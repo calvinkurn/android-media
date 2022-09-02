@@ -13,9 +13,6 @@ class HasPaginatedListImpl : HasPaginatedList {
         config: HasPaginatedList.Config,
         loadNextPage: (Int, Int) -> Unit
     ) {
-        if (recyclerView.adapter == null) throw RuntimeException("RecyclerView adapter must not be null. Please initialize recyclerView adapter first")
-        if (recyclerView.layoutManager == null) throw RuntimeException("RecyclerView layout manager must not be null. Please initialize layout manager first")
-
         this.config = config
         enablePaging(recyclerView, config, loadNextPage)
         resetPaging()
