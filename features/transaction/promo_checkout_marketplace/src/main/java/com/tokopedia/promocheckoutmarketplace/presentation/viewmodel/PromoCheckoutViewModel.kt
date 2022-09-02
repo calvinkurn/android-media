@@ -1310,15 +1310,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         return@forEach
                     }
                 }
-                otherPromoSelectedWithBoClashingInfo?.let { promo ->
-                    val otherPromoBoClashingInfo = promo.uiData.boClashingInfos.firstOrNull()
-                    if (otherPromoBoClashingInfo != null) {
-                        fragmentUiModel.value?.let {
-                            it.uiData.boClashingMessage = otherPromoBoClashingInfo.message
-                            it.uiData.boClashingImage = otherPromoBoClashingInfo.icon
-                            it.uiState.shouldShowTickerBoClashing = promo.uiState.isSelected
+                otherPromoSelectedWithBoClashingInfo.let { promo ->
+                    if (promo != null) {
+                        val otherPromoBoClashingInfo = promo.uiData.boClashingInfos.firstOrNull()
+                        otherPromoBoClashingInfo?.let { boClashingInfo ->
+                            fragmentUiModel.value?.let {
+                                it.uiData.boClashingMessage = boClashingInfo.message
+                                it.uiData.boClashingImage = boClashingInfo.icon
+                                it.uiState.shouldShowTickerBoClashing = promo.uiState.isSelected
 
-                            _fragmentUiModel.value = it
+                                _fragmentUiModel.value = it
+                            }
                         }
                     } else {
                         fragmentUiModel.value?.let {
