@@ -160,7 +160,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSaldoDepositBinding.inflate(layoutInflater, container, false)
-        initViews(binding.root)
+        initViews()
         return binding.root
     }
 
@@ -203,14 +203,12 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         }
     }
 
-    @SuppressLint("Range")
-    private fun initViews(view: View) {
 
+    private fun initViews() {
         if (arguments != null) {
             isSellerEnabled = requireArguments().getBoolean(IS_SELLER_ENABLED)
         }
         setViewModelObservers()
-
         expandLayout = true
         binding.depositHeaderLayout.apply {
             if (expandLayout) {
@@ -228,7 +226,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 merchantDetailsLl.gone()
             }
         }
-
         val saldoHistoryFragment = SaldoTransactionHistoryFragment()
         childFragmentManager.beginTransaction()
             .replace(
@@ -238,7 +235,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             )
             .commit()
         this.saldoHistoryFragment = saldoHistoryFragment
-
         binding.depositHeaderLayout.merchantDetailsLl.apply {
             if (isSellerMigrationEnabled(context)) {
                 this.hide()
@@ -246,7 +242,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 this.show()
             }
         }
-
     }
 
     private fun setViewModelObservers() {
