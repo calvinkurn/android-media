@@ -120,6 +120,9 @@ class PlayUpcomingViewModel @Inject constructor(
     val isExpanded: Boolean
             get() = _widgetState.value.isExpand
 
+    val isWidgetShown: Boolean
+        get() = _widgetState.value.isShown
+
     val remindState: PlayUpcomingState
         get() = _upcomingState.value
 

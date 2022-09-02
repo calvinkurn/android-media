@@ -19,7 +19,7 @@ data class PlayUpcomingInfoUiState(
     val state: PlayUpcomingState
 )
 //Could be rename as WidgetUiState when product carousel is in
-data class DescriptionUiState(val isExpand: Boolean = false, val isShown: Boolean = true)
+data class DescriptionUiState(val isExpand: Boolean = false, val isShown: Boolean = false)
 
 sealed class PlayUpcomingState {
     object Unknown : PlayUpcomingState()

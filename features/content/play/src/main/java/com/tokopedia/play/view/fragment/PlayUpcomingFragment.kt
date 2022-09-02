@@ -14,9 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
@@ -99,6 +97,7 @@ class PlayUpcomingFragment @Inject constructor(
         if (currentActivity is PlayActivity) {
             playParentViewModel = ViewModelProvider(currentActivity, currentActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
         }
+        setupPage()
     }
 
     private fun setupPage(){
@@ -121,12 +120,11 @@ class PlayUpcomingFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupInsets()
         setupObserver()
-        setupView()
+        setupTapCover()
     }
 
     override fun onResume() {
         super.onResume()
-        setupPage()
         playUpcomingViewModel.startSSE(channelId)
     }
 
@@ -157,6 +155,7 @@ class PlayUpcomingFragment @Inject constructor(
 
     private fun sendImpression() {
         analytic.impressUpcomingPage(channelId)
+        if(!playUpcomingViewModel.isWidgetShown) analytic.impressCoverWithoutComponent(channelId)
     }
 
     private fun renderDescription(prevState: DescriptionUiState?, state: DescriptionUiState){
@@ -415,16 +414,12 @@ class PlayUpcomingFragment @Inject constructor(
         })
     }
 
-    fun setupView(){
+    private fun setupTapCover(){
         binding.ivUpcomingCover.setOnClickListener {
             playUpcomingViewModel.submitAction(TapCover)
             if (!playUpcomingViewModel.isExpanded) {
                 analytic.clickCover(channelId)
             } else return@setOnClickListener
-        }
-
-        binding.ivUpcomingCover.addOnImpressionListener(ImpressHolder()){
-            analytic.impressCoverWithoutComponent(channelId)
         }
     }
 
