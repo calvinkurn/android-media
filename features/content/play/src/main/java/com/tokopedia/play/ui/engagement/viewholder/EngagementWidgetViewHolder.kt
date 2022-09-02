@@ -16,6 +16,9 @@ class EngagementWidgetViewHolder(
 
     fun bindPromo(item: EngagementUiModel.Promo){
         binding.setupPromo(title = item.info.title, description = getPromoDescription(item))
+        binding.setOnClickListener {
+            listener.onWidgetClicked(engagement = item)
+        }
     }
 
     private fun getPromoDescription(item: EngagementUiModel.Promo): String {
@@ -34,46 +37,45 @@ class EngagementWidgetViewHolder(
 
     fun bindGame(item: EngagementUiModel.Game) {
         when(item.interactive){
-            is InteractiveUiModel.Giveaway -> setupGiveaway(item.interactive)
-            is InteractiveUiModel.Quiz-> setupQuiz(item.interactive)
+            is InteractiveUiModel.Giveaway -> setupGiveaway(item.interactive, item)
+            is InteractiveUiModel.Quiz-> setupQuiz(item.interactive, item)
         }
+        listener.onWidgetClicked(engagement = item)
     }
 
-    private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway){
+    private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway, item: EngagementUiModel.Game){
         when(val current = giveaway.status){
             is InteractiveUiModel.Giveaway.Status.Upcoming -> binding.setupUpcomingGiveaway(
                 title = giveaway.title,
                 targetTime = current.startTime,
                 onDurationEnd = {
-                    listener.onGiveawayUpcomingEnd(giveaway)
+                    listener.onWidgetGameEnded(item)
                 }
             )
             is InteractiveUiModel.Giveaway.Status.Ongoing -> binding.setupOngoingGiveaway(
                 title = giveaway.title,
                 targetTime = current.endTime,
                 onDurationEnd = {
-                    listener.onGiveawayEnd(giveaway)
+                    listener.onWidgetGameEnded(item)
                 }
             )
         }
     }
 
-    private fun setupQuiz(quiz: InteractiveUiModel.Quiz) {
+    private fun setupQuiz(quiz: InteractiveUiModel.Quiz, item: EngagementUiModel.Game) {
         when(val current = quiz.status){
             is InteractiveUiModel.Quiz.Status.Ongoing -> binding.setupQuiz(
                 question = quiz.title,
                 targetTime = current.endTime,
                 onDurationEnd = {
-                    listener.onQuizEnd(quiz)
+                    listener.onWidgetGameEnded(item)
                 }
             )
         }
     }
 
     interface Listener {
-        fun onGiveawayEnd(giveaway: InteractiveUiModel.Giveaway)
-        fun onGiveawayUpcomingEnd(giveaway: InteractiveUiModel.Giveaway)
-        fun onQuizEnd(quiz: InteractiveUiModel.Quiz)
+        fun onWidgetGameEnded(engagement: EngagementUiModel)
         fun onWidgetClicked(engagement: EngagementUiModel)
     }
 }

@@ -1812,6 +1812,26 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
+    /**
+     * Engagement Listener
+     */
+    override fun onWidgetGameEnded(
+        view: EngagementCarouselViewComponent,
+        engagement: EngagementUiModel
+    ) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onWidgetClicked(
+        view: EngagementCarouselViewComponent,
+        engagement: EngagementUiModel
+    ) {
+        when (engagement){
+            is EngagementUiModel.Promo -> {}
+            is EngagementUiModel.Game -> {}
+        }
+    }
+
     companion object {
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
 

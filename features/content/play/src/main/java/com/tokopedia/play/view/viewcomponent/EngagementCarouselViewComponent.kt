@@ -27,20 +27,12 @@ class EngagementCarouselViewComponent(
     private val carousel : RecyclerView = findViewById(R.id.rv_engagement_widget)
 
     private val carouselAdapter = EngagementWidgetAdapter(object : EngagementWidgetViewHolder.Listener{
-        override fun onGiveawayEnd(giveaway: InteractiveUiModel.Giveaway) {
-            //TODO("Not yet implemented")
-        }
-
-        override fun onGiveawayUpcomingEnd(giveaway: InteractiveUiModel.Giveaway) {
-            //TODO("Not yet implemented")
-        }
-
-        override fun onQuizEnd(quiz: InteractiveUiModel.Quiz) {
-            //TODO("Not yet implemented")
+        override fun onWidgetGameEnded(engagement: EngagementUiModel) {
+            listener.onWidgetGameEnded(this@EngagementCarouselViewComponent, engagement)
         }
 
         override fun onWidgetClicked(engagement: EngagementUiModel) {
-            TODO("Not yet implemented")
+            listener.onWidgetClicked(this@EngagementCarouselViewComponent, engagement)
         }
     })
 
@@ -67,6 +59,7 @@ class EngagementCarouselViewComponent(
     }
 
     interface Listener {
-
+        fun onWidgetGameEnded(view: EngagementCarouselViewComponent, engagement: EngagementUiModel)
+        fun onWidgetClicked(view: EngagementCarouselViewComponent, engagement: EngagementUiModel)
     }
 }
