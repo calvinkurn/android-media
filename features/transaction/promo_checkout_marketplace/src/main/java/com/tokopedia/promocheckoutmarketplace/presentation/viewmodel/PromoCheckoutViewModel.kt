@@ -1294,12 +1294,42 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private fun updateBoClashingState(selectedItem: PromoListItemUiModel) {
         if (selectedItem.uiData.boClashingInfos.isNotEmpty() && !selectedItem.uiState.isBebasOngkir) {
-            fragmentUiModel.value?.let {
-                it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.first().message
-                it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.first().icon
-                it.uiState.shouldShowTickerBoClashing = selectedItem.uiState.isSelected
+            if (selectedItem.uiState.isSelected) {
+                fragmentUiModel.value?.let {
+                    it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.first().message
+                    it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.first().icon
+                    it.uiState.shouldShowTickerBoClashing = selectedItem.uiState.isSelected
 
-                _fragmentUiModel.value = it
+                    _fragmentUiModel.value = it
+                }
+            } else {
+                var otherPromoSelectedWithBoClashingInfo: PromoListItemUiModel? = null
+                promoListUiModel.value?.forEach {
+                    if (it is PromoListItemUiModel && it.uiState.isSelected && it.uiData.boClashingInfos.isNotEmpty() && !it.uiState.isBebasOngkir && it.uiData.promoCode != selectedItem.uiData.promoCode) {
+                        otherPromoSelectedWithBoClashingInfo = it
+                        return@forEach
+                    }
+                }
+                otherPromoSelectedWithBoClashingInfo.let { promo ->
+                    if (promo != null) {
+                        val otherPromoBoClashingInfo = promo.uiData.boClashingInfos.firstOrNull()
+                        otherPromoBoClashingInfo?.let { boClashingInfo ->
+                            fragmentUiModel.value?.let {
+                                it.uiData.boClashingMessage = boClashingInfo.message
+                                it.uiData.boClashingImage = boClashingInfo.icon
+                                it.uiState.shouldShowTickerBoClashing = promo.uiState.isSelected
+
+                                _fragmentUiModel.value = it
+                            }
+                        }
+                    } else {
+                        fragmentUiModel.value?.let {
+                            it.uiState.shouldShowTickerBoClashing = selectedItem.uiState.isSelected
+
+                            _fragmentUiModel.value = it
+                        }
+                    }
+                }
             }
         }
     }
