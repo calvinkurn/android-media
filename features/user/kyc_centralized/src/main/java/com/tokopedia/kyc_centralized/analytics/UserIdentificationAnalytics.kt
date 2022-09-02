@@ -57,6 +57,12 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         const val LABEL_UNCHECK = "uncheck"
     }
 
+    private object ScreenName {
+        const val PENDING_VERIFICATION = "menunggu verifikasi kyc page"
+        const val SUCCESS_VERIFICATION = "success message verifikasi kyc page"
+        const val SUCCESS_VERIFIED = "success terverifikasi kyc page"
+    }
+
     fun eventViewOnKYCOnBoarding() {
         track(TrackAppUtils.gtmData(
                 Event.VIEW_ACCOUNT_IRIS,
@@ -99,7 +105,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventViewPendingPage() {
-        sendScreenName("${Action.VIEW_PENDING_PAGE} - $projectID - ${getKycType(projectID.toString())}")
+        sendScreenName("${ScreenName.PENDING_VERIFICATION} / $projectID - ${getKycType(projectID.toString())}")
     }
 
     fun eventClickBackPendingPage() {
@@ -121,7 +127,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventViewSuccessSnackbarPendingPage() {
-        sendScreenName("${Action.VIEW_SUCCESS_SNACKBAR_PENDING_PAGE} - $projectID - ${getKycType(projectID.toString())}")
+        sendScreenName("${ScreenName.SUCCESS_VERIFICATION} / $projectID - ${getKycType(projectID.toString())}")
     }
 
     fun eventViewRejectedPage() {
@@ -170,7 +176,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventViewSuccessPage() {
-        sendScreenName("${Action.VIEW_SUCCES_PAGE} - $projectID - ${getKycType(projectID.toString())}")
+        sendScreenName("${ScreenName.SUCCESS_VERIFIED} - $projectID - ${getKycType(projectID.toString())}")
     }
 
     fun eventClickBackSuccessPage() {
