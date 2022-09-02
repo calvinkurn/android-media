@@ -3411,6 +3411,7 @@ open class ProductManageFragment :
 
     private fun refreshCoachMark() {
         haveSetReminder = -1
+        recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
         dismissAllCoachMark()
     }
 
@@ -3441,7 +3442,6 @@ open class ProductManageFragment :
     }
 
     private fun dismissAllCoachMark(){
-        recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
         if (coachMarkNotifyMe?.isDismissed == false) {
             coachMarkNotifyMe?.dismissCoachMark()
             coachMarkNotifyMe?.isDismissed = false
