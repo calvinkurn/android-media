@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play_common.view.RoundedConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/engagement_tools_small_widget_width"
-    android:layout_height="wrap_content"
-    tools:background="@color/Unify_GN400"
-    >
+    android:layout_height="@dimen/engagement_tools_small_widget_height"
+    tools:background="@color/Unify_GN400">
 
     <android.widget.Space
         android:id="@+id/space_bg_top"
         android:layout_width="0dp"
         android:layout_height="@dimen/play_spacing_size"
         app:layout_constraintBottom_toBottomOf="@id/iv_engagement_tools"
-        app:layout_constraintTop_toTopOf="@id/iv_engagement_tools"
-        />
+        app:layout_constraintTop_toTopOf="@id/iv_engagement_tools" />
 
     <com.tokopedia.play_common.view.RoundedFrameLayout
         android:id="@+id/fl_background"
@@ -25,8 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/space_bg_top"
-        app:rfl_cornerRadius="@dimen/interactive_widget_radius"
-        />
+        app:rfl_cornerRadius="@dimen/interactive_widget_radius" />
 
     <com.tokopedia.play_common.view.RoundedImageView
         android:id="@+id/iv_engagement_tools"
@@ -41,11 +37,10 @@
         app:rImg_cornerRadius="@dimen/interactive_icon_radius"
         app:unify_image_type="circle"
         tools:background="@color/Unify_Static_Black"
-        tools:src="@drawable/iconunify_24h"
-        />
+        tools:src="@drawable/iconunify_24h" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_engagement_desc"
+        android:id="@+id/tv_engagement_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl2"
@@ -60,22 +55,21 @@
         app:layout_constraintTop_toBottomOf="@id/iv_engagement_tools"
         app:typographyType="small"
         app:typographyWeight="bold"
-        tools:text="Kapan ulang tahun Rockbros Indonesia?"
-        />
+        tools:text="Kapan ulang tahun Rockbros Indonesia?" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_engagement_timer_info"
+        android:id="@+id/tv_engagement_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:textColor="@color/Unify_Static_White"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tv_engagement_desc"
-        app:layout_constraintTop_toBottomOf="@+id/tv_engagement_desc"
+        app:layout_constraintStart_toStartOf="@+id/tv_engagement_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_engagement_title"
         app:layout_constraintVertical_bias="0.0"
         app:typographyType="small"
-        android:visibility="invisible"
         tools:text="@string/play_common_widget_interactive_end" />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -84,13 +78,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/spacing_lvl2"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_engagement_timer_info"
+        app:layout_constraintTop_toBottomOf="@id/tv_engagement_desc"
         app:timer_unify_single_type="minute_digit"
         app:timer_unify_single_variant="main"
-        tools:timer_unify_single_remainingMinutes="10"
-        android:visibility="invisible"
-        />
+        tools:timer_unify_single_remainingMinutes="10" />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

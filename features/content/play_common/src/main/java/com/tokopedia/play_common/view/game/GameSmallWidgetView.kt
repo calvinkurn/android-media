@@ -16,13 +16,23 @@ import java.util.*
 class GameSmallWidgetView : FrameLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     private val binding = ViewGameInteractiveBinding.inflate(
         LayoutInflater.from(context),
         this,
         true
     )
+
+    var title: String = ""
+        set(value) {
+            field = value
+            binding.tvEngagementTitle.text = value
+        }
 
     var description: String = ""
         set(value) {
@@ -35,7 +45,7 @@ class GameSmallWidgetView : FrameLayout {
         binding.timerEngagementTools.pause()
     }
 
-    fun setTimer(duration: Long, onFinished: () -> Unit){
+    fun setTimer(duration: Long, onFinished: () -> Unit) {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MILLISECOND, duration.toInt())
         setTargetTime(calendar, onFinished)
@@ -71,14 +81,7 @@ class GameSmallWidgetView : FrameLayout {
         binding.ivEngagementTools.setImageDrawable(icon)
     }
 
-    fun setTimerInfo(info: String) {
-        binding.tvEngagementTimerInfo.apply {
-            visible()
-            text = info
-        }
-    }
-
-    fun cancelTimer(){
+    fun cancelTimer() {
         binding.timerEngagementTools.timer?.cancel()
     }
 }

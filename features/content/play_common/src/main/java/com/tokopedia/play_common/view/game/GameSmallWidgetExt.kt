@@ -25,25 +25,25 @@ private fun GameSmallWidgetView.setupGiveaway() {
 }
 
 fun GameSmallWidgetView.setupUpcomingGiveaway(
-    desc: String,
+    title: String,
     targetTime: Calendar,
     onDurationEnd: (GameSmallWidgetView) -> Unit,
 ) {
     setTimerVariant(TimerUnifySingle.VARIANT_GENERAL)
-    description = desc
-    setTimerInfo(context.getString(R.string.play_common_widget_interactive_start))
+    this.title = title
+    this.description = context.getString(R.string.play_common_widget_interactive_start)
     setTargetTime(targetTime) { onDurationEnd(this) }
     setupGiveaway()
 }
 
 fun GameSmallWidgetView.setupOngoingGiveaway(
-    desc: String,
+    title: String,
     targetTime: Calendar,
     onDurationEnd: (GameSmallWidgetView) -> Unit,
 ) {
     setTimerVariant(TimerUnifySingle.VARIANT_MAIN)
-    description = desc
-    setTimerInfo(context.getString(R.string.play_common_widget_interactive_end))
+    this.title = title
+    this.description = context.getString(R.string.play_common_widget_interactive_end)
     setTargetTime(targetTime) { onDurationEnd(this) }
     setupGiveaway()
 }
@@ -62,19 +62,22 @@ fun GameSmallWidgetView.setupQuiz(
     setContentBackground(
         MethodChecker.getDrawable(context, R.drawable.bg_play_quiz_widget)
     )
-    setTimerInfo(context.getString(R.string.play_common_widget_interactive_end))
+    description = context.getString(R.string.play_common_widget_interactive_end)
     setTargetTime(targetTime) { onDurationEnd(this) }
     setTimerVariant(TimerUnifySingle.VARIANT_MAIN)
-    description = question
+    title = question
 }
 
 fun GameSmallWidgetView.setupPromo(
     title: String,
+    description: String,
 ){
-    description = title
+    this.title = title
+    this.description = description
+
     getIconUnifyDrawable(
         context = context,
-        iconId = IconUnify.PROMO,
+        iconId = IconUnify.DISCOUNT,
         assetColor = MethodChecker.getColor(context, unifyR.color.Unify_GN500)
     )?.let(::setIcon)
     setContentBackground(

@@ -15,8 +15,21 @@ class EngagementWidgetViewHolder(
     BaseViewHolder(binding) {
 
     fun bindPromo(item: EngagementUiModel.Promo){
-        //TODO build string
-        binding.setupPromo(title = item.info.title)
+        binding.setupPromo(title = item.info.title, description = getPromoDescription(item))
+    }
+
+    private fun getPromoDescription(item: EngagementUiModel.Promo): String {
+        return when {
+            item.info.voucherStock <= 20 -> {
+                "Sisa ${item.info.voucherStock - 1} kupon!"
+            }
+            item.size == 1 -> {
+                "Cek kuponnya!"
+            }
+            else -> {
+                "+${item.size} Kupon lainnya"
+            }
+        }
     }
 
     fun bindGame(item: EngagementUiModel.Game) {
@@ -29,14 +42,14 @@ class EngagementWidgetViewHolder(
     private fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway){
         when(val current = giveaway.status){
             is InteractiveUiModel.Giveaway.Status.Upcoming -> binding.setupUpcomingGiveaway(
-                desc = giveaway.title,
+                title = giveaway.title,
                 targetTime = current.startTime,
                 onDurationEnd = {
                     listener.onGiveawayUpcomingEnd(giveaway)
                 }
             )
             is InteractiveUiModel.Giveaway.Status.Ongoing -> binding.setupOngoingGiveaway(
-                desc = giveaway.title,
+                title = giveaway.title,
                 targetTime = current.endTime,
                 onDurationEnd = {
                     listener.onGiveawayEnd(giveaway)

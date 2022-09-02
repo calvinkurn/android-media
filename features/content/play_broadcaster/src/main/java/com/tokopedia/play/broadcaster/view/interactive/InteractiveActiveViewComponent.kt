@@ -32,13 +32,13 @@ class InteractiveActiveViewComponent(
     }
 
     fun setOngoingGiveaway(
-        desc: String,
+        title: String,
         targetTime: Calendar,
         onDurationEnd: () -> Unit,
     ) {
         setChildView { GameSmallWidgetView(parent.context) }.apply {
             setupOngoingGiveaway(
-                desc = desc,
+                title = title,
                 targetTime = targetTime,
                 onDurationEnd = { onDurationEnd() }
             )
@@ -47,13 +47,13 @@ class InteractiveActiveViewComponent(
     }
 
     fun setUpcomingGiveaway(
-        desc: String,
+        title: String,
         targetTime: Calendar,
         onDurationEnd: () -> Unit,
     ) {
         setChildView { GameSmallWidgetView(parent.context) }.apply {
             setupUpcomingGiveaway(
-                desc = desc,
+                title = title,
                 targetTime = targetTime,
                 onDurationEnd = { onDurationEnd() }
             )
