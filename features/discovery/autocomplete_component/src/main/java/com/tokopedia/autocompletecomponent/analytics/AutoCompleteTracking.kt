@@ -42,14 +42,12 @@ open class AutoCompleteTracking(
 
     object Category {
         const val LONG_PRESS = "Long Press"
-        const val SEARCH = "Search"
     }
 
     object Action {
         const val CLICK_CARI = "Click Cari"
         const val CLICK_SEARCH_SEARCH_BAR = "click - search - search bar"
         const val CLICK_SEARCH = "click - search"
-        const val VOICE_SEARCH = "Voice Search"
         const val CLICK_SEARCH_BAR = "click search bar"
     }
 
