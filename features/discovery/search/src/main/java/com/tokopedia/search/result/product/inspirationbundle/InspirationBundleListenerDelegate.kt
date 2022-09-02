@@ -75,7 +75,7 @@ class InspirationBundleListenerDelegate(
             trackingOption = trackingOption,
             componentId = componentId,
             dimension90 = dimension90,
-            applink = applink,
+            applink = activeApplink,
             keyword = keyword,
             valueName = "$carouselTitle - ${bundle.bundleName}",
         )
