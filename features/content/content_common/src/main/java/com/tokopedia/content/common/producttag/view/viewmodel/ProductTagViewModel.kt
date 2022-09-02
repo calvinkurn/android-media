@@ -243,7 +243,7 @@ class ProductTagViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val split = productTagSourceRaw.split(",")
             _productTagSourceList.value = split.map {
-                ProductTagSource.mapFromString(it)
+                ProductTagSource.mapFromString(it.trim())
             }
         }) { }
     }

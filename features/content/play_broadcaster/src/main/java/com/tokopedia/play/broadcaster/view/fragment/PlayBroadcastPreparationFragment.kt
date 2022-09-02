@@ -35,7 +35,7 @@ import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayUGCProductPickerBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
@@ -650,16 +650,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     override fun onClickSetProduct() {
         analytic.clickSetupProductMenu()
 
-        val selectedAccount = parentViewModel.uiState.value.selectedContentAccount
-
-        if (selectedAccount.isShop) {
-            childFragmentManager.beginTransaction()
-                .add(ProductSetupFragment::class.java, null, null)
-                .commit()
-        } else {
-            getProductPicker()
-                .showNow(childFragmentManager)
-        }
+        childFragmentManager.beginTransaction()
+            .add(ProductSetupFragment::class.java, null, null)
+            .commit()
     }
 
     override fun onClickSetSchedule() {
@@ -850,13 +843,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun startBroadcast(ingestUrl: String) {
         broadcaster.start(ingestUrl)
-    }
-
-    private fun getProductPicker(): PlayUGCProductPickerBottomSheet {
-        return PlayUGCProductPickerBottomSheet.getOrCreate(
-            childFragmentManager,
-            requireActivity().classLoader,
-        )
     }
 
     companion object {

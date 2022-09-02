@@ -142,6 +142,10 @@ class ProductChooserBottomSheet @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         mListener = null
     }
 

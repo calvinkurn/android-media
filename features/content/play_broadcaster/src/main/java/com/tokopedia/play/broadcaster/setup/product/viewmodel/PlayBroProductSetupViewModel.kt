@@ -168,7 +168,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
             _productTagSectionList.collectLatest { sections ->
-                savedStateHandle[KEY_PRODUCT_SECTIONS] = sections
+                savedStateHandle.setProductSections(sections)
             }
         }
     }

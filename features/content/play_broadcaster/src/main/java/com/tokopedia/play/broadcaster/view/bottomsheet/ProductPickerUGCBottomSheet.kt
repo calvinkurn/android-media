@@ -1,0 +1,186 @@
+package com.tokopedia.play.broadcaster.view.bottomsheet
+
+import android.app.Dialog
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayUgcProductPickerBinding
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.BaseProductSetupBottomSheet
+import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import javax.inject.Inject
+
+/**
+ * Created by kenny.hadisaputra on 29/08/22
+ */
+class ProductPickerUGCBottomSheet @Inject constructor(
+    private val dialogCustomizer: PlayBroadcastDialogCustomizer,
+) : BaseProductSetupBottomSheet() {
+
+    private var _binding: BottomSheetPlayUgcProductPickerBinding? = null
+    private val binding: BottomSheetPlayUgcProductPickerBinding
+        get() = _binding!!
+
+    private val parentViewModel by activityViewModels<PlayBroadcastViewModel>()
+
+    private val productTagListener = object : ProductTagParentFragment.Listener {
+        override fun onCloseProductTag() {
+//            dismiss()
+            mListener?.onCancelled(this@ProductPickerUGCBottomSheet)
+        }
+
+        override fun onFinishProductTag(products: List<SelectedProductUiModel>) {
+//            products.forEach {
+//                viewModel.submitAction(
+//                    ProductSetupAction.SelectProduct(
+//                        ProductUiModel(
+//                            id = it.id,
+//                            name = it.name,
+//                            imageUrl = it.cover,
+//                            stock = 1,
+//                            price = PriceUnknown,
+//                        )
+//                    )
+//                )
+//            }
+//
+//            viewModel.submitAction(ProductSetupAction.SaveProducts)
+//
+//            dismiss()
+            mListener?.onFinished(this@ProductPickerUGCBottomSheet)
+        }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return object : BottomSheetDialog(requireContext(), theme) {
+            override fun cancel() {
+                closeBottomSheet()
+            }
+        }.apply {
+            dialogCustomizer.customize(this)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupBottomSheet()
+    }
+
+    private var mListener: Listener? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupView()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is ProductTagParentFragment -> childFragment.setListener(productTagListener)
+        }
+    }
+
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
+    fun showNow(fragmentManager: FragmentManager) {
+        showNow(fragmentManager, TAG)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mListener = null
+    }
+
+    private fun setupView() {
+        binding.root.layoutParams = binding.root.layoutParams.apply {
+            height = (getScreenHeight() * SHEET_HEIGHT_PERCENT).toInt()
+        }
+
+        try {
+            bottomSheetWrapper.setPadding(0, 0, 0, 0)
+        } catch (ignored: UninitializedPropertyAccessException) { }
+
+        setCloseClickListener {
+            closeBottomSheet()
+        }
+
+        val selectedAccount = parentViewModel.uiState.value.selectedContentAccount
+
+        val productPicker = ProductTagParentFragment.getFragment(
+            fragmentManager = childFragmentManager,
+            classLoader = requireActivity().classLoader,
+            argumentBuilder = ContentProductTagArgument.Builder()
+                .setAuthorType(selectedAccount.type)
+                .setProductTagSource(
+                    listOf(ProductTagSource.GlobalSearch, ProductTagSource.LastPurchase, ProductTagSource.MyShop)
+                        .joinToString { it.tag }
+                )
+                .setAuthorId(selectedAccount.id)
+                .setShopBadge(selectedAccount.badge)
+                .setMultipleSelectionProduct(true)
+                .setMaxSelectedProduct(50)
+        )
+
+        childFragmentManager.beginTransaction()
+            .replace(binding.containerContent.id, productPicker, ProductTagParentFragment.TAG)
+            .commit()
+    }
+
+    private fun setupBottomSheet() {
+        _binding = BottomSheetPlayUgcProductPickerBinding.inflate(
+            LayoutInflater.from(requireContext()),
+        )
+        clearContentPadding = true
+        showHeader = false
+        setChild(binding.root)
+    }
+
+    private fun closeBottomSheet() {
+        dismiss()
+    }
+
+    companion object {
+        private const val TAG = "PlayUGCProductPickerBottomSheet"
+        private const val SHEET_HEIGHT_PERCENT = 0.85f
+
+        fun get(fragmentManager: FragmentManager): ProductPickerUGCBottomSheet? {
+            return fragmentManager.findFragmentByTag(TAG) as? ProductPickerUGCBottomSheet
+        }
+
+        fun getOrCreate(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+
+        ): ProductPickerUGCBottomSheet {
+            val existing = get(fragmentManager)
+            if (existing != null) return existing
+
+            return fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                ProductPickerUGCBottomSheet::class.java.name
+            ) as ProductPickerUGCBottomSheet
+        }
+    }
+
+    interface Listener {
+        fun onCancelled(bottomSheet: ProductPickerUGCBottomSheet)
+        fun onFinished(bottomSheet: ProductPickerUGCBottomSheet)
+    }
+}

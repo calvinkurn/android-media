@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSumm
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import javax.inject.Inject
@@ -62,12 +63,22 @@ class ProductSetupFragment @Inject constructor(
 
         override fun onShouldAddProduct(bottomSheet: ProductSummaryBottomSheet) {
             bottomSheet.dismiss()
-            openProductChooser(ChooserSource.Summary)
+            openProductChooser()
         }
 
         override fun onFinish(bottomSheet: ProductSummaryBottomSheet) {
             bottomSheet.dismiss()
             removeFragment()
+        }
+    }
+
+    private val productPickerUGCListener = object : ProductPickerUGCBottomSheet.Listener {
+        override fun onCancelled(bottomSheet: ProductPickerUGCBottomSheet) {
+            bottomSheet.dismiss()
+        }
+
+        override fun onFinished(bottomSheet: ProductPickerUGCBottomSheet) {
+            bottomSheet.dismiss()
         }
     }
 
@@ -80,7 +91,7 @@ class ProductSetupFragment @Inject constructor(
 
         if (savedInstanceState != null) return
 
-        if (parentViewModel.productSectionList.isEmpty()) openProductChooser(ChooserSource.Preparation)
+        if (parentViewModel.productSectionList.isEmpty()) openProductChooser()
         else openProductSummary()
     }
 
@@ -89,6 +100,7 @@ class ProductSetupFragment @Inject constructor(
         when (childFragment) {
             is ProductChooserBottomSheet -> childFragment.setListener(productChooserListener)
             is ProductSummaryBottomSheet -> childFragment.setListener(productSummaryListener)
+            is ProductPickerUGCBottomSheet -> childFragment.setListener(productPickerUGCListener)
         }
     }
 
@@ -105,7 +117,7 @@ class ProductSetupFragment @Inject constructor(
         ).show(childFragmentManager)
     }
 
-    private fun openProductChooser(chooserSource: ChooserSource) {
+    private fun openShopProductChooser(chooserSource: ChooserSource) {
         this.chooserSource = chooserSource
 
         ProductChooserBottomSheet.getFragment(
@@ -119,6 +131,22 @@ class ProductSetupFragment @Inject constructor(
             childFragmentManager,
             requireActivity().classLoader,
         ).show(childFragmentManager)
+    }
+
+    private fun openUGCProductChooser() {
+        ProductPickerUGCBottomSheet.getOrCreate(
+            childFragmentManager,
+            requireActivity().classLoader,
+        ).showNow(childFragmentManager)
+    }
+
+    private fun openProductChooser() {
+        val selectedAccount = parentViewModel.uiState.value.selectedContentAccount
+        if (selectedAccount.isShop) {
+            openShopProductChooser(ChooserSource.Preparation)
+        } else {
+            openUGCProductChooser()
+        }
     }
 
     fun setDataSource(dataSource: DataSource?) {
