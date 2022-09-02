@@ -11,7 +11,7 @@ import javax.inject.Inject
  */
 class PlayUpcomingAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface,
-): PlayUpcomingAnalytic {
+) : PlayUpcomingAnalytic {
 
     private val userId: String
         get() = userSession.userId
@@ -62,7 +62,7 @@ class PlayUpcomingAnalyticImpl @Inject constructor(
     }
 
 
-    override fun clickCancelRemindMe(channelId: String){
+    override fun clickCancelRemindMe(channelId: String) {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_TOP_ADS)
             .setEventAction("click - batalkan pengingat")
@@ -126,6 +126,18 @@ class PlayUpcomingAnalyticImpl @Inject constructor(
         Tracker.Builder()
             .setEvent(KEY_TRACK_VIEW_TOP_ADS)
             .setEventAction("impression - cover image")
+            .setEventCategory(KEY_TRACK_UPCOMING_PAGE)
+            .setEventLabel(channelId)
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    override fun impressShare(channelId: String) {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_VIEW_TOP_ADS)
+            .setEventAction("impression - share button")
             .setEventCategory(KEY_TRACK_UPCOMING_PAGE)
             .setEventLabel(channelId)
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)

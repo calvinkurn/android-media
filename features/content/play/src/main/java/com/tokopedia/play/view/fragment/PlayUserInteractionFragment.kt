@@ -428,6 +428,10 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(CopyLinkAction)
     }
 
+    override fun onShareIconImpressed(view: ShareExperienceViewComponent) {
+        //No tracker for live
+    }
+
     override fun onPartnerInfoClicked(view: PartnerInfoViewComponent, applink: String) {
         playViewModel.submitAction(ClickPartnerNameAction(applink))
     }

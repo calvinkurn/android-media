@@ -21,4 +21,6 @@ interface PlayUpcomingAnalytic {
     fun clickCover(channelId: String)
 
     fun impressCoverWithoutComponent(channelId: String)
+
+    fun impressShare(channelId: String)
 }

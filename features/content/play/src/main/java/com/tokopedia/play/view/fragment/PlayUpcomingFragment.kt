@@ -97,7 +97,6 @@ class PlayUpcomingFragment @Inject constructor(
         if (currentActivity is PlayActivity) {
             playParentViewModel = ViewModelProvider(currentActivity, currentActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
         }
-        setupPage()
     }
 
     private fun setupPage(){
@@ -125,6 +124,7 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+        setupPage()
         playUpcomingViewModel.startSSE(channelId)
     }
 
@@ -369,6 +369,10 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onHandleShareFallback(view: ShareExperienceViewComponent) {
         playUpcomingViewModel.submitAction(CopyLinkUpcomingAction)
+    }
+
+    override fun onShareIconImpressed(view: ShareExperienceViewComponent) {
+        analytic.impressShare(channelId)
     }
 
     override fun onTextClicked(view: UpcomingDescriptionViewComponent) {
