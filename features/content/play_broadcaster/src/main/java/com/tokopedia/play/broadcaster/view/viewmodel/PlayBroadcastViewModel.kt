@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
+import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet.WarningType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.AccountConfiguration
 import com.tokopedia.content.common.ui.model.AccountConfigurationType
@@ -1552,9 +1554,34 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return _accountListState.value.first { it.type == selectedType }
     }
 
-    private fun checkSelectedAccountIsEligible(selectedAccount: ContentAccountUiModel) {
+    private fun checkSelectedAccountConfiguration(
+        configUiModel: ConfigurationUiModel,
+        selectedAccount: ContentAccountUiModel,
+    ) {
         when {
-            selectedAccount.isUser && selectedAccount.hasUsername -> return
+            !configUiModel.streamAllowed -> {
+                _accountConfiguration.value = AccountConfiguration(
+                    type = AccountConfigurationType.Banned,
+                    selectedAccount = selectedAccount
+                )
+                warningInfoType = WarningType.BANNED
+                return
+            }
+            configUiModel.channelStatus == ChannelStatus.Live -> {
+                _accountConfiguration.value = AccountConfiguration(
+                    type = AccountConfigurationType.Banned,
+                    selectedAccount = selectedAccount
+                )
+                warningInfoType = WarningType.LIVE
+                return
+            }
+            !selectedAccount.hasAcceptTnc -> {
+                _accountConfiguration.value = AccountConfiguration(
+                    type = AccountConfigurationType.NotAcceptTNC,
+                    selectedAccount
+                )
+                return
+            }
             selectedAccount.isUser && !selectedAccount.hasUsername -> {
                 _accountConfiguration.value = AccountConfiguration(
                     type = AccountConfigurationType.NoUsername,
