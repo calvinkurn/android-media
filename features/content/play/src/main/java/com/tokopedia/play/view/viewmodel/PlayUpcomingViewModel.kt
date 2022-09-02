@@ -275,8 +275,8 @@ class PlayUpcomingViewModel @Inject constructor(
 
                     if(!status) failedRemindMe()
                     else {
-                        _upcomingState.emit(PlayUpcomingState.ReminderStatus(isReminded = isReminderSet))
                         _upcomingInfo.setValue { copy(isReminderSet = !isReminderSet) }
+                        _upcomingState.emit(PlayUpcomingState.ReminderStatus(isReminded = isReminderSet))
 
                         _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(
                             if (!isReminderSet) R.string.play_cancel_remind_me_success else R.string.play_remind_me_success),

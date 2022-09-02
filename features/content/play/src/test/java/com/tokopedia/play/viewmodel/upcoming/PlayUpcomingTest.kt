@@ -124,7 +124,7 @@ class PlayUpcomingTest {
                 robot.submitAction(ClickUpcomingButton)
             }
 
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.Reminded)
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertTrue()}
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
     }
@@ -163,7 +163,7 @@ class PlayUpcomingTest {
                 robot.submitAction(ClickUpcomingButton)
             }
 
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertFalse()}
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
     }
@@ -232,7 +232,7 @@ class PlayUpcomingTest {
                 robot.submitAction(ClickUpcomingButton)
             }
 
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertFalse()}
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
     }
@@ -270,7 +270,7 @@ class PlayUpcomingTest {
                 robot.submitAction(ClickUpcomingButton)
             }
 
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.Reminded)
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertTrue()}
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
     }
@@ -642,7 +642,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertFalse()}
             fakePlayChannelSSE.isConnectionOpen().assertTrue()
         }
     }
@@ -666,7 +666,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.upcomingInfo.state.assertEqualTo(PlayUpcomingState.RemindMe)
+            state.upcomingInfo.state.assertType<PlayUpcomingState.ReminderStatus> {it.isReminded.assertFalse()}
             fakePlayChannelSSE.isConnectionOpen().assertTrue()
         }
     }
