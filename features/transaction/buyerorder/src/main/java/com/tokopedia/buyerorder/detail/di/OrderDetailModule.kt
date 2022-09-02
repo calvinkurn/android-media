@@ -18,7 +18,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
-import java.util.*
 
 @Module
 class OrderDetailModule {
