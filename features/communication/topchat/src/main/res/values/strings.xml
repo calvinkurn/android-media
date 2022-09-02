@@ -261,4 +261,7 @@ yang ditemukan</string>
     <string name="topchat_operational_insight_data_ninety_days">Data di atas berdasarkan Performa Toko (90 hari terakhir).</string>
     <string name="topchat_operational_insight_monitor">Pantau data yang lebih detail di Wawasan Operasional, yuk!</string>
     <string name="topchat_operational_insight_button">Kunjungi Wawasan Operasional</string>
+    <string name="topchat_operational_insight_performance_shop">Performa Toko</string>
+    <string name="topchat_operational_insight_good">baik</string>
+    <string name="topchat_operational_insight_need_improvement">perlu ditingkatkan</string>
 </resources>

@@ -35,7 +35,7 @@ class OperationalInsightViewHolder(
             )
             binding?.tvTickerChatPerformance?.text = getSpannableString(
                 getString(R.string.chat_performance_ticker_maintain),
-                SPAN_MAINTAIN,
+                getGoodText(),
                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
         } else {
@@ -46,10 +46,18 @@ class OperationalInsightViewHolder(
             )
             binding?.tvTickerChatPerformance?.text = getSpannableString(
                 getString(R.string.chat_performance_ticker),
-                SPAN_TICKER,
+                getNeedImprovementText(),
                 com.tokopedia.unifyprinciples.R.color.Unify_YN500
             )
         }
+    }
+
+    private fun getGoodText(): String {
+        return getString(R.string.topchat_operational_insight_good)
+    }
+
+    private fun getNeedImprovementText(): String {
+        return getString(R.string.topchat_operational_insight_need_improvement)
     }
 
     private fun getSpannableString(
@@ -85,7 +93,5 @@ class OperationalInsightViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_ticker_chat_performance
-        private const val SPAN_MAINTAIN = "baik"
-        private const val SPAN_TICKER = "perlu ditingkatkan"
     }
 }

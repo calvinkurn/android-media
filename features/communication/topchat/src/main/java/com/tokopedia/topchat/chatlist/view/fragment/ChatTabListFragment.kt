@@ -160,7 +160,7 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
 
     private fun initInjectorSellerApp() {
         DaggerChatListComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .baseAppComponent((activity?.application as BaseMainApplication?)?.baseAppComponent)
             .chatListContextModule(context?.let { ChatListContextModule(it) })
             .build()
             .inject(this)

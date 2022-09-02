@@ -29,7 +29,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import java.text.DecimalFormat
 
 class OperationalInsightBottomSheet(
     private var ticker: ShopChatTicker,
@@ -321,8 +320,9 @@ class OperationalInsightBottomSheet(
     private fun createSpannableWithLink(completeString: String): SpannableString {
         val spannableString = SpannableString(completeString)
         try {
-            val startPosition = completeString.indexOf(SHOP_PERFORMANCE)
-            val endPosition = completeString.lastIndexOf(SHOP_PERFORMANCE) + SHOP_PERFORMANCE.length
+            val startPosition = completeString.indexOf(getPerformanceShopText())
+            val endPosition = completeString.lastIndexOf(getPerformanceShopText()) +
+                    getPerformanceShopText().length
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(textView: View) {
                     goToShopScorePage()
@@ -344,6 +344,10 @@ class OperationalInsightBottomSheet(
             throwable.printStackTrace()
         }
         return spannableString
+    }
+
+    private fun getPerformanceShopText() : String {
+        return getString(R.string.topchat_operational_insight_performance_shop)
     }
 
     private fun goToOperationalInsightPage() {
@@ -401,7 +405,6 @@ class OperationalInsightBottomSheet(
 
     companion object {
         private const val LIMIT = 100
-        private const val SHOP_PERFORMANCE = "Performa Toko"
         private const val TOPED_IMAGE_URL = "https://images.tokopedia.net/img/android/comm/wawasan_operasional_character_toped.png"
         private const val MAINTAIN_IMAGE_URL = "https://images.tokopedia.net/img/android/comm/wawasan_operasional_pertahankan_performa.png"
         private const val FIX_IMAGE_URL = "https://images.tokopedia.net/img/android/comm/wawasan_operasional_tingkatkan_performa.png"
