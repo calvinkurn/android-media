@@ -8,6 +8,7 @@ import com.tokopedia.content.common.producttag.view.adapter.ProductTagCardAdapte
 import com.tokopedia.content.common.producttag.view.adapter.ShopCardAdapter
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.ShopUiModel
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -19,6 +20,9 @@ import kotlin.math.max
  */
 val Set<ProductTagSource>.currentSource: ProductTagSource
     get() = lastOrNull() ?: ProductTagSource.Unknown
+
+val Set<ProductTagSource>.isAutocomplete: Boolean
+    get() = currentSource == ProductTagSource.Autocomplete
 
 fun Set<ProductTagSource>.removeLast(): Set<ProductTagSource> {
     return toMutableSet().apply {
@@ -110,4 +114,8 @@ private fun <T: Any> getVisibleItemsPosition(
     }
 
     return Pair(-1, -1)
+}
+
+fun List<SelectedProductUiModel>.isProductFound(product: ProductUiModel): Boolean {
+    return find { it.id == product.id } != null
 }

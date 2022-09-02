@@ -15,6 +15,7 @@ data class ProductTagUiState(
     val globalSearchProduct: GlobalSearchProductUiState,
     val globalSearchShop: GlobalSearchShopUiState,
     val shopProduct: ShopProductUiState,
+    val selectedProduct: List<SelectedProductUiModel>,
 )
 
 data class ProductTagSourceUiState(

@@ -13,15 +13,19 @@ import com.tokopedia.content.common.databinding.FragmentGlobalSearchProductTabBi
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
+import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.content.common.producttag.view.decoration.ProductTagItemDecoration
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.producttag.view.uimodel.PagedState
+import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.producttag.view.uimodel.state.GlobalSearchProductUiState
+import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.kotlin.extensions.view.*
@@ -144,6 +148,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
         binding.rvGlobalSearchProduct.addOnScrollListener(scrollListener)
         binding.rvGlobalSearchProduct.addItemDecoration(ProductTagItemDecoration(requireContext()))
         binding.rvGlobalSearchProduct.layoutManager = layoutManager
+        binding.rvGlobalSearchProduct.itemAnimator = null
         binding.rvGlobalSearchProduct.adapter = adapter
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -155,7 +160,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                renderGlobalSearchProduct(it.prevValue?.globalSearchProduct, it.value.globalSearchProduct)
+                renderGlobalSearchProduct(it.prevValue, it.value)
                 renderQuickFilter(it.prevValue?.globalSearchProduct, it.value.globalSearchProduct)
             }
         }
@@ -186,25 +191,32 @@ class GlobalSearchProductTabFragment @Inject constructor(
         }
     }
 
-    private fun renderGlobalSearchProduct(prev: GlobalSearchProductUiState?, curr: GlobalSearchProductUiState) {
-        if(prev?.products == curr.products &&
-            prev.state == curr.state &&
-            prev.ticker == curr.ticker &&
-            prev.suggestion == curr.suggestion
+    private fun renderGlobalSearchProduct(
+        prev: ProductTagUiState?,
+        curr: ProductTagUiState
+    ) {
+        if(prev?.globalSearchProduct?.products == curr.globalSearchProduct.products &&
+            prev.globalSearchProduct.state == curr.globalSearchProduct.state &&
+            prev.globalSearchProduct.ticker == curr.globalSearchProduct.ticker &&
+            prev.globalSearchProduct.suggestion == curr.globalSearchProduct.suggestion &&
+            prev.selectedProduct == curr.selectedProduct
         ) return
 
-        when(curr.state) {
+        val currGlobalSearchProduct = curr.globalSearchProduct
+        val currState = curr.globalSearchProduct.state
+
+        when(currState) {
             is PagedState.Loading -> {
-                updateAdapterData(curr, !binding.swipeRefresh.isRefreshing)
+                updateAdapterData(curr.globalSearchProduct, curr.selectedProduct, !binding.swipeRefresh.isRefreshing)
             }
             is PagedState.Success -> {
                 binding.swipeRefresh.isRefreshing = false
-                binding.sortFilter.showWithCondition(curr.products.isNotEmpty() || (curr.products.isEmpty() && curr.param.hasFilterApplied()))
-                updateAdapterData(curr, curr.state.hasNextPage)
+                binding.sortFilter.showWithCondition(currGlobalSearchProduct.products.isNotEmpty() || (currGlobalSearchProduct.products.isEmpty() && currGlobalSearchProduct.param.hasFilterApplied()))
+                updateAdapterData(currGlobalSearchProduct, curr.selectedProduct, currState.hasNextPage)
             }
             is PagedState.Error -> {
                 binding.swipeRefresh.isRefreshing = false
-                updateAdapterData(curr,false)
+                updateAdapterData(currGlobalSearchProduct, curr.selectedProduct,false)
 
                 Toaster.build(
                     binding.root,
@@ -241,7 +253,11 @@ class GlobalSearchProductTabFragment @Inject constructor(
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private fun updateAdapterData(currState: GlobalSearchProductUiState, showLoading: Boolean) {
+    private fun updateAdapterData(
+        currState: GlobalSearchProductUiState,
+        selectedProduct: List<SelectedProductUiModel>,
+        showLoading: Boolean
+    ) {
         val finalProducts = buildList {
             if(currState.suggestion.text.isNotEmpty()) add(
                 ProductTagCardAdapter.Model.Suggestion(
@@ -262,7 +278,14 @@ class GlobalSearchProductTabFragment @Inject constructor(
             if(currState.products.isEmpty() && currState.state is PagedState.Success)
                 add(ProductTagCardAdapter.Model.EmptyState(currState.param.hasFilterApplied()))
             else
-                addAll(currState.products.map { ProductTagCardAdapter.Model.Product(product = it) })
+                addAll(currState.products.map { product ->
+                    if(viewModel.isMultipleSelectionProduct) {
+                        ProductTagCardAdapter.Model.ProductWithCheckbox(
+                            product = product,
+                            isSelected = selectedProduct.isProductFound(product),
+                        )
+                    } else ProductTagCardAdapter.Model.Product(product = product)
+                })
 
 
             if(showLoading) add(ProductTagCardAdapter.Model.Loading)

@@ -7,4 +7,17 @@ data class ContentProductTagConfig(
     val isMultipleSelectionProduct: Boolean,
     val isFullPageAutocomplete: Boolean,
     val maxSelectedProduct: Int,
-)
+    val backButton: BackButton,
+    val isShowActionBarDivider: Boolean,
+) {
+    enum class BackButton(val value: Int) {
+        Back(1),
+        Close(2);
+
+        companion object {
+            fun mapFromValue(v: Int): BackButton {
+                return values().firstOrNull { it.value == v } ?: Back
+            }
+        }
+    }
+}

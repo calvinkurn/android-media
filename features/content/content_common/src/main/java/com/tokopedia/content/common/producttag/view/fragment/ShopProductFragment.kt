@@ -15,12 +15,14 @@ import com.tokopedia.content.common.databinding.FragmentShopProductBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
 import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
+import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.common.producttag.view.uimodel.PagedState
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.content.common.producttag.view.uimodel.state.ShopProductUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.content.common.util.hideKeyboard
@@ -119,6 +121,7 @@ class ShopProductFragment @Inject constructor(
 
         binding.rvShopProduct.addOnScrollListener(scrollListener)
         binding.rvShopProduct.layoutManager = layoutManager
+        binding.rvShopProduct.itemAnimator = null
         binding.rvShopProduct.adapter = adapter
 
         binding.globalError.apply {
@@ -156,16 +159,21 @@ class ShopProductFragment @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                renderShopProducts(it.prevValue?.shopProduct, it.value.shopProduct)
+                renderShopProducts(it.prevValue, it.value)
             }
         }
     }
 
-    private fun renderShopProducts(prev: ShopProductUiState?, curr: ShopProductUiState) {
+    private fun renderShopProducts(prev: ProductTagUiState?, curr: ProductTagUiState) {
 
         fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
-            val finalProducts = products.map {
-                ProductTagCardAdapter.Model.Product(product = it)
+            val finalProducts = products.map { product ->
+                if(viewModel.isMultipleSelectionProduct) {
+                    ProductTagCardAdapter.Model.ProductWithCheckbox(
+                        product = product,
+                        isSelected = curr.selectedProduct.isProductFound(product),
+                    )
+                } else ProductTagCardAdapter.Model.Product(product = product)
             } + if(hasNextPage) listOf(ProductTagCardAdapter.Model.Loading) else emptyList()
 
             if(binding.rvShopProduct.isComputingLayout.not())
@@ -177,21 +185,27 @@ class ShopProductFragment @Inject constructor(
             impressProduct()
         }
 
-        if(prev?.products == curr.products && prev.state == curr.state) return
+        if(prev?.shopProduct?.products == curr.shopProduct.products &&
+            prev.shopProduct.state == curr.shopProduct.state &&
+            prev.selectedProduct == curr.selectedProduct
+        ) return
 
-        when(curr.state) {
+        val currProducts = curr.shopProduct.products
+        val currState = curr.shopProduct.state
+
+        when(currState) {
             is PagedState.Loading -> {
-                updateAdapterData(curr.products, true)
+                updateAdapterData(currProducts, true)
             }
             is PagedState.Success -> {
-                if(curr.products.isEmpty()) {
+                if(currProducts.isEmpty()) {
                     binding.rvShopProduct.hide()
-                    showEmptyState(curr.hasFilter())
+                    showEmptyState(curr.shopProduct.hasFilter())
                 }
-                else updateAdapterData(curr.products, curr.state.hasNextPage)
+                else updateAdapterData(currProducts, currState.hasNextPage)
             }
             is PagedState.Error -> {
-                updateAdapterData(curr.products, false)
+                updateAdapterData(currProducts, false)
 
                 Toaster.build(
                     binding.root,

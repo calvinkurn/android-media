@@ -11,6 +11,8 @@ import com.tokopedia.content.common.di.DaggerContentProductTagSampleComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -51,9 +53,19 @@ class ContentProductTagSampleActivity : BaseActivity() {
                         closeFragment()
                     }
 
-                    override fun onFinishProductTag(products: List<ProductUiModel>) {
+                    override fun onFinishProductTag(products: List<SelectedProductUiModel>) {
                         Log.d("<LOG>", products.toString())
                         closeFragment()
+                    }
+                })
+
+                fragment.setDataSource(object : ProductTagParentFragment.DataSource {
+                    override fun getInitialSelectedProduct(): List<SelectedProductUiModel> {
+                        return listOf(
+                            SelectedProductUiModel.createOnlyId("2148279610"),
+                            SelectedProductUiModel.createOnlyId("4207525260"),
+                            SelectedProductUiModel.createOnlyId("2653580529"),
+                        )
                     }
                 })
             }
@@ -91,8 +103,11 @@ class ContentProductTagSampleActivity : BaseActivity() {
                 .setAuthorId(getAuthorId())
                 .setAuthorType(getAuthorType())
                 .setProductTagSource("global_search,own_shop,last_purchase")
-                .setMultipleSelectionProduct(binding.rbMultipleSelectionProductYes.isChecked)
+                .setMultipleSelectionProduct(isMultipleSelectionProduct())
                 .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
+                .setMaxSelectedProduct(if(isMultipleSelectionProduct()) 3 else 0)
+                .setBackButton(ContentProductTagConfig.BackButton.Close)
+                .setIsShowActionBarDivider(false)
         )
     }
 
@@ -116,10 +131,20 @@ class ContentProductTagSampleActivity : BaseActivity() {
         }
     }
 
+    private fun isMultipleSelectionProduct(): Boolean {
+        return binding.rbMultipleSelectionProductYes.isChecked
+    }
+
     private fun inject() {
         DaggerContentProductTagSampleComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    override fun onBackPressed() {
+        ProductTagParentFragment.findFragment(supportFragmentManager)?.let {
+            it.onBackPressed()
+        } ?: super.onBackPressed()
     }
 }
