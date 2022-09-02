@@ -77,8 +77,8 @@ class UpcomingDescriptionViewComponent(
         resetText()
     }
 
-    private val clickableSpan: ClickableSpan
-        get() = object : ClickableSpan() {
+    private val clickableSpan by lazy {
+        object : ClickableSpan() {
             override fun updateDrawState(tp: TextPaint) {
                 tp.color = MethodChecker.getColor(ctx, unifyR.color.Unify_GN500)
                 tp.isUnderlineText = false
@@ -88,6 +88,7 @@ class UpcomingDescriptionViewComponent(
                 listener.onTextClicked(this@UpcomingDescriptionViewComponent)
             }
         }
+    }
 
     private fun resetText() {
         animExpand.start()
