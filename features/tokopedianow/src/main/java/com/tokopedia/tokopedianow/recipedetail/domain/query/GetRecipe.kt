@@ -30,9 +30,6 @@ internal object GetRecipe: GqlQueryInterface {
                   instruction
                   portion
                   duration
-                  createdTime
-                  updatedTime
-                  publishedTime
                   isBookmarked
                   category {
                     id
@@ -47,22 +44,10 @@ internal object GetRecipe: GqlQueryInterface {
                     name
                     quantity
                     unit
-                    image {
-                      urlOriginal
-                      urlThumbnail
-                      fileName
-                      filePath
-                      width
-                      height
-                    }
                   }
                   images {
                     urlOriginal
                     urlThumbnail
-                    fileName
-                    filePath
-                    width
-                    height
                   }
                   videos {
                     url

@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.recipelist.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel.ChipType.MORE_FILTER
@@ -50,7 +51,7 @@ object RecipeListMapper {
                 id = it.id,
                 title = it.title,
                 portion = it.portion,
-                duration = it.duration,
+                duration = it.duration.orZero(),
                 labels = it.tags.take(TAKE_LABEL_COUNT).mapIndexed { index, tag ->
                     val position = index + 1
                     if (position > MAX_LABEL_COUNT) {

@@ -14,13 +14,7 @@ data class RecipeResponse(
     @SerializedName("portion")
     val portion: Int,
     @SerializedName("duration")
-    val duration: Int,
-    @SerializedName("createdTime")
-    val createdTime: String,
-    @SerializedName("updatedTime")
-    val updatedTime: String,
-    @SerializedName("publishedTime")
-    val publishedTime: String,
+    val duration: Int?,
     @SerializedName("category")
     val category: RecipeCategoryResponse,
     @SerializedName("tags")

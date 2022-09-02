@@ -6,9 +6,5 @@ data class RecipeImageResponse(
     @SerializedName("urlOriginal")
     val urlOriginal: String,
     @SerializedName("urlThumbnail")
-    val urlThumbnail: String,
-    @SerializedName("fileName")
-    val fileName: String,
-    @SerializedName("filePath")
-    val filePath: String
+    val urlThumbnail: String
 )

@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.recipedetail.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -113,7 +114,7 @@ object RecipeDetailMapper {
         return RecipeInfoUiModel(
             title = response.title,
             portion = response.portion,
-            duration = response.duration,
+            duration = response.duration.orZero(),
             labels = recipeLabels,
             thumbnail = thumbnail,
             imageUrls = imageUrls

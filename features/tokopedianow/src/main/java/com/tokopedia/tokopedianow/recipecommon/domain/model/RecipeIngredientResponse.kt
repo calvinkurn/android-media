@@ -10,7 +10,5 @@ data class RecipeIngredientResponse(
     @SerializedName("quantity")
     val quantity: Float,
     @SerializedName("unit")
-    val unit: String,
-    @SerializedName("image")
-    val image: RecipeImageResponse
+    val unit: String
 )
