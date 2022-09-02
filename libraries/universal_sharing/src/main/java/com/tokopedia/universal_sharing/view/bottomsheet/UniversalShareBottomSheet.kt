@@ -42,8 +42,6 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
-import com.tokopedia.universal_sharing.di.DaggerUniversalShareBottomSheetComponents
-import com.tokopedia.universal_sharing.di.UniversalShareBottomSheetModule
 import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
@@ -68,7 +66,6 @@ import org.json.JSONArray
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 import kotlin.Exception
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -303,16 +300,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     //Dynamic Social Media ordering from Remote Config
     private var socialMediaOrderHashMap: HashMap<String, Int>? = null
 
-    @Inject
-    lateinit var tracker: UniversalSharebottomSheetTracker
+    private lateinit var tracker: UniversalSharebottomSheetTracker
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        injectDependency()
-    }
+    private lateinit var userSession: UserSession
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -321,6 +311,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initTracker()
         initRecyclerView()
         initImageOptionsRecyclerView()
     }
@@ -366,12 +357,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         else {
             clearLoader()
             affiliateQueryData = null
-        }
-    }
-
-    private fun injectDependency() {
-        context?.let { context ->
-            DaggerUniversalShareBottomSheetComponents.builder().universalShareBottomSheetModule(UniversalShareBottomSheetModule(context)).build().inject(this)
         }
     }
 
@@ -544,6 +529,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 dismiss()
             }
         }
+    }
+
+    private fun initTracker() {
+        userSession = UserSession(context)
+        tracker = UniversalSharebottomSheetTracker(userSession)
     }
 
     private fun initRecyclerView() {

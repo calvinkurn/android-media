@@ -3,9 +3,8 @@ package com.tokopedia.universal_sharing.tracker
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSession
-import javax.inject.Inject
 
-class UniversalSharebottomSheetTracker @Inject constructor(private val userSession: UserSession) {
+class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
 
     companion object {
         private const val EVENT_CATEGORY = "eventCategory"
