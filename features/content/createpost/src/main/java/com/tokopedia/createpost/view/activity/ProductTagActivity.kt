@@ -11,11 +11,9 @@ import com.tokopedia.createpost.createpost.databinding.ActivityProductTagBinding
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
-import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
-import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import javax.inject.Inject
 
 /**
@@ -63,7 +61,7 @@ class ProductTagActivity : BaseActivity() {
                         finish()
                     }
 
-                    override fun onFinishProductTag(products: List<ProductUiModel>) {
+                    override fun onFinishProductTag(products: List<SelectedProductUiModel>) {
                         val product = products.firstOrNull()
 
                         if(product == null) {
@@ -74,10 +72,10 @@ class ProductTagActivity : BaseActivity() {
                         val data = Intent().apply {
                             putExtra(RESULT_PRODUCT_ID, product.id)
                             putExtra(RESULT_PRODUCT_NAME, product.name)
-                            putExtra(RESULT_PRODUCT_PRICE, if(product.isDiscount) product.priceDiscountFmt else product.priceFmt)
-                            putExtra(RESULT_PRODUCT_IMAGE, product.coverURL)
-                            putExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT, product.priceOriginalFmt)
-                            putExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT, product.discountFmt)
+                            putExtra(RESULT_PRODUCT_PRICE, if(product.isDiscount) product.priceDiscount else product.price)
+                            putExtra(RESULT_PRODUCT_IMAGE, product.cover)
+                            putExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT, product.priceOriginal)
+                            putExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT, product.discount)
                             putExtra(RESULT_PRODUCT_IS_DISCOUNT, product.isDiscount)
                         }
 
@@ -132,6 +130,8 @@ class ProductTagActivity : BaseActivity() {
                 .setProductTagSource(productTagList)
                 .setMultipleSelectionProduct(false)
                 .setFullPageAutocomplete(true)
+                .setBackButton(ContentProductTagConfig.BackButton.Back)
+                .setIsShowActionBarDivider(true)
         )
     }
 

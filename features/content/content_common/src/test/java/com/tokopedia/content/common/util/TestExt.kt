@@ -7,15 +7,15 @@ import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiSt
  * Created By : Jonathan Darwin on May 30, 2022
  */
 
-fun ProductTagUiState.andThen(fn: ProductTagUiState.() -> Unit) {
+infix fun ProductTagUiState.andThen(fn: ProductTagUiState.() -> Unit) {
     fn()
 }
 
-fun List<ProductTagUiEvent>.andThen(fn: List<ProductTagUiEvent>.() -> Unit) {
+infix fun List<ProductTagUiEvent>.andThen(fn: List<ProductTagUiEvent>.() -> Unit) {
     fn()
 }
 
-fun Pair<ProductTagUiState, List<ProductTagUiEvent>>.andThen(
+infix fun Pair<ProductTagUiState, List<ProductTagUiEvent>>.andThen(
     fn: Pair<ProductTagUiState, List<ProductTagUiEvent>>.
         (ProductTagUiState,  List<ProductTagUiEvent>) -> Unit
 ) {

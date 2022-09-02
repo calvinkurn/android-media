@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.viewmodel.producttag
 
 import com.tokopedia.content.common.model.CommonModelBuilder
+import com.tokopedia.content.common.model.ConfigModelBuilder
 import com.tokopedia.content.common.model.ShopModelBuilder
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.util.extension.currentSource
@@ -35,17 +36,10 @@ class ProductTagNavigationViewModelTest {
 
     private val commonModelBuilder = CommonModelBuilder()
     private val shopModelBuilder = ShopModelBuilder()
-    private val feedConfig = ContentProductTagConfig(
-        isMultipleSelectionProduct = false,
-        isFullPageAutocomplete = true,
-        maxSelectedProduct = 0,
-    )
-    private val playConfig = ContentProductTagConfig(
-        isMultipleSelectionProduct = true,
-        isFullPageAutocomplete = false,
-        maxSelectedProduct = 0,
-    )
+    private val configModelBuilder = ConfigModelBuilder()
 
+    private val feedConfig = configModelBuilder.buildFeedConfig()
+    private val playConfig = configModelBuilder.buildPlayConfig()
     private val mockException = commonModelBuilder.buildException()
 
     @Test
@@ -300,8 +294,9 @@ class ProductTagNavigationViewModelTest {
     }
 
     @Test
-    fun `when user selects a product, it should emit product selected event`() {
-        val selectedProduct = commonModelBuilder.buildProduct()
+    fun `user selects a product & isMultipleProductSelection false - emit event finish product tag`() {
+        val product = commonModelBuilder.buildProduct()
+        val selectedProduct = product.toSelectedProduct()
 
         val robot = ProductTagViewModelRobot(
             dispatcher = testDispatcher,
@@ -312,9 +307,43 @@ class ProductTagNavigationViewModelTest {
 
         robot.use {
             robot.recordEvent {
-                submitAction(ProductTagAction.ProductSelected(selectedProduct))
+                submitAction(ProductTagAction.ProductSelected(product))
             }.andThen {
                 last().assertEqualTo(ProductTagUiEvent.FinishProductTag(listOf(selectedProduct)))
+            }
+        }
+    }
+
+    @Test
+    fun `user selects a product & isMultipleProductSelection true with maxSelected 5 - emit new selected product list`() {
+        val products = List(6) {
+            commonModelBuilder.buildProduct(id = it.toString())
+        }
+
+        val selectedProducts = products.map {
+            commonModelBuilder.buildSelectedProduct(id = it.id)
+        }
+
+        val robot = ProductTagViewModelRobot(
+            dispatcher = testDispatcher,
+            repo = mockRepo,
+            sharedPref = mockSharedPref,
+            productTagConfig = playConfig,
+        )
+
+        robot.use {
+            robot.recordState {
+                products.forEach { product ->
+                    submitAction(ProductTagAction.ProductSelected(product))
+                }
+            } andThen {
+                this.selectedProduct equalTo selectedProducts.take(playConfig.maxSelectedProduct)
+            }
+
+            robot.recordState {
+                submitAction(ProductTagAction.ProductSelected(products[0]))
+            } andThen {
+                this.selectedProduct equalTo selectedProducts.take(5).filterNot { it.id == products[0].id }
             }
         }
     }

@@ -1,5 +1,8 @@
 package com.tokopedia.content.common.producttag.view.uimodel
 
+import com.tokopedia.content.common.producttag.util.AUTHOR_TYPE
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
+import com.tokopedia.content.common.util.forEachIndexed
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import java.lang.StringBuilder
 
@@ -31,6 +34,12 @@ class ContentProductTagArgument private constructor(
     val maxSelectedProduct: Int
         get() = query[KEY_MAX_SELECTED_PRODUCT].toIntOrZero()
 
+    val backButton: ContentProductTagConfig.BackButton
+        get() = ContentProductTagConfig.BackButton.mapFromValue(query[KEY_BACK_BUTTON].toIntOrZero())
+
+    val isShowActionBarDivider: Boolean
+        get() = query[KEY_IS_SHOW_ACTION_BAR_DIVIDER].toBoolean()
+
     companion object {
         const val KEY_SHOP_BADGE = "shopBadge"
         const val KEY_AUTHOR_ID = "authorId"
@@ -39,6 +48,8 @@ class ContentProductTagArgument private constructor(
         const val KEY_IS_MULTIPLE_SELECTION_PRODUCT = "isMultipleSelectionProduct"
         const val KEY_IS_FULL_PAGE_AUTOCOMPLETE = "isFullPageAutocomplete"
         const val KEY_MAX_SELECTED_PRODUCT = "maxSelectedProduct"
+        const val KEY_BACK_BUTTON = "backButton"
+        const val KEY_IS_SHOW_ACTION_BAR_DIVIDER = "isShowActionBarDivider"
 
         const val QUERY_SEPARATOR = "&"
 
@@ -54,64 +65,74 @@ class ContentProductTagArgument private constructor(
 
     class Builder {
 
-        private var shopBadge: String = ""
-        private var authorId: String = ""
-        private var authorType: String = ""
-        private var productTagSource: String = ""
-        private var isMultipleSelectionProduct: Boolean = false
-        private var isFullPageAutocomplete: Boolean = false
-        private var maxSelectedProduct: Int = 0
+        private val argumentMap = mutableMapOf<String, Any>(
+            KEY_SHOP_BADGE to "",
+            KEY_AUTHOR_ID to "",
+            KEY_AUTHOR_TYPE to "",
+            KEY_PRODUCT_TAG_SOURCE to "",
+            KEY_IS_MULTIPLE_SELECTION_PRODUCT to false,
+            KEY_IS_FULL_PAGE_AUTOCOMPLETE to false,
+            KEY_MAX_SELECTED_PRODUCT to 0,
+            KEY_BACK_BUTTON to ContentProductTagConfig.BackButton.Back,
+            KEY_IS_SHOW_ACTION_BAR_DIVIDER to true,
+        )
 
         fun setShopBadge(shopBadge: String): Builder {
-            this.shopBadge = shopBadge
+            argumentMap[KEY_SHOP_BADGE] = shopBadge
             return this
         }
 
         fun setAuthorId(authorId: String): Builder {
-            this.authorId = authorId
+            argumentMap[KEY_AUTHOR_ID] = authorId
             return this
         }
 
         fun setAuthorType(authorType: String): Builder {
-            this.authorType = authorType
+            argumentMap[AUTHOR_TYPE] = authorType
             return this
         }
 
         fun setProductTagSource(productTagSource: String): Builder {
-            this.productTagSource = productTagSource
+            argumentMap[KEY_PRODUCT_TAG_SOURCE] = productTagSource
             return this
         }
 
         fun setMultipleSelectionProduct(isMultipleSelectionProduct: Boolean): Builder {
-            this.isMultipleSelectionProduct = isMultipleSelectionProduct
+            argumentMap[KEY_IS_MULTIPLE_SELECTION_PRODUCT] = isMultipleSelectionProduct
             return this
         }
 
         fun setFullPageAutocomplete(isFullPageAutocomplete: Boolean): Builder {
-            this.isFullPageAutocomplete = isFullPageAutocomplete
+            argumentMap[KEY_IS_FULL_PAGE_AUTOCOMPLETE] = isFullPageAutocomplete
             return this
         }
 
         fun setMaxSelectedProduct(maxSelectedProduct: Int): Builder {
-            this.maxSelectedProduct = maxSelectedProduct
+            argumentMap[KEY_MAX_SELECTED_PRODUCT] = maxSelectedProduct
+            return this
+        }
+
+        fun setBackButton(backButton: ContentProductTagConfig.BackButton): Builder {
+            argumentMap[KEY_BACK_BUTTON] = backButton.value
+            return this
+        }
+
+        fun setIsShowActionBarDivider(isShowActionBarDivider: Boolean): Builder {
+            argumentMap[KEY_IS_SHOW_ACTION_BAR_DIVIDER] = isShowActionBarDivider
             return this
         }
 
         fun build(): String {
             return buildString {
-                append(KEY_SHOP_BADGE, shopBadge)
-                append(QUERY_SEPARATOR)
-                append(KEY_AUTHOR_ID, authorId)
-                append(QUERY_SEPARATOR)
-                append(KEY_AUTHOR_TYPE, authorType)
-                append(QUERY_SEPARATOR)
-                append(KEY_PRODUCT_TAG_SOURCE, productTagSource)
-                append(QUERY_SEPARATOR)
-                append(KEY_IS_MULTIPLE_SELECTION_PRODUCT, isMultipleSelectionProduct)
-                append(QUERY_SEPARATOR)
-                append(KEY_IS_FULL_PAGE_AUTOCOMPLETE, isFullPageAutocomplete)
-                append(QUERY_SEPARATOR)
-                append(KEY_MAX_SELECTED_PRODUCT, maxSelectedProduct)
+                val size = argumentMap.count()
+
+                argumentMap.forEachIndexed { idx, entry ->
+                    val key = entry.key
+                    val value = entry.value
+
+                    append(key, value)
+                    if(idx < size-1) append(QUERY_SEPARATOR)
+                }
             }
         }
 

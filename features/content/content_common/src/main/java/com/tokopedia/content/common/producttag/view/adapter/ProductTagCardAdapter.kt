@@ -18,6 +18,7 @@ class ProductTagCardAdapter(
             .addDelegate(ProductTagCardAdapterDelegate.Suggestion())
             .addDelegate(ProductTagCardAdapterDelegate.Ticker())
             .addDelegate(ProductTagCardAdapterDelegate.Product(onSelected))
+            .addDelegate(ProductTagCardAdapterDelegate.ProductWithCheckbox(onSelected))
             .addDelegate(ProductTagCardAdapterDelegate.Loading())
             .addDelegate(ProductTagCardAdapterDelegate.EmptyState())
     }
@@ -33,6 +34,8 @@ class ProductTagCardAdapter(
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
         return if(oldItem is Model.Product && newItem is Model.Product) {
+            oldItem.product.id == newItem.product.id
+        } else if(oldItem is Model.ProductWithCheckbox && newItem is Model.ProductWithCheckbox) {
             oldItem.product.id == newItem.product.id
         } else if(oldItem is Model.EmptyState && newItem is Model.EmptyState) {
             oldItem.hasFilterApplied == newItem.hasFilterApplied
@@ -59,6 +62,11 @@ class ProductTagCardAdapter(
 
         data class Product(
             val product: ProductUiModel,
+        ) : Model
+
+        data class ProductWithCheckbox(
+            val product: ProductUiModel,
+            val isSelected: Boolean,
         ) : Model
 
         object Loading : Model

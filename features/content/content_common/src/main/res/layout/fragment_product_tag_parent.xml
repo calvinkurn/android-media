@@ -36,13 +36,6 @@
         android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@id/tv_cc_product_tag_page_title" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_action_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ic_cc_product_tag_back, tv_cc_product_tag_page_title, view_cc_product_tag_divider"
-        />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_cc_product_tag_product_source_label"
         android:layout_width="wrap_content"
@@ -160,7 +153,27 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fl_btn_save"
         app:layout_constraintTop_toBottomOf="@id/tv_cc_product_tag_product_source" />
+
+    <FrameLayout
+        android:id="@+id/fl_btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        android:elevation="@dimen/content_common_space_10"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/content_common_space_12"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/content_common_space_12"
+            android:text="@string/cc_product_tag_save" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
