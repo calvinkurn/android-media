@@ -689,7 +689,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 // Promo is clashing. Need to reload promo page
                 setApplyPromoStateClashing()
             } else {
-                if (validateUsePromoRevampUiModel.promoUiModel.globalSuccess) {
+                if (validateUsePromoRevampUiModel.promoUiModel.success) {
                     handleApplyPromoSuccess(selectedPromoList, validateUsePromoRevampUiModel, validateUsePromoRequest)
                 } else {
                     handleApplyPromoFailed(selectedPromoList, validateUsePromoRevampUiModel)
