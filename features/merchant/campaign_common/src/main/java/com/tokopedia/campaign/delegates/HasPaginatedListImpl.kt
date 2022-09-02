@@ -29,9 +29,12 @@ class HasPaginatedListImpl : HasPaginatedList {
                 loadNextPage(page, totalItemsCount)
             }
         }
-        scrollListener?.apply { recyclerView.addOnScrollListener(this) }
+        recyclerView.addOnScrollListener(scrollListener ?: return)
     }
 
+    /**
+     * Function to determine whether we should load next page or not
+     */
     override fun notifyLoadResult(hasNextPage: Boolean) {
         val config = this.config ?: return
 
