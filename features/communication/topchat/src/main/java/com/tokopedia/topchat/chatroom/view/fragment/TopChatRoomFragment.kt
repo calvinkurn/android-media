@@ -3169,7 +3169,26 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return widgets
     }
 
-    override fun closeReminderTicker(element: ReminderTickerUiModel, position: Int) {
+    override fun onClickLinkReminderTicker(element: ReminderTickerUiModel) {
+        TopChatAnalyticsKt.eventClickLinkTicker(
+            element.getTickerFeature(),
+            isSeller(),
+            viewModel.roomMetaData.msgId,
+            element.replyId
+        )
+        if (element.url.isNotEmpty()) {
+            val intent = RouteManager.getIntent(context, element.url)
+            startActivity(intent)
+        }
+    }
+
+    override fun onCloseReminderTicker(element: ReminderTickerUiModel, position: Int) {
+        TopChatAnalyticsKt.eventClickCloseTicker(
+            element.getTickerFeature(),
+            isSeller(),
+            viewModel.roomMetaData.msgId,
+            element.replyId
+        )
         viewModel.closeTickerReminder(element, isSeller())
         adapter.removeViewHolder(element, position)
         isTickerNotShownYet = true

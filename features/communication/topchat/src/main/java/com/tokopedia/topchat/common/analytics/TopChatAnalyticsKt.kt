@@ -302,6 +302,44 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventClickLinkTicker(
+        tickerType: String,
+        isSeller: Boolean,
+        msgId: String,
+        lastReplyId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_LINK_INSIDE_TICKER,
+                label = "$tickerType - ${getRole(isSeller)} - $msgId - $lastReplyId",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "35990"
+            )
+        )
+    }
+
+    fun eventClickCloseTicker(
+        tickerType: String,
+        isSeller: Boolean,
+        msgId: String,
+        lastReplyId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_CLOSE_TICKER,
+                label = "$tickerType - ${getRole(isSeller)}  - $msgId - $lastReplyId",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "35991"
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -335,6 +373,14 @@ object TopChatAnalyticsKt {
         return data
     }
 
+    private fun getRole(isSeller: Boolean): String {
+        return if (isSeller) {
+            "seller"
+        } else {
+            "buyer"
+        }
+    }
+
     object Event {
         const val CHAT_DETAIL = "clickChatDetail"
         const val CLICK_COMMUNICATION = "clickCommunication"
@@ -363,6 +409,8 @@ object TopChatAnalyticsKt {
         const val VIEW_BUNDLE_CART_CHATROOM = "view on bundle card in chatroom"
         const val CLICK_PRODUCT_BUNDLE = "click on product attachment on bundle card"
         const val CLICK_ADD_TO_CART_BUNDLE = "click on add to cart from bundle card"
+        const val CLICK_LINK_INSIDE_TICKER = "user click link inside ticker"
+        const val CLICK_CLOSE_TICKER = "user click close ticker"
     }
 
     //Event Name

@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
@@ -21,7 +20,8 @@ class ReminderTickerViewHolder(
     private val ticker: Ticker? = itemView?.findViewById(R.id.tk_prompt)
 
     interface Listener {
-        fun closeReminderTicker(element: ReminderTickerUiModel, position: Int)
+        fun onClickLinkReminderTicker(element: ReminderTickerUiModel)
+        fun onCloseReminderTicker(element: ReminderTickerUiModel, position: Int)
     }
 
     override fun bind(element: ReminderTickerUiModel) {
@@ -33,7 +33,7 @@ class ReminderTickerViewHolder(
 
     private fun bindImpression(element: ReminderTickerUiModel) {
         ticker?.addOnImpressionListener(element.impressHolder) {
-            commonListener.getAnalytic().eventViewTickerReminder(commonListener.getCommonShopId())
+            //Tracker impression
         }
     }
 
@@ -45,19 +45,12 @@ class ReminderTickerViewHolder(
         ticker?.setHtmlDescription(element.subText)
         ticker?.setDescriptionClickEvent(object: TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                commonListener.getAnalytic().eventClickTickerReminderCta(
-                    commonListener.getCommonShopId()
-                )
                 itemView.context?.let { context ->
-                    val intent = RouteManager.getIntent(context, element.url)
-                    context.startActivity(intent)
+
                 }
             }
             override fun onDismiss() {
-                commonListener.getAnalytic().eventCloseTickerReminder(
-                    commonListener.getCommonShopId()
-                )
-                listener?.closeReminderTicker(element, adapterPosition)
+                listener?.onCloseReminderTicker(element, adapterPosition)
             }
         })
     }
