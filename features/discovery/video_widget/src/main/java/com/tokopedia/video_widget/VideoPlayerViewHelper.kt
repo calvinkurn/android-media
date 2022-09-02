@@ -23,11 +23,10 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.video_widget.util.DimensionUtils
-import java.lang.ref.WeakReference
 
 class VideoPlayerViewHelper(
-    context: Context,
-    private val exoPlayerView: VideoPlayerView,
+    var exoPlayerView: VideoPlayerView?,
+    var mExoPlayerListener: ExoPlayerListener?
 ) : ExoPlayerControl {
     companion object {
         private const val MINIMUM_DENSITY_MATRIX = 1.5f
@@ -36,15 +35,13 @@ class VideoPlayerViewHelper(
         private const val MAXIMUM_VIDEO_BANDWIDTH = 600_000
     }
 
-    private val contextReference: WeakReference<Context> = WeakReference(context)
     private val context: Context?
-        get() = contextReference.get()
+        get() = exoPlayerView?.context
 
     var isAutoplay = true
     var shouldCache = true
 
     private var videoPlayer: ExoPlayer? = null
-    private var mExoPlayerListener: ExoPlayerListener? = null
 
     private var videoUri: Uri? = null
 
@@ -118,7 +115,7 @@ class VideoPlayerViewHelper(
     }
 
     override fun init() {
-        val context = context?: return
+        val context = context ?: return
         initVideoPlayer(context)
     }
 
@@ -127,7 +124,7 @@ class VideoPlayerViewHelper(
     }
 
     override fun playerPause() {
-        exoPlayerView.setPlayer(null)
+        exoPlayerView?.setPlayer(null)
     }
 
     override fun play(url: String) {
@@ -159,7 +156,7 @@ class VideoPlayerViewHelper(
     private fun resumeVideo() {
         if (canResume()) {
             playUri(videoUri ?: Uri.parse(""))
-            exoPlayerView.setPlayer(videoPlayer)
+            exoPlayerView?.setPlayer(videoPlayer)
         }
     }
 
@@ -254,9 +251,11 @@ class VideoPlayerViewHelper(
         if(shouldPausePlay) stopVideoPlayer()
     }
 
-    private  fun onActivityDestroy() {
-        exoPlayerView.setPlayer(null)
+    fun onActivityDestroy() {
+        exoPlayerView?.setPlayer(null)
         releasePlayer()
+        mExoPlayerListener = null
+        exoPlayerView = null
         videoPlayer = null
     }
 
@@ -268,22 +267,4 @@ class VideoPlayerViewHelper(
         val context = context ?: return false
         return DimensionUtils.getDensityMatrix(context) >= MINIMUM_DENSITY_MATRIX
     }
-
-    class Builder(context: Context, videoPlayerView: VideoPlayerView) {
-        private val mExoPlayerHelper: VideoPlayerViewHelper = VideoPlayerViewHelper(
-            context,
-            videoPlayerView
-        )
-
-        fun setExoPlayerEventsListener(exoPlayerListener: ExoPlayerListener): Builder {
-            mExoPlayerHelper.setExoPlayerEventsListener(exoPlayerListener)
-            return this
-        }
-
-        fun create(): VideoPlayerViewHelper {
-            mExoPlayerHelper.init()
-            return mExoPlayerHelper
-        }
-    }
-
 }

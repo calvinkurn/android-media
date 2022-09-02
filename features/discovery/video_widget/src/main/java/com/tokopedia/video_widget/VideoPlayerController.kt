@@ -25,9 +25,7 @@ class VideoPlayerController(
     private var videoURL = ""
     private var videoPlayerStateFlow: MutableStateFlow<VideoPlayerState>? = null
     private val helper: VideoPlayerViewHelper by lazy(LazyThreadSafetyMode.NONE) {
-        VideoPlayerViewHelper.Builder(rootView.context, videoView)
-            .setExoPlayerEventsListener(this)
-            .create()
+        VideoPlayerViewHelper(videoView, this)
     }
 
     fun setVideoURL(videoURL: String) {
@@ -35,7 +33,7 @@ class VideoPlayerController(
     }
 
     fun clear() {
-        helper.onViewDetach()
+        helper.onActivityDestroy()
     }
 
     override fun onPlayerIdle() {
@@ -75,11 +73,11 @@ class VideoPlayerController(
     override fun playVideo(): Flow<VideoPlayerState> {
         if (!hasVideo) return flowOf(VideoPlayerState.NoVideo)
         videoPlayerStateFlow = MutableStateFlow(VideoPlayerState.Starting)
-        helper.play(videoURL)
+        helper?.play(videoURL)
         return videoPlayerStateFlow as Flow<VideoPlayerState>
     }
 
     override fun stopVideo() {
-        helper.stop()
+        helper?.stop()
     }
 }
