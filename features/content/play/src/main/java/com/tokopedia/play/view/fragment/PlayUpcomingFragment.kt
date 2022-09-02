@@ -175,7 +175,7 @@ class PlayUpcomingFragment @Inject constructor(
 
                 renderToolbarView(state.channel)
                 renderPartnerInfoView(prevState?.partner, state.partner)
-                renderShareView(state.channel)
+                renderShareView(prevState?.channel, state.channel)
                 renderUpcomingInfo(prevState?.upcomingInfo, state.upcomingInfo)
                 renderDescription(prevState?.description, state.description)
             }
@@ -279,9 +279,10 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun renderShareView(
-        channel: PlayChannelDetailUiModel,
+        prevState: PlayChannelDetailUiModel?,
+        state: PlayChannelDetailUiModel,
     ) {
-        shareExperienceView.setIsShareable(channel.shareInfo.shouldShow)
+        if(prevState != state) shareExperienceView.setIsShareable(state.shareInfo.shouldShow)
     }
 
     private fun renderUpcomingInfo(prevState: PlayUpcomingInfoUiState?, currState: PlayUpcomingInfoUiState) {
