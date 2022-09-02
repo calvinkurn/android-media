@@ -206,7 +206,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
         setupView()
         observeUiEffect()
         observeUiState()
-        viewModel.processEvent(FlashSaleListUiEvent.LoadPage(0))
+        viewModel.processEvent(FlashSaleListUiEvent.LoadPage(Int.ZERO))
     }
 
 
