@@ -16,7 +16,7 @@ import com.tokopedia.buyerorder.R
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.buyerorder.common.util.ApplinkOMSConstant
 import com.tokopedia.buyerorder.common.util.BuyerUtils.clickActionButton
-import com.tokopedia.buyerorder.databinding.VoucherItemCardEventsBinding
+import com.tokopedia.buyerorder.databinding.VoucherItemCardEventsNewBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.ItemsEvents
@@ -42,7 +42,7 @@ class EventsViewHolder(
 
     companion object{
         @LayoutRes
-        val LAYOUT = R.layout.voucher_item_card_events
+        val LAYOUT = R.layout.voucher_item_card_events_new
 
         private const val IS_ENTERTAIN = 1
         private const val ZERO_QUANTITY = 0
@@ -60,7 +60,7 @@ class EventsViewHolder(
     }
 
     override fun bind(element: ItemsEvents) {
-        val binding = VoucherItemCardEventsBinding.bind(itemView)
+        val binding = VoucherItemCardEventsNewBinding.bind(itemView)
         val metadata = getMetadata(element.item)
 
         eventDetailsListener.sendThankYouEvent(metadata, ITEM_EVENTS, element.orderDetails)
@@ -85,7 +85,7 @@ class EventsViewHolder(
     }
 
     private fun renderProducts(
-        binding: VoucherItemCardEventsBinding,
+        binding: VoucherItemCardEventsNewBinding,
         metadata: MetaDataInfo,
         item: Items,
     ) {
@@ -103,7 +103,7 @@ class EventsViewHolder(
     }
 
     private fun renderAddress(
-        binding: VoucherItemCardEventsBinding,
+        binding: VoucherItemCardEventsNewBinding,
         metadata: MetaDataInfo
     ){
         if (metadata.locationName.isNotEmpty()){
@@ -116,7 +116,7 @@ class EventsViewHolder(
     }
 
     private fun renderTime(
-        binding: VoucherItemCardEventsBinding,
+        binding: VoucherItemCardEventsNewBinding,
         metadata: MetaDataInfo
     ){
         if (metadata.isHiburan == IS_ENTERTAIN) {
@@ -135,7 +135,7 @@ class EventsViewHolder(
     }
 
     private fun renderInfoName(
-        binding: VoucherItemCardEventsBinding,
+        binding: VoucherItemCardEventsNewBinding,
         metadata: MetaDataInfo,
         item: Items,
     ){
@@ -145,7 +145,7 @@ class EventsViewHolder(
     }
 
     private fun setTapActionButtons(
-        binding: VoucherItemCardEventsBinding,
+        binding: VoucherItemCardEventsNewBinding,
         metadata: MetaDataInfo,
         item: Items,
     ){
@@ -207,7 +207,7 @@ class EventsViewHolder(
         }
     }
 
-    private fun setETicket(binding: VoucherItemCardEventsBinding, totalCount: Int){
+    private fun setETicket(binding: VoucherItemCardEventsNewBinding, totalCount: Int){
         if (totalCount > ZERO_QUANTITY) {
             binding.tvBrandName.text = String.format(
                 E_TICKET_FORMAT,
@@ -218,7 +218,7 @@ class EventsViewHolder(
         }
     }
 
-    private fun setEventInfo(binding: VoucherItemCardEventsBinding, actionButton: ActionButton, totalCount: Int){
+    private fun setEventInfo(binding: VoucherItemCardEventsNewBinding, actionButton: ActionButton, totalCount: Int){
         when{
             actionButton.control.equals(KEY_REDIRECT, true)
                     || actionButton.control.equals(KEY_REFRESH, true) -> {
