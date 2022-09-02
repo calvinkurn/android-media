@@ -36,9 +36,7 @@ class UpcomingDescriptionViewComponent(
     private val ctx: Context
         get() = rootView.context
 
-    private val uiModel: DescriptionUiModel by lazy(LazyThreadSafetyMode.NONE){
-        DescriptionUiModel()
-    }
+    private val uiModel: DescriptionUiModel = DescriptionUiModel()
 
     private val animExpand: ObjectAnimator
         get() = ObjectAnimator.ofInt(
