@@ -1,6 +1,6 @@
 package com.tokopedia.campaign.components.bottomsheet.selection.multiple
 
-import com.tokopedia.campaign.entity.MultipleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 
 internal class MultipleSelectionHelper {
 
