@@ -26,6 +26,7 @@ class PromoListHeaderEnabledViewHolder(private val viewBinding: PromoCheckoutMar
                     iconPromoListHeader.gone()
                     if (element.uiData.iconUrl.isNotEmpty()) {
                         imagePromoListHeader.setImageUrl(element.uiData.iconUrl)
+                        imagePromoListHeader.show()
                     } else {
                         imagePromoListHeader.gone()
                     }
