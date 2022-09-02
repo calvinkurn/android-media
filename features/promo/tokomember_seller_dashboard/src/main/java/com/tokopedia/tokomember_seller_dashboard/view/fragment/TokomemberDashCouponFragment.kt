@@ -27,6 +27,7 @@ import com.tokopedia.tokomember_seller_dashboard.callbacks.TmFilterCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
@@ -401,6 +402,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             }
             ACTION_CREATE ->{
                 message = "Yay, kupon TokoMember berhasil dibuat!"
+            }
+            ACTION_DUPLICATE ->{
+                message = "Asyik, kupon TokoMember berhasil dibuat!"
             }
             ADD_QUOTA ->{
                 message = "Yay, kuota kupon berhasil ditambahkan!"

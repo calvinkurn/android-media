@@ -264,7 +264,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                 intent.putExtra(BUNDLE_CREATE_SCREEN_TYPE, screenType)
                 intent.putExtra(BUNDLE_VOUCHER_ID, voucherId)
                 intent.putExtra(ACTION_EDIT, edit)
-                intent.putExtra(ACTION_DUPLICATE, edit)
+                intent.putExtra(ACTION_DUPLICATE, duplicate)
                 it.startActivity(intent)
             }
         }
