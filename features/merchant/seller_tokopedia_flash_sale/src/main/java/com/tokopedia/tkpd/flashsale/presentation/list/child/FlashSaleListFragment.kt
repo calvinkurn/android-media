@@ -6,13 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.components.bottomsheet.selection.multiple.MultipleSelectionBottomSheet
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
+import com.tokopedia.campaign.delegates.HasPaginatedList
+import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.entity.MultipleSelectionItem
 import com.tokopedia.campaign.entity.SingleSelectionItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
@@ -49,7 +52,6 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleLis
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEvent
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiState
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.TabConfig
-import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
 import com.tokopedia.tkpd.flashsale.util.constant.RemoteImageUrlConstant
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -57,7 +59,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateAdapterItem>() {
+class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
         private const val BUNDLE_KEY_TAB_ID = "tab_id"
@@ -204,12 +206,41 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         setupView()
         observeUiEffect()
         observeUiState()
+        viewModel.processEvent(FlashSaleListUiEvent.LoadPage(0))
     }
 
 
     private fun setupView() {
         setupSortFilter()
-        binding?.imgScrollUp?.setOnClickListener { binding?.recyclerView?.smoothSnapToPosition(Int.ZERO) }
+        setupPaging()
+        binding?.imgScrollUp?.setOnClickListener {
+            binding?.recyclerView?.smoothSnapToPosition(Int.ZERO)
+        }
+    }
+
+    private fun setupPaging() {
+        val pagingConfig = HasPaginatedList.Config(onLoadNextPage = {
+            flashSaleAdapter.addItem(LoadingItem)
+        }, onLoadNextPageFinished = {
+            flashSaleAdapter.removeItem(LoadingItem)
+        })
+
+        binding?.recyclerView?.apply {
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            applyPaddingToLastItem()
+            attachOnScrollListener(onScrollDown = {
+                binding?.imgScrollUp?.slideUp()
+                binding?.sortFilter?.slideDown()
+            }, onScrollUp = {
+                binding?.imgScrollUp?.slideDown()
+                binding?.sortFilter?.slideUp()
+            })
+            adapter = flashSaleAdapter
+
+            attachPaging(this, pagingConfig) { _, offset ->
+                viewModel.processEvent(FlashSaleListUiEvent.LoadPage(offset))
+            }
+        }
     }
 
     private fun observeUiState() {
@@ -244,7 +275,8 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
                 binding?.recyclerView.showToasterError(effect.throwable)
             }
             is FlashSaleListUiEffect.LoadNextPageSuccess -> {
-                renderList(effect.allItems, effect.currentPageItems.size == getPerPage())
+                notifyLoadResult(effect.currentPageItems.size == PAGE_SIZE)
+                flashSaleAdapter.submit(effect.allItems)
             }
 
         }
@@ -361,7 +393,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     private fun refreshScrollState(allItems: List<DelegateAdapterItem>) {
         if (allItems.isEmpty()) {
-            endlessRecyclerViewScrollListener?.resetState()
+            resetPaging()
         }
     }
 
@@ -470,56 +502,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
             viewModel.processEvent(FlashSaleListUiEvent.ApplyStatusFilter(filter))
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
-    }
-
-
-    override fun createAdapter(): CompositeAdapter {
-        return flashSaleAdapter
-    }
-
-    override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.recyclerView?.apply {
-            applyPaddingToLastItem()
-            attachOnScrollListener(onScrollDown = {
-                binding?.imgScrollUp?.slideUp()
-                binding?.sortFilter?.slideDown()
-            }, onScrollUp = {
-                binding?.imgScrollUp?.slideDown()
-                binding?.sortFilter?.slideUp()
-            })
-        }
-    }
-
-    override fun getPerPage(): Int {
-        return PAGE_SIZE
-    }
-
-    override fun addElementToAdapter(list: List<DelegateAdapterItem>) {
-        adapter?.submit(list)
-    }
-
-    override fun loadData(page: Int, offset: Int) {
-        viewModel.processEvent(FlashSaleListUiEvent.LoadPage(offset))
-    }
-
-    override fun clearAdapterData() {
-        adapter?.submit(listOf())
-    }
-
-    override fun onShowLoading() {
-        flashSaleAdapter.addItem(LoadingItem)
-    }
-
-    override fun onHideLoading() {
-        flashSaleAdapter.removeItem(LoadingItem)
-    }
-
-    override fun onDataEmpty() {
-        flashSaleAdapter.removeItem(LoadingItem)
-    }
-
-    override fun onGetListError(message: String) {
-        flashSaleAdapter.removeItem(LoadingItem)
     }
 
     private val onFlashSaleClicked: (Int) -> Unit = { selectedItemPosition ->
