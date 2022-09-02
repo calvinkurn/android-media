@@ -139,53 +139,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         bundle?.putString(ARGUMENT_MVC, mvc)
     }
 
-//    /* OCC */
-//    fun show(
-//        activity: Activity,
-//        fragmentManager: FragmentManager,
-//        shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
-//        shippingRecommendationData: ShippingRecommendationData,
-//        cartPosition: Int,
-//        isDisableOrderPrioritas: Boolean
-//    ) {
-//        this.activity = activity
-//        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
-//        initBottomSheet(activity, shippingRecommendationData)
-//        initView(activity)
-//        initData(cartPosition, isDisableOrderPrioritas)
-//        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
-//    }
-
-//    private fun initBottomSheet(activity: Activity, shippingRecommendationData: ShippingRecommendationData) {
-//        bottomSheet = BottomSheetUnify().apply {
-//            showCloseIcon = true
-//            setTitle(activity.getString(R.string.title_bottomsheet_shipment_duration))
-//            clearContentPadding = true
-//            customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
-//            isDragable = true
-//            isHideable = true
-//            setShowListener {
-//                presenter?.attachView(this@ShippingDurationBottomsheet)
-//                hideLoading()
-//                setupRecyclerView(mCartPosition)
-//                showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
-//            }
-//            setOnDismissListener {
-//                presenter?.detachView()
-//            }
-//            setCloseClickListener {
-//                shippingDurationBottomsheetListener?.onShippingDurationButtonCloseClicked()
-//                dismiss()
-//            }
-//        }
-//    }
-
-//    private fun initData(cartPosition: Int, isDisableOrderPrioritas: Boolean) {
-//        mCartPosition = cartPosition
-//        this.isDisableOrderPrioritas = isDisableOrderPrioritas
-//        this.isOcc = true
-//    }
-
     private fun initializeInjector() {
         val baseMainApplication = activity!!.application as BaseMainApplication
         val component = DaggerShippingDurationComponent.builder()
