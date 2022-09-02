@@ -131,7 +131,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
             shop.itemID,
             adapterPosition-1,
             shop.itemTitle,
-            "${shop.itemID} - ${shop.metrics?.findLast { it?.metricType == "shopOrderCommissionPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "shopTotalClickPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "shopOrderPerItem" }?.metricValue} - $label",
+            "${shop.itemID} - ${shop.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $label",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT)
     }
 }
