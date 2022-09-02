@@ -10,12 +10,15 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.buyerorder.KEY_CONTAINS_ORDER_DETAILS
+import com.tokopedia.buyerorder.ORDER_DETAIL_APPLINK
+import com.tokopedia.buyerorder.ORDER_ID_KEY
+import com.tokopedia.buyerorder.ORDER_ID_VALUE
 import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListDetailActivity
 import com.tokopedia.buyerorder.setupRemoteConfig
 import com.tokopedia.buyerorder.test.R
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -24,12 +27,12 @@ import com.tokopedia.user.session.UserSession
 import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 /**
  * created by @bayazidnasir on 17/3/2022
  */
-@RunWith(AndroidJUnit4::class)
+
+@UiTest
 class OrderListDetailActivityOneTickerTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -69,8 +72,8 @@ class OrderListDetailActivityOneTickerTest {
                     context,
                     RevampOrderListDetailActivity::class.java
                 ).apply {
-                    putExtra("order_id", "72b9fd8f-2e86-4484-8577-16cf1d97e16c")
-                    data = Uri.parse("tokopedia://order/72b9fd8f-2e86-4484-8577-16cf1d97e16c?upstream-ORDERINTERNAL&vertical_category=foodvchr")
+                    putExtra(ORDER_ID_KEY, ORDER_ID_VALUE)
+                    data = Uri.parse(ORDER_DETAIL_APPLINK)
                 }
             }
         }
@@ -82,7 +85,6 @@ class OrderListDetailActivityOneTickerTest {
     }
 
     private fun assertLabelAnTopTicker(){
-        Thread.sleep(1000)
         onView(withId(R.id.status_label)).check(matches(isDisplayed()))
         onView(withId(R.id.status_value)).check(matches(isDisplayed()))
 
@@ -93,14 +95,12 @@ class OrderListDetailActivityOneTickerTest {
     }
 
     private fun assertBottomTickerNotShow(){
-        Thread.sleep(1000)
 
         val scrollView = activityRule.activity.findViewById<NestedScrollView>(R.id.parentScroll)
 
         while (scrollView.canScrollVertically(1)){
             onView(withId(R.id.parentScroll)).perform(swipeUp())
         }
-        Thread.sleep(2000)
         onView(withId(R.id.ticker_detail_order)).check(matches(not(isDisplayed())))
     }
 }
