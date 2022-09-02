@@ -355,7 +355,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun handleChannelConfiguration(config: ConfigurationUiModel) {
         if (config.streamAllowed) {
             this.channelType = config.channelStatus
-            if (channelType == ChannelStatus.Live) {
+            if (channelType.isLive) {
                 showDialogWhenActiveOnOtherDevices()
                 analytic.viewDialogViolation(config.channelId)
             } else {

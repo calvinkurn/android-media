@@ -1434,9 +1434,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleBroadcasterRecovered() {
         viewModelScope.launchCatchError(block = {
             val channelInfo = getChannelInfo()
-            if (channelInfo.status == ChannelStatus.Pause
-                || channelInfo.status == ChannelStatus.Live) {
-                updateChannelStatus(PlayChannelStatusType.Live)
+            if (channelInfo.status.isPause || channelInfo.status.isLive) {
+                    if (channelInfo.status.isPause) updateChannelStatus(PlayChannelStatusType.Live)
                 _uiEvent.emit(PlayBroadcastEvent.BroadcastRecovered)
                 updateCurrentInteractiveStatus()
             } else {
