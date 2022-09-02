@@ -16,8 +16,6 @@ import androidx.core.text.buildSpannedString
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
@@ -40,14 +38,6 @@ class UpcomingDescriptionViewComponent(
 
     private val uiModel: DescriptionUiModel by lazy(LazyThreadSafetyMode.NONE){
         DescriptionUiModel()
-    }
-
-    private val impressHelper = ImpressHolder()
-
-    init {
-        txt.addOnImpressionListener(impressHelper) {
-            listener.onDescriptionImpressed(this)
-        }
     }
 
     private val animExpand: ObjectAnimator
@@ -165,7 +155,6 @@ class UpcomingDescriptionViewComponent(
 
     interface Listener {
         fun onTextClicked(view: UpcomingDescriptionViewComponent)
-        fun onDescriptionImpressed(view: UpcomingDescriptionViewComponent)
     }
 
     data class DescriptionUiModel(

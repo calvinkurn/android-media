@@ -156,6 +156,7 @@ class PlayUpcomingFragment @Inject constructor(
     private fun sendImpression() {
         analytic.impressUpcomingPage(channelId)
         if(!playUpcomingViewModel.isWidgetShown) analytic.impressCoverWithoutComponent(channelId)
+        if(playUpcomingViewModel.isWidgetShown) analytic.impressDescription(channelId)
     }
 
     private fun renderDescription(prevState: DescriptionUiState?, state: DescriptionUiState){
@@ -373,10 +374,6 @@ class PlayUpcomingFragment @Inject constructor(
     override fun onTextClicked(view: UpcomingDescriptionViewComponent) {
         if(playUpcomingViewModel.isExpanded) analytic.clickSeeLessDescription(channelId) else analytic.clickSeeAllDescription(channelId)
         playUpcomingViewModel.submitAction(ExpandDescriptionUpcomingAction)
-    }
-
-    override fun onDescriptionImpressed(view: UpcomingDescriptionViewComponent) {
-        analytic.impressDescription(channelId)
     }
 
     private fun copyToClipboard(content: String) {

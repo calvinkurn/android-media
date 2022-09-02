@@ -143,6 +143,11 @@ class PlayUpcomingViewModel @Inject constructor(
         updateUpcomingState(channelData.upcomingInfo)
         updateStatusInfo(mChannelId, false)
         updatePartnerInfo(channelData.partnerInfo)
+        handleWidgetState(channelData.upcomingInfo.description.isNotBlank())
+    }
+
+    private fun handleWidgetState(isShown: Boolean){
+        _widgetState.update { it.copy(isShown = isShown) }
     }
 
     override fun onCleared() {
