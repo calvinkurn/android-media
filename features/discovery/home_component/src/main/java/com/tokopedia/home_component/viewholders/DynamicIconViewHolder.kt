@@ -132,7 +132,6 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
             iconTvName = itemView.findViewById(R.id.dynamic_icon_typography)
             iconImageView = itemView.findViewById(R.id.dynamic_icon_image_view)
             iconContainer = itemView.findViewById(R.id.dynamic_icon_container)
-            iconBackground = itemView.findViewById(R.id.dynamic_icon_background)
 
             iconTvName?.text = item.name
             iconImageView?.loadImage(item.imageUrl)
