@@ -607,7 +607,6 @@ open class ProductManageFragment :
         setupSelectAll()
         setupErrorPage()
         setupNoAccessPage()
-        setCoachMarkFlagStockReminder()
         renderCheckedView()
 
         observeShopInfo()
@@ -644,7 +643,7 @@ open class ProductManageFragment :
     private fun setCoachMarkFlagStockReminder() {
         coachMarkStockReminder?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                if (currentIndex == Int.ONE) {
+                if (currentIndex == Int.ZERO) {
                     CoachMarkPreference.setShown(
                         requireContext(),
                         SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK,
@@ -1213,6 +1212,7 @@ open class ProductManageFragment :
                     showLoadingProgress()
                     isLoadingInitialData = true
                     getProductList()
+                    dismissAllCoachMark()
                     clearFocus()
                     true
                 } else {
@@ -1461,7 +1461,6 @@ open class ProductManageFragment :
         filterTab?.getSelectedFilter()?.let {
             filterOptions.add(FilterByStatus(it))
         }
-
         if (isRefreshFromSortFilter) {
             tabSortFilter?.show()
             shimmerSortFilter?.hide()
@@ -2431,15 +2430,7 @@ open class ProductManageFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
-            if (coachMarkNotifyMe?.isDismissed == false) {
-                coachMarkNotifyMe?.dismissCoachMark()
-            }
-            if (coachMarkMoreOption?.isDismissed == false) {
-                coachMarkMoreOption?.dismissCoachMark()
-            }
-            if (coachMarkStockReminder?.isDismissed == false) {
-                coachMarkStockReminder?.dismissCoachMark()
-            }
+           dismissAllCoachMark()
         }
     }
 
@@ -3386,10 +3377,13 @@ open class ProductManageFragment :
                 coachMarkStockReminder?.stepButtonTextLastChild =
                     activity?.resources?.getString(com.tokopedia.abstraction.R.string.label_done)
                         .orEmpty()
+
+                val itemCoachMark = getCoachMarkFlagStockReminder(item)
                 coachMarkStockReminder?.showCoachMark(
-                    step = getCoachMarkFlagStockReminder(item),
+                    step = itemCoachMark,
                     index = 0
                 )
+                setCoachMarkFlagStockReminder()
             }
         }
     }
@@ -3417,20 +3411,7 @@ open class ProductManageFragment :
 
     private fun refreshCoachMark() {
         haveSetReminder = -1
-        recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
-        if (coachMarkNotifyMe?.isDismissed == false) {
-            coachMarkNotifyMe?.dismissCoachMark()
-            coachMarkNotifyMe?.isDismissed = false
-        }
-        if (coachMarkMoreOption?.isDismissed == false) {
-            coachMarkMoreOption?.dismissCoachMark()
-            coachMarkMoreOption?.isDismissed = false
-        }
-        if (coachMarkStockReminder?.isDismissed == false) {
-            coachMarkStockReminder?.dismissCoachMark()
-            coachMarkStockReminder?.isDismissed = false
-
-        }
+        dismissAllCoachMark()
     }
 
     private fun getCoachMarkNotifyMe(notifyMeIcon: View): ArrayList<CoachMark2Item> {
@@ -3456,6 +3437,23 @@ open class ProductManageFragment :
     private fun getProductWithNotifyMe(data: List<ProductUiModel>): Int {
         return data.indexOfFirst {
             it.haveNotifyMeOOS
+        }
+    }
+
+    private fun dismissAllCoachMark(){
+        recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
+        if (coachMarkNotifyMe?.isDismissed == false) {
+            coachMarkNotifyMe?.dismissCoachMark()
+            coachMarkNotifyMe?.isDismissed = false
+        }
+        if (coachMarkMoreOption?.isDismissed == false) {
+            coachMarkMoreOption?.dismissCoachMark()
+            coachMarkMoreOption?.isDismissed = false
+        }
+        if (coachMarkStockReminder?.isDismissed == false) {
+            coachMarkStockReminder?.dismissCoachMark()
+            coachMarkStockReminder?.isDismissed = false
+
         }
     }
 
