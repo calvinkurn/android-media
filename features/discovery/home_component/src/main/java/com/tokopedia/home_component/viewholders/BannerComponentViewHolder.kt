@@ -11,6 +11,7 @@ import com.tokopedia.home_component.decoration.BannerChannelDecoration
 import com.tokopedia.home_component.decoration.BannerChannelSingleItemDecoration
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
@@ -237,10 +238,8 @@ class BannerComponentViewHolder(itemView: View,
                 })
             }
             binding?.homeComponentHeaderView?.visible()
-//            binding?.homeComponentHeaderView?.rootView?.visible()
         } else {
             binding?.homeComponentHeaderView?.gone()
-//            binding?.homeComponentHeaderView?.rootView?.gone()
         }
     }
 
