@@ -20,6 +20,7 @@ import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -27,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListBinding
@@ -207,6 +209,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     private fun setupView() {
         setupSortFilter()
+        binding?.imgScrollUp?.setOnClickListener { binding?.recyclerView?.smoothSnapToPosition(Int.ZERO) }
     }
 
     private fun observeUiState() {
@@ -251,7 +254,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     private fun handleUiState(uiState: FlashSaleListUiState) {
         renderLoadingState(uiState.isLoading)
         renderSortFilter(uiState)
-        renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.allItems.size)
+        renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.searchResultCount)
         refreshScrollState(uiState.allItems)
         renderScrollUpButton(uiState.allItems.size)
     }
@@ -277,18 +280,26 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         renderStatusChips(uiState.selectedStatusIds)
     }
 
-    private fun renderEmptyState(isLoading: Boolean, isUsingFilter: Boolean, totalFlashSaleCount: Int) {
+    private fun renderEmptyState(isLoading: Boolean, isUsingFilter: Boolean, searchResultCount: Int) {
+        if (isLoading) {
+            binding?.emptyState?.gone()
+        } else {
+            handleEmptyState(isUsingFilter, searchResultCount)
+        }
+    }
+
+    private fun handleEmptyState(isUsingFilter: Boolean, searchResultCount: Int) {
         when {
-            isLoading -> binding?.emptyState?.gone()
-            totalFlashSaleCount.isZero() -> displayEmptySearchResult()
-            totalFlashSaleCount.isMoreThanZero() -> binding?.emptyState?.gone()
-            isUsingFilter && totalFlashSaleCount == 0 -> displayEmptySearchResult()
-            !isUsingFilter && totalFlashSaleCount == 0 -> displayNoFlashSaleAvailable()
+            searchResultCount.isZero() -> displayEmptySearchResult()
+            searchResultCount.isMoreThanZero() -> binding?.emptyState?.gone()
+            isUsingFilter && searchResultCount == 0 -> displayEmptySearchResult()
+            !isUsingFilter && searchResultCount == 0 -> displayNoFlashSaleAvailable()
         }
     }
 
     private fun displayEmptySearchResult() {
         flashSaleAdapter.removeItem(LoadingItem)
+
         binding?.emptyState?.visible()
         binding?.emptyState?.setImageUrl(RemoteImageUrlConstant.IMAGE_URL_NO_SEARCH_RESULT)
         binding?.emptyState?.setTitle(getString(R.string.stfs_empty_search_result_title))
@@ -297,6 +308,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     private fun displayNoFlashSaleAvailable() {
         flashSaleAdapter.removeItem(LoadingItem)
+
         binding?.emptyState?.visible()
 
         val emptyStateConfig = tabConfig[tabId]?.emptyStateConfig ?: return
