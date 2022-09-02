@@ -560,14 +560,6 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickFeaturedProductSeeMore()
     }
 
-    /**
-     * Interactive Active Listener
-     */
-//        playViewModel.submitAction(
-//            PlayViewerNewAction.StartPlayingInteractive)
-//            newAnalytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), interactiveType = playViewModel.interactiveData, channelId = playViewModel.channelId)
-    //endregion
-
     fun maxTopOnChatMode(maxTopPosition: Int) {
         mMaxTopChatMode = maxTopPosition
         if (!playViewModel.bottomInsets.isKeyboardShown) return
@@ -1828,14 +1820,15 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         when (engagement){
             is EngagementUiModel.Promo -> {
-                openCouponPage()
+                playViewModel.showCouponSheet(bottomSheetMaxHeight)
             }
-            is EngagementUiModel.Game -> {}
+            is EngagementUiModel.Game -> {
+                playViewModel.submitAction(PlayViewerNewAction.StartPlayingInteractive)
+                newAnalytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id,
+                    shopId = playViewModel.partnerId.toString(),
+                    interactiveType = playViewModel.interactiveData, channelId = playViewModel.channelId)
+            }
         }
-    }
-
-    private fun openCouponPage() {
-        playViewModel.showCouponSheet(bottomSheetMaxHeight)
     }
 
     companion object {
