@@ -9,11 +9,11 @@ import com.tokopedia.track.interfaces.Analytics
 
 const val ON = "on"
 const val OFF = "off"
-const val CLICK_AKTIFKAN_ATUR_MANUAL = "click aktifkan atur manual"
-const val CLICK_BATALKAN_ATUR_MANUAL = "click batalkan atur manual"
-const val CLICK_BATALKAN_ATUR_OTOMATIS = "click batalkan atur otomatis"
-const val CLICK_AKTIFKAN_ATUR_OTOMATIS = "click aktifkan atur otomatis"
-const val CLICK_TOGGLE_ATUR_OTOMATIS = "click toggle atur otomatis"
+const val EVENT_ACTION_CLICK_AKTIFKAN_ATUR_MANUAL = "click aktifkan atur manual"
+const val EVENT_ACTION_CLICK_BATALKAN_ATUR_MANUAL = "click batalkan atur manual"
+const val EVENT_ACTION_CLICK_BATALKAN_ATUR_OTOMATIS = "click batalkan atur otomatis"
+const val EVENT_ACTION_CLICK_AKTIFKAN_ATUR_OTOMATIS = "click aktifkan atur otomatis"
+const val EVENT_ACTION_CLICK_TOGGLE_ATUR_OTOMATIS = "click toggle atur otomatis"
 private const val CLICK_TOP_ADS = "clickTopAds"
 const val KEY_EVENT = "event"
 private const val KEY_EVENT_SCREEN_NAME = "screenName"
@@ -57,6 +57,12 @@ private const val KEY_EVENT_CATEGORY_IKLAN_PRODUK = "topads dashboard iklan prod
 private const val KEY_EVENT_CATEGORY_PRODUCT_CREATE = "topads manage product create form"
 private const val KEY_EVENT_CATEGORY_PRODUCT_EDIT = "topads manage product edit form"
 private const val KEY_EVENT_CATEGORY_ONBOARDING = "onboarding dashboard"
+const val KEY_TRACKER_ID = "trackerId"
+const val TRACKER_ID_CLICK_TOGGLE_ATUR_OTOMATIS = "33130"
+const val TRACKER_ID_CLICK_AKTIFKAN_ATUR_OTOMATIS = "33131"
+const val TRACKER_ID_CLICK_BATALKAN_ATUR_OTOMATIS = "33132"
+const val TRACKER_ID_CLICK_AKTIFKAN_ATUR_MANUAL = "33133"
+const val TRACKER_ID_CLICK_BATALKAN_ATUR_MANUAL = "33134"
 
 class TopAdsCreateAnalytics {
 
@@ -68,6 +74,16 @@ class TopAdsCreateAnalytics {
         return TrackApp.getInstance().gtm
     }
 
+    private fun getTrackerId(eventAction: String) : String{
+        return when(eventAction){
+            EVENT_ACTION_CLICK_TOGGLE_ATUR_OTOMATIS -> TRACKER_ID_CLICK_TOGGLE_ATUR_OTOMATIS
+            EVENT_ACTION_CLICK_AKTIFKAN_ATUR_OTOMATIS -> TRACKER_ID_CLICK_AKTIFKAN_ATUR_OTOMATIS
+            EVENT_ACTION_CLICK_BATALKAN_ATUR_OTOMATIS -> TRACKER_ID_CLICK_BATALKAN_ATUR_OTOMATIS
+            EVENT_ACTION_CLICK_AKTIFKAN_ATUR_MANUAL -> TRACKER_ID_CLICK_AKTIFKAN_ATUR_MANUAL
+            EVENT_ACTION_CLICK_BATALKAN_ATUR_MANUAL -> TRACKER_ID_CLICK_BATALKAN_ATUR_MANUAL
+            else -> ""
+        }
+    }
 
     fun sendTopAdsEvent(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
@@ -408,7 +424,8 @@ class TopAdsCreateAnalytics {
             KEY_EVENT_ACTION to eventAction,
             KEY_EVENT_LABEL to eventLabel,
             KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-            KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE)
+            KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
+            KEY_TRACKER_ID to getTrackerId(eventAction))
 
         getTracker().sendGeneralEvent(map)
     }
