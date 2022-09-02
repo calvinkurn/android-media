@@ -1608,4 +1608,16 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             verify { this@mockk.get("savedStateReputationId") }
         }
     }
+
+    @Test
+    fun `setBottomSheetBottomInset should update createReviewBottomSheetUiState when createReviewBottomSheetUiState is CreateReviewBottomSheetUiState#Showing`() = runBlockingTest {
+        val expectedInset = 100
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.setBottomSheetBottomInset(expectedInset)
+        val createReviewBottomSheetUiState = viewModel.createReviewBottomSheetUiState.first()
+        Assert.assertEquals(expectedInset, (createReviewBottomSheetUiState as CreateReviewBottomSheetUiState.Showing).bottomInset)
+    }
 }
