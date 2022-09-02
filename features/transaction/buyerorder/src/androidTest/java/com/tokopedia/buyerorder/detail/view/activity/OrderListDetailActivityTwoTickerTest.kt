@@ -9,10 +9,14 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.buyerorder.KEY_CONTAINS_ORDER_DETAILS
+import com.tokopedia.buyerorder.ORDER_DETAIL_APPLINK
+import com.tokopedia.buyerorder.ORDER_ID_KEY
+import com.tokopedia.buyerorder.ORDER_ID_VALUE
 import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListDetailActivity
 import com.tokopedia.buyerorder.test.R
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -20,18 +24,13 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 /**
  * created by @bayazidnasir on 17/3/2022
  */
 
-@RunWith(AndroidJUnit4::class)
+@UiTest
 class OrderListDetailActivityTwoTickerTest {
-
-    companion object{
-        private const val KEY_CONTAINS_ORDER_DETAILS = "orderDetails"
-    }
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
@@ -68,8 +67,8 @@ class OrderListDetailActivityTwoTickerTest {
                     context,
                     RevampOrderListDetailActivity::class.java
                 ).apply {
-                    putExtra("order_id", "72b9fd8f-2e86-4484-8577-16cf1d97e16c")
-                    data = Uri.parse("tokopedia://order/72b9fd8f-2e86-4484-8577-16cf1d97e16c?upstream-ORDERINTERNAL&vertical_category=foodvchr")
+                    putExtra(ORDER_ID_KEY, ORDER_ID_VALUE)
+                    data = Uri.parse(ORDER_DETAIL_APPLINK)
                 }
             }
         }
@@ -81,7 +80,6 @@ class OrderListDetailActivityTwoTickerTest {
     }
 
     private fun assertLabelAnTopTicker(){
-        Thread.sleep(1000)
         onView(ViewMatchers.withId(R.id.status_label))
             .check(ViewAssertions.matches(isDisplayed()))
         onView(ViewMatchers.withId(R.id.status_value))
@@ -97,14 +95,11 @@ class OrderListDetailActivityTwoTickerTest {
     }
 
     private fun assertBottomTickerShow(){
-        Thread.sleep(1000)
-
         val scrollView = activityRule.activity.findViewById<NestedScrollView>(R.id.parentScroll)
 
         while (scrollView.canScrollVertically(1)){
             onView(ViewMatchers.withId(R.id.parentScroll)).perform(ViewActions.swipeUp())
         }
-        Thread.sleep(2000)
         onView(ViewMatchers.withId(R.id.ticker_detail_order))
             .check(ViewAssertions.matches(isDisplayed()))
     }

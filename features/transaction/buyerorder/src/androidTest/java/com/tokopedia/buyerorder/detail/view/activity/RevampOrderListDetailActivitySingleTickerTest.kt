@@ -86,7 +86,6 @@ class RevampOrderListDetailActivitySingleTickerTest {
     }
 
     private fun assertLabelTopTicker() {
-        Thread.sleep(1000)
         onView(withId(R.id.status_label)).check(matches(isDisplayed()))
         onView(withId(R.id.status_value)).check(matches(isDisplayed()))
         onView(withId(R.id.status_label)).check(matches(withText("Status")))
@@ -95,12 +94,10 @@ class RevampOrderListDetailActivitySingleTickerTest {
     }
 
     private fun assertBottomTickerNotShow(){
-        Thread.sleep(1000)
         val scrollView = activityRule.activity.findViewById<NestedScrollView>(R.id.parentScroll)
         while (scrollView.canScrollVertically(1)){
             onView(withId(R.id.parentScroll)).perform(swipeUp())
         }
-        Thread.sleep(2000)
         onView(withId(R.id.ticker_detail_order)).check(matches(not(isDisplayed())))
     }
 }
