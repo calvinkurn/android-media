@@ -53,10 +53,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.fragment_saldo_deposit.*
-import kotlinx.android.synthetic.main.fragment_saldo_deposit.view.*
-import kotlinx.android.synthetic.main.saldo_deposit_header.*
-import kotlinx.android.synthetic.main.saldo_deposit_header.view.*
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 class SaldoDepositFragment : BaseDaggerFragment() {
@@ -106,7 +103,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     @Inject
     lateinit var saldoDetailsAnalytics: SaldoDetailsAnalytics
 
-    private lateinit var binding: FragmentSaldoDepositBinding
+    private var binding by autoCleared<FragmentSaldoDepositBinding>()
 
     private var isSellerEnabled: Boolean = false
     private var saldoHistoryFragment: SaldoTransactionHistoryFragment? = null
@@ -134,7 +131,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private val saldoCoachMarkController: SaldoCoachMarkController by lazy {
         SaldoCoachMarkController(requireContext()) {
-            sp_app_bar_layout.setExpanded(true)
+            binding.spAppBarLayout.setExpanded(true)
         }
     }
 
@@ -180,11 +177,13 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun addBalanceAnchorsForCoachMark(isBalanceShown: Boolean) {
-        saldoCoachMarkController.addBalanceAnchorsForCoachMark(
-            isBalanceShown,
-            listOf(saldo_buyer_deposit_text, saldo_seller_deposit_text)
-        )
-        prepareSaldoCoachMark()
+        binding.depositHeaderLayout.apply {
+            saldoCoachMarkController.addBalanceAnchorsForCoachMark(
+                isBalanceShown,
+                listOf(saldoBuyerDepositText, saldoSellerDepositText)
+            )
+            prepareSaldoCoachMark()
+        }
     }
 
     fun startSaldoCoachMarkFlow(anchorView: View?) {
@@ -195,7 +194,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private fun prepareSaldoCoachMark() {
         if (activity is SaldoDepositActivity) {
             saldoCoachMarkController.startCoachMark()
-            sp_app_bar_layout.addOnOffsetChangedListener(AppBarLayout
+            binding.spAppBarLayout.addOnOffsetChangedListener(AppBarLayout
                 .OnOffsetChangedListener { _, _ ->
                     saldoCoachMarkController.updateCoachMarkOnScroll(
                         expandLayout
@@ -213,21 +212,21 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         setViewModelObservers()
 
         expandLayout = true
+        binding.depositHeaderLayout.apply {
+            if (expandLayout) {
+                saldoTypeLl.show()
+            } else {
+                saldoDepositLayoutExpand.animate().rotation(animationRotationValue).duration = animationDuration
+                saldoTypeLl.gone()
+            }
 
-        if (expandLayout) {
-            binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll.show()
-        } else {
-            binding.depositHeaderLayout.saldoBalanceLayout.withdraw_layout.cardWithdrawBalance.llWithdrawBalance.main_balance_rl.saldo_deposit_layout_expand.animate().rotation(animationRotationValue).duration =
-                animationDuration
-            binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll.gone()
-        }
-
-        if (expandMerchantDetailLayout) {
-            binding.depositHeaderLayout.merchantDetailsLl.show()
-        } else {
-            binding.depositHeaderLayout.merchantStatusLl.merchant_detail_ll.merchant_detail_layout_expand.animate().rotation(animationRotationValue).duration =
-                animationDuration
-            binding.depositHeaderLayout.merchantDetailsLl.gone()
+            if (expandMerchantDetailLayout) {
+                merchantDetailsLl.show()
+            } else {
+                merchantDetailLayoutExpand.animate().rotation(animationRotationValue).duration =
+                    animationDuration
+                merchantDetailsLl.gone()
+            }
         }
 
         val saldoHistoryFragment = SaldoTransactionHistoryFragment()
@@ -240,11 +239,14 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             .commit()
         this.saldoHistoryFragment = saldoHistoryFragment
 
-        if (isSellerMigrationEnabled(context)) {
-            binding.depositHeaderLayout.merchantDetailsLl.hide()
-        } else {
-            binding.depositHeaderLayout.merchantDetailsLl.show()
+        binding.depositHeaderLayout.merchantDetailsLl.apply {
+            if (isSellerMigrationEnabled(context)) {
+                this.hide()
+            } else {
+                this.show()
+            }
         }
+
     }
 
     private fun setViewModelObservers() {
@@ -329,8 +331,10 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun onUserSaldoBalanceLoaded(saldo: Saldo) {
         addBalanceAnchorsForCoachMark(true)
-        cardWithdrawBalance.visible()
-        localLoadSaldoBalance.gone()
+        binding.depositHeaderLayout.apply {
+            cardWithdrawBalance.visible()
+            localLoadSaldoBalance.gone()
+        }
         setSellerSaldoBalance(
             saldo.sellerUsable,
             saldo.sellerUsableFmt ?: ""
@@ -371,16 +375,18 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private fun onSaldoBalanceLoadingError() {
         saldoDetailsAnalytics.sendApiFailureEvents(SaldoDetailsConstants.EventLabel.SALDO_FETCH_BALANCE)
         addBalanceAnchorsForCoachMark(false)
-        cardWithdrawBalance.gone()
-        localLoadSaldoBalance.visible()
-        localLoadSaldoBalance.refreshBtn?.setOnClickListener {
-            cardWithdrawBalance.visible()
-            localLoadSaldoBalance.gone()
-            refresh()
+        binding.depositHeaderLayout.apply {
+            cardWithdrawBalance.gone()
+            localLoadSaldoBalance.visible()
+            localLoadSaldoBalance.refreshBtn?.setOnClickListener {
+                cardWithdrawBalance.visible()
+                localLoadSaldoBalance.gone()
+                refresh()
+            }
+            localLoadSaldoBalance.localLoadTitle = getString(R.string.saldo_balance_load_fail_title)
+            localLoadSaldoBalance.localLoadDescription =
+                getString(R.string.saldo_balance_load_fail_desc)
         }
-        localLoadSaldoBalance.localLoadTitle = getString(R.string.saldo_balance_load_fail_title)
-        localLoadSaldoBalance.localLoadDescription =
-            getString(R.string.saldo_balance_load_fail_desc)
     }
 
 
@@ -399,54 +405,55 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun initListeners() {
-
-        binding.depositHeaderLayout.saldoBalanceLayout.withdraw_layout.cardWithdrawBalance.llWithdrawBalance.main_balance_rl.saldo_deposit_layout_expand.setOnClickListener {
-            if (expandLayout) {
-                binding.depositHeaderLayout.saldoBalanceLayout.withdraw_layout.cardWithdrawBalance.llWithdrawBalance.main_balance_rl.saldo_deposit_layout_expand.animate().rotation(animationRotationValue).duration =
-                    animationDuration
-                expandLayout = false
-                collapse(binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll)
-                saldoCoachMarkController.handleCoachMarkVisibility(false)
-            } else {
-                binding.depositHeaderLayout.saldoBalanceLayout.withdraw_layout.cardWithdrawBalance.llWithdrawBalance.main_balance_rl.saldo_deposit_layout_expand.animate().rotation(animationRotationZeroValue).duration =
-                    animationDuration
-                expandLayout = true
-                expand(binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll)
-                saldoCoachMarkController.handleCoachMarkVisibility(true)
-            }
-        }
-
-        binding.depositHeaderLayout.merchantStatusLl.merchant_detail_ll.merchant_detail_layout_expand.setOnClickListener {
-            if (expandMerchantDetailLayout) {
-                binding.depositHeaderLayout.merchantStatusLl.merchant_detail_ll.merchant_detail_layout_expand.animate().rotation(animationRotationValue).duration =
-                    animationDuration
-                expandMerchantDetailLayout = false
-                collapse(binding.depositHeaderLayout.merchantDetailsLl)
-            } else {
-                binding.depositHeaderLayout.merchantStatusLl.merchant_detail_ll.merchant_detail_layout_expand.animate().rotation(animationRotationZeroValue).duration =
-                    animationDuration
-                expandMerchantDetailLayout = true
-                expand(binding.depositHeaderLayout.merchantDetailsLl)
-            }
-        }
-
-        binding.spAppBarLayout.deposit_header_layout.saldo_balance_layout.withdraw_button?.setOnClickListener {
-            saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_WITHDRAWAL_CLICK)
-            try {
-                if (!userSession.isMsisdnVerified) {
-                    showMustVerify()
-                } else if (!userSession.hasShownSaldoWithdrawalWarning()) {
-                    userSession.setSaldoWithdrawalWaring(true)
-                    showSaldoWarningDialog()
+        binding.depositHeaderLayout.apply {
+            saldoDepositLayoutExpand.setOnClickListener {
+                if (expandLayout) {
+                    saldoDepositLayoutExpand.animate().rotation(animationRotationValue).duration =
+                        animationDuration
+                    expandLayout = false
+                    collapse(saldoTypeLl)
+                    saldoCoachMarkController.handleCoachMarkVisibility(false)
                 } else {
-                    goToWithdrawActivity()
+                    saldoDepositLayoutExpand.animate().rotation(animationRotationZeroValue).duration =
+                        animationDuration
+                    expandLayout = true
+                    expand(saldoTypeLl)
+                    saldoCoachMarkController.handleCoachMarkVisibility(true)
                 }
-            } catch (e: Exception) {
-
             }
-        }
 
-        binding.depositHeaderLayout.saldoBalanceLayout.ticker_message_layout.close_ticker_message.setOnClickListener { binding.depositHeaderLayout.saldoBalanceLayout.ticker_message_layout.gone() }
+            merchantDetailLayoutExpand.setOnClickListener {
+                if (expandMerchantDetailLayout) {
+                    merchantDetailLayoutExpand.animate().rotation(animationRotationValue).duration =
+                        animationDuration
+                    expandMerchantDetailLayout = false
+                    collapse(merchantDetailsLl)
+                } else {
+                    merchantDetailLayoutExpand.animate().rotation(animationRotationZeroValue).duration =
+                        animationDuration
+                    expandMerchantDetailLayout = true
+                    expand(merchantDetailsLl)
+                }
+            }
+
+            withdrawButton.setOnClickListener {
+                saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_WITHDRAWAL_CLICK)
+                try {
+                    if (!userSession.isMsisdnVerified) {
+                        showMustVerify()
+                    } else if (!userSession.hasShownSaldoWithdrawalWarning()) {
+                        userSession.setSaldoWithdrawalWaring(true)
+                        showSaldoWarningDialog()
+                    } else {
+                        goToWithdrawActivity()
+                    }
+                } catch (e: Exception) {
+
+                }
+            }
+
+            closeTickerMessage.setOnClickListener { tickerMessageLayout.gone() }
+        }
     }
 
     private fun expand(v: View) {
@@ -583,37 +590,39 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun initialVar() {
-        saldoDetailViewModel.isSeller = isSellerEnabled
-        context?.resources?.let { res ->
-            binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.main_balance_rl.saldo_deposit_text.text =
-                res.getString(R.string.total_saldo_text)
-        }
-        binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll.saldo_buyer_balance_rl.show()
-        binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll.saldo_buyer_balance_rl.show()
+        binding.depositHeaderLayout.apply {
+            saldoDetailViewModel.isSeller = isSellerEnabled
+            context?.resources?.let { res ->
+                saldoDepositText.text =
+                    res.getString(R.string.total_saldo_text)
+            }
+            saldoBuyerBalanceRl.show()
+            saldoBuyerBalanceRl.show()
 
-        binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll.saldo_buyer_balance_rl.saldo_buyer_deposit_text_info.setOnClickListener {
-            showBottomSheetInfoDialog(
-                false
-            )
-        }
-
-        binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll.saldo_seller_balance_rl.saldo_seller_deposit_text_info
-            .setOnClickListener { showBottomSheetInfoDialog(true) }
-
-        performanceInterface.stopPreparePagePerformanceMonitoring()
-        performanceInterface.startNetworkRequestPerformanceMonitoring()
-
-        if (activity != null) {
-            if (isSaldoNativeEnabled) {
-                saldoDetailViewModel.getMerchantSaldoDetails()
-            } else {
-                hideSaldoPrioritasFragment()
+            saldoBuyerDepositTextInfo.setOnClickListener {
+                showBottomSheetInfoDialog(
+                    false
+                )
             }
 
-            if (isMerchantCreditLineEnabled) {
-                saldoDetailViewModel.getMerchantCreditLineDetails()
-            } else {
-                hideMerchantCreditLineFragment()
+            saldoSellerDepositTextInfo
+                .setOnClickListener { showBottomSheetInfoDialog(true) }
+
+            performanceInterface.stopPreparePagePerformanceMonitoring()
+            performanceInterface.startNetworkRequestPerformanceMonitoring()
+
+            if (activity != null) {
+                if (isSaldoNativeEnabled) {
+                    saldoDetailViewModel.getMerchantSaldoDetails()
+                } else {
+                    hideSaldoPrioritasFragment()
+                }
+
+                if (isMerchantCreditLineEnabled) {
+                    saldoDetailViewModel.getMerchantCreditLineDetails()
+                } else {
+                    hideMerchantCreditLineFragment()
+                }
             }
         }
     }
@@ -673,23 +682,22 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun setBalance(summaryUsebleDepositIdr: String) {
-        if (!TextUtils.isEmpty(summaryUsebleDepositIdr)) {
-            binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.main_balance_rl.total_balance.text =
-                summaryUsebleDepositIdr
-            binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.main_balance_rl.total_balance.show()
-        } else {
-            binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.main_balance_rl.total_balance.gone()
+        binding.depositHeaderLayout.totalBalance.apply {
+            if (!TextUtils.isEmpty(summaryUsebleDepositIdr)) {
+                this.text = summaryUsebleDepositIdr
+                this.show()
+            } else {
+                this.gone()
+            }
         }
-
     }
 
     private fun setWithdrawButtonState(state: Boolean) {
-        binding.spAppBarLayout.deposit_header_layout.saldo_balance_layout.withdraw_button.buttonType =
-            if (state) UnifyButton.Type.MAIN else UnifyButton.Type.ALTERNATE
-        binding.spAppBarLayout.deposit_header_layout.saldo_balance_layout.withdraw_button.isEnabled =
-            state
-        binding.spAppBarLayout.deposit_header_layout.saldo_balance_layout.withdraw_button.isClickable =
-            state
+        binding.depositHeaderLayout.withdrawButton.apply {
+            buttonType = if (state) UnifyButton.Type.MAIN else UnifyButton.Type.ALTERNATE
+            isEnabled = state
+            isClickable = state
+        }
     }
 
     @SuppressLint("Range")
@@ -700,86 +708,97 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showHoldWarning(warningText: String) {
-        binding.depositHeaderLayout.withdrawLayout.hold_balance_ll.hold_balance_layout.show()
-        binding.depositHeaderLayout.withdrawLayout.hold_balance_ll.hold_balance_layout.setHtmlDescription(
-            String.format(
-                getString(
-                    R.string.saldo_hold_balance_text,
-                    warningText
+        binding.depositHeaderLayout.holdBalanceLayout.apply {
+            this.show()
+            this.setHtmlDescription(
+                String.format(
+                    getString(
+                        R.string.saldo_hold_balance_text,
+                        warningText
+                    )
                 )
             )
-        )
-        binding.depositHeaderLayout.withdrawLayout.hold_balance_ll.hold_balance_layout.setDescriptionClickEvent(
-            object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_HOLD_STATUS_CLICK)
-                    val intent = Intent(context, SaldoHoldInfoActivity::class.java)
-                    startActivity(intent)
-                }
 
-                override fun onDismiss() {}
-            })
+            this.setDescriptionClickEvent(
+                object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_HOLD_STATUS_CLICK)
+                        val intent = Intent(context, SaldoHoldInfoActivity::class.java)
+                        startActivity(intent)
+                    }
+
+                    override fun onDismiss() {}
+                })
+        }
     }
 
     private fun hideSaldoPrioritasFragment() {
-        binding.depositHeaderLayout.merchantDetailsLl.saldo_prioritas_widget.show()
-        Handler().postDelayed({
-            if (binding.depositHeaderLayout.merchantDetailsLl.merchant_credit_line_widget.visibility != View.VISIBLE) {
-                hideUserFinancialStatusLayout()
-            }
-        }, CHECK_VISIBILITY_DELAY)
+        binding.depositHeaderLayout.apply {
+            saldoPrioritasWidget.show()
+            Handler().postDelayed({
+                if (merchantCreditLineWidget.visibility != View.VISIBLE) {
+                    hideUserFinancialStatusLayout()
+                }
+            }, CHECK_VISIBILITY_DELAY)
+        }
     }
 
     private fun hideMerchantCreditLineFragment() {
-        binding.depositHeaderLayout.merchantDetailsLl.merchant_credit_line_widget.gone()
-        Handler().postDelayed({
-            if (binding.depositHeaderLayout.merchantDetailsLl.saldo_prioritas_widget.visibility != View.VISIBLE) {
-                hideUserFinancialStatusLayout()
-            }
-        }, CHECK_VISIBILITY_DELAY)
+        binding.depositHeaderLayout.apply {
+            merchantCreditLineWidget.gone()
+            Handler().postDelayed({
+                if (saldoPrioritasWidget.visibility != View.VISIBLE) {
+                    hideUserFinancialStatusLayout()
+                }
+            }, CHECK_VISIBILITY_DELAY)
+        }
     }
 
     private fun showTickerMessage(withdrawalTicker: String) {
-        binding.depositHeaderLayout.saldoBalanceLayout.ticker_message_layout.show()
-        binding.depositHeaderLayout.saldoBalanceLayout.ticker_message_layout.ticker_message_text.text =
-            withdrawalTicker
+        binding.depositHeaderLayout.apply {
+            tickerMessageLayout.show()
+            tickerMessageText.text =
+                withdrawalTicker
+        }
     }
 
     private fun showTicker() {
         if (showMclBlockTickerFirebaseFlag) {
-            binding.spAppBarLayout.layout_holdwithdrawl_dialog.visible()
-            binding.spAppBarLayout.layout_holdwithdrawl_dialog.tickerTitle =
-                getString(R.string.saldo_lock_tickerTitle)
-            val descriptionStr = getString(R.string.saldo_lock_tickerDescription, mclLateCount)
-            val payNowLinkStr = getString(R.string.saldo_lock_pay_now)
-            val combinedHtmlDescription = getString(
-                R.string.saldo_ticker_description_html,
-                descriptionStr, payNowLinkStr
-            )
-            binding.spAppBarLayout.layout_holdwithdrawl_dialog.setHtmlDescription(
-                combinedHtmlDescription
-            )
-            binding.spAppBarLayout.layout_holdwithdrawl_dialog.setDescriptionClickEvent(object :
-                TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    RouteManager.route(
-                        context, String.format(
-                            "%s?url=%s",
-                            ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDOLOCK_PAYNOW_URL
+            binding.layoutHoldwithdrawlDialog.apply {
+                this.visible()
+                this.tickerTitle =
+                    getString(R.string.saldo_lock_tickerTitle)
+                val descriptionStr = getString(R.string.saldo_lock_tickerDescription, mclLateCount)
+                val payNowLinkStr = getString(R.string.saldo_lock_pay_now)
+                val combinedHtmlDescription = getString(
+                    R.string.saldo_ticker_description_html,
+                    descriptionStr, payNowLinkStr
+                )
+                this.setHtmlDescription(
+                    combinedHtmlDescription
+                )
+                this.setDescriptionClickEvent(object :
+                    TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        RouteManager.route(
+                            context, String.format(
+                                "%s?url=%s",
+                                ApplinkConst.WEBVIEW, SaldoDetailsConstants.SALDOLOCK_PAYNOW_URL
+                            )
                         )
-                    )
-                }
+                    }
 
-                override fun onDismiss() {
-                    binding.spAppBarLayout.layout_holdwithdrawl_dialog.gone()
-                }
+                    override fun onDismiss() {
+                        binding.layoutHoldwithdrawlDialog.gone()
+                    }
 
-            })
+                })
+            }
         }
     }
 
     private fun hideTickerMessage() {
-        binding.depositHeaderLayout.saldoBalanceLayout.ticker_message_layout.gone()
+        binding.depositHeaderLayout.tickerMessageLayout.gone()
     }
 
     private fun setLateCount(count: Int) {
@@ -787,27 +806,26 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideWithdrawTicker() {
-        binding.spAppBarLayout.layout_holdwithdrawl_dialog.gone()
+        binding.layoutHoldwithdrawlDialog.gone()
     }
 
     private fun showSellerSaldoRL() {
-        binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll.saldo_seller_balance_rl.show()
+        binding.depositHeaderLayout.saldoSellerBalanceRl.show()
     }
 
     private fun setBuyerSaldoBalance(balance: Long, text: String) {
         saldoBalanceBuyer = balance
-        binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll.saldo_buyer_balance_rl.buyer_balance
-            .text = text
+        binding.depositHeaderLayout.buyerBalance.text = text
     }
 
     private fun setSellerSaldoBalance(amount: Long, formattedAmount: String) {
         saldoBalanceSeller = amount
-        binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll.saldo_seller_balance_rl.seller_balance
+        binding.depositHeaderLayout.sellerBalance
             .text = formattedAmount
     }
 
     private fun showBuyerSaldoRL() {
-        binding.depositHeaderLayout.withdrawLayout.cardWithdrawBalance.llWithdrawBalance.saldo_type_ll.saldo_buyer_balance_rl.show()
+        binding.depositHeaderLayout.saldoBuyerBalanceRl.show()
     }
 
     private fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?) {
@@ -871,7 +889,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideWarning() {
-        binding.depositHeaderLayout.withdrawLayout.hold_balance_ll.hold_balance_layout.hide()
+        binding.depositHeaderLayout.holdBalanceLayout.hide()
     }
 
     override fun onDestroy() {
