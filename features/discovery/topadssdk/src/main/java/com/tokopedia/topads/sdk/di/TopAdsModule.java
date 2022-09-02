@@ -5,8 +5,11 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase;
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
+import com.tokopedia.topads.sdk.repository.TopAdsRepository;
 import com.tokopedia.topads.sdk.utils.CacheHandler;
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
@@ -57,5 +60,11 @@ public class TopAdsModule {
     @Provides
     RemoveWishListUseCase removeWishListUseCase(@ApplicationContext Context context){
         return new RemoveWishListUseCase(context);
+    }
+
+    @TopAdsScope
+    @Provides
+    TopAdsImageViewUseCase topAdsImageViewUseCase(@ApplicationContext Context context, UserSessionInterface userSession, TopAdsIrisSession topAdsIrisSession){
+        return new TopAdsImageViewUseCase(userSession.getUserId(), new TopAdsRepository(), topAdsIrisSession.getSessionId());
     }
 }
