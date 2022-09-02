@@ -1,6 +1,9 @@
 package com.tokopedia.wishlistcollection
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -497,5 +500,39 @@ class WishlistCollectionDetailViewModelTest {
 
         //then
         assert(wishlistCollectionDetailViewModel.deleteWishlistProgressResult.value is Fail)
+    }
+
+    // atc_success
+    @Test
+    fun atcWishlist_shouldReturnSuccess() {
+        //given
+        coEvery {
+            atcUseCase.executeOnBackground()
+        } returns AddToCartDataModel(
+            status = AddToCartDataModel.STATUS_OK,
+            data = DataModel(success = 1)
+        )
+
+        //when
+        wishlistCollectionDetailViewModel.doAtc(AddToCartRequestParams())
+
+        //then
+        assert(wishlistCollectionDetailViewModel.atcResult.value is Success)
+        assert((wishlistCollectionDetailViewModel.atcResult.value as Success<AddToCartDataModel>).data.data.success == 1)
+    }
+
+    // atc_fail
+    @Test
+    fun atcWishlist_shouldReturnFail() {
+        //given
+        coEvery {
+            atcUseCase.executeOnBackground()
+        } throws Exception()
+
+        //when
+        wishlistCollectionDetailViewModel.doAtc(AddToCartRequestParams())
+
+        //then
+        assert(wishlistCollectionDetailViewModel.atcResult.value is Fail)
     }
 }

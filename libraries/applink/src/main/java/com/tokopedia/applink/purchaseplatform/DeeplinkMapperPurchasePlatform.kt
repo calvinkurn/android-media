@@ -49,7 +49,5 @@ object DeeplinkMapperPurchasePlatform {
         } catch (e: Exception) {
             true
         }
-
-        // return true
     }
 }
