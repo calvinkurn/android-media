@@ -3,8 +3,6 @@ package com.tokopedia.topchat.chatlist.activity.base
 import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.filters.LargeTest
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topchat.AndroidFileUtil
@@ -23,12 +21,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.junit.runner.RunWith
 import javax.inject.Inject
 
-@LargeTest
-@RunWith(AndroidJUnit4ClassRunner::class)
-open class ChatListTest {
+abstract class ChatListTest {
     @get:Rule
     var activityTestRule = IntentsTestRule(ChatListActivityStub::class.java,
         false, false)

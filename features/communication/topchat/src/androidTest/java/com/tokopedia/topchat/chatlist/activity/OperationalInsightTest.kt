@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Instrumentation
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
 import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.OperationalInsightResult.assertOperationalInsightTickerNotVisible
 import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.OperationalInsightResult.assertOperationalInsightTickerText
@@ -16,6 +17,7 @@ import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.Operati
 import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.OperationalInsightRobot.clickOnTextBottomSheet
 import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.OperationalInsightRobot.clickOperationalInsightTicker
 
+@UiTest
 class OperationalInsightTest : ChatListTest() {
     @Test
     fun should_show_maintain_ticker_operational_insight_in_sellerapp() {
