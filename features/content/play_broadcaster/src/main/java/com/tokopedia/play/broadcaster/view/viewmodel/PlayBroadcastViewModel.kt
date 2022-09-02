@@ -434,57 +434,52 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return mDataStore.getSetupDataStore()
     }
 
-    fun getConfiguration(selectedAccount: ContentAccountUiModel) {
+    private fun getConfiguration(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launchCatchError(block = {
 
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
-
             _configInfo.value = configUiModel
 
-            if (!configUiModel.streamAllowed) {
-                _observableConfigInfo.value = NetworkResult.Success(configUiModel)
-            } else {
-                // create channel when there are no channel exist
-                if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
+            // create channel when there are no channel exist
+            if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
 
-                // get channel when channel status is paused
-                if (configUiModel.channelStatus == ChannelStatus.Pause
+            // get channel when channel status is paused
+            if (configUiModel.channelStatus == ChannelStatus.Pause
                 // also when complete draft is true
                 || configUiModel.channelStatus == ChannelStatus.CompleteDraft
                 || configUiModel.channelStatus == ChannelStatus.Draft
-            ) {        val deferredChannel = asyncCatchError(block = {
-                            getChannelById(configUiModel.channelId)
-                    }) { it }
-                        val deferredProductMap = asyncCatchError(block = {
-                        repo.getProductTagSummarySection(channelID = configUiModel.channelId)
-                    }) { emptyList() }
+            ) {
+                val deferredChannel = asyncCatchError(block = {
+                    getChannelById(configUiModel.channelId)
+                }) { it }
+                val deferredProductMap = asyncCatchError(block = {
+                    repo.getProductTagSummarySection(channelID = configUiModel.channelId)
+                }) { emptyList() }
 
-                    val error = deferredChannel.await()
-                    val productMap = deferredProductMap.await()
+                val error = deferredChannel.await()
+                val productMap = deferredProductMap.await()
 
-                    if (error != null) throw error
-                    setSelectedProduct(productMap.orEmpty())
-                }
-
-                setProductConfig(configUiModel.productTagConfig)
-                setCoverConfig(configUiModel.coverConfig)
-                setDurationConfig(configUiModel.durationConfig)
-                setScheduleConfig(configUiModel.scheduleConfig)
-
-                broadcastTimer.setupDuration(
-                    configUiModel.durationConfig.remainingDuration,
-                    configUiModel.durationConfig.maxDuration
-                )
-                broadcastTimer.setupPauseDuration(
-                    configUiModel.durationConfig.pauseDuration
-                )
-
-                checkSelectedAccountIsEligible(selectedAccount)
-                updateSelectedAccount(selectedAccount)
-                _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+                if (error != null) throw error
+                setSelectedProduct(productMap.orEmpty())
             }
 
+            setProductConfig(configUiModel.productTagConfig)
+            setCoverConfig(configUiModel.coverConfig)
+            setDurationConfig(configUiModel.durationConfig)
+            setScheduleConfig(configUiModel.scheduleConfig)
+
+            broadcastTimer.setupDuration(
+                configUiModel.durationConfig.remainingDuration,
+                configUiModel.durationConfig.maxDuration
+            )
+            broadcastTimer.setupPauseDuration(
+                configUiModel.durationConfig.pauseDuration
+            )
+
+            checkSelectedAccountConfiguration(configUiModel, selectedAccount)
+            updateSelectedAccount(selectedAccount)
+            _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { handleSwitchAccount() }
         }
