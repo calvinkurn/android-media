@@ -466,10 +466,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     setSelectedProduct(productMap.orEmpty())
                 }
 
-                _observableConfigInfo.value = NetworkResult.Success(configUiModel)
-                _selectedAccount.update { selectedAccount }
-                sharedPref.setLastSelectedAccount(selectedAccount.type)
-
                 setProductConfig(configUiModel.productTagConfig)
                 setCoverConfig(configUiModel.coverConfig)
                 setDurationConfig(configUiModel.durationConfig)
@@ -482,6 +478,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 broadcastTimer.setupPauseDuration(
                     configUiModel.durationConfig.pauseDuration
                 )
+
+                checkSelectedAccountIsEligible(selectedAccount)
+                updateSelectedAccount(selectedAccount)
+                _observableConfigInfo.value = NetworkResult.Success(configUiModel)
             }
 
         }) {
@@ -1529,12 +1529,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _accountListState.value = accountList
 
             if (accountList.isNotEmpty()) {
-                _selectedAccount.update {
+                updateSelectedAccount(
                     getAccountFromCachedOrDefault(
                         sharedPref.getLastSelectedAccount(),
                         accountList
                     )
-                }
+                )
                 getConfiguration(_selectedAccount.value)
             }
         }, onError = {
@@ -1548,29 +1548,30 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (_selectedAccount.value.type == TYPE_SHOP) TYPE_USER
             else TYPE_SHOP
         )
-        checkSelectedAccountIsEligible(currentSelected) {
-            _observableConfigInfo.value = NetworkResult.Loading
-            getConfiguration(currentSelected)
-        }
+        _observableConfigInfo.value = NetworkResult.Loading
+        getConfiguration(currentSelected)
     }
 
     private fun switchAccount(selectedType: String): ContentAccountUiModel {
         return _accountListState.value.first { it.type == selectedType }
     }
 
-    private fun checkSelectedAccountIsEligible(
-        selectedAccount: ContentAccountUiModel,
-        isEligible: () -> Unit
-    ) {
+    private fun checkSelectedAccountIsEligible(selectedAccount: ContentAccountUiModel) {
         when {
-            selectedAccount.hasUsername -> isEligible()
-            !selectedAccount.hasUsername -> {
+            selectedAccount.isUser && selectedAccount.hasUsername -> return
+            selectedAccount.isUser && !selectedAccount.hasUsername -> {
                 _notEligibleAccount.value = NotEligibleAccountUiModel(
                     type = NotEligibleType.NoUsername,
                     selectedAccount = selectedAccount
                 )
             }
+            else -> _notEligibleAccount.value = NotEligibleAccountUiModel.Empty
         }
+    }
+
+    private fun updateSelectedAccount(selectedAccount: ContentAccountUiModel) {
+        _selectedAccount.update { selectedAccount }
+        sharedPref.setLastSelectedAccount(selectedAccount.type)
     }
 
     private fun getAccountFromCachedOrDefault(

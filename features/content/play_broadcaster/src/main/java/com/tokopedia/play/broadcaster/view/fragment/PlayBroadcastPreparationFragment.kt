@@ -599,11 +599,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         when(state.type) {
             NotEligibleType.Banned -> { toaster.showToaster("banned")}
-            NotEligibleType.NoUsername -> {
-                childFragmentManager.beginTransaction()
-                    .add(UGCOnboardingParentFragment::class.java, null, UGCOnboardingParentFragment.TAG)
-                    .commit()
-            }
+            NotEligibleType.NoUsername -> openUGCCompletionBottomSheet()
             NotEligibleType.Unknown -> return
         }
     }
@@ -859,6 +855,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
         return switchAccountConfirmationDialog
+    }
+
+    private fun openUGCCompletionBottomSheet() {
+        childFragmentManager.beginTransaction()
+            .add(UGCOnboardingParentFragment::class.java, null, UGCOnboardingParentFragment.TAG)
+            .commit()
     }
 
     private fun showLoading(isShow: Boolean) {
