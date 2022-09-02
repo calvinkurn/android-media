@@ -98,7 +98,7 @@ class HomeProductRecomViewHolder(
         adapterPosition: Int
     ) {
         listener?.onRecomProductCardImpressed(
-            data.recommendationData.recommendationItemList,
+            recomItem,
             channelId,
             data.recommendationData.title,
             data.recommendationData.pageName,
@@ -169,7 +169,7 @@ class HomeProductRecomViewHolder(
         )
 
         fun onRecomProductCardImpressed(
-            recomItems: List<RecommendationItem>,
+            recomItem: RecommendationItem,
             channelId: String,
             headerName: String,
             pageName: String,

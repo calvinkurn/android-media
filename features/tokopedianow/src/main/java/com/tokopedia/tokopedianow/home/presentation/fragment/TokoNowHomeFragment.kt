@@ -270,7 +270,6 @@ class TokoNowHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
-    private var isRefreshed = true
     private var isOpenMiniCartList = false
     private var externalServiceType = ""
     private var shareHomeTokonow: ShareTokonow? = null
@@ -462,21 +461,18 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onRecomProductCardImpressed(
-        recomItems: List<RecommendationItem>,
+        recomItem: RecommendationItem,
         channelId: String,
         headerName: String,
         pageName: String,
         isOoc: Boolean
     ) {
-        if (isRefreshed) {
-            isRefreshed = false
-            analytics.onImpressProductRecom(
-                channelId = channelId,
-                headerName = headerName,
-                recomItems = recomItems,
-                isOoc = isOoc
-            )
-        }
+        analytics.onImpressProductRecom(
+            channelId = channelId,
+            headerName = headerName,
+            recomItem = recomItem,
+            isOoc = isOoc
+        )
     }
 
     override fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean, applink: String) {
@@ -860,7 +856,6 @@ class TokoNowHomeFragment: Fragment(),
         rvLayoutManager?.setScrollEnabled(true)
         carouselScrollState.clear()
         carouselParallaxState.clear()
-        isRefreshed = true
         loadLayout()
     }
 

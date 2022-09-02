@@ -22,14 +22,12 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CAMPAIGN_CODE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_COMMUNICATION
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROWTH
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_PG
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_REMOVE_FROM_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROWTH_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_PG_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_TOKONOW_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_AFFINITY_LABEL
@@ -348,7 +346,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         val eventLabel = "${category.id} - ${category.title} - $warehouseId"
 
         val event = getMarketplaceDataLayer(
-            event = EVENT_VIEW_PG_IRIS,
+            event = EVENT_VIEW_ITEM,
             action = EVENT_ACTION_IMPRESSION_CATEGORY,
             label = eventLabel
         ).apply {
@@ -357,7 +355,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(KEY_WAREHOUSE_ID, warehouseId)
         }
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_PG_IRIS, event)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, event)
     }
 
     fun onClickAllProductRecom(channelId: String, headerName: String, isOoc: Boolean) {
@@ -378,6 +376,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: String,
         isOoc: Boolean
     ) {
+        val productId = recommendationItem.productId.toString()
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_SELECT_CONTENT,
             action = if (isOoc) EVENT_ACTION_CLICK_PRODUCT_RECOM_OOC else EVENT_ACTION_CLICK_PRODUCT_RECOM,
@@ -394,6 +393,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             ),
             productId = recommendationItem.productId.toString(),
         )
+        dataLayer.putString(KEY_PRODUCT_ID, productId)
+
         if (isOoc) {
             dataLayer.remove(KEY_PAGE_SOURCE)
             dataLayer.putString(
@@ -406,28 +407,26 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 "{'list': '/tokonow - recomproduct - carousel - ${recommendationItem.recommendationType} - ${recommendationItem.pageName} - $headerName'}"
             )
         }
+
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     fun onImpressProductRecom(
         channelId: String,
         headerName: String,
-        recomItems: List<RecommendationItem>,
+        recomItem: RecommendationItem,
         isOoc: Boolean
     ) {
-        val items = arrayListOf<Bundle>()
-        recomItems.forEachIndexed { position, recomItem ->
-            items.add(
-                productItemDataLayer(
-                    index = position.toString(),
-                    productId = recomItem.productId.toString(),
-                    productName = recomItem.name,
-                    price = recomItem.price.filter { it.isDigit() }.toLongOrZero(),
-                    productCategory = recomItem.categoryBreadcrumbs
-                )
+        val productId = recomItem.productId.toString()
+        val items = arrayListOf(
+            productItemDataLayer(
+                index = recomItem.position.toString(),
+                productId = recomItem.productId.toString(),
+                productName = recomItem.name,
+                price = recomItem.price.filter { it.isDigit() }.toLongOrZero(),
+                productCategory = recomItem.categoryBreadcrumbs
             )
-        }
-
+        )
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_VIEW_ITEM_LIST,
             action = if (isOoc) EVENT_ACTION_IMPRESSION_PRODUCT_RECOM_OOC else EVENT_ACTION_IMPRESSION_PRODUCT_RECOM,
@@ -435,6 +434,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             label = if (isOoc) " - $headerName" else "$channelId - $headerName",
             items = items
         )
+        dataLayer.putString(KEY_PRODUCT_ID, productId)
 
         if (isOoc) dataLayer.remove(KEY_PAGE_SOURCE)
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
@@ -466,14 +466,17 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(KEY_CATEGORY_ID, "")
         }
 
+        val productId = recommendationItem.productId.toString()
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_ADD_TO_CART,
             action = EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART,
             category = EVENT_CATEGORY_RECOM_HOME_PAGE,
             label = "$channelId - $headerName",
             items = arrayListOf(item),
-            productId = recommendationItem.productId.toString()
+            productId = productId
         )
+        dataLayer.putString(KEY_PRODUCT_ID, productId)
+
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
 
@@ -625,32 +628,32 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
     fun trackImpressionLeftCarousel(channelId: String, channelHeaderName: String) {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_VIEW_PG_IRIS,
+            event = EVENT_VIEW_ITEM,
             action = EVENT_ACTION_IMPRESSION_LEFT_CAROUSEL,
             label = "$channelId - $channelHeaderName"
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_PG_IRIS, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
     }
 
     fun trackClickBannerLeftCarousel(channelId: String, channelHeaderName: String) {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_CLICK_PG,
+            event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_BANNER_LEFT_CAROUSEL,
             label = "$channelId - $channelHeaderName"
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_PG, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     fun trackClickViewAllLeftCarousel(channelId: String, channelHeaderName: String) {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_CLICK_PG,
+            event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_VIEW_ALL_LEFT_CAROUSEL,
             label = "$channelId - $channelHeaderName"
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_PG, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     fun trackImpressionProductLeftCarousel(
@@ -890,7 +893,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         val eventLabel = "${channelModel.id} - $headerName - $warehouseId - ${position + 1}"
 
         val event = getMarketplaceDataLayer(
-            event = EVENT_CLICK_PG,
+            event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_LEGO_6_VIEW_ALL,
             label = eventLabel
         ).apply {
@@ -900,88 +903,88 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(KEY_USER_ID, userSession.userId)
         }
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_PG, event)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, event)
     }
 
     fun trackImpressionQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_VIEW_PG_IRIS,
+            event = EVENT_VIEW_ITEM,
             action = EVENT_ACTION_IMPRESSION_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_PG_IRIS, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
     }
 
     fun trackClickSeeDetailsQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_CLICK_PG,
+            event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_SEE_DETAILS_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_PG, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     fun trackClickTitleCardQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_CLICK_PG,
+            event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_TITLE_CARD_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_PG, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     fun trackClickCardQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_CLICK_PG,
+            event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_QUEST_CARD_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_PG, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     fun trackImpressionFinishedQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_VIEW_PG_IRIS,
+            event = EVENT_VIEW_ITEM,
             action = EVENT_ACTION_IMPRESSION_FINISHED_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_PG_IRIS, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
     }
 
     fun trackClickRewardQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_CLICK_PG,
+            event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_REWARD_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_PG, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     fun trackClickCloseQuestWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_CLICK_PG,
+            event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_CLOSE_QUEST_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_PG, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     fun trackImpressionUSPWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_VIEW_PG_IRIS,
+            event = EVENT_VIEW_ITEM,
             action = EVENT_ACTION_IMPRESSION_USP_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_PG_IRIS, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
     }
 
     fun trackClickUSPWidget() {
         val dataLayer = getMarketplaceDataLayer(
-            event = EVENT_CLICK_PG,
+            event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_USP_WIDGET
         )
 
-        getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_PG, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     /*
@@ -1188,7 +1191,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         warehouseId: String
     ) {
         Tracker.Builder()
-            .setEvent(EVENT_VIEW_PG_IRIS)
+            .setEvent(EVENT_VIEW_ITEM)
             .setEventAction(EVENT_ACTION_IMPRESSION_SENDER_REFERRAL_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
             .setEventLabel(
@@ -1218,7 +1221,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         warehouseId: String
     ) {
         Tracker.Builder()
-            .setEvent(EVENT_CLICK_PG)
+            .setEvent(EVENT_SELECT_CONTENT)
             .setEventAction(EVENT_ACTION_CLICK_MORE_SENDER_REFERRAL_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
             .setEventLabel(
@@ -1248,7 +1251,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         warehouseId: String
     ) {
         Tracker.Builder()
-            .setEvent(EVENT_CLICK_PG)
+            .setEvent(EVENT_SELECT_CONTENT)
             .setEventAction(EVENT_ACTION_CLICK_SHARE_SENDER_REFERRAL_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
             .setEventLabel(
