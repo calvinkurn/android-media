@@ -80,12 +80,13 @@
         app:typographyType="display_3"
         app:typographyWeight="bold" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/competitive_products_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@color/Unify_NN50"
+        android:orientation="vertical"
         android:paddingHorizontal="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="8dp"
@@ -98,8 +99,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN600"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="5 produk terkompetitif" />
@@ -108,10 +107,8 @@
             android:id="@+id/rv_similar_products"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tpg_product_counter" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginTop="4dp" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/about_price_recommendation_layout"
