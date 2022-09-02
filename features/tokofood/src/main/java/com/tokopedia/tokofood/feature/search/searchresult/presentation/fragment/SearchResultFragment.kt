@@ -16,6 +16,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
@@ -25,6 +26,8 @@ import com.tokopedia.tokofood.feature.search.searchresult.di.component.DaggerSea
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultAdapterTypeFactory
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultDiffer
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultPageAdapter
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchEmptyWithFilterViewHolder
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchEmptyWithoutFilterViewHolder
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchResultViewHolder
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.customview.TokofoodSearchFilterTab
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
@@ -34,12 +37,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Listener,
     MerchantSearchResultViewHolder.TokoFoodMerchantSearchResultListener,
-    TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener {
+    TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
+    MerchantSearchEmptyWithFilterViewHolder.Listener,
+    MerchantSearchEmptyWithoutFilterViewHolder.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -51,14 +55,15 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private val filterController by lazy(LazyThreadSafetyMode.NONE) {
         FilterController()
     }
-
     private val adapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
-        TokofoodSearchResultAdapterTypeFactory(this, this)
+        TokofoodSearchResultAdapterTypeFactory(this, this, this, this)
     }
-
     private val merchantResultAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val differ = TokofoodSearchResultDiffer()
         TokofoodSearchResultPageAdapter(adapterTypeFactory, differ)
+    }
+    private val loadMoreListener by lazy(LazyThreadSafetyMode.NONE) {
+        createLoadMoreListener()
     }
 
     private var binding by autoClearedNullable<FragmentSearchResultBinding>()
@@ -133,6 +138,18 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         TODO("Not yet implemented")
     }
 
+    override fun onResetFilterButtonClicked() {
+        viewModel.getInitialMerchantSearchResult(searchParameter)
+    }
+
+    override fun onCheckKeywordButtonClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSearchInTokopediaButtonClicked() {
+        TODO("Not yet implemented")
+    }
+
     fun setSearchResultViewUpdateListener(searchResultViewUpdateListener: SearchResultViewUpdateListener) {
         this.searchResultViewUpdateListener = searchResultViewUpdateListener
     }
@@ -175,13 +192,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                         applySearchFilterTab(result.data)
                     }
                     is Fail -> {
-                        // TODO: Move to separate method
-                        Toaster.build(
-                            this@SearchResultFragment.requireView(),
-                            result.throwable.message.orEmpty(),
-                            Toaster.LENGTH_SHORT,
-                            Toaster.TYPE_ERROR
-                        ).show()
+                        showToasterError(result.throwable.message.orEmpty())
                     }
                 }
             }
@@ -191,14 +202,16 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun collectVisitables() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.visitables.collect { result ->
+                removeScrollListener()
                 when(result) {
                     is Success -> {
                         updateAdapterVisitables(result.data)
                     }
-                    else -> {
-
+                    is Fail -> {
+                        showToasterError(result.throwable.message.orEmpty())
                     }
                 }
+                addScrollListener()
             }
         }
     }
@@ -226,7 +239,44 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun updateAdapterVisitables(visitables: List<Visitable<*>>) {
-        merchantResultAdapter.submitList(visitables)
+        binding?.rvTokofoodSearchResult?.post {
+            merchantResultAdapter.submitList(visitables)
+        }
+    }
+
+    private fun showToasterError(message: String) {
+        view?.let {
+            Toaster.build(
+                it,
+                message,
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR
+            ).show()
+        }
+    }
+
+    private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                onScrollProductList()
+            }
+        }
+    }
+
+    private fun addScrollListener() {
+        binding?.rvTokofoodSearchResult?.addOnScrollListener(loadMoreListener)
+    }
+
+    private fun removeScrollListener() {
+        binding?.rvTokofoodSearchResult?.removeOnScrollListener(loadMoreListener)
+    }
+
+    private fun onScrollProductList() {
+        val layoutManager = binding?.rvTokofoodSearchResult?.layoutManager as? LinearLayoutManager
+        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
+        val itemCount = layoutManager?.itemCount.orZero()
+        viewModel.onScrollProductList(lastVisibleItemIndex, itemCount)
     }
 
 }

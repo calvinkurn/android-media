@@ -14,12 +14,18 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategory
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchEmptyWithFilterViewHolder
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchEmptyWithoutFilterViewHolder
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchResultViewHolder
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithFilterUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithoutFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchResultUiModel
 
 class TokofoodSearchResultAdapterTypeFactory(
     private val merchantListListener: MerchantSearchResultViewHolder.TokoFoodMerchantSearchResultListener? = null,
-    private val errorStateListener: TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener? = null
+    private val errorStateListener: TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener? = null,
+    private val emptyStateWithFilterListener: MerchantSearchEmptyWithFilterViewHolder.Listener,
+    private val emptyStateWithoutFilterListener: MerchantSearchEmptyWithoutFilterViewHolder.Listener
 ) : BaseAdapterTypeFactory(),
     TokoFoodCategoryTypeFactory,
     TokoFoodCommonTypeFactory,
@@ -30,6 +36,8 @@ class TokofoodSearchResultAdapterTypeFactory(
     override fun type(uiModel: TokoFoodProgressBarUiModel): Int = TokoFoodProgressBarViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodErrorStateUiModel): Int = TokoFoodErrorStateViewHolder.LAYOUT
     override fun type(uiModel: MerchantSearchResultUiModel): Int = MerchantSearchResultViewHolder.LAYOUT
+    override fun type(uiModel: MerchantSearchEmptyWithFilterUiModel): Int = MerchantSearchEmptyWithFilterViewHolder.LAYOUT
+    override fun type(uiModel: MerchantSearchEmptyWithoutFilterUiModel): Int = MerchantSearchEmptyWithoutFilterViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -38,6 +46,8 @@ class TokofoodSearchResultAdapterTypeFactory(
             TokoFoodErrorStateViewHolder.LAYOUT -> TokoFoodErrorStateViewHolder(view, errorStateListener)
             TokoFoodCategoryLoadingViewHolder.LAYOUT -> TokoFoodCategoryLoadingViewHolder(view)
             TokoFoodCategoryEmptyStateViewHolder.LAYOUT -> TokoFoodCategoryEmptyStateViewHolder(view)
+            MerchantSearchEmptyWithFilterViewHolder.LAYOUT -> MerchantSearchEmptyWithFilterViewHolder(view, emptyStateWithFilterListener)
+            MerchantSearchEmptyWithoutFilterViewHolder.LAYOUT -> MerchantSearchEmptyWithoutFilterViewHolder(view, emptyStateWithoutFilterListener)
             else -> super.createViewHolder(view, type)
         }
     }

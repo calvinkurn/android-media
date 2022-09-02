@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.feature.search.searchresult.domain.usecase
 
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.filter.common.helper.getSortFilterParamsString
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -103,7 +103,7 @@ class TokofoodSearchMerchantUseCase @Inject constructor(
                     TokoFoodMerchantListParamMapper.TIMEZONE
                 )
             }
-            return getSortFilterParamsString(updatedSearchParamMap)
+            return UrlParamUtils.generateUrlParamString(updatedSearchParamMap)
         }
     }
 
