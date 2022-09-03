@@ -1322,6 +1322,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
+        val clearBoPromo = generateParamClearBo()
+        if (clearBoPromo != null) {
+            dPresenter.clearAllBo(clearBoPromo)
+            dPresenter.setLastApplyValid()
+        }
         refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
     }
 
@@ -2680,6 +2685,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    private fun generateParamClearBo(): ClearPromoOrderData? {
+        return when {
+            dPresenter.isLastApplyValid() -> {
+                val lastApplyPromo = dPresenter.getCartListData()?.promo?.lastApplyPromo
+                        ?: LastApplyPromo()
+                PromoRequestMapper.generateClearBoParam(lastApplyPromo, cartAdapter.allAvailableShopGroupDataList)
+            }
+            dPresenter.getValidateUseLastResponse() != null -> {
+                val promoUiModel = dPresenter.getValidateUseLastResponse()?.promoUiModel
+                        ?: PromoUiModel()
+                PromoRequestMapper.generateClearBoParam(promoUiModel, cartAdapter.allAvailableShopGroupDataList)
+            }
+            else -> null
+        }
+    }
+
     private fun renderTickerError(cartData: CartData) {
         if (cartData.availableSection.availableGroupGroups.isNotEmpty() && cartData.unavailableSections.isNotEmpty()) {
             val cartItemTickerErrorHolderData = CartUiModelMapper.mapTickerErrorUiModel(cartData)
@@ -3953,5 +3974,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.LOADING
             dPresenter.checkBoAffordability(cartShopHolderData)
         }
+    }
+
+    override fun refreshCartAfterClearBoToChangeAddress() {
+        refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
     }
 }

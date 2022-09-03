@@ -1,10 +1,11 @@
 package com.tokopedia.cart.view.mapper
 
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
-import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -214,5 +215,44 @@ object PromoRequestMapper {
                 state = "cart",
                 isSuggested = 0,
                 orders = orders)
+    }
+
+    fun generateClearBoParam(promoData: Any?, availableCartShopHolderDataList: List<CartShopHolderData>): ClearPromoOrderData? {
+        val orders = arrayListOf<ClearPromoOrder>()
+        availableCartShopHolderDataList.forEach { cartShopHolderData ->
+            val order = ClearPromoOrder(
+                    uniqueId = cartShopHolderData.cartString,
+                    boType = cartShopHolderData.boMetadata.boType,
+            )
+            orders.add(order)
+        }
+
+        var hasBo = false
+        if (promoData is PromoUiModel) {
+            promoData.voucherOrderUiModels.forEach { voucherOrder ->
+                orders.forEach { order ->
+                    if (voucherOrder.uniqueId == order.uniqueId && voucherOrder.shippingId > 0
+                            && voucherOrder.spId > 0 && voucherOrder.type == "logistic") {
+                        order.codes.add(voucherOrder.code)
+                        hasBo = true
+                    }
+                }
+            }
+
+        } else if (promoData is LastApplyPromo) {
+            promoData.lastApplyPromoData.listVoucherOrders.forEach { voucherOrders ->
+                orders.forEach { order ->
+                    if (voucherOrders.uniqueId == order.uniqueId && voucherOrders.shippingId > 0
+                            && voucherOrders.spId > 0 && voucherOrders.type == "logistic") {
+                        order.codes.add(voucherOrders.code)
+                        hasBo = true
+                    }
+                }
+            }
+        }
+
+        return if(hasBo) ClearPromoOrderData(
+                orders = orders.filter { it.codes.isNotEmpty() }
+        ) else null
     }
 }
