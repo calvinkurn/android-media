@@ -2534,9 +2534,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public ArrayList<String> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
         final ArrayList<String> unappliedBoPromoUniqueIds = new ArrayList<>();
         final ArrayList<String> reloadedUniqueIds = new ArrayList<>();
-        final ArrayList<String> unprocessedBoPromoUniqueIds = new ArrayList<>();
-        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-            unprocessedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
+        final ArrayList<String> unprocessedUniqueIds = new ArrayList<>();
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+            unprocessedUniqueIds.add(shipmentCartItemModel.getCartString());
         }
         // loop twice for unapply BO and then apply BO to prevent race condition issue
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
@@ -2549,7 +2549,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     doUnapplyBo(voucherOrdersItemUiModel.getUniqueId(), voucherOrdersItemUiModel.getCode());
                     unappliedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
                     reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
-                    unprocessedBoPromoUniqueIds.remove(voucherOrdersItemUiModel.getUniqueId());
+                    unprocessedUniqueIds.remove(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
         }
@@ -2565,13 +2565,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (!voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doApplyBo(voucherOrdersItemUiModel);
                     reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
-                    unprocessedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
+                    unprocessedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
         }
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null
-                    && unprocessedBoPromoUniqueIds.contains(shipmentCartItemModel.getCartString())) {
+                    && unprocessedUniqueIds.contains(shipmentCartItemModel.getCartString())) {
                 doUnapplyBo(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
             }
         }
