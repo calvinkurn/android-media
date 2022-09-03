@@ -2536,11 +2536,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         final ArrayList<String> reloadedUniqueIds = new ArrayList<>();
         final ArrayList<String> unprocessedBoPromoUniqueIds = new ArrayList<>();
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-            if (voucherOrdersItemUiModel.getShippingId() > 0
-                    && voucherOrdersItemUiModel.getSpId() > 0
-                    && voucherOrdersItemUiModel.getType().equalsIgnoreCase("logistic")) {
-                unprocessedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
-            }
+            unprocessedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
         }
         // loop twice for unapply BO and then apply BO to prevent race condition issue
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
@@ -2551,9 +2547,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (shippingId > 0 && spId > 0 && type.equals("logistic")) {
                 if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doUnapplyBo(voucherOrdersItemUiModel.getUniqueId(), voucherOrdersItemUiModel.getCode());
-                    unprocessedBoPromoUniqueIds.remove(voucherOrdersItemUiModel.getUniqueId());
                     unappliedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
                     reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
+                    unprocessedBoPromoUniqueIds.remove(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
         }
@@ -2568,8 +2564,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (shippingId > 0 && spId > 0 && type.equals("logistic")) {
                 if (!voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doApplyBo(voucherOrdersItemUiModel);
-                    unprocessedBoPromoUniqueIds.remove(voucherOrdersItemUiModel.getUniqueId());
                     reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
+                    unprocessedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
         }
