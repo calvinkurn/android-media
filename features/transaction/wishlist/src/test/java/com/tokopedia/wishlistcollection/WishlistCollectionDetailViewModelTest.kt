@@ -215,12 +215,11 @@ class WishlistCollectionDetailViewModelTest {
 
     private var addWishlistParam = AddWishlistCollectionsHostBottomSheetParams()
 
-    lateinit var timber : WishlistMockTimber
+    private val timber = WishlistMockTimber()
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        timber = WishlistMockTimber()
         Timber.plant(timber)
         wishlistCollectionDetailViewModel = spyk(
             WishlistCollectionDetailViewModel(

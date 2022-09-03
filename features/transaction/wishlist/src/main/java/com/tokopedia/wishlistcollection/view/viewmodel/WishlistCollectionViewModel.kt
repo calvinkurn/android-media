@@ -25,6 +25,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class WishlistCollectionViewModel @Inject constructor(
@@ -130,7 +131,7 @@ class WishlistCollectionViewModel @Inject constructor(
                 }
                 _collectionData.value = Success(listData)
             } catch (e: Exception) {
-                _collectionData.value = Fail(e)
+                Timber.d(e)
             }
         }
     }

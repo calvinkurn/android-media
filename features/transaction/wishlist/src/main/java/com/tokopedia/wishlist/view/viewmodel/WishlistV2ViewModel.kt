@@ -96,7 +96,7 @@ class WishlistV2ViewModel @Inject constructor(
                 }
                 _wishlistV2Data.value = Success(listData)
             } catch (e: Exception) {
-                _wishlistV2Data.value = Fail(e)
+                Timber.d(e)
             }
         }
     }

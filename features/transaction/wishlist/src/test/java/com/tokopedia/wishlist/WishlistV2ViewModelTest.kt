@@ -1,6 +1,7 @@
 package com.tokopedia.wishlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.WishlistMockTimber
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -39,11 +40,13 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import org.assertj.core.api.SoftAssertions
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import timber.log.Timber
 
 @RunWith(JUnit4::class)
 class WishlistV2ViewModelTest {
@@ -65,6 +68,7 @@ class WishlistV2ViewModelTest {
     private var listRecommendationItem = listOf<RecommendationItem>()
     private var topAdsImageViewModel = TopAdsImageViewModel()
     private var tickerState = WishlistV2Response.Data.WishlistV2.TickerState()
+    private var timber = WishlistMockTimber()
 
     @RelaxedMockK
     lateinit var wishlistV2UseCase: WishlistV2UseCase
@@ -104,6 +108,7 @@ class WishlistV2ViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        Timber.plant(timber)
         wishlistV2ViewModel = spyk(WishlistV2ViewModel(dispatcher, wishlistV2UseCase, deleteWishlistV2UseCase,
                 bulkDeleteWishlistV2UseCase, deleteWishlistProgressUseCase, topAdsImageViewUseCase, getSingleRecommendationUseCase, atcUseCase))
 
@@ -259,7 +264,9 @@ class WishlistV2ViewModelTest {
 
     // recommendation_failed
     @Test
-    fun loadRecommendation_shouldReturnFail() {
+    fun `loadRecommendation_shouldReturnFail`() {
+        val throwable = spyk(Throwable())
+
         //given
         coEvery {
             getSingleRecommendationUseCase.getData(any())
@@ -269,7 +276,9 @@ class WishlistV2ViewModelTest {
         wishlistV2ViewModel.loadRecommendation(0)
 
         //then
-        assert(wishlistV2ViewModel.wishlistV2Data.value is Fail)
+        SoftAssertions.assertSoftly {
+            timber.lastLogMessage() contentEquals throwable.localizedMessage
+        }
     }
 
     // delete_success
@@ -672,7 +681,7 @@ class WishlistV2ViewModelTest {
         //given
         coEvery {
             deleteWishlistProgressUseCase(Unit)
-        } returns deleteWishlistProgressStatusNotOkErrorEmpty
+        } returns deleteWishlistProgressStatusNotOkErrorNotEmpty
 
         //when
         wishlistV2ViewModel.getDeleteWishlistProgress()
