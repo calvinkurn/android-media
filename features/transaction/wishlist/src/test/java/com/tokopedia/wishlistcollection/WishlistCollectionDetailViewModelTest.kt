@@ -1,6 +1,7 @@
 package com.tokopedia.wishlistcollection
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.WishlistMockTimber
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -24,7 +25,9 @@ import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
+import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
+import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
@@ -38,11 +41,13 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
+import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import timber.log.Timber
 
 @RunWith(JUnit4::class)
 class WishlistCollectionDetailViewModelTest {
@@ -106,6 +111,23 @@ class WishlistCollectionDetailViewModelTest {
         status = "ERROR", errorMessage = arrayListOf("error")
     ))
 
+    private var addWishlistCollectionStatusOkErrorEmpty = AddWishlistCollectionItemsResponse(
+        AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(
+        status = "OK", errorMessage = emptyList()
+    ))
+
+    private var addWishlistCollectionStatusOkErrorNotEmpty = AddWishlistCollectionItemsResponse(AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(
+        status = "OK", errorMessage = arrayListOf("error")
+    ))
+
+    private var addWishlistCollectionStatusNotOkErrorEmpty = AddWishlistCollectionItemsResponse(AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(
+        status = "ERROR", errorMessage = emptyList()
+    ))
+
+    private var addWishlistCollectionStatusNotOkErrorNotEmpty = AddWishlistCollectionItemsResponse(AddWishlistCollectionItemsResponse.AddWishlistCollectionItems(
+        status = "ERROR", errorMessage = arrayListOf("error")
+    ))
+
     private val throwable = Fail(Throwable(message = "Error"))
 
     private val getWishlistCollectionItemsParams = GetWishlistCollectionItemsParams()
@@ -150,25 +172,56 @@ class WishlistCollectionDetailViewModelTest {
     private val recommendationWidget = RecommendationWidget(tid = "123", recommendationItemList = listRecommendationItem,
     recommendationFilterChips = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip()), title = "TestRecomm")
 
-    private val listDeleteProductId: List<String> = arrayListOf()
-    private var deleteWishlistCollectionItemsResponseDataStatusOk = DeleteWishlistCollectionItemsResponse(
-        deleteWishlistCollectionItems = DeleteWishlistCollectionItemsResponse.DeleteWishlistCollectionItems(status = "OK")
-    )
-    private var deleteWishlistCollectionItemsResponseDataStatusError = DeleteWishlistCollectionItemsResponse(
-        deleteWishlistCollectionItems = DeleteWishlistCollectionItemsResponse.DeleteWishlistCollectionItems(status = "ERROR")
+    private val topadsImage = TopAdsImageViewModel(bannerId = "1")
+    private val topadsResult = arrayListOf(topadsImage)
+
+    private var deleteWishlistCollectionItemsStatusOkErrorEmpty = DeleteWishlistCollectionItemsResponse(
+        deleteWishlistCollectionItems = DeleteWishlistCollectionItemsResponse.DeleteWishlistCollectionItems(
+            status = "OK", errorMessage = emptyList())
     )
 
-    private val deletedProductId = "1"
-    private var deleteWishlistCollectionResponseDataStatusOk = DeleteWishlistCollectionResponse(
-        deleteWishlistCollection = DeleteWishlistCollectionResponse.DeleteWishlistCollection(status = "OK")
+    private var deleteWishlistCollectionItemsStatusOkErrorNotEmpty = DeleteWishlistCollectionItemsResponse(
+        deleteWishlistCollectionItems = DeleteWishlistCollectionItemsResponse.DeleteWishlistCollectionItems(
+            status = "OK", arrayListOf("error"))
     )
-    private var deleteWishlistCollectionResponseDataStatusError = DeleteWishlistCollectionResponse(
-        deleteWishlistCollection = DeleteWishlistCollectionResponse.DeleteWishlistCollection(status = "ERROR")
+
+    private var deleteWishlistCollectionItemsStatusNotOkErrorEmpty = DeleteWishlistCollectionItemsResponse(
+        deleteWishlistCollectionItems = DeleteWishlistCollectionItemsResponse.DeleteWishlistCollectionItems(
+            status = "ERROR", errorMessage = emptyList())
     )
+
+    private var deleteWishlistCollectionItemsStatusNotOkErrorNotEmpty = DeleteWishlistCollectionItemsResponse(
+        deleteWishlistCollectionItems = DeleteWishlistCollectionItemsResponse.DeleteWishlistCollectionItems(
+            status = "ERROR", errorMessage = arrayListOf("error")
+    ))
+
+    private val productId = "1"
+    private val listProductId: ArrayList<String> = arrayListOf()
+    private var deleteWishlistCollectionResponseDataStatusOkErrorEmpty = DeleteWishlistCollectionResponse(
+        deleteWishlistCollection = DeleteWishlistCollectionResponse.DeleteWishlistCollection(status = "OK", errorMessage = emptyList())
+    )
+
+    private var deleteWishlistCollectionResponseDataStatusOkErrorNotEmpty = DeleteWishlistCollectionResponse(
+        deleteWishlistCollection = DeleteWishlistCollectionResponse.DeleteWishlistCollection(status = "OK", errorMessage = arrayListOf("error"))
+    )
+
+    private var deleteWishlistCollectionResponseDataStatusNotOkErrorEmpty = DeleteWishlistCollectionResponse(
+        deleteWishlistCollection = DeleteWishlistCollectionResponse.DeleteWishlistCollection(status = "ERROR", errorMessage = emptyList())
+    )
+
+    private var deleteWishlistCollectionResponseDataStatusNotOkErrorNotEmpty = DeleteWishlistCollectionResponse(
+        deleteWishlistCollection = DeleteWishlistCollectionResponse.DeleteWishlistCollection(status = "ERROR", errorMessage = arrayListOf("error"))
+    )
+
+    private var addWishlistParam = AddWishlistCollectionsHostBottomSheetParams()
+
+    lateinit var timber : WishlistMockTimber
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        timber = WishlistMockTimber()
+        Timber.plant(timber)
         wishlistCollectionDetailViewModel = spyk(
             WishlistCollectionDetailViewModel(
                 dispatcher,
@@ -261,7 +314,6 @@ class WishlistCollectionDetailViewModelTest {
             singleRecommendationUseCase.getData(any())
         } returns recommendationWidget
 
-
         //when
         wishlistCollectionDetailViewModel.loadRecommendation(0)
 
@@ -271,6 +323,8 @@ class WishlistCollectionDetailViewModelTest {
 
     @Test
     fun `Load Recommendation Failed`() {
+        val throwable = spyk(Throwable())
+
         //given
         coEvery {
             singleRecommendationUseCase.getData(any())
@@ -280,7 +334,9 @@ class WishlistCollectionDetailViewModelTest {
         wishlistCollectionDetailViewModel.loadRecommendation(0)
 
         //then
-        assert(wishlistCollectionDetailViewModel.collectionData.value is Fail)
+        assertSoftly {
+            timber.lastLogMessage() contentEquals throwable.localizedMessage
+        }
     }
 
     @Test
@@ -346,14 +402,14 @@ class WishlistCollectionDetailViewModelTest {
     }
 
     @Test
-    fun `Execute DeleteWishlistCollectionItems Success Status OK`() {
+    fun `Execute DeleteWishlistCollectionItems Success Status OK Error is Empty`() {
         //given
         coEvery {
-            deleteCollectionItemsUseCase(listDeleteProductId)
-        } returns deleteWishlistCollectionItemsResponseDataStatusOk
+            deleteCollectionItemsUseCase(listProductId)
+        } returns deleteWishlistCollectionItemsStatusOkErrorEmpty
 
         //when
-        wishlistCollectionDetailViewModel.deleteWishlistCollectionItems(listDeleteProductId)
+        wishlistCollectionDetailViewModel.deleteWishlistCollectionItems(listProductId)
 
         //then
         assert(wishlistCollectionDetailViewModel.deleteCollectionItemsResult.value is Success)
@@ -361,14 +417,42 @@ class WishlistCollectionDetailViewModelTest {
     }
 
     @Test
-    fun `Execute DeleteWishlistCollectionItems Success Status ERROR`() {
+    fun `Execute DeleteWishlistCollectionItems Success Status OK Error is not Empty`() {
         //given
         coEvery {
-            deleteCollectionItemsUseCase(listDeleteProductId)
-        } returns deleteWishlistCollectionItemsResponseDataStatusError
+            deleteCollectionItemsUseCase(listProductId)
+        } returns deleteWishlistCollectionItemsStatusOkErrorNotEmpty
 
         //when
-        wishlistCollectionDetailViewModel.deleteWishlistCollectionItems(listDeleteProductId)
+        wishlistCollectionDetailViewModel.deleteWishlistCollectionItems(listProductId)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.deleteCollectionItemsResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute DeleteWishlistCollectionItems Success Status Not OK Error is Empty`() {
+        //given
+        coEvery {
+            deleteCollectionItemsUseCase(listProductId)
+        } returns deleteWishlistCollectionItemsStatusNotOkErrorEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.deleteWishlistCollectionItems(listProductId)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.deleteCollectionItemsResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute DeleteWishlistCollectionItems Success Status Not OK Error is not Empty`() {
+        //given
+        coEvery {
+            deleteCollectionItemsUseCase(listProductId)
+        } returns deleteWishlistCollectionItemsStatusNotOkErrorNotEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.deleteWishlistCollectionItems(listProductId)
 
         //then
         assert(wishlistCollectionDetailViewModel.deleteCollectionItemsResult.value is Fail)
@@ -378,25 +462,25 @@ class WishlistCollectionDetailViewModelTest {
     fun `Execute DeleteWishlistCollectionItems Failed`() {
         //given
         coEvery {
-            deleteCollectionItemsUseCase(listDeleteProductId)
+            deleteCollectionItemsUseCase(listProductId)
         } throws throwable.throwable
 
         //when
-        wishlistCollectionDetailViewModel.deleteWishlistCollectionItems(listDeleteProductId)
+        wishlistCollectionDetailViewModel.deleteWishlistCollectionItems(listProductId)
 
         //then
         assert(wishlistCollectionDetailViewModel.deleteCollectionItemsResult.value is Fail)
     }
 
     @Test
-    fun `Execute DeleteWishlistCollection Success Status OK`() {
+    fun `Execute DeleteWishlistCollection Success Status OK Error is Empty`() {
         //given
         coEvery {
-            deleteWishlistCollectionUseCase(deletedProductId)
-        } returns deleteWishlistCollectionResponseDataStatusOk
+            deleteWishlistCollectionUseCase(productId)
+        } returns deleteWishlistCollectionResponseDataStatusOkErrorEmpty
 
         //when
-        wishlistCollectionDetailViewModel.deleteWishlistCollection(deletedProductId)
+        wishlistCollectionDetailViewModel.deleteWishlistCollection(productId)
 
         //then
         assert(wishlistCollectionDetailViewModel.deleteCollectionResult.value is Success)
@@ -404,14 +488,42 @@ class WishlistCollectionDetailViewModelTest {
     }
 
     @Test
-    fun `Execute DeleteWishlistCollection Success Status ERROR`() {
+    fun `Execute DeleteWishlistCollection Success Status OK Error not Empty`() {
         //given
         coEvery {
-            deleteWishlistCollectionUseCase(deletedProductId)
-        } returns deleteWishlistCollectionResponseDataStatusError
+            deleteWishlistCollectionUseCase(productId)
+        } returns deleteWishlistCollectionResponseDataStatusOkErrorNotEmpty
 
         //when
-        wishlistCollectionDetailViewModel.deleteWishlistCollection(deletedProductId)
+        wishlistCollectionDetailViewModel.deleteWishlistCollection(productId)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.deleteCollectionResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute DeleteWishlistCollection Success Status Not OK Error Empty`() {
+        //given
+        coEvery {
+            deleteWishlistCollectionUseCase(productId)
+        } returns deleteWishlistCollectionResponseDataStatusNotOkErrorEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.deleteWishlistCollection(productId)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.deleteCollectionResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute DeleteWishlistCollection Success Status Not OK Error not Empty`() {
+        //given
+        coEvery {
+            deleteWishlistCollectionUseCase(productId)
+        } returns deleteWishlistCollectionResponseDataStatusNotOkErrorNotEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.deleteWishlistCollection(productId)
 
         //then
         assert(wishlistCollectionDetailViewModel.deleteCollectionResult.value is Fail)
@@ -421,11 +533,11 @@ class WishlistCollectionDetailViewModelTest {
     fun `Execute DeleteWishlistCollection Failed`() {
         //given
         coEvery {
-            deleteWishlistCollectionUseCase(deletedProductId)
+            deleteWishlistCollectionUseCase(productId)
         } throws throwable.throwable
 
         //when
-        wishlistCollectionDetailViewModel.deleteWishlistCollection(deletedProductId)
+        wishlistCollectionDetailViewModel.deleteWishlistCollection(productId)
 
         //then
         assert(wishlistCollectionDetailViewModel.deleteCollectionResult.value is Fail)
@@ -534,5 +646,86 @@ class WishlistCollectionDetailViewModelTest {
 
         //then
         assert(wishlistCollectionDetailViewModel.atcResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute SaveNewWishlistCollection Success Status OK And Error is Empty`() {
+        //given
+        listProductId.add(productId)
+        addWishlistParam = AddWishlistCollectionsHostBottomSheetParams(collectionId = "1", listProductId)
+        coEvery {
+            addWishlistCollectionItemsUseCase(addWishlistParam)
+        } returns addWishlistCollectionStatusOkErrorEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.saveNewWishlistCollection(addWishlistParam)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.addWishlistCollectionItem.value is Success)
+        assert((wishlistCollectionDetailViewModel.addWishlistCollectionItem.value as Success).data.errorMessage.isEmpty())
+    }
+
+    @Test
+    fun `Execute SaveNewWishlistCollection Success Status OK And Error is not Empty`() {
+        //given
+        listProductId.add(productId)
+        addWishlistParam = AddWishlistCollectionsHostBottomSheetParams(collectionId = "1", listProductId)
+        coEvery {
+            addWishlistCollectionItemsUseCase(addWishlistParam)
+        } returns addWishlistCollectionStatusOkErrorNotEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.saveNewWishlistCollection(addWishlistParam)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.addWishlistCollectionItem.value is Fail)
+    }
+
+    @Test
+    fun `Execute SaveNewWishlistCollection Success Status Error And Error is Empty`() {
+        //given
+        listProductId.add(productId)
+        addWishlistParam = AddWishlistCollectionsHostBottomSheetParams(collectionId = "1", listProductId)
+        coEvery {
+            addWishlistCollectionItemsUseCase(addWishlistParam)
+        } returns addWishlistCollectionStatusNotOkErrorEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.saveNewWishlistCollection(addWishlistParam)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.addWishlistCollectionItem.value is Fail)
+    }
+
+    @Test
+    fun `Execute SaveNewWishlistCollection Success Status Error And Error is not Empty`() {
+        //given
+        listProductId.add(productId)
+        addWishlistParam = AddWishlistCollectionsHostBottomSheetParams(collectionId = "1", listProductId)
+        coEvery {
+            addWishlistCollectionItemsUseCase(addWishlistParam)
+        } returns addWishlistCollectionStatusNotOkErrorNotEmpty
+
+        //when
+        wishlistCollectionDetailViewModel.saveNewWishlistCollection(addWishlistParam)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.addWishlistCollectionItem.value is Fail)
+    }
+
+    @Test
+    fun `Execute SaveNewWishlistCollection Failed`() {
+        //given
+        listProductId.add(productId)
+        addWishlistParam = AddWishlistCollectionsHostBottomSheetParams(collectionId = "1", listProductId)
+        coEvery {
+            addWishlistCollectionItemsUseCase(addWishlistParam)
+        } throws throwable.throwable
+
+        //when
+        wishlistCollectionDetailViewModel.saveNewWishlistCollection(addWishlistParam)
+
+        //then
+        assert(wishlistCollectionDetailViewModel.addWishlistCollectionItem.value is Fail)
     }
 }

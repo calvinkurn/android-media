@@ -100,6 +100,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation rootProject.ext.testDependencies.assertJCore
 }
 
 project.ext {

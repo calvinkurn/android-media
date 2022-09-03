@@ -143,7 +143,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 }
                 _collectionData.value = Success(listData)
             } catch (e: Exception) {
-                _collectionData.value = Fail(e)
+                Timber.d(e)
             }
         }
     }
@@ -167,19 +167,22 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     }
 
     suspend fun getTopAdsData(): TopAdsImageViewModel? {
-        return try {
-            topAdsImageViewUseCase.getImageData(
+        var result: TopAdsImageViewModel? = null
+        launchCatchError(dispatcher.io, {
+            result = topAdsImageViewUseCase.getImageData(
                 topAdsImageViewUseCase.getQueryMap(
                     "",
-                    WISHLIST_TOPADS_SOURCE, "",
+                    WISHLIST_TOPADS_SOURCE,
+                    "",
                     WISHLIST_TOPADS_ADS_COUNT,
-                    WISHLIST_TOPADS_DIMENS, ""
+                    WISHLIST_TOPADS_DIMENS,
+                    ""
                 )
             ).firstOrNull()
-        } catch (e: Exception) {
-            Timber.d(e)
-            return null
-        }
+        }, {
+            result = null
+        })
+        return result
     }
 
     fun deleteWishlistV2(productId: String, userId: String) {
