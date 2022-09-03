@@ -70,14 +70,14 @@ class WishlistV2ViewModel @Inject constructor(
     val deleteWishlistProgressResult: LiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>
         get() = _deleteWishlistProgressResult
 
-    fun loadWishlistV2(params: WishlistV2Params, typeLayout: String?, isAutomaticDelete: Boolean) {
+    fun loadWishlistV2(params: WishlistV2Params, typeLayout: String?, isAutomaticDelete: Boolean, isUsingCollection: Boolean) {
         launch {
             try {
                 val wishlistV2Response = wishlistV2UseCase.executeSuspend(params).wishlistV2
                 _wishlistV2.value = Success(wishlistV2Response)
                 _wishlistV2Data.value = Success(organizeWishlistV2Data(
                     convertWishlistV2IntoWishlistUiModel(wishlistV2Response),
-                    typeLayout, isAutomaticDelete, getRecommendationWishlistV2(1, listOf(), EMPTY_WISHLIST_PAGE_NAME), getTopAdsData(), false))
+                    typeLayout, isAutomaticDelete, getRecommendationWishlistV2(1, listOf(), EMPTY_WISHLIST_PAGE_NAME), getTopAdsData(), isUsingCollection))
             } catch (e: Exception) {
                 _wishlistV2.value = Fail(e)
                 _wishlistV2Data.value = Fail(e)

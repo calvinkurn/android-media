@@ -613,8 +613,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
         paramWishlistV2.page = currPage
         wishlistViewModel.loadWishlistV2(paramWishlistV2, wishlistPref?.getTypeLayout(),
-            paramWishlistV2.source == SOURCE_AUTOMATIC_DELETION
-        )
+            paramWishlistV2.source == SOURCE_AUTOMATIC_DELETION, false)
     }
 
     private fun triggerSearch() {
