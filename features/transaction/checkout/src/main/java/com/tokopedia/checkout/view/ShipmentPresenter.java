@@ -2532,9 +2532,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public ArrayList<String> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
-        // loop for red state first, then do auto apply BO
         final ArrayList<String> unappliedBoPromoUniqueIds = new ArrayList<>();
-        ArrayList<String> reloadedUniqueIds = new ArrayList<>();
+        final ArrayList<String> reloadedUniqueIds = new ArrayList<>();
+        final ArrayList<String> unprocessedBoPromoUniqueIds = new ArrayList<>();
+        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+            if (voucherOrdersItemUiModel.getShippingId() > 0
+                    && voucherOrdersItemUiModel.getSpId() > 0
+                    && voucherOrdersItemUiModel.getType().equalsIgnoreCase("logistic")) {
+                unprocessedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
+            }
+        }
+        // loop twice for unapply BO and then apply BO to prevent race condition issue
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
             final long shippingId = voucherOrdersItemUiModel.getShippingId();
             final long spId = voucherOrdersItemUiModel.getSpId();
@@ -2543,8 +2551,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (shippingId > 0 && spId > 0 && type.equals("logistic")) {
                 if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doUnapplyBo(voucherOrdersItemUiModel.getUniqueId(), voucherOrdersItemUiModel.getCode());
+                    unprocessedBoPromoUniqueIds.remove(voucherOrdersItemUiModel.getUniqueId());
                     unappliedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
-                    // do interaction
                     reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
@@ -2560,15 +2568,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (shippingId > 0 && spId > 0 && type.equals("logistic")) {
                 if (!voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doApplyBo(voucherOrdersItemUiModel);
+                    unprocessedBoPromoUniqueIds.remove(voucherOrdersItemUiModel.getUniqueId());
                     reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
         }
-        for (ShipmentCartItemModel cartItemModel : shipmentCartItemModelList) {
-            if (cartItemModel.getVoucherLogisticItemUiModel() != null && !reloadedUniqueIds.contains(cartItemModel.getCartString())) {
-                // kalau cartItem sedang pakai BO, tapi tidak ada voucherOrder BOnya (sehingga belum diproses cartItemnya), maka unapply BOnya
-                // jangan ada interaction
-                doUnapplyBo(cartItemModel.getCartString(), "");
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null
+                    && unprocessedBoPromoUniqueIds.contains(shipmentCartItemModel.getCartString())) {
+                doUnapplyBo(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
             }
         }
         return reloadedUniqueIds;
@@ -2576,13 +2584,32 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private void doUnapplyBo(String uniqueId, String promoCode) {
         final int itemAdapterPosition = getView().getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId);
+        final ShipmentCartItemModel shipmentCartItemModel = getView().getShipmentCartItemModel(itemAdapterPosition);
         if (itemAdapterPosition != -1) {
             getView().resetCourier(itemAdapterPosition);
+            if (shipmentCartItemModel != null) {
+                clearCacheAutoApply(shipmentCartItemModel);
+            }
             clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode);
-            // hit clear auto apply
-//            clearCacheAutoApplyStackUseCase.createObservable(...)
             getView().onNeedUpdateViewItem(itemAdapterPosition);
         }
+    }
+
+    private void clearCacheAutoApply(ShipmentCartItemModel shipmentCartItemModel) {
+        final List<String> globalCodes = new ArrayList<>();
+        globalCodes.add(shipmentCartItemModel.getBoCode());
+        final List<ClearPromoOrder> clearOrders = new ArrayList<>();
+        for (OrdersItem ordersItem : lastValidateUsePromoRequest.getOrders()) {
+            if (ordersItem != null && ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
+                clearOrders.add(new ClearPromoOrder(ordersItem.getUniqueId(), ordersItem.getBoType(), ordersItem.getCodes()));
+            }
+        }
+        final ClearPromoRequest params = new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                false, new ClearPromoOrderData(globalCodes, clearOrders));
+        clearCacheAutoApplyStackUseCase.setParams(params);
+        compositeSubscription.add(
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
+        );
     }
 
     @Override
