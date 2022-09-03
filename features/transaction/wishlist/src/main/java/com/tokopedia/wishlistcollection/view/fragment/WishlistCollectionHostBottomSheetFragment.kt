@@ -90,7 +90,9 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
     }
 
     private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager, source: String) {
-        val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance(productId, source)
+        val listProductId = arrayListOf<String>()
+        listProductId.add(productId)
+        val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance(listProductId, source)
         bottomSheetCreateCollection.setListener(this@WishlistCollectionHostBottomSheetFragment)
         if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(fragmentManager)

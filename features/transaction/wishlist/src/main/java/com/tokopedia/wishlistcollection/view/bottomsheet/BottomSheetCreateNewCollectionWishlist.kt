@@ -48,7 +48,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
     private var listCollections: List<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames.DataItem> =
         emptyList()
     private var newCollectionName = ""
-    private var _productIds = ""
+    private var _productIds = arrayListOf<String>()
     private var _src = ""
     private var isSavingCreateNewCollection = false
     private var actionListenerFromPdp: ActionListenerFromPdp? = null
@@ -74,10 +74,10 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
         private const val DELAY_CHECK_NAME = 500L
 
         @JvmStatic
-        fun newInstance(productId: String, source: String): BottomSheetCreateNewCollectionWishlist {
+        fun newInstance(productId: ArrayList<String>, source: String): BottomSheetCreateNewCollectionWishlist {
             return BottomSheetCreateNewCollectionWishlist().apply {
                 val bundle = Bundle()
-                bundle.putString(PRODUCT_IDs, productId)
+                bundle.putStringArrayList(PRODUCT_IDs, productId)
                 bundle.putString(SOURCE, source)
                 arguments = bundle
             }
@@ -98,7 +98,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _productIds = arguments?.getString(PRODUCT_IDs) ?: ""
+        _productIds = arguments?.getStringArrayList(PRODUCT_IDs) ?: arrayListOf()
         _src = arguments?.getString(SOURCE) ?: ""
         initInjector()
         checkLogin()
@@ -156,13 +156,11 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
     }
 
     private fun enableSaveButton() {
-        val arrayProductIds = arrayListOf<String>()
         if (_productIds.isNotEmpty()) {
-            arrayProductIds.add(_productIds)
             binding?.run {
                 collectionCreateButton.apply {
                     isEnabled = true
-                    setOnClickListener { saveNewCollection(newCollectionName, arrayProductIds) }
+                    setOnClickListener { saveNewCollection(newCollectionName, _productIds) }
                 }
             }
         } else {
@@ -186,32 +184,28 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
     }
 
     private fun convertToSaveButton() {
-        val arrayProductIds = arrayListOf<String>()
         if (_productIds.isNotEmpty()) {
-            arrayProductIds.add(_productIds)
-        }
-        binding?.run {
-            collectionCreateButton.apply {
-                isEnabled = true
-                text = getString(Rwishlist.string.collection_save_to_existing_collection)
-                setOnClickListener {
-                    saveNewCollection(newCollectionName, arrayProductIds)
+            binding?.run {
+                collectionCreateButton.apply {
+                    isEnabled = true
+                    text = getString(Rwishlist.string.collection_save_to_existing_collection)
+                    setOnClickListener {
+                        saveNewCollection(newCollectionName, _productIds)
+                    }
                 }
             }
         }
     }
 
     private fun convertToCreateButton() {
-        val arrayProductIds = arrayListOf<String>()
         if (_productIds.isNotEmpty()) {
-            arrayProductIds.add(_productIds)
-        }
-        binding?.run {
-            collectionCreateButton.apply {
-                isEnabled = true
-                text = getString(Rwishlist.string.collection_create_bottomsheet_button_label)
-                setOnClickListener {
-                    saveNewCollection(newCollectionName, arrayProductIds, true)
+            binding?.run {
+                collectionCreateButton.apply {
+                    isEnabled = true
+                    text = getString(Rwishlist.string.collection_create_bottomsheet_button_label)
+                    setOnClickListener {
+                        saveNewCollection(newCollectionName, _productIds, true)
+                    }
                 }
             }
         }

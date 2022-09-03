@@ -567,7 +567,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     private fun showBottomSheetCreateNewCollection() {
-        val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance("", WISHLIST_PAGE)
+        val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance(
+            arrayListOf(), WISHLIST_PAGE)
         bottomSheetCreateCollection.setListener(this@WishlistCollectionFragment)
         if (bottomSheetCreateCollection.isAdded || childFragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(childFragmentManager)

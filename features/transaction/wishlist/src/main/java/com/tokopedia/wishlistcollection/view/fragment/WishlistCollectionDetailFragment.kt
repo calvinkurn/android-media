@@ -2748,7 +2748,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {
         val bottomSheetCreateCollection =
-            BottomSheetCreateNewCollectionWishlist.newInstance(listSelectedProductIds.toString(), SRC_WISHLIST_PAGE)
+            BottomSheetCreateNewCollectionWishlist.newInstance(listSelectedProductIds, SRC_WISHLIST_PAGE)
         bottomSheetCreateCollection.setListener(this@WishlistCollectionDetailFragment)
         if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(fragmentManager)
@@ -2765,6 +2765,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {
         if (dataObject.totalCollection < dataObject.maxLimitCollection) {
+            bottomSheetCollection.dismiss()
             showBottomSheetCreateNewCollection(childFragmentManager)
         } else {
             val intent = Intent()
@@ -2800,7 +2801,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onSuccessSaveToNewCollection(dataItem: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems.DataItem) {
-        showToasterActionOke(dataItem.message, Toaster.TYPE_NORMAL)
+        showToasterActionLihat(dataItem.message, Toaster.TYPE_NORMAL, dataItem.collectionId)
+        turnOffBulkMode()
+        updateToolbarTitle(toolbarTitle)
     }
 
     override fun onFailedSaveToNewCollection(errorMessage: String?) {
