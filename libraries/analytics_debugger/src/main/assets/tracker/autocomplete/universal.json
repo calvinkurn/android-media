@@ -1,0 +1,32 @@
+{
+  "readme": "Universal Search Tracking",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickSearch",
+      "eventCategory": "search component",
+      "eventAction": "click",
+      "pageDestination": "tokopedia:\\/\\/.*",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "pageSource": ".*",
+      "eventLabel": ".*",
+      "component": ".*",
+      "campaignCode": "none"
+    },
+    {
+      "event": "clickSearch",
+      "eventCategory": "search component",
+      "eventAction": "click",
+      "pageDestination": "tokopedia:\\/\\/.*",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "pageSource": ".*",
+      "eventLabel": ".*",
+      "component": ".*",
+      "campaignCode": "none"
+    }
+  ]
+}
