@@ -74,6 +74,7 @@ dependencies {
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+    androidTestImplementation project(path: ':libraries:instrumentation_test')
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.dagger
@@ -93,10 +94,10 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)

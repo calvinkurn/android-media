@@ -11,11 +11,13 @@ import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFacto
 import com.tokopedia.profilecompletion.profileinfo.view.activity.ProfileInfoActivity
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.common.helper.*
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@UiTest
 class BioUsernameInstrumentTest {
 
     val testComponentFactory = TestComponentActivityFactory()

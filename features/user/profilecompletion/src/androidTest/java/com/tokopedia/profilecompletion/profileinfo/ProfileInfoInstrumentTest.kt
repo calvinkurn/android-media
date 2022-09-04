@@ -14,11 +14,13 @@ import com.tokopedia.profilecompletion.changegender.view.activity.ChangeGenderAc
 import com.tokopedia.profilecompletion.changename.view.ChangeNameActivity
 import com.tokopedia.profilecompletion.common.helper.*
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@UiTest
 class ProfileInfoInstrumentTest {
 
     val testComponentFactory = TestComponentActivityFactory()
@@ -76,7 +78,6 @@ class ProfileInfoInstrumentTest {
         runTest {
             clickViewHolder(SECTION_USERID, clickChildWithViewId<IconUnify>(R.id.fragmentProfileItemIcon))
             checkToasterShowing(SUBSTRING_COPY_USER_ID)
-            Thread.sleep(3000)
         }
     }
 
