@@ -122,7 +122,7 @@
     <string name="product_eligible_card_description_label">Tunggu apa lagi? Yuk, daftar campaign sekarang!</string>
     <string name="stfs_campaign_label">Campaign</string>
 
-<!--    Registered CDP-->
+    <!--    Registered CDP-->
     <string name="stfs_remaining_quota_label">Sisa kuota!</string>
     <string name="stfs_remaining_quota_placeholder"><![CDATA[<b>%d</b>]]>/%2d Produk</string>
     <string name="stfs_proposed_before_label">Ajukan sebelum</string>
@@ -146,4 +146,5 @@
     <string name="stfs_label_edit">Ubah</string>
     <string name="stfs_register_body_title_label">Daftar Produk Flash Sale Tokopedia</string>
     <string name="stfs_selection_process_label">Proses Seleksi</string>
+    <string name="stfs_subsidy_value_placeholder">Menerima subsidi sebesar <![CDATA[<font color=#00AA5B>>%s</font>]]> dari Tokopedia</string>
 </resources>

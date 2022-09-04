@@ -74,7 +74,7 @@ class CampaignDetailViewModel @Inject constructor(
                 val result = getFlashSaleSubmittedProductListUseCase.execute(
                     campaignId = campaignId,
                     pagination = GetFlashSaleSubmittedProductListRequest.Pagination(
-                        3,
+                        10,
                         offset
                     )
                 )
@@ -96,7 +96,7 @@ class CampaignDetailViewModel @Inject constructor(
             when (status) {
                 FlashSaleStatus.WAITING_FOR_SELECTION -> submittedProduct.toWaitingForSelectionItem()
                 FlashSaleStatus.ON_SELECTION_PROCESS -> submittedProduct.toOnSelectionProcessItem()
-                FlashSaleStatus.SELECTION_FINISHED -> submittedProduct.toOnSelectionProcessItem()
+                FlashSaleStatus.SELECTION_FINISHED -> submittedProduct.toFinishedProcessSelectionItem()
                 else -> submittedProduct.toWaitingForSelectionItem()
             }
         }
@@ -147,6 +147,7 @@ class CampaignDetailViewModel @Inject constructor(
             campaignStock,
             isMultiwarehouse,
             isParentProduct,
+            totalChild,
             mainStock,
             name,
             picture,
@@ -156,6 +157,7 @@ class CampaignDetailViewModel @Inject constructor(
             price,
             discount,
             discountedPrice,
+            submittedProductStockStatus,
             warehouses
         )
     }

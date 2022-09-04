@@ -29,6 +29,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.FinishedProcessSelectionDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.OnSelectionProcessDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.WaitingForSelectionDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
@@ -49,7 +50,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         private const val REGISTERED_TAB = "registered"
         private const val ONGOING_TAB = "ongoing"
         private const val FINISHED_TAB = "finished"
-        private const val PAGE_SIZE = 3
+        private const val PAGE_SIZE = 10
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
         private const val EMPTY_SUBMITTED_PRODUCT_URL =
@@ -105,6 +106,9 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
                     })
             )
             .add(OnSelectionProcessDelegateAdapter(
+                onProductItemClicked = { onProductClicked(it) }
+            ))
+            .add(FinishedProcessSelectionDelegateAdapter(
                 onProductItemClicked = { onProductClicked(it) }
             ))
             .add(LoadingDelegateAdapter())
@@ -484,6 +488,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
                     cardProductEligibleForSelection.visible()
                     llSelectionProcessView.visible()
                     llBeforeSelectionView.hide()
+                    imageProductEligibleForSelection.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
                     tpgCardMidTitle.text = MethodChecker.fromHtml(
                         getString(
                             R.string.product_eligible_for_selection_card_title_placeholder,
@@ -509,6 +514,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
                     cardProductEligibleForSelection.visible()
                     llSelectionProcessView.visible()
                     llBeforeSelectionView.hide()
+                    imageProductEligibleForSelection.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
                     tpgCardMidTitle.text = MethodChecker.fromHtml(
                         getString(
                             R.string.product_eligible_card_title_placeholder,
@@ -518,7 +524,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
                     tpgCardMidDesctiption.text = MethodChecker.fromHtml(
                         getString(
                             R.string.product_eligible_start_date_placeholder,
-                            flashSale.reviewEndDateUnix.formatTo(
+                            flashSale.startDateUnix.formatTo(
                                 DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
                             )
                         )

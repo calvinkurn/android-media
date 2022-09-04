@@ -6,25 +6,21 @@
     android:layout_height="match_parent"
     tools:context="com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailFragment">
 
-<!--    <ScrollView-->
-<!--        android:id="@+id/nsv_content"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:fillViewport="true"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/card_bottom_button_group"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent">-->
+    <ScrollView
+        android:id="@+id/nsv_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/card_bottom_button_group"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/ll_content"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/card_bottom_button_group"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <ViewStub
                 android:id="@+id/layout_header"
@@ -68,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="48dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:unifyEmptyStateCTAFullWidth="true"
                 app:unifyEmptyStateDescription="Tambah produk dulu, yuk!"
                 app:unifyEmptyStateOrientation="horizontal"
@@ -76,7 +72,7 @@
 
         </LinearLayout>
 
-<!--    </ScrollView>-->
+    </ScrollView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_bottom_button_group"
