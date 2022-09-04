@@ -863,4 +863,22 @@ class WishlistCollectionDetailViewModelTest {
 
         assert(wishlistCollectionDetailViewModel.collectionData.value is Success)
     }
+
+    @Test
+    fun getTopAdsData_return_null() {
+        val getWishlistCollectionFiveItems = GetWishlistCollectionItemsResponse(
+            getWishlistCollectionItems = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems(errorMessage = "", items = collectionDetailFiveItemList, totalData = 5, page = 1, hasNextPage = false)
+        )
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwable.throwable
+        coEvery { singleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
+        coEvery {
+            getWishlistCollectionItemsUseCase(getWishlistCollectionItemsParams)
+        } returns getWishlistCollectionFiveItems
+
+        wishlistCollectionDetailViewModel.getWishlistCollectionItems(
+            GetWishlistCollectionItemsParams(), "",
+            isAutomaticDelete = false)
+
+        assert(wishlistCollectionDetailViewModel.collectionData.value is Success)
+    }
 }
