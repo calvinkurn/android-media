@@ -3,7 +3,6 @@ package com.tokopedia.unifyorderhistory.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,10 +53,14 @@ import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -188,7 +191,9 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
 import timber.log.Timber
 import java.io.Serializable
+import java.net.SocketTimeoutException
 import java.net.URLDecoder
+import java.net.UnknownHostException
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -387,6 +392,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
         if (isVisibleToUser && isAutoRefreshEnabled()) {
             binding?.run {
+                globalErrorUoh.gone()
                 rvOrderList.scrollToPosition(0)
             }
             refreshUohData()
@@ -618,7 +624,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun observeTdnBanner() {
-        uohListViewModel.tdnBannerResult.observe(viewLifecycleOwner, {
+        uohListViewModel.tdnBannerResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     tdnBanner = it.data
@@ -626,20 +632,21 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 is Fail -> {
                 }
             }
-        })
+        }
     }
 
     private fun observeUohPmsCounter() {
-        uohListViewModel.getUohPmsCounterResult.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    if (!paramUohOrder.hasActiveFilter()) {
-                        val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
-                        uohItemAdapter.appendPmsButton(data)
-                    }
+        uohListViewModel.getUohPmsCounterResult.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                if (!paramUohOrder.hasActiveFilter()) {
+                    val data = UohTypeData(
+                        dataObject = it.data,
+                        typeLayout = UohConsts.TYPE_PMS_BUTTON
+                    )
+                    uohItemAdapter.appendPmsButton(data)
                 }
             }
-        })
+        }
     }
 
     private fun prepareLayout() {
@@ -748,6 +755,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
 
         binding?.run {
+            globalErrorUoh.gone()
             rvOrderList.apply {
                 layoutManager = glm
                 adapter = uohItemAdapter
@@ -773,23 +781,29 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun observingFilterCategory() {
-        uohListViewModel.filterCategoryResult.observe(viewLifecycleOwner, {
+        uohListViewModel.filterCategoryResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    renderChipsFilter(it.data.uohFilterCategoryData.v2Filters, it.data.uohFilterCategoryData.categories)
+                    renderChipsFilter(
+                        it.data.uohFilterCategoryData.v2Filters,
+                        it.data.uohFilterCategoryData.categories
+                    )
                     setDefaultDatesForDatePicker()
                     initialLoadOrderHistoryList()
                 }
                 is Fail -> {
-                    showToaster(ErrorHandler.getErrorMessage(context, it.throwable), Toaster.TYPE_ERROR)
+                    showToaster(
+                        ErrorHandler.getErrorMessage(context, it.throwable),
+                        Toaster.TYPE_ERROR
+                    )
                 }
             }
-        })
+        }
     }
 
     private fun observingOrderHistory() {
         if (orderIdNeedUpdated.isEmpty() && !onLoadMore) uohItemAdapter.showLoader()
-        uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner, {
+        uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     orderList = it.data
@@ -803,8 +817,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         } else {
                             if (currIndexNeedUpdate > -1) {
                                 loop@ for (i in orderList.orders.indices) {
-                                    if (orderList.orders[i].orderUUID.equals(orderIdNeedUpdated, true)) {
-                                        uohItemAdapter.updateDataAtIndex(currIndexNeedUpdate, orderList.orders[i])
+                                    if (orderList.orders[i].orderUUID.equals(
+                                            orderIdNeedUpdated,
+                                            true
+                                        )
+                                    ) {
+                                        uohItemAdapter.updateDataAtIndex(
+                                            currIndexNeedUpdate,
+                                            orderList.orders[i]
+                                        )
                                         orderIdNeedUpdated = ""
                                         break@loop
                                     }
@@ -820,14 +841,33 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 is Fail -> {
-                    showToaster(ErrorHandler.getErrorMessage(context, it.throwable), Toaster.TYPE_ERROR)
+                    val errorType = when (it.throwable) {
+                        is MessageErrorException -> null
+                        is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
+                        else -> GlobalError.SERVER_ERROR
+                    }
+                    if (errorType != null) {
+                        binding?.run {
+                            rvOrderList.gone()
+                            globalErrorUoh.visible()
+                            globalErrorUoh.setType(errorType)
+                            globalErrorUoh.setActionClickListener {
+                                initialLoadOrderHistoryList()
+                            }
+                        }
+                    }
+
+                    showToaster(
+                        ErrorHandler.getErrorMessage(context, it.throwable),
+                        Toaster.TYPE_ERROR
+                    )
                 }
             }
-        })
+        }
     }
 
     private fun observingRecommendationList() {
-        uohListViewModel.recommendationListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.recommendationListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     currRecommendationListPage += 1
@@ -836,40 +876,46 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         renderEmptyList()
                     }
                 }
-                is Fail -> {
-                }
+                is Fail -> {}
             }
-        })
+        }
     }
 
     private fun observingFinishOrder() {
-        uohListViewModel.finishOrderResult.observe(viewLifecycleOwner, {
+        uohListViewModel.finishOrderResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     responseFinishOrder = it.data
                     if (responseFinishOrder.success == 1) {
-                        responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
+                        responseFinishOrder.message.firstOrNull()
+                            ?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
                         loadOrderHistoryList(orderIdNeedUpdated)
                     } else {
                         if (responseFinishOrder.message.isNotEmpty()) {
-                            responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                            responseFinishOrder.message.firstOrNull()
+                                ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         } else {
-                            context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                            context?.getString(R.string.fail_cancellation)
+                                ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
                 }
                 is Fail -> {
-                    responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    responseFinishOrder.message.firstOrNull()
+                        ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                 }
             }
-        })
+        }
     }
 
     private fun observingAtcMulti() {
-        uohListViewModel.atcMultiResult.observe(viewLifecycleOwner, {
+        uohListViewModel.atcMultiResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
+                    val msg = StringUtils.convertListToStringDelimiter(
+                        it.data.atcMulti.buyAgainData.message,
+                        ","
+                    )
                     if (it.data.atcMulti.buyAgainData.success == 1) {
                         showToasterAtc(msg, Toaster.TYPE_NORMAL)
                     } else {
@@ -877,27 +923,32 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 is Fail -> {
-                    context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    context?.getString(R.string.fail_cancellation)
+                        ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                 }
             }
-        })
+        }
     }
 
     private fun observingLsFinishOrder() {
-        uohListViewModel.lsPrintFinishOrderResult.observe(viewLifecycleOwner, {
+        uohListViewModel.lsPrintFinishOrderResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     responseLsPrintFinishOrder = it.data.oiaction
                     if (responseLsPrintFinishOrder.status == STATUS_200) {
                         if (responseLsPrintFinishOrder.data.message.isNotEmpty()) {
-                            showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_NORMAL)
+                            showToaster(
+                                responseLsPrintFinishOrder.data.message,
+                                Toaster.TYPE_NORMAL
+                            )
                         }
                         loadOrderHistoryList(orderIdNeedUpdated)
                     } else {
                         if (responseLsPrintFinishOrder.data.message.isNotEmpty()) {
                             showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
                         } else {
-                            context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                            context?.getString(R.string.fail_cancellation)
+                                ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
                 }
@@ -905,19 +956,25 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
                 }
             }
-        })
+        }
     }
 
     private fun observingFlightResendEmail() {
-        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, { result ->
+        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     val flightEmailResponse = result.data.flightResendEmailV2
                     if (flightEmailResponse == null) {
-                        showToaster(getString(R.string.toaster_failed_send_email), Toaster.TYPE_ERROR)
+                        showToaster(
+                            getString(R.string.toaster_failed_send_email),
+                            Toaster.TYPE_ERROR
+                        )
                     } else {
                         if (flightEmailResponse.meta.status.equals(FLIGHT_STATUS_OK, true)) {
-                            showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
+                            showToaster(
+                                getString(R.string.toaster_succeed_send_email),
+                                Toaster.TYPE_NORMAL
+                            )
                         }
                     }
                 }
@@ -925,19 +982,25 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     showToaster(getString(R.string.toaster_failed_send_email), Toaster.TYPE_ERROR)
                 }
             }
-        })
+        }
     }
 
     private fun observingTrainResendEmail() {
-        uohListViewModel.trainResendEmailResult.observe(viewLifecycleOwner, {
+        uohListViewModel.trainResendEmailResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     val trainEmailResponse = it.data.trainResendBookingEmail
                     if (trainEmailResponse == null) {
-                        showToaster(getString(R.string.toaster_failed_send_email), Toaster.TYPE_ERROR)
+                        showToaster(
+                            getString(R.string.toaster_failed_send_email),
+                            Toaster.TYPE_ERROR
+                        )
                     } else {
                         if (trainEmailResponse.success) {
-                            showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
+                            showToaster(
+                                getString(R.string.toaster_succeed_send_email),
+                                Toaster.TYPE_NORMAL
+                            )
                         }
                     }
                 }
@@ -945,29 +1008,33 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     showToaster(getString(R.string.toaster_failed_send_email), Toaster.TYPE_ERROR)
                 }
             }
-        })
+        }
     }
 
     private fun observingRechargeSetFail() {
-        uohListViewModel.rechargeSetFailResult.observe(viewLifecycleOwner, {
+        uohListViewModel.rechargeSetFailResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
                     if (isSuccess) {
                         loadOrderHistoryList(orderIdNeedUpdated)
                     } else {
-                        showToaster(it.data.rechargeSetOrderToFail.attributes.errorMessage, Toaster.TYPE_ERROR)
+                        showToaster(
+                            it.data.rechargeSetOrderToFail.attributes.errorMessage,
+                            Toaster.TYPE_ERROR
+                        )
                     }
                 }
                 is Fail -> {
-                    context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    context?.getString(R.string.fail_cancellation)
+                        ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                 }
             }
-        })
+        }
     }
 
     private fun observingAtc() {
-        uohListViewModel.atcResult.observe(viewLifecycleOwner, {
+        uohListViewModel.atcResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.isStatusError()) {
@@ -975,10 +1042,16 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         if (atcErrorMessage != null) {
                             showToaster(atcErrorMessage, Toaster.TYPE_ERROR)
                         } else {
-                            context?.getString(R.string.fail_cancellation)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, Toaster.TYPE_ERROR) }
+                            context?.getString(R.string.fail_cancellation)?.let { errorDefaultMsg ->
+                                showToaster(
+                                    errorDefaultMsg,
+                                    Toaster.TYPE_ERROR
+                                )
+                            }
                         }
                     } else {
-                        val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
+                        val successMsg =
+                            StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
                         showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
                     }
                 }
@@ -988,7 +1061,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         var errorMessage = if (throwable is ResponseErrorException) {
                             throwable.message ?: ""
                         } else {
-                            ErrorHandler.getErrorMessage(ctx, throwable, ErrorHandler.Builder().withErrorCode(false))
+                            ErrorHandler.getErrorMessage(
+                                ctx,
+                                throwable,
+                                ErrorHandler.Builder().withErrorCode(false)
+                            )
                         }
                         if (errorMessage.isBlank()) {
                             errorMessage = ctx.getString(R.string.fail_cancellation)
@@ -997,7 +1074,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
             }
-        })
+        }
     }
 
     private fun renderChipsFilter(filterDataList: List<UohFilterCategory.Data.UohFilterCategoryData.FilterV2>,
