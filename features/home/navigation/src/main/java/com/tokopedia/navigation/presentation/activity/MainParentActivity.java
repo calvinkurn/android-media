@@ -70,6 +70,7 @@ import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
+import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.R;
@@ -456,7 +457,7 @@ public class MainParentActivity extends BaseActivity implements
             if (getIntent().getExtras().getString(ARGS_TAB_POSITION) != null) {
                 try {
                     String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
-                    return Integer.parseInt(posString);
+                    return StringExtKt.toIntOrZero(posString);
                 } catch (Exception e) {
                     return HOME_MENU;
                 }
@@ -469,7 +470,7 @@ public class MainParentActivity extends BaseActivity implements
                         getIntent().getData().getQueryParameter(ARGS_TAB_POSITION) != null) {
             try {
                 String posString = getIntent().getData().getQueryParameter(ARGS_TAB_POSITION);
-                return Integer.parseInt(posString);
+                return StringExtKt.toIntOrZero(posString);
             } catch (Exception e) {
                 return HOME_MENU;
             }
@@ -746,6 +747,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unRegisterNewFeedClickedReceiver();
         if (presenter != null)
             presenter.get().onDestroy();
     }
@@ -1086,7 +1088,9 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void unRegisterNewFeedClickedReceiver() {
-        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
+        if (newFeedClickedReceiver != null) {
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
+        }
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)

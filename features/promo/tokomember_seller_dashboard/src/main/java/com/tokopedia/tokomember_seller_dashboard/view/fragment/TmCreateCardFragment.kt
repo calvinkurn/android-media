@@ -264,7 +264,6 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
     }
 
     private fun renderCardUi(data: CardDataTemplate) {
-        tmTracker?.clickCardCreationButton(shopID.toString())
         containerViewFlipper.displayedChild = DATA
         renderCardCarousel(data)
         btnContinueCard?.setOnClickListener {
@@ -283,6 +282,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                     numberOfLevel = 2
                 )
             )
+            tmTracker?.clickCardCreationButton(shopID.toString())
             proceedIntroLogic(mTmCardModifyInput)
         }
     }
@@ -361,6 +361,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
             subtitle = HEADER_DESC
             isShowBackButton = true
             setNavigationOnClickListener {
+                tmTracker?.clickCardCreationBack(shopID.toString())
                 activity?.onBackPressed()
             }
         }

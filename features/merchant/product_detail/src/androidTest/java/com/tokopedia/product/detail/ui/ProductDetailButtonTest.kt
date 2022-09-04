@@ -68,7 +68,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         InstrumentationAuthHelper.clearUserSession()
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
-        onView(withId(R.id.btn_pdp_container)).assertVisible()
+        onView(withId(R.id.pdp_button_container)).assertVisible()
         onView(withId(R.id.sticky_login_pdp)).assertVisible()
     }
 
@@ -78,7 +78,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
-        onView(withId(R.id.btn_pdp_container)).assertVisible()
+        onView(withId(R.id.pdp_button_container)).assertVisible()
         onView(withId(R.id.sticky_login_pdp)).assertNotVisible()
     }
 
