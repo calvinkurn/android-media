@@ -14,7 +14,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleDetailForSellerUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSubmittedProductListUseCase
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
-import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.OnProcessSelectionItem
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.OnSelectionProcessItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.util.extension.hoursDifference
 import com.tokopedia.tkpd.flashsale.util.extension.minutesDifference
@@ -74,7 +74,7 @@ class CampaignDetailViewModel @Inject constructor(
                 val result = getFlashSaleSubmittedProductListUseCase.execute(
                     campaignId = campaignId,
                     pagination = GetFlashSaleSubmittedProductListRequest.Pagination(
-                        10,
+                        3,
                         offset
                     )
                 )
@@ -95,8 +95,8 @@ class CampaignDetailViewModel @Inject constructor(
         return submittedProductList.map { submittedProduct ->
             when (status) {
                 FlashSaleStatus.WAITING_FOR_SELECTION -> submittedProduct.toWaitingForSelectionItem()
-                FlashSaleStatus.ON_SELECTION_PROCESS -> submittedProduct.toOnProcessSelectionItem()
-                FlashSaleStatus.SELECTION_FINISHED -> submittedProduct.toFinishedProcessSelectionItem()
+                FlashSaleStatus.ON_SELECTION_PROCESS -> submittedProduct.toOnSelectionProcessItem()
+                FlashSaleStatus.SELECTION_FINISHED -> submittedProduct.toOnSelectionProcessItem()
                 else -> submittedProduct.toWaitingForSelectionItem()
             }
         }
@@ -122,11 +122,12 @@ class CampaignDetailViewModel @Inject constructor(
         )
     }
 
-    private fun SubmittedProduct.toOnProcessSelectionItem(): DelegateAdapterItem {
-        return OnProcessSelectionItem(
+    private fun SubmittedProduct.toOnSelectionProcessItem(): DelegateAdapterItem {
+        return OnSelectionProcessItem(
             campaignStock,
             isMultiwarehouse,
             isParentProduct,
+            totalChild,
             mainStock,
             name,
             picture,
@@ -136,6 +137,7 @@ class CampaignDetailViewModel @Inject constructor(
             price,
             discount,
             discountedPrice,
+            submittedProductStockStatus,
             warehouses
         )
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.OnSelectionProcessDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.WaitingForSelectionDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
@@ -47,7 +49,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         private const val REGISTERED_TAB = "registered"
         private const val ONGOING_TAB = "ongoing"
         private const val FINISHED_TAB = "finished"
-        private const val PAGE_SIZE = 10
+        private const val PAGE_SIZE = 3
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
         private const val EMPTY_SUBMITTED_PRODUCT_URL =
@@ -102,6 +104,9 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
                         )
                     })
             )
+            .add(OnSelectionProcessDelegateAdapter(
+                onProductItemClicked = { onProductClicked(it) }
+            ))
             .add(LoadingDelegateAdapter())
             .build()
     }
@@ -149,7 +154,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
             when (submittedProduct) {
                 is Success -> {
                     renderList(submittedProduct.data, submittedProduct.data.size == getPerPage())
-                    setupRegisteredBody()
+                    setupRegisteredBodyData()
                 }
                 is Fail -> {
 
@@ -386,6 +391,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
 
         setupRegisteredHeader(flashSale)
         setupRegisteredMid(flashSale)
+        setupRegisteredBody()
         observeSubmittedProductData()
     }
 
@@ -410,7 +416,6 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         val inflatedView = binding.layoutBody
         inflatedView.layoutResource = R.layout.stfs_cdp_registered_body
         inflatedView.inflate()
-        setupRegisteredBodyData()
     }
 
     private fun setupRegisteredHeaderData(flashSale: FlashSale) {
@@ -671,7 +676,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
     private fun showLoading() {
         binding?.run {
             loader.show()
-            nsvContent.gone()
+            llContent.gone()
             cardBottomButtonGroup.gone()
         }
     }
@@ -679,7 +684,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
     private fun hideLoading() {
         binding?.run {
             loader.gone()
-            nsvContent.show()
+            llContent.show()
         }
     }
 
@@ -713,7 +718,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
     }
 
     override fun addElementToAdapter(list: List<DelegateAdapterItem>) {
-        adapter?.submit(list)
+        adapter?.addItems(list)
     }
 
     override fun loadData(page: Int, offset: Int) {

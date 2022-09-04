@@ -6,21 +6,25 @@
     android:layout_height="match_parent"
     tools:context="com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailFragment">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nsv_content"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/card_bottom_button_group"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SpeakableTextPresentCheck">
+<!--    <ScrollView-->
+<!--        android:id="@+id/nsv_content"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:fillViewport="true"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/card_bottom_button_group"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent">-->
 
         <LinearLayout
+            android:id="@+id/ll_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:orientation="vertical"
-            android:gravity="center">
+            app:layout_constraintBottom_toTopOf="@+id/card_bottom_button_group"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ViewStub
                 android:id="@+id/layout_header"
@@ -53,23 +57,26 @@
                 android:id="@+id/rv_submitted_product_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="16dp"
+                android:descendantFocusability="blocksDescendants"
+                android:nestedScrollingEnabled="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             <com.tokopedia.empty_state.EmptyStateUnify
                 android:id="@+id/empty_state_product_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:unifyEmptyStateCTAFullWidth="true"
+                android:layout_gravity="center"
                 android:layout_marginTop="48dp"
                 android:visibility="visible"
-                android:layout_gravity="center"
+                app:unifyEmptyStateCTAFullWidth="true"
                 app:unifyEmptyStateDescription="Tambah produk dulu, yuk!"
                 app:unifyEmptyStateOrientation="horizontal"
                 app:unifyEmptyStateTitle="Belum ada produk, nih!" />
 
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+<!--    </ScrollView>-->
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_bottom_button_group"
