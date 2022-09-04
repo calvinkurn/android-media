@@ -274,10 +274,6 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     public void handleCMInAppPushPayload(CMInApp cmInApp) {
-//        boolean isDuplicatePresentInDB = false;
-//        if (cmInApp.isAmplification()){
-//            isDuplicatePresentInDB = handleDuplicatePayload(cmInApp);
-//        }
         if (isSaveInAppNewFlowEnabled()) {
             handlePushPayloadVNew(cmInApp);
         } else {
