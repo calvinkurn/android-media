@@ -14,6 +14,11 @@ class ChooseProductViewHolder(
     private val listener: ChooseProductDelegateAdapter.ChooseProductListener?
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    companion object {
+        const val OPACITY_ACTIVE = 1f
+        const val OPACITY_INACTIVE = 0.5f
+    }
+
     init {
         binding.tvCheckDetail.setOnClickListener {
             listener?.onDetailClicked(adapterPosition)
@@ -46,7 +51,7 @@ class ChooseProductViewHolder(
 
     private fun setEnable(enabled: Boolean, binding: ItemChooseProductBinding) {
         binding.apply {
-            imgProduct.alpha = if (enabled) 1f else 0.5f
+            imgProduct.alpha = if (enabled) OPACITY_ACTIVE else OPACITY_INACTIVE
             root.isEnabled = enabled
             root.setViewGroupEnabled(enabled)
             tvCheckDetail.enable() // this text/cta will always enabled
