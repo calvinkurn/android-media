@@ -433,7 +433,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
-        (context as Context?)
         val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
         if (!TextUtils.isEmpty(commissionMessage)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -469,7 +468,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
             } else {
                 affiliateRegisterTitle?.text = Html.fromHtml(banner.title)
-                affiliateRegisterMsg?.text = Html.fromHtml(banner.message)            }
+                affiliateRegisterMsg?.text = Html.fromHtml(banner.message)
+            }
         }
     }
 

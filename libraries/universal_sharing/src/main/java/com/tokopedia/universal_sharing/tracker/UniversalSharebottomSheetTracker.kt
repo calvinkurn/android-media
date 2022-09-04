@@ -7,9 +7,6 @@ import com.tokopedia.user.session.UserSession
 class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
 
     companion object {
-        private const val EVENT_CATEGORY = "eventCategory"
-        private const val EVENT_ACTION = "eventAction"
-        private const val EVENT_LABEL = "eventLabel"
         private const val EVENT_BUSINESS_UNIT = "businessUnit"
         private const val EVENT_CURRENT_SITE = "currentSite"
         private const val EVENT_PROMOTIONS = ""
