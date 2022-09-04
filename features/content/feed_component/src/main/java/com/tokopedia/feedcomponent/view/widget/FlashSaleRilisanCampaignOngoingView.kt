@@ -25,6 +25,10 @@ import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 import kotlin.math.roundToInt
 
+/**
+ * @author by shruti on 01/09/22
+ */
+
 class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
