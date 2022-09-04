@@ -1824,18 +1824,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
     }
 
-    private fun changeCTABtnColorToRed() {
-        changeCTABtnColor(
-            primaryColor = MethodChecker.getColor(
-                context,
-                R.color.feed_dms_asgc_discount_toko_btn_bg_color
-            ),
-            secondaryColor = MethodChecker.getColor(
-                context,
-                unifyPrinciplesR.color.Unify_N0
-            ),
-        )
-    }
 
     private fun changeCTABtnColorToGreen() {
         changeCTABtnColor(
@@ -1904,6 +1892,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         colorArray: ArrayList<String>,
         secondaryColor: Int,
     ) {
+        //Todo add background animation for gradient color
 //        TransitionManager.beginDelayedTransition(
 //            this,
 //            BackgroundColorTransition()
