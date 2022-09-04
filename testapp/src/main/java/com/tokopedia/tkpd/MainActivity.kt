@@ -16,7 +16,6 @@ import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.watch.TokopediaWatchActivity
 import kotlinx.android.synthetic.main.main_testapp.*
 
 class MainActivity : AppCompatActivity() {
@@ -126,6 +125,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return ApplinkConst.HOME_NAVIGATION
+        return "tokopedia-android-internal://marketplace/product-report/5468977597/?dffallbackurl=https%3A%2F%2Fm.tokopedia.com%2F11530573-tammamstore%2Fkemeja-pria-pendek%2Freport%2F"
     }
 }
