@@ -138,6 +138,10 @@ data class FeedXCard(
         get() = type == ASGC_FLASH_SALE_TOKO
     val isRilisanSpl: Boolean
         get() = type == ASGC_RILISAN_SPECIAL
+    val isUpcoming: Boolean
+        get() = campaign.status == Upcoming
+    val isOngoing: Boolean
+        get() = campaign.status == Ongoing
 
     fun copyPostData(): FeedXCard {
         return FeedXCard(
@@ -196,6 +200,8 @@ data class FeedXCard(
         private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
         private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
         private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"
+        private const val Upcoming = "upcoming"
+        private const val Ongoing = "ongoing"
 
     }
 }

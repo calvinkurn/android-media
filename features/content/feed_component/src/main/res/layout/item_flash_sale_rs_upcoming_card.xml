@@ -18,13 +18,13 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/unify_space_8"
         android:maxLines="1"
-        android:text="@string/btn_asgc_flash_sale_name"
         app:layout_constrainedWidth="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_2"
         app:typographyWeight="bold"
+        tools:text="@string/btn_asgc_flash_sale_name"
         />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -49,7 +49,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/chatbot_image_placeloader"
+        android:background="@color/Unify_Background"
        >
 
     <com.tokopedia.unifycomponents.UnifyButton

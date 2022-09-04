@@ -40,6 +40,11 @@ class FeedPostCarouselAdapter(
         return if (!oldItem.isImage) false
         else oldItem == newItem
     }
+
+    /**
+    Using notifyDataSetChanged() here as all the reminder button in each item of carousel needs to be updated
+    Also max items in a carousel can 5
+    ***/
     fun updateReminderStatusForAllButtonsInCarousel(){
         notifyDataSetChanged()
     }

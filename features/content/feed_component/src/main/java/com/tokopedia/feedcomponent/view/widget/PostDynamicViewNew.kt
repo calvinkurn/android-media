@@ -1520,6 +1520,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         commentButton.invisible()
         seeAllCommentText.hide()
+        if (feedXCard.isTypeProductHighlight && feedXCard.isUpcoming)
         listener?.onIngatkanSayaBtnImpressed(mData, positionInFeed)
 
         adapter.setItemsAndAnimateChanges(mediaList)
@@ -1865,21 +1866,22 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun changeCTABtnColorAsPerWidget(card: FeedXCard, delayInMs: Long? = null) {
-        val colorGradient: List<FeedXCtaColorGradient> = listOf(
-        FeedXCtaColorGradient(color ="#D74049", position = 0f ),
-        FeedXCtaColorGradient(color ="#F56958", position = 100f ))
+        val colorGradient = card.cta.colorGradient
         topAdsJob?.cancel()
 
         topAdsJob = scope.launch {
             if (delayInMs != null) delay(delayInMs)
 
-
             card.isAsgcColorChangedAsPerWidgetColor = true
-            if (card.isTypeProductHighlight)
-                changeCTABtnColorAsPerColorGradientFromBE(colorGradient.map { colorGradient ->
-                    colorGradient.color
-                } as ArrayList<String>)
-            else
+            if (card.isTypeProductHighlight) {
+                if (card.isRilisanSpl || card.isFlashSaleToko) {
+                    changeCTABtnColorAsPerColorGradientFromBE(colorGradient.map { colorGradient ->
+                        colorGradient.color
+                    } as ArrayList<String>)
+                } else {
+                    changeCTABtnColorAsPerColorCodeFromBE(card.cta.color)
+                }
+            } else
                 changeCTABtnColorToGreen()
         }
     }
