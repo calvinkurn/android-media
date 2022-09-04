@@ -36,6 +36,7 @@ import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseC
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -56,6 +57,9 @@ class WishlistCollectionDetailViewModelTest {
 
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var wishlistCollectionDetailViewModel: WishlistCollectionDetailViewModel
+
+    private var collectionDetailFiveItemList = listOf<GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem>()
+    private var collectionDetailFourItemList = listOf<GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem>()
 
     @RelaxedMockK
     lateinit var getWishlistCollectionItemsUseCase: GetWishlistCollectionItemsUseCase
@@ -133,7 +137,7 @@ class WishlistCollectionDetailViewModelTest {
     private val getWishlistCollectionItemsParams = GetWishlistCollectionItemsParams()
     private val typeLayout = WishlistV2Consts.TYPE_GRID
 
-    private val topAdsImageViewModel = TopAdsImageViewModel(bannerName = "testBanner")
+    private var topAdsImageViewModel = TopAdsImageViewModel()
     private val productCardModel1 = ProductCardModel(productName = "product1",
         labelGroupList = listOf(ProductCardModel.LabelGroup()),
         shopBadgeList = listOf(ProductCardModel.ShopBadge()),
@@ -236,6 +240,32 @@ class WishlistCollectionDetailViewModelTest {
                 addWishlistCollectionItemsUseCase
             )
         )
+        topAdsImageViewModel = TopAdsImageViewModel(bannerName = "testBanner")
+
+        val primaryButton1 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons.PrimaryButton(action = "ADD_TO_CART")
+        val primaryButton2 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons.PrimaryButton(action = "SEE_SIMILAR_PRODUCT")
+        val primaryButton3 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons.PrimaryButton(action = "ADD_TO_CART")
+        val primaryButton4 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons.PrimaryButton(action = "SEE_SIMILAR_PRODUCT")
+        val primaryButton5 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons.PrimaryButton(action = "ADD_TO_CART")
+
+        val listLabelGroup = arrayListOf<GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.LabelGroupItem>()
+        listLabelGroup.add(GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.LabelGroupItem(title = "test", url = "labelUrl"))
+
+        val listBadge = arrayListOf<GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.BadgesItem>()
+        listBadge.add(GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.BadgesItem(imageUrl = "badgeUrl", title = "testBadge"))
+
+        val collectionItem1 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem(name = "Test1",
+            buttons = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons(primaryButton = primaryButton1), labelGroup = listLabelGroup, badges = listBadge)
+        val collectionItem2 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem(name = "Test2",
+            buttons = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons(primaryButton = primaryButton2), labelGroup = listLabelGroup, badges = listBadge)
+        val collectionItem3 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem(name = "Test3",
+            buttons = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons(primaryButton = primaryButton3), labelGroup = listLabelGroup, badges = listBadge)
+        val collectionItem4 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem(name = "Test4",
+            buttons = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons(primaryButton = primaryButton4), labelGroup = listLabelGroup, badges = listBadge)
+        val collectionItem5 = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem(name = "Test5",
+            buttons = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem.Buttons(primaryButton = primaryButton5), labelGroup = listLabelGroup, badges = listBadge)
+        collectionDetailFiveItemList = arrayListOf(collectionItem1, collectionItem2, collectionItem3, collectionItem4, collectionItem5)
+        collectionDetailFourItemList = arrayListOf(collectionItem1, collectionItem2, collectionItem3, collectionItem4)
     }
 
     @Test
@@ -726,5 +756,111 @@ class WishlistCollectionDetailViewModelTest {
 
         //then
         assert(wishlistCollectionDetailViewModel.addWishlistCollectionItem.value is Fail)
+    }
+
+    // mapToTopads
+    @Test
+    fun mapToTopads_onExpectedIndex() {
+        val getWishlistCollectionFiveItems = GetWishlistCollectionItemsResponse(
+            getWishlistCollectionItems = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems(errorMessage = "", items = collectionDetailFiveItemList, totalData = 5, page = 1, hasNextPage = false)
+        )
+        
+        coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
+            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+        }
+        coEvery { singleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
+        coEvery {
+            getWishlistCollectionItemsUseCase(getWishlistCollectionItemsParams)
+        } returns getWishlistCollectionFiveItems
+
+        wishlistCollectionDetailViewModel.getWishlistCollectionItems(
+            GetWishlistCollectionItemsParams(), "",
+            isAutomaticDelete = false)
+
+        assert(wishlistCollectionDetailViewModel.collectionData.value is Success)
+    }
+
+    // mapToTopads
+    @Test
+    fun mapToTopads_onOddPage() {
+        val getWishlistCollectionFiveItems = GetWishlistCollectionItemsResponse(
+            getWishlistCollectionItems = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems(errorMessage = "", items = collectionDetailFiveItemList, totalData = 5, page = 1, hasNextPage = false)
+        )
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
+            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+        }
+        coEvery { singleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
+        coEvery {
+            getWishlistCollectionItemsUseCase(getWishlistCollectionItemsParams)
+        } returns getWishlistCollectionFiveItems
+
+        wishlistCollectionDetailViewModel.getWishlistCollectionItems(
+            GetWishlistCollectionItemsParams(), "",
+            isAutomaticDelete = false)
+
+        assert(wishlistCollectionDetailViewModel.collectionData.value is Success)
+    }
+
+    @Test
+    fun mapToTopads_onIndexZero() {
+        val getWishlistCollectionFourItems = GetWishlistCollectionItemsResponse(
+            getWishlistCollectionItems = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems(errorMessage = "", items = collectionDetailFourItemList, totalData = 4, page = 1, hasNextPage = false)
+        )
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
+            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+        }
+        coEvery { singleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
+        coEvery {
+            getWishlistCollectionItemsUseCase(getWishlistCollectionItemsParams)
+        } returns getWishlistCollectionFourItems
+
+        wishlistCollectionDetailViewModel.getWishlistCollectionItems(
+            GetWishlistCollectionItemsParams(), "",
+            isAutomaticDelete = false)
+
+        assert(wishlistCollectionDetailViewModel.collectionData.value is Success)
+    }
+
+    @Test
+    fun mapToTopads_onPageOneAndHasNextPage() {
+        val getWishlistCollectionFiveItems = GetWishlistCollectionItemsResponse(
+            getWishlistCollectionItems = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems(errorMessage = "", items = collectionDetailFiveItemList, totalData = 5, page = 1, hasNextPage = false)
+        )
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
+            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+        }
+        coEvery { singleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
+        coEvery {
+            getWishlistCollectionItemsUseCase(getWishlistCollectionItemsParams)
+        } returns getWishlistCollectionFiveItems
+
+        wishlistCollectionDetailViewModel.getWishlistCollectionItems(
+            GetWishlistCollectionItemsParams(), "",
+            isAutomaticDelete = false)
+
+        assert(wishlistCollectionDetailViewModel.collectionData.value is Success)
+    }
+
+    @Test
+    fun mapToTopads_onOddPageAndHasNextPage() {
+        val getWishlistCollectionFiveItems = GetWishlistCollectionItemsResponse(
+            getWishlistCollectionItems = GetWishlistCollectionItemsResponse.GetWishlistCollectionItems(errorMessage = "", items = collectionDetailFiveItemList, totalData = 5, page = 1, hasNextPage = false)
+        )
+        coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
+            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+        }
+        coEvery { singleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
+        coEvery {
+            getWishlistCollectionItemsUseCase(getWishlistCollectionItemsParams)
+        } returns getWishlistCollectionFiveItems
+
+        wishlistCollectionDetailViewModel.getWishlistCollectionItems(
+            GetWishlistCollectionItemsParams(), "",
+            isAutomaticDelete = false)
+
+        assert(wishlistCollectionDetailViewModel.collectionData.value is Success)
     }
 }

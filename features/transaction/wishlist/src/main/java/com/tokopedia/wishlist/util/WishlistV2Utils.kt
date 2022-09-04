@@ -43,6 +43,7 @@ object WishlistV2Utils {
         if (wishlistV2UiModel.items.isEmpty() && wishlistV2UiModel.page == 1) {
             listData = mapToEmptyState(wishlistV2UiModel, listData, isFilterActive, recomm, isUsingCollection)
 
+        // non-empty wishlist
         } else {
             if (wishlistV2UiModel.page == 1) {
                 listProductId.clear()
