@@ -11,8 +11,9 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
- * @author by astidhiyaa on 09/02/22
+ * @author by shruti on 30/08/22
  */
+
 @GqlQuery(PostUpcomingCampaignReminderUseCase.QUERY_NAME, PostUpcomingCampaignReminderUseCase.QUERY)
 class PostUpcomingCampaignReminderUseCase@Inject constructor(
     graphqlRepository: GraphqlRepository
