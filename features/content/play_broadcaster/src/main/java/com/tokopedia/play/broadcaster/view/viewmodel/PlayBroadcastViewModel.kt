@@ -1577,7 +1577,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             !selectedAccount.hasAcceptTnc -> {
                 _accountStateInfo.value = AccountStateInfo(
                     type = AccountStateInfoType.NotAcceptTNC,
-                    selectedAccount
+                    selectedAccount = selectedAccount
                 )
             }
             selectedAccount.isUser && !selectedAccount.hasUsername -> {
