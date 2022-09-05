@@ -15,16 +15,6 @@ buildscript {
 }
 
 android {
-
-    defaultConfig {
-        multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-    }
-
-    testOptions {
-        animationsDisabled = true
-    }
-
     buildFeatures {
         viewBinding true
     }
@@ -91,15 +81,6 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation rootProject.ext.testDependencies.androidxTest
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation rootProject.ext.testDependencies.androidxTest
-    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    debugImplementation rootProject.ext.testDependencies.fragmentTest
-
-    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 
 }
 
