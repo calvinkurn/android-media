@@ -7,20 +7,19 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class ReminderTickerViewHolder(
     itemView: View?,
-    private val listener: Listener?,
-    private val commonListener: CommonViewHolderListener
+    private val listener: Listener?
 ) : AbstractViewHolder<ReminderTickerUiModel>(itemView) {
 
     private val ticker: Ticker? = itemView?.findViewById(R.id.tk_prompt)
 
     interface Listener {
-        fun onClickLinkReminderTicker(element: ReminderTickerUiModel)
+        fun trackSeenTicker(element: ReminderTickerUiModel)
+        fun onClickLinkReminderTicker(element: ReminderTickerUiModel, linkUrl: String)
         fun onCloseReminderTicker(element: ReminderTickerUiModel, position: Int)
     }
 
@@ -33,7 +32,7 @@ class ReminderTickerViewHolder(
 
     private fun bindImpression(element: ReminderTickerUiModel) {
         ticker?.addOnImpressionListener(element.impressHolder) {
-            //Tracker impression
+            listener?.trackSeenTicker(element)
         }
     }
 
@@ -45,9 +44,7 @@ class ReminderTickerViewHolder(
         ticker?.setHtmlDescription(element.subText)
         ticker?.setDescriptionClickEvent(object: TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                itemView.context?.let { context ->
-
-                }
+                listener?.onClickLinkReminderTicker(element, linkUrl.toString())
             }
             override fun onDismiss() {
                 listener?.onCloseReminderTicker(element, adapterPosition)

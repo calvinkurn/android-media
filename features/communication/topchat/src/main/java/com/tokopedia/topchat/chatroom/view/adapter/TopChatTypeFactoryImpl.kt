@@ -257,7 +257,7 @@ open class TopChatTypeFactoryImpl constructor(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ReminderTickerViewHolder.LAYOUT -> ReminderTickerViewHolder(
-                parent, listener, commonListener
+                parent, listener
             )
             TopchatBannedProductAttachmentViewHolder.LAYOUT -> TopchatBannedProductAttachmentViewHolder(
                 parent,

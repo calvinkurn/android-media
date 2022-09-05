@@ -302,6 +302,25 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventViewTicker(
+        tickerType: String,
+        isSeller: Boolean,
+        msgId: String,
+        lastReplyId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.VIEW_TICKER,
+                label = "$tickerType - ${getRole(isSeller)} - $msgId - $lastReplyId",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "35989"
+            )
+        )
+    }
+
     fun eventClickLinkTicker(
         tickerType: String,
         isSeller: Boolean,
@@ -409,6 +428,7 @@ object TopChatAnalyticsKt {
         const val VIEW_BUNDLE_CART_CHATROOM = "view on bundle card in chatroom"
         const val CLICK_PRODUCT_BUNDLE = "click on product attachment on bundle card"
         const val CLICK_ADD_TO_CART_BUNDLE = "click on add to cart from bundle card"
+        const val VIEW_TICKER = "user impress ticker"
         const val CLICK_LINK_INSIDE_TICKER = "user click link inside ticker"
         const val CLICK_CLOSE_TICKER = "user click close ticker"
     }

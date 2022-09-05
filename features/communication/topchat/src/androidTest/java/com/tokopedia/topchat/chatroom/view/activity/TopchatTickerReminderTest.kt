@@ -39,13 +39,12 @@ class TopchatTickerReminderTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun should_show_warning_ticker_when_gql_response_fraud_ticker() {
         // Given
-        val url = "tokopedia://home"
+        val url = "https://www.tokopedia.com/help/article/st-1030-jaga-keamanan-akun-tokopedia"
         val urlLabel = "<a href='https://www.tokopedia.com/help/article/st-1030-jaga-keamanan-akun-tokopedia'>Click disini</a>"
         val subText = "Hati-hati penipuan, ya! Hindari bertransaksi dan menghubungi penjual di luar Tokopedia."
         reminderTickerUseCase.response = reminderTickerUseCase.customTickerReminder(
             featureId = 2,
             subText = "$subText $urlLabel",
-            url = url,
             urlLabel = urlLabel,
             replyId = "1234",
             tickerType = "warning"
