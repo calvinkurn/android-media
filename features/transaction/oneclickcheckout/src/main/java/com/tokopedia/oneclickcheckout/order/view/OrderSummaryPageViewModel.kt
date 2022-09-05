@@ -441,10 +441,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         applyBbo(voucherOrderUiModel.code)
                     }
             }
-            if (orderShipment.value.isApplyLogisticPromo) {
-                // kalau sedang pakai BO, tapi tidak ada voucherOrder BOnya, maka unapply BOnya
-//                unApplyBbo()
-            }
         }
         displayingAdjustmentPromoToaster()
     }
@@ -452,8 +448,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private fun unApplyBbo(code: String) {
         orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
         promoProcessor.clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest, code)
-        // hit clear cache auto apply
-//        promoProcessor.clearOldLogisticPromo()
     }
 
     private fun applyBbo(code: String) {
