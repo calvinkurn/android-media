@@ -603,8 +603,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (prevState == state) return
 
         when(state.type) {
-            AccountStateInfoType.Live, AccountStateInfoType.Banned -> { showWaringInfoBottomSheet() }
-            AccountStateInfoType.NotAcceptTNC -> { showTermsAndConditionBottomSheet(state.tnc) }
+            AccountStateInfoType.Live, AccountStateInfoType.Banned -> showWaringInfoBottomSheet()
+            AccountStateInfoType.NotAcceptTNC -> showTermsAndConditionBottomSheet(state.tnc)
             AccountStateInfoType.NoUsername -> openUGCCompletionBottomSheet()
             AccountStateInfoType.Unknown -> return
         }
