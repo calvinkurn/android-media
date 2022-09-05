@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.PAGE_TYPE_PDP
+import com.tokopedia.affiliate.PAGE_TYPE_SHOP
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -40,6 +42,8 @@ class AffiliatePerformaSharedProductCardsItemVH(
 
         const val PRODUCT_ACTIVE = 1
         const val SPAN_COUNT = 3
+        private const val PRODUCT_ITEM = 0
+
     }
 
     override fun bind(element: AffiliatePerformaSharedProductCardsModel?) {
@@ -93,19 +97,41 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 itemView.findViewById<Typography>(R.id.product_status)?.text = getString(R.string.affiliate_inactive)
             }
             itemView.setOnClickListener {
-                sendSelectContentEvent(product)
+                if (product.itemType == PRODUCT_ITEM) sendSelectContentEvent(product) else sendShopClickEvent(product)
                 productClickInterface?.onProductClick(
                     product.itemID!!, product.itemTitle ?: "", product.image?.androidURL
                         ?: "", product.defaultLinkURL ?: "",
-                    product.itemID!!, product.status ?: 0
+                    product.itemID!!, product.status ?: 0,
+                    if (product.itemType == PRODUCT_ITEM) PAGE_TYPE_PDP else PAGE_TYPE_SHOP
                 )
             }
         }
     }
 
     private fun sendSelectContentEvent(product: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item) {
-        val label = if(product.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
-        AffiliateAnalytics.trackEventImpression(AffiliateAnalytics.EventKeys.SELECT_CONTENT,AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN,
-        AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,UserSession(itemView.context).userId,product.itemID,adapterPosition-1,product.itemTitle,"${product.itemID} - $label",AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT)
+        val label = if (product.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            UserSession(itemView.context).userId,
+            product.itemID,
+            adapterPosition-1,
+            "${product.itemID} - ${product.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${product.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${product.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $label",
+            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
+        )
+    }
+    private fun sendShopClickEvent(shop: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item){
+        val label = if (shop.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_SHOP_LINK_DENGAN_PERFORMA,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            UserSession(itemView.context).userId,
+            shop.itemID,
+            adapterPosition-1,
+            shop.itemTitle,
+            "${shop.itemID} - ${shop.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $label",
+            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT)
     }
 }
