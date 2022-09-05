@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DOUBLE_ZERO
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
@@ -1897,6 +1898,17 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `when the price range is null expect the price suggestion range to be pair of zeroes`() {
+        mProductPriceRecommendation.value = null
+        mAddProductPriceSuggestion.value = null
+        val expectedResult = DOUBLE_ZERO to DOUBLE_ZERO
+        val firstActualResult = viewModel.getProductPriceSuggestionRange(true)
+        val secondActualResult = viewModel.getProductPriceSuggestionRange(false)
+        assertEquals(expectedResult, firstActualResult)
+        assertEquals(expectedResult, secondActualResult)
+    }
+
+    @Test
     fun `when editing product expect the price suggestion range compiled from productPriceRecommendation`() {
         mProductPriceRecommendation.value = PriceSuggestionSuggestedPriceGet(
                 suggestedPriceMin = 10000.0,
@@ -2014,6 +2026,24 @@ class AddEditProductDetailViewModelTest {
                 hasVariant = true
         )
         assertFalse(isVisible)
+    }
+
+    @Test
+    fun `when price suggestion max and min limit is zero expect isPriceSuggestionRangeIsEmpty true`() {
+        val isRangeEmpty = viewModel.isPriceSuggestionRangeIsEmpty(DOUBLE_ZERO, DOUBLE_ZERO)
+        assertTrue(isRangeEmpty)
+    }
+
+    @Test
+    fun `when price suggestion min limit is not zero expect isPriceSuggestionRangeIsEmpty false`() {
+        val isRangeEmpty = viewModel.isPriceSuggestionRangeIsEmpty(1000.0, DOUBLE_ZERO)
+        assertFalse(isRangeEmpty)
+    }
+
+    @Test
+    fun `when price suggestion max limit is not zero expect isPriceSuggestionRangeIsEmpty false`() {
+        val isRangeEmpty = viewModel.isPriceSuggestionRangeIsEmpty(DOUBLE_ZERO, 1000.0)
+        assertFalse(isRangeEmpty)
     }
 
     private fun getIsTheLastOfWholeSaleTestResult(
