@@ -45,19 +45,20 @@ class GameSmallWidgetView : FrameLayout {
         binding.timerEngagementTools.pause()
     }
 
-    fun setTimer(duration: Long, onFinished: () -> Unit) {
+    fun setTimer(duration: Long, onFinished: () -> Unit, onTicked: ((millisUntilFinished: Long) -> Unit)) {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MILLISECOND, duration.toInt())
-        setTargetTime(calendar, onFinished)
+        setTargetTime(calendar, onFinished, onTicked)
     }
 
-    fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
+    fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit, onTicked: ((millisUntilFinished: Long) -> Unit)) {
         binding.timerEngagementTools.apply {
             visible()
             pause()
 
             targetDate = targetTime
             onFinish = onFinished
+            onTick = onTicked
 
             resume()
         }
