@@ -14,6 +14,7 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideEx
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListRequest
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListGlobalParentNotEnabled
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithBoPlusAsRecommendedPromo
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoRequestWithBoPromo
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoRequestWithSelectedExpandedMerchantPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
@@ -155,28 +156,28 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         assert(!validateUseRequest.orders[0].codes.contains(promoBo))
     }
 
-    // todo
     @Test
     fun `WHEN show BO promo and no same unique id in order clear param THEN should add new order clear param from get promo request`() {
         // given
         val promoList = providePromoListWithBoPlusAsRecommendedPromo()
-        val promoParam = providePromoRequestWithSelectedExpandedMerchantPromo()
-        val validateUseRequest = provideApplyPromoBoRequest()
+        val promoParam = providePromoRequestWithBoPromo()
+        val validateUseRequest = provideApplyPromoEmptyRequest()
+        validateUseRequest.orders = emptyList()
         val promoBo = "PLUSAA"
         val response = provideClearPromoResponseSuccess()
         val clearPromoRequest = ClearPromoRequest()
         viewModel.setPromoListValue(promoList)
+
         coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
         coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
             firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), validateUseRequest, ArrayList(), clearPromoRequest)
+        viewModel.clearPromo(promoParam, validateUseRequest, ArrayList(), clearPromoRequest)
 
         //then
         assert(clearPromoRequest.orderData.orders[0].codes.contains(promoBo))
-        assert(!validateUseRequest.orders[0].codes.contains(promoBo))
     }
 
     @Test

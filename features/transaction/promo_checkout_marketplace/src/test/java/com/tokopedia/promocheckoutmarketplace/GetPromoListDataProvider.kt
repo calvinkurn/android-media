@@ -7,6 +7,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutU
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoInputUiModel
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 
 object GetPromoListDataProvider {
@@ -131,6 +132,15 @@ object GetPromoListDataProvider {
         val response = provideGetPromoListResponseSuccessAllExpanded()
         val promoRequest = provideGetPromoListRequest()
         promoRequest.codes.add(response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0].code)
+
+        return promoRequest
+    }
+
+    fun providePromoRequestWithBoPromo(): PromoRequest {
+        val response = provideGetPromoListResponseSuccessWithBoPromo()
+        val promoRequest = provideGetPromoListRequest()
+        val boData = response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0].additionalBoData[0]
+        promoRequest.orders = listOf(Order(uniqueId = boData.uniqueId, codes = mutableListOf(boData.code)))
 
         return promoRequest
     }
