@@ -1577,20 +1577,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 warningInfoType = WarningType.LIVE
             }
             !selectedAccount.hasAcceptTnc -> {
-                if (selectedAccount.isShop) {
-                    _accountStateInfo.value = AccountStateInfo(
-                        type = AccountStateInfoType.NotAcceptTNC,
-                        selectedAccount = selectedAccount,
-                        tnc = configUiModel.tnc,
-                    )
-                } else {
-                    _accountStateInfo.value = AccountStateInfo(
-                        type = AccountStateInfoType.Banned,
-                        selectedAccount = selectedAccount,
-                        tnc = emptyList(),
-                    )
-                    warningInfoType = WarningType.BANNED
-                }
+                _accountStateInfo.value = AccountStateInfo(
+                    type = AccountStateInfoType.NotAcceptTNC,
+                    selectedAccount = selectedAccount,
+                    tnc = configUiModel.tnc,
+                )
             }
             !selectedAccount.hasUsername -> {
                 if (selectedAccount.isShop) return
