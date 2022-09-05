@@ -26,7 +26,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4" />
+            app:typographyType="display_1"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvDescEligiblePowerMerchant"
@@ -40,7 +41,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitleEligiblePowerMerchant"
-            app:typographyType="body_3" />
+            app:typographyType="display_3" />
 
         <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/cardEligiblePowerMerchant"
@@ -86,7 +87,7 @@
                     app:layout_constraintStart_toEndOf="@id/ic_pm_badge_eligible_status"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:typographyType="body_2"
+                    app:typographyType="display_2"
                     tools:text="@string/example_desc_pm_potential" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -101,7 +102,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@id/tv_pm_potential_value"
                     app:layout_constraintTop_toBottomOf="@id/tv_pm_potential_value"
-                    app:typographyType="body_2"
+                    app:typographyType="display_2"
                     app:typographyWeight="bold"
                     android:text="@string/see_all_benefit" />
 

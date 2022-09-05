@@ -64,7 +64,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC_END
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE_END
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
