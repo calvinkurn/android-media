@@ -12,7 +12,8 @@ data class TokoNowProductCardUiModel (
     val quantity: Int,
     var parentId: String,
     var product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType val type: String
+    @TokoNowLayoutType val type: String,
+    val position: Int
 ): Visitable<TokoNowProductCardTypeFactory>, ImpressHolder() {
 
     override fun type(typeFactory: TokoNowProductCardTypeFactory): Int {

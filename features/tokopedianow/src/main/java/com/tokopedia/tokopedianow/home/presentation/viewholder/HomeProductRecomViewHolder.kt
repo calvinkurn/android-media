@@ -98,7 +98,7 @@ class HomeProductRecomViewHolder(
         adapterPosition: Int
     ) {
         listener?.onRecomProductCardImpressed(
-            recomItem.copy(position = itemPosition),
+            recomItem,
             channelId,
             data.recommendationData.title,
             data.recommendationData.pageName,
@@ -120,7 +120,7 @@ class HomeProductRecomViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        listener?.onRecomProductCardClicked(recomItem, channelId, data.recommendationData.title, itemPosition.toString(), isOoc, applink)
+        listener?.onRecomProductCardClicked(recomItem, channelId, data.recommendationData.title, recomItem.position.toString(), isOoc, applink)
     }
 
     override fun onRecomProductCardAddToCartNonVariant(
@@ -129,7 +129,7 @@ class HomeProductRecomViewHolder(
         adapterPosition: Int,
         quantity: Int
     ) {
-        listener?.onProductRecomNonVariantClick(recomItem, quantity, data.recommendationData.title, channelId, adapterPosition.toString())
+        listener?.onProductRecomNonVariantClick(recomItem, quantity, data.recommendationData.title, channelId, recomItem.position.toString())
     }
 
     override fun onRecomProductCardAddVariantClick(
