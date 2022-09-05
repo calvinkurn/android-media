@@ -89,6 +89,8 @@ open class RecommendationPageViewModel @Inject constructor(
         const val POS_CPM = 1
         const val HEADLINE_PARAM_RECOM = "device=android&ep=cpm&headline_product_count=3&item=3&src=recom_google&st=product&template_id=2%2C3%2C4&page=1&q=&user_id="
         const val QUERY_PARAMS_GOOGLE_SHOPPING = "ref=googleshopping"
+        const val PARAM_RECOMPUSH_ANCHOR = "recom_1_recompush_anchor"
+        const val PARAM_RECOM_WIDGET = "recom_widget"
     }
     /**
      * public variable
@@ -213,7 +215,8 @@ open class RecommendationPageViewModel @Inject constructor(
                         productKey = "",
                         shopDomain = "",
                         urlParam = queryParam,
-                        pageName = ""
+                        pageName = PARAM_RECOMPUSH_ANCHOR,
+                        src = PARAM_RECOM_WIDGET
                 )
                 adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
                 val dataList = recommendationListLiveData.value?.toMutableList()
