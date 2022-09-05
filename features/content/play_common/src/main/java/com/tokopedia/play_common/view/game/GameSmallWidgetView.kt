@@ -58,7 +58,9 @@ class GameSmallWidgetView : FrameLayout {
 
             targetDate = targetTime
             onFinish = onFinished
-            onTick = onTicked
+            onTick = {
+                onTicked(it)
+            }
 
             resume()
         }

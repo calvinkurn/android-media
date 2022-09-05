@@ -37,6 +37,10 @@ class EngagementCarouselViewComponent(
             override fun onWidgetClicked(engagement: EngagementUiModel) {
                 listener.onWidgetClicked(this@EngagementCarouselViewComponent, engagement)
             }
+
+            override fun onWidgetTimerTick(engagement: EngagementUiModel.Game, timeInMillis: Long) {
+                //TODO("Not yet implemented")
+            }
         })
 
     private val snapHelper by lazy(LazyThreadSafetyMode.NONE) {

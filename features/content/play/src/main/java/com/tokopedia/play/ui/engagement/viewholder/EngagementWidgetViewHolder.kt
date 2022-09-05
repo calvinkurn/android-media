@@ -53,6 +53,9 @@ class EngagementWidgetViewHolder(
                 targetTime = current.startTime,
                 onDurationEnd = {
                     listener.onWidgetGameEnded(item)
+                },
+                onTick = {
+                    listener.onWidgetTimerTick(item,it)
                 }
             )
             is InteractiveUiModel.Giveaway.Status.Ongoing -> binding.setupOngoingGiveaway(
@@ -60,6 +63,9 @@ class EngagementWidgetViewHolder(
                 targetTime = current.endTime,
                 onDurationEnd = {
                     listener.onWidgetGameEnded(item)
+                },
+                onTick = {
+                    listener.onWidgetTimerTick(item,it)
                 }
             )
         }
@@ -72,6 +78,9 @@ class EngagementWidgetViewHolder(
                 targetTime = current.endTime,
                 onDurationEnd = {
                     listener.onWidgetGameEnded(item)
+                },
+                onTick = {
+                    listener.onWidgetTimerTick(item,it)
                 }
             )
         }
@@ -80,6 +89,7 @@ class EngagementWidgetViewHolder(
     interface Listener {
         fun onWidgetGameEnded(engagement: EngagementUiModel.Game)
         fun onWidgetClicked(engagement: EngagementUiModel)
+        fun onWidgetTimerTick(engagement: EngagementUiModel.Game, timeInMillis: Long)
     }
 }
 
