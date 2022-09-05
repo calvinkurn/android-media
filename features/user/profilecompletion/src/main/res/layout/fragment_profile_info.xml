@@ -15,7 +15,7 @@
             android:id="@+id/shimmer_profile_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
+            android:visibility="visible"
             layout="@layout/layout_shimmer_profile_info"/>
 
         <com.tokopedia.globalerror.GlobalError
@@ -29,7 +29,7 @@
             android:id="@+id/container_profile_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible"
+            android:visibility="gone"
             android:background="@color/Unify_Background">
 
             <com.tokopedia.unifycomponents.ticker.Ticker
