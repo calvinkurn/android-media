@@ -795,9 +795,20 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         } else {
             // If coupon is unselected, disabled, or clashing, remove from request param
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
+            // Remove BO code only if not disabled and not selected,
+            // because if bo code disabled, bo code still needed in param to get red state to perform unapply logic
             if (promoListItemUiModel.uiData.uniqueId == order?.uniqueId &&
                     order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.remove(promoListItemUiModel.uiData.promoCode)
+            } else if (!promoListItemUiModel.uiState.isSelected && promoListItemUiModel.uiState.isBebasOngkir && !promoListItemUiModel.uiState.isDisabled) {
+                val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
+                if (boData != null) {
+                    order?.let {
+                        if (it.codes.contains(boData.code)) {
+                            it.codes.remove(boData.code)
+                        }
+                    }
+                }
             } else if (promoListItemUiModel.uiData.shopId == 0 &&
                     validateUsePromoRequest.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 validateUsePromoRequest.codes.remove(promoListItemUiModel.uiData.promoCode)

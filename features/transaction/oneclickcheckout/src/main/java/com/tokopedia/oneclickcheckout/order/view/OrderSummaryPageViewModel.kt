@@ -738,15 +738,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
             val (resultValidateUse, newGlobalEvent, isAkamaiError) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel, forceValidateUse)
             when {
-                newGlobalEvent != null && isAkamaiError -> {
+                isAkamaiError && newGlobalEvent != null -> {
                     resetBbo()
                     clearAllPromoFromLastRequest()
                     calculateTotal()
-                    globalEvent.value = newGlobalEvent
-                }
-                newGlobalEvent != null && !isAkamaiError -> {
-                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
-                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                     globalEvent.value = newGlobalEvent
                 }
                 resultValidateUse != null -> {
@@ -755,6 +750,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     if (newGlobalEvent != null) {
                         globalEvent.value = newGlobalEvent
                     }
+                }
+                newGlobalEvent != null && !isAkamaiError -> {
+                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+                    globalEvent.value = newGlobalEvent
                 }
                 else -> {
                     validateUsePromoRevampUiModel = null
