@@ -65,7 +65,13 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
+
+        arguments?.let {
+            isUseCropping = it.getBoolean(EXTRA_USE_CROPPING).orFalse()
+            isUseCompression = it.getBoolean(EXTRA_USE_COMPRESSION).orFalse()
+            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orZero()
+        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -76,11 +82,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.let {
-            isUseCropping = it.getBoolean(EXTRA_USE_CROPPING).orFalse()
-            isUseCompression = it.getBoolean(EXTRA_USE_COMPRESSION).orFalse()
-            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orZero()
-        }
+        analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
 
         setupView()
         showCameraView()
