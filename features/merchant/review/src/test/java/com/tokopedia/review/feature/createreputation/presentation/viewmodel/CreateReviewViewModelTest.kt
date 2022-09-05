@@ -21,12 +21,12 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProgressBarUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewSubmitButtonUiState
-import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateItemUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTickerUiState
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTopicsUiState
 import com.tokopedia.review.utils.assertInstanceOf
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
@@ -280,13 +280,38 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3`() = runBlockingTest {
-        mockSuccessGetReputationForm()
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_raw_string_format when selected rating is more than 3, placeholder from BE is not blank and review topics inspiration is enabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
+            mockSuccessGetReputationForm()
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData(rating = 4)
+            val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+            Assert.assertEquals(R.string.review_raw_string_format, textAreaUiState.hint.id)
+            Assert.assertEquals(listOf("Contoh: Kualitas materialnya bagus, bikin panas & matangnya rata. Ukuran ini pas buat masak sehari-hari. Wajib punya, deh \uD83D\uDC4D"), textAreaUiState.hint.params)
+        }
+    }
+
+    @Test
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3 and placeholder from BE is blank`() = runBlockingTest {
+        mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessValidWithEmptyPlaceholder)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 4)
         val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
         Assert.assertEquals(R.string.review_form_good_helper, textAreaUiState.hint.id)
+    }
+
+    @Test
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3 and review topics inspiration is disabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "control_variant") {
+            mockSuccessGetReputationForm()
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData(rating = 4)
+            val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+            Assert.assertEquals(R.string.review_form_good_helper, textAreaUiState.hint.id)
+        }
     }
 
     @Test
@@ -802,6 +827,61 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when canRenderForm is false and review topics inspiration is enabled`() = runBlockingTest {
+        mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessProductDeleted)
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when postSubmitReviewResult is not success and review topics inspiration is enabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
+            mockErrorGetReputationForm()
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData()
+            assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+        }
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when keywords is empty and review topics inspiration is enabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
+            mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessValidWithEmptyKeywords)
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData()
+            assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+        }
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when keywords is not empty and review topics inspiration is disabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "control_variant") {
+            setShouldRunReviewTopicsPeekAnimation()
+            mockSuccessGetReputationForm()
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData()
+            assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+        }
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Showing when keywords is not empty and review topics inspiration is enabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
+            setShouldRunReviewTopicsPeekAnimation()
+            mockSuccessGetReputationForm()
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData()
+            assertInstanceOf<CreateReviewTopicsUiState.Showing>(viewModel.topicsUiState.first())
+        }
+    }
+
+    @Test
     fun `should enqueue toaster error when submit review returns error`() = runBlockingTest {
         val expectedToasterQueue = CreateReviewToasterUiModel(
             message = StringRes(R.string.review_create_fail_toaster),
@@ -928,7 +1008,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val templateToSelect = (viewModel.templateUiState.first().templates.first().uiState as CreateReviewTemplateItemUiState.Showing).data
+        val templateToSelect = viewModel.templateUiState.first().templates.first().data
         viewModel.selectTemplate(templateToSelect)
         Assert.assertEquals(templateToSelect.text, (viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing).reviewTextAreaTextUiModel.text)
     }
@@ -1259,7 +1339,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val templateToSelect = (viewModel.templateUiState.first().templates.last().uiState as CreateReviewTemplateItemUiState.Showing).data
+        val templateToSelect = viewModel.templateUiState.first().templates.last().data
         viewModel.selectTemplate(templateToSelect)
         viewModel.templateUiState.first()
         Assert.assertEquals(1, viewModel.getSelectedTemplateCount())
@@ -1480,7 +1560,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockk<Bundle>(relaxed = true) {
             every { this@mockk.get(any()) } answers {
                 when (args.first()) {
-                    "savedStateReviewForm" -> ReviewFormRequestSuccessState(getReputationFormUseCaseResultSuccessValid)
+                    "savedStateReviewForm" -> ReviewFormRequestSuccessState(getReputationFormUseCaseResultSuccessValidWithNonEmptyKeywords)
                     "savedStateIncentiveOvo" -> IncentiveOvoRequestSuccessState(getProductIncentiveOvoUseCaseResultSuccessIncentive)
                     "savedStateReviewTemplate" -> ReviewTemplateRequestSuccessState(emptyList())
                     "savedStateBadRatingCategories" -> BadRatingCategoriesRequestSuccessState(getBadRatingCategoryUseCaseResultSuccessNonEmpty.productrevGetBadRatingCategory.list)
@@ -1527,5 +1607,17 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             verify { this@mockk.get("savedStateProductId") }
             verify { this@mockk.get("savedStateReputationId") }
         }
+    }
+
+    @Test
+    fun `setBottomSheetBottomInset should update createReviewBottomSheetUiState when createReviewBottomSheetUiState is CreateReviewBottomSheetUiState#Showing`() = runBlockingTest {
+        val expectedInset = 100
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.setBottomSheetBottomInset(expectedInset)
+        val createReviewBottomSheetUiState = viewModel.createReviewBottomSheetUiState.first()
+        Assert.assertEquals(expectedInset, (createReviewBottomSheetUiState as CreateReviewBottomSheetUiState.Showing).bottomInset)
     }
 }

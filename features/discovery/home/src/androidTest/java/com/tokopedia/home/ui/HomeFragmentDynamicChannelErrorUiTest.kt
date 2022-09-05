@@ -18,6 +18,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_ERROR_COUN
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
+import com.tokopedia.home.ui.HomeMockValueHelper.setupDynamicChannelQueryRemoteConfig
 import com.tokopedia.home.ui.HomeMockValueHelper.setupRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
@@ -53,6 +54,7 @@ class HomeFragmentDynamicChannelErrorUiTest {
             disableCoachMark(context)
             setupAbTestRemoteConfig()
             setupRemoteConfig()
+            setupDynamicChannelQueryRemoteConfig()
             super.beforeActivityLaunched()
         }
     }
