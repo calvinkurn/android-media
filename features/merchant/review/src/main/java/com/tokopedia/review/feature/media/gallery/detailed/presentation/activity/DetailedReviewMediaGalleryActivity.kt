@@ -559,12 +559,12 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         private val callback = Callback()
 
         fun attachListener() {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.registerNetworkCallback(networkRequest, callback)
         }
 
         fun detachListener() {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.unregisterNetworkCallback(callback)
         }
 
