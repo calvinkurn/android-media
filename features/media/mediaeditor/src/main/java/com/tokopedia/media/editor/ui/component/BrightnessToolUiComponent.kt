@@ -3,7 +3,7 @@ package com.tokopedia.media.editor.ui.component
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.ui.component.slider.EditorSliderView
+import com.tokopedia.media.editor.ui.widget.slider.EditorSliderView
 import com.tokopedia.picker.common.basecomponent.UiComponent
 
 class BrightnessToolUiComponent constructor(

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.ui.component.slider.EditorSliderView
+import com.tokopedia.media.editor.ui.widget.slider.EditorSliderView
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.basecomponent.UiComponent
 

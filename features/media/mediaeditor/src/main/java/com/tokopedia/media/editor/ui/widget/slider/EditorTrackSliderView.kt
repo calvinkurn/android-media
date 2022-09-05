@@ -1,11 +1,10 @@
-package com.tokopedia.media.editor.ui.component.slider
+package com.tokopedia.media.editor.ui.widget.slider
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.R
 import com.tokopedia.unifyprinciples.R as PrincipleR

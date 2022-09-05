@@ -1,4 +1,4 @@
-package com.tokopedia.media.editor.ui.component.slider
+package com.tokopedia.media.editor.ui.widget.slider
 
 import android.annotation.SuppressLint
 import android.content.Context
