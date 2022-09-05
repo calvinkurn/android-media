@@ -39,4 +39,5 @@ object AddEditProductConstants {
     const val DELAY_MILLIS = 1000L
 
     const val FIRST_CATEGORY_SELECTED = 0
+    const val DOUBLE_ZERO = 0.0
 }

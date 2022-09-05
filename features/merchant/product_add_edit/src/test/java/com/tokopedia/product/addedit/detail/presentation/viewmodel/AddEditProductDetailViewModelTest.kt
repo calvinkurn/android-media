@@ -158,6 +158,16 @@ class AddEditProductDetailViewModelTest {
         (getPrivateField(viewModel, "stockAllocationDefaultMessage") as? String) ?: "invalid"
     }
 
+    @Suppress("UNCHECKED_CAST")
+    private val mProductPriceRecommendation: MutableLiveData<PriceSuggestionSuggestedPriceGet> by lazy {
+        getPrivateField(viewModel, "mProductPriceRecommendation") as MutableLiveData<PriceSuggestionSuggestedPriceGet>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mAddProductPriceSuggestion: MutableLiveData<PriceSuggestionByKeyword> by lazy {
+        getPrivateField(viewModel, "mAddProductPriceSuggestion") as MutableLiveData<PriceSuggestionByKeyword>
+    }
+
     private val viewModel: AddEditProductDetailViewModel by lazy {
         AddEditProductDetailViewModel(provider, CoroutineTestDispatchersProvider,
                 getNameRecommendationUseCase, getCategoryRecommendationUseCase,
@@ -1793,7 +1803,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `when suggestions is empty expect similar products is empty`() {
+    fun `when the list of similar product from response is empty the expect list of similar product to be empty`() {
         val testData = PriceSuggestionByKeyword(
                 summary = PriceSuggestionSuggestedPriceByKeywordSummary(
                         suggestedPrice = 8000.0,
@@ -1801,6 +1811,13 @@ class AddEditProductDetailViewModelTest {
                         suggestedPriceMax = 10000.0
                 ), suggestions = listOf()
         )
+        val actualResult = viewModel.mapAddPriceSuggestionToPriceSuggestionUiModel(testData)
+        assertTrue(actualResult.similarProducts.isEmpty())
+    }
+
+    @Test
+    fun `when price suggestion data is null expect default values and empty list of similar product`() {
+        val testData = PriceSuggestionByKeyword(summary = null, suggestions = null)
         val actualResult = viewModel.mapAddPriceSuggestionToPriceSuggestionUiModel(testData)
         assertTrue(actualResult.similarProducts.isEmpty())
     }
@@ -1878,6 +1895,31 @@ class AddEditProductDetailViewModelTest {
         val actualResult = viewModel.mapEditPriceSuggestionToPriceSuggestionUiModel(testData)
         assertEquals(expectedResult, actualResult)
     }
+
+    @Test
+    fun `when editing product expect the price suggestion range compiled from productPriceRecommendation`() {
+        mProductPriceRecommendation.value = PriceSuggestionSuggestedPriceGet(
+                suggestedPriceMin = 10000.0,
+                suggestedPriceMax = 20000.0
+        )
+        val expectedResult = 10000.0 to 20000.0
+        val actualResult = viewModel.getProductPriceSuggestionRange(true)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when adding product expect the price suggestion range compiled from addProductPriceSuggestion`() {
+        mAddProductPriceSuggestion.value = PriceSuggestionByKeyword(
+                summary = PriceSuggestionSuggestedPriceByKeywordSummary(
+                        suggestedPriceMin = 10000.0,
+                        suggestedPriceMax = 20000.0
+                )
+        )
+        val expectedResult = 10000.0 to 20000.0
+        val actualResult = viewModel.getProductPriceSuggestionRange(false)
+        assertEquals(expectedResult, actualResult)
+    }
+
     @Test
     fun `when the price input is below the price suggestion range expect is competitive true`() {
         val priceSuggestionRange = 5000.0 to 10000.0
@@ -1887,7 +1929,24 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `when the price input within the price suggestion range expect is competitive true`() {
+    fun `when the price input is error expect isCompetitive false`() {
+        val priceSuggestionRange = 5000.0 to 10000.0
+        val productPrice = 6000.0
+        val isError = true
+        val isCompetitive = viewModel.isProductPriceCompetitive(productPrice, priceSuggestionRange, isError)
+        assertFalse(isCompetitive)
+    }
+
+    @Test
+    fun `when the price input below the price suggestion range expect isCompetitive true`() {
+        val priceSuggestionRange = 5000.0 to 10000.0
+        val productPrice = 4000.0
+        val isCompetitive = viewModel.isProductPriceCompetitive(productPrice, priceSuggestionRange)
+        assertTrue(isCompetitive)
+    }
+
+    @Test
+    fun `when the price input within the price suggestion range expect isCompetitive true`() {
         val priceSuggestionRange = 5000.0 to 10000.0
         val productPrice = 6000.0
         val isCompetitive = viewModel.isProductPriceCompetitive(productPrice, priceSuggestionRange)
@@ -1895,7 +1954,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `when the price input is over the price suggestion range expect is competitive false`() {
+    fun `when the price input is over the price suggestion range expect isCompetitive false`() {
         val priceSuggestionRange = 5000.0 to 10000.0
         val productPrice = 11000.0
         val isCompetitive = viewModel.isProductPriceCompetitive(productPrice, priceSuggestionRange)

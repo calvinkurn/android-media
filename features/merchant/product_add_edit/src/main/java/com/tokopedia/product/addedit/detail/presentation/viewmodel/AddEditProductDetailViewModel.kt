@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DOUBLE_ZERO
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -829,7 +830,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun isPriceSuggestionRangeIsEmpty(minLimit: Double, maxLimit: Double): Boolean {
-        return minLimit == 0.0 && maxLimit == 0.0
+        return minLimit == DOUBLE_ZERO && maxLimit == DOUBLE_ZERO
     }
 
     /**
