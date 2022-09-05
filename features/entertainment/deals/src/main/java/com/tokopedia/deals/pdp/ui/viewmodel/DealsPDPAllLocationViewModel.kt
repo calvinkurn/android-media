@@ -15,8 +15,6 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 class DealsPDPAllLocationViewModel @Inject constructor(dispatcher: CoroutineDispatchers):
     BaseViewModel(dispatcher.main) {
 

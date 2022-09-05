@@ -1,13 +1,19 @@
 package com.tokopedia.deals.pdp.ui.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailSelectQuantityBinding
 import com.tokopedia.deals.pdp.data.ProductDetailData
@@ -20,16 +26,26 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.QuantityEditorUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.math.min
+import kotlinx.coroutines.flow.collect
 
 class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var userSession: UserSessionInterface
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(DealsPDPSelectQuantityViewModel::class.java)
     }
@@ -44,6 +60,9 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
     private var tgMrp: Typography? = null
     private var tgSalesPrice: Typography? = null
     private var tgTotalAmount: Typography? = null
+    private var btnCheckout: UnifyButton? = null
+    private var progressBar: LoaderUnify? = null
+    private var progressBarLayout: FrameLayout? = null
 
     override fun initInjector() {
         getComponent(DealsPDPComponent::class.java).inject(this)
@@ -68,8 +87,20 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUi()
+        observeFlowData()
         setupHeader()
         renderUi()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_LOGIN -> context?.let {
+                    goToCheckout()
+                }
+            }
+        }
     }
 
     private fun setupUi() {
@@ -82,6 +113,9 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
             tgSalesPrice = binding?.tgSalesPrice
             tgTotalAmount = binding?.tgTotalAmount
             quantityEditor = binding?.qtyEditor
+            btnCheckout = binding?.btnContinue
+            progressBar = binding?.progressBar
+            progressBarLayout = binding?.progressBarLayout
         }
     }
 
@@ -119,6 +153,15 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
                 setQuantity(newValue)
                 updateTotalAmount(salesPrice)
             }
+            btnCheckout?.setOnClickListener {
+                if (userSession.isLoggedIn) {
+                    goToCheckout()
+                } else {
+                    startActivityForResult(
+                        RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
+                }
+            }
         }
     }
 
@@ -132,7 +175,53 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
         tgTotalAmount?.text = DealsUtils.convertToCurrencyString(getCurrentQuantity() * salesPrice)
     }
 
+    private fun goToCheckout() {
+        showProgressBar()
+        verifyCheckout()
+    }
+
+    private fun verifyCheckout() {
+        productDetailData?.let {
+            viewModel.setVerifyRequest(it)
+        }
+    }
+
+    private fun showProgressBar() {
+        progressBarLayout?.show()
+        progressBar?.show()
+    }
+
+    private fun hideProgressBar() {
+        progressBarLayout?.hide()
+        progressBar?.hide()
+    }
+
+    private fun observeFlowData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowVerify.collect {
+                hideProgressBar()
+                when (it) {
+                    is Success -> {
+                        //goto checkout
+                        view?.let {
+                            Toaster.build(it, "Yoi", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                        }
+                    }
+
+                    is Fail -> {
+                        val error = ErrorHandler.getErrorMessage(context, it.throwable)
+                        view?.let {
+                            Toaster.build(it, error, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
     companion object {
+        const val REQUEST_CODE_LOGIN = 101
         private const val EXTRA_PRODUCT_DATA = "EXTRA_PRODUCT_DATA"
 
         fun createInstance(data: ProductDetailData): DealsPDPSelectDealsQuantityFragment {
