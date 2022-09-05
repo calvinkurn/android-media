@@ -45,15 +45,7 @@ class GraphqlRepositoryStub : GraphqlRepository {
                             || (param.get("param") as Map<String, Any>).get("biography").toString().equals(BioUsernameInstrumentTest.BIO_FAILED)) {
                         GraphqlResponse(
                                   mapOf(SubmitBioUsernameResponse::class.java to SubmitBioUsernameResponse(
-                                        SubmitBioUsername(status = false))), mapOf(SubmitBioUsernameResponse::class.java to listOf(GraphqlError().apply {
-                            message = ERROR_MESSAGE_USERNAME
-                            path = listOf("feedXProfileSubmit")
-                            extensions = Extensions().apply {
-                                code = 11001
-                                developerMessage = BioUsernameInstrumentTest.ERROR_MESSAGE_DEVELOPER
-                            }
-
-                        })), false)
+                                        SubmitBioUsername(status = false))), mapOf(SubmitBioUsernameResponse::class.java to listOf(AndroidFileUtil.parse(R.raw.error_profile_submit, GraphqlError::class.java))), false)
                     }
                     else
                         GraphqlResponse(

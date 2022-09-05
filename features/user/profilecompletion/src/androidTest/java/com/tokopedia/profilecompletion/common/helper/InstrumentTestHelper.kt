@@ -48,9 +48,9 @@ fun clickViewHolder(title: String, action: ViewAction? = null) {
         }
     }
     if (action == null)
-        Espresso.onView(ViewMatchers.withId(R.id.fragmentProfileInfoRv)).perform(RecyclerViewActions.scrollToHolder(matcher), RecyclerViewActions.actionOnHolderItem(matcher, ViewActions.click()))
+        Espresso.onView(withId(R.id.fragmentProfileInfoRv)).perform(RecyclerViewActions.scrollToHolder(matcher), RecyclerViewActions.actionOnHolderItem(matcher, ViewActions.click()))
     else
-        Espresso.onView(ViewMatchers.withId(R.id.fragmentProfileInfoRv)).perform(RecyclerViewActions.scrollToHolder(matcher), RecyclerViewActions.actionOnHolderItem(matcher, action))
+        Espresso.onView(withId(R.id.fragmentProfileInfoRv)).perform(RecyclerViewActions.scrollToHolder(matcher), RecyclerViewActions.actionOnHolderItem(matcher, action))
 }
 
 fun <T : View> clickChildWithViewId(resId: Int): ViewAction {
@@ -64,7 +64,7 @@ fun <T : View> clickChildWithViewId(resId: Int): ViewAction {
         }
 
         override fun perform(uiController: UiController, view: View) {
-            ViewActions.click().perform(uiController, view.findViewById(resId))
+            click().perform(uiController, view.findViewById(resId))
         }
 
     }
@@ -76,46 +76,9 @@ fun goToAnotherActivity(type: Type?, specifyClass: Boolean = true) {
     else Intents.intending(IntentMatchers.anyIntent()).respondWith(result)
 }
 
-fun waitForView(viewId: Int, timeout: Long): ViewAction {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View> {
-            return isRoot()
-        }
-
-        override fun getDescription(): String {
-            return "wait for a specific view with id $viewId; during $timeout millis."
-        }
-
-        override fun perform(uiController: UiController, rootView: View) {
-            uiController.loopMainThreadUntilIdle()
-            val startTime = System.currentTimeMillis()
-            val endTime = startTime + timeout
-            val viewMatcher = withId(viewId)
-
-            do {
-                // Iterate through all views on the screen and see if the view we are looking for is there already
-                for (child in TreeIterables.breadthFirstViewTraversal(rootView)) {
-                    // found view with required ID
-                    if (viewMatcher.matches(child)) {
-                        return
-                    }
-                }
-                // Loops the main thread for a specified period of time.
-                // Control may not return immediately, instead it'll return after the provided delay has passed and the queue is in an idle state again.
-                uiController.loopMainThreadForAtLeast(100)
-            } while (System.currentTimeMillis() < endTime) // in case of a timeout we throw an exception -> test fails
-            throw PerformException.Builder()
-                    .withCause(TimeoutException())
-                    .withActionDescription(this.description)
-                    .withViewDescription(HumanReadables.describe(rootView))
-                    .build()
-        }
-    }
-}
-
 fun checkToasterShowing(message: String) {
     Thread.sleep(1000)
-    Espresso.onView(withSubstring(message)).perform().check(matches(withEffectiveVisibility(Visibility.VISIBLE)));
+    Espresso.onView(withSubstring(message)).perform().check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
 }
 
 fun isViewsExists(resIds: List<Int>) {
@@ -128,7 +91,7 @@ fun checkTextOnEditText(id: Int, text: String) {
     Espresso.onView(allOf(supportsInputMethods(), isDescendantOfA(withId(id)))).check(matches(withText(text)))
 }
 
-fun typeTextOnEditText(id: Int, text: String) {
+fun typingTextOn(id: Int, text: String) {
     Espresso.onView(allOf(supportsInputMethods(), isDescendantOfA(withId(id))))
             .perform(clearText(), typeText(text))
     Thread.sleep(3000)
