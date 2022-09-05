@@ -2148,7 +2148,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     getView().hideLoading();
                                     getView().setHasRunningApiCall(false);
                                     if (setShippingAddressData.isSuccess()) {
-                                        getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
+                                        if (setShippingAddressData.getMessages().isEmpty()) {
+                                            getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
+                                        } else {
+                                            getView().showToastNormal(setShippingAddressData.getMessages().get(0));
+                                        }
                                         hitClearAllBo();
                                         getView().renderChangeAddressSuccess(reloadCheckoutPage);
                                     } else {
