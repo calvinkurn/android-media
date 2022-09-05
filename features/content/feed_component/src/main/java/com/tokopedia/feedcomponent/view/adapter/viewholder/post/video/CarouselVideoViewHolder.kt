@@ -113,6 +113,10 @@ class CarouselVideoViewHolder(
             toggleMute(item)
         }
 
+        frameVideo.setOnClickListener {
+            toggleMute(item)
+            runAutoHideMute()
+        }
     }
 
     private fun toggleMute(media: FeedXMedia) {
@@ -149,6 +153,8 @@ class CarouselVideoViewHolder(
         videoPlayer?.destroy()
         videoPlayer = null
         layoutVideo.player = null
+
+        isMuted = true
 
         videoPreviewImage.visible()
         icPlay.visible()
@@ -197,11 +203,8 @@ class CarouselVideoViewHolder(
             videoPlayer = FeedExoPlayer(itemView.context)
             layoutVideo.player = videoPlayer?.getExoPlayer()
             layoutVideo.videoSurfaceView?.setOnClickListener {
-                toggleMute(media)
-                runAutoHideMute()
                 listener.onVideoSurfaceTapped(this, media, isMuted)
             }
-            videoPlayer?.toggleVideoVolume(isMuted)
             videoPlayer?.setVideoStateListener(createVideoStateListener(media))
         }
         media.canPlay = true

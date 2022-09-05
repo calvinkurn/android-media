@@ -42,7 +42,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import com.tokopedia.feedcomponent.R as feedComponentR
-import com.tokopedia.kol.R as kolR
 
 class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     context: Context,
@@ -1054,21 +1053,14 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
         adapter.focusItemAt(pageControl.indicatorCurrentPosition)
-        if (mData.isTypeVOD)
-            feedVODViewHolder.onResume()
+        feedVODViewHolder.onResume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     internal fun onPause() {
         adapter.onPause()
-        if (mData.isTypeVOD)
         feedVODViewHolder.onPause()
         job.cancelChildren()
-    }
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    internal fun onDestroy() {
-        if (mData.isTypeVOD)
-        feedVODViewHolder.onDestroy()
     }
 
     companion object {
