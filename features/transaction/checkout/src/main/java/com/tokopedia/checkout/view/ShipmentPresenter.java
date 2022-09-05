@@ -2572,7 +2572,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null
                     && unprocessedUniqueIds.contains(shipmentCartItemModel.getCartString())) {
-                doUnapplyBo(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
+                doUnapplyBo(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                 reloadedUniqueIds.add(shipmentCartItemModel.getCartString());
             }
         }
@@ -2585,22 +2585,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (itemAdapterPosition != -1) {
             getView().resetCourier(itemAdapterPosition);
             if (shipmentCartItemModel != null) {
-                clearCacheAutoApply(shipmentCartItemModel);
+                clearCacheAutoApply(shipmentCartItemModel, promoCode);
             }
             clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode);
             getView().onNeedUpdateViewItem(itemAdapterPosition);
         }
     }
 
-    private void clearCacheAutoApply(ShipmentCartItemModel shipmentCartItemModel) {
+    private void clearCacheAutoApply(ShipmentCartItemModel shipmentCartItemModel, String promoCode) {
         final List<String> globalCodes = new ArrayList<>();
-        globalCodes.add(shipmentCartItemModel.getBoCode());
         final List<ClearPromoOrder> clearOrders = new ArrayList<>();
-        for (OrdersItem ordersItem : lastValidateUsePromoRequest.getOrders()) {
-            if (ordersItem != null && ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
-                clearOrders.add(new ClearPromoOrder(ordersItem.getUniqueId(), ordersItem.getBoType(), ordersItem.getCodes()));
-            }
-        }
+        final List<String> promoCodes = new ArrayList<>();
+        promoCodes.add(promoCode);
+        clearOrders.add(new ClearPromoOrder(shipmentCartItemModel.getCartString(),
+                shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(), promoCodes));
         final ClearPromoRequest params = new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                 false, new ClearPromoOrderData(globalCodes, clearOrders));
         clearCacheAutoApplyStackUseCase.setParams(params);
