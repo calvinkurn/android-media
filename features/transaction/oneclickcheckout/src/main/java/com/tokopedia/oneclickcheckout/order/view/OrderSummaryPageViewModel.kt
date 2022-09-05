@@ -444,7 +444,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         applyBbo(voucherOrderUiModel.code)
                     }
             }
-            if (orderShipment.value.isApplyLogisticPromo && hasApplyOrUnApply) {
+            if (orderShipment.value.isApplyLogisticPromo && !hasApplyOrUnApply) {
                 // if use BO but voucher BO didn't exist
                 orderShipment.value.logisticPromoViewModel?.let { logisticPromo -> unApplyBbo(logisticPromo.promoCode) }
             }
