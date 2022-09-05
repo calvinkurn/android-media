@@ -32,6 +32,7 @@ public class RemoteConfigKey {
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
     public static final String APP_SHOW_AFFILIATES_BUTTON = "old_home_account_show_affiliates";
+    public static final String ENABLE_EPHARMACY_UPLOAD_PAGE = "android_main_app_enable_epharmacy_page";
 
     public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
     public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
@@ -293,13 +294,13 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_PRODUCT_CARD_VIEWSTUB = "android_mainapp_enable_product_card_viewstub";
 
-    public static final String ENABLE_OLD_BUNDLE_SELECTION_PAGE = "android_enable_old_bundle_selection_page";
-
     public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
 
     public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
 
     public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
+
+    public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
 
     public static final String ENABLE_OLD_IKLAN_PROMOSI_PAGE = "android_enable_old_iklan_promosi_page";
 }

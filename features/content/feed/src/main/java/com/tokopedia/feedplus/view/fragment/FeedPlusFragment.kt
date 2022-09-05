@@ -51,7 +51,6 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -104,14 +103,9 @@ import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
-import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
-import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
-import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
@@ -127,7 +121,6 @@ import com.tokopedia.play.widget.analytic.global.model.PlayWidgetFeedsAnalyticMo
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener
@@ -181,7 +174,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     VideoViewHolder.VideoViewListener,
     FeedMultipleImageView.FeedMultipleImageViewListener,
     HighlightAdapter.HighlightListener,
-    InterestPickAdapter.InterestPickItemListener,
     EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener,
     RetryViewHolder.RetryViewHolderListener,
     EmptyFeedViewHolder.EmptyFeedListener,
@@ -252,7 +244,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val OPEN_KOL_COMMENT = 101
         private const val OPEN_CONTENT_REPORT = 1310
         private const val CREATE_POST = 888
-        private const val OPEN_INTERESTPICK_RECOM_PROFILE = 1235
         private const val DEFAULT_VALUE = -1
         private const val OPEN_PLAY_CHANNEL = 1858
         private const val OPEN_VIDEO_DETAIL = 1311
@@ -363,21 +354,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         super.onActivityCreated(savedInstanceState)
         val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
         feedViewModel.run {
-            onboardingResp.observe(lifecycleOwner, Observer {
-                hideAdapterLoading()
-                when (it) {
-                    is Success -> onSuccessGetOnboardingData(it.data)
-                    is Fail -> fetchFirstPage()
-                }
-            })
-
-            submitInterestPickResp.observe(lifecycleOwner, Observer {
-                view?.hideLoadingTransparent()
-                when (it) {
-                    is Fail -> onErrorSubmitInterestPickData(it.throwable)
-                }
-            })
-
             getFeedFirstPageResp.observe(lifecycleOwner, Observer {
                 finishLoading()
                 when (it) {
@@ -674,7 +650,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             setAnalyticModel(PlayWidgetFeedsAnalyticModel())
             setImpressionHelper(ImpressionHelper(validator = playWidgetImpressionValidator))
         }
-        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this, playWidgetCoordinator)
+        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, playWidgetCoordinator)
         adapter = FeedPlusAdapter(typeFactory, this)
 
         val loginIdString = userSession.userId
@@ -768,6 +744,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        onRefresh()
+
         recyclerView.addOnScrollListener(feedFloatingButtonManager.scrollListener)
         feedFloatingButtonManager.setDelayForExpandFab(recyclerView)
     }
@@ -823,7 +802,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onRefresh() {
         newFeed.visibility = View.GONE
-        feedViewModel.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
+        hideAdapterLoading()
+        fetchFirstPage()
         afterRefresh = true
         TopAdsHeadlineActivityCounter.page = 1
     }
@@ -1188,7 +1168,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         activity?.let {
             if (isVisibleToUser && isAdded) {
                 if (!isLoadedOnce) {
-                    feedViewModel.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
                     isLoadedOnce = !isLoadedOnce
                 }
                 if (afterPost) {
@@ -2663,54 +2642,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
-        feedAnalytics.eventClickFeedInterestPick(item.name)
-    }
-
-    @Deprecated("Removed when interest_common is removed")
-    override fun onLihatSemuaItemClicked(selectedItemList: List<InterestPickDataViewModel>) {}
-
-    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<InterestPickDataViewModel>) {
-        view?.showLoadingTransparent()
-        feedAnalytics.eventClickFeedCheckAccount(selectedItemList.size.toString())
-        feedViewModel.submitInterestPickData(
-            selectedItemList,
-            FeedViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK,
-            OPEN_INTERESTPICK_RECOM_PROFILE
-        )
-    }
-
     private fun fetchFirstPage() {
         showRefresh()
         adapter.showShimmer()
         feedViewModel.getFeedFirstPage()
         afterRefresh = false
-    }
-
-    private fun onSuccessGetOnboardingData(data: OnboardingViewModel) {
-        if (!data.isEnableOnboarding) {
-            fetchFirstPage()
-        } else {
-            finishLoading()
-            clearData()
-            val feedOnBoardingData: MutableList<InterestPickDataViewModel> = mutableListOf()
-            feedOnBoardingData.addAll(data.dataList)
-            data.dataList = feedOnBoardingData
-            adapter.addItem(data)
-            parentFragment?.let {
-                (it as FeedPlusContainerFragment).hideAllFab()
-            }
-            swipe_refresh_layout.isRefreshing = false
-            swipe_refresh_layout.isEnabled = false
-        }
-    }
-
-    private fun onErrorSubmitInterestPickData(throwable: Throwable) {
-        Toaster.build(
-            requireView(),
-            ErrorHandler.getErrorMessage(activity, throwable),
-            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR
-        )
     }
 
     private fun onSuccessGetFirstFeed(firstPageDomainModel: DynamicFeedFirstPageDomainModel) {
@@ -2741,10 +2677,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
         } else {
             onShowEmpty()
-        }
-
-        if (firstPageDomainModel.isInterestWhitelist) {
-            showInterestPick()
         }
 
         sendMoEngageOpenFeedEvent()
@@ -3132,17 +3064,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun finishLoading() {
         swipeToRefresh.isRefreshing = false
-    }
-
-    private fun showInterestPick() {
-        if (context != null && isEnableInterestPick()) {
-            RouteManager.route(context, ApplinkConst.INTEREST_PICK)
-        }
-    }
-
-    private fun isEnableInterestPick(): Boolean {
-        val remoteConfig = FirebaseRemoteConfigImpl(requireContext())
-        return remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_INTEREST_PICK, true)
     }
 
     private fun onShowRetryGetFeed() {

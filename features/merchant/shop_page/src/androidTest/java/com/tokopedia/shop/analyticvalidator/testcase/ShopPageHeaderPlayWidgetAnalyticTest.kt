@@ -10,14 +10,13 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import org.hamcrest.MatcherAssert
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -39,9 +38,10 @@ class ShopPageHeaderPlayWidgetAnalyticTest {
 
     @get:Rule
     var intentsTestRule: IntentsTestRule<ShopPageActivity> = IntentsTestRule(ShopPageActivity::class.java, false, false)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDbSource = GtmLogDBSource(targetContext)
 
     private val idlingResourceLogin = CountingIdlingResource(IDLING_RESOURCE)
     private val idlingResourceInit: IdlingResource by lazy {
@@ -70,7 +70,6 @@ class ShopPageHeaderPlayWidgetAnalyticTest {
         IdlingPolicies.setMasterPolicyTimeout(1, TimeUnit.MINUTES)
         IdlingPolicies.setIdlingResourceTimeout(1, TimeUnit.MINUTES)
 
-        gtmLogDbSource.deleteAll().toBlocking().first()
 
 //        mockLogin()
     }
@@ -114,9 +113,6 @@ class ShopPageHeaderPlayWidgetAnalyticTest {
     }
 
     private fun validateTracker() {
-        MatcherAssert.assertThat(
-                getAnalyticsWithQuery(gtmLogDbSource, targetContext, FILE_NAME),
-                hasAllSuccess()
-        )
+        assertThat(cassavaRule.validate(FILE_NAME), hasAllSuccess())
     }
 }

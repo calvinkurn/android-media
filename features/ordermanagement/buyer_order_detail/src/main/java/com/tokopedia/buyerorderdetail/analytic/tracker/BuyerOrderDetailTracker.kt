@@ -54,6 +54,13 @@ object BuyerOrderDetailTracker {
         return this
     }
 
+    private fun MutableMap<String, Any>.appendTrackerId(trackerId: String): MutableMap<String, Any> {
+        if (trackerId.isNotBlank()) {
+            put(BuyerOrderDetailTrackerConstant.EVENT_KEY_TRACKER_ID, trackerId)
+        }
+        return this
+    }
+
     private fun Bundle.appendCurrentSite(currentSite: String): Bundle {
         putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE, currentSite)
         return this
@@ -120,7 +127,8 @@ object BuyerOrderDetailTracker {
         eventAction: String,
         orderStatusCode: String,
         orderId: String,
-        businessUnit: String = BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_MARKETPLACE
+        businessUnit: String = BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_MARKETPLACE,
+        trackerId: String = ""
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             eventName = eventName,
@@ -129,6 +137,7 @@ object BuyerOrderDetailTracker {
             eventLabel = "$orderStatusCode${BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP}$orderId"
         ).appendBusinessUnit(businessUnit)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(trackerId)
             .sendGeneralEvent()
     }
 
@@ -214,14 +223,14 @@ object BuyerOrderDetailTracker {
         eventGeneralBuyerOrderDetail(eventAction = eventAction, orderStatusCode = orderStatusCode, orderId = orderId)
     }
 
-    fun eventClickActionButtonPG(isPrimaryButton: Boolean, buttonName: String, orderStatusCode: String, orderId: String) {
+    fun eventClickActionButtonPG(isPrimaryButton: Boolean, buttonName: String, trackerId: String, orderStatusCode: String, orderId: String) {
         val eventAction = StringBuilder().apply {
             if (isPrimaryButton) append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_PRIMARY_BUTTON)
             else append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_SECONDARY_BUTTON)
             append(BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP)
             append(buttonName)
         }.toString()
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG, eventAction, orderStatusCode, orderId, BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG, eventAction, orderStatusCode, orderId, BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS, trackerId)
     }
 
     fun eventClickActionButtonFromReceiveConfirmation(buttonName: String, orderStatusCode: String, orderId: String) {
