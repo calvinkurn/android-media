@@ -251,9 +251,9 @@ object TopChatAnalyticsKt {
         shop_name: String = "",
         shop_type: Boolean = false,
     ): ArrayList<Bundle> {
-        var listItemBundles = ArrayList<Bundle>()
+        val listItemBundles = ArrayList<Bundle>()
         for (item in bundleItems) {
-            var itemBundle = Bundle()
+            val itemBundle = Bundle()
             itemBundle.putString(DIMENSION_117, setValueOrDefault(bundleType))
             itemBundle.putString(DIMENSION_118, setValueOrDefault(bundleId))
             itemBundle.putString(
@@ -287,7 +287,7 @@ object TopChatAnalyticsKt {
     }
 
     private fun getItemIdList(bundleItems: List<BundleItem>): List<String> {
-        var productIdList = listOf<String>()
+        val productIdList = mutableListOf<String>()
         for (item in bundleItems) {
             productIdList += setValueOrDefault(item.productId)
         }
@@ -304,10 +304,10 @@ object TopChatAnalyticsKt {
         shopId: String,
         userId: String
     ) {
-        var bundleTypeString = bundleTypeMapper(bundleType)
-        var listItemBundles = getItemBundle(bundleItems, bundleId, bundleTypeString, source)
+        val bundleTypeString = bundleTypeMapper(bundleType)
+        val listItemBundles = getItemBundle(bundleItems, bundleId, bundleTypeString, source)
 
-        var eventDataLayer = Bundle()
+        val eventDataLayer = Bundle()
 
         eventDataLayer.putString(TrackAppUtils.EVENT, VIEW_ITEM_LIST)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_BUNDLE_CART_CHATROOM)
@@ -320,7 +320,7 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
 
-        var productIdList = getItemIdList(bundleItems)
+        val productIdList = getItemIdList(bundleItems)
 
         eventDataLayer.putString(ITEM_LIST, productIdList.toString())
         eventDataLayer.putParcelableArrayList(
@@ -368,10 +368,10 @@ object TopChatAnalyticsKt {
         shopId: String,
         userId: String
     ) {
-        var bundleTypeString = bundleTypeMapper(bundleType)
-        var listItemBundles = getItemBundle(bundleItems, bundleId, bundleTypeString, source)
+        val bundleTypeString = bundleTypeMapper(bundleType)
+        val listItemBundles = getItemBundle(bundleItems, bundleId, bundleTypeString, source)
 
-        var eventDataLayer = Bundle()
+        val eventDataLayer = Bundle()
 
         eventDataLayer.putString(TrackAppUtils.EVENT, SELECT_CONTENT)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_PRODUCT_BUNDLE)
@@ -384,7 +384,7 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
 
-        var productIdList = getItemIdList(bundleItems)
+        val productIdList = getItemIdList(bundleItems)
 
         eventDataLayer.putString(ITEM_LIST, productIdList.toString())
         eventDataLayer.putParcelableArrayList(
@@ -409,8 +409,8 @@ object TopChatAnalyticsKt {
         shopName: String,
         userId: String
     ) {
-        var bundleTypeString = bundleTypeMapper(bundleType)
-        var listItemBundles = getItemBundle(
+        val bundleTypeString = bundleTypeMapper(bundleType)
+        val listItemBundles = getItemBundle(
             bundleItems,
             bundleId,
             bundleTypeString,
@@ -421,7 +421,7 @@ object TopChatAnalyticsKt {
             true
         )
 
-        var eventDataLayer = Bundle()
+        val eventDataLayer = Bundle()
 
         eventDataLayer.putString(TrackAppUtils.EVENT, ATC)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_ADD_TO_CART_BUNDLE)
@@ -452,8 +452,8 @@ object TopChatAnalyticsKt {
         user: UserSessionInterface,
         amISeller: Boolean
     ) {
-        var eventLabel = product.getEventLabelImpression(amISeller)
-        var itemBundle = Bundle()
+        val eventLabel = product.getEventLabelImpression(amISeller)
+        val itemBundle = Bundle()
         itemBundle.putString("index", PRODUCT_INDEX.toString())
         itemBundle.putString(ITEM_BRAND, "none / other")
         itemBundle.putString(ITEM_CATEGORY, setValueOrDefault(product.category))
@@ -462,7 +462,7 @@ object TopChatAnalyticsKt {
         itemBundle.putString(ITEM_VARIANT, EE_VALUE_NONE_OTHER)
         itemBundle.putString(PRICE, product.productPrice + 0.0)
 
-        var eventDataLayer = Bundle()
+        val eventDataLayer = Bundle()
         eventDataLayer.putString(TrackAppUtils.EVENT, VIEW_ITEM_LIST)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_ON_PRODUCT_THUMBNAIL)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
@@ -490,7 +490,7 @@ object TopChatAnalyticsKt {
         eventAction: String,
         userId: String
     ) {
-        var itemBundle = Bundle()
+        val itemBundle = Bundle()
         itemBundle.putString(CATEGORY_ID, setValueOrDefault(""))
         itemBundle.putString(DIMENSION_45, setValueOrDefault(data?.cartId.toString()))
         itemBundle.putString(ITEM_BRAND, setValueOrDefault(""))
@@ -504,7 +504,7 @@ object TopChatAnalyticsKt {
         itemBundle.putString(SHOP_NAME, setValueOrDefault(shopName))
         itemBundle.putString(SHOP_TYPE, "")
 
-        var eventDataLayer = Bundle()
+        val eventDataLayer = Bundle()
         eventDataLayer.putString(TrackAppUtils.EVENT, ATC)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, eventAction)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)

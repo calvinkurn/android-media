@@ -26,11 +26,11 @@ object AttachProductAnalytics {
     fun trackSendButtonClicked(
         products: List<ResultProduct>
     ) {
-        var product_ids = listOf<String>()
+        val product_ids = mutableListOf<String>()
         for (product in products) {
             product_ids += product.productId.toString()
         }
-        var eventDataLayer = Bundle()
+        val eventDataLayer = Bundle()
         eventDataLayer.putString(TrackAppUtils.EVENT, Event.CLICK_COMMUNICATION)
         eventDataLayer.putString(
             TrackAppUtils.EVENT_ACTION,
