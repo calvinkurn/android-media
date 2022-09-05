@@ -348,19 +348,18 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(TrackAppUtils.EVENT, SELECT_CONTENT)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_PRODUCT_BUNDLE)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
-        if (bundleItems.isNotEmpty()) {
+
+        val productId = if (bundleItems.isNotEmpty()) {
             // if bundleItems is not empty
-            eventDataLayer.putString(
-                TrackAppUtils.EVENT_LABEL,
-                "$blastId - $statusBundle - $bundleId - bundling - ${bundleItems[0].productId}"
-            )
+            bundleItems[0].productId
         } else {
-            // fail safe case if empty
-            eventDataLayer.putString(
-                TrackAppUtils.EVENT_LABEL,
-                "$blastId - $statusBundle - $bundleId - bundling - 0"
-            )
+            "0"
         }
+        eventDataLayer.putString(
+            TrackAppUtils.EVENT_LABEL,
+            "$blastId - $statusBundle - $bundleId - bundling - $productId"
+        )
+
         eventDataLayer.putString(TRACKER_ID, "35598")
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
@@ -406,18 +405,18 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(TrackAppUtils.EVENT, ATC)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_ADD_TO_CART_BUNDLE)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
-        if (bundleItems.isNotEmpty()) {
-            eventDataLayer.putString(
-                TrackAppUtils.EVENT_LABEL,
-                "$blastId - $statusBundle - $bundleId - bundling - ${bundleItems[0].productId}"
-            )
+
+        val productId = if (bundleItems.isNotEmpty()) {
+            // if bundleItems is not empty
+            bundleItems[0].productId
         } else {
-            // fail safe case if empty
-            eventDataLayer.putString(
-                TrackAppUtils.EVENT_LABEL,
-                "$blastId - $statusBundle - $bundleId - bundling - 0"
-            )
+            "0"
         }
+        eventDataLayer.putString(
+            TrackAppUtils.EVENT_LABEL,
+            "$blastId - $statusBundle - $bundleId - bundling - $productId"
+        )
+
         eventDataLayer.putString(TRACKER_ID, "35599")
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
@@ -439,8 +438,8 @@ object TopChatAnalyticsKt {
     ) {
         val eventLabel = product.getEventLabelImpression(amISeller)
         val itemBundle = Bundle()
-        itemBundle.putString(INDEX, PRODUCT_INDEX.toString())
-        itemBundle.putString(ITEM_BRAND, "none / other")
+        itemBundle.putString(INDEX, PRODUCT_INDEX)
+        itemBundle.putString(ITEM_BRAND, EE_VALUE_NONE_OTHER)
         itemBundle.putString(ITEM_CATEGORY, setValueOrDefault(product.category))
         itemBundle.putString(ITEM_ID, setValueOrDefault(product.productId))
         itemBundle.putString(ITEM_NAME, setValueOrDefault(product.productName))
@@ -508,16 +507,158 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
         eventDataLayer.putParcelableArrayList(
             AddToCartExternalAnalytics.EE_VALUE_ITEMS,
-            object : ArrayList<Bundle?>() {
-                init {
-                    add(itemBundle)
-                }
-            }
+            arrayListOf(itemBundle)
         )
         eventDataLayer.putString(USER_ID, setValueOrDefault(userId))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ATC, eventDataLayer)
     }
+
+    fun eventViewOperationalInsightTicker(
+        shopId: String,
+        stateReport: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_IMPRESS_REPORT_TICKER,
+                label = "$shopId - $stateReport",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33142"
+            )
+        )
+    }
+
+    fun eventClickOperationalInsightTicker(
+        shopId: String,
+        stateReport: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_REPORT_TICKER,
+                label = "$shopId - $stateReport",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33143"
+            )
+        )
+    }
+
+    fun eventClickCloseOperationalInsightTicker(
+        shopId: String,
+        stateReport: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_CLOSE_REPORT_TICKER,
+                label = "$shopId - $stateReport",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33144"
+            )
+        )
+    }
+
+    fun eventViewOperationalInsightBottomSheet(
+        shopId: String,
+        stateReport: String,
+        replyChatRate: String,
+        targetReplyChatRate: String,
+        replyChatSpeed: String,
+        targetReplyChatSpeed: String,
+    ) {
+        val label = generateOperationalInsightLabel(
+            shopId, stateReport,
+            replyChatRate, targetReplyChatRate,
+            replyChatSpeed, targetReplyChatSpeed
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_IMPRESS_TICKER_BOTTOMSHEET,
+                label = label,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33145"
+            )
+        )
+    }
+
+    fun eventClickShopPerformanceOperationalInsightBottomSheet(
+        shopId: String,
+        stateReport: String,
+        replyChatRate: String,
+        targetReplyChatRate: String,
+        replyChatSpeed: String,
+        targetReplyChatSpeed: String,
+    ) {
+        val label = generateOperationalInsightLabel(
+            shopId, stateReport,
+            replyChatRate, targetReplyChatRate,
+            replyChatSpeed, targetReplyChatSpeed
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_SHOP_PERFORMANCE,
+                label = label,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33146"
+            )
+        )
+    }
+
+    fun eventClickOperationalInsightCta(
+        shopId: String,
+        stateReport: String,
+        replyChatRate: String,
+        targetReplyChatRate: String,
+        replyChatSpeed: String,
+        targetReplyChatSpeed: String
+    ) {
+        val label = generateOperationalInsightLabel(
+            shopId, stateReport,
+            replyChatRate, targetReplyChatRate,
+            replyChatSpeed, targetReplyChatSpeed
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_OPERATIONAL_INSIGHT_CTA,
+                label = label,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33147"
+            )
+        )
+    }
+
+    private fun generateOperationalInsightLabel(
+        shopId: String,
+        stateReport: String,
+        replyChatRate: String,
+        targetReplyChatRate: String,
+        replyChatSpeed: String,
+        targetReplyChatSpeed: String
+    ): String {
+        return """
+            $shopId - $stateReport - $replyChatRate - $targetReplyChatRate - $replyChatSpeed - $targetReplyChatSpeed
+        """.trimIndent()
+    }
+
 
     private fun createGeneralEvent(
         event: String,
@@ -560,6 +701,7 @@ object TopChatAnalyticsKt {
 
     object Category {
         const val CHAT_DETAIL = "chat detail"
+        const val INBOX_CHAT = "inbox-chat"
         const val PUSH_NOTIF_CHAT = "push notification chat"
     }
 
@@ -576,14 +718,20 @@ object TopChatAnalyticsKt {
         const val CLICK_CLOSE_SRW_ONBOARDING = "click close on srw onboarding"
         const val VIEW_BUNDLING_PRODUCT_CARD = "view on bundling product card"
         const val CLICK_BUNDLING_PRODUCT_CTA = "click on bundling product card"
+        const val SELLER_IMPRESS_REPORT_TICKER = "seller impress on report ticker"
         const val CLICK_SEND_MSG_ON_NOTIF = "click sent msg on notifpush"
         const val VIEW_BUNDLE_CART_CHATROOM = "view on bundle card in chatroom"
         const val CLICK_PRODUCT_BUNDLE = "click on product attachment on bundle card"
         const val CLICK_ADD_TO_CART_BUNDLE = "click on add to cart from bundle card"
+        const val SELLER_CLICK_REPORT_TICKER = "seller click on report ticker"
+        const val SELLER_CLICK_CLOSE_REPORT_TICKER = "seller click close on report ticker"
+        const val SELLER_IMPRESS_TICKER_BOTTOMSHEET = "seller impress ticker bottomsheet"
+        const val SELLER_CLICK_SHOP_PERFORMANCE = "seller click performa toko in bottomsheet"
+        const val SELLER_CLICK_OPERATIONAL_INSIGHT_CTA = "seller click cta wawasan in bottomsheet"
         const val VIEW_ON_PRODUCT_THUMBNAIL = "view on product thumbnail"
     }
 
-    private const val PRODUCT_INDEX = 1
+    private const val PRODUCT_INDEX = "1"
 
     // default value
     private const val EE_VALUE_NONE_OTHER = "none / other"
