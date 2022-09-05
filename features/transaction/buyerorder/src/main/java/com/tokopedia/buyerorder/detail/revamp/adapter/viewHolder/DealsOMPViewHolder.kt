@@ -90,6 +90,11 @@ class DealsOMPViewHolder(
         item: Items,
         orderDetails: OrderDetails,
     ){
+
+        if (orderDetails.actionButtons.isNotEmpty()){
+            eventDetailsListener.setActionButtonEvent(orderDetails.actionButtons.first(), item, orderDetails)
+        }
+
         if (item.actionButtons.isEmpty()){
             with(binding){
                 progBar.gone()
@@ -143,10 +148,6 @@ class DealsOMPViewHolder(
             }
         }
         binding.progBar.gone()
-
-        if (orderDetails.actionButtons.isNotEmpty()){
-            eventDetailsListener.setActionButtonEvent(orderDetails.actionButtons.first(), item, orderDetails)
-        }
     }
 
     private fun renderActionButtons(
