@@ -430,18 +430,21 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun validateBboStacking() {
         validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.let {
+            var hasApplyOrUnApply = false
             for (voucherOrderUiModel in it) {
                 if (voucherOrderUiModel.shippingId > 0
                     && voucherOrderUiModel.spId > 0
                     && voucherOrderUiModel.type == "logistic"
                 )
                     if (voucherOrderUiModel.messageUiModel.state == "red") {
+                        hasApplyOrUnApply = true
                         unApplyBbo(voucherOrderUiModel.code)
                     } else if (voucherOrderUiModel.messageUiModel.state == "green") {
+                        hasApplyOrUnApply = true
                         applyBbo(voucherOrderUiModel.code)
                     }
             }
-            if (orderShipment.value.isApplyLogisticPromo) {
+            if (orderShipment.value.isApplyLogisticPromo && hasApplyOrUnApply) {
                 // if use BO but voucher BO didn't exist
                 orderShipment.value.logisticPromoViewModel?.let { logisticPromo -> unApplyBbo(logisticPromo.promoCode) }
             }
@@ -451,7 +454,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun unApplyBbo(code: String) {
         orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
-        promoProcessor.clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest, code)
+        clearOldLogisticPromo(code)
     }
 
     private fun applyBbo(code: String) {
