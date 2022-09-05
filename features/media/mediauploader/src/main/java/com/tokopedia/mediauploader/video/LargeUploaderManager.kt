@@ -15,12 +15,7 @@ import com.tokopedia.mediauploader.video.data.params.ChunkCheckerParam
 import com.tokopedia.mediauploader.video.data.params.ChunkUploadParam
 import com.tokopedia.mediauploader.video.data.params.InitParam
 import com.tokopedia.mediauploader.video.data.params.LargeUploadCacheParam
-import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
-import com.tokopedia.mediauploader.video.domain.GetChunkUploaderUseCase
-import com.tokopedia.mediauploader.video.domain.GetTranscodingStatusUseCase
-import com.tokopedia.mediauploader.video.domain.InitVideoUploaderUseCase
-import com.tokopedia.mediauploader.video.domain.SetAbortUploaderUseCase
-import com.tokopedia.mediauploader.video.domain.SetCompleteUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.*
 import kotlinx.coroutines.delay
 import java.io.File
 import javax.inject.Inject
@@ -49,7 +44,7 @@ class LargeUploaderManager @Inject constructor(
         sourceId: String,
         withTranscode: Boolean
     ): UploadResult {
-        val policy = policyManager.policy()
+        val policy = policyManager.get()
         val videoPolicy = policy.videoPolicy ?: return UploadResult.Error(POLICY_NOT_FOUND)
 
         // 1. init the uploader

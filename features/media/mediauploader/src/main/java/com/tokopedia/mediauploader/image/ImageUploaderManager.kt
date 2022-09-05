@@ -6,7 +6,6 @@ import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.fileExtension
 import com.tokopedia.mediauploader.common.util.isMaxBitmapResolution
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
 import com.tokopedia.mediauploader.common.util.isMinBitmapResolution
@@ -73,9 +72,6 @@ class ImageUploaderManager @Inject constructor(
         } else {
             UNKNOWN_ERROR
         }
-
-        // clear the current policy
-        policyManager.clear()
 
         return upload.data?.let {
             UploadResult.Success(uploadId = it.uploadId)

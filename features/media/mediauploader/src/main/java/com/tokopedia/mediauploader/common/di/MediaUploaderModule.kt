@@ -1,11 +1,14 @@
 package com.tokopedia.mediauploader.common.di
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.internal.MediaUploaderUrl
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
+import com.tokopedia.mediauploader.common.internal.SourcePolicyManagerImpl
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
@@ -47,6 +50,15 @@ class MediaUploaderModule {
             imageUploader,
             videoUploader
         )
+    }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideSourcePolicyManager(
+        @ApplicationContext context: Context,
+        @ApplicationScope gson: Gson
+    ): SourcePolicyManager {
+        return SourcePolicyManagerImpl(context, gson)
     }
 
     @Provides
