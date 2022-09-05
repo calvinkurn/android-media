@@ -11,6 +11,7 @@ import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet.WarningType
@@ -1528,8 +1529,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (accountList.isNotEmpty()) {
                 updateSelectedAccount(
                     getAccountFromCachedOrDefault(
-                        sharedPref.getLastSelectedAccount(),
-                        accountList
+                        cacheSelectedType = sharedPref.getLastSelectedAccount(),
+                        accountList = accountList,
+                        defaultSelectedType = TYPE_SHOP
                     )
                 )
                 getConfiguration(_selectedAccount.value)
@@ -1593,16 +1595,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         sharedPref.setLastSelectedAccount(selectedAccount.type)
     }
 
+    // TODO need to refactor this for entry point from user profile
     private fun getAccountFromCachedOrDefault(
         cacheSelectedType: String,
         accountList: List<ContentAccountUiModel>,
-        defaultSelectedType: String = TYPE_SHOP
+        defaultSelectedType: String,
     ): ContentAccountUiModel {
         return accountList.first {
             it.type == when {
+                GlobalConfig.isSellerApp() -> TYPE_SHOP
                 cacheSelectedType.isNotEmpty() -> cacheSelectedType
-                it.type == defaultSelectedType -> defaultSelectedType
-                else -> TYPE_USER
+                else -> defaultSelectedType
             }
         }
     }
