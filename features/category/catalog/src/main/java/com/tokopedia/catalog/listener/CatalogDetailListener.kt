@@ -40,6 +40,8 @@ interface CatalogDetailListener {
 
     fun openComparisonBottomSheet(comparisonCatalog: ComparisionModel?){}
 
+    fun openComparisonBottomSheet(comparisonNewModel: ComparisonNewModel?){}
+
     fun changeComparison(comparedCatalogId: String){}
 
     /**

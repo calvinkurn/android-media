@@ -41,6 +41,7 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogComparisionNewDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
 import com.tokopedia.catalog.model.raw.ComparisionModel
@@ -299,6 +300,10 @@ class CatalogDetailPageFragment : Fragment(),
                         catalogUiUpdater.updateModel(component)
                         if(component is CatalogComparisionDataModel && comparisonCatalogId.isBlank()){
                             recommendedCatalogId = (component).comparisionCatalog[CatalogConstant.COMPARISION_DETAIL]?.id ?: ""
+                        }else if(component is CatalogComparisionNewDataModel && comparisonCatalogId.isBlank()){
+                            component.comparisonNewModel.forEach { comparisonNewModel ->
+                                recommendedCatalogId = comparisonNewModel.id ?: ""
+                            }
                         }
                     }
                     catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
