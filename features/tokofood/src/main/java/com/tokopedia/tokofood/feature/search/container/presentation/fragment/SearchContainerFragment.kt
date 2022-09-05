@@ -96,7 +96,7 @@ class SearchContainerFragment : BaseDaggerFragment(),
         initialStateFragment?.let { initialStateFragment ->
             searchResultFragment?.let { searchResultFragment ->
                 val ft = childFragmentManager.beginTransaction()
-                if (searchResultFragment.isAdded && initialStateFragment.isAdded) {
+                if (searchResultFragment.isVisible && !initialStateFragment.isVisible) {
                     ft.hide(searchResultFragment)
                     ft.show(initialStateFragment)
                 }
@@ -114,7 +114,7 @@ class SearchContainerFragment : BaseDaggerFragment(),
         searchResultFragment?.let { searchResultFragment ->
             initialStateFragment?.let { initialStateFragment ->
                 val ft = childFragmentManager.beginTransaction()
-                if (searchResultFragment.isAdded && initialStateFragment.isAdded) {
+                if (!searchResultFragment.isVisible && initialStateFragment.isVisible) {
                     ft.hide(initialStateFragment)
                     ft.show(searchResultFragment)
                 }
