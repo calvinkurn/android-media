@@ -159,7 +159,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_ads_detail_card"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/unify_space_40"
         android:background="@color/Unify_NN50"
         android:paddingTop="@dimen/unify_space_8"
         android:paddingBottom="@dimen/unify_space_8"
