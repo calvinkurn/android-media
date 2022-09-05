@@ -55,16 +55,9 @@ class InspirationProductBundleViewHolder(
         binding?.rvProductBundle?.let {
             if (it.itemDecorationCount == 0) it.addItemDecoration(createItemDecoration())
 
-            it.setDefaultHeightInspirationCarouselOptionList()
             it.layoutManager = createLayoutManager()
             it.adapter = createAdapter(element.asBundleUiModel())
         }
-    }
-
-    private fun RecyclerView.setDefaultHeightInspirationCarouselOptionList() {
-        val carouselLayoutParams = layoutParams
-        carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
-        layoutParams = carouselLayoutParams
     }
 
     private fun createLayoutManager(): RecyclerView.LayoutManager {
