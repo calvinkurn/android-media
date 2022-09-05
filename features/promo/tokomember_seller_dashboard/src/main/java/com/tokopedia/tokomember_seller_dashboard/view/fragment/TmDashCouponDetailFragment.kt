@@ -47,11 +47,12 @@ class TmDashCouponDetailFragment:Fragment(),TmCouponListRefreshCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tm_dash_coupon_detail_main,container,false)
+        return inflater.inflate(layout,container,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupHeader(view)
         initViews(view)
         renderCouponDetails()
         cta.setOnClickListener {
@@ -59,8 +60,14 @@ class TmDashCouponDetailFragment:Fragment(),TmCouponListRefreshCallback {
         }
     }
 
-    private fun initViews(view: View){
+    private fun setupHeader(view: View){
         header=view.findViewById(R.id.tm_coupon_detail_header)
+        header.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+    }
+
+    private fun initViews(view: View){
         couponImage = view.findViewById(R.id.coupon_detail_image)
         couponTimerBadge = view.findViewById(R.id.coupon_detail_timer)
         couponStatusTv = view.findViewById(R.id.coupon_detail_status_tv)
@@ -72,9 +79,6 @@ class TmDashCouponDetailFragment:Fragment(),TmCouponListRefreshCallback {
         minTransaksiTv = view.findViewById(R.id.coupon_min_transaksi_tv)
         kuotaTv = view.findViewById(R.id.coupon_kuota_tv)
         cta = view.findViewById(R.id.coupon_detail_cta)
-        header.setNavigationOnClickListener {
-            activity?.onBackPressed()
-        }
     }
 
     private fun renderCouponDetails(){
@@ -253,7 +257,7 @@ class TmDashCouponDetailFragment:Fragment(),TmCouponListRefreshCallback {
         fun newInstance() : TmDashCouponDetailFragment {
             return TmDashCouponDetailFragment()
         }
-//        private val layout = R.layout.tm_dash_coupon_detail_main
+        private val layout = R.layout.tm_coupon_detail_container
     }
 
     override fun refreshCouponList(action: String) {}
