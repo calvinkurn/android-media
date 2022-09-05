@@ -2565,7 +2565,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (!voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doApplyBo(voucherOrdersItemUiModel);
                     reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
-                    unprocessedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
+                    unprocessedUniqueIds.remove(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
         }
@@ -2573,6 +2573,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null
                     && unprocessedUniqueIds.contains(shipmentCartItemModel.getCartString())) {
                 doUnapplyBo(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
+                reloadedUniqueIds.add(shipmentCartItemModel.getCartString());
             }
         }
         return reloadedUniqueIds;
