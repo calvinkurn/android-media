@@ -1,5 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmFilterCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
@@ -50,6 +52,8 @@ import javax.inject.Inject
 class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, SortFilterBottomSheet.Callback,
     TmCouponListRefreshCallback, TmFilterCallback {
 
+    private var tmCouponDetailCallback:TmCouponDetailCallback?=null
+
     private var showButton: Boolean = true
     private var filterStatus: SortFilterItem? = null
     private var filterType: SortFilterItem? = null
@@ -71,7 +75,14 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     }
 
     private val tmCouponAdapter: TmCouponAdapter by lazy{
-        TmCouponAdapter(arrayListOf(), childFragmentManager, this)
+        TmCouponAdapter(arrayListOf(), childFragmentManager, this,tmCouponDetailCallback)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(context is TmCouponDetailCallback){
+            tmCouponDetailCallback = context as TmCouponDetailCallback
+        }
     }
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -207,3 +207,8 @@ const val MIN_TRANSACTION_OVERFLOW = "Harus kurang dari min. transaksi."
 const val MIN_DISCOUNT_LABEL = "Min. Rp10.000"
 const val MAX_DISCOUNT_LABEL = "Maks. Rp99.999.99"
 const val MAX_DISCOUNT_OVERFLOW = "Harus kurang dari min. transaksi."
+
+const val COUPON_STATE_EMPTY_LABEL = "Kuota Habis"
+const val COUPON_STATE_ACTIVE_LABEL = "Kupon Aktif"
+const val COUPON_STATE_NOT_STARTED_LABEL = "Belum Aktif"
+const val COUPON_STATE_ENDED_LABEL = "Berakhir"
