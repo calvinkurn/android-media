@@ -658,7 +658,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         shippingId = 1,
                         spId = 1,
                         type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
+                        messageUiModel = MessageUiModel(state = "green"),
                     )
                 )
             )
