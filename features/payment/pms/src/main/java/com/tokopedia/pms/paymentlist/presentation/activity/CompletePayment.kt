@@ -3,7 +3,6 @@ package com.tokopedia.pms.paymentlist.presentation.activity
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -11,7 +10,6 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.databinding.ActivityCompletePaymentBinding
@@ -69,11 +67,11 @@ class CompletePayment : AppCompatActivity() {
             getString(com.tokopedia.pms.R.string.pms_complete_payment_title)
         binding.progressbar.isIndeterminate = true
         binding.btnBack.setOnClickListener {
-            finish()
+            webViewBackLogic()
         }
 
         binding.scroogeExtendedWebview.webViewClient = CompletePaymentPmsWebClient()
-        binding.scroogeExtendedWebview?.settings.apply {
+        binding.scroogeExtendedWebview.settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
             builtInZoomControls = false
@@ -82,7 +80,13 @@ class CompletePayment : AppCompatActivity() {
         }
 
 
+    }
 
+    private fun webViewBackLogic() {
+        if (binding.scroogeExtendedWebview.canGoBack()) {
+            binding.scroogeExtendedWebview.goBack()
+        } else
+            finish()
     }
 
     private fun routeToSuccess(appLink: String) {
@@ -97,7 +101,6 @@ class CompletePayment : AppCompatActivity() {
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
-            Log.e("Hii",request?.url.toString())
             if (request?.url.toString().contains("tokopedia://payment/thankyou?payment_id=")) {
                 routeToSuccess(request?.url.toString())
                 return true
@@ -109,7 +112,7 @@ class CompletePayment : AppCompatActivity() {
         override fun onPageFinished(view: WebView?, url: String?) {
             hideProgressBar()
             // cancel timer
-            if(::timerJob.isInitialized)
+            if (::timerJob.isInitialized)
                 timerJob.cancel()
 
             super.onPageFinished(view, url)
@@ -139,7 +142,12 @@ class CompletePayment : AppCompatActivity() {
         timerJob = CoroutineScope(Dispatchers.Main).launch {
             delay(90000)
             binding.scroogeExtendedWebview.stopLoading()
-            Toaster.build(binding.activityCompletepayment, "Gagal memuat pembayaran. Silakan coba lagi", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            Toaster.build(
+                binding.activityCompletepayment,
+                "Gagal memuat pembayaran. Silakan coba lagi",
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR
+            ).show()
             finish()
 
         }

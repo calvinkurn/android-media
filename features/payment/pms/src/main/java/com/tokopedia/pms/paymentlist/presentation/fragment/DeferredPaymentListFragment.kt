@@ -23,7 +23,16 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pms.R
 import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.paymentlist.di.PmsComponent
-import com.tokopedia.pms.paymentlist.domain.data.*
+import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
+import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
+import com.tokopedia.pms.paymentlist.domain.data.CancelPayment
+import com.tokopedia.pms.paymentlist.domain.data.CreditCardPaymentModel
+import com.tokopedia.pms.paymentlist.domain.data.EmptyState
+import com.tokopedia.pms.paymentlist.domain.data.Fail
+import com.tokopedia.pms.paymentlist.domain.data.LoadingState
+import com.tokopedia.pms.paymentlist.domain.data.ProgressState
+import com.tokopedia.pms.paymentlist.domain.data.Success
+import com.tokopedia.pms.paymentlist.domain.data.VirtualAccountPaymentModel
 import com.tokopedia.pms.paymentlist.presentation.activity.CompletePayment
 import com.tokopedia.pms.paymentlist.presentation.activity.PaymentListActivity
 import com.tokopedia.pms.paymentlist.presentation.adapter.DeferredPaymentListAdapter
@@ -34,7 +43,6 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_payment_list.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
 class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -77,7 +85,13 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
             loader?.dialog?.setOverlayClose(false)
         }
         (recycler_view.adapter as DeferredPaymentListAdapter).clearAllElements()
+    }
+
+    override fun onStart() {
+        (recycler_view.adapter as DeferredPaymentListAdapter).clearAllElements()
+        viewModel.clearGQlPaymentList()
         viewModel.getPaymentListCount()
+        super.onStart()
     }
 
     private fun observeViewModels() {
@@ -194,8 +208,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun openCompletePaymentWeb(model: BasePaymentModel) {
-        startActivity(Intent(activity,CompletePayment::class.java).apply {
-            putExtra(COMPLETE_PAYMENT_URL_KEY,(model as CreditCardPaymentModel).paymentUrl)
+        startActivity(Intent(activity, CompletePayment::class.java).apply {
+            putExtra(COMPLETE_PAYMENT_URL_KEY, (model as CreditCardPaymentModel).paymentUrl)
         })
     }
 
@@ -244,7 +258,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun showToast(toastMessage: String?, toastType: Int) =
-        Toaster.make(recycler_view, toastMessage ?: "", Toaster.LENGTH_LONG, toastType)
+        Toaster.build(recycler_view, toastMessage ?: "", Toaster.LENGTH_LONG, toastType).show()
 
     private fun handleSwipeRefresh(show: Boolean) {
         swipe_refresh_layout.isRefreshing = show
