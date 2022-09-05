@@ -2,7 +2,6 @@ package com.tokopedia.talk.analytics.util
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Context
 import android.view.View
 import android.widget.EditText
 import androidx.test.espresso.*
@@ -11,12 +10,10 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.unifycomponents.TabsUnify
@@ -55,15 +52,8 @@ class TalkPageRobot {
 
     infix fun assertTest(action: TalkPageRobot.() -> Unit) = TalkPageRobot().apply(action)
 
-    fun GtmLogDBSource.finishTest() {
-        deleteAll().subscribe()
-    }
-
-    fun validate(gtmLogDbSource: GtmLogDBSource,
-                 targetContext: Context,
-                 fileName: String) {
-        assertThat(getAnalyticsWithQuery(gtmLogDbSource, targetContext, fileName),
-                hasAllSuccess())
+    fun validate(cassavaRule: CassavaTestRule, fileName: String) {
+        assertThat(cassavaRule.validate(fileName), hasAllSuccess())
     }
 
     companion object {
