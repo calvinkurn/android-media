@@ -8,5 +8,5 @@ import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource
 data class AnalyticsLogData (
     var data: String,
     var name: String,
-    @AnalyticsSource var source: String? = null
+    var source: String
 )

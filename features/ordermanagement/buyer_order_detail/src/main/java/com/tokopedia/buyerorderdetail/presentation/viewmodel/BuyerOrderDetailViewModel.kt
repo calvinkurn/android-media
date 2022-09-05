@@ -22,6 +22,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -57,18 +58,18 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     private fun getFinishOrderActionStatus(): String {
         val statusId = getOrderStatusId()
-        return if (statusId.matches(Regex("\\d+")) && statusId.toInt() < BuyerOrderDetailOrderStatusCode.ORDER_DELIVERED) BuyerOrderDetailMiscConstant.ACTION_FINISH_ORDER else ""
+        return if (statusId.matches(Regex("\\d+")) && statusId.toIntOrZero() < BuyerOrderDetailOrderStatusCode.ORDER_DELIVERED) BuyerOrderDetailMiscConstant.ACTION_FINISH_ORDER else ""
     }
 
     private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
         return AddToCartMultiParam(
-                productId = productId.toLong(),
+                productId = productId.toLongOrZero(),
                 productName = productName,
                 productPrice = price.toLong(),
                 qty = quantity,
                 notes = productNote,
-                shopId = getShopId().toInt(),
-                custId = userSession.get().userId.toInt()
+                shopId = getShopId().toIntOrZero(),
+                custId = userSession.get().userId.toIntOrZero()
         )
     }
 
