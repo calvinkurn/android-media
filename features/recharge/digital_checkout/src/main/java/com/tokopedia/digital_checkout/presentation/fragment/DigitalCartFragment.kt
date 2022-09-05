@@ -48,6 +48,7 @@ import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewMode
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
+import com.tokopedia.digital_checkout.utils.DeviceUtil.generateATokenRechargeCheckout
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
@@ -185,6 +186,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             } else {
                 hideContent()
                 loaderCheckout.visibility = View.VISIBLE
+                it.idemPotencyKey = generateATokenRechargeCheckout(requireContext())
                 addToCartViewModel.addToCart(
                     it,
                     getDigitalIdentifierParam(),
