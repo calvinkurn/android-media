@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.play_common.R
+import com.tokopedia.play_common.databinding.ViewGameInteractiveBinding
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
@@ -27,25 +28,23 @@ fun GameSmallWidgetView.setupUpcomingGiveaway(
     title: String,
     targetTime: Calendar,
     onDurationEnd: (GameSmallWidgetView) -> Unit,
-    onTick: (Long) -> Unit = {},
 ) {
     setTimerVariant(TimerUnifySingle.VARIANT_GENERAL)
     this.title = title
     this.description = context.getString(R.string.play_common_widget_interactive_start)
-    setTargetTime(targetTime, onFinished = { onDurationEnd(this) }, onTicked = {onTick(targetTime.time.time)})
+    setTargetTime(targetTime) { onDurationEnd(this) }
     setupGiveaway()
 }
 
 fun GameSmallWidgetView.setupOngoingGiveaway(
     title: String,
     targetTime: Calendar,
-    onDurationEnd: (GameSmallWidgetView) -> Unit = {},
-    onTick: (Long) -> Unit = {},
+    onDurationEnd: (GameSmallWidgetView) -> Unit,
 ) {
     setTimerVariant(TimerUnifySingle.VARIANT_MAIN)
     this.title = title
     this.description = context.getString(R.string.play_common_widget_interactive_end)
-    setTargetTime(targetTime, onFinished = { onDurationEnd(this) }, onTicked = {onTick(targetTime.time.time)})
+    setTargetTime(targetTime) { onDurationEnd(this) }
     setupGiveaway()
 }
 
@@ -53,8 +52,7 @@ fun GameSmallWidgetView.setupQuiz(
     question: String,
     targetTime: Calendar,
     onDurationEnd: (GameSmallWidgetView) -> Unit,
-    onTick: (Long) -> Unit = {},
-    ) {
+) {
     getIconUnifyDrawable(
         context = context,
         iconId = IconUnify.QUIZ,
@@ -65,7 +63,7 @@ fun GameSmallWidgetView.setupQuiz(
         MethodChecker.getDrawable(context, R.drawable.bg_play_quiz_widget)
     )
     description = context.getString(R.string.play_common_widget_interactive_end)
-    setTargetTime(targetTime, onFinished = { onDurationEnd(this) }, onTicked = {onTick(targetTime.time.time)})
+    setTargetTime(targetTime) { onDurationEnd(this) }
     setTimerVariant(TimerUnifySingle.VARIANT_MAIN)
     title = question
 }
