@@ -86,25 +86,6 @@
         tools:text="Transaksi min. Rp1.000.000"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_coupon_stock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_R600"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tv_expired_date"
-        app:layout_constraintTop_toTopOf="@+id/tv_expired_date"
-        app:layout_constraintBottom_toTopOf="@id/view_voucher_copyable"
-        app:typographyType="body_3"
-        tools:text="Sisa 20 kupon"
-        tools:visibility="gone" />
-
     <include
         android:id="@+id/view_voucher_copyable"
         layout="@layout/view_play_voucher_copyable"
