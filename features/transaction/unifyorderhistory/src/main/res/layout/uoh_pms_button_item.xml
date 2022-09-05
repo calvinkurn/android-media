@@ -30,7 +30,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_uoh_pms"
+                app:srcCompat="@drawable/saldo_tempo"
                 app:unify_image_corner_radius="0"
                 app:unify_image_type="rect"
                 tools:visibility="visible" />

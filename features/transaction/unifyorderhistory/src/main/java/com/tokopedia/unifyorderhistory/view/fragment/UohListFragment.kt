@@ -393,6 +393,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (isVisibleToUser && isAutoRefreshEnabled()) {
             binding?.run {
                 globalErrorUoh.gone()
+                rvOrderList.visible()
                 rvOrderList.scrollToPosition(0)
             }
             refreshUohData()
@@ -757,6 +758,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         binding?.run {
             globalErrorUoh.gone()
             rvOrderList.apply {
+                visible()
                 layoutManager = glm
                 adapter = uohItemAdapter
                 addOnScrollListener(scrollRecommendationListener)
