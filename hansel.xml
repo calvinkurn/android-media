@@ -8,6 +8,7 @@
         <name>com.tkpd</name>
         <name>com.tokopedia</name>
         <name>com.laku6.tradeinsdk</name>
+        <name>com.gojek</name>
     </includePackage>
 
     <exceptPackname name="exceptPackage">
