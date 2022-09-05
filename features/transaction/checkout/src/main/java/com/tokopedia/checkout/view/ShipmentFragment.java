@@ -3542,7 +3542,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onClickApplyNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel) {
-        startActivityForResult(UpsellWebViewActivity.Companion.getStartIntent(getContext(), shipmentUpsellModel.getAppLink(), true, true, false, ""), REQUEST_CODE_UPSELL);
+        startActivityForResult(UpsellWebViewActivity.Companion.getStartIntent(requireContext(), shipmentUpsellModel.getAppLink(), true, true, false, ""), REQUEST_CODE_UPSELL);
     }
 
     @Override
