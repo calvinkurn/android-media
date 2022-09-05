@@ -7,16 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
-import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
+import com.tokopedia.campaign.delegates.HasPaginatedList
+import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_MONTH_ONLY
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
+import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
@@ -35,7 +38,6 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.Waiti
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
-import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.R.color
 import com.tokopedia.usecase.coroutines.Fail
@@ -43,7 +45,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, DelegateAdapterItem>() {
+class CampaignDetailFragment : BaseDaggerFragment(){
 
     companion object {
         private const val UPCOMING_TAB = "upcoming"
@@ -137,6 +139,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         super.onViewCreated(view, savedInstanceState)
         observeCampaignDetail()
         loadCampaignDetailData()
+        loadSubmittedProductListData(Int.ZERO)
     }
 
     private fun observeCampaignDetail() {
@@ -157,7 +160,7 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         viewModel.submittedProduct.observe(viewLifecycleOwner) { submittedProduct ->
             when (submittedProduct) {
                 is Success -> {
-                    renderList(submittedProduct.data, submittedProduct.data.size == getPerPage())
+                    productAdapter.addItems(submittedProduct.data)
                     setupRegisteredBodyData()
                 }
                 is Fail -> {
@@ -186,10 +189,35 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         viewModel.getSubmittedProduct(flashSaleId, offset)
     }
 
+    private fun setupPaging() {
+        binding?.rvSubmittedProductList?.apply {
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            applyPaddingToLastItem()
+            adapter = productAdapter
+        }
+
+        binding?.nsvContent?.apply {
+            viewTreeObserver.addOnScrollChangedListener {
+                val scrollState: Int =
+                    this.getChildAt(this.childCount - Int.ONE).bottom - (this.height + this.scrollY)
+                if (scrollState == Int.ZERO) {
+                    val isInCheckBoxState = viewModel.isOnCheckBoxState()
+                    val hasNextPage = productAdapter.itemCount >= PAGE_SIZE
+                    if (hasNextPage && !isInCheckBoxState) {
+                        loadSubmittedProductListData(productAdapter.itemCount)
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupView(flashSale: FlashSale) {
         when (tabName) {
             UPCOMING_TAB -> setupUpcoming(flashSale)
-            REGISTERED_TAB -> setupRegistered(flashSale)
+            REGISTERED_TAB -> {
+                setupRegistered(flashSale)
+                setupPaging()
+            }
             ONGOING_TAB -> setupOngoing()
             FINISHED_TAB -> setupFinished()
         }
@@ -607,11 +635,12 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
     }
 
     private fun onShowOrHideItemCheckBox() {
-        val oldItems = adapter?.getItems() as List<WaitingForSelectionItem>
+        val oldItems = productAdapter.getItems() as List<WaitingForSelectionItem>
         val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
         val isShown = newItems[0].isCheckBoxShown
-        adapter?.submit(listOf())
-        adapter?.submit(newItems)
+        productAdapter.submit(listOf())
+        productAdapter.submit(newItems)
+        viewModel.setCheckBoxStateStatus(isShown)
 
         registeredCdpBodyBinding?.run {
             if (isShown) {
@@ -709,45 +738,5 @@ class CampaignDetailFragment : BaseSimpleListFragment<CompositeAdapter, Delegate
         } else {
             viewModel.removeSelectedItem(selectedProductId)
         }
-    }
-
-    override fun createAdapter(): CompositeAdapter {
-        return productAdapter
-    }
-
-    override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.rvSubmittedProductList
-    }
-
-    override fun getPerPage(): Int {
-        return PAGE_SIZE
-    }
-
-    override fun addElementToAdapter(list: List<DelegateAdapterItem>) {
-        adapter?.addItems(list)
-    }
-
-    override fun loadData(page: Int, offset: Int) {
-        loadSubmittedProductListData(offset)
-    }
-
-    override fun clearAdapterData() {
-        adapter?.submit(listOf())
-    }
-
-    override fun onShowLoading() {
-        adapter?.addItem(LoadingItem)
-    }
-
-    override fun onHideLoading() {
-        adapter?.removeItem(LoadingItem)
-    }
-
-    override fun onDataEmpty() {
-        adapter?.removeItem(LoadingItem)
-    }
-
-    override fun onGetListError(message: String) {
-        adapter?.removeItem(LoadingItem)
     }
 }

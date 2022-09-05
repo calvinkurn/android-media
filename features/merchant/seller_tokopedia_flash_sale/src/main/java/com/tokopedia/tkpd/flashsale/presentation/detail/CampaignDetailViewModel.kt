@@ -45,10 +45,12 @@ class CampaignDetailViewModel @Inject constructor(
 
     private var campaignRegisteredStatus = FlashSaleStatus.NO_REGISTERED_PRODUCT
     private var selectedItemIds = mutableListOf<Long>()
+    private var isOnCheckboxState = false
 
     companion object {
         private const val TWENTY_FOUR_HOURS = 24
         private const val SIXTY_MINUTES = 60
+        private const val PAGE_SIZE = 10
     }
 
     fun getCampaignDetail(campaignId: Long) {
@@ -74,7 +76,7 @@ class CampaignDetailViewModel @Inject constructor(
                 val result = getFlashSaleSubmittedProductListUseCase.execute(
                     campaignId = campaignId,
                     pagination = GetFlashSaleSubmittedProductListRequest.Pagination(
-                        10,
+                        PAGE_SIZE,
                         offset
                     )
                 )
@@ -209,5 +211,13 @@ class CampaignDetailViewModel @Inject constructor(
 
     fun getCampaignRegisteredStatus(): FlashSaleStatus {
         return this.campaignRegisteredStatus
+    }
+
+    fun isOnCheckBoxState(): Boolean {
+        return this.isOnCheckboxState
+    }
+
+    fun setCheckBoxStateStatus(isShown: Boolean) {
+        this.isOnCheckboxState = isShown
     }
 }
