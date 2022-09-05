@@ -80,6 +80,10 @@ class ContentProductTagSampleActivity : BaseActivity() {
         binding.rbMultipleSelectionProductYes.isChecked = true
         binding.rbFullPageAutocompleteNo.isChecked = true
         binding.textFieldMaxSelectedProduct.editText.setText("3")
+
+        binding.cbxGlobalSearch.isChecked = true
+        binding.cbxLastPurchased.isChecked = true
+        binding.cbxMyShop.isChecked = true
     }
 
     private fun setupListener() {
@@ -117,7 +121,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
                 .setShopBadge("")
                 .setAuthorId(getAuthorId())
                 .setAuthorType(getAuthorType())
-                .setProductTagSource("global_search,own_shop,last_purchase")
+                .setProductTagSource(getProductTagSource())
                 .setMultipleSelectionProduct(isMultipleSelectionProduct(), getMaxSelectedProduct())
                 .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
                 .setBackButton(ContentProductTagConfig.BackButton.Close)
@@ -143,6 +147,22 @@ class ContentProductTagSampleActivity : BaseActivity() {
             binding.rbSeller.id -> ContentCommonUserType.TYPE_SHOP
             else -> ""
         }
+    }
+
+    private fun getProductTagSource(): String{
+        return mutableListOf<String>().apply {
+            if(binding.cbxGlobalSearch.isChecked) {
+                add("global_search")
+            }
+
+            if(binding.cbxLastPurchased.isChecked) {
+                add("last_purchase")
+            }
+
+            if(binding.cbxMyShop.isChecked) {
+                add("own_shop")
+            }
+        }.joinToString(separator = ",")
     }
 
     private fun isMultipleSelectionProduct(): Boolean {

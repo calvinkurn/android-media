@@ -135,6 +135,38 @@
 
             </RadioGroup>
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_product_tag_source_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Product Tag Source"
+                android:layout_marginTop="@dimen/spacing_lvl6"
+                />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cbx_global_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Global Search"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cbx_last_purchased"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last Purchased"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cbx_my_shop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Shop"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                />
+
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_open"
                 android:layout_width="match_parent"
