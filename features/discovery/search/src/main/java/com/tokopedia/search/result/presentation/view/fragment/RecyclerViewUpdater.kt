@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.di.qualifier.SearchContext
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.SeparatorItemDecoration
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
@@ -14,11 +16,12 @@ import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import javax.inject.Inject
 
+@SearchScope
 class RecyclerViewUpdater @Inject constructor(
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     @SearchContext
     context: Context,
-): ViewUpdater,
+) : ViewUpdater,
     ProductListAdapter.OnItemChangeView,
     ContextProvider by WeakReferenceContextProvider(context) {
 
@@ -55,6 +58,7 @@ class RecyclerViewUpdater @Inject constructor(
             layoutManager = rvLayoutManager
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
+            addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
             addOnScrollListener(rvOnScrollListener)
         }
     }

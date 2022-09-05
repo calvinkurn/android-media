@@ -31,9 +31,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_KEY
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_NO_KEY
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.remoteconfig.ShopAbTestPlatform
@@ -51,10 +48,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.resources.isDarkMode
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -143,7 +136,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkAbTestRollenceVariant()
+        getInitialData()
         setupToolbar()
         setBackgroundColor()
         initListener()
@@ -200,42 +193,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         removeObservers(shopSettingsOperationalHoursViewModel.shopSettingsOperationalHoursListUiModel)
         removeObservers(shopSettingsOperationalHoursViewModel.shopInfoCloseSchedule)
         removeObservers(shopSettingsOperationalHoursViewModel.shopInfoAbortSchedule)
-    }
-
-    private fun checkAbTestRollenceVariant() {
-        context?.let { ctx ->
-            shopAbTestPlatform = ShopAbTestPlatform(ctx).apply {
-                requestParams = ShopAbTestPlatform.createRequestParam(
-                        listExperimentName = listOf(AB_TEST_OPERATIONAL_HOURS_KEY),
-                        shopId = userSession.shopId
-                )
-                fetch(object : RemoteConfig.Listener {
-                    override fun onComplete(remoteConfig: RemoteConfig?) {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            val variantType = getString(AB_TEST_OPERATIONAL_HOURS_KEY, AB_TEST_OPERATIONAL_HOURS_NO_KEY)
-                            if (variantType == AB_TEST_OPERATIONAL_HOURS_NO_KEY) {
-                                // no experiment / successfully deleted, by default render new page
-                                getInitialData()
-                            }
-                            else {
-                                if (variantType.isEmpty() || variantType != AB_TEST_OPERATIONAL_HOURS_KEY) {
-                                    // user not get the experiment yet,
-                                    // redirect to old shop ops hour settings
-                                    RouteManager.route(ctx, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
-                                    activity?.finish()
-                                }
-                                else {
-                                    // user get new experiment
-                                    getInitialData()
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onError(e: Exception?) {}
-                })
-            }
-        }
     }
 
     private fun initView(view: View?) {
@@ -378,7 +335,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 RouteManager.route(context, String.format(
                         WEBVIEW_APPLINK_FORMAT,
                         ApplinkConst.WEBVIEW,
-                        getString(R.string.shop_operational_hour_seller_edu_revamp)
+                        getString(R.string.shop_operational_hour_desc_ticker_holiday_url)
                 ))
             }
             isShowShadow = false
@@ -529,7 +486,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             // set "sampai" end date text
             shopIsOnHolidayEndDateText?.text = getString(
                     R.string.shop_operational_hour_is_on_holiday_until,
-                    OperationalHoursUtil.toIndonesianDateFormat(selectedEndDate, isRequireSimpleFormat = true)
+                    OperationalHoursUtil.toIndonesianDateFormat(selectedEndDate, isRequireSimpleFormat = false)
             )
 
             // set open shop button

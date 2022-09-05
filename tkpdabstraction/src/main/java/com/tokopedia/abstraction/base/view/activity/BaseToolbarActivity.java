@@ -46,7 +46,6 @@ public abstract class BaseToolbarActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setupStatusBar();
         setupLayout(savedInstanceState);
-        setUpActionBar(toolbar);
         setupFragment(savedInstanceState);
     }
 
@@ -78,6 +77,7 @@ public abstract class BaseToolbarActivity extends BaseActivity {
         setContentView(getLayoutRes());
         toolbar = getInitToolbarView();
         changeToolbarFontToOSO();
+        setUpActionBar(toolbar);
     }
 
     private @Nullable Toolbar getInitToolbarView(){

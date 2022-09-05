@@ -39,6 +39,7 @@ import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.design.SaldoInstructionsBottomSheet
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
+import com.tokopedia.saldodetails.commom.utils.SaldoDetailsRollenceUtil
 import com.tokopedia.saldodetails.commom.utils.ErrorMessage
 import com.tokopedia.saldodetails.commom.utils.SaldoCoachMarkController
 import com.tokopedia.saldodetails.commom.utils.Success
@@ -631,8 +632,10 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun initialVar() {
         saldoDetailViewModel.isSeller = isSellerEnabled
-        totalBalanceTitle!!.text =
-            resources.getString(com.tokopedia.saldodetails.R.string.total_saldo_text)
+        context?.resources?.let { res ->
+            totalBalanceTitle!!.text =
+                res.getString(R.string.total_saldo_text)
+        }
         buyerSaldoBalanceRL!!.show()
         sellerSaldoBalanceRL!!.show()
 
@@ -839,7 +842,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?) {
-        if (response != null && response.isEligible) {
+        if (SaldoDetailsRollenceUtil.shouldShowModalTokoWidget() && response != null && response.isEligible) {
             statusWithDrawLock = response.status
             when (statusWithDrawLock) {
                 MCL_STATUS_ZERO -> hideMerchantCreditLineFragment()
@@ -856,7 +859,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         } else {
             hideMerchantCreditLineFragment()
         }
-
     }
 
     private fun showMerchantCreditLineWidget(response: GqlMerchantCreditResponse?) {

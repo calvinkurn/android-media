@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -12,6 +13,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
@@ -259,11 +261,10 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel.setPreOrderInfo(shipmentInformationData.getPreorder().getDuration());
             }
             if (shipmentInformationData.getFreeShippingExtra().getEligible()) {
-                shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShippingExtra().getBadgeUrl());
                 shipmentCartItemModel.setFreeShippingExtra(true);
-            } else if (shipmentInformationData.getFreeShipping().getEligible()) {
-                shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShipping().getBadgeUrl());
             }
+            shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShippingGeneral().getBadgeUrl());
+            shipmentCartItemModel.setFreeShippingPlus(shipmentInformationData.getFreeShippingGeneral().isBoTypePlus());
             shipmentCartItemModel.setShopLocation(shipmentInformationData.getShopLocation());
         }
 
@@ -356,6 +357,7 @@ public class ShipmentDataConverter {
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
         cartItemModel.setFreeShippingExtra(product.isFreeShippingExtra());
         cartItemModel.setFreeShipping(product.isFreeShipping());
+        cartItemModel.setFreeShippingName(product.getFreeShippingName());
         cartItemModel.setShowTicker(product.isShowTicker());
         cartItemModel.setTickerMessage(product.getTickerMessage());
         cartItemModel.setVariant(product.getVariant());
@@ -399,6 +401,7 @@ public class ShipmentDataConverter {
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
 
         cartItemModel.setAddOnProductLevelModel(product.getAddOnProduct());
+        cartItemModel.setEthicalDrugDataModel(product.getEthicalDrugs());
         cartItemModel.setAddOnDefaultFrom(username);
         cartItemModel.setAddOnDefaultTo(receiverName);
         cartItemModel.setCartString(groupShop.getCartString());
@@ -413,6 +416,16 @@ public class ShipmentDataConverter {
         addOnWordingModel.setPackagingAndGreetingCard(addOnWordingData.getPackagingAndGreetingCard());
         addOnWordingModel.setInvoiceNotSendToRecipient(addOnWordingData.getInvoiceNotSendToRecipient());
         return addOnWordingModel;
+    }
+
+    public ShipmentUpsellModel getShipmentUpsellModel(UpsellData upsellData) {
+        ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
+        shipmentUpsellModel.setShow(upsellData.isShow());
+        shipmentUpsellModel.setTitle(upsellData.getTitle());
+        shipmentUpsellModel.setDescription(upsellData.getDescription());
+        shipmentUpsellModel.setAppLink(upsellData.getAppLink());
+        shipmentUpsellModel.setImage(upsellData.getImage());
+        return shipmentUpsellModel;
     }
 
     private Fobject levelUpParametersFromProductToCartSeller(List<CartItemModel> cartItemList) {

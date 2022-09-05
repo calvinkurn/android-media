@@ -1,5 +1,7 @@
 package com.tokopedia.promogamification.common.floating.view.presenter;
 
+import androidx.core.content.ContextCompat;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -114,15 +116,16 @@ public class FloatingEggPresenter extends BaseDaggerPresenter<FloatingEggContrac
 
     @Override
     public void clickCloseButton(int floatingId) {
-
         getTokenTokopointsUseCase.clearRequest();
-        GraphqlRequest closeClickRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.core_gami_floating_close_click_query),
-                GamiFloatingCloseClickResponse.class, false);
-        HashMap map = new HashMap();
-        map.put("floatingID", floatingId);
-        closeClickRequest.setVariables(map);
-        getTokenTokopointsUseCase.addRequest(closeClickRequest);
-        getTokenTokopointsUseCase.execute(getClickCloseSubscriber());
+        if(getView() != null) {
+            GraphqlRequest closeClickRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.core_gami_floating_close_click_query),
+                    GamiFloatingCloseClickResponse.class, false);
+            HashMap map = new HashMap();
+            map.put("floatingID", floatingId);
+            closeClickRequest.setVariables(map);
+            getTokenTokopointsUseCase.addRequest(closeClickRequest);
+            getTokenTokopointsUseCase.execute(getClickCloseSubscriber());
+        }
     }
 
     @Override

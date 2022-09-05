@@ -4,21 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="16dp"
-    android:paddingTop="12dp"
-    android:paddingEnd="16dp"
-    android:paddingBottom="12dp">
+    android:padding="16dp" >
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_shipment_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_title_strike"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_goneMarginEnd="2dp"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
         tools:text="Ongkir cuma Rp10.000" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -26,17 +28,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:textColor="@color/Unify_N700_68"
+        android:layout_marginEnd="2dp"
+        android:textColor="@color/Unify_NN300"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
         app:layout_constraintLeft_toRightOf="@id/pdp_shipment_title"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_icon"
-        app:typographyType="display_2"
+        app:typographyType="display_3"
         tools:text="Rp30.000" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/pdp_shipment_icon"
         android:layout_width="wrap_content"
-        android:layout_height="16dp"
+        android:layout_height="20dp"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
         app:layout_constraintRight_toRightOf="parent"

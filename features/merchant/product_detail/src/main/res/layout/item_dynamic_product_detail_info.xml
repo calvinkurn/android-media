@@ -10,7 +10,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/product_detail_info_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         android:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -55,7 +55,7 @@
         android:layout_marginEnd="16dp"
         android:text="@string/label_read_detail"
         android:layout_marginTop="8dp"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:visibility="visible"
         app:typographyType="display_3"
         app:typographyWeight="bold" />

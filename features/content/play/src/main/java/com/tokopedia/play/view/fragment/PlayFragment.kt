@@ -39,6 +39,7 @@ import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.*
@@ -233,6 +234,10 @@ class PlayFragment @Inject constructor(
         fragmentUserInteractionView.finishAnimateInsets(isHidingInsets)
     }
 
+    fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
+        fragmentBottomSheetView.openVariantBottomSheet(action, product)
+    }
+
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
@@ -313,8 +318,8 @@ class PlayFragment @Inject constructor(
         try {
             val channelData = playParentViewModel.getLatestChannelStorageData(channelId)
             playViewModel.focusPage(channelData)
-            analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType, channelName = channelData.channelDetail.channelInfo.title)
-            newAnalytic.sendData(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
+            analytic.sendScreen(channelId, playViewModel.channelType, sourceType = playParentViewModel.source.type, channelName = channelData.channelDetail.channelInfo.title)
+            newAnalytic.sendDataNow(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }

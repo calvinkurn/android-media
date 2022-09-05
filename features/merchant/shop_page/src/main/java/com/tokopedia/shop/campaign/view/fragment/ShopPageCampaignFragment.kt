@@ -1,5 +1,6 @@
 package com.tokopedia.shop.campaign.view.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -35,6 +36,7 @@ import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
@@ -49,7 +51,11 @@ import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHol
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, ShopCampaignProductBundleParentWidgetViewHolder.Listener {
+class ShopPageCampaignFragment :
+    ShopPageHomeFragment(),
+    WidgetConfigListener,
+    ShopCampaignProductBundleParentWidgetViewHolder.Listener,
+    ShopHomeListener {
 
     companion object {
         private const val KEY_SHOP_ID = "SHOP_ID"
@@ -61,6 +67,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val CONFETTI_URL = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json"
+        private const val KEY_ENABLE_SHOP_DIRECT_PURCHASE = "ENABLE_SHOP_DIRECT_PURCHASE"
 
         fun createInstance(
             shopId: String,
@@ -68,7 +75,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             isGoldMerchant: Boolean,
             shopName: String,
             shopAttribution: String,
-            shopRef: String
+            shopRef: String,
+            isEnableDirectPurchase: Boolean
         ): ShopPageCampaignFragment {
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
@@ -77,7 +85,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             bundle.putString(KEY_SHOP_NAME, shopName)
             bundle.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
             bundle.putString(KEY_SHOP_REF, shopRef)
-
+            bundle.putBoolean(KEY_ENABLE_SHOP_DIRECT_PURCHASE, isEnableDirectPurchase)
             return ShopPageCampaignFragment().apply {
                 arguments = bundle
             }
@@ -121,7 +129,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             thematicWidgetListener = thematicWidgetProductClickListenerImpl(),
             shopHomeProductListSellerEmptyListener = this,
             widgetConfigListener = this,
-            bundlingParentListener = this
+            bundlingParentListener = this,
+            shopHomeListener = this
         )
     }
 
@@ -150,7 +159,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         setWidgetLayoutPlaceholder()
     }
 
-    private fun setWidgetLayoutPlaceholder() {
+    override fun setWidgetLayoutPlaceholder() {
         if (listWidgetLayout.isNotEmpty()) {
             shopCampaignTabAdapter.hideLoading()
             val shopHomeWidgetContentData =
@@ -158,7 +167,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
                     listWidgetLayout,
                     isOwner,
                     isLogin,
-                    isThematicWidgetShown
+                    isThematicWidgetShown,
+                    isEnableDirectPurchase
                 )
             shopCampaignTabAdapter.setCampaignLayoutData(shopHomeWidgetContentData)
         }
@@ -249,9 +259,12 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
     }
 
     override fun onMultipleBundleProductClicked(
+        shopId: String,
+        warehouseId: String,
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
+        bundleType: String,
         bundlePosition: Int,
         widgetTitle: String,
         widgetName: String,
@@ -273,13 +286,16 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
     }
 
     override fun onSingleBundleProductClicked(
+        shopId: String,
+        warehouseId: String,
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
         bundlePosition: Int,
-        widgetName: String,
         widgetTitle: String,
-        productItemPosition: Int
+        widgetName: String,
+        productItemPosition: Int,
+        bundleType: String
     ) {
         shopCampaignTabTracker.clickCampaignTabProduct(
             selectedProduct.productId,
@@ -320,12 +336,15 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
     }
 
     override fun impressionProductBundleSingle(
+        shopId: String,
+        warehouseId: String,
         selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
         selectedProduct: ShopHomeBundleProductUiModel,
         bundleName: String,
         bundlePosition: Int,
         widgetTitle: String,
-        widgetName: String
+        widgetName: String,
+        bundleType: String
     ) {
         shopCampaignTabTracker.impressionCampaignTabProduct(
             selectedProduct.productId,
@@ -567,9 +586,9 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             }
             val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
             gradient.cornerRadius = 0f
-            topView?.setBackgroundColor(Color.parseColor(listBackgroundColor.firstOrNull()))
+            topView?.setBackgroundColor(parseColor(listBackgroundColor.firstOrNull().orEmpty()))
             centerView?.background = gradient
-            bottomView?.setBackgroundColor(Color.parseColor(listBackgroundColor.lastOrNull()))
+            bottomView?.setBackgroundColor(parseColor(listBackgroundColor.lastOrNull().orEmpty()))
         } else {
             topView?.hide()
             centerView?.hide()
@@ -583,10 +602,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         } catch (e: Throwable) {
             0
         }
-    }
-
-    override fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
-        listWidgetLayout = data.listWidgetLayout.toMutableList()
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AdapterTypeFactory> {
@@ -697,7 +712,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
                 listWidgetLayoutToLoad.toList(),
                 shopId,
                 widgetUserAddressLocalData,
-                isThematicWidgetShown
+                isThematicWidgetShown,
+                isEnableDirectPurchase
             )
         }
     }
@@ -740,6 +756,22 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
 
     fun setPageBackgroundColor(listBackgroundColor: List<String>) {
         this.listBackgroundColor = listBackgroundColor
+        checkIfListBackgroundColorValueIsEmpty()
+    }
+
+    @SuppressLint("ResourceType")
+    private fun checkIfListBackgroundColorValueIsEmpty() {
+        if (listBackgroundColor.all { it.isEmpty() }) {
+            this.listBackgroundColor = getDefaultListBackgroundColor()
+        }
+    }
+
+    @SuppressLint("ResourceType")
+    private fun getDefaultListBackgroundColor(): List<String> {
+        return listOf(
+            getString(R.color.clr_dms_shop_campaign_tab_first_color),
+            getString(R.color.clr_dms_shop_campaign_tab_second_color)
+        )
     }
 
     fun setPageTextColor(textColor: String) {

@@ -1,22 +1,18 @@
 package com.tokopedia.media.preview.ui.activity
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.media.preview.managers.ImageCompressionManager
-import com.tokopedia.media.preview.managers.SaveToGalleryManager
+import com.tokopedia.media.preview.data.repository.ImageCompressionRepository
+import com.tokopedia.media.preview.data.repository.SaveToGalleryRepository
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.getFileFormatByMimeType
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScope
@@ -35,8 +31,8 @@ class PreviewViewModelTest {
         coroutineScopeRule.dispatchers.main
     )
 
-    private val saveToGalleryManagerMock = mockk<SaveToGalleryManager>()
-    private val imageCompressorMock = mockk<ImageCompressionManager>()
+    private val saveToGalleryRepository = mockk<SaveToGalleryRepository>()
+    private val imageCompressorRepository = mockk<ImageCompressionRepository>()
 
     private lateinit var viewModel: PreviewViewModel
 
@@ -45,15 +41,16 @@ class PreviewViewModelTest {
         mockkStatic(::getFileFormatByMimeType)
 
         viewModel = PreviewViewModel(
-            imageCompressorMock,
-            saveToGalleryManagerMock
+            imageCompressorRepository,
+            saveToGalleryRepository,
+            coroutineScopeRule.dispatchers
         )
     }
 
     @Test
     fun `check isLoading not empty`() {
         // When
-        every { imageCompressorMock.compress(any()) } returns flow { }
+        coEvery { imageCompressorRepository.compress(any()) } returns listOf()
         viewModel.files(mockMediaUiModel)
 
         // Then
@@ -69,12 +66,8 @@ class PreviewViewModelTest {
 
         // When
         every { getFileFormatByMimeType(any(), any(), any()) } returns false
-        every { saveToGalleryManagerMock.dispatch(any()) } returns null
-        every { imageCompressorMock.compress(any()) } returns flow {
-            emit(
-                listOf("")
-            )
-        }
+        every { saveToGalleryRepository.dispatch(any()) } returns null
+        coEvery { imageCompressorRepository.compress(any()) } returns listOf()
 
         // Then
         testCoroutineScope.launch {
@@ -99,11 +92,9 @@ class PreviewViewModelTest {
 
         // When
         every { getFileFormatByMimeType(any(), any(), any()) } returns true
-        every { saveToGalleryManagerMock.dispatch(any()) } returns null
-        every { imageCompressorMock.compress(any()) } answers {
-            flow {
-                emit(firstArg())
-            }
+        every { saveToGalleryRepository.dispatch(any()) } returns null
+        coEvery { imageCompressorRepository.compress(any()) } answers {
+            firstArg()
         }
 
         // Then

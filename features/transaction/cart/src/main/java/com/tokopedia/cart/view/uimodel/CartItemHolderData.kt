@@ -59,6 +59,9 @@ data class CartItemHolderData(
         var bundleIconUrl: String = "",
         var bundleGrayscaleIconUrl: String = "",
         var bundleLabelQuantity: Int = 0,
+        var needPrescription: Boolean = false,
+        var butuhResepText: String = "",
+        var butuhResepIconUrl: String = "",
 
         // Analytics data
         var shopId: String = "",
@@ -72,6 +75,7 @@ data class CartItemHolderData(
         var promoDetails: String = "",
         var isFreeShippingExtra: Boolean = false,
         var isFreeShipping: Boolean = false,
+        var freeShippingName: String = "",
         var campaignId: String = "",
         var originalQty: Int = 0,
         var originalNotes: String = "",

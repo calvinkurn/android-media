@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
@@ -123,7 +124,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
                 ApplinkConstInternalMarketplace.ADMIN_INVITATION
             }
         } else {
-            ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
+            ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION
         }
 
         context?.let {
@@ -143,7 +144,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
         val appLink = if (isShopAdminMA(adminTypeUiModel)) {
             ApplinkConstInternalMarketplace.ADMIN_INVITATION
         } else {
-            ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
+            ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION
         }
 
         context?.let {

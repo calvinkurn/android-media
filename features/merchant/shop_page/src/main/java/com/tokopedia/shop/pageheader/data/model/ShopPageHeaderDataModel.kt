@@ -24,5 +24,6 @@ data class ShopPageHeaderDataModel(
         var shopBadge: String = "",
         var description: String = "",
         var tagline: String = "",
-        var listDynamicTabData: List<ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData> = listOf()
+        var listDynamicTabData: List<ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData> = listOf(),
+        var isEnableDirectPurchase: Boolean = false
 )

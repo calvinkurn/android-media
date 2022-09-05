@@ -103,6 +103,7 @@ class ShopCampaignDynamicHeaderCustomView: FrameLayout {
             tusCountDown?.apply {
                 isShowClockIcon = false
                 timerFormat = TimerUnifySingle.FORMAT_AUTO
+                timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
                 onFinish = {
                     listener?.onTimerFinish()
                 }

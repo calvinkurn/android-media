@@ -18,6 +18,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
+import com.tokopedia.tokofood.common.util.TokofoodExt
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
@@ -33,7 +34,6 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 object TokoFoodPurchaseUiModelMapper {
 
     private const val MIN_QUANTITY_STOCK = 1
-    private const val MAX_QUANTITY_STOCK = 99999
 
     private const val INDEX_AFTER_FROM_PROMO = 2
 
@@ -91,8 +91,8 @@ object TokoFoodPurchaseUiModelMapper {
                     }
                     add(mapProductUnavailableReasonUiModel(isEnabled, unavailableSection.title))
                     addAll(unavailableProducts.map { mapProductUiModel(it, isEnabled, false) })
-                    add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
                     if (unavailableProducts.size > Int.ONE) {
+                        add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel())
                         add(mapAccordionUiModel(isEnabled))
                     }
                 }
@@ -128,8 +128,8 @@ object TokoFoodPurchaseUiModelMapper {
         needPinpoint: Boolean
     ): PartialTokoFoodUiModel {
         val shouldShippingShown = response.data.shipping.name.isNotEmpty()
-        val shouldPromoShown = !response.data.promo.hidePromo
-        val shouldSummaryShown = !response.data.summaryDetail.hideSummary
+        val shouldPromoShown = !response.data.promo.hidePromo && isEnabled
+        val shouldSummaryShown = !response.data.summaryDetail.hideSummary && isEnabled
         val shouldTickerShopLevelShown =
             response.data.errorsUnblocking.isNotEmpty() && response.data.availableSection.products.isNotEmpty()
 
@@ -481,7 +481,7 @@ object TokoFoodPurchaseUiModelMapper {
             priceFmt = product.priceFmt,
             quantity = product.quantity,
             minQuantity = MIN_QUANTITY_STOCK,
-            maxQuantity = MAX_QUANTITY_STOCK,
+            maxQuantity = TokofoodExt.MAXIMUM_QUANTITY,
             notes = product.notes,
             addOns = addOnsAndParamPair.map { it.first },
             originalPrice = product.originalPrice,

@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
@@ -14,7 +15,7 @@ import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
 import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_WHOLESALE_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
@@ -36,6 +37,10 @@ import com.tokopedia.product.addedit.util.getPrivateProperty
 import com.tokopedia.product.addedit.util.setPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse.GetIMSMeta
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse.GetIMSMeta.Data
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -52,8 +57,10 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import java.io.IOException
 import kotlin.reflect.KFunction0
+import kotlin.reflect.KFunction1
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -88,6 +95,9 @@ class AddEditProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var getProductTitleValidationUseCase: GetProductTitleValidationUseCase
+
+    @RelaxedMockK
+    lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
 
     @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
@@ -153,6 +163,7 @@ class AddEditProductDetailViewModelTest {
                 validateProductUseCase, validateProductNameUseCase, getShopEtalaseUseCase, annotationCategoryUseCase,
                 productPriceSuggestionSuggestedPriceGetUseCase,
                 priceSuggestionSuggestedPriceGetByKeywordUseCase, getProductTitleValidationUseCase,
+                getMaxStockThresholdUseCase,
                 userSession)
     }
 
@@ -559,6 +570,21 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `validateProductWholeSaleQuasdsaoleSaleQuantityInput`() {
+        val stringResErrorMessage = "Jasd"
+
+        val errorMessage = runValidationAndProvideMessage(
+            provider::getWholeSaleMaxErrorMessage,
+            MAX_WHOLESALE_QUANTITY,
+            stringResErrorMessage
+        ) {
+            viewModel.validateProductWholeSaleQuantityInput(MAX_WHOLESALE_QUANTITY.toString(), "", "5")
+        }
+
+        Assert.assertTrue(errorMessage == stringResErrorMessage)
+    }
+
+    @Test
     fun `validateProductWholeSalePriceInput should valid when wholeSalePriceInput is more than zero and productPriceInput also previousInput is blank`() {
         val errorMessage = viewModel.validateProductWholeSalePriceInput("500", "", "")
 
@@ -689,15 +715,146 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductStockInput should invalid when productStockInput is greater than max stock limit`() {
-        val stringResErrorMessage = "Stok melebihi batas maks. 999.999"
+    fun `getMaxStockThreshold and validateProductStockInput should be successful in getting the threshold value and getting an error`() {
+        /*
+         * Init Data:
+         * 1. stringResErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current more than expectedMaxStockThreshold for this test case
+         */
+        val stringResErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold = "100000"
+        val stockInput = "200000"
 
-        runValidationAndProvideMessage(provider::getMaxLimitProductStockErrorMessage, stringResErrorMessage) {
-            viewModel.validateProductStockInput("${MAX_PRODUCT_STOCK_LIMIT + 1}")
-        }
+        // create stub
+        coEvery {
+            getMaxStockThresholdUseCase.execute(anyString())
+        } returns MaxStockThresholdResponse(getIMSMeta = GetIMSMeta(
+                data = Data(
+                    maxStockThreshold = expectedMaxStockThreshold
+                ),
+                header = Header()
+            )
+        )
 
+        // create stub
+        every {
+            provider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns stringResErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        viewModel.validateProductStockInput(stockInput)
+
+        // wait until isProductStockInputError gets the value
         val isError = viewModel.isProductStockInputError.getOrAwaitValue()
-        Assert.assertTrue(isError && viewModel.productStockMessage.isNotBlank() && viewModel.productStockMessage == stringResErrorMessage)
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one
+         * 2. Error and the error message is not blank
+         * 3. Error message equals to the actual one
+         */
+        Assert.assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        Assert.assertTrue(isError && viewModel.productStockMessage.isNotBlank())
+        Assert.assertEquals(stringResErrorMessage, viewModel.productStockMessage)
+    }
+
+    @Test
+    fun `getMaxStockThreshold and validateProductStockInput should be successful in getting the threshold value and not getting an error`() {
+        /*
+         * Init Data:
+         * 1. stringResErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current stock less than expectedMaxStockThreshold for this test case
+         */
+        val stringResErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold = "100000"
+        val stockInput = "212"
+
+        // create stub
+        coEvery {
+            getMaxStockThresholdUseCase.execute(anyString())
+        } returns MaxStockThresholdResponse(getIMSMeta = GetIMSMeta(
+                data = Data(
+                    maxStockThreshold = expectedMaxStockThreshold
+                ),
+                header = Header()
+            )
+        )
+
+        // create stub
+        every {
+            provider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns stringResErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        viewModel.validateProductStockInput(stockInput)
+
+        // wait until isProductStockInputError gets the value
+        val isError = viewModel.isProductStockInputError.getOrAwaitValue()
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one.
+         * 2. Not error and the error message is blank
+         */
+        Assert.assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        Assert.assertTrue(!isError && viewModel.productStockMessage.isBlank())
+    }
+
+    @Test
+    fun `getMaxStockThreshold and validateProductStockInput should fail in getting the threshold value and not getting an error`() {
+        /*
+         * Init Data:
+         * 1. stringResErrorMessage is an error message will be shown provided that current stock more than the maximum stock
+         * 2. expectedMaxStockThreshold is max stock threshold which we need to use to compare the expected and actual threshold
+         * 3. stockInput is current stock, we need current stock more than expectedMaxStockThreshold for this test case
+         */
+        val stringResErrorMessage = "Stok melebihi batas maks. 100.000"
+        val expectedMaxStockThreshold: String? = null
+        val stockInput = "200000"
+
+        // throw a throwable
+        coEvery {
+            getMaxStockThresholdUseCase.execute(anyString())
+        } throws Throwable()
+
+        // create stub
+        every {
+            provider.getMaxLimitProductStockErrorMessage(expectedMaxStockThreshold)
+        } returns stringResErrorMessage
+
+        // fetch the threshold
+        viewModel.getMaxStockThreshold(anyString())
+
+        // need to wait the response of threshold because the validation using maxStockThreshold value inside of the function validation
+        val actualMaxStockThreshold = viewModel.maxStockThreshold.getOrAwaitValue()
+
+        // validate product stock input
+        viewModel.validateProductStockInput(stockInput)
+
+        // wait until isProductStockInputError gets the value
+        val isError = viewModel.isProductStockInputError.getOrAwaitValue()
+
+        /*
+         * Expected Result:
+         * 1. Max stock threshold equals to the actual one.
+         * 2. Not error and the error message is blank
+         */
+        Assert.assertEquals(expectedMaxStockThreshold, actualMaxStockThreshold)
+        Assert.assertTrue(!isError && viewModel.productStockMessage.isBlank())
     }
 
     @Test
@@ -1579,11 +1736,6 @@ class AddEditProductDetailViewModelTest {
         runValidationAndProvideMessage(provider::getPrevInputWholeSalePriceErrorMessage, null) {
             viewModel.validateProductWholeSalePriceInput("-1", "10", "1")
         }
-
-        runValidationAndProvideMessage(provider::getMaxLimitProductStockErrorMessage, null) {
-            viewModel.validateProductStockInput((MAX_PRODUCT_STOCK_LIMIT + 1).toString())
-        }
-
         runValidationAndProvideMessage(provider::getEmptyOrderQuantityErrorMessage, null) {
             viewModel.validateProductMinOrderInput("", "")
         }
@@ -1694,6 +1846,18 @@ class AddEditProductDetailViewModelTest {
         every { provider() } returns value
         val result = funcToCall.invoke()
         verify { provider() }
+        return result
+    }
+
+    private fun <T: Any> runValidationAndProvideMessage(
+        provider: KFunction1<Int, String>,
+        arg: Int,
+        value: String,
+        funcToCall: () -> T
+    ): T {
+        every { provider(arg) } returns value
+        val result = funcToCall.invoke()
+        verify { provider(arg) }
         return result
     }
 

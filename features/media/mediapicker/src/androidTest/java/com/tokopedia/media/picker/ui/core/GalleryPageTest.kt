@@ -1,38 +1,62 @@
 package com.tokopedia.media.picker.ui.core
 
-import android.net.Uri
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.helper.matchers.withRecyclerView
+import com.tokopedia.media.picker.helper.utils.ImageGenerator
+import com.tokopedia.media.picker.helper.utils.VideoGenerator
 import com.tokopedia.media.picker.ui.PickerTest
+import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.ThumbnailViewHolder
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.types.PageType
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import org.hamcrest.Matcher
 
-open class GalleryPageTest : PickerTest() {
+abstract class GalleryPageTest : PickerTest() {
 
-    override fun createAndAppendUri(builder: Uri.Builder) {}
+    protected abstract val isMultipleSelectionMode: Boolean
 
-    object DataProvider {
-        val imageOnly = listOf(
-            Media(1, "sample.png", ""),
-            Media(2, "sample.png", ""),
-        )
+    protected val imageAndVideoFiles = mockImageFiles()
+        .plus(mockVideoFiles())
 
-        val videoOnly = listOf(
-            Media(1, "videoplayback.mp4", ""),
-            Media(2, "videoplayback.mp4", ""),
-        )
+    fun mockImageFiles(): List<Media> {
+        return ImageGenerator
+            .getFiles(context)
+            .mapIndexed { index, file ->
+                Media(index.toLong(), file = PickerFile(filePath = file.path))
+            }
+    }
 
-        val imageAndVideo = listOf(
-            Media(1, "sample.png", ""),
-            Media(2, "videoplayback.mp4", ""),
-        )
+    fun mockVideoFiles(): List<Media> {
+        return VideoGenerator
+            .getFiles(context)
+            .map {
+                Media(Long.MAX_VALUE, file = PickerFile(filePath = it.path))
+            }
+    }
+
+    protected open fun startGalleryPage(param: PickerParam.() -> Unit = {}) {
+        val pickerParam = PickerParam()
+            .apply(param)
+            .also {
+                it.pageSource(PageSource.CreatePost) // sample
+                it.pageType(PageType.GALLERY)
+
+                if (isMultipleSelectionMode) {
+                    it.multipleSelectionMode()
+                } else {
+                    it.singleSelectionMode()
+                }
+            }
+
+        startPickerActivity(pickerParam)
     }
 
     object Robot {
@@ -42,18 +66,41 @@ open class GalleryPageTest : PickerTest() {
             ).perform(click())
         }
 
-        fun clickFirstItemMediaList() {
+        fun clickRecyclerViewItemAt(position: Int) {
             onView(
                 withRecyclerView(R.id.lst_media)
-                    .atPosition(0)
+                    .atPosition(position)
+            ).perform(click())
+        }
+
+        fun removeFirstItemOnDrawer() {
+            onView(
+                withId(R.id.iv_delete)
             ).perform(click())
         }
     }
 
     object Asserts {
+        fun assertTextDisplayedWith(text: String) {
+            // set waiting for 500ms before assertion
+            Thread.sleep(500)
+
+            onView(
+                withText(text)
+            ).check(
+                matches(withEffectiveVisibility(Visibility.VISIBLE))
+            )
+        }
+
         fun assertRecyclerViewDisplayed() {
             onView(
                 withId(R.id.lst_media)
+            ).check(matches(isDisplayed()))
+        }
+
+        fun assertEmptyStateDisplayed() {
+            onView(
+                withId(R.id.empty_state)
             ).check(matches(isDisplayed()))
         }
 
@@ -63,13 +110,20 @@ open class GalleryPageTest : PickerTest() {
             ).check(matches(isDisplayed()))
         }
 
-        fun assertItemListSize(size: Int) {
-            assertRecyclerviewItem(hasTotalItemOf(size))
+        fun assertMediaItemListSize(size: Int) {
+            assertRecyclerviewItem(R.id.lst_media, hasTotalItemOf(size))
         }
 
-        private fun assertRecyclerviewItem(matcher: Matcher<in View>) {
+        fun assertDrawerItemListSize(size: Int) {
+            assertRecyclerviewItem(
+                R.id.rv_thumbnail,
+                hasTotalItemOf(size, ThumbnailViewHolder::class.java)
+            )
+        }
+
+        private fun assertRecyclerviewItem(recyclerViewId: Int, matcher: Matcher<in View>) {
             onView(
-                withId(R.id.lst_media)
+                withId(recyclerViewId)
             ).check(matches(matcher))
         }
     }

@@ -100,6 +100,8 @@
     <string name="tag_home_nav_toolbar">home_navigation_toolbar</string>
     <string name="tag_balance_widget">drawerItemType %s</string>
 
+    <string name="balance_widget_failed_to_load">Gagal Dimuat</string>
+
     <!--Test Setup Options-->
     <string name="host_home_setting" translatable="false">home-setting</string>
     <string name="path_home_dev_opt" translatable="false">/opt</string>

@@ -2,11 +2,13 @@ package com.tokopedia.product.addedit.variant.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ZERO
+import java.math.BigInteger
 
 data class VariantDetail (
         @SerializedName("VariantID")
         @Expose
-        var variantID: Int = 0,
+        var variantID: BigInteger = Int.ZERO.toBigInteger(),
         @SerializedName("Identifier")
         @Expose
         var identifier: String = "",

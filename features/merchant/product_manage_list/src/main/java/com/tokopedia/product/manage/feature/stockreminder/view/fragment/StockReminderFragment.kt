@@ -21,13 +21,20 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.databinding.FragmentStockReminderBinding
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MAXIMUM_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.MINIMUM_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
 import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_INACTIVE
@@ -78,6 +85,7 @@ class StockReminderFragment : BaseDaggerFragment(),
     private var productName: String? = null
     private var warehouseId: String? = null
 
+    private var maxStock: Int? = null
     private var isVariant: Boolean = false
     private var adapter: ProductStockReminderAdapter? = null
 
@@ -134,6 +142,7 @@ class StockReminderFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         checkLogin()
         initView()
+        observeMaxStock()
         observeState()
     }
 
@@ -173,7 +182,8 @@ class StockReminderFragment : BaseDaggerFragment(),
         }
 
         val dataIsValid = getProductWareHouseList().firstOrNull{
-            it.thresholdStatus == REMINDER_ACTIVE.toString() && it.threshold.toInt() < MINIMUM_STOCK_REMINDER
+            it.thresholdStatus == REMINDER_ACTIVE.toString() &&
+                    (it.threshold.toIntOrZero() < MINIMUM_STOCK_REMINDER || it.threshold.toIntOrZero() > maxStock ?: MAXIMUM_STOCK_REMINDER)
         } == null
 
         val haveValidChanges = haveChanges.size.orZero() > 0
@@ -243,6 +253,12 @@ class StockReminderFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeMaxStock() {
+        observe(viewModel.maxStockLiveData) { maxStock ->
+            this.maxStock = maxStock
+        }
+    }
+
     private fun observeState() {
         observe(viewModel.showLoading) { showProgressBar ->
             if (showProgressBar) {
@@ -309,7 +325,7 @@ class StockReminderFragment : BaseDaggerFragment(),
                         stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(
                             0
                         )?.wareHouseId
-                    viewModel.getProduct(productId.orEmpty(), warehouseId.orEmpty())
+                    viewModel.getProduct(productId.orEmpty(), warehouseId.orEmpty(), userSession.shopId)
                 }
                 is Fail -> {
                     binding?.cardSaveBtn?.visibility = View.GONE
@@ -346,7 +362,7 @@ class StockReminderFragment : BaseDaggerFragment(),
                 binding?.geStockReminder?.setActionClickListener {
                     binding?.globalErrorStockReminder?.visibility = View.GONE
                     binding?.cardSaveBtn?.visibility = View.VISIBLE
-                    viewModel.getProduct(productId.toString(), warehouseId.toString())
+                    viewModel.getProduct(productId.toString(), warehouseId.toString(), userSession.shopId)
                 }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(productData.throwable)
                 ProductManageListErrorHandler.logExceptionToServer(
@@ -442,9 +458,7 @@ class StockReminderFragment : BaseDaggerFragment(),
     }
 
     private fun showVariantSelectionBottomSheet() {
-        val groupVariantBottomSheet = VariantSelectionStockReminderBottomSheet(
-            childFragmentManager
-        )
+        val groupVariantBottomSheet = VariantSelectionStockReminderBottomSheet(childFragmentManager)
         groupVariantBottomSheet.setData(dataProducts.orEmpty().mapToGroupVariant())
         groupVariantBottomSheet.setOnNextListener { dataSelection ->
             showSetOnceStockReminderBottomSheet(dataSelection)
@@ -455,9 +469,7 @@ class StockReminderFragment : BaseDaggerFragment(),
 
     private fun showSetOnceStockReminderBottomSheet(selection: List<ProductStockReminderUiModel>) {
         val setStockForVariantSelectionReminderBottomSheet =
-            SetStockForVariantSelectionReminderBottomSheet(
-                childFragmentManager
-            )
+            SetStockForVariantSelectionReminderBottomSheet.createInstance(maxStock, childFragmentManager)
         setStockForVariantSelectionReminderBottomSheet.setOnApplyListener { stockReminder, reminderStatus ->
             updateFromBulkSetting(stockReminder, reminderStatus, selection)
         }

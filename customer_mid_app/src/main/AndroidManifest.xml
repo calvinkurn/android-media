@@ -4,7 +4,8 @@
     android:resizeableActivity="true"
     tools:replace="android:resizeableActivity">
 
-    <application>
+    <application
+        android:taskAffinity="@string/qodndmcgfk">
         <activity
             android:name="com.tokopedia.tkpd.ConsumerSplashScreen"
             android:label="Tokopedia"
@@ -69,11 +70,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="ta.tokopedia.com"
-                    android:pathPattern="@string/path_topads_click_tracker_link"
-                    android:scheme="https" />
-
-                <data
-                    android:host="ta-staging.tokopedia.com"
                     android:pathPattern="@string/path_topads_click_tracker_link"
                     android:scheme="https" />
 

@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_account.data.model.CommonDataView
-import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.adapter.viewholder.CommonViewHolder
+import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 
 /**
  * Created by Yoris Prayogo on 16/10/20.

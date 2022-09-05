@@ -960,6 +960,7 @@
   "quick_filter": {
     "filter": [
       {
+        "chip_name": "Gratis Ongkir Chip Name",
         "options": [
           {
             "name": "Gratis Ongkir",
@@ -977,6 +978,7 @@
         ]
       },
       {
+        "chip_name": "Tukar Tambah Chip Name",
         "options": [
           {
             "name": "Tukar Tambah",
@@ -994,6 +996,7 @@
         ]
       },
       {
+        "chip_name": "Official Store Chip Name",
         "options": [
           {
             "name": "Official Store",
@@ -1011,6 +1014,7 @@
         ]
       },
       {
+        "chip_name": "Kurir Instant Chip Name",
         "options": [
           {
             "name": "Kurir Instan",
@@ -1028,6 +1032,7 @@
         ]
       },
       {
+        "chip_name": "Dilayani Tokopedia Chip Name",
         "options": [
           {
             "name": "Dilayani Tokopedia",
@@ -1045,6 +1050,7 @@
         ]
       },
       {
+        "chip_name": "Power Merchant Chip Name",
         "options": [
           {
             "name": "Power Merchant",

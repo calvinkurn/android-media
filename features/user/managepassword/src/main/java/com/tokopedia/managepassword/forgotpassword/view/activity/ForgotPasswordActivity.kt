@@ -30,11 +30,11 @@ import javax.inject.Inject
  * @team : @minion-kevin
  *
  * For navigating to this class
- * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.FORGOT_PASSWORD]
+ * @applink : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.FORGOT_PASSWORD]
  * @params
  * required : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_EMAIL]
- * optional : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_AUTO_RESET]
- * optional : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_REMOVE_FOOTER]
+ * optional : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_AUTO_RESET]
+ * optional : [com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REMOVE_FOOTER]
  */
 
 class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePasswordComponent> {
