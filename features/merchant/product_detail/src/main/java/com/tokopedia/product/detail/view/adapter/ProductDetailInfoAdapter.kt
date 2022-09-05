@@ -7,11 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.productcard.utils.showWithCondition
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
@@ -47,6 +49,7 @@ class ProductDetailInfoAdapter(private val listener: DynamicProductDetailListene
         private val detailDesc: Typography? = itemView.findViewById(R.id.info_detail_value)
         private val detailIcon: IconUnify? = itemView.findViewById(R.id.info_detail_icon)
         private val detailClickArea: View? = itemView.findViewById(R.id.info_detail_click_area)
+        private val divider: View? = itemView.findViewById(R.id.divider)
 
         fun bind(data: ProductDetailInfoContent) = with(itemView) {
             detailTitle?.text = data.title
@@ -82,6 +85,8 @@ class ProductDetailInfoAdapter(private val listener: DynamicProductDetailListene
                     }
                 }
             }
+
+            divider?.showWithCondition(shouldShow = adapterPosition < itemCount - 1)
         }
     }
 }
