@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -89,6 +90,9 @@ class NewShopPageViewModelTest {
 
     @RelaxedMockK
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
+
+    @RelaxedMockK
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     @RelaxedMockK
     lateinit var context: Context
@@ -708,6 +712,40 @@ class NewShopPageViewModelTest {
         shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
         assert(shopPageViewModel.shopPageTickerData.value == null)
         assert(shopPageViewModel.shopPageShopShareData.value == null)
+    }
+
+    @Test
+    fun `check when call initAffiliateCookie is success`() {
+        val mockAffiliateUUId = "123"
+        val mockAffiliateChannel = "channel"
+        val mockShopId = "456"
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any())
+        } returns Unit
+        shopPageViewModel.initAffiliateCookie(
+            affiliateCookieHelper,
+            mockAffiliateUUId,
+            mockAffiliateChannel,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
+    }
+
+    @Test
+    fun `when when call initAffiliateCookie is not success`() {
+        val mockAffiliateUUId = "123"
+        val mockAffiliateChannel = "channel"
+        val mockShopId = "456"
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any())
+        } throws Exception()
+        shopPageViewModel.initAffiliateCookie(
+            affiliateCookieHelper,
+            mockAffiliateUUId,
+            mockAffiliateChannel,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
     }
 
 }

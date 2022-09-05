@@ -1786,4 +1786,13 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun getShowChoosePromoWidget(): Boolean {
         return showChoosePromoWidget
     }
+
+    override fun clearAllBo(clearPromoOrderData: ClearPromoOrderData) {
+        clearCacheAutoApplyStackUseCase.setParams(ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                orderData = clearPromoOrderData))
+        compositeSubscription.add(
+                // Do nothing on subscribe
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
+        )
+    }
 }

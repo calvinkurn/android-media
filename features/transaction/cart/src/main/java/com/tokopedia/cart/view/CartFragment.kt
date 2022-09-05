@@ -1322,6 +1322,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
+        val clearBoPromo = generateParamClearBo()
+        if (clearBoPromo != null) {
+            dPresenter.clearAllBo(clearBoPromo)
+            dPresenter.setLastApplyValid()
+        }
         refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
     }
 
@@ -2677,6 +2682,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             else -> {
                 PromoRequestMapper.generateCouponListRequestParams(null, cartAdapter.allAvailableShopGroupDataList)
             }
+        }
+    }
+
+    private fun generateParamClearBo(): ClearPromoOrderData? {
+        return when {
+            dPresenter.isLastApplyValid() -> {
+                val lastApplyPromo = dPresenter.getCartListData()?.promo?.lastApplyPromo
+                        ?: LastApplyPromo()
+                PromoRequestMapper.generateClearBoParam(lastApplyPromo, cartAdapter.allAvailableShopGroupDataList)
+            }
+            dPresenter.getValidateUseLastResponse() != null -> {
+                val promoUiModel = dPresenter.getValidateUseLastResponse()?.promoUiModel
+                        ?: PromoUiModel()
+                PromoRequestMapper.generateClearBoParam(promoUiModel, cartAdapter.allAvailableShopGroupDataList)
+            }
+            else -> null
         }
     }
 

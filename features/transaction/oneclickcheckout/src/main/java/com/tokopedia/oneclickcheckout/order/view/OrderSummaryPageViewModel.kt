@@ -430,13 +430,23 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun validateBboStacking() {
         validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.let {
+            var hasApplyOrUnApply = false
             for (voucherOrderUiModel in it) {
-                if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0)
+                if (voucherOrderUiModel.shippingId > 0
+                    && voucherOrderUiModel.spId > 0
+                    && voucherOrderUiModel.type == "logistic"
+                )
                     if (voucherOrderUiModel.messageUiModel.state == "red") {
+                        hasApplyOrUnApply = true
                         unApplyBbo(voucherOrderUiModel.code)
                     } else if (voucherOrderUiModel.messageUiModel.state == "green") {
+                        hasApplyOrUnApply = true
                         applyBbo(voucherOrderUiModel.code)
                     }
+            }
+            if (orderShipment.value.isApplyLogisticPromo && !hasApplyOrUnApply) {
+                // if use BO but voucher BO didn't exist
+                orderShipment.value.logisticPromoViewModel?.let { logisticPromo -> unApplyBbo(logisticPromo.promoCode) }
             }
         }
         displayingAdjustmentPromoToaster()
@@ -444,13 +454,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun unApplyBbo(code: String) {
         orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
-        promoProcessor.clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest, code)
+        clearOldLogisticPromo(code)
     }
 
     private fun applyBbo(code: String) {
-        if (orderShipment.value.logisticPromoViewModel == null ||
-            orderShipment.value.logisticPromoViewModel!!.promoCode != code ||
-            !orderShipment.value.isApplyLogisticPromo
+        if (orderShipment.value.logisticPromoViewModel == null
+            || orderShipment.value.logisticPromoViewModel!!.promoCode != code
+            || !orderShipment.value.isApplyLogisticPromo
         ) {
             orderShipment.value = orderShipment.value.copy(
                 isApplyLogisticPromo = true,
@@ -731,15 +741,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
             val (resultValidateUse, newGlobalEvent, isAkamaiError) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel, forceValidateUse)
             when {
-                newGlobalEvent != null && isAkamaiError -> {
+                isAkamaiError && newGlobalEvent != null -> {
                     resetBbo()
                     clearAllPromoFromLastRequest()
                     calculateTotal()
-                    globalEvent.value = newGlobalEvent
-                }
-                newGlobalEvent != null && !isAkamaiError -> {
-                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
-                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                     globalEvent.value = newGlobalEvent
                 }
                 resultValidateUse != null -> {
@@ -748,6 +753,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     if (newGlobalEvent != null) {
                         globalEvent.value = newGlobalEvent
                     }
+                }
+                newGlobalEvent != null && !isAkamaiError -> {
+                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+                    globalEvent.value = newGlobalEvent
                 }
                 else -> {
                     validateUsePromoRevampUiModel = null

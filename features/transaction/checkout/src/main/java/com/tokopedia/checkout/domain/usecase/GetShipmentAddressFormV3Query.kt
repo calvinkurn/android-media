@@ -18,6 +18,14 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
               is_ineligible_promo_dialog_enabled
               disabled_features
               donation_checkbox_status
+              image_upload {
+                show_image_upload
+                text
+                left_icon_url
+                right_icon_url
+                checkout_id
+                front_end_validation
+              }
               open_prerequisite_site
               eligible_new_shipping_experience
               pop_up_message
@@ -103,6 +111,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   errors_unblocking
                   shipping_id
                   sp_id
+                  bo_code
                   is_insurance
                   is_fulfillment_service
                   toko_cabang {
@@ -343,6 +352,11 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                       product_alert_message
                       product_information
                       campaign_id
+                      ethical_drug {
+                        need_prescription
+                        icon_url
+                        text
+                      }
                     }
                   }
                   warehouse {

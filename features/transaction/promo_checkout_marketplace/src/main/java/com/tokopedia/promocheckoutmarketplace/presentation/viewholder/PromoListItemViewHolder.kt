@@ -419,7 +419,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
     private fun renderPromoDetailButton(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
                                         element: PromoListItemUiModel, timeValidityInfo: PromoInfo?) {
         with(viewBinding) {
-            if (!element.uiState.isAttempted) {
+            if (!element.uiState.isBebasOngkir && !element.uiState.isAttempted) {
                 buttonPromoDetail.setOnClickListener {
                     listener.onClickPromoItemDetail(element)
                 }

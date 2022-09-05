@@ -317,9 +317,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         val hasPreSelectedPromo = checkHasPreSelectedPromo()
         val preSelectedPromoCodes = getPreSelectedPromoList()
+        val currentClashingInfoBo = checkCurrentClashingInfoBo()
         val clashingInfoPreAppliedBo = checkClashingInfoPreAppliedBo()
 
-        setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes, hasPreSelectedPromo, clashingInfoPreAppliedBo)
+        setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes, hasPreSelectedPromo, clashingInfoPreAppliedBo, currentClashingInfoBo)
 
         calculateAndRenderTotalBenefit()
         updateRecommendationState()
@@ -451,6 +452,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         promoListUiModel.value?.forEach visitableLoop@{ visitable ->
             if (visitable is PromoListItemUiModel && visitable.uiState.isSelected && visitable.uiState.isBebasOngkir) {
                 boClashingInfo = visitable.uiData.boClashingInfos.firstOrNull()
+                return@visitableLoop
+            }
+        }
+        return boClashingInfo
+    }
+
+    private fun checkCurrentClashingInfoBo(): BoClashingInfo? {
+        var boClashingInfo: BoClashingInfo? = null
+        promoListUiModel.value?.forEach visitableLoop@{ visitable ->
+            if (visitable is PromoListItemUiModel && visitable.uiState.isSelected && !visitable.uiState.isBebasOngkir && visitable.uiData.boClashingInfos.isNotEmpty()) {
+                boClashingInfo = visitable.uiData.boClashingInfos.first()
                 return@visitableLoop
             }
         }
@@ -592,7 +604,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes: ArrayList<String>, hasPreSelectedPromo: Boolean, clashingInfoPreAppliedBo: BoClashingInfo?) {
+    private fun setFragmentStateLoadPromoListSuccess(preSelectedPromoCodes: ArrayList<String>, hasPreSelectedPromo: Boolean, clashingInfoPreAppliedBo: BoClashingInfo?, currentClashingInfoBo: BoClashingInfo?) {
         fragmentUiModel.value?.let {
             it.uiData.preAppliedPromoCode = preSelectedPromoCodes
             it.uiState.hasPreAppliedPromo = hasPreSelectedPromo
@@ -603,6 +615,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             it.uiState.hasPreAppliedBo = clashingInfoPreAppliedBo != null
             it.uiData.unApplyBoMessage = clashingInfoPreAppliedBo?.message ?: ""
             it.uiData.unApplyBoIcon = clashingInfoPreAppliedBo?.icon ?: ""
+
+            it.uiState.shouldShowTickerBoClashing = currentClashingInfoBo != null
+            it.uiData.boClashingMessage = currentClashingInfoBo?.message ?: ""
+            it.uiData.boClashingImage = currentClashingInfoBo?.icon ?: ""
             _fragmentUiModel.value = it
         }
     }
@@ -680,7 +696,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun onSuccessValidateUse(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
                                      selectedPromoList: ArrayList<String>,
                                      validateUsePromoRequest: ValidateUsePromoRequest) {
-        if (validateUsePromoRevampUiModel.status == "OK") {
+        if (validateUsePromoRevampUiModel.status == "OK" && validateUsePromoRevampUiModel.errorCode == "200") {
             // Initialize response action state
             initApplyPromoResponseAction()
 
@@ -689,7 +705,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 // Promo is clashing. Need to reload promo page
                 setApplyPromoStateClashing()
             } else {
-                if (validateUsePromoRevampUiModel.promoUiModel.globalSuccess) {
+                if (validateUsePromoRevampUiModel.promoUiModel.success) {
                     handleApplyPromoSuccess(selectedPromoList, validateUsePromoRevampUiModel, validateUsePromoRequest)
                 } else {
                     handleApplyPromoFailed(selectedPromoList, validateUsePromoRevampUiModel)
@@ -779,11 +795,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         } else {
             // If coupon is unselected, disabled, or clashing, remove from request param
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
+            // Remove BO code only if not disabled and not selected and has no clashing,
+            // because if bo code disabled/clashing, bo code still needed in param to get red state to perform unapply logic
             if (promoListItemUiModel.uiData.uniqueId == order?.uniqueId &&
                     order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.remove(promoListItemUiModel.uiData.promoCode)
-            } else if (promoListItemUiModel.uiState.isBebasOngkir) {
-                // if coupon is bebas ongkir promo, then remove code only
+            } else if (!promoListItemUiModel.uiState.isSelected && promoListItemUiModel.uiState.isBebasOngkir && !promoListItemUiModel.uiState.isDisabled
+                    && promoListItemUiModel.uiData.currentClashingPromo.isEmpty() && promoListItemUiModel.uiState.isParentEnabled) {
                 val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
                 if (boData != null) {
                     order?.let {
@@ -824,21 +842,22 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         // Check all promo merchant is success
         // Update : This logic might be unnecessary,
         // since if global success is true, all voucher order status shoulbe success
-        var successCount = 0
-        responseValidatePromo.voucherOrderUiModels.forEach { voucherOrder ->
-            if (voucherOrder.success) {
-                successCount++
-            } else {
-                // If one of promo merchant is error, then show error message
-                val exception = PromoErrorException(voucherOrder.messageUiModel.text)
-                PromoCheckoutLogger.logOnErrorApplyPromo(exception)
-                // Notify fragment apply promo to stop loading
-                setApplyPromoStateFailed(exception, selectedPromoList)
-                sendAnalyticsOnErrorApplyPromo(exception, selectedPromoList)
-            }
-        }
+//        // temporary disabled for bo unstack
+//        var successCount = 0
+//        responseValidatePromo.voucherOrderUiModels.forEach { voucherOrder ->
+//            if (voucherOrder.success) {
+//                successCount++
+//            } else {
+//                // If one of promo merchant is error, then show error message
+//                val exception = PromoErrorException(voucherOrder.messageUiModel.text)
+//                PromoCheckoutLogger.logOnErrorApplyPromo(exception)
+//                // Notify fragment apply promo to stop loading
+//                setApplyPromoStateFailed(exception, selectedPromoList)
+//                sendAnalyticsOnErrorApplyPromo(exception, selectedPromoList)
+//            }
+//        }
 
-        if (isGlobalSuccess || successCount == responseValidatePromo.voucherOrderUiModels.size) {
+        if (isGlobalSuccess /*|| successCount == responseValidatePromo.voucherOrderUiModels.size*/) {
             var selectedRecommendationCount = 0
             promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {
                 if (selectedPromoList.contains(it)) selectedRecommendationCount++
@@ -1293,12 +1312,42 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private fun updateBoClashingState(selectedItem: PromoListItemUiModel) {
         if (selectedItem.uiData.boClashingInfos.isNotEmpty() && !selectedItem.uiState.isBebasOngkir) {
-            fragmentUiModel.value?.let {
-                it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.first().message
-                it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.first().icon
-                it.uiState.shouldShowTickerBoClashing = selectedItem.uiState.isSelected
+            if (selectedItem.uiState.isSelected) {
+                fragmentUiModel.value?.let {
+                    it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.first().message
+                    it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.first().icon
+                    it.uiState.shouldShowTickerBoClashing = selectedItem.uiState.isSelected
 
-                _fragmentUiModel.value = it
+                    _fragmentUiModel.value = it
+                }
+            } else {
+                var otherPromoSelectedWithBoClashingInfo: PromoListItemUiModel? = null
+                promoListUiModel.value?.forEach {
+                    if (it is PromoListItemUiModel && it.uiState.isSelected && it.uiData.boClashingInfos.isNotEmpty() && !it.uiState.isBebasOngkir && it.uiData.promoCode != selectedItem.uiData.promoCode) {
+                        otherPromoSelectedWithBoClashingInfo = it
+                        return@forEach
+                    }
+                }
+                otherPromoSelectedWithBoClashingInfo.let { promo ->
+                    if (promo != null) {
+                        val otherPromoBoClashingInfo = promo.uiData.boClashingInfos.firstOrNull()
+                        otherPromoBoClashingInfo?.let { boClashingInfo ->
+                            fragmentUiModel.value?.let {
+                                it.uiData.boClashingMessage = boClashingInfo.message
+                                it.uiData.boClashingImage = boClashingInfo.icon
+                                it.uiState.shouldShowTickerBoClashing = promo.uiState.isSelected
+
+                                _fragmentUiModel.value = it
+                            }
+                        }
+                    } else {
+                        fragmentUiModel.value?.let {
+                            it.uiState.shouldShowTickerBoClashing = selectedItem.uiState.isSelected
+
+                            _fragmentUiModel.value = it
+                        }
+                    }
+                }
             }
         }
     }
@@ -1394,7 +1443,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             it.uiState.needToDismissBottomsheet = false
             it.uiData.promoCode = promoCode
 
-            _tmpUiModel.value = Update(it)
+            _promoInputUiModel.value = it
         }
     }
 
@@ -1404,7 +1453,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             it.uiState.isButtonSelectEnabled = false
             it.uiData.promoCode = ""
 
-            _tmpUiModel.value = Update(it)
+            _promoInputUiModel.value = it
         }
     }
 

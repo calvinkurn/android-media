@@ -807,6 +807,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     it.labelBoClashing.text = fragmentUiModel.uiData.unApplyBoMessage
                     it.imgBoClashing.setImageUrl(fragmentUiModel.uiData.unApplyBoIcon)
                     it.containerTickerBoClashing.show()
+                } else {
+                    it.containerTickerBoClashing.gone()
                 }
                 it.containerActionBottom.show()
             } else {
