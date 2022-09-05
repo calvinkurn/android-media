@@ -22,7 +22,6 @@ class OldClearCacheAutoApplyStackUseCase @Inject constructor(private val graphql
         const val PARAM_VALUE_MARKETPLACE = "marketplace"
 
         const val PARAM_PLACEHOLDER_SERVICE_ID = "serviceID"
-        const val PARAM_PLACEHOLDER_PROMO_CODE = "promoCode"
         const val PARAM_PLACEHOLDER_IS_OCC = "isOCC"
         const val PARAM_PLACEHOLDER_ORDER_DATA = "orderData"
     }
@@ -32,10 +31,6 @@ class OldClearCacheAutoApplyStackUseCase @Inject constructor(private val graphql
                 PARAM_PLACEHOLDER_SERVICE_ID to request.serviceId,
                 PARAM_PLACEHOLDER_IS_OCC to request.isOcc,
                 PARAM_PLACEHOLDER_ORDER_DATA to request.orderData,
-                // temporary for old compatibility
-//                PARAM_PLACEHOLDER_PROMO_CODE to ArrayList<String>().apply {
-//                    add("")
-//                }
         )
     }
 

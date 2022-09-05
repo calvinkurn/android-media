@@ -3975,8 +3975,4 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dPresenter.checkBoAffordability(cartShopHolderData)
         }
     }
-
-    override fun refreshCartAfterClearBoToChangeAddress() {
-        refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
-    }
 }

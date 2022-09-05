@@ -1792,20 +1792,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 orderData = clearPromoOrderData))
         compositeSubscription.add(
                 // Do nothing on subscribe
-//                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(object : Observer<ClearPromoUiModel?> {
-//                    override fun onCompleted() {
-//
-//                    }
-//
-//                    override fun onError(e: Throwable?) {
-//                        view?.refreshCartAfterClearBoToChangeAddress()
-//                    }
-//
-//                    override fun onNext(t: ClearPromoUiModel?) {
-//                        view?.refreshCartAfterClearBoToChangeAddress()
-//                    }
-//                })
-        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
         )
     }
 }
