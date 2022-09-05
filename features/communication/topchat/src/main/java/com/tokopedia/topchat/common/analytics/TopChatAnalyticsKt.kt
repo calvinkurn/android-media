@@ -329,8 +329,6 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(SHOP_ID, shopId)
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
-
-
     }
 
     fun eventClickProductAttachmentOnProductBundlingBroadcast(
@@ -378,7 +376,6 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(SHOP_ID, shopId)
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
-
     }
 
     fun eventClickCtaOnProductBundlingBroadcast(
@@ -433,8 +430,6 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(SHOP_ID, shopId)
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ATC, eventDataLayer)
-
-
     }
 
     fun eventSeenProductAttachment(
@@ -522,7 +517,6 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(USER_ID, setValueOrDefault(userId))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ATC, eventDataLayer)
-
     }
 
     private fun createGeneralEvent(
