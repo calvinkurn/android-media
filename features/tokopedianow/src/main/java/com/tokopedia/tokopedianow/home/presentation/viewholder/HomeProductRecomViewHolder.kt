@@ -98,7 +98,7 @@ class HomeProductRecomViewHolder(
         adapterPosition: Int
     ) {
         listener?.onRecomProductCardImpressed(
-            recomItem,
+            recomItem.copy(position = itemPosition),
             channelId,
             data.recommendationData.title,
             data.recommendationData.pageName,

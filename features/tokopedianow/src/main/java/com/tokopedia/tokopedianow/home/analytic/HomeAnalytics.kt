@@ -653,16 +653,17 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         position: Int,
         product: HomeLeftCarouselAtcProductCardUiModel
     ) {
-        val items = arrayListOf(
-            productItemDataLayer(
-                index = position.toString(),
-                productId = product.id.orEmpty(),
-                productName = product.productCardModel.productName,
-                price = product.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero(),
-                productBrand = product.brandId,
-                productCategory = product.categoryId
-            )
+        val productItem = productItemDataLayer(
+            index = position.toString(),
+            productId = product.id.orEmpty(),
+            productName = product.productCardModel.productName,
+            price = product.productCardModel.formattedPrice.filter { it.isDigit() }.toLongOrZero(),
+            productBrand = product.brandId,
+            productCategory = product.categoryId
         )
+        productItem.putString(KEY_DIMENSION_90, "")
+
+        val items = arrayListOf(productItem)
 
         val dataLayer = getMarketplaceDataLayer(
             event = EVENT_VIEW_ITEM_LIST,
@@ -671,6 +672,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         ).apply {
             putParcelableArrayList(KEY_ITEMS, items)
             putString(KEY_USER_ID, userSession.userId)
+            putString(KEY_ITEM_LIST, "/ - p{$position} - dynamic channel left carousel - carousel - ${product.channelHeaderName}")
         }
 
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)

@@ -17,6 +17,8 @@ class HomeLeftCarouselAtcProductCardViewHolder(
 ): AbstractViewHolder<HomeLeftCarouselAtcProductCardUiModel>(itemView) {
 
     companion object {
+        private const val SUBTRACTION_POSITION = 1
+
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_left_carousel_atc_product_card
     }
@@ -48,7 +50,7 @@ class HomeLeftCarouselAtcProductCardViewHolder(
             setImageProductViewHintListener(element, object : ViewHintListener{
                 override fun onViewHint() {
                     listener?.onProductCardImpressed(
-                        position = adapterPosition,
+                        position = adapterPosition - SUBTRACTION_POSITION,
                         product = element
                     )
                 }
