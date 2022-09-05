@@ -979,17 +979,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         bboPromoCodes: ArrayList<String>,
         clearPromoParam: ClearPromoRequest = ClearPromoRequest()
     ) {
-        val toBeRemovedPromoCodes = getToBeClearedPromoCodes(validateUsePromoRequest, bboPromoCodes)
+        val toBeRemovedPromoCodes = arrayListOf<String>()
 
         val globalPromo = arrayListOf<String>()
-        promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId == 0 && !visitable.uiState.isBebasOngkir && !globalPromo.contains(visitable.uiData.promoCode)) {
-                globalPromo.add(visitable.uiData.promoCode)
-            }
-        }
         validateUsePromoRequest.codes.forEach { promoGlobalCode ->
             if (!bboPromoCodes.contains(promoGlobalCode) && !globalPromo.contains(promoGlobalCode)) {
                 globalPromo.add(promoGlobalCode)
+                toBeRemovedPromoCodes.add(promoGlobalCode)
             }
         }
 
@@ -1006,6 +1002,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             order.codes.forEach {
                 if (!bboPromoCodes.contains(it) && !clearOrder.codes.contains(it)) {
                     clearOrder.codes.add(it)
+                    toBeRemovedPromoCodes.add(it)
                 }
             }
         }
@@ -1019,44 +1016,28 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         // for each eligible order, get bo additional data
                         val boData = visitable.uiData.boAdditionalData.find { boAdditionalData -> order.uniqueId == boAdditionalData.uniqueId }
                         if (boData != null) {
-                            // if code is not in clear orders code, then add bo code
-                            if (!order.codes.contains(boData.code)) {
-                                order.codes.add(visitable.uiData.promoCode)
+                            // if code is not in clear orders code & is applied in previous page, then add bo code
+                            if (!order.codes.contains(boData.code) && bboPromoCodes.contains(boData.code)) {
+                                order.codes.add(boData.code)
+                                toBeRemovedPromoCodes.add(boData.code)
                             }
                         }
                     }
-                    // if there are unique ids which eligible for bo promo
-                    // but that unique id not present in clear promo param,
-                    if (boPromoUniqueIds.size != eligibleClearPromoParamForBoPromo.size) {
-                        val boUniqueIdNotInClearPromo = boPromoUniqueIds.subtract(orders.map { it.uniqueId })
-                        boUniqueIdNotInClearPromo.forEach { uniqueId ->
-                            // then find that unique id in promo request param
-                            val promoOrder = promoRequest.orders.find { it.uniqueId == uniqueId }
-                            if (promoOrder != null) {
-                                val boData = visitable.uiData.boAdditionalData.find { boAdditionalData -> promoOrder.uniqueId == boAdditionalData.uniqueId }
-                                boData?.let {
-                                    orders.add(ClearPromoOrder(
-                                        uniqueId = uniqueId,
-                                        boType = promoOrder.boType,
-                                        codes = arrayListOf(boData.code)
-                                    ))
-                                }
-                            }
+                }
+            }
+        }
+
+        if (toBeRemovedPromoCodes.isEmpty()) {
+            // if there are no promo to be removed, try removing attempted codes
+            promoListUiModel.value?.forEach { visitable ->
+                if (visitable is PromoListItemUiModel && !visitable.uiState.isBebasOngkir && visitable.uiState.isParentEnabled && visitable.uiState.isAttempted) {
+                    if (visitable.uiData.shopId > 0) {
+                        val order = orders.firstOrNull { it.uniqueId == visitable.uiData.uniqueId }
+                        if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
+                            order.codes.add(visitable.uiData.promoCode)
                         }
-                    }
-                } else if (visitable.uiData.shopId > 0) {
-                    val order = orders.find { it.uniqueId == visitable.uiData.uniqueId }
-                    if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
-                        order.codes.add(visitable.uiData.promoCode)
-                    } else if (order == null) {
-                        val promoOrder = promoRequest.orders.find { it.uniqueId == visitable.uiData.uniqueId }
-                        if (promoOrder != null) {
-                            orders.add(ClearPromoOrder(
-                                uniqueId = visitable.uiData.uniqueId,
-                                boType = promoOrder.boType,
-                                codes = arrayListOf(visitable.uiData.promoCode)
-                            ))
-                        }
+                    } else if (!globalPromo.contains(visitable.uiData.promoCode)) {
+                        globalPromo.add(visitable.uiData.promoCode)
                     }
                 }
             }
