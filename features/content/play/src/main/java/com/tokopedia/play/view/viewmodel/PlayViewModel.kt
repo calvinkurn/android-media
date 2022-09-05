@@ -80,6 +80,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -265,9 +266,30 @@ class PlayViewModel @AssistedInject constructor(
                 add(EngagementUiModel.Game(interactive = game.interactive))
             if(vouchers.isNotEmpty())
                 add(EngagementUiModel.Promo(info = vouchers.first(), size = vouchers.size - 1))
-        }
+        },
     )
     }.flowOn(dispatchers.computation)
+
+    private val isNeedToAutoScroll: Boolean get() {
+        return when (val value = _interactive.value.interactive){
+            is InteractiveUiModel.Quiz -> return when (val endTime = value.status){
+                is InteractiveUiModel.Quiz.Status.Ongoing -> {
+                    TimeUnit.MILLISECONDS.toSeconds(endTime.endTime.time.time - DateUtil.getCurrentDate().time) > 15
+                }
+                else -> true
+            }
+            is InteractiveUiModel.Giveaway -> return when (val endTime = value.status){
+                is InteractiveUiModel.Giveaway.Status.Ongoing -> {
+                    TimeUnit.MILLISECONDS.toSeconds(endTime.endTime.time.time - DateUtil.getCurrentDate().time) > 15
+                }
+                is InteractiveUiModel.Giveaway.Status.Upcoming -> {
+                    TimeUnit.MILLISECONDS.toSeconds(endTime.endTime.time.time - DateUtil.getCurrentDate().time) > 15
+                }
+                else -> true
+            }
+            else -> false
+        }
+    }
 
     private val _featuredProducts = _tagItems.map { tagItems ->
         /**

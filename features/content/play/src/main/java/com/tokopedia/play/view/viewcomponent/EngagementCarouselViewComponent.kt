@@ -11,9 +11,9 @@ import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 /**
  * @author by astidhiyaa on 24/08/22
@@ -26,6 +26,7 @@ class EngagementCarouselViewComponent(
 ) : ViewComponent(container, resId) {
 
     private val carousel: RecyclerView = findViewById(R.id.rv_engagement_widget)
+    private var job: Job? = null
 
     private val carouselAdapter =
         EngagementWidgetAdapter(object : EngagementWidgetViewHolder.Listener {
@@ -52,45 +53,23 @@ class EngagementCarouselViewComponent(
         }
 
         snapHelper.attachToRecyclerView(carousel)
-
-        autoScroll()
     }
 
     fun setData(list: List<EngagementUiModel>) {
         carouselAdapter.setItemsAndAnimateChanges(list)
     }
 
-    private fun autoScroll() {
-        scope.launch {
-            //should be list size
-            repeat(2) {
-                delay(5000L)
-                carousel.snapScrollTo(it)
+    fun startAutoScroll(size: Int){
+        job = scope.launch {
+            repeat(size) {
+                delay(AUTO_SCROLL_DELAY)
+                carousel.smoothScrollToPosition(it)
             }
         }
     }
 
-    private fun RecyclerView.snapScrollTo(position: Int) {
-        try {
-            scrollToPosition(position)
-            post {
-                val itemView = linearLayoutManager.findViewByPosition(position)
-                if (itemView != null) {
-                    val snapDistance: IntArray =
-                        snapHelper.calculateDistanceToFinalSnap(linearLayoutManager, itemView)
-                            ?: intArrayOf()
-                    if (snapDistance.isEmpty()) return@post
-                    if (snapDistance[0] != 0 || snapDistance[1] != 0) {
-                        scrollBy(
-                            snapDistance[0],
-                            snapDistance[1]
-                        )
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            smoothScrollToPosition(position)
-        }
+    fun stopAutoScroll(){
+        job?.cancel()
     }
 
     interface Listener {
@@ -100,5 +79,9 @@ class EngagementCarouselViewComponent(
         )
 
         fun onWidgetClicked(view: EngagementCarouselViewComponent, engagement: EngagementUiModel)
+    }
+
+    companion object {
+        private const val AUTO_SCROLL_DELAY = 5000L
     }
 }
