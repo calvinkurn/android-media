@@ -3,7 +3,6 @@ package com.tokopedia.home_component.viewholders
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,10 +14,10 @@ import com.tokopedia.home_component.databinding.HomeComponentDynamicIconBinding
 import com.tokopedia.home_component.decoration.CommonSpacingDecoration
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.model.DynamicIconComponent
-import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -120,9 +119,8 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
 
     internal class DynamicIconItemViewHolder(itemView: View, private val listener: DynamicIconComponentListener): RecyclerView.ViewHolder(itemView){
         var iconTvName: Typography? = null
-        var iconImageView: ImageView? = null
+        var iconImageView: ImageUnify? = null
         var iconContainer: LinearLayout? = null
-        var iconBackground: ImageView? = null
         companion object{
             @LayoutRes
             val LAYOUT = R.layout.home_component_dynamic_icon_item
@@ -134,7 +132,7 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
             iconContainer = itemView.findViewById(R.id.dynamic_icon_container)
 
             iconTvName?.text = item.name
-            iconImageView?.loadImage(item.imageUrl)
+            iconImageView?.setImageUrl(item.imageUrl)
             iconContainer?.layoutParams = ViewGroup.LayoutParams(
                     if(isScrollable) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
