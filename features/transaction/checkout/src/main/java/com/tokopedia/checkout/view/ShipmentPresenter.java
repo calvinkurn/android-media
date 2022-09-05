@@ -2629,6 +2629,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private void processBoPromoCourierRecommendation(int itemPosition, PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel, ShipmentCartItemModel shipmentCartItemModel) {
         ShipmentDetailData selectedShipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
+        if (selectedShipmentDetailData == null) {
+            selectedShipmentDetailData = getView().getShipmentDetailData(shipmentCartItemModel, recipientAddressModel);
+        }
         List<Product> products = getProductForRatesRequest(shipmentCartItemModel);
         String cartString = shipmentCartItemModel.getCartString() != null ? shipmentCartItemModel.getCartString() : "";
         boolean isTradeInDropOff = getView().isTradeInByDropOff();
