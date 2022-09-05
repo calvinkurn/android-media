@@ -6,20 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.components.bottomsheet.selection.multiple.MultipleSelectionBottomSheet
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
-import com.tokopedia.campaign.entity.MultipleSelectionItem
-import com.tokopedia.campaign.entity.SingleSelectionItem
+import com.tokopedia.campaign.delegates.HasPaginatedList
+import com.tokopedia.campaign.delegates.HasPaginatedListImpl
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -54,13 +58,12 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateAdapterItem>() {
+class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
         private const val BUNDLE_KEY_TAB_ID = "tab_id"
         private const val BUNDLE_KEY_TAB_NAME = "tab_name"
         private const val PAGE_SIZE = 10
-        private const val ONE = 1
         private const val SELLER_EDU_URL =
             "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
 
@@ -83,7 +86,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
             .add(OngoingFlashSaleDelegateAdapter(onFlashSaleClicked))
-            .add(RegisteredFlashSaleDelegateAdapter(onFlashSaleClicked))
+            .add(RegisteredFlashSaleDelegateAdapter(onFlashSaleClicked, onAddProductClicked))
             .add(UpcomingFlashSaleDelegateAdapter(onFlashSaleClicked))
             .add(FinishedFlashSaleDelegateAdapter(onFlashSaleClicked))
             .add(LoadingDelegateAdapter())
@@ -202,11 +205,43 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         setupView()
         observeUiEffect()
         observeUiState()
+        viewModel.processEvent(FlashSaleListUiEvent.LoadPage(Int.ZERO))
     }
 
 
     private fun setupView() {
         setupSortFilter()
+        setupPaging()
+        binding?.imgScrollUp?.setOnClickListener {
+            binding?.recyclerView?.smoothSnapToPosition(Int.ZERO)
+        }
+    }
+
+    private fun setupPaging() {
+        val pagingConfig = HasPaginatedList.Config(
+            pageSize = PAGE_SIZE,
+            onLoadNextPage = {
+                flashSaleAdapter.addItem(LoadingItem)
+            }, onLoadNextPageFinished = {
+                flashSaleAdapter.removeItem(LoadingItem)
+            })
+
+        binding?.recyclerView?.apply {
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            applyPaddingToLastItem()
+            attachOnScrollListener(onScrollDown = {
+                binding?.imgScrollUp?.slideUp()
+                binding?.sortFilter?.slideDown()
+            }, onScrollUp = {
+                binding?.imgScrollUp?.slideDown()
+                binding?.sortFilter?.slideUp()
+            })
+            adapter = flashSaleAdapter
+
+            attachPaging(this, pagingConfig) { _, offset ->
+                viewModel.processEvent(FlashSaleListUiEvent.LoadPage(offset))
+            }
+        }
     }
 
     private fun observeUiState() {
@@ -241,7 +276,8 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
                 binding?.recyclerView.showToasterError(effect.throwable)
             }
             is FlashSaleListUiEffect.LoadNextPageSuccess -> {
-                renderList(effect.allItems, effect.currentPageItems.size == getPerPage())
+                notifyLoadResult(effect.currentPageItems.size == PAGE_SIZE)
+                flashSaleAdapter.submit(effect.allItems)
             }
 
         }
@@ -251,9 +287,9 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     private fun handleUiState(uiState: FlashSaleListUiState) {
         renderLoadingState(uiState.isLoading)
         renderSortFilter(uiState)
-        renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.totalFlashSaleCount)
+        renderEmptyState(uiState.isLoading, uiState.isFilterActive, uiState.searchResultCount)
         refreshScrollState(uiState.allItems)
-        renderScrollUpButton(uiState.totalFlashSaleCount)
+        renderScrollUpButton(uiState.allItems.size)
     }
 
     private fun renderLoadingState(isLoading: Boolean) {
@@ -267,7 +303,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
     }
 
     private fun renderSortFilter(uiState: FlashSaleListUiState) {
-        if (!uiState.isFilterActive && uiState.totalFlashSaleCount == 0) {
+        if (!uiState.isFilterActive && uiState.allItems.isEmpty()) {
             binding?.sortFilter?.gone()
         } else {
             binding?.sortFilter?.visible()
@@ -277,30 +313,42 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         renderStatusChips(uiState.selectedStatusIds)
     }
 
-    private fun renderEmptyState(
-        isLoading: Boolean,
-        isUsingFilter: Boolean,
-        totalFlashSaleCount: Int
-    ) {
-        when {
-            isLoading -> binding?.emptyState?.gone()
-            isUsingFilter && totalFlashSaleCount == 0 -> {
-                flashSaleAdapter.removeItem(LoadingItem)
-                binding?.emptyState?.visible()
-                binding?.emptyState?.setImageUrl(RemoteImageUrlConstant.IMAGE_URL_NO_SEARCH_RESULT)
-                binding?.emptyState?.setTitle(getString(R.string.stfs_empty_search_result_title))
-                binding?.emptyState?.setDescription(getString(R.string.stfs_empty_search_result_description))
-            }
-            !isUsingFilter && totalFlashSaleCount == 0 -> {
-                flashSaleAdapter.removeItem(LoadingItem)
-                binding?.emptyState?.visible()
-                val emptyStateConfig = tabConfig[tabId]?.emptyStateConfig ?: return
-                binding?.emptyState?.setImageUrl(emptyStateConfig.imageUrl)
-                binding?.emptyState?.setTitle(emptyStateConfig.title)
-                binding?.emptyState?.setDescription(emptyStateConfig.description)
-                handleEmptyStatePrimaryAction(emptyStateConfig)
-            }
+    private fun renderEmptyState(isLoading: Boolean, isUsingFilter: Boolean, searchResultCount: Int) {
+        if (isLoading) {
+            binding?.emptyState?.gone()
+        } else {
+            handleEmptyState(isUsingFilter, searchResultCount)
         }
+    }
+
+    private fun handleEmptyState(isUsingFilter: Boolean, searchResultCount: Int) {
+        when {
+            searchResultCount.isZero() -> displayEmptySearchResult()
+            searchResultCount.isMoreThanZero() -> binding?.emptyState?.gone()
+            isUsingFilter && searchResultCount == 0 -> displayEmptySearchResult()
+            !isUsingFilter && searchResultCount == 0 -> displayNoFlashSaleAvailable()
+        }
+    }
+
+    private fun displayEmptySearchResult() {
+        flashSaleAdapter.removeItem(LoadingItem)
+
+        binding?.emptyState?.visible()
+        binding?.emptyState?.setImageUrl(RemoteImageUrlConstant.IMAGE_URL_NO_SEARCH_RESULT)
+        binding?.emptyState?.setTitle(getString(R.string.stfs_empty_search_result_title))
+        binding?.emptyState?.setDescription(getString(R.string.stfs_empty_search_result_description))
+    }
+
+    private fun displayNoFlashSaleAvailable() {
+        flashSaleAdapter.removeItem(LoadingItem)
+
+        binding?.emptyState?.visible()
+
+        val emptyStateConfig = tabConfig[tabId]?.emptyStateConfig ?: return
+        binding?.emptyState?.setImageUrl(emptyStateConfig.imageUrl)
+        binding?.emptyState?.setTitle(emptyStateConfig.title)
+        binding?.emptyState?.setDescription(emptyStateConfig.description)
+        handleEmptyStatePrimaryAction(emptyStateConfig)
     }
 
     private fun renderSortChips(selectedSort: SingleSelectionItem) {
@@ -346,7 +394,7 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
 
     private fun refreshScrollState(allItems: List<DelegateAdapterItem>) {
         if (allItems.isEmpty()) {
-            endlessRecyclerViewScrollListener?.resetState()
+            resetPaging()
         }
     }
 
@@ -457,61 +505,6 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-
-    override fun createAdapter(): CompositeAdapter {
-        return flashSaleAdapter
-    }
-
-    override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.recyclerView?.apply {
-            applyPaddingToLastItem()
-            attachOnScrollListener(onScrollDown = {
-                binding?.imgScrollUp?.slideUp()
-                binding?.sortFilter?.slideDown()
-            }, onScrollUp = {
-                binding?.imgScrollUp?.slideDown()
-                binding?.sortFilter?.slideUp()
-            })
-        }
-    }
-
-    override fun getPerPage(): Int {
-        return PAGE_SIZE
-    }
-
-    override fun addElementToAdapter(list: List<DelegateAdapterItem>) {
-        adapter?.submit(list)
-    }
-
-    override fun loadData(page: Int, offset: Int) {
-        viewModel.processEvent(FlashSaleListUiEvent.LoadPage(offset))
-    }
-
-    override fun clearAdapterData() {
-        adapter?.submit(listOf())
-    }
-
-    override fun onShowLoading() {
-        flashSaleAdapter.addItem(LoadingItem)
-    }
-
-    override fun onHideLoading() {
-        flashSaleAdapter.removeItem(LoadingItem)
-    }
-
-    override fun onDataEmpty() {
-        flashSaleAdapter.removeItem(LoadingItem)
-    }
-
-    override fun onGetListError(message: String) {
-        flashSaleAdapter.removeItem(LoadingItem)
-    }
-
-
-//    override fun onScrolled(xScrollAmount: Int, yScrollAmount: Int) {
-//
-//    }
-
     private val onFlashSaleClicked: (Int) -> Unit = { selectedItemPosition ->
         val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
         val selectedFlashSaleId = selectedFlashSale.id()
@@ -522,6 +515,12 @@ class FlashSaleListFragment : BaseSimpleListFragment<CompositeAdapter, DelegateA
                 tabName
             )
         }
+    }
+
+    private val onAddProductClicked: (Int) -> Unit = { selectedItemPosition ->
+        val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
+        val selectedFlashSaleId = selectedFlashSale.id()
+        //TODO: Navigate to add product page
     }
 
 }

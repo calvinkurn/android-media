@@ -28,7 +28,7 @@
     <string name="stfs_selection_ends_in">Seleksi berakhir dalam</string>
     <string name="stfs_campaign_starts_in">Campaign dimulai dalam</string>
     <string name="stfs_campaign_quota">Kuota Campaign</string>
-    <string name="stfs_full_quota">Kuota penuh</string>
+    <string name="stfs_full_quota">Kuota penuh!</string>
     <string name="stfs_register">Daftar</string>
     <string name="stfs_add_product">Tambah Produk</string>
     <string name="stfs_change_product">Ubah Produk</string>
@@ -67,7 +67,6 @@
     <string name="stfs_placeholder_sold_count"><![CDATA[<b>%d</b>]]> dari %d</string>
     <string name="stfs_placeholder_selected_category_count">%d Kategori</string>
     <string name="stfs_placeholder_selected_status_count">%d Status</string>
-    <string name="stfs_placeholder_cancellation_reason">Dibatalkan karena %s</string>
     <string name="stfs_placeholder_sold_count_on_campaign_finished">Campaign selesai dengan jumlah produk terjual sebanyak %d%% (%d dari %d)</string>
 
     <!--Campaign Detail Bottomsheet-->
@@ -85,6 +84,7 @@
     <string name="commonbs_category_filter_title">Mau cari kategori apa?</string>
     <string name="commonbs_category_criteria_check_title">Kriteria campaign</string>
     <string name="commonbs_location_criteria_check_title">Kriteria lokasi</string>
+    <string name="commonbs_product_check_title">Detail produk</string>
     <string name="commonbs_max_shown_format">Maks. %1d kali dalam %2d hari</string>
     <string name="commonbs_multiloc_desc"><![CDATA[2 lokasi tokomu tidak sesuai dengan kriteria campaign. <a href="#">Cek Lokasi</a>]]></string>
     <string name="commonbs_criteria_check_description">Menampilkan produk dan lokasi campaign yang belum sesuai kriteria.</string>
@@ -96,6 +96,9 @@
     <string name="commonbs_criteria_check_min_score_field_title">Min. Skor Produk</string>
     <string name="commonbs_criteria_check_min_buy_field_title">Min. Pembelian</string>
     <string name="commonbs_criteria_check_other_criteria_field_title">Kriteria Khusus</string>
+    <string name="commonbs_product_check_stock_format">Stok Campaign: %d</string>
+    <string name="commonbs_product_check_subsidy_format">Menerima subsidi sebesar %s dari Tokopedia</string>
+    <string name="commonbs_product_check_location_count_format">Detail di %d Lokasi</string>
     <string name="commonbs_field_required">Diwajibkan</string>
     <string name="commonbs_field_limited">Dibatasi</string>
 

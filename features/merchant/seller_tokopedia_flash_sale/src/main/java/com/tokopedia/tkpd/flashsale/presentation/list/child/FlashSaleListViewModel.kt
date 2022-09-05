@@ -3,8 +3,8 @@ package com.tokopedia.tkpd.flashsale.presentation.list.child
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
-import com.tokopedia.campaign.entity.MultipleSelectionItem
-import com.tokopedia.campaign.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerCategoryUseCase
@@ -189,7 +189,7 @@ class FlashSaleListViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         allItems = allItems,
-                        totalFlashSaleCount = response.totalFlashSaleCount
+                        searchResultCount = response.flashSales.size
                     )
                 }
             },

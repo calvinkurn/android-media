@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.databinding.ItemSingleSelectionItemBinding
-import com.tokopedia.campaign.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 
 internal class SingleSelectionAdapter : RecyclerView.Adapter<SingleSelectionAdapter.ViewHolder>() {
 
