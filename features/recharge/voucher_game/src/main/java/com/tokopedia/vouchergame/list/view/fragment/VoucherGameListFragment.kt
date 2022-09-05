@@ -30,6 +30,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -120,7 +121,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
                                 val categoryName = catalog.label
                                 (activity as? BaseVoucherGameActivity)?.updateTitle(categoryName)
                                 voucherGameAnalytics.categoryName = categoryName
-                                voucherGameExtraParam.categoryId.toIntOrNull()?.let { id ->
+                                voucherGameExtraParam.categoryId.toIntSafely().let { id ->
                                     rechargeAnalytics.eventOpenScreen(
                                             userSession.userId,
                                             categoryName,
@@ -157,11 +158,11 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
         }
 
-        voucherGameExtraParam.categoryId.toIntOrNull()?.let {
-            rechargeAnalytics.trackVisitRechargePushEventRecommendation(it)
-        }
+        rechargeAnalytics.trackVisitRechargePushEventRecommendation(
+            voucherGameExtraParam.categoryId.toIntSafely()
+        )
 
-        voucherGameExtraParam.menuId.toIntOrNull()?.let {
+        voucherGameExtraParam.menuId.toIntSafely().let {
             togglePromoBanner(false)
             voucherGameViewModel.getVoucherGameMenuDetail(com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.catalogMenuDetail,
                     voucherGameViewModel.createMenuDetailParams(it))
@@ -471,10 +472,12 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
     }
 
     private fun searchVoucherGame(query: String, loadFromCloud: Boolean = false) {
-        voucherGameExtraParam.menuId.toIntOrNull()?.let {
-            voucherGameViewModel.getVoucherGameOperators(VoucherGameGqlQuery.voucherGameProductList,
-                    voucherGameViewModel.createParams(it), query, loadFromCloud)
-        }
+        voucherGameViewModel.getVoucherGameOperators(
+            VoucherGameGqlQuery.voucherGameProductList,
+            voucherGameViewModel.createParams(voucherGameExtraParam.menuId.toIntSafely()),
+            query, 
+            loadFromCloud
+        )
     }
 
     fun onBackPressed() {
