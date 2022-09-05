@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.R
@@ -18,12 +19,10 @@ class EditorTrackSliderView(context: Context, attributeSet: AttributeSet) :
     private var yCenter = 0f
 
     init {
-        paint.strokeWidth = resources.getDimension(R.dimen.media_editor_slider_height)
+        val strokeWidth = resources.getDimension(R.dimen.media_editor_slider_height)
+        paint.strokeWidth = strokeWidth
         paint.color = ContextCompat.getColor(context, PrincipleR.color.Unify_GN400)
-
-        post {
-            yCenter = (height / 2).toFloat()
-        }
+        yCenter = strokeWidth / 2
     }
 
     fun update(newXStart: Float, newXEnd: Float, thumbSize: Float) {

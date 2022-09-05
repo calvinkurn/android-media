@@ -50,12 +50,6 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
 
     init {
         updateSliderTextValue()
-
-        post {
-            initSliderRef()
-            moveThumb()
-            initSliderTouchListener()
-        }
     }
 
     fun setRangeSliderValue(
@@ -70,6 +64,12 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
         sliderInitialPosition = initialPosition ?: startValue
 
         resetSlider()
+
+        post {
+            initSliderValue()
+            moveThumb()
+            initSliderTouchListener()
+        }
     }
 
     private fun moveThumb() {
@@ -112,12 +112,9 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
         sliderText.text = sliderStartValue.toString()
     }
 
-    private fun initSliderRef() {
+    private fun initSliderValue() {
         sliderWidth = sliderTrack.width.toFloat()
         thumbWidth = sliderThumb.width.toFloat()
-
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(sliderWrapper)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -155,7 +152,7 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
                 if (!isValueUpdateDelay && !delayFlag) {
                     listener?.valueUpdated(stepIndex, value.toFloat())
                 } else if (!delayFlag) {
-                    checkIsThumbStop(value.toFloat(), stepIndex, 0f, 0)
+                    checkIsThumbStop(value.toFloat(), stepIndex, 0f)
                     delayFlag = true
                 }
             }
@@ -167,8 +164,7 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
     private fun checkIsThumbStop(
         currentValue: Float,
         currentStepIndex: Int,
-        previousValue: Float,
-        previousStepIndex: Int
+        previousValue: Float
     ) {
         Handler().postDelayed({
             if (currentValue == previousValue) {
@@ -177,7 +173,7 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
             } else {
                 val stepIndex = xToStep(sliderThumb.x)
                 val value = stepToValue(stepIndex).toInt().toString()
-                checkIsThumbStop(value.toFloat(), stepIndex, currentValue, currentStepIndex)
+                checkIsThumbStop(value.toFloat(), stepIndex, currentValue)
             }
         }, delayTime)
     }
