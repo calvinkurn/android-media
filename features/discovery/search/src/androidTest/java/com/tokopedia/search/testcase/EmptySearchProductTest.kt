@@ -13,7 +13,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.search.R
 import com.tokopedia.search.RecyclerViewHasItemIdlingResource
 import com.tokopedia.search.SearchMockModelConfig
@@ -39,14 +38,11 @@ internal class EmptySearchProductTest {
     private val recyclerViewId = R.id.recyclerview
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     private val emptyStateProductLayout = R.id.emptyStateKeywordLayout
 
     @Before
     fun setUp() {
-        gtmLogDBSource.deleteAll().subscribe()
-
         setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_empty_search_response))
 
         disableOnBoarding(context)
@@ -88,8 +84,6 @@ internal class EmptySearchProductTest {
 
     @After
     fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
-
         IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
     }
 }
