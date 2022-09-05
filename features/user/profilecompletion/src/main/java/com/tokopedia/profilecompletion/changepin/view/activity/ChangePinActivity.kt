@@ -60,8 +60,8 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
 	toolbar = findViewById(toolbarResourceID)
 	setSupportActionBar(toolbar)
 	supportActionBar?.apply {
+		title = ""
 	    setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
-	    setDisplayShowTitleEnabled(false)
 	    setDisplayHomeAsUpEnabled(true)
 	    elevation = 0f
 	    setBackgroundDrawable(
