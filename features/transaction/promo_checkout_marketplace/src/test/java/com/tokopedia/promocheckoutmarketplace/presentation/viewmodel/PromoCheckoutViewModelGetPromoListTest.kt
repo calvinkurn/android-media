@@ -653,4 +653,12 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
         //then
         assert(viewModel.boInfoBottomSheetUiModel.value?.uiState?.isVisible == false)
     }
+
+    // todo
+    @Test
+    fun `WHEN get promo list and show selected promo with bo clashing THEN show ticker BO Clashing`() {}
+
+    // todo
+    @Test
+    fun `WHEN get promo list and show selected promo without bo clashing THEN dont show ticker BO Clashing`() {}
 }

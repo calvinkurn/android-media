@@ -443,7 +443,7 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
-    fun `WHEN unapply promo BO from promo page THEN validate use request should not contain bo promo code`() {
+    fun `WHEN unapply promo BO and not disabled THEN validate use request should not contain bo promo code`() {
         //given
         val request = provideApplyPromoEmptyRequest()
         request.orders.first().codes.add("PLUSAA")
@@ -466,5 +466,9 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         assert(request.orders.first().codes.intersect(selectedBo.uiData.boAdditionalData.map { it.code }).isEmpty())
         assert(!request.orders.first().codes.contains(selectedBo.uiData.promoCode))
     }
+
+    // todo
+    @Test
+    fun `WHEN unapply promo BO because clashing with other chosen promo THEN should add promo BO code in param to get red state`() {}
 
 }
