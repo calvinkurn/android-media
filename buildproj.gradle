@@ -13,6 +13,7 @@ allprojects {
                 username = "${gcp_artifactory_username}"
                 password = "${gcp_artifactory_password}"
             }
+            allowInsecureProtocol = true
         }
         maven {
             url "${artifactory_url}" + "/libs-release-local";
