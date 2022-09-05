@@ -12,7 +12,11 @@ import com.tokopedia.profilecompletion.addbod.view.activity.AddBodActivity
 import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameActivity
 import com.tokopedia.profilecompletion.changegender.view.activity.ChangeGenderActivity
 import com.tokopedia.profilecompletion.changename.view.ChangeNameActivity
-import com.tokopedia.profilecompletion.common.helper.*
+import com.tokopedia.profilecompletion.common.helper.checkToasterShowing
+import com.tokopedia.profilecompletion.common.helper.clickViewHolder
+import com.tokopedia.profilecompletion.common.helper.goToAnotherActivity
+import com.tokopedia.profilecompletion.common.helper.isViewsExists
+import com.tokopedia.profilecompletion.common.helper.clickChildWithViewId
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
