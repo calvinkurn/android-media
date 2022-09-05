@@ -586,7 +586,6 @@ object TopChatAnalyticsKt {
         const val VIEW_BUNDLE_CART_CHATROOM = "view on bundle card in chatroom"
         const val CLICK_PRODUCT_BUNDLE = "click on product attachment on bundle card"
         const val CLICK_ADD_TO_CART_BUNDLE = "click on add to cart from bundle card"
-        const val CLICK_SEND_AFTER_ADD_PRODUCT_VARIANT = "click kirim after pilih product variant"
         const val VIEW_ON_PRODUCT_THUMBNAIL = "view on product thumbnail"
     }
 
