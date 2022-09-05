@@ -74,6 +74,16 @@ class ProductBundlingUiModel constructor(
         }
     }
 
+    fun getBundleTypeMapped(): String {
+        if (productBundling.bundleType != null) {
+            return when (productBundling.bundleType) {
+                1 -> "single"
+                else -> "multiple"
+            }
+        }
+        return ""
+    }
+
     companion object {
         const val BUNDLE_TYPE_MULTIPLE = 2
         private const val NOT_BROADCAST = "0"

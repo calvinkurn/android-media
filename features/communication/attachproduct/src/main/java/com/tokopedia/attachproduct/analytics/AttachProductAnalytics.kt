@@ -23,13 +23,18 @@ object AttachProductAnalytics {
         )
     }
 
+    private fun getProductIdList(bundleItems: List<ResultProduct>): List<String> {
+        val productIdList = mutableListOf<String>()
+        for (item in bundleItems) {
+            productIdList += item.productId.toString()
+        }
+        return productIdList
+    }
+
     fun trackSendButtonClicked(
         products: List<ResultProduct>
     ) {
-        val product_ids = mutableListOf<String>()
-        for (product in products) {
-            product_ids += product.productId.toString()
-        }
+        val productIds = getProductIdList(products)
         val eventDataLayer = Bundle()
         eventDataLayer.putString(TrackAppUtils.EVENT, Event.CLICK_COMMUNICATION)
         eventDataLayer.putString(
@@ -37,7 +42,7 @@ object AttachProductAnalytics {
             Action.CLICK_KIRIM_AFTER_PILIH_PRODUCT_VARIANT
         )
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
-        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, product_ids.toString())
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, productIds.toString())
         eventDataLayer.putString(TRACKER_ID, "14823")
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
