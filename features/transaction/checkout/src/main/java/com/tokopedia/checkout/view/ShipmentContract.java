@@ -185,8 +185,10 @@ public interface ShipmentContract {
 
         int getShipmentCartItemModelAdapterPositionByUniqueId(String uniqueId);
 
-        @Nullable
-        ShipmentCartItemModel getShipmentCartItemModel(int position);
+        @Nullable ShipmentCartItemModel getShipmentCartItemModel(int position);
+
+        ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
+                                                        RecipientAddressModel recipientAddressModel);
     }
 
     interface AnalyticsActionListener {
