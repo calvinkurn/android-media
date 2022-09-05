@@ -21,4 +21,6 @@ object WishlistCollectionConsts {
     const val EXTRA_IS_BULK_ADD = "IS_BULK_ADD"
     const val EXTRA_COLLECTION_ID_DESTINATION = "EXTRA_COLLECTION_ID_DESTINATION"
     const val EXTRA_COLLECTION_NAME_DESTINATION = "EXTRA_COLLECTION_NAME_DESTINATION"
+
+    const val BG_TICKER = "https://images.tokopedia.net/img/android/wishlistcollection/bg_ticker_wishlist_collection.png"
 }

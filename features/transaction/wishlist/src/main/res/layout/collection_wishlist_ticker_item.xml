@@ -8,7 +8,8 @@
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/collection_ticker_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -16,10 +17,9 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/wishlist_collection_ticker_bg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/bg_ticker_wishlist_collection"/>
+                android:layout_width="334dp"
+                android:layout_height="73dp"
+                android:layout_alignParentEnd="true"/>
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ic_close_ticker_collection_wishlist"
