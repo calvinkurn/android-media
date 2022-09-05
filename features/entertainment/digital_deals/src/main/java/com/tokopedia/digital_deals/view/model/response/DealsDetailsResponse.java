@@ -256,6 +256,9 @@ public class DealsDetailsResponse implements Parcelable {
         return appUrl;
     }
 
+    public void setAppUrl(String appUrl) {
+        this.appUrl = appUrl;
+    }
 
     public DealsDetailsResponse() {
     }

@@ -12,6 +12,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -110,7 +111,7 @@ class DealsCheckoutViewModel @Inject constructor(
                           orderTitle = orderTitle,
                           orderSubTitle = orderSubTitle,
                           quantity = quantity,
-                          totalPrice = totalPrice,
+                          totalPrice = totalPrice.toInt(),
                           itemIds = convertStringListtoIntList(itemIds),
                           productNames = productNames,
                           productIds = convertStringListtoIntList(productIds),
@@ -122,12 +123,12 @@ class DealsCheckoutViewModel @Inject constructor(
       private fun mapToItemMapCheckout(itemMapResponses: List<ItemMapResponse>): List<ItemMapCheckout> {
             return itemMapResponses.map {
                   ItemMapCheckout(
-                          basePrice = it.basePrice.toInt(),
-                          categoryId = it.categoryId.toInt(),
+                          basePrice = it.basePrice.toIntSafely(),
+                          categoryId = it.categoryId.toIntSafely(),
                           childCategoryIds = it.childCategoryIds,
                           commission = it.commission,
                           commissionType = it.commissionType,
-                          currencyPrice = it.currencyPrice,
+                          currencyPrice = it.currencyPrice.toInt(),
                           description = it.description,
                           email = it.email,
                           endTime = it.endTime,
@@ -145,7 +146,7 @@ class DealsCheckoutViewModel @Inject constructor(
                           packageId = it.packageId.toIntOrZero(),
                           packageName = it.packageName,
                           paymentType = it.paymentType,
-                          price = it.price,
+                          price = it.price.toInt(),
                           productAppUrl = it.productAppUrl,
                           productId = it.productId.toInt(),
                           productImage = it.productImage,
@@ -157,7 +158,7 @@ class DealsCheckoutViewModel @Inject constructor(
                           quantity = it.quantity,
                           scheduleTimestamp = it.scheduleTimestamp.toInt(),
                           startTime = it.startTime,
-                          totalPrice = it.totalPrice,
+                          totalPrice = it.totalPrice.toInt(),
                           productWebUrl = it.productWebUrl,
                           providerId = it.providerId.toInt(),
                           passengerForms = it.passengerForms

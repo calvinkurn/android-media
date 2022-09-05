@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailSelectQuantityBinding
 import com.tokopedia.deals.pdp.data.ProductDetailData
@@ -202,9 +203,13 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
                 hideProgressBar()
                 when (it) {
                     is Success -> {
-                        //goto checkout
-                        view?.let {
-                            Toaster.build(it, "Yoi", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                        context?.let { context ->
+                            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CHECKOUT)
+                            productDetailData?.let { productDetailData ->
+                                intent.putExtra(EXTRA_DEAL_DETAIL_REVAMPED, viewModel.mapOldProductDetailData(productDetailData))
+                            }
+                            intent.putExtra(EXTRA_VERIFY_REVAMPED, viewModel.mapperOldVerify(it.data.eventVerify))
+                            startActivity(intent)
                         }
                     }
 
@@ -223,6 +228,8 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
     companion object {
         const val REQUEST_CODE_LOGIN = 101
         private const val EXTRA_PRODUCT_DATA = "EXTRA_PRODUCT_DATA"
+        private const val EXTRA_DEAL_DETAIL_REVAMPED = "EXTRA_DEALDETAIL"
+        private const val EXTRA_VERIFY_REVAMPED = "EXTRA_VERIFY"
 
         fun createInstance(data: ProductDetailData): DealsPDPSelectDealsQuantityFragment {
             val fragment = DealsPDPSelectDealsQuantityFragment()

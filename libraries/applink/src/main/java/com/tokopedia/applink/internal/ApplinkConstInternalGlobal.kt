@@ -176,6 +176,8 @@ object ApplinkConstInternalGlobal {
 
     const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE = "$INTERNAL_GLOBAL/deals-slug/"
 
+    const val GLOBAL_INTERNAL_DIGITAL_DEAL_CHECKOUT = "$GLOBAL_INTERNAL_DIGITAL_DEAL/checkout"
+
     const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG = "$GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE{slug}/"
 
     // PhoneVerificationProfileActivity

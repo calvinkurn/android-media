@@ -65,7 +65,7 @@ data class MetaDataResponse(
         val quantity: Int = 0,
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Int = 0
+        val totalPrice: Long = 0
 
 ) : Parcelable
 
@@ -88,7 +88,7 @@ data class ItemMapResponse(
         val commissionType:String = "",
         @SerializedName("currency_price")
         @Expose
-        val currencyPrice: Int = 0,
+        val currencyPrice: Long = 0,
         @SerializedName("description")
         @Expose
         val description:String = "",
@@ -142,7 +142,7 @@ data class ItemMapResponse(
         val paymentType:String = "",
         @SerializedName("price")
         @Expose
-        val price: Int = 0,
+        val price: Long = 0,
         @SerializedName("product_app_url")
         @Expose
         val productAppUrl:String = "",
@@ -184,7 +184,7 @@ data class ItemMapResponse(
         val startTime:String = "",
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Int = 0,
+        val totalPrice: Long = 0,
         @SerializedName("web_app_url")
         @Expose
         val webAppUrl:String = "",
