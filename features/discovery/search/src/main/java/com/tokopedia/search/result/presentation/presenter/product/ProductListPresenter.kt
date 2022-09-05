@@ -1914,7 +1914,7 @@ class ProductListPresenter @Inject constructor(
 
     private fun checkShouldShowBOELabelOnBoarding(position: Int) {
         if (isViewAttached && checkProductWithBOELabel(position))
-            if (shouldShowBoeCoachmark())
+            if (shouldShowBoeCoachmark() || true)
                 view.showOnBoarding(firstProductPositionWithBOELabel)
     }
 
