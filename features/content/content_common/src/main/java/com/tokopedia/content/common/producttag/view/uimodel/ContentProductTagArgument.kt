@@ -97,18 +97,21 @@ class ContentProductTagArgument private constructor(
             return this
         }
 
-        fun setMultipleSelectionProduct(isMultipleSelectionProduct: Boolean): Builder {
+        fun setMultipleSelectionProduct(
+            isMultipleSelectionProduct: Boolean,
+            maxSelectedProduct: Int,
+        ): Builder {
+            /**
+             * if isMultipleSelectionProduct is false,
+             * maxSelectedProduct will be ignored.
+             */
             argumentMap[KEY_IS_MULTIPLE_SELECTION_PRODUCT] = isMultipleSelectionProduct
+            argumentMap[KEY_MAX_SELECTED_PRODUCT] = maxSelectedProduct
             return this
         }
 
         fun setFullPageAutocomplete(isFullPageAutocomplete: Boolean): Builder {
             argumentMap[KEY_IS_FULL_PAGE_AUTOCOMPLETE] = isFullPageAutocomplete
-            return this
-        }
-
-        fun setMaxSelectedProduct(maxSelectedProduct: Int): Builder {
-            argumentMap[KEY_MAX_SELECTED_PRODUCT] = maxSelectedProduct
             return this
         }
 

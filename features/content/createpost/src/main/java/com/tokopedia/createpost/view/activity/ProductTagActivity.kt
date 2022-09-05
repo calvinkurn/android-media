@@ -128,7 +128,7 @@ class ProductTagActivity : BaseActivity() {
                 .setAuthorId(authorId)
                 .setAuthorType(authorType)
                 .setProductTagSource(productTagList)
-                .setMultipleSelectionProduct(false)
+                .setMultipleSelectionProduct(false, 0)
                 .setFullPageAutocomplete(true)
                 .setBackButton(ContentProductTagConfig.BackButton.Back)
                 .setIsShowActionBarDivider(true)
