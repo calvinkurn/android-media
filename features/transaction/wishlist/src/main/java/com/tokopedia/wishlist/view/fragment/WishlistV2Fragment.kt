@@ -255,10 +255,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun observingWishlistV2() {
-        showLoader()
         wishlistViewModel.wishlistV2.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
+                    hideLoader()
                     finishRefresh()
                     result.data.let { wishlistV2 ->
                         rvScrollListener.setHasNextPage(wishlistV2.hasNextPage)
@@ -279,14 +279,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             if (wishlistV2.sortFilters.isEmpty() && wishlistV2.items.isEmpty()) {
                                 onFailedGetWishlistV2(ResponseErrorException())
                             } else {
-                                hideLoader(wishlistV2.showDeleteProgress)
                                 showRvWishlist()
                                 isFetchRecommendation = true
                                 hideTotalLabel()
                                 hideSortFilter(wishlistV2.sortFilters)
                             }
                         } else {
-                            hideLoader(wishlistV2.showDeleteProgress)
                             showRvWishlist()
                             if (!wishlistV2.showDeleteProgress) updateTotalLabel(wishlistV2.totalData)
                         }
@@ -306,6 +304,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     }
                 }
                 is Fail -> {
+                    hideLoader()
                     finishRefresh()
                     onFailedGetWishlistV2(result.throwable)
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
@@ -472,6 +471,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         wishlistV2Adapter = WishlistV2Adapter().apply {
             setActionListener(this@WishlistV2Fragment)
         }
+        showLoader()
         addEndlessScrollListener()
     }
 
@@ -532,13 +532,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         rvScrollListener = object : EndlessRecyclerViewScrollListener(staggeredGlm) {
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                currentPage += 1
-                onLoadMore = true
-                if (isFetchRecommendation) {
-                    loadRecommendationList()
-                } else {
-                    paramWishlistV2.page = currPage
-                    loadWishlistV2()
+                if (totalItemsCount > 5) {
+                    currentPage += 1
+                    onLoadMore = true
+                    if (isFetchRecommendation) {
+                        loadRecommendationList()
+                    } else {
+                        paramWishlistV2.page = currPage
+                        loadWishlistV2()
+                    }
                 }
             }
 
@@ -873,6 +875,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private fun hideStickyDeletionProgress() {
         binding?.run {
             wishlistV2StickyCountManageLabel.rlWishlistV2StickyProgressDeletionWidget.gone()
+            wishlistV2StickyCountManageLabel.rlWishlistV2Manage.visible()
             wishlistV2StickyCountManageLabel.wishlistV2CountDeletionMessage.text = ""
             wishlistV2StickyCountManageLabel.wishlistV2CountDeletionProgressbar.setValue(0)
             wishlistV2StickyCountManageLabel.wishlistV2LabelProgressBar.text = "0/0"
@@ -900,11 +903,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
-    private fun hideLoader(showDeleteProgress: Boolean) {
+    private fun hideLoader() {
         binding?.run {
             wishlistLoaderLayout.root.gone()
             wishlistSortFilter.visible()
-            if (!showDeleteProgress) wishlistV2StickyCountManageLabel.rlWishlistV2Manage.visible()
         }
     }
 
@@ -1604,6 +1606,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.visible()
         }
         showSortFilter()
+        showLoader()
         addEndlessScrollListener()
         wishlistV2Adapter.resetTicker()
     }

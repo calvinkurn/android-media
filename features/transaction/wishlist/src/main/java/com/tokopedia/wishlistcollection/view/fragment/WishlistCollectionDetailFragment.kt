@@ -496,6 +496,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         wishlistCollectionDetailViewModel.collectionItems.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
+                    hideLoader()
                     finishRefresh()
                     result.data.getWishlistCollectionItems.let { collectionDetail ->
                         toolbarTitle = collectionDetail.headerTitle
@@ -529,14 +530,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 if (collectionDetail.sortFilters.isEmpty() && collectionDetail.items.isEmpty()) {
                                     onFailedGetWishlistV2(ResponseErrorException())
                                 } else {
-                                    hideLoader(collectionDetail.showDeleteProgress)
                                     showRvWishlist()
                                     isFetchRecommendation = true
                                     hideTotalLabel()
                                 }
                             }
                         } else {
-                            hideLoader(collectionDetail.showDeleteProgress)
                             showRvWishlist()
                             if (isAutoDeletion && isBulkDeleteShow) {
                                 hideSearchBar()
@@ -566,6 +565,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     }
                 }
                 is Fail -> {
+                    hideLoader()
                     finishRefresh()
                     onFailedGetWishlistV2(result.throwable)
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
@@ -849,6 +849,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         collectionItemsAdapter = WishlistV2Adapter().apply {
             setActionListener(this@WishlistCollectionDetailFragment)
         }
+        showLoader()
         addEndlessScrollListener()
         binding?.run {
             wishlistCollectionDetailSearchbar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
@@ -928,7 +929,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         if (toasterMessageInitial.isNotEmpty()) {
             showToasterInitial(toasterMessageInitial)
         }
-        showLoader()
     }
 
     private fun hideKeyboardFromSearchBar() {
@@ -1042,13 +1042,15 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         rvScrollListener = object : EndlessRecyclerViewScrollListener(staggeredGlm) {
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                currentPage += 1
-                onLoadMore = true
-                if (isFetchRecommendation) {
-                    loadRecommendationList()
-                } else {
-                    paramGetCollectionItems.page = currPage
-                    getCollectionItems()
+                if (totalItemsCount > 5) {
+                    currentPage += 1
+                    onLoadMore = true
+                    if (isFetchRecommendation) {
+                        loadRecommendationList()
+                    } else {
+                        paramGetCollectionItems.page = currPage
+                        getCollectionItems()
+                    }
                 }
             }
 
@@ -1264,6 +1266,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun hideStickyDeletionProgress() {
         binding?.run {
             wishlistCollectionDetailStickyCountManageLabel.rlWishlistCollectionDetailManage.gone()
+            wishlistCollectionDetailStickyCountManageLabel.rlWishlistCollectionDetailManage.visible()
             wishlistCollectionDetailStickyCountManageLabel.stickyProgressDeletionWidget.rlDeletionProgress.gone()
         }
     }
@@ -1289,11 +1292,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
-    private fun hideLoader(showDeleteProgress: Boolean) {
+    private fun hideLoader() {
         binding?.run {
             wishlistCollectionDetailLoaderLayout.root.gone()
             wishlistCollectionDetailSortFilter.visible()
-            if (!showDeleteProgress) wishlistCollectionDetailStickyCountManageLabel.rlWishlistCollectionDetailManage.visible()
         }
     }
 
@@ -2659,6 +2661,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.visible()
             wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.visible()
         }
+        showLoader()
         addEndlessScrollListener()
         collectionItemsAdapter.resetTicker()
     }
