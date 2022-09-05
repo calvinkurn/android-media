@@ -24,21 +24,24 @@ object AttachProductAnalytics {
     }
 
     fun trackSendButtonClicked(
-        products : List<ResultProduct>
-    ){
+        products: List<ResultProduct>
+    ) {
         var product_ids = listOf<String>()
-        for (product in products){
+        for (product in products) {
             product_ids += product.productId.toString()
         }
         var eventDataLayer = Bundle()
-        eventDataLayer.putString(TrackAppUtils.EVENT,Event.CLICK_COMMUNICATION)
-        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_KIRIM_AFTER_PILIH_PRODUCT_VARIANT)
+        eventDataLayer.putString(TrackAppUtils.EVENT, Event.CLICK_COMMUNICATION)
+        eventDataLayer.putString(
+            TrackAppUtils.EVENT_ACTION,
+            Action.CLICK_KIRIM_AFTER_PILIH_PRODUCT_VARIANT
+        )
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
         eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, product_ids.toString())
         eventDataLayer.putString(TRACKER_ID, "14823")
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
-        eventDataLayer.putString(KEY_CURRENT_SITE,CURRENT_SITE)
-        
+        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+
     }
 
     val eventClickChatAttachedProductImage: AttachProductEventTracking
@@ -63,7 +66,8 @@ object AttachProductAnalytics {
     object Action {
         const val CLICK_PRODUCT_IMAGE: String = "click on product image"
         const val CHECK_PRODUCT: String = "click one of the product"
-        const val CLICK_KIRIM_AFTER_PILIH_PRODUCT_VARIANT = "click kirim after pilih product variant"
+        const val CLICK_KIRIM_AFTER_PILIH_PRODUCT_VARIANT =
+            "click kirim after pilih product variant"
     }
 
     private const val TRACKER_ID = "trackerId"
