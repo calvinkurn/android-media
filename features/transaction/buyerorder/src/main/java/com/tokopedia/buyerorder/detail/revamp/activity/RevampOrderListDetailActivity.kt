@@ -53,7 +53,7 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
             }
         }
         if (!userSession.isLoggedIn) {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE)
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
         } else {
             intent.data?.let {
                 upstream = it.getQueryParameter(UPSTREAM)
@@ -92,7 +92,7 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK){
             intent.data?.let {
                 category = it.toString()
                 upstream = it.getQueryParameter(UPSTREAM)
@@ -115,7 +115,7 @@ class RevampOrderListDetailActivity: BaseSimpleActivity(), HasComponent<OrderDet
     companion object{
 
         private const val ORDER_ID = "order_id"
-        private const val REQUEST_CODE = 100
+        private const val REQUEST_CODE_LOGIN = 100
         private const val UPSTREAM = "upstream"
         private const val FROM_PAYMENT = "from_payment"
 

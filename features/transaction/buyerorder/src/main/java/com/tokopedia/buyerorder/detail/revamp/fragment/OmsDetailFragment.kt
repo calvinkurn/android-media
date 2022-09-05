@@ -945,7 +945,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     }
 
     private fun isUriDownloadable(url: String): Boolean{
-        val pattern = Pattern.compile("^.+\\.([pP][dD][fF])\$")
+        val pattern = Pattern.compile(URI_DOWNLOADABLE_PATTERN)
         val matcher = pattern.matcher(url)
         return matcher.find() || isDownloadable
     }
@@ -1059,6 +1059,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val KEY_QRCODE = "qrcode"
         private const val KEY_CUSTOMER_NOTIFICATION = "customer_notification"
         private const val KEY_DEAL = "Deal"
+        private const val URI_DOWNLOADABLE_PATTERN = "^.+\\.([pP][dD][fF])\$"
         private const val PADDING_5 = 5
         private const val PADDING_0 = 0
         private const val SHAPE_STROKE_2 = 2
