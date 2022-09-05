@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -85,13 +86,25 @@
 
     </RadioGroup>
 
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/text_field_max_selected_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:unify_text_field_input_type="number"
+        app:layout_constraintEnd_toEndOf="@id/tv_title"
+        app:layout_constraintStart_toStartOf="@id/rg_multiple_selection_product"
+        app:layout_constraintTop_toBottomOf="@id/rg_multiple_selection_product"
+        app:unify_text_field_label="Max Selected Product"
+        app:unify_text_field_label_static="true" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_full_page_autocomplete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Full page Autocomplete"
         android:layout_marginTop="@dimen/spacing_lvl6"
-        app:layout_constraintTop_toBottomOf="@id/rg_multiple_selection_product"
+        app:layout_constraintTop_toBottomOf="@id/text_field_max_selected_product"
         app:layout_constraintStart_toStartOf="@id/tv_title"
         />
 
@@ -134,6 +147,8 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

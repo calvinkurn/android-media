@@ -2,6 +2,7 @@ package com.tokopedia.content.common.sample
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -13,6 +14,9 @@ import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArg
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
+import com.tokopedia.content.common.util.hideKeyboard
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -38,8 +42,8 @@ class ContentProductTagSampleActivity : BaseActivity() {
         )
         setContentView(binding.root)
 
-        setupDefault()
         setupListener()
+        setupDefault()
     }
 
     override fun onAttachFragment(fragment: Fragment) {
@@ -73,13 +77,25 @@ class ContentProductTagSampleActivity : BaseActivity() {
 
     private fun setupDefault() {
         binding.rbUser.isChecked = true
-        binding.rbMultipleSelectionProductNo.isChecked = true
+        binding.rbMultipleSelectionProductYes.isChecked = true
         binding.rbFullPageAutocompleteNo.isChecked = true
+        binding.textFieldMaxSelectedProduct.editText.setText("3")
     }
 
     private fun setupListener() {
         binding.btnOpen.setOnClickListener {
-            setupFragment()
+            hideKeyboard()
+            binding.textFieldMaxSelectedProduct.clearFocus()
+
+            if(validate()) {
+                setupFragment()
+            }
+        }
+
+        binding.rgMultipleSelectionProduct.setOnCheckedChangeListener { radioGroup, i ->
+            binding.textFieldMaxSelectedProduct.showWithCondition(
+                binding.rgMultipleSelectionProduct.checkedRadioButtonId == binding.rbMultipleSelectionProductYes.id
+            )
         }
     }
 
@@ -102,7 +118,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
                 .setAuthorId(getAuthorId())
                 .setAuthorType(getAuthorType())
                 .setProductTagSource("global_search,own_shop,last_purchase")
-                .setMultipleSelectionProduct(isMultipleSelectionProduct(), if(isMultipleSelectionProduct()) 3 else 0)
+                .setMultipleSelectionProduct(isMultipleSelectionProduct(), getMaxSelectedProduct())
                 .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
                 .setBackButton(ContentProductTagConfig.BackButton.Close)
                 .setIsShowActionBarDivider(false)
@@ -131,6 +147,20 @@ class ContentProductTagSampleActivity : BaseActivity() {
 
     private fun isMultipleSelectionProduct(): Boolean {
         return binding.rbMultipleSelectionProductYes.isChecked
+    }
+
+    private fun getMaxSelectedProduct(): Int {
+        return if(isMultipleSelectionProduct())
+            binding.textFieldMaxSelectedProduct.editText.text.toString().toIntOrZero()
+        else 0
+    }
+
+    private fun validate(): Boolean {
+        return if(binding.rbMultipleSelectionProductYes.isChecked && binding.textFieldMaxSelectedProduct.editText.text.isEmpty()) {
+            Toast.makeText(this, "Please input Max Selected Product", Toast.LENGTH_SHORT).show()
+            false
+        }
+        else true
     }
 
     private fun inject() {
