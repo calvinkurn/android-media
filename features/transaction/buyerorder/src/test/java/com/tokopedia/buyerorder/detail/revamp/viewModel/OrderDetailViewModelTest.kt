@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorder.detail.revamp.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.ActionButtonEventWrapper
 import com.tokopedia.buyerorder.detail.data.ActionButtonList
@@ -44,6 +45,7 @@ class OrderDetailViewModelTest{
     private val omsDetailUseCase: Lazy<OmsDetailUseCase> = mockk()
     private val actionButtonUseCase: Lazy<RevampActionButtonUseCase> = mockk()
     private val sendNotificationUseCase: Lazy<SendEventNotificationUseCase> = mockk(relaxed = true)
+    private val gson: Lazy<Gson> = mockk(relaxed = true)
 
     private lateinit var viewModel: OrderDetailViewModel
 
@@ -53,6 +55,7 @@ class OrderDetailViewModelTest{
             omsDetailUseCase,
             actionButtonUseCase,
             sendNotificationUseCase,
+            gson,
             dispatcher.io,
         )
     }
@@ -233,39 +236,6 @@ class OrderDetailViewModelTest{
         val actionClickable = viewModel.actionClickable.value
         assertNotNull(result)
         assertEquals(response.getData<SendEventEmail>().data.message, result.data.data.message)
-        assertEquals(false, actionClickable)
-
-        verify { sendNotificationUseCase.get().execute(any()) }
-    }
-
-    @Test
-    fun `send event notification should be failed`(){
-        //Given
-        val response = RestResponse(SendEventEmail(data = DataEmail(message = "test1")), 401, false)
-        response.errorBody = """
-            {
-              "data": {
-                "message": "failed to fetch"
-              }
-            }
-        """.trimIndent()
-        val responseMap = mapOf<Type, RestResponse>(SendEventEmail::class.java to response)
-
-        every { sendNotificationUseCase.get().execute(any()) } answers {
-            firstArg<Subscriber<Map<Type, RestResponse>>>().onStart()
-            firstArg<Subscriber<Map<Type, RestResponse>>>().onCompleted()
-            firstArg<Subscriber<Map<Type, RestResponse>>>().onNext(responseMap)
-        }
-
-        //When
-        viewModel.sendEventEmail(ActionButton(), "")
-
-        //Then
-        val result = viewModel.eventEmail.value as Fail
-        val actionClickable = viewModel.actionClickable.value
-        assertNotNull(result)
-        assertNotNull(actionClickable)
-        assertEquals("failed to fetch", result.throwable.message)
         assertEquals(false, actionClickable)
 
         verify { sendNotificationUseCase.get().execute(any()) }

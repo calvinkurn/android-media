@@ -35,6 +35,7 @@ class OrderDetailViewModel @Inject constructor(
     private val omsDetailUseCase: Lazy<OmsDetailUseCase>,
     private val actionButtonUseCase: Lazy<RevampActionButtonUseCase>,
     private val eventNotificationUseCase: Lazy<SendEventNotificationUseCase>,
+    private val gson: Lazy<Gson>,
     dispatcher: CoroutineDispatcher,
 ): BaseViewModel(dispatcher) {
 
@@ -113,7 +114,7 @@ class OrderDetailViewModel @Inject constructor(
                         val result = response.getData<SendEventEmail>()
                         _eventEmail.postValue(Success(result))
                     } else {
-                        val result = Gson().fromJson(response?.errorBody, SendEventEmail::class.java)
+                        val result = gson.get().fromJson(response?.errorBody, SendEventEmail::class.java)
                         _eventEmail.postValue(Fail(MessageErrorException(result.data.message)))
                     }
                 }
