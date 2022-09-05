@@ -1769,13 +1769,13 @@ class AddEditProductDetailViewModelTest {
         )
 
         viewModel.getAddProductPriceSuggestion("keyword","categoryL3")
-        val result = viewModel.productPriceRecommendation.getOrAwaitValue()
+        val result = viewModel.addProductPriceSuggestion.getOrAwaitValue()
 
         coVerify {
-            getEditProductPriceSuggestionUseCase.executeOnBackground()
+            getAddProductPriceSuggestionUseCase.executeOnBackground()
         }
 
-        assertEquals(8000.0, result.suggestedPrice)
+        assertEquals(8000.0, result.summary?.suggestedPrice)
     }
 
     @Test
@@ -1869,6 +1869,7 @@ class AddEditProductDetailViewModelTest {
                                 productId = "productId",
                                 displayPrice = 2000.0,
                                 imageURL = "imageUrl",
+                                title = "title",
                                 totalSold = 10,
                                 rating = 4.5
                         )
@@ -1902,9 +1903,58 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `when product is active and new expect price suggestion layout visible`() {
-        val isVisible = viewModel.isPriceSuggestionLayoutVisible(ProductStatus.STATUS_ACTIVE, true)
+    fun `when product is active, new , and price suggestion is not empty expect price suggestion layout visible`() {
+        val isVisible = viewModel.isPriceSuggestionLayoutVisible(
+                isRangeEmpty = false,
+                productStatus = ProductStatus.STATUS_ACTIVE,
+                isNew = true,
+                hasVariant = false
+        )
         assertTrue(isVisible)
+    }
+
+    @Test
+    fun `when product price suggestion is empty expect hidden price suggestion layout `() {
+        val isVisible = viewModel.isPriceSuggestionLayoutVisible(
+                isRangeEmpty = true,
+                productStatus = ProductStatus.STATUS_ACTIVE,
+                isNew = true,
+                hasVariant = false
+        )
+        assertFalse(isVisible)
+    }
+
+    @Test
+    fun `when product is not active expect hidden price suggestion layout `() {
+        val isVisible = viewModel.isPriceSuggestionLayoutVisible(
+                isRangeEmpty = false,
+                productStatus = ProductStatus.STATUS_INACTIVE,
+                isNew = true,
+                hasVariant = false
+        )
+        assertFalse(isVisible)
+    }
+
+    @Test
+    fun `when product is second hand expect hidden price suggestion layout`() {
+        val isVisible = viewModel.isPriceSuggestionLayoutVisible(
+                isRangeEmpty = false,
+                productStatus = ProductStatus.STATUS_ACTIVE,
+                isNew = false,
+                hasVariant = false
+        )
+        assertFalse(isVisible)
+    }
+
+    @Test
+    fun `when product has variant expect hidden price suggestion layout`() {
+        val isVisible = viewModel.isPriceSuggestionLayoutVisible(
+                isRangeEmpty = false,
+                productStatus = ProductStatus.STATUS_ACTIVE,
+                isNew = true,
+                hasVariant = true
+        )
+        assertFalse(isVisible)
     }
 
     private fun getIsTheLastOfWholeSaleTestResult(
