@@ -4,10 +4,10 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class CCRedirectUrlResponse(
-        @SerializedName("success")
+    @SerializedName("success")
         @Expose
         val success: Boolean = false,
-        @SerializedName("data")
+    @SerializedName("data")
         @Expose
         val data: CCRedirectUrl = CCRedirectUrl(),
 )

@@ -137,8 +137,9 @@
     <string name="review_form_incentives_exit_dialog_body">Kamu bisa dapat hadiah dari ulasan ini, lho. Kalau keluar, ulasanmu tidak akan tersimpan.</string>
     <string name="review_form_incentives_incomplete_dialog_body">Ayo lengkapi dulu karena kamu bisa dapat hadiah dari ulasan, lho!</string>
     <string name="review_form_media_picker_error_upload">Oops, ada yang gagal di-upload. &lt;a href="#"&gt;Upload Ulang&lt;/a&gt;</string>
-    <string name="review_form_media_picker_toaster_failed_upload_message">Proses upload belum berhasil. Coba cek koneksi internetmu dan upload ulang, ya.</string>
+    <string name="review_form_media_picker_toaster_failed_upload_message">Proses upload belum berhasil. Coba cek koneksi internetmu dan upload ulang, ya. Kode Error: (%1$s)</string>
     <string name="review_form_media_picker_toaster_wait_for_upload_message">Tunggu foto atau videomu selesai di-upload, ya. Setelah itu kamu bisa kirim ulasanmu.</string>
+    <string name="review_form_cannot_add_more_media_while_uploading">Sebelum tambah foto atau video lagi, tunggu proses upload kamu selesai, ya.</string>
 
     <!--  Review Form Poem  -->
     <string name="review_form_waiting_upload_poem">Buah sawo buah pepaya, kita upload dulu ya…</string>
@@ -150,6 +151,7 @@
     <string name="review_refresh">Refresh</string>
     <string name="review_toaster_page_error">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
     <string name="review_oke">Oke</string>
+    <string name="review_back_to_home">Ke Homepage</string>
 
     <string name="review_pending_network_error_title">Koneksi internetmu terganggu!</string>
     <string name="review_pending_network_error_content">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
@@ -303,9 +305,9 @@
     <string name="review_create_later">Selesai</string>
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
-    <string name="review_create_bottom_sheet_text_area_empty_incentive">Tulis min. 40 karakter buat dapetin hadiahnya ✍️️</string>
+    <string name="review_create_bottom_sheet_text_area_empty_incentive">Tulis min. 40 karakter buat dapetin hadiahnya ✍️️️</string>
     <string name="review_create_bottom_sheet_text_area_partial_incentive">Lengkapi sedikit lagi biar dapet hadiahnya 🙌</string>
-    <string name="review_create_bottom_sheet_text_area_eligible_for_incentive">Oke siap dikirim. Pastikan kamu sertain foto juga!  📸</string>
+    <string name="review_create_bottom_sheet_text_area_eligible_for_incentive">Testimoni sudah lengkap? Tambah foto atau video, ya  📸</string>
 
     <!-- Review Reminder -->
     <string name="review_reminder_tab_title_1">Kirim Pesan</string>
@@ -393,6 +395,8 @@
     <string name="review_reading_seller_label">Penjual</string>
     <string name="review_reading_hide_response">Tutup Balasan</string>
     <string name="review_reading_empty_review">Tidak ada ulasan</string>
+    <string name="review_reading_empty_review_shop_page_title">Toko ini belum punya ulasan</string>
+    <string name="review_reading_empty_review_shop_page_subtitle">Yuk, belanja di toko ini dan jadi yang pertama kasih ulasan.</string>
     <string name="review_reading_filter_multiple_rating_selected">%d Rating</string>
     <string name="review_reading_filter_multiple_topic_selected">%d Topik</string>
     <string name="review_reading_connection_error">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
@@ -413,6 +417,7 @@
 
     <!-- Credibility   -->
     <string name="review_credibility_learn_more">Pelajari Selengkapnya</string>
+    <string name="review_credibility_footer_format">%1$s %2$s</string>
 
     <!--  media  -->
     <string name="review_media_gallery_item_counter_format">%1$d/%2$d</string>
@@ -426,6 +431,7 @@
     <string name="review_media_image_player_see_more_button_text">Lihat Semua</string>
     <string name="review_image_player_see_more">Tersedia %1$d foto &amp; video dari pembeli</string>
     <string name="review_image_player_toaster_error_message">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
+    <string name="review_image_player_toaster_error_message_with_error_code">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya! Kode Error: (%1$s)</string>
     <string name="review_image_player_toaster_error_action">Refresh</string>
 
     <string name="ic_create_review_image_remove_content_description">Buang gambar</string>

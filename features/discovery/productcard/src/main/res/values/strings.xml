@@ -38,4 +38,5 @@
     <string name="content_desc_imageShop">image toko</string>
     <string name="content_desc_imageTopAds">image topads</string>
     <string name="content_desc_videoPlay">button play</string>
+    <string name="product_card_content_desc_imageRating">image rating</string>
 </resources>

@@ -47,17 +47,18 @@ class HomeFragmentRefreshTest {
     companion object {
         /**
          * Header will be refreshed exactly 2 times on Resume with 3 minutes rule not reached
+         * 1 For get home balance widget
          * 1 For wallet data refresh
          * 1 For Membership data refresh
          *
          * But if 3 minutes rule reached, total refresh will be above 2
          */
-        private const val TOTAL_PARTIAL_HEADER_REFRESH_COUNT = 2
+        private const val TOTAL_PARTIAL_HEADER_REFRESH_COUNT = 3
 
         private const val BELOW_THREE_MINUTES_ELAPSED_TIME = 5000L
         private const val ABOVE_THREE_MINUTES_ELAPSED_TIME = 180001L
         private const val DELAY_TRANSITION = 500L
-        private const val DELAY_PROCESS = 2000L
+        private const val DELAY_PROCESS = 5000L
 
         private const val ADDRESS_1_ID = "0"
         private const val ADDRESS_1_CITY_ID = "228"
@@ -128,6 +129,7 @@ class HomeFragmentRefreshTest {
          */
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         recyclerView.adapter?.registerAdapterDataObserver(changeCountDetector())
+        Thread.sleep(DELAY_PROCESS)
 
         goToOtherPage()
         Thread.sleep(BELOW_THREE_MINUTES_ELAPSED_TIME)
@@ -137,11 +139,12 @@ class HomeFragmentRefreshTest {
         /**
          * Assert data changes count
          * Partial refresh will only trigger 2 data changes
+         * - Home Balance Widget
          * - Wallet data changes
          * - Membership data changes
          */
         Thread.sleep(DELAY_PROCESS)
-        Assert.assertEquals(TOTAL_PARTIAL_HEADER_REFRESH_COUNT, dataChangedCount)
+        Assert.assertTrue(dataChangedCount >= TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         Thread.sleep(DELAY_PROCESS)
     }
 

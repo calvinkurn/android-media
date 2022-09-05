@@ -28,7 +28,8 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            app:typographyType="heading_4"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
             android:layout_marginTop="8dp"
             android:id="@+id/deals_channel_title"
             android:layout_marginStart="@dimen/home_component_margin_default"
@@ -37,7 +38,6 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:maxEms="12"
-            android:textSize="@dimen/fontSize_lvl4"
             android:lines="1"
             android:gravity="center_vertical"
             tools:text="Hypebeast Banget Pokoknya"
@@ -46,7 +46,7 @@
             app:layout_constraintTop_toTopOf="@+id/deals_channel_subtitle"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             android:id="@+id/deals_channel_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

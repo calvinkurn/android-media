@@ -16,7 +16,6 @@ import com.tokopedia.tradein.TradeInGTMConstants.EVENT_LABEL
 import com.tokopedia.tradein.TradeInGTMConstants.KEY_BUSINESS_UNIT
 import com.tokopedia.tradein.TradeInGTMConstants.KEY_CURRENT_SITE
 import com.tokopedia.tradein.TradeInGTMConstants.KEY_LOGGED_IN
-import com.tokopedia.tradein.TradeInGTMConstants.KEY_PAGE_PATH
 import com.tokopedia.tradein.TradeInGTMConstants.KEY_SCREEN_NAME
 import com.tokopedia.tradein.TradeInGTMConstants.KEY_USER_ID
 import com.tokopedia.tradein.TradeInGTMConstants.OPEN_SCREEN
@@ -35,6 +34,7 @@ import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_IMEI_IMPRESSION
 import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_IMEI_SUCCESS
 import com.tokopedia.tradein.TradeInGTMConstants.TRADE_IN_START_PAGE
 import com.tokopedia.tradein.TradeInGTMConstants.VIEW_PG
+import com.tokopedia.tradein.model.TradeInDetailModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -157,8 +157,8 @@ class TradeInAnalytics @Inject constructor(
     fun clickEducationalButton(is3PL : Boolean, imei : String, isDiagnosed : Boolean) {
         val map = mutableMapOf<String, Any>(
             EVENT to CLICK_PG,
-            EVENT_CATEGORY to TRADE_IN_CLICK_EDUCATIONAL_PAGE_BUTTON,
-            EVENT_ACTION to TRADE_IN_START_PAGE,
+            EVENT_CATEGORY to TRADE_IN_START_PAGE,
+            EVENT_ACTION to TRADE_IN_CLICK_EDUCATIONAL_PAGE_BUTTON,
             EVENT_LABEL to (if(isDiagnosed) "with test" else "without test")
                     + " - "
                     + (if(imei.isNotEmpty()) "with IMEI" else "without IMEI")
@@ -174,8 +174,8 @@ class TradeInAnalytics @Inject constructor(
     fun expandDropDown(is3PL : Boolean, imei : String, isDiagnosed : Boolean) {
         val map = mutableMapOf<String, Any>(
             EVENT to CLICK_PG,
-            EVENT_CATEGORY to TRADE_IN_CLICK_DROPDOWN,
-            EVENT_ACTION to TRADE_IN_START_PAGE,
+            EVENT_CATEGORY to TRADE_IN_START_PAGE,
+            EVENT_ACTION to TRADE_IN_CLICK_DROPDOWN,
             EVENT_LABEL to (if(isDiagnosed) "with test" else "without test")
                     + " - "
                     + (if(imei.isNotEmpty()) "with IMEI" else "without IMEI")
@@ -248,31 +248,44 @@ class TradeInAnalytics @Inject constructor(
     }
 
     //15
-    fun clickExchangeMethods(is1PLAvailable : Boolean, price1PL : String, is3PLAvailable : Boolean, price3Pl : String) {
+    fun clickExchangeMethods(
+        is3PL: Boolean,
+        price1PL: String,
+        price3Pl: String
+    ) {
         val map = mutableMapOf<String, Any>(
             EVENT to CLICK_PG,
             EVENT_CATEGORY to TRADE_IN_START_PAGE,
             EVENT_ACTION to "click exchange methods",
-            EVENT_LABEL to "alamatmu: " + (if(is1PLAvailable) "available" else "unavailable")
-                    + " - price_range_alamatmu: $price1PL"
-                    + " - indomaret: " + (if(is3PLAvailable) "available" else "unavailable")
-                    + " - price_range_indomaret: $price3Pl",
+            EVENT_LABEL to if (is3PL) {
+                "indomaret - $price3Pl"
+            } else {
+                "alamatmu - $price1PL"
+            },
             KEY_BUSINESS_UNIT to BUSINESS_UNIT,
             KEY_CURRENT_SITE to CURRENT_SITE,
-            KEY_USER_ID to userSession.userId)
+            KEY_USER_ID to userSession.userId
+        )
         getTracker().sendGeneralEvent(map)
     }
 
     //16
-    fun errorScreen(errorCode : String) {
+    fun errorScreen(
+        errorMessage: String,
+        deviceAttribute: TradeInDetailModel.GetTradeInDetail.DeviceAttribute? = null
+    ) {
         getTracker().sendGeneralEvent(
             createGeneralEvent(
                 eventName = OPEN_SCREEN,
                 eventCategory = TRADE_IN_ERROR_PAGE_EVENT,
                 eventAction = TRADE_IN_ERROR_PAGE_IMPRESSION,
-                eventLabel = errorCode,
-                screenName = TRADE_IN_ERROR_PAGE))
-
+                screenName = "$TRADE_IN_ERROR_PAGE - $errorMessage" + if (deviceAttribute != null) {
+                    " - $deviceAttribute"
+                } else {
+                    ""
+                }
+            )
+        )
     }
 
     //17

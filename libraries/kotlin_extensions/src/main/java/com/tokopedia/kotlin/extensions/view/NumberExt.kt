@@ -55,3 +55,18 @@ fun Number.getNumberFormatted(): String {
     val format = DecimalFormat("###,###").format(this)
     return format.replace(",", ".")
 }
+
+private const val DECIMAL_FORMAT_PATTERN = "#,###,###"
+
+/**
+ * Input: 1_000_000
+ * Output: 1.000.000 (if locale is Indonesia)
+ */
+fun Number.splitByThousand(
+    desiredOutputFormat: String = DECIMAL_FORMAT_PATTERN,
+    locale: Locale = Locale("id", "ID")
+): String {
+    val symbol = DecimalFormatSymbols(locale)
+    val formatter = DecimalFormat(desiredOutputFormat, symbol)
+    return formatter.format(this)
+}

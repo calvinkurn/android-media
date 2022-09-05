@@ -64,7 +64,6 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                         categoryListener.getTrackingQueueObj(),
                         element.channel,
                         categoryListener.userId,
-                        adapterPosition,
                         false,
                         element.topAdsImageViewModel?.bannerId?:""
                 )
@@ -72,7 +71,6 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                         categoryListener.getTrackingQueueObj(),
                         element.channel,
                         categoryListener.userId,
-                        adapterPosition,
                         true,
                         element.topAdsImageViewModel?.bannerId?:""
                 )

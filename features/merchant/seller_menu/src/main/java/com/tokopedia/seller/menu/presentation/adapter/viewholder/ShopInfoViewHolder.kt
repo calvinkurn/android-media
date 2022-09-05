@@ -57,6 +57,7 @@ class ShopInfoViewHolder(
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val TICKER_TYPE_WARNING = "warning"
         private const val TICKER_TYPE_DANGER = "danger"
+        private const val STATUS_INCUBATE_OS = 6
     }
 
     private val context by lazy { itemView.context }
@@ -127,30 +128,33 @@ class ShopInfoViewHolder(
             val title = statusInfoUiModel?.statusTitle.orEmpty()
             val message = statusInfoUiModel?.statusMessage.orEmpty()
 
-            if (title.isNotEmpty() && message.isNotEmpty()) {
-                tickerShopInfo.tickerTitle = title.parseAsHtml().toString()
-                tickerShopInfo.setHtmlDescription(message)
-                val tickerType: Int = when (statusInfoUiModel?.tickerType) {
-                    TICKER_TYPE_DANGER -> Ticker.TYPE_ERROR
-                    TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
-                    else -> Ticker.TYPE_ANNOUNCEMENT
+            if (statusInfoUiModel?.shopStatus.orZero() == STATUS_INCUBATE_OS){
+                if (title.isNotEmpty() && message.isNotEmpty()) {
+                    tickerShopInfo.tickerTitle = title.parseAsHtml().toString()
+                    tickerShopInfo.setHtmlDescription(message)
+                    val tickerType: Int = when (statusInfoUiModel?.tickerType) {
+                        TICKER_TYPE_DANGER -> Ticker.TYPE_ERROR
+                        TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
+                        else -> Ticker.TYPE_ANNOUNCEMENT
+                    }
+                    tickerShopInfo.tickerType = tickerType
+                    tickerShopInfo.setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            RouteManager.route(context, linkUrl.toString())
+
+                        }
+
+                        override fun onDismiss() {
+                        }
+
+                    })
+                    tickerShopInfo.show()
+                } else {
+                    tickerShopInfo.hide()
                 }
-                tickerShopInfo.tickerType = tickerType
-                tickerShopInfo.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, linkUrl.toString())
-
-                    }
-
-                    override fun onDismiss() {
-                    }
-
-                })
-                tickerShopInfo.show()
-            } else {
+            }else{
                 tickerShopInfo.hide()
             }
-
         }
 
     }

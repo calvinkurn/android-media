@@ -1,0 +1,1036 @@
+package com.tokopedia.topchat.chatroom.view.activity.base
+
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.idling.CountingIdlingResource
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.attachcommon.data.ResultProduct
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
+import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
+import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
+import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
+import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.topchat.AndroidFileUtil
+import com.tokopedia.topchat.R
+import com.tokopedia.topchat.action.ClickChildViewWithIdAction
+import com.tokopedia.topchat.action.RecyclerViewAction
+import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
+import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
+import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.service.UploadImageChatService
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import com.tokopedia.topchat.common.TopChatInternalRouter
+import com.tokopedia.topchat.common.network.TopchatCacheManager
+import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
+import com.tokopedia.topchat.isKeyboardOpened
+import com.tokopedia.topchat.matchers.hasSrwBubble
+import com.tokopedia.topchat.matchers.withIndex
+import com.tokopedia.topchat.matchers.withRecyclerView
+import com.tokopedia.topchat.matchers.withTotalItem
+import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
+import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
+import com.tokopedia.topchat.stub.chatroom.usecase.*
+import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
+import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
+import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
+import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.WebSocketResponse
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers
+import org.hamcrest.Matchers.not
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import java.sql.Date
+import java.text.SimpleDateFormat
+import javax.inject.Inject
+
+abstract class TopchatRoomTest {
+
+    @get:Rule
+    var activityTestRule = IntentsTestRule(
+        TopChatRoomActivityStub::class.java, false, false
+    )
+
+    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+    protected val applicationContext: Context
+        get() = InstrumentationRegistry
+            .getInstrumentation().context.applicationContext
+
+    protected val rvChatRoomId = R.id.recycler_view_chatroom
+    protected val flexBoxBubbleId = R.id.fxChat
+
+    @Inject
+    protected lateinit var getChatUseCase: GetChatUseCaseStub
+
+    @Inject
+    protected lateinit var reminderTickerUseCase: GetReminderTickerUseCaseStub
+
+    @Inject
+    protected lateinit var closeReminderTicker: CloseReminderTickerStub
+
+    @Inject
+    protected lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
+
+    @Inject
+    protected lateinit var stickerGroupUseCase: ChatListGroupStickerUseCaseStub
+
+    @Inject
+    protected lateinit var chatListStickerUseCase: ChatListStickerUseCaseStub
+
+    @Inject
+    protected lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCaseStub
+
+    @Inject
+    protected lateinit var getShopFollowingUseCaseStub: GetShopFollowingUseCaseStub
+
+    @Inject
+    protected lateinit var uploadImageUseCase: TopchatUploadImageUseCaseStub
+
+    @Inject
+    protected lateinit var replyChatGQLUseCase: ReplyChatGQLUseCaseStub
+
+    @Inject
+    protected lateinit var chatSrwUseCase: GetSmartReplyQuestionUseCaseStub
+
+    @Inject
+    protected lateinit var chatBackgroundUseCase: GetChatBackgroundUseCaseStub
+
+    @Inject
+    protected lateinit var websocket: FakeTopchatWebSocket
+
+    @Inject
+    protected lateinit var addWishListUseCase: AddWishListUseCaseStub
+
+    @Inject
+    protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseStub
+
+    @Inject
+    protected lateinit var toggleFavouriteShopUseCaseStub: ToggleFavouriteShopUseCaseStub
+
+    @Inject
+    protected lateinit var getKeygenUseCase: GetKeygenUseCaseStub
+
+    @Inject
+    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseStub
+
+    @Inject
+    protected lateinit var orderProgressUseCase: OrderProgressUseCaseStub
+
+    @Inject
+    protected lateinit var addToCartOccMultiUseCase: AddToCartOccMultiUseCaseStub
+
+    @Inject
+    protected lateinit var addToCartUseCase: AddToCartUseCaseStub
+
+    @Inject
+    protected lateinit var moveChatToTrashUseCase: MutationMoveChatToTrashUseCaseStub
+
+    @Inject
+    protected lateinit var existingChatMapper: TopChatRoomGetExistingChatMapper
+
+    @Inject
+    protected lateinit var unsendReplyUseCase: UnsendReplyUseCaseStub
+
+    @Inject
+    protected lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCaseStub
+
+    @Inject
+    protected lateinit var getChatPreAttachPayloadUseCase: GetChatPreAttachPayloadUseCaseStub
+
+    @Inject
+    protected lateinit var cacheManager: TopchatCacheManager
+
+    @Inject
+    protected lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
+    protected open lateinit var activity: TopChatRoomActivityStub
+
+    protected var firstPageChatAsBuyer = GetExistingChatPojo()
+    protected var firstPageChatAsSeller = GetExistingChatPojo()
+    protected var chatAttachmentResponse = ChatAttachmentResponse()
+    protected var stickerGroupAsBuyer = ChatListGroupStickerResponse()
+    protected var stickerListAsBuyer = StickerResponse()
+    protected var firstPageChatBroadcastAsBuyer = GetExistingChatPojo()
+    protected var getShopFollowingStatus = ShopFollowingPojo()
+    protected var chatSrwResponse = ChatSmartReplyQuestionResponse()
+    protected var uploadImageReplyResponse = ChatReplyPojo()
+    protected var orderProgressResponse = OrderProgressResponse()
+    protected var chatBackgroundResponse = ChatBackgroundResponse()
+    protected var chatRoomSettingResponse = RoomSettingResponse()
+
+    object ProductPreviewAttribute {
+        const val productName = "Testing Attach Product 1"
+        const val productThumbnail = "https://ecs7-p.tokopedia.net/img/cache/350/attachment/" +
+                "2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
+        const val productPrice = "Rp 23.000.000"
+    }
+
+    companion object {
+        const val MSG_ID = "66961"
+        const val EX_PRODUCT_ID = "1111"
+        var chatComponentStub: ChatComponentStub? = null
+        var keyboardStateIdling: CountingIdlingResource? = null
+    }
+
+    @Before
+    open fun before() {
+        setupDaggerComponent()
+        setupResponse()
+        setupDefaultResponseWhenFirstOpenChatRoom()
+        setupDummyImageChatService()
+        setupKeyboardIdlingResource()
+        disableUploadImageByService()
+    }
+
+    protected open fun enableUploadImageByService() {
+        remoteConfig.setString(
+            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, "true"
+        )
+    }
+
+    protected open fun disableUploadImageByService() {
+        remoteConfig.setString(
+            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, "false"
+        )
+    }
+
+    protected open fun enableCompressImage() {
+        remoteConfig.setString(
+            RemoteConfigKey.TOPCHAT_COMPRESS, "true"
+        )
+    }
+
+    protected open fun disableCompressImage() {
+        remoteConfig.setString(
+            RemoteConfigKey.TOPCHAT_COMPRESS, "false"
+        )
+    }
+
+    @After
+    open fun tearDown() {
+        IdlingRegistry.getInstance().unregister(keyboardStateIdling)
+        chatComponentStub = null
+        keyboardStateIdling = null
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
+        disableUploadImageByService()
+    }
+
+    protected open fun setupResponse() {
+        firstPageChatAsSeller = getChatUseCase.defaultChatWithSellerResponse
+        firstPageChatAsBuyer = getChatUseCase.defaultChatWithBuyerResponse
+        firstPageChatBroadcastAsBuyer = getChatUseCase.defaultBroadCastChatWithBuyerResponse
+
+        chatAttachmentResponse = AndroidFileUtil.parse(
+            "success_get_chat_attachments.json",
+            ChatAttachmentResponse::class.java
+        )
+        stickerGroupAsBuyer = AndroidFileUtil.parse(
+            "success_chat_group_sticker.json",
+            ChatListGroupStickerResponse::class.java
+        )
+        stickerListAsBuyer = AndroidFileUtil.parse(
+            "success_chat_bundle_sticker.json",
+            StickerResponse::class.java
+        )
+        getShopFollowingStatus = AndroidFileUtil.parse(
+            "success_get_shop_following_status.json",
+            ShopFollowingPojo::class.java
+        )
+        uploadImageReplyResponse = AndroidFileUtil.parse(
+            "success_upload_image_reply.json",
+            ChatReplyPojo::class.java
+        )
+        chatRoomSettingResponse = AndroidFileUtil.parse(
+            "success_get_chat_setting_fraud_alert.json",
+            RoomSettingResponse::class.java
+        )
+    }
+
+    private fun setupDaggerComponent() {
+        val baseComponent = DaggerFakeBaseAppComponent.builder()
+            .fakeAppModule(FakeAppModule(applicationContext))
+            .build()
+        chatComponentStub = DaggerChatComponentStub.builder()
+            .fakeBaseAppComponent(baseComponent)
+            .chatRoomContextModule(ChatRoomContextModule(context))
+            .build()
+        chatComponentStub!!.inject(this)
+    }
+
+    protected fun setupDefaultResponseWhenFirstOpenChatRoom() {
+        getChatRoomSettingUseCase.response = chatRoomSettingResponse
+        chatBackgroundUseCase.response = chatBackgroundResponse
+        getChatUseCase.response = firstPageChatAsBuyer
+        orderProgressUseCase.response = orderProgressResponse
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        stickerGroupUseCase.response = stickerGroupAsBuyer
+        chatListStickerUseCase.response = stickerListAsBuyer
+        chatSrwUseCase.response = chatSrwResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus
+        getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
+        toggleFavouriteShopUseCaseStub.response = true
+    }
+
+    private fun setupDummyImageChatService() {
+        UploadImageChatService.dummyMap.clear()
+    }
+
+    private fun setupKeyboardIdlingResource() {
+        keyboardStateIdling = CountingIdlingResource("ChatRoom-Keyboard")
+        IdlingRegistry.getInstance().register(keyboardStateIdling)
+    }
+
+    protected fun launchChatRoomActivity(
+        sourcePage: String? = null,
+        isSellerApp: Boolean = false,
+        intentModifier: (Intent) -> Unit = {}
+    ) {
+        if (isSellerApp) {
+            GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+        }
+        val intent = Intent().apply {
+            putExtra(ApplinkConst.Chat.MESSAGE_ID, MSG_ID)
+            sourcePage?.let {
+                putExtra(ApplinkConst.Chat.SOURCE_PAGE, it)
+            }
+        }
+        intentModifier(intent)
+        activityTestRule.launchActivity(intent)
+        activity = activityTestRule.activity
+    }
+
+    protected fun finishChatRoomActivity() {
+        pressBackUnconditionally()
+        activityTestRule.finishActivity()
+    }
+
+    protected fun changeResponseStartTime(
+        response: WebSocketResponse,
+        exStartTime: String
+    ) {
+        response.jsonObject?.addProperty(
+            "start_time",
+            exStartTime
+        )
+    }
+
+    protected fun clickAttachProductMenu() {
+        val viewAction = RecyclerViewActions
+            .actionOnItemAtPosition<AttachmentItemViewHolder>(
+                0, click()
+            )
+        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
+            .perform(viewAction)
+    }
+
+    protected fun clickAttachImageMenu() {
+        val viewAction = RecyclerViewActions
+            .actionOnItemAtPosition<AttachmentItemViewHolder>(
+                1, click()
+            )
+        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
+            .perform(viewAction)
+    }
+
+    protected fun clickAttachInvoiceMenu() {
+        val viewAction = RecyclerViewActions
+            .actionOnItemAtPosition<AttachmentItemViewHolder>(
+                2, click()
+            )
+        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
+            .perform(viewAction)
+    }
+
+    protected fun clickAttachVoucherMenu() {
+        val viewAction = RecyclerViewActions
+            .actionOnItemAtPosition<AttachmentItemViewHolder>(
+                3, click()
+            )
+        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0))
+            .perform(viewAction)
+    }
+
+    protected fun clickComposeArea() {
+        onView(withIndex(withId(R.id.new_comment), 0))
+            .perform(click())
+    }
+
+    protected fun typeMessage(msg: String) {
+        onView(withIndex(withId(R.id.new_comment), 0))
+            .perform(typeText(msg))
+    }
+
+    protected fun clickStickerIconMenu() {
+        onView(withIndex(withId(R.id.iv_chat_sticker), 0))
+            .perform(click())
+    }
+
+    protected fun clickPlusIconMenu() {
+        onView(withIndex(withId(R.id.iv_chat_menu), 0))
+            .perform(click())
+    }
+
+    protected fun clickSendBtn() {
+        onView(withIndex(withId(R.id.send_but), 0))
+            .perform(click())
+    }
+
+    protected fun clickTemplateChatAt(position: Int) {
+        val viewAction = RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+            position, click()
+        )
+        onView(withId(R.id.list_template)).perform(viewAction)
+    }
+
+    protected fun clickSrwPreviewExpandCollapse() {
+        onView(
+            allOf(
+                withId(R.id.rv_srw_content_container),
+                isDescendantOfA(withId(R.id.cl_attachment_preview))
+            )
+        ).perform(click())
+    }
+
+    protected fun clickSrwBubbleExpandCollapse(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tp_srw_container_partial
+            )
+        ).perform(click())
+    }
+
+    protected fun assertLabelOnProductCard(
+        recyclerViewId: Int,
+        atPosition: Int,
+        viewMatcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(recyclerViewId).atPositionOnView(
+                atPosition, R.id.lb_product_label
+            )
+        ).check(matches(viewMatcher))
+    }
+
+    protected fun assertEmptyStockLabelOnProductCard(
+        recyclerViewId: Int,
+        atPosition: Int,
+    ) {
+        assertLabelTextOnProductCard(recyclerViewId, atPosition, "Stok habis")
+    }
+
+    protected fun assertLabelTextOnProductCard(
+        recyclerViewId: Int,
+        atPosition: Int,
+        text: String
+    ) {
+        onView(
+            withRecyclerView(recyclerViewId).atPositionOnView(
+                atPosition, R.id.lb_product_label
+            )
+        ).check(matches(withText(text)))
+    }
+
+    protected fun assertProductStockType(
+        recyclerViewId: Int,
+        atPosition: Int,
+        viewMatcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(recyclerViewId).atPositionOnView(
+                atPosition, R.id.tp_seller_stock_category
+            )
+        ).check(matches(viewMatcher))
+    }
+
+    protected fun assertProductStockTypeText(
+        recyclerViewId: Int,
+        atPosition: Int,
+        text: String
+    ) {
+        onView(
+            withRecyclerView(recyclerViewId).atPositionOnView(
+                atPosition, R.id.tp_seller_stock_category
+            )
+        ).check(matches(withText(text)))
+    }
+
+    protected fun assertTemplateChatVisibility(
+        visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withId(R.id.list_template)).check(
+            matches(visibilityMatcher)
+        )
+    }
+
+    protected fun assertSrwPreviewContentContainerVisibility(
+        visibilityMatcher: Matcher<in View>
+    ) {
+        onView(
+            allOf(
+                withId(R.id.rv_srw_content_container),
+                isDescendantOfA(withId(R.id.cl_attachment_preview))
+            )
+        ).check(matches(visibilityMatcher))
+    }
+
+    protected fun assertSrwBubbleContentContainerVisibility(
+        position: Int,
+        visibilityMatcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.rv_srw_content_container
+            )
+        ).check(matches(visibilityMatcher))
+    }
+
+    protected fun assertSrwTitle(
+        title: String
+    ) {
+        onView(withIndex(withId(R.id.tp_srw_partial), 0)).check(
+            matches(withText(title))
+        )
+    }
+
+    protected fun assertSrwTotalQuestion(
+        totalQuestion: Int
+    ) {
+        onView(withIndex(withId(R.id.rv_srw_partial), 0))
+            .check(matches(withTotalItem(totalQuestion)))
+    }
+
+    /**
+     * assert unify snackbar/toaster
+     */
+    protected fun assertSnackbarText(msg: String) {
+        onView(withText(msg)).check(matches(isDisplayed()))
+    }
+
+    protected fun assertNoSnackbarText(msg: String) {
+        onView(withText(msg)).check(doesNotExist())
+    }
+
+    protected fun assertSnackbarWithSubText(msg: String) {
+        onView(withSubstring(msg)).check(matches(isDisplayed()))
+    }
+
+    protected fun assertSrwPreviewContentIsVisible() {
+        assertSrwPreviewContentContainerVisibility(isDisplayed())
+        assertTemplateChatVisibility(not(isDisplayed()))
+    }
+
+    protected fun assertSrwBubbleDoesNotExist() {
+        onView(withId(R.id.recycler_view_chatroom)).check(matches(not(hasSrwBubble())))
+    }
+
+    protected fun assertSrwBubbleContentIsVisibleAt(
+        position: Int
+    ) {
+        assertSrwBubbleContentContainerVisibility(position, isDisplayed())
+        assertTemplateChatVisibility(not(isDisplayed()))
+    }
+
+    protected fun assertSrwPreviewContentIsLoading() {
+        assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        assertTemplateChatVisibility(not(isDisplayed()))
+    }
+
+    protected fun assertSrwPreviewContentIsError() {
+        assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+        assertTemplateChatVisibility(isDisplayed())
+    }
+
+    protected fun assertSrwPreviewContentIsHidden() {
+        assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
+    }
+
+    protected fun assertHeaderRightMsgBubbleVisibility(
+        position: Int, visibilityMatcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tvRole
+            )
+        ).check(matches(visibilityMatcher))
+    }
+
+    protected fun assertHeaderRightMsgBubbleText(position: Int, msg: String) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tvRole
+            )
+        ).check(matches(withText(msg)))
+    }
+
+    protected fun assertHeaderRightMsgBubbleBlueDotVisibility(
+        position: Int, visibilityMatcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.img_sr_blue_dot
+            )
+        ).check(matches(visibilityMatcher))
+    }
+
+    protected fun assertKeyboardIsVisible() {
+        val isKeyboardOpened = isKeyboardOpened()
+        assertThat(isKeyboardOpened, `is`(true))
+    }
+
+    protected fun assertKeyboardIsNotVisible() {
+        val isKeyboardOpened = isKeyboardOpened()
+        assertThat(isKeyboardOpened, `is`(false))
+    }
+
+    protected fun assertLongClickMenu(matcher: Matcher<in View>) {
+        onView(withId(R.id.rvMenu)).check(
+            matches(matcher)
+        )
+    }
+
+    protected fun assertChatMenuVisibility(visibilityMatcher: Matcher<in View>) {
+        onView(withId(R.id.fl_chat_menu)).check(
+            matches(visibilityMatcher)
+        )
+    }
+
+    protected fun assertChatAttachmentMenuVisibility(visibilityMatcher: Matcher<in View>) {
+        onView(withIndex(withId(R.id.rv_topchat_attachment_menu), 0)).check(
+            matches(visibilityMatcher)
+        )
+    }
+
+    protected fun assertChatStickerMenuVisibility(
+        visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withIndex(withId(R.id.ll_sticker_container), 0)).check(
+            matches(visibilityMatcher)
+        )
+    }
+
+    protected fun assertComposedTextValue(msg: String) {
+        onView(withIndex(withId(R.id.new_comment), 0)).check(
+            matches(withText(msg))
+        )
+    }
+
+    protected fun assertChatRoomList(matcher: Matcher<in View>) {
+        onView(withId(R.id.recycler_view_chatroom)).check(matches(matcher))
+    }
+
+    protected fun finishActivity() {
+        activityTestRule.finishActivity()
+    }
+
+    protected fun assertMsgHeaderContainer(
+        position: Int, matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.ll_msg_header
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertDividerHeaderContainer(
+        position: Int, matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.v_header_divider
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertHeaderTitleMsgAtBubblePosition(
+        position: Int, matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tp_header_title
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertCtaHeaderMsgAtBubblePosition(position: Int, matcher: Matcher<in View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tp_header_cta
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun clickCtaHeaderMsgAtBubblePosition(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tp_header_cta
+            )
+        ).perform(click())
+    }
+
+    protected fun assertMsgBubbleAt(position: Int, matcher: Matcher<in View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tvMessage
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertChatRecyclerview(matcher: Matcher<in View>) {
+        onView(
+            withId(R.id.recycler_view_chatroom)
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.broadcast_campaign_label
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelDescAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.tp_broadcast_campaign_status
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelCountdownAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.tu_bc_countdown
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelStartDateIconAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.iu_broadcast_start_date
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelStartDateTextAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.iu_broadcast_start_date
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertToolbarTitle(expectedTitle: String) {
+        onView(
+            Matchers.allOf(
+                withId(com.tokopedia.chat_common.R.id.title),
+                isDescendantOfA(withId(R.id.toolbar))
+            )
+        ).check(matches(withText(expectedTitle)))
+    }
+
+    protected fun assertStickerContainer() {
+        onView(withIndex(withId(R.id.ll_sticker_container), 0)).check(
+            matches(isDisplayed())
+        )
+    }
+
+    protected fun isKeyboardOpened(): Boolean {
+        val rootView = activity.findViewById<View>(R.id.main)
+        return isKeyboardOpened(rootView)
+    }
+
+    protected fun generateTemplateResponse(
+        enable: Boolean = true,
+        success: Boolean = true,
+        templates: List<String> = listOf("Template Chat 1", "Template Chat 2")
+    ): TemplateData {
+        return TemplateData().apply {
+            this.isIsEnable = enable
+            this.isSuccess = success
+            this.templates = templates
+        }
+    }
+
+    protected fun clickCloseAttachmentPreview(position: Int) {
+        val viewAction = RecyclerViewActions
+            .actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
+                position,
+                ClickChildViewWithIdAction()
+                    .clickChildViewWithId(R.id.iv_close)
+            )
+        onView(withId(R.id.rv_attachment_preview)).perform(viewAction)
+    }
+
+    protected fun clickStickerAtPosition(position: Int) {
+        val viewAction = RecyclerViewActions
+            .actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
+                position,
+                ClickChildViewWithIdAction()
+                    .clickChildViewWithId(R.id.iv_sticker)
+            )
+        onView(withId(R.id.rv_sticker)).perform(viewAction)
+    }
+
+    protected fun clickSrwPreviewItemAt(position: Int) {
+        onView(
+            Matchers.allOf(
+                withRecyclerView(R.id.rv_srw_partial).atPositionOnView(
+                    position, R.id.tp_srw_title
+                ),
+                isDescendantOfA(withId(R.id.cl_attachment_preview))
+            )
+        ).perform(click())
+    }
+
+    protected fun clickOnSrwPartial() {
+        onView(withIndex(withId(R.id.tp_srw_container_partial), 0)).perform(click())
+    }
+
+    protected fun scrollChatToPosition(position: Int) {
+        onView(withId(R.id.recycler_view_chatroom)).perform(
+            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
+        )
+    }
+
+    protected fun smoothScrollChatToPosition(position: Int) {
+        onView(withId(R.id.recycler_view_chatroom)).perform(
+            RecyclerViewAction.smoothScrollTo(position)
+        )
+    }
+
+    protected fun intendingAttachProduct(totalProductAttached: Int) {
+        intending(
+            IntentMatchers.hasExtra(
+                ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY,
+                TopChatInternalRouter.Companion.SOURCE_TOPCHAT
+            )
+        )
+            .respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK, getAttachProductData(totalProductAttached)
+                )
+            )
+    }
+
+    protected open fun getAttachProductData(totalProduct: Int): Intent {
+        val products = ArrayList<ResultProduct>(totalProduct)
+        for (i in 0 until totalProduct) {
+            products.add(
+                ResultProduct(
+                    "11111",
+                    "tokopedia://product/1111",
+                    ProductPreviewAttribute.productThumbnail,
+                    "Rp ${i + 1}5.000.000",
+                    "${i + 1} ${ProductPreviewAttribute.productName}"
+                )
+            )
+        }
+        return Intent().apply {
+            putParcelableArrayListExtra(
+                ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products
+            )
+        }
+    }
+
+    protected fun getImageData(): Intent {
+        return Intent().apply {
+            putStringArrayListExtra(
+                PICKER_RESULT_PATHS,
+                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
+            )
+            putStringArrayListExtra(
+                RESULT_PREVIOUS_IMAGE,
+                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
+            )
+            putStringArrayListExtra(
+                RESULT_IMAGES_FED_INTO_IMAGE_PICKER,
+                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
+            )
+        }
+    }
+
+    protected fun getClipboardMsg(): CharSequence? {
+        val clipboard: ClipboardManager =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        return clipboard.primaryClip?.getItemAt(0)?.text
+    }
+
+    protected fun getBubbleMsgAtPosition(position: Int): CharSequence {
+        val rv = activity.findViewById<RecyclerView>(rvChatRoomId)
+        (rv.layoutManager as? LinearLayoutManager)?.let {
+            val child = it.getChildAt(position)
+            val flexBox = child?.findViewById<FlexBoxChatLayout>(flexBoxBubbleId)
+            return flexBox?.message?.text ?: ""
+        }
+        return ""
+    }
+
+    protected fun waitForIt(timeMillis: Long) {
+        Thread.sleep(timeMillis)
+    }
+
+    protected fun clickBroadcastHandlerFollowShop() {
+        onView(withId(R.id.btn_follow_shop)).perform(click())
+    }
+
+    protected fun preventOpenOtherActivity() {
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+    }
+}
+
+/*
+    Extension function below
+ */
+
+fun GetExistingChatPojo.blockPromo(blockPromo: Boolean): GetExistingChatPojo {
+    chatReplies.block.isPromoBlocked = blockPromo
+    return this
+}
+
+fun GetExistingChatPojo.hideBanner(hide: Boolean): GetExistingChatPojo {
+    val banner: Reply? = chatReplies.list[0].chats[0].replies.find { reply ->
+        reply.attachment.type.toString() == TYPE_IMAGE_ANNOUNCEMENT
+    }
+    val newAttribute = ImageAnnouncementPojo().apply {
+        isHideBanner = hide
+        imageUrl = "https://images.tokopedia.net/img/cache/1190/wmEwCC/2021/3/" +
+                "8/d0389667-b822-43fa-bf3f-485b4518b286.jpg.webp?ect=4g"
+    }
+    banner?.attachment?.attributes = CommonUtil.toJson(newAttribute)
+    return this
+}
+
+fun ShopFollowingPojo.setFollowing(following: Boolean): ShopFollowingPojo {
+    val follow = if (following) IS_FOLLOW else 0
+    shopInfoById.result[0].favoriteData.alreadyFavorited = follow
+    return this
+}
+
+fun ChatSmartReplyQuestionResponse.hasQuestion(
+    hasQuestion: Boolean
+): ChatSmartReplyQuestionResponse {
+    chatSmartReplyQuestion.hasQuestion = hasQuestion
+    return this
+}
+
+fun WebSocketResponse.changeTimeStampTo(
+    timeMillis: Long
+): WebSocketResponse {
+    val date = Date(timeMillis)
+    val startTime = SimpleDateFormat(FakeTopchatWebSocket.START_TIME_FORMAT).format(date)
+    val msg = jsonObject?.getAsJsonObject("message")
+    msg?.apply {
+        addProperty("timestamp", startTime)
+        addProperty("timestamp_fmt", startTime)
+        addProperty("timestamp_unix", timeMillis)
+        addProperty("timestamp_unix_nano", timeMillis * 1_000_000)
+    }
+    jsonObject?.apply {
+        addProperty("start_time", startTime)
+    }
+    return this
+}
+
+fun WebSocketResponse.changeProductIdTo(
+    productId: String
+): WebSocketResponse {
+    val attrs = jsonObject?.getAsJsonObject("attachment")
+        ?.getAsJsonObject("attributes")
+    attrs?.apply {
+        addProperty("product_id", productId)
+    }
+    return this
+}
+
+fun WebSocketResponse.matchProductWith(
+    productId: String,
+    productImageUrl: String,
+    productName: String,
+    productPrice: String
+): WebSocketResponse {
+    val attrs = jsonObject?.getAsJsonObject("attachment")
+        ?.getAsJsonObject("attributes")
+    val attrProductProfile = attrs?.getAsJsonObject("product_profile")
+    attrs?.apply {
+        addProperty("product_id", productId)
+    }
+    attrProductProfile?.apply {
+        addProperty("image_url", productImageUrl)
+        addProperty("name", productName)
+        addProperty("price", productPrice)
+    }
+    return this
+}

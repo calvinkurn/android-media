@@ -3,7 +3,7 @@ package com.tokopedia.home_component.util
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
-import android.graphics.drawable.*
+import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

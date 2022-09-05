@@ -23,11 +23,12 @@ class CustomProductLogisticViewModel @Inject constructor(
     val cplList: LiveData<Result<CustomProductLogisticModel>>
         get() = _cplList
 
-    fun getCPLList(shopId: Long, productId: String) {
+    fun getCPLList(shopId: Long, productId: String, shipperServicesIds: List<Long>?) {
         viewModelScope.launch {
             try {
                 val cplList = repo.getCPLList(shopId, productId)
-                _cplList.value = Success(mapper.mapCPLData(cplList.response.data))
+                _cplList.value =
+                    Success(mapper.mapCPLData(cplList.response.data, productId, shipperServicesIds))
             } catch (e: Throwable) {
                 _cplList.value = Fail(e)
             }

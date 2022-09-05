@@ -2,10 +2,11 @@ package com.tokopedia.loginfingerprint.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.loginfingerprint.data.model.SignatureData
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprint
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
 import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
-import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
+import com.tokopedia.loginfingerprint.utils.crypto.RsaSignatureUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -13,8 +14,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import io.mockk.coEvery
-import io.mockk.every
+import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Before
@@ -36,23 +38,24 @@ class FingerprintLandingViewModelTest {
     private var verifyFingerprintObserver = mockk<Observer<Result<VerifyFingerprint>>>(relaxed = true)
 
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
-    private val cryptographyUtils = mockk<Cryptography>(relaxed = true)
+    private val rsaSignatureUtils = mockk<Lazy<RsaSignatureUtils?>>(relaxed = true)
     val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
 
     private val throwable = mockk<Throwable>(relaxed = true)
 
+    val signatureModel = SignatureData(signature = "abc123", datetime = "1235123")
     @Before
     fun setUp() {
         viewModel = FingerprintLandingViewModel(
             CoroutineTestDispatchersProvider,
             userSession,
+            rsaSignatureUtils,
             verifyFingerprintUseCase,
-            cryptographyUtils,
             fingerprintPreferenceManager
         )
 
         viewModel.verifyFingerprint.observeForever(verifyFingerprintObserver)
-        every { cryptographyUtils.getSignature(any(), any()) } returns "abc12345"
+        coEvery { rsaSignatureUtils.get()?.generateFingerprintSignature(any(), any()) } returns signatureModel
     }
 
     @Test
@@ -66,8 +69,8 @@ class FingerprintLandingViewModelTest {
         viewModel.verifyFingerprint()
 
         /* Then */
-        verify {
-            cryptographyUtils.generateFingerprintSignature(any(), any())
+        coVerify {
+            rsaSignatureUtils.get()?.generateFingerprintSignature(any(), any())
             verifyFingerprintObserver.onChanged(Success(response.data))
         }
     }

@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/play_dms_broadcaster_background"
     >
 
-    <com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
-        android:id="@+id/surface_aspect_ratio_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout
+        android:id="@+id/aspect_ratio_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <SurfaceView
+            android:id="@+id/surface_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+    </com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout>
 
     <include
         layout="@layout/layout_play_gradient_background"
@@ -45,6 +55,35 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_play_bro_debug_mode"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_128"
+        android:background="@drawable/bg_play_light_gray_circle"
+        android:visibility="invisible"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="SETTING_FILLED"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
+        android:id="@+id/view_play_bro_debug"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/play_dms_N700_68"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

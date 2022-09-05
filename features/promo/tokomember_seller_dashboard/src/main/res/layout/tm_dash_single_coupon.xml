@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/unify_space_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvKuponType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tm_type_kupon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.tokomember_common_widget.TokomemberChipGroup
+        android:id="@+id/chipGroupKuponType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:layout_constraintStart_toStartOf="@+id/tvKuponType"
+        app:layout_constraintTop_toBottomOf="@+id/tvKuponType" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvCashbackType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:text="@string/tm_jenis_cashback"
+        app:layout_constraintStart_toStartOf="@+id/tvKuponType"
+        app:layout_constraintTop_toBottomOf="@id/chipGroupKuponType"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.tokomember_common_widget.TokomemberChipGroup
+        android:id="@+id/chipGroupCashbackType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:layout_constraintStart_toStartOf="@+id/tvKuponType"
+        app:layout_constraintTop_toBottomOf="@id/tvCashbackType" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/textFieldPercentCashback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/tm_dash_dp_20"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvKuponType"
+        app:layout_constraintTop_toBottomOf="@+id/chipGroupCashbackType"
+        app:unify_text_field_append_text="%    "
+        app:unify_text_field_clearable="false"
+        app:unify_text_field_input_type="number"
+        app:unify_text_field_label="Persentase Cashback"
+        app:unify_text_field_label_static="false" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/textFieldMaxCashback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/tm_dash_dp_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvKuponType"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldPercentCashback"
+        app:layout_goneMarginTop="@dimen/tm_dash_dp_20"
+        app:unify_text_field_clearable="false"
+        app:unify_text_field_input_type="number"
+        app:unify_text_field_label="Maks. Cashback"
+        app:unify_text_field_label_static="false"
+        app:unify_text_field_prepend_text="Rp" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/textFieldMinTransk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvKuponType"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldMaxCashback"
+        app:unify_text_field_clearable="false"
+        app:unify_text_field_input_type="number"
+        app:unify_text_field_label="Min. Transaksi"
+        app:unify_text_field_label_static="false"
+        app:unify_text_field_prepend_text="Rp" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/textFieldQuota"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvKuponType"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldMinTransk"
+        app:unify_text_field_clearable="false"
+        app:unify_text_field_input_type="number"
+        app:unify_text_field_label="Kuota"
+        app:unify_text_field_label_static="true"
+        app:unify_text_field_message="Rekomendasi kuota: 500" />
+
+    <View
+        android:id="@+id/viewDividerOne"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldQuota" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvKuponTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:text="@string/tm_kupon_title_single"
+        app:layout_constraintBottom_toTopOf="@+id/ivPreviewContainer"
+        app:layout_constraintStart_toStartOf="@+id/tvKuponType"
+        app:layout_constraintTop_toBottomOf="@+id/viewDividerOne"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/ivPreviewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvKuponTitle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.tokomember_common_widget.TmCouponViewPreview
+                android:id="@+id/ivPreviewCoupon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</LinearLayout>

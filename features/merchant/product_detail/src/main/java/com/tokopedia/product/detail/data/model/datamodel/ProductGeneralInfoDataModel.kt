@@ -7,11 +7,13 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductGeneralInfoDataModel(
         val name: String = "",
         val type: String = "",
-        val applink: String = "",
+        var applink: String = "",
         var title: String = "",
         var isApplink: Boolean = false,
         val parentIcon: String = "",
         var subtitle: String = "",
+        val lightIcon: String = "",
+        val darkIcon: String = "",
 
         var additionalIcon: String = "",
         var additionalDesc: String = ""
@@ -47,5 +49,19 @@ data class ProductGeneralInfoDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
+    }
+
+    /**
+     * get icon url from 3 field (dark, light or default)
+     * icon field is old version
+     */
+    fun getIconUrl(isDarkModel: Boolean): String {
+        val iconUrl = if (isDarkModel) {
+            darkIcon
+        } else {
+            lightIcon
+        }
+
+        return iconUrl.ifBlank { parentIcon }
     }
 }

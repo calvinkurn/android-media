@@ -8,4 +8,13 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 interface ShopProductClickedListener {
     fun onThreeDotsClicked(shopProductUiModel: ShopProductUiModel, shopTrackType: Int)
     fun onProductClicked(shopProductUiModel: ShopProductUiModel, shopTrackType: Int, productPosition: Int)
+
+    fun onProductAtcNonVariantQuantityEditorChanged(
+        shopProductUiModel: ShopProductUiModel,
+        quantity: Int
+    )
+
+    fun onProductAtcVariantClick(shopProductUiModel: ShopProductUiModel)
+
+    fun onProductAtcDefaultClick(shopProductUiModel: ShopProductUiModel, quantity: Int)
 }

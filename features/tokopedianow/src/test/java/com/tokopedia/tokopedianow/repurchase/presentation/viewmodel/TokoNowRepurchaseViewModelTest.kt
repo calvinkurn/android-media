@@ -171,7 +171,18 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                     appLinks = "tokoepdia://",
                     imageUrl = "tokopedia://",
                     parentId = "5",
-                    childList = listOf()
+                    childList = listOf(),
+                    isAdult = 0
+                ),
+                CategoryResponse(
+                    id = "4",
+                    name = "Category 4",
+                    url = "tokopedia://",
+                    appLinks = "tokoepdia://",
+                    imageUrl = "tokopedia://",
+                    parentId = "5",
+                    childList = listOf(),
+                    isAdult = 1
                 )
             )
         ))

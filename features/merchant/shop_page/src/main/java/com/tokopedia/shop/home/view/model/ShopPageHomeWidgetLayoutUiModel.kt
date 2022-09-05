@@ -1,14 +1,9 @@
 package com.tokopedia.shop.home.view.model
 
+import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+
 data class ShopPageHomeWidgetLayoutUiModel(
         val layoutId: String = "",
         val masterLayoutId: String = "",
-        val listWidgetLayout: List<WidgetLayout> = listOf()
-) {
-    data class WidgetLayout(
-            val widgetId: String = "",
-            val widgetMasterId: String = "",
-            val widgetType: String = "",
-            val widgetName: String = ""
-    )
-}
+        val listWidgetLayout: List<ShopPageWidgetLayoutUiModel> = listOf()
+)

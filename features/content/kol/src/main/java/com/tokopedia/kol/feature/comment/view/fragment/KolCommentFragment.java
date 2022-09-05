@@ -301,7 +301,7 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onHashTagClicked(String hashTag, String id) {
+    public void onHashTagClicked(String hashTag) {
 
     }
 

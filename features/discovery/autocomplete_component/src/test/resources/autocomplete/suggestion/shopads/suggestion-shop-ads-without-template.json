@@ -22,7 +22,8 @@
             }
           ],
           "shop": {
-            "location": "Jakarta Barat"
+            "location": "Jakarta Barat",
+            "suggestion_id": "12345"
           }
         }
       }

@@ -11,8 +11,8 @@ import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-const val DEPOSIT = """query topadsDashboardDeposits(${'$'}shop_id: Int!) {
-  topadsDashboardDeposits(shop_id: ${'$'}shop_id) {
+const val DEPOSIT = """query topadsDashboardDepositsV2(${'$'}shop_id: String!) {
+  topadsDashboardDepositsV2(shop_id: ${'$'}shop_id) {
     data {
       amount
       amount_fmt
@@ -36,7 +36,7 @@ class TopAdsGetDepositUseCase @Inject constructor(graphqlRepository: GraphqlRepo
 
     private fun setParams() {
         val params = mutableMapOf(
-                ParamObject.SHOP_id to userSession.shopId.toIntOrZero(),
+                ParamObject.SHOP_id to userSession.shopId
         )
         setRequestParams(params)
     }

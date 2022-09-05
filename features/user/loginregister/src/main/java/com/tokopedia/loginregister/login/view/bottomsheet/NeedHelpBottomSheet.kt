@@ -20,8 +20,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
+import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
-import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
@@ -37,7 +38,7 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        activity?.application?.let { LoginComponentBuilder.getComponent(it).inject(this) }
+        activity?.application?.let { ActivityComponentFactory.instance.createLoginComponent(it).inject(this) }
     }
 
     override fun onCreateView(
@@ -118,7 +119,7 @@ class NeedHelpBottomSheet: BottomSheetUnify() {
     }
 
     private fun goToForgotPassword() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
     }

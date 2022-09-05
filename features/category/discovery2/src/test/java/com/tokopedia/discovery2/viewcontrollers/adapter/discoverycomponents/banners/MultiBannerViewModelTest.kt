@@ -173,7 +173,7 @@ class MultiBannerViewModelTest {
         val list = ArrayList<DataItem>()
         every { componentsItem.data } returns list
         coEvery { componentsItem.properties?.dynamic } returns true
-        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext) } returns true
+        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } returns true
 
         viewModel.onAttachToViewHolder()
 
@@ -188,7 +188,7 @@ class MultiBannerViewModelTest {
         list.add(item)
         every { componentsItem.data } returns list
         coEvery { componentsItem.properties?.dynamic } returns true
-        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext) } throws Exception("Error")
+        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } throws Exception("Error")
 
         viewModel.onAttachToViewHolder()
 
@@ -203,7 +203,7 @@ class MultiBannerViewModelTest {
         list.add(item)
         every { componentsItem.data } returns list
         coEvery { componentsItem.properties?.dynamic } returns true
-        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext) } throws SocketTimeoutException("Error")
+        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } throws SocketTimeoutException("Error")
 
         viewModel.onAttachToViewHolder()
 
@@ -482,7 +482,7 @@ class MultiBannerViewModelTest {
         val list = ArrayList<DataItem>()
         every { componentsItem.data } returns list
         coEvery { componentsItem.properties?.dynamic } returns true
-        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext) } returns true
+        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } returns true
 
         viewModel.reload()
 

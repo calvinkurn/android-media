@@ -122,7 +122,10 @@ class PlayUiModelMapper @Inject constructor(
             },
             minQty = prevDetail.minQty.orZero(),
             isFreeShipping = prevDetail.isFreeShipping,
-            applink = prevDetail.applink
+            applink = prevDetail.applink,
+            isTokoNow = prevDetail.isTokoNow,
+            isPinned = prevDetail.isPinned,
+            isRilisanSpesial = prevDetail.isRilisanSpesial,
         )
     }
 }

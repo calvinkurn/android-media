@@ -15,8 +15,8 @@ data class InteractiveConfigUiModel(
     @OptIn(ExperimentalStdlibApi::class)
     fun availableGameList(): List<GameType> {
         return buildList {
-            if (quizConfig.isActive) add(GameType.Quiz)
-            if (giveawayConfig.isActive) add(GameType.Giveaway)
+            if (quizConfig.isActive && quizConfig.availableStartTimeInMs.isNotEmpty()) add(GameType.Quiz)
+            if (giveawayConfig.isActive && giveawayConfig.availableStartTimeInMs.isNotEmpty()) add(GameType.Giveaway)
         }
     }
 

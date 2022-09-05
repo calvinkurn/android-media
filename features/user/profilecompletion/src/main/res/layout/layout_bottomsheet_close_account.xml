@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_title"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:text="@string/close_account_title"
+            app:typographyType="heading_3"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_sub_title"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:text="@string/close_account_sub_title"
+            app:typographyType="paragraph_2"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tg_title" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_requirement_1"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tg_sub_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_requirement_desc_1"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:text="@string/close_account_requirement_description_1"
+            app:typographyType="paragraph_3"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginStart="@dimen/unify_space_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_requirement_1"
+            app:layout_constraintTop_toTopOf="@+id/img_requirement_1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_requirement_desc_1_center"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:text="@string/close_account_requirement_description_1"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintBottom_toBottomOf="@+id/img_requirement_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_requirement_1"
+            app:layout_constraintTop_toTopOf="@+id/img_requirement_1"
+            app:typographyType="paragraph_3" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_requirement_check_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/close_account_requirement_check"
+            app:labelType="general_light_grey"
+            android:layout_marginTop="@dimen/unify_space_4"
+            app:layout_constraintStart_toStartOf="@+id/tg_requirement_desc_1"
+            app:layout_constraintTop_toBottomOf="@+id/tg_requirement_desc_1" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_requirement_2"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_requirement_1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_requirement_desc_2"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:text="@string/close_account_requirement_description_2"
+            app:typographyType="paragraph_3"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginStart="@dimen/unify_space_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_requirement_2"
+            app:layout_constraintTop_toTopOf="@+id/img_requirement_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_requirement_desc_2_center"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:text="@string/close_account_requirement_description_2"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintBottom_toBottomOf="@+id/img_requirement_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_requirement_2"
+            app:layout_constraintTop_toTopOf="@+id/img_requirement_2"
+            app:typographyType="paragraph_3" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_requirement_check_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/close_account_requirement_check"
+            app:labelType="general_light_grey"
+            android:layout_marginTop="@dimen/unify_space_4"
+            app:layout_constraintStart_toStartOf="@+id/tg_requirement_desc_2"
+            app:layout_constraintTop_toBottomOf="@+id/tg_requirement_desc_2" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_requirement_3"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_requirement_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_requirement_desc_3"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:text="@string/close_account_requirement_description_3"
+            app:typographyType="paragraph_3"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginStart="@dimen/unify_space_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_requirement_3"
+            app:layout_constraintTop_toTopOf="@+id/img_requirement_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_requirement_desc_3_center"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:text="@string/close_account_requirement_description_3"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintBottom_toBottomOf="@+id/img_requirement_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_requirement_3"
+            app:layout_constraintTop_toTopOf="@+id/img_requirement_3"
+            app:typographyType="paragraph_3" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_requirement_check_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/close_account_requirement_check"
+            app:labelType="general_light_grey"
+            android:layout_marginTop="@dimen/unify_space_4"
+            app:layout_constraintStart_toStartOf="@+id/tg_requirement_desc_3"
+            app:layout_constraintTop_toBottomOf="@+id/tg_requirement_desc_3" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_oke"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:text="@string/close_account_oke"
+            android:layout_marginBottom="@dimen/unify_space_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_requirement_3"
+            app:unifyButtonVariant="filled" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -13,6 +13,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -31,15 +32,16 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
  * @author by jessica on 03/02/21
  */
+@RunWith(AndroidJUnit4ClassRunner::class)
 class DigitalCartActivityWithDisableVoucher {
 
     @get:Rule
-    var mActivityRule = ActivityTestRule(DigitalCartActivity::class.java,
-            false, false)
+    val mActivityRule = ActivityTestRule(DigitalCartActivity::class.java, false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
@@ -85,6 +87,7 @@ class DigitalCartActivityWithDisableVoucher {
             passData.needGetCart = true
             passData.instantCheckout = "0"
             passData.idemPotencyKey = "17211378_d44feedc9f7138c1fd91015d5bd88810"
+            passData.atcSource = "pg_checkout"
             putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
         }.setData(
                 Uri.parse("tokopedia-android-internal://digital/checkout")
@@ -245,8 +248,7 @@ class DigitalCartActivityWithDisableVoucher {
 
         onView(withId(R.id.tv_promo_checkout_title)).check(matches(isDisplayed()))
         onView(withId(R.id.tv_promo_checkout_title)).check(matches(withText(mActivityRule.activity.resources.getString(R.string.digital_checkout_promo_disabled_title))))
-        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(withText(mActivityRule.activity.resources.getString(R.string.digital_checkout_promo_disabled_description))))
+        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(not(isDisplayed())))
         onView(withId(R.id.iv_promo_checkout_right)).check(matches(not(isDisplayed())))
         Thread.sleep(1000)
     }

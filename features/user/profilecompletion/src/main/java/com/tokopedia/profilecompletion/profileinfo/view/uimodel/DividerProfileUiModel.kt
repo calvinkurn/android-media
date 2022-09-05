@@ -7,6 +7,6 @@ data class DividerProfileUiModel(
     override var id: String = ""
 ) : BaseProfileInfoUiModel {
     override fun type(typeFactory: ProfileInfoListTypeFactory): Int {
-	return typeFactory.type(this)
+        return typeFactory.type(this)
     }
 }

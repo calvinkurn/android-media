@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
@@ -71,7 +73,19 @@ class WithdrawalDetailsList @JvmOverloads constructor(
             view.tvDetailTitle.text = feeDetailData[i].feeType
             view.tvDetailAmount.text = getAmountString(feeDetailData[i].amount)
             view.tvDetailAmount.visible()
+            setLateLogic(feeDetailData[i],view)
             addView(view)
+        }
+    }
+
+    private fun setLateLogic(feeDetailData: FeeDetailData, view: View) {
+        if (feeDetailData.isLate) {
+            view.tvDetailLastUpdate.show()
+            view.tvDetailLastUpdate.text = feeDetailData.lastUpdateDetail
+            view.lateNotifier.show()
+        } else {
+            view.tvDetailLastUpdate.hide()
+            view.lateNotifier.hide()
         }
     }
 

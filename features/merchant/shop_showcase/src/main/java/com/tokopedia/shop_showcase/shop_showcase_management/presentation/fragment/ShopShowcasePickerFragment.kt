@@ -50,6 +50,7 @@ import com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcasePickerViewModel
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
 import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
@@ -130,7 +131,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private var emptyStatePicker: EmptyStateUnify? = null
     private var emptyStateHint: ConstraintLayout? = null
     private var emptyStateImage: ImageView? = null
-    private var tvEmptyStateHintShowcasePicker: TextView? = null
+    private var tvEmptyStateHintShowcasePicker: Typography? = null
     private var savePickerButton: UnifyButton? = null
     private var addShowcaseButton: UnifyButton? = null
     private var loaderUnify: LoaderUnify? = null
