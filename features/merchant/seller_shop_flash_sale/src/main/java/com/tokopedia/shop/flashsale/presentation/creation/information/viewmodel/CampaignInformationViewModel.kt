@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
+import com.tokopedia.shop.flashsale.common.extension.decreaseMinuteBy
 import com.tokopedia.shop.flashsale.common.extension.epochToDate
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
 import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
@@ -57,6 +58,7 @@ class CampaignInformationViewModel @Inject constructor(
         private const val SHOP_TIER_BENEFIT_PACKAGE_ID: Long= -1
         private const val EMPTY_QUOTA = 0
         private const val VPS_PACKAGE_ID_NOT_SELECTED: Long = 0
+        private const val THIRTY_MINUTE = 30
     }
 
     private val _currentMonthRemainingQuota = MutableLiveData<Result<Int>>()
@@ -555,7 +557,7 @@ class CampaignInformationViewModel @Inject constructor(
         val isUsingVpsPackage = selectedVpsPackage.packageId != SHOP_TIER_BENEFIT_PACKAGE_ID
 
         return if (isUsingVpsPackage) {
-            selectedVpsPackage.packageEndTime
+            selectedVpsPackage.packageEndTime.decreaseMinuteBy(THIRTY_MINUTE)
         } else {
             endDate
         }
