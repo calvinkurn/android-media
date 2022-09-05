@@ -81,30 +81,8 @@ import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListRespons
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
-import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionListResponse
 import com.tokopedia.chatbot.domain.subscriber.*
 import com.tokopedia.chatbot.domain.usecase.*
-import com.tokopedia.chatbot.domain.subscriber.ChipSubmitChatCsatSubscriber
-import com.tokopedia.chatbot.domain.subscriber.ChipSubmitHelpfullQuestionsSubscriber
-import com.tokopedia.chatbot.domain.subscriber.LeaveQueueSubscriber
-import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
-import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
-import com.tokopedia.chatbot.domain.subscriber.SubmitCsatRatingSubscriber
-import com.tokopedia.chatbot.domain.subscriber.TickerDataSubscriber
-import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
-import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
-import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
-import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
-import com.tokopedia.chatbot.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
-import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
-import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
-import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
-import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
-import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
-import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
-import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
-import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
-import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
@@ -846,7 +824,7 @@ class ChatbotPresenter @Inject constructor(
         destroyWebSocket()
         sendChatRatingUseCase.unsubscribe()
         sendRatingReasonUseCase.unsubscribe()
-        chipGetChatRatingListUseCase.unsubscribe()
+  //      chipGetChatRatingListUseCase.unsubscribe()
         job.cancel()
         super.detachView()
     }

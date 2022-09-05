@@ -4,9 +4,7 @@ import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
-import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
@@ -364,7 +362,7 @@ class ChatbotPresenterTest {
     fun `getBottomChat success when chat ratings list is not empty`() {
         val expectedResponse = GetExistingChatPojo()
         val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
-        var chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
+        val chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
 
         coEvery {
             getExistingChatUseCase.getBottomChat(any())
@@ -382,7 +380,7 @@ class ChatbotPresenterTest {
             presenter.getChatRatingList(any(), any())
         }
 
-        presenter.getBottomChat("123456", { viewModel, chatReplies -> }, {}, {})
+        presenter.getBottomChat("123456", { _, _ -> }, {}, {})
 
         verify {
             presenter.getChatRatingList(chatRatingListInput, any())
@@ -408,11 +406,11 @@ class ChatbotPresenterTest {
             presenter.getChatRatingData(any())
         } returns chatRatingListInput
 
-        presenter.getBottomChat("123456", { viewModel, chatReplies ->
-            chatroomViewModel = viewModel!!
+        presenter.getBottomChat("123456", { viewModel, _ ->
+            chatroomViewModel = viewModel
         }, {}, {})
 
-        Assert.assertEquals(
+        assertEquals(
             chatroomViewModel, getExistingChatMapper.map(expectedResponse)
         )
     }
@@ -426,11 +424,11 @@ class ChatbotPresenterTest {
             getExistingChatUseCase.getBottomChat(any())
         } throws exception
 
-        presenter.getBottomChat("123", { chatroomViewModel, chatReplies -> }, { exception ->
+        presenter.getBottomChat("123", { _, _ -> }, { exception ->
             result = exception
         }, {})
 
-        Assert.assertEquals(
+        assertEquals(
             exception, (result as Exception)
         )
 
@@ -441,7 +439,7 @@ class ChatbotPresenterTest {
 
         val expectedResponse = GetExistingChatPojo()
         val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
-        var chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
+        val chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
 
 
         coEvery {
@@ -461,7 +459,7 @@ class ChatbotPresenterTest {
         }
 
         // When
-        presenter.getTopChat("123456", { viewModel, chatReplies -> }, {}, {})
+        presenter.getTopChat("123456", { _, _ -> }, {}, {})
 
         verify {
             presenter.getChatRatingList(chatRatingListInput, any())
@@ -487,11 +485,11 @@ class ChatbotPresenterTest {
             presenter.getChatRatingData(any())
         } returns chatRatingListInput
 
-        presenter.getTopChat("123456", { viewModel, chatReplies ->
-            chatroomViewModel = viewModel!!
+        presenter.getTopChat("123456", { viewModel, _ ->
+            chatroomViewModel = viewModel
         }, {}, {})
 
-        Assert.assertEquals(
+        assertEquals(
             chatroomViewModel, getExistingChatMapper.map(expectedResponse)
         )
     }
@@ -505,11 +503,11 @@ class ChatbotPresenterTest {
             getExistingChatUseCase.getTopChat(any())
         } throws exception
 
-        presenter.getTopChat("123", { chatroomViewModel, chatReplies -> }, { exception ->
+        presenter.getTopChat("123", { _, _ -> }, { exception ->
             result = exception
         }, {})
 
-        Assert.assertEquals(
+        assertEquals(
             exception, (result as Exception)
         )
 
@@ -522,7 +520,7 @@ class ChatbotPresenterTest {
             getExistingChatUseCase.getFirstPageChat(any())
         }
 
-        presenter.getExistingChat("", {}, { chatroomViewModel, chatReplies -> }, {})
+        presenter.getExistingChat("", {}, { _, _ -> }, {})
 
         verify(exactly = 0) {
             presenter.getChatRatingData(any())
@@ -533,7 +531,7 @@ class ChatbotPresenterTest {
     fun `getExistingChat - when input List is empty calls getChatRatingList - Success`() {
         val expectedResponse = GetExistingChatPojo()
         val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
-        var chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
+        val chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
 
 
         coEvery {
@@ -553,7 +551,7 @@ class ChatbotPresenterTest {
         }
 
         // When
-        presenter.getExistingChat("123456", { }, { viewModel, chatReplies -> }, {})
+        presenter.getExistingChat("123456", { }, { _, _ -> }, {})
 
         verify {
             presenter.getChatRatingList(chatRatingListInput, any())
@@ -571,9 +569,9 @@ class ChatbotPresenterTest {
 
         presenter.getExistingChat("123", { exception ->
             result = exception
-        }, { chatroomViewModel, chatReplies -> }, {})
+        }, { _, _ -> }, {})
 
-        Assert.assertEquals(
+        assertEquals(
             exception, (result as Exception)
         )
     }
@@ -597,7 +595,7 @@ class ChatbotPresenterTest {
             expectedChatRatingList = chipGetChatRatingList!!
         }
 
-        Assert.assertEquals(
+        assertEquals(
             expectedChatRatingList, ratingListResponse.chipGetChatRatingList
         )
 
@@ -611,7 +609,7 @@ class ChatbotPresenterTest {
             chipGetChatRatingListUseCase.getChatRatingList(any())
         } throws exception
 
-        presenter.getChatRatingList(ChipGetChatRatingListInput(), {})
+        presenter.getChatRatingList(ChipGetChatRatingListInput()) {}
 
         verify {
             exception.printStackTrace()
