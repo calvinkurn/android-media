@@ -49,8 +49,8 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
             this,
             viewModelFactoryCreator.create(
                 this,
-                usernameArg,
-                strategyFactory.create(usernameArg),
+                onboardingType,
+                strategyFactory.create(onboardingType),
             )
         )[UGCOnboardingViewModel::class.java]
     }

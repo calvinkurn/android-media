@@ -23,8 +23,8 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     override fun getScreenName() = TAG
 
-    private val usernameArg: String
-        get() = arguments?.getString(KEY_USERNAME).orEmpty()
+    private val onboardingType: Int
+        get() = arguments?.getInt(KEY_ONBOARDING_TYPE, 0) ?: 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,7 +79,7 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     }
 
     private fun showBottomSheet() {
-        if(usernameArg.isEmpty()) {
+        if(onboardingType == KEY_ONBOARDING_TYPE_COMPLETION) {
             mListener?.impressCompleteOnboarding()
             UserCompleteOnboardingBottomSheet.getFragment(
                 childFragmentManager,
@@ -100,7 +100,7 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     }
 
     private fun createArgument() = Bundle().apply {
-        putString(KEY_USERNAME, usernameArg)
+        putInt(KEY_ONBOARDING_TYPE, onboardingType)
     }
 
     fun setListener(listener: Listener?) {
@@ -117,6 +117,8 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     companion object {
         const val TAG = "FeedUGCOnboardingParentFragment"
-        const val KEY_USERNAME = "username"
+        const val KEY_ONBOARDING_TYPE = "onboarding_type"
+        const val KEY_ONBOARDING_TYPE_COMPLETION = 1
+        const val KEY_ONBOARDING_TYPE_TNC = 2
     }
 }

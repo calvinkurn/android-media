@@ -2,6 +2,8 @@ package com.tokopedia.content.common.onboarding.view.strategy.factory
 
 import com.tokopedia.content.common.onboarding.di.qualifier.CompleteStrategy
 import com.tokopedia.content.common.onboarding.di.qualifier.TncStrategy
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.KEY_ONBOARDING_TYPE_COMPLETION
 import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingStrategy
 import javax.inject.Inject
 
@@ -13,8 +15,8 @@ class UGCOnboardingStrategyFactory @Inject constructor(
     @TncStrategy private val tncStrategy: UGCOnboardingStrategy,
 ) {
 
-    fun create(username: String): UGCOnboardingStrategy {
-        return if(username.isEmpty()) completeStrategy
+    fun create(onboardingType: Int): UGCOnboardingStrategy {
+        return if(onboardingType == KEY_ONBOARDING_TYPE_COMPLETION) completeStrategy
         else tncStrategy
     }
 }

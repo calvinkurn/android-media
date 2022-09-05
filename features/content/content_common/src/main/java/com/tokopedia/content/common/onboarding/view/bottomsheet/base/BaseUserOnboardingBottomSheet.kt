@@ -27,8 +27,8 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
 
     protected var mListener: Listener? = null
 
-    protected val usernameArg: String
-        get() = arguments?.getString(UGCOnboardingParentFragment.KEY_USERNAME).orEmpty()
+    protected val onboardingType: Int
+        get() = arguments?.getInt(UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE, 0) ?: 0
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {

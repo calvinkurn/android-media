@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.KEY_ONBOARDING_TYPE_COMPLETION
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.KEY_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
@@ -604,8 +606,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         when(state.type) {
             AccountStateInfoType.Live, AccountStateInfoType.Banned -> showWaringInfoBottomSheet()
-            AccountStateInfoType.NotAcceptTNC -> showTermsAndConditionBottomSheet(state.tnc)
-            AccountStateInfoType.NoUsername -> openUGCCompletionBottomSheet()
+            AccountStateInfoType.NotAcceptTNC -> {
+                if (state.selectedAccount.isShop) showTermsAndConditionBottomSheet(state.tnc)
+                else openUGCOnboardingBottomSheet(KEY_ONBOARDING_TYPE_TNC)
+            }
+            AccountStateInfoType.NoUsername -> openUGCOnboardingBottomSheet(KEY_ONBOARDING_TYPE_COMPLETION)
             AccountStateInfoType.Unknown -> return
         }
     }
@@ -863,10 +868,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         return switchAccountConfirmationDialog
     }
 
-    private fun openUGCCompletionBottomSheet() {
+    private fun openUGCOnboardingBottomSheet(onboardingType: Int) {
         try {
+            val bundle = Bundle().apply {
+                putInt(UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE, onboardingType)
+            }
             childFragmentManager.beginTransaction()
-                .add(UGCOnboardingParentFragment::class.java, null, UGCOnboardingParentFragment.TAG)
+                .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
                 .commit()
         } catch (e: Exception) { }
     }
