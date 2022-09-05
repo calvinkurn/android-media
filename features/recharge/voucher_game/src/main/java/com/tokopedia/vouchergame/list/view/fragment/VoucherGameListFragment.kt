@@ -475,7 +475,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
         voucherGameViewModel.getVoucherGameOperators(
             VoucherGameGqlQuery.voucherGameProductList,
             voucherGameViewModel.createParams(voucherGameExtraParam.menuId.toIntSafely()),
-            query, 
+            query,
             loadFromCloud
         )
     }
