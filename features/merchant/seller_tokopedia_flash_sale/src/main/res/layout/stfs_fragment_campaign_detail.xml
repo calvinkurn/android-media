@@ -6,11 +6,10 @@
     android:layout_height="match_parent"
     tools:context="com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailFragment">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@+id/card_bottom_button_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,9 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:descendantFocusability="blocksDescendants"
-                android:nestedScrollingEnabled="true"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:nestedScrollingEnabled="false"/>
 
             <com.tokopedia.empty_state.EmptyStateUnify
                 android:id="@+id/empty_state_product_list"
@@ -72,7 +69,7 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_bottom_button_group"
