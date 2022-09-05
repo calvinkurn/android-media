@@ -14,7 +14,12 @@ import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.MessageData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
@@ -965,7 +970,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isNotEmpty())
@@ -1004,7 +1009,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isEmpty())
@@ -1042,7 +1047,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isEmpty())
@@ -1080,7 +1085,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "", arrayListOf())
 
         // Then
         assert(checkoutRequest.crossSell!!.listItem.isEmpty())
