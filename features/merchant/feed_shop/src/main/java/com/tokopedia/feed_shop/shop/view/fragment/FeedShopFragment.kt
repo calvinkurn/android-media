@@ -949,6 +949,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostViewHolder.DynamicPostListener, id: String, type: String, isFollowed: Boolean, mediaType: String, positionInFeed: Int, playChannelId: String, shopName: String) {
     }
 
+    override fun onIngatkanSayaBtnImpressed(card: FeedXCard, positionInFeed: Int) {
+
+    }
+
+    override fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int) {
+
+    }
+
     override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String) {
     }
 
