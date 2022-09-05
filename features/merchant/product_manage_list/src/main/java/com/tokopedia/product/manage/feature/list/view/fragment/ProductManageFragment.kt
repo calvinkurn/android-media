@@ -643,7 +643,7 @@ open class ProductManageFragment :
     private fun setCoachMarkFlagStockReminder() {
         coachMarkStockReminder?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                if (currentIndex == Int.ZERO) {
+                if (currentIndex == Int.ONE) {
                     CoachMarkPreference.setShown(
                         requireContext(),
                         SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK,
@@ -3390,12 +3390,12 @@ open class ProductManageFragment :
                         .orEmpty()
 
                 val itemCoachMark = getCoachMarkFlagStockReminder(item)
+                setCoachMarkFlagStockReminder()
                 coachMarkStockReminder?.showCoachMark(
                     step = itemCoachMark,
                     index = 0
                 )
                 recyclerView?.addOnScrollListener(recyclerViewScrollListener)
-                setCoachMarkFlagStockReminder()
             }
         }
     }
