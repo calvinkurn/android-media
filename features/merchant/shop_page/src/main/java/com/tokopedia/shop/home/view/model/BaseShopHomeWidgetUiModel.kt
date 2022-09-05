@@ -15,6 +15,7 @@ abstract class BaseShopHomeWidgetUiModel: Visitable<ShopHomeAdapterTypeFactory>{
     var widgetMasterId = ""
     data class Header(
             val title: String = "",
+            val subtitle: String = "",
             val ctaText: String = "",
             val ctaLink: String = "",
             val cover: String = "",
