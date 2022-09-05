@@ -571,7 +571,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         RouteManager.getIntent(
             requireContext(),
             UriUtil.buildUriAppendParam(
-                ApplinkConstInternalContent.COMMENT,
+                ApplinkConstInternalContent.COMMENT_NEW,
                 mapOf(
                     COMMENT_ARGS_POSITION to rowNumber.toString()
                 )
