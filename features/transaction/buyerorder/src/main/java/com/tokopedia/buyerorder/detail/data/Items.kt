@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.detail.data
 
+import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
@@ -56,4 +57,7 @@ data class Items(
     var isTapActionsLoaded: Boolean = false,
 
     var isActionButtonLoaded: Boolean = false
-) : Serializable
+) : Serializable {
+    val metadataInfo: MetaDataInfo
+        get() = Gson().fromJson(metaData, MetaDataInfo::class.java)
+}

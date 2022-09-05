@@ -8,12 +8,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.buyerorder.common.util.ApplinkOMSConstant
 import com.tokopedia.buyerorder.common.util.BuyerUtils.clickActionButton
 import com.tokopedia.buyerorder.databinding.VoucherItemCardEventsNewBinding
@@ -30,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 /**
  * created by @bayazidnasir on 23/8/2022
@@ -61,7 +60,7 @@ class EventsViewHolder(
 
     override fun bind(element: ItemsEvents) {
         val binding = VoucherItemCardEventsNewBinding.bind(itemView)
-        val metadata = getMetadata(element.item)
+        val metadata = element.item.metadataInfo
 
         eventDetailsListener.sendThankYouEvent(metadata, ITEM_EVENTS, element.orderDetails)
 
@@ -74,7 +73,7 @@ class EventsViewHolder(
             eventDetailsListener.setActionButtonEvent(element.orderDetails.actionButtons.first(), element.item, element.orderDetails)
         }
 
-        eventDetailsListener.setPassengerEvent(element.item, metadata)
+        eventDetailsListener.setPassengerEvent(element.item)
         eventDetailsListener.setDetailTitle(getString(R.string.detail_label_events))
 
         binding.customView1.setOnClickListener {
@@ -332,7 +331,6 @@ class EventsViewHolder(
                             clickActionButton(itemView.context, actionButton.body.appURL, true,){
                                 eventDetailsListener.askPermission(it, true, getString(R.string.oms_order_detail_ticket_title))
                             }
-                            //TODO : set uri pdp using @params uri
                         }
                     }
                     else -> {
@@ -350,11 +348,6 @@ class EventsViewHolder(
                 }
             }
         }
-    }
-
-    private fun getMetadata(item: Items): MetaDataInfo {
-        val gson = Gson()
-        return gson.fromJson(item.metaData, MetaDataInfo::class.java)
     }
 
     private fun getDimension(@DimenRes dimenId: Int): Int{

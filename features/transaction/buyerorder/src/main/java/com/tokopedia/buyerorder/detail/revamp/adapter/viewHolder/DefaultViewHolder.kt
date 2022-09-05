@@ -8,12 +8,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.buyerorder.common.util.BuyerUtils.clickActionButton
 import com.tokopedia.buyerorder.databinding.VoucherItemDefaultBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
@@ -26,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 /**
  * created by @bayazidnasir on 23/8/2022
@@ -53,7 +52,7 @@ class DefaultViewHolder(
 
     override fun bind(element: ItemsDefault) {
         val binding = VoucherItemDefaultBinding.bind(itemView)
-        val metadata = Gson().fromJson(element.item.metaData, MetaDataInfo::class.java)
+        val metadata = element.item.metadataInfo
 
         eventDetailsListener.sendThankYouEvent(metadata, ITEMS_DEALS, element.orderDetails)
         eventDetailsListener.sendOpenScreenDeals(false)
@@ -291,7 +290,6 @@ class DefaultViewHolder(
                 ){ uri ->
                     eventDetailsListener.askPermission(uri, false, "")
                 }
-                //TODO : set uri pdp using @params uri
             }
         }
     }

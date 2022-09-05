@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -58,9 +57,8 @@ class DealsOMPViewHolder(
 
     override fun bind(element: ItemsDealsOMP) {
         val binding = VoucherItemCardDealsBinding.bind(itemView)
-        val metadata = Gson().fromJson(element.item.metaData, MetaDataInfo::class.java)
 
-        renderProducts(binding, metadata, element.item)
+        renderProducts(binding, element.item.metadataInfo, element.item)
         setActionButton(binding, element.item, element.orderDetails)
     }
 

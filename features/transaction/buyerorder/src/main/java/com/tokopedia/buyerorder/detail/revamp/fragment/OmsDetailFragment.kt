@@ -597,7 +597,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
     }
 
-    override fun setEventDetails(actionButton: ActionButton, item: Items, metadata: MetaDataInfo) {
+    override fun setEventDetails(actionButton: ActionButton, item: Items) {
         binding?.let {
             if (item.actionButtons.isEmpty()) {
                 it.actionButton.gone()
@@ -611,13 +611,13 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                             view?.let { v -> Toaster.build(v, String.format(
                                 TOASTER_FORMAT,
                                 getString(R.string.deal_voucher_code_copied),
-                                metadata.entityAddress.email
+                                item.metadataInfo.entityAddress.email
                             )).show() }
                         } else {
                             view?.let { v -> Toaster.build(v, String.format(
                                 TOASTER_FORMAT,
                                 getString(R.string.event_voucher_code_copied),
-                                metadata.entityAddress.email
+                                item.metadataInfo.entityAddress.email
                             )).show() }
                         }
 
@@ -633,17 +633,17 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             }
 
             if (!item.category.equals(OrderCategory.EVENT.category, true)) {
-                if (metadata.entityPackages.isNotEmpty()) {
+                if (item.metadataInfo.entityPackages.isNotEmpty()) {
                     it.userLabel.visible()
                     it.userInformationLayout.visible()
                     it.dividerAboveUserInfo.visible()
                     it.userInformationLayout.removeAllViews()
 
-                    metadata.entityPessengers.forEach { entityPessenger ->
+                    item.metadataInfo.entityPessengers.forEach { entityPassenger ->
                         val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
-                            setTopText(entityPessenger.title)
+                            setTopText(entityPassenger.title)
                             setTopTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_68))
-                            setBottomText(entityPessenger.value)
+                            setBottomText(entityPassenger.value)
                             setBottomTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_96))
                             setBottomTextStyle(BOLD_TEXT_STYLE)
                         }
@@ -793,13 +793,13 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
     }
 
-    override fun setPassengerEvent(item: Items, metadata: MetaDataInfo) {
+    override fun setPassengerEvent(item: Items) {
         if (!item.category.equals(OrderCategory.EVENT.category, true)){
             return
         }
 
         binding?.let {
-            if (metadata.passengerForms.isEmpty()){
+            if (item.metadataInfo.passengerForms.isEmpty()){
                 it.userLabel.gone()
                 it.userInformationLayout.gone()
                 it.dividerAboveUserInfo.gone()
@@ -812,7 +812,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             it.dividerAboveUserInfo.visible()
             it.userInformationLayout.removeAllViews()
 
-            metadata.passengerForms.forEach { passengerForm ->
+            item.metadataInfo.passengerForms.forEach { passengerForm ->
                 passengerForm.passengerInformations.forEach { passengerInformation ->
                     val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
                         setTopText(passengerInformation.title)

@@ -2,7 +2,6 @@ package com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
@@ -40,7 +39,7 @@ class DealsViewHolder(
 
     override fun bind(element: ItemsDeals) {
         val binding = VoucherItemDealsBinding.bind(itemView)
-        val metadata = Gson().fromJson(element.item.metaData, MetaDataInfo::class.java)
+        val metadata = element.item.metadataInfo
 
         renderProducts(binding, metadata, element.item, element.orderDetails)
         setTapAction(binding, element.item)
@@ -65,7 +64,7 @@ class DealsViewHolder(
         eventDetailsListener.setDealsBanner(metadata)
 
         if (item.actionButtons.isNotEmpty()){
-            eventDetailsListener.setEventDetails(item.actionButtons.first(), item, metadata)
+            eventDetailsListener.setEventDetails(item.actionButtons.first(), item)
         }
 
         binding.tvBrandName.text = metadata.entityBrandName

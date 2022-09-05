@@ -3,11 +3,9 @@ package com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorder.R
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.buyerorder.databinding.VoucherItemInsuranceBinding
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.ItemsInsurance
@@ -16,6 +14,7 @@ import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.utils.view.DoubleTextView
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 /**
  * created by @bayazidnasir on 23/8/2022
@@ -36,7 +35,7 @@ class InsuranceViewHolder(
 
     override fun bind(element: ItemsInsurance) {
         val binding = VoucherItemInsuranceBinding.bind(itemView)
-        val metadata = getMetadata(element.item)
+        val metadata = element.item.metadataInfo
 
         renderProduct(binding, metadata, element.item, element.orderDetails)
     }
@@ -93,10 +92,5 @@ class InsuranceViewHolder(
             }
             binding.statusDetail.addView(textView)
         }
-    }
-
-    private fun getMetadata(item: Items): MetaDataInfo{
-        val gson = Gson()
-        return gson.fromJson(item.metaData, MetaDataInfo::class.java)
     }
 }

@@ -2,12 +2,10 @@ package com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.databinding.VoucherItemCardDealsShortBinding
 import com.tokopedia.buyerorder.detail.data.ItemsDealsShort
-import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.media.loader.loadImage
 
 /**
@@ -23,7 +21,7 @@ class DealsShortViewHolder(itemView: View) : AbstractViewHolder<ItemsDealsShort>
 
     override fun bind(element: ItemsDealsShort) {
         val binding = VoucherItemCardDealsShortBinding.bind(itemView)
-        val metadata = Gson().fromJson(element.item.metaData, MetaDataInfo::class.java)
+        val metadata = element.item.metadataInfo
 
         binding.tvDealIntro.text = metadata.entityProductName.ifEmpty { element.item.title }
         binding.tvBrandName.text = metadata.entityBrandName
