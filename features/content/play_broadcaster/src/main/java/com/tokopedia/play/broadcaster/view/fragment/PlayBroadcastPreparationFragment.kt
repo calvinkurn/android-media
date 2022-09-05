@@ -32,7 +32,7 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccoun
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
@@ -603,13 +603,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (prevState == state) return
 
         when(state.type) {
-            AccountStateInfoType.Live, AccountStateInfoType.Banned -> {
-                showWaringInfoBottomSheet()
-            }
-            AccountStateInfoType.NotAcceptTNC -> {
-                if (state.selectedAccount.isUser) toaster.showToaster("not accept tnc buyer")
-                else toaster.showToaster("not accept tnc seller")
-            }
+            AccountStateInfoType.Live, AccountStateInfoType.Banned -> { showWaringInfoBottomSheet() }
+            AccountStateInfoType.NotAcceptTNC -> { showTermsAndConditionBottomSheet(state.tnc) }
             AccountStateInfoType.NoUsername -> openUGCCompletionBottomSheet()
             AccountStateInfoType.Unknown -> return
         }
@@ -884,19 +879,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         } catch (e: Exception) { }
     }
 
-    private fun showTermsAndConditionBottomSheet(
-        canStream: Boolean,
-        tncList: List<TermsAndConditionUiModel>
-    ) {
+    private fun showTermsAndConditionBottomSheet(tncList: List<TermsAndConditionUiModel>) {
         val existingFragment = childFragmentManager.findFragmentByTag(TERMS_AND_CONDITION_TAG)
-
-        if (canStream) {
-            if (existingFragment is BottomSheetUnify && existingFragment.isVisible) {
-                existingFragment.setOnDismissListener {  }
-                existingFragment.dismiss()
-            }
-            return
-        }
 
         val (bottomSheet, view) = if (existingFragment is BottomSheetUnify) {
             existingFragment to existingFragment.requireView().findViewWithTag(
@@ -904,11 +888,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             )
         } else {
             val bottomSheet = BottomSheetUnify().apply {
-                isCancelable = false
-                isHideable = false
-                overlayClickDismiss = false
                 clearContentPadding = true
-                setTitle(requireContext().getString(R.string.play_bro_tnc_title))
+                setTitle(this@PlayBroadcastPreparationFragment.getString(R.string.play_bro_tnc_title))
             }
 
             val view = PlayTermsAndConditionView(requireContext())
@@ -927,10 +908,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
         if (!bottomSheet.isVisible) {
             view.setTermsAndConditions(tncList)
-            bottomSheet.setOnDismissListener {
-                if (parentViewModel.isAllowChangeAccount) parentViewModel.submitAction(SwitchAccount)
-                else activity?.finish()
-            }
+            bottomSheet.setOnDismissListener { bottomSheet.dismiss() }
             bottomSheet.show(childFragmentManager, TERMS_AND_CONDITION_TAG)
         }
     }

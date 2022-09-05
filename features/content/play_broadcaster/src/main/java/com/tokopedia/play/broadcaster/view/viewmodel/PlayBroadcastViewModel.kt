@@ -1563,27 +1563,41 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             !configUiModel.streamAllowed -> {
                 _accountStateInfo.value = AccountStateInfo(
                     type = AccountStateInfoType.Banned,
-                    selectedAccount = selectedAccount
+                    selectedAccount = selectedAccount,
+                    tnc = emptyList(),
                 )
                 warningInfoType = WarningType.BANNED
             }
             configUiModel.channelStatus == ChannelStatus.Live -> {
                 _accountStateInfo.value = AccountStateInfo(
-                    type = AccountStateInfoType.Banned,
-                    selectedAccount = selectedAccount
+                    type = AccountStateInfoType.Live,
+                    selectedAccount = selectedAccount,
+                    tnc = emptyList(),
                 )
                 warningInfoType = WarningType.LIVE
             }
             !selectedAccount.hasAcceptTnc -> {
-                _accountStateInfo.value = AccountStateInfo(
-                    type = AccountStateInfoType.NotAcceptTNC,
-                    selectedAccount = selectedAccount
-                )
+                if (selectedAccount.isShop) {
+                    _accountStateInfo.value = AccountStateInfo(
+                        type = AccountStateInfoType.NotAcceptTNC,
+                        selectedAccount = selectedAccount,
+                        tnc = configUiModel.tnc,
+                    )
+                } else {
+                    _accountStateInfo.value = AccountStateInfo(
+                        type = AccountStateInfoType.Banned,
+                        selectedAccount = selectedAccount,
+                        tnc = emptyList(),
+                    )
+                    warningInfoType = WarningType.BANNED
+                }
             }
-            selectedAccount.isUser && !selectedAccount.hasUsername -> {
+            !selectedAccount.hasUsername -> {
+                if (selectedAccount.isShop) return
                 _accountStateInfo.value = AccountStateInfo(
                     type = AccountStateInfoType.NoUsername,
-                    selectedAccount = selectedAccount
+                    selectedAccount = selectedAccount,
+                    tnc = emptyList(),
                 )
             }
             else -> _accountStateInfo.value = AccountStateInfo.Empty
