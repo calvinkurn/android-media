@@ -89,10 +89,11 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
 
     suspend fun execute(
         campaignId: Long,
+        productId: Long = 0,
         pagination: Pagination = Pagination(),
         filter: Filter = Filter()
     ): SubmittedProductData {
-        val request = buildRequest(campaignId, pagination, filter)
+        val request = buildRequest(campaignId = campaignId, pagination = pagination, filter = filter)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetFlashSaleSubmittedProductListResponse>()
         return mapper.map(data)
@@ -100,12 +101,14 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
 
     private fun buildRequest(
         campaignId: Long,
+        productId: Long = 0,
         pagination: Pagination,
         filter : Filter
     ): GraphqlRequest {
         val payload = GetFlashSaleSubmittedProductListRequest(
             requestHeader = SubmittedProductListRequestHeader(),
             campaignId = campaignId.toInt(),
+            productId = productId.toInt(),
             pagination = pagination,
             filter = filter,
         )

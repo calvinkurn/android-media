@@ -9,6 +9,9 @@ data class GetFlashSaleSubmittedProductListRequest(
     @SuppressLint("Invalid Data Type")
     @SerializedName("campaign_id")
     val campaignId: Int = 0,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("product_id")
+    val productId: Int = 0,
     @SerializedName("pagination")
     val pagination: Pagination = Pagination(),
     @SerializedName("filter")
