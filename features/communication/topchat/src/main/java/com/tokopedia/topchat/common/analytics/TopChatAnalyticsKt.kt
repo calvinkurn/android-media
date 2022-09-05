@@ -333,29 +333,6 @@ object TopChatAnalyticsKt {
 
     }
 
-    fun eventClickBundle(
-        blastId: String,
-        statusBundle: String,
-        bundleId: String,
-        shopId: String,
-        userId: String
-    ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            createGeneralEvent(
-                event = Event.VIEW_COMMUNICATION_IRIS,
-                category = Category.CHAT_DETAIL,
-                action = Action.VIEW_BUNDLE_CART_CHATROOM,
-                label = "$blastId - $statusBundle - $bundleId - bundling",
-                businessUnit = COMMUNICATION,
-                currentSite = CURRENT_SITE_TOKOPEDIA,
-                trackerId = "35596",
-                shopId = shopId,
-                userId = userId
-            )
-        )
-
-    }
-
     fun eventClickProductAttachmentOnProductBundlingBroadcast(
         blastId: String,
         statusBundle: String,
