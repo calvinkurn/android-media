@@ -85,6 +85,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID_INT
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST_INT
+import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2CleanerBottomSheetAdapter
@@ -1478,7 +1479,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun onStickyManageClicked() {
-        isAutoDeletion = false
         if (!isBulkDeleteShow) {
             turnOnBulkDeleteMode()
             binding?.run {
@@ -1526,17 +1526,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 }
             }
         } else {
+            wishlistV2Adapter.hideCheckbox()
+            setSwipeRefreshLayout()
+            binding?.run {
+                containerDelete.gone()
+                clWishlistHeader.visible()
+                wishlistV2StickyCountManageLabel.wishlistDivider.visible()
+                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.visible()
+            }
+
             if (isAutoDeletion) {
-                doResetFilter()
-            } else {
-                setSwipeRefreshLayout()
-                wishlistV2Adapter.hideCheckbox()
-                binding?.run {
-                    containerDelete.gone()
-                    clWishlistHeader.visible()
-                    wishlistV2StickyCountManageLabel.wishlistDivider.visible()
-                    wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.visible()
-                }
+                paramWishlistV2.source = WISHLIST_PAGE_NAME
+                doRefresh()
             }
         }
     }

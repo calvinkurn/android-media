@@ -2522,6 +2522,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.visible()
                 wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.visible()
             }
+            if (isAutoDeletion) {
+                paramGetCollectionItems.source = SRC_WISHLIST_COLLECTION
+                doRefresh()
+            }
         }
     }
 
