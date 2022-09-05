@@ -48,12 +48,15 @@
         android:id="@+id/searchBarUnify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFilter"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/searchBarUnify" />
 
     <androidx.recyclerview.widget.RecyclerView
