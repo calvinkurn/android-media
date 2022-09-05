@@ -9,7 +9,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroadcastTncBinding
 import com.tokopedia.play.broadcaster.ui.itemdecoration.DefaultVerticalItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tnc.TermsAndConditionBenefitUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.tnc.PlayTermsAndConditionAdapter
 import com.tokopedia.play.broadcaster.ui.viewholder.tnc.PlayTermsAndConditionBenefitAdapter

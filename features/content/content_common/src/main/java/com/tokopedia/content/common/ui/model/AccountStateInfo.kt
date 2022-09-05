@@ -6,12 +6,14 @@ package com.tokopedia.content.common.ui.model
 data class AccountStateInfo(
     val type: AccountStateInfoType,
     val selectedAccount: ContentAccountUiModel,
+    val tnc: List<TermsAndConditionUiModel>,
 ) {
     companion object {
         val Empty: AccountStateInfo
             get() = AccountStateInfo(
                 type = AccountStateInfoType.Unknown,
                 selectedAccount = ContentAccountUiModel.Empty,
+                tnc = emptyList(),
             )
     }
 }

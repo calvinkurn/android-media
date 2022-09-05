@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.model
 
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import java.util.*
 
 
@@ -40,8 +41,4 @@ data class BroadcastScheduleConfigUiModel(
         val minimum: Date,
         val maximum: Date,
         val default: Date
-)
-
-data class TermsAndConditionUiModel(
-        val desc: String,
 )
