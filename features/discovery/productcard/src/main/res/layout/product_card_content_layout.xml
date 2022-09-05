@@ -353,8 +353,8 @@
 
         <ImageView
             android:id="@+id/imageViewRating1"
-            android:layout_width="@dimen/dp_11"
-            android:layout_height="@dimen/dp_11"
+            android:layout_width="11dp"
+            android:layout_height="11dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
@@ -363,8 +363,8 @@
 
         <ImageView
             android:id="@+id/imageViewRating2"
-            android:layout_width="@dimen/dp_11"
-            android:layout_height="@dimen/dp_11"
+            android:layout_width="11dp"
+            android:layout_height="11dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
@@ -373,8 +373,8 @@
 
         <ImageView
             android:id="@+id/imageViewRating3"
-            android:layout_width="@dimen/dp_11"
-            android:layout_height="@dimen/dp_11"
+            android:layout_width="11dp"
+            android:layout_height="11dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
@@ -383,8 +383,8 @@
 
         <ImageView
             android:id="@+id/imageViewRating4"
-            android:layout_width="@dimen/dp_11"
-            android:layout_height="@dimen/dp_11"
+            android:layout_width="11dp"
+            android:layout_height="11dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
@@ -393,8 +393,8 @@
 
         <ImageView
             android:id="@+id/imageViewRating5"
-            android:layout_width="@dimen/dp_11"
-            android:layout_height="@dimen/dp_11"
+            android:layout_width="11dp"
+            android:layout_height="11dp"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
@@ -465,7 +465,7 @@
 
     <View
         android:id="@+id/salesRatingFloatLine"
-        android:layout_width="@dimen/dp_1"
+        android:layout_width="1dp"
         android:layout_height="10dp"
         android:background="@color/Unify_N700_32"
         android:layout_marginStart="4dp"

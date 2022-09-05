@@ -22,6 +22,8 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
                 reputationIDStr
                 orderID
                 validToReview
+                keywords
+                placeholder
                 productData{
                   productIDStr
                   productName
