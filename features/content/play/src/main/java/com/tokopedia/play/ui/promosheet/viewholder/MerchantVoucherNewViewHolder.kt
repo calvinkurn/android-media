@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
+import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.utils.date.DateUtil
 
 /**
