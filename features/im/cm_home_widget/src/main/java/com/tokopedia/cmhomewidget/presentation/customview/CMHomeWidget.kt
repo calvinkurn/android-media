@@ -208,8 +208,7 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     private fun startWebView(urlString: String?) {
-        val webViewAppLink = URLEncoder.encode(urlString, "UTF-8")
-        RouteManager.route(context, webViewAppLink)
+        RouteManager.route(context, urlString)
     }
 
     override fun onPaymentBtnClick(dataItem: CMHomeWidgetPaymentData) {
