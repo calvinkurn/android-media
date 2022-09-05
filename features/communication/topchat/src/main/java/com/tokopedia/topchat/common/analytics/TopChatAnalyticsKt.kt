@@ -309,7 +309,7 @@ object TopChatAnalyticsKt {
 
         var eventDataLayer = Bundle()
 
-        eventDataLayer.putString(TrackAppUtils.EVENT, VIL)
+        eventDataLayer.putString(TrackAppUtils.EVENT, VIEW_ITEM_LIST)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_BUNDLE_CART_CHATROOM)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
         eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, "$blastId - $statusBundle - $bundleId - bundling")
@@ -327,7 +327,7 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(USER_ID, userId)
         eventDataLayer.putString(SHOP_ID, shopId)
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIL,eventDataLayer)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST,eventDataLayer)
 
 
     }
@@ -369,7 +369,7 @@ object TopChatAnalyticsKt {
 
         var eventDataLayer = Bundle()
 
-        eventDataLayer.putString(TrackAppUtils.EVENT, SC)
+        eventDataLayer.putString(TrackAppUtils.EVENT, SELECT_CONTENT)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_PRODUCT_BUNDLE)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
         eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, "$blastId - $statusBundle - $bundleId - bundling - ${bundleItems[0].productId.toString()}")
@@ -387,7 +387,7 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(USER_ID, userId)
         eventDataLayer.putString(SHOP_ID, shopId)
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SC,eventDataLayer)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT,eventDataLayer)
 
     }
 
@@ -453,7 +453,7 @@ object TopChatAnalyticsKt {
         itemBundle.putString(PRICE, product.productPrice + 0.0)
 
         var eventDataLayer = Bundle()
-        eventDataLayer.putString(TrackAppUtils.EVENT, VIL)
+        eventDataLayer.putString(TrackAppUtils.EVENT, VIEW_ITEM_LIST)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_ON_PRODUCT_THUMBNAIL)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
         eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
@@ -470,7 +470,7 @@ object TopChatAnalyticsKt {
         )
         eventDataLayer.putString(USER_ID, setValueOrDefault(user.userId))
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIL,eventDataLayer)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST,eventDataLayer)
     }
 
     fun trackSuccessDoBuyAndAtc(
@@ -605,8 +605,8 @@ object TopChatAnalyticsKt {
 
     //Event Name
     private const val ATC = "add_to_cart"
-    private const val VIL = "view_item_list"
-    private const val SC = "select_content"
+    private const val VIEW_ITEM_LIST = "view_item_list"
+    private const val SELECT_CONTENT = "select_content"
 
     //Event Category
     private const val EVENT_CATEGORY_CHAT = "chat"
