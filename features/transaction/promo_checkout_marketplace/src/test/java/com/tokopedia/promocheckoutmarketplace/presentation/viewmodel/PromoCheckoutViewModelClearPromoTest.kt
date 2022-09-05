@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoBoRequest
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoEmptyRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantRequestInvalid
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantRequest
@@ -132,12 +133,11 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
 
     }
 
-//    todo
     @Test
     fun `WHEN show BO promo THEN should add BO promo code in clear promo order param`() {
         // given
         val promoList = providePromoListWithBoPlusAsRecommendedPromo()
-        val validateUseRequest = provideApplyPromoBoRequest()
+        val validateUseRequest = provideApplyPromoEmptyRequest()
         val promoBo = "PLUSAA"
         val response = provideClearPromoResponseSuccess()
         val clearPromoRequest = ClearPromoRequest()
