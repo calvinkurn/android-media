@@ -1,6 +1,10 @@
 package com.tokopedia.product_bundle.common.data.constant
 
 object ProductBundleConstants {
+
+    /**
+     * Deprecated - Please use BundlingPageSource
+     */
     // page sources
     const val PAGE_SOURCE_CART = "cart"
     const val PAGE_SOURCE_MINI_CART = "minicart"
