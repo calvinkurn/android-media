@@ -55,7 +55,6 @@
             app:showBottomShadow="true"
             app:ticketElevation="@dimen/deals_voucher_elevation_ticket_view" />
 
-        <!--v.setLayerType(View.LAYER_TYPE_SOFTWARE, null);-->
         <View
             android:id="@+id/divider1"
             android:layout_width="match_parent"
