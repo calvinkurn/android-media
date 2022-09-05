@@ -18,7 +18,6 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     companion object {
         private const val LAST_HOUR_OF_A_DAY = 23
         private const val LAST_MINUTE = 59
-        private const val MAX_SELECTABLE_MINUTE_FOR_VPS_PACKAGE = 29
     }
 
 
@@ -105,9 +104,11 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     private fun buildMaxTime(isUsingVpsPackage: Boolean): Calendar {
          if (param.mode == TimePickerSelectionMode.CAMPAIGN_START_DATE) {
              return if (isUsingVpsPackage) {
+                 val maxHour = param.maximumDate.extractHour()
+                 val maxMinute = param.maximumDate.extractMinute()
                  GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                     set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
-                     set(Calendar.MINUTE, MAX_SELECTABLE_MINUTE_FOR_VPS_PACKAGE)
+                     set(Calendar.HOUR_OF_DAY, maxHour)
+                     set(Calendar.MINUTE, maxMinute)
                  }
              } else {
                  GregorianCalendar(LocaleConstant.INDONESIA).apply {
