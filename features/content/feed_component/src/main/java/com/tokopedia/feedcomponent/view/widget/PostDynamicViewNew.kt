@@ -338,16 +338,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 val listener = this@PostDynamicViewNew.listener ?: return
 
                 listener.onTagClicked(
-                    mData.id.toIntOrZero(),
+                    mData,
                     media.tagProducts,
                     listener,
-                    mData.author.id,
-                    mData.typename,
-                    mData.followers.isFollowed,
                     media.type,
                     positionInFeed,
-                    mData.playChannelID,
-                    shopName = mData.author.name
                 )
             }
         },
@@ -359,16 +354,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 val listener = this@PostDynamicViewNew.listener ?: return
 
                 listener.onTagClicked(
-                    mData.id.toIntOrZero(),
+                    mData,
                     media.tagProducts,
                     listener,
-                    mData.author.id,
-                    mData.typename,
-                    mData.followers.isFollowed,
                     media.type,
                     positionInFeed,
-                    mData.playChannelID,
-                    shopName = mData.author.name
                 )
             }
 
@@ -1342,19 +1332,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     positionInFeed: Int,
                     products: List<FeedXProduct>
                 ) {
-                    val finalPostId =
-                        if (feedXCard.isTypeVOD) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
                     it.onTagClicked(
-                        finalPostId,
+                        feedXCard,
                         products,
                         it,
-                        feedXCard.author.id,
-                        feedXCard.typename,
-                        feedXCard.followers.isFollowed,
-                        feedXCard.type,
-                        positionInFeed,
-                        playChannelId = feedXCard.playChannelID,
-                        shopName = feedXCard.author.name
+                        feedMedia.type,
+                        positionInFeed
                     )
                 }
 

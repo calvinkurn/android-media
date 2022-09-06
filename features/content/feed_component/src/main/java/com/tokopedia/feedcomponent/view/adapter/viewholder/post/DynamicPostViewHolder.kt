@@ -722,16 +722,11 @@ open class DynamicPostViewHolder(v: View,
         fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String)
 
         fun onTagClicked(
-                postId: Int,
+                card: FeedXCard,
                 products: List<FeedXProduct>,
                 listener: DynamicPostListener,
-                id: String,
-                type: String,
-                isFollowed: Boolean,
                 mediaType: String = "",
-                positionInFeed: Int,
-                playChannelId: String = "",
-                shopName: String = ""
+                positionInFeed: Int
         )
         fun onIngatkanSayaBtnImpressed(card : FeedXCard, positionInFeed: Int)
         fun onIngatkanSayaBtnClicked(card : FeedXCard, positionInFeed: Int)

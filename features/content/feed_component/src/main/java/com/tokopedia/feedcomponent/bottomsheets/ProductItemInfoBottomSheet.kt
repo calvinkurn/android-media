@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.view.adapter.bottomsheetadapter.ProductInfoBottomSheetAdapter
@@ -30,6 +31,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private var mediaType: String = ""
     private var playChannelId: String = "0"
     private var postType: String = ""
+    private var saleType: String = ""
+    private var saleStatus: String = ""
     private var isFollowed: Boolean = false
     var closeClicked: (() -> Unit)? = null
     var disMissed: (() -> Unit)? = null
@@ -132,7 +135,9 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 description = postDescription,
                 isTopads = postTagItem.isTopads,
                 adClickUrl = adClickUrl,
-                playChannelId = playChannelId
+                playChannelId = playChannelId,
+                saleType = saleType,
+                saleStatus = saleStatus
             )
             item.feedType = "product"
             item.postId = postId
@@ -147,27 +152,21 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
     fun show(
         fragmentManager: FragmentManager,
-        products: List<FeedXProduct>,
         listener: Listener?,
-        postId: Int,
-        shopId: String,
-        type: String,
-        isFollowed: Boolean,
-        positionInFeed: Int,
-        playChannelId: String,
-        shopName:String,
-        mediaType: String
+        productBottomSheetData: ProductBottomSheetData
     ) {
-        this.listProducts = products
+        this.listProducts = productBottomSheetData.products
         this.listener = listener
-        this.postId = postId
-        this.shopId = shopId
-        this.postType = type
-        this.isFollowed = isFollowed
-        this.positionInFeed = positionInFeed
-        this.playChannelId = playChannelId
-        this.shopName = shopName
-        this.mediaType = mediaType
+        this.postId = productBottomSheetData.postId
+        this.shopId = productBottomSheetData.shopId
+        this.postType = productBottomSheetData.postType
+        this.isFollowed = productBottomSheetData.isFollowed
+        this.positionInFeed = productBottomSheetData.positionInFeed
+        this.playChannelId = productBottomSheetData.playChannelId
+        this.shopName = productBottomSheetData.shopName
+        this.mediaType = productBottomSheetData.mediaType
+        this.saleType = productBottomSheetData.saleType
+        this.saleStatus = productBottomSheetData.saleStatus
         show(fragmentManager, "")
     }
 
