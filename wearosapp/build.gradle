@@ -103,4 +103,8 @@ dependencies {
     implementation "androidx.wear.compose:compose-foundation:$wear_version"
     implementation "androidx.wear.compose:compose-navigation:$wear_version"
 
+    def room_version = "2.4.3"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 }
