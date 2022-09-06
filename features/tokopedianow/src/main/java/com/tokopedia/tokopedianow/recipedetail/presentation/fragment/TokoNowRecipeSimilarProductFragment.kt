@@ -24,8 +24,7 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return LayoutInflater.from(context)
-            .inflate(R.layout.fragment_tokopedianow_base, container, false)
+        return inflater.inflate(R.layout.fragment_tokopedianow_base, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
