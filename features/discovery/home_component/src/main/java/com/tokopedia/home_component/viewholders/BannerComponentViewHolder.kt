@@ -2,6 +2,7 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -93,7 +94,7 @@ class BannerComponentViewHolder(itemView: View,
             channelModel?.let { it ->
                 this.isCache = element.isCache
                 try {
-                    initBanner(it.convertToBannerItemModel())
+                    initBanner(it.convertToBannerItemModel(), element.dimenMarginTop, element.dimenMarginBottom)
                 } catch (e: NumberFormatException) {
                     e.printStackTrace()
                 }
@@ -158,11 +159,17 @@ class BannerComponentViewHolder(itemView: View,
         return layoutManager
     }
 
-    private fun initBanner(list: List<BannerItemModel>){
+    private fun initBanner(list: List<BannerItemModel>, dimenMarginTop: Int, dimenMarginBottom: Int){
         rvBanner.clearOnScrollListeners()
 
         val snapHelper: SnapHelper = PagerSnapHelper()
         rvBanner.onFlingListener = null
+
+        val layoutParams = rvBanner.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.setMargins(0, 0, 0, itemView.resources.getDimensionPixelOffset(dimenMarginBottom))
+        layoutParams.goneTopMargin = itemView.resources.getDimensionPixelOffset(dimenMarginTop)
+        rvBanner.layoutParams = layoutParams
+
         snapHelper.attachToRecyclerView(rvBanner)
         rvBanner.layoutManager = getLayoutManager(list)
         rvBanner.removeAllItemDecoration()
