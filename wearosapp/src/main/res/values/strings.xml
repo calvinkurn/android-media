@@ -1,8 +1,21 @@
 <resources>
     <string name="app_name">Tokopedia Wear</string>
     <string name="splash_screen_logo_content_description">Splash Screen Logo</string>
+    <string name="home_title">Tokopedia Seller</string>
+
+    <!-- New Order Summary -->
     <string name="new_order_summary_text_open_order">Open</string>
     <string name="new_order_summary_text_potency">Potensi</string>
     <string name="new_order_summary_text_potency_format">+Rp%1s</string>
     <string name="new_order_summary_text_title">Pesanan baru</string>
+
+    <!-- New Order Detail -->
+    <string name="new_order_detail_content_description_seller_icon">Seller Icon</string>
+    <string name="new_order_detail_header_title">Pesanan Baru</string>
+    <string name="new_order_detail_status_response">Batas Respons (P0):</string>
+    <string name="new_order_detail_content_description_clocked_filled">Clock Icon</string>
+    <string name="new_order_detail_footer_title">Actions</string>
+    <string name="new_order_detail_accept_order">Terima Pesanan</string>
+    <string name="new_order_detail_open_on_cellphone">Buka di handphone</string>
+
 </resources>

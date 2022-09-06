@@ -6,19 +6,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
-import com.tokopedia.sellerapp.presentation.theme.NestLightBlue
+import com.tokopedia.sellerapp.presentation.theme.TextBlueColor
 import com.tokopedia.tkpd.R
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_1
 
 @Composable
-fun NewOrderSummaryScreen() {
+fun NewOrderSummaryScreen(
+    navigateToNewOrderList: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -38,7 +39,9 @@ fun NewOrderSummaryScreen() {
             CreateOrderTitle()
             CreateOrderQuantity(totalOrder)
             CreateOrderPotential(orderPotential)
-            CreateOpenOrder()
+            CreateOpenOrder(
+                navigateToNewOrderList = navigateToNewOrderList
+            )
         }
 
     }
@@ -46,13 +49,17 @@ fun NewOrderSummaryScreen() {
 }
 
 @Composable
-fun CreateOpenOrder() {
+fun CreateOpenOrder(
+    navigateToNewOrderList: () -> Unit
+) {
     Button(
         modifier = Modifier
             .height(32.dp)
             .padding(PaddingValues(top = 6.dp)),
-        onClick = { redirectToNewOrderListScreen() },
-        colors = ButtonDefaults.buttonColors(backgroundColor = NestLightBlue)
+        onClick = {
+            navigateToNewOrderList()
+        },
+        colors = ButtonDefaults.buttonColors(backgroundColor = TextBlueColor)
     ) {
         AndroidView(factory = {
             Typography(it).apply {
@@ -62,10 +69,6 @@ fun CreateOpenOrder() {
             }
         })
     }
-}
-
-fun redirectToNewOrderListScreen() {
-    //TODO will be implemented later
 }
 
 @Composable

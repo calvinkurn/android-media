@@ -6,11 +6,13 @@
     <uses-sdk tools:overrideLibrary="com.tokopedia.core" />
     <uses-feature android:name="android.hardware.type.watch" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name="com.tokopedia.sellerapp.di.SellerApp"
         android:icon="@mipmap/ic_launcher_customerapp"
         android:allowBackup="true"
         android:label="@string/app_name"
