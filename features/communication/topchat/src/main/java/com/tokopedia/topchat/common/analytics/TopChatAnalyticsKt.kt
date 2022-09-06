@@ -415,15 +415,9 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.CLICK_ADD_TO_CART_BUNDLE)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
 
-        val productId = if (bundleItems.isNotEmpty()) {
-            // if bundleItems is not empty
-            bundleItems[0].productId
-        } else {
-            "0"
-        }
         eventDataLayer.putString(
             TrackAppUtils.EVENT_LABEL,
-            "$blastId - $statusBundle - $bundleId - bundling - $productId"
+            "$blastId - $statusBundle - $bundleId - bundling"
         )
 
         eventDataLayer.putString(TRACKER_ID, "35599")

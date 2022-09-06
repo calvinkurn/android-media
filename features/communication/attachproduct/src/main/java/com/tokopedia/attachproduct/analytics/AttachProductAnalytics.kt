@@ -47,6 +47,7 @@ object AttachProductAnalytics {
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
 
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.CLICK_COMMUNICATION, eventDataLayer)
     }
 
     val eventClickChatAttachedProductImage: AttachProductEventTracking
