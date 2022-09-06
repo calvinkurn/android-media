@@ -83,7 +83,7 @@ class PlayBroProductUiMapper @Inject constructor() {
                     } else DiscountedPrice(
                         originalPrice = data.campaign.originalPriceFmt,
                         originalPriceNumber = 0.0,
-                        discountPercent = data.campaign.discountedPercentage.toIntSafely(),
+                        discountPercent = data.campaign.discountedPercentage.toLong(),
                         discountedPrice = data.campaign.discountedPriceFmt,
                         discountedPriceNumber = 0.0,
                     )
@@ -126,7 +126,7 @@ class PlayBroProductUiMapper @Inject constructor() {
                         DiscountedPrice(
                             originalPrice = data.campaign.originalPrice,
                             originalPriceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
-                            discountPercent = data.campaign.discountPercentage.toIntSafely(),
+                            discountPercent = data.campaign.discountPercentage.toLong(),
                             discountedPrice = data.campaign.discountedPrice,
                             discountedPriceNumber = data.campaign.discountedPriceFmt.toDoubleOrNull() ?: 0.0,
                         )
@@ -159,7 +159,7 @@ class PlayBroProductUiMapper @Inject constructor() {
                             DiscountedPrice(
                                 originalPrice = product.originalPriceFmt,
                                 originalPriceNumber = product.originalPrice,
-                                discountPercent = product.discount.toInt(),
+                                discountPercent = product.discount.toLong(),
                                 discountedPrice = product.priceFmt,
                                 discountedPriceNumber = product.price,
                             )
@@ -190,7 +190,7 @@ class PlayBroProductUiMapper @Inject constructor() {
                         else DiscountedPrice(
                             originalPrice = product.originalPriceFmt,
                             originalPriceNumber = product.originalPrice.toDouble(),
-                            discountPercent = product.discount.toIntSafely(),
+                            discountPercent = product.discount.toLong(),
                             discountedPrice = product.priceFmt,
                             discountedPriceNumber = product.price.toDouble(),
                         ),
