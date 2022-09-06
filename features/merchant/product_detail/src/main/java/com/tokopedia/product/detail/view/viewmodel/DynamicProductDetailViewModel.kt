@@ -1221,9 +1221,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 productIds = arrayListOf(nonNullProductId),
             )
             val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
-            recommendationResponse.firstOrNull()?.let {
-                _verticalRecommendation.value = it.asSuccess()
+            val dataResponse = recommendationResponse.firstOrNull()?.takeIf {
+                it.hasNext
             }
+            if (dataResponse == null)
+                _verticalRecommendation.value = Fail(Throwable("End of Page"))
+            else _verticalRecommendation.value = dataResponse.asSuccess()
         }, onError = {
             _verticalRecommendation.value = Fail(it)
         })

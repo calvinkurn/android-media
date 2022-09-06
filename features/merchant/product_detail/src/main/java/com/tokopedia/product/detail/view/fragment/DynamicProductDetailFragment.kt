@@ -2654,21 +2654,21 @@ open class DynamicProductDetailFragment :
         }
     }
 
+
+    /**
+     * When Vertical Recommendation Exists, will attach endless scroll listener
+     * otherwise, the listener will be remove from recyclerView
+     */
     private fun observeVerticalRecommendation() {
         viewLifecycleOwner.observe(viewModel.verticalRecommendation) { data ->
             data.doSuccessOrFail({
                 val recommendationWidget = it.data
                 pdpUiUpdater?.updateVerticalRecommendationData(recommendationWidget)
                 endlessScrollListener?.updateStateAfterGetData()
-                if (recommendationWidget.hasNext) {
-                    addEndlessScrollListener {
-                        val page =
-                            pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
-                        viewModel.getVerticalRecommendationData(page, productId)
-                    }
-                } else {
-                    pdpUiUpdater?.removeComponent(PDP_VERTICAL_LOADING)
-                    removeEndlessScrollListener()
+                addEndlessScrollListener {
+                    val page =
+                        pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
+                    viewModel.getVerticalRecommendationData(page, productId)
                 }
                 updateUi()
             }, {
