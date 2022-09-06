@@ -83,9 +83,6 @@ class GlobalSearchBarWidget: ConstraintLayout {
                 searchBarTextField.imeOptions = EditorInfo.IME_ACTION_PREVIOUS
 
                 isClearable = true
-                clearListener = {
-                    searchTextBoxListener?.onClearTextBoxListener()
-                }
 
                 searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
@@ -186,7 +183,6 @@ class GlobalSearchBarWidget: ConstraintLayout {
     }
 
     interface SearchTextBoxListener {
-        fun onClearTextBoxListener()
         fun onQueryTextChangeListener(keyword: String)
     }
 

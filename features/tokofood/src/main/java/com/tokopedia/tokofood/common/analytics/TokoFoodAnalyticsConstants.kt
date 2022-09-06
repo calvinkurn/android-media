@@ -8,6 +8,7 @@ object TokoFoodAnalyticsConstants {
     const val SHOP_ID = "shopId"
     const val DESTINATION_ID = "destinationId"
     const val PRODUCT_ID = "productId"
+    const val TRACKER_ID = "trackerId"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val SCREEN_NAME = "screenName"
     const val GOFOOD_PAGENAME = "gofood"
@@ -19,6 +20,7 @@ object TokoFoodAnalyticsConstants {
     const val ADD_TO_CART = "add_to_cart"
     const val VIEW_ITEM = "view_item"
     const val BEGIN_CHECKOUT = "begin_checkout"
+    const val VIEW_PG_IRIS = "viewPGIris"
 
     //home
     const val EMPTY_DATA = "null"
@@ -60,4 +62,25 @@ object TokoFoodAnalyticsConstants {
     const val VIEW_ON_SHARING_CHANNEL = "view on sharing channel"
     const val USER_ID_FORMAT = "UserID %s"
     const val VIEW_MERCHANT_PAGE = "view_merchant_page"
+
+    //Search Page
+    const val CLICK_SEARCH_BAR_TOKOFOOD = "click search bar tokofood"
+    const val TRACKER_ID_35766 = "35766"
+    const val TOKOFOOD_HOME = "tokofood home"
+    const val VIEW_SEARCH_HISTORY_TOKOFOOD = "view search history tokofood"
+    const val TOKOFOOD_SEARCH_RECOMMENDATION = "tokofood search recommendation"
+    const val TRACKER_ID_35767 = "35767"
+    const val CLICK_SEARCH_HISTORY_TOKOFOOD = "click search history tokofood"
+    const val TRACKER_ID_35768 = "35768"
+    const val VIEW_TOP_KEYWORD_TOKOFOOD = "view top keyword tokofood"
+    const val TRACKER_ID_35769 = "35769"
+    const val CLICK_TOP_KEYWORD_TOKOFOOD = "click top keyword tokofood"
+    const val TRACKER_ID_35770 = "35770"
+    const val VIEW_CUISINE_LIST_TOKOFOOD = "view cuisine list tokofood"
+    const val TRACKER_ID_35771 = "35771"
+    const val CLICK_CUISINE_LIST_TOKOFOOD = "click cuisine list tokofood"
+    const val TRACKER_ID_35772 = "35772"
+
+
+
 }
