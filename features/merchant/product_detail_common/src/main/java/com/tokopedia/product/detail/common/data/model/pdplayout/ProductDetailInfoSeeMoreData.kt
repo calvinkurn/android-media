@@ -10,8 +10,6 @@ import com.google.gson.annotations.SerializedName
 data class ProductDetailInfoSeeMoreData(
     @SerializedName("actionTitle")
     val actionTitle: String = "",
-    @SerializedName("isHasDetail")
-    val isHasDetail: Boolean = false,
     @SerializedName("param")
     val param: String = ""
 )

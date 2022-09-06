@@ -103,83 +103,6 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         observeData()
     }
 
-    override fun goToDiscussion(discussionCount: Int) {
-        if (discussionCount > 0) {
-            listener?.goToTalkReadingBottomSheet()
-        } else {
-            listener?.onDiscussionSendQuestionBottomSheetClicked()
-        }
-    }
-
-    private fun setupFullScreen(data: List<ProductDetailInfoVisitable>) {
-        var isFullScreen = false
-        data.forEach {
-            if (it is ProductDetailInfoExpandableImageDataModel || it is ProductDetailInfoExpandableDataModel || it is ProductDetailInfoExpandableListDataModel) {
-                isFullScreen = true
-                return@forEach
-            }
-        }
-
-        try {
-            val displayMetrics = DisplayMetrics()
-            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-            val height = displayMetrics.heightPixels
-
-            if (isFullScreen) {
-                binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 20.dpToPx(displayMetrics))
-                binding?.bsProductInfoContainer?.layoutParams?.height = height - bottomSheetHeader.height - (bottomSheetHeader.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin - bottomSheetWrapper.paddingTop
-            } else {
-                binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
-                binding?.bsProductInfoContainer?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            }
-        } catch (_: Throwable) {
-        }
-    }
-
-    override fun goToCatalog(url: String, catalogName: String) {
-        DynamicProductDetailTracking.ProductDetailSheet.onCatalogBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
-                ?: "", catalogName)
-        goToApplink(url)
-    }
-
-    override fun goToCategory(url: String) {
-        if (!GlobalConfig.isSellerApp()) {
-            DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
-                    ?: "")
-            goToApplink(url)
-        }
-    }
-
-    override fun goToEtalase(url: String) {
-        DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
-                ?: "")
-        goToApplink(url)
-    }
-
-    override fun goToApplink(url: String) {
-        RouteManager.route(context, url)
-    }
-
-    override fun goToEducational(url: String, infoTitle: String, infoValue: String, position: Int) {
-        val context = context ?: return
-        val data = listener?.getPdpDataSource() ?: return
-
-        ProductEducationalHelper.goToEducationalBottomSheet(
-            context,
-            url,
-            data.basic.productID,
-            data.basic.shopID
-        )
-
-        ProductDetailBottomSheetTracking.clickInfoItem(
-            data,
-            userSession.userId,
-            infoTitle,
-            infoValue,
-            position
-        )
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         productDetailComponent?.inject(this)
         super.onCreate(savedInstanceState)
@@ -217,6 +140,83 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                 dismiss()
             }
         }
+    }
+
+    override fun goToDiscussion(discussionCount: Int) {
+        if (discussionCount > 0) {
+            listener?.goToTalkReadingBottomSheet()
+        } else {
+            listener?.onDiscussionSendQuestionBottomSheetClicked()
+        }
+    }
+
+    private fun setupFullScreen(data: List<ProductDetailInfoVisitable>) {
+        var isFullScreen = false
+        data.forEach {
+            if (it is ProductDetailInfoExpandableImageDataModel || it is ProductDetailInfoExpandableDataModel || it is ProductDetailInfoExpandableListDataModel) {
+                isFullScreen = true
+                return@forEach
+            }
+        }
+
+        try {
+            val displayMetrics = DisplayMetrics()
+            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+            val height = displayMetrics.heightPixels
+
+            if (isFullScreen) {
+                binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 20.dpToPx(displayMetrics))
+                binding?.bsProductInfoContainer?.layoutParams?.height = height - bottomSheetHeader.height - (bottomSheetHeader.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin - bottomSheetWrapper.paddingTop
+            } else {
+                binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
+                binding?.bsProductInfoContainer?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+        } catch (_: Throwable) {
+        }
+    }
+
+    override fun goToCatalog(url: String, catalogName: String) {
+        DynamicProductDetailTracking.ProductDetailSheet.onCatalogBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
+            ?: "", catalogName)
+        goToApplink(url)
+    }
+
+    override fun goToCategory(url: String) {
+        if (!GlobalConfig.isSellerApp()) {
+            DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
+                ?: "")
+            goToApplink(url)
+        }
+    }
+
+    override fun goToEtalase(url: String) {
+        DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
+            ?: "")
+        goToApplink(url)
+    }
+
+    override fun goToApplink(url: String) {
+        RouteManager.route(context, url)
+    }
+
+    override fun goToEducational(url: String, infoTitle: String, infoValue: String, position: Int) {
+        val context = context ?: return
+        val data = listener?.getPdpDataSource() ?: return
+
+        ProductEducationalHelper.goToEducationalBottomSheet(
+            context,
+            url,
+            data.basic.productID,
+            data.basic.shopID
+        )
+
+        ProductDetailBottomSheetTracking.clickInfoItem(
+            data,
+            userSession.userId,
+            infoTitle,
+            infoValue,
+            position
+        )
     }
 
     override fun onBranchLinkClicked(url: String) {

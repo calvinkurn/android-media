@@ -12,12 +12,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ProductDetailInfoSeeMore(
     val actionTitle: String = "",
-    val isHasDetail: Boolean = false,
     val param: String = ""
 ) : Parcelable
 
 fun ProductDetailInfoSeeMoreData.asModel() = ProductDetailInfoSeeMore(
     actionTitle = actionTitle,
-    isHasDetail = isHasDetail,
     param = param
 )

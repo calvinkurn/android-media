@@ -9,4 +9,5 @@ object ProductDetailInfoConstant {
     const val GUIDELINE_DETAIL_KEY = "panduan_ukuran"
     const val SHOP_NOTES_DETAIL_KEY = "informasi_penting"
     const val CUSTOM_INFO_KEY = "custom_info"
+    const val CATALOG = "catalog"
 }

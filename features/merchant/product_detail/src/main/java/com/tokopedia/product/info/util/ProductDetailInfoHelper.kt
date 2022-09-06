@@ -6,7 +6,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.showImmediately
-import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.di.ProductDetailComponent
@@ -28,7 +27,7 @@ object ProductDetailInfoHelper {
         val parcelData = generateProductInfoParcel(
             p1Data,
             sizeChartImageUrl.orEmpty(),
-            infoData.dataContent,
+            infoData,
             forceRefresh
         )
         cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
@@ -49,10 +48,12 @@ object ProductDetailInfoHelper {
         }
     }
 
-    private fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?,
-                                          variantGuideLine: String,
-                                          productInfoContent: List<ProductDetailInfoContent>,
-                                          forceRefresh: Boolean): ProductInfoParcelData {
+    private fun generateProductInfoParcel(
+        productInfoP1: DynamicProductInfoP1?,
+        variantGuideLine: String,
+        productInfo: ProductDetailInfoDataModel,
+        forceRefresh: Boolean
+    ): ProductInfoParcelData {
 
         productInfoP1?.let {
             val data = it.data
@@ -60,20 +61,19 @@ object ProductDetailInfoHelper {
             val parentId = it.parentProductId
 
             return ProductInfoParcelData(
-                    productId = basic.productID,
-                    shopId = basic.shopID,
-                    productTitle = data.parentName,
-                    productImageUrl = data.getProductImageUrl() ?: "",
-                    variantGuideline = variantGuideLine,
-                    discussionCount = productInfoP1.basic.stats.countTalk.toIntOrZero(),
-                    listOfYoutubeVideo = data.youtubeVideos,
-                    data = productInfoContent,
-                    forceRefresh = forceRefresh,
-                    isTokoNow = productInfoP1.basic.isTokoNow,
-                    isGiftable = basic.isGiftable,
-                    parentId = parentId
+                productId = basic.productID,
+                shopId = basic.shopID,
+                productTitle = data.parentName,
+                productImageUrl = data.getProductImageUrl().orEmpty(),
+                variantGuideline = variantGuideLine,
+                discussionCount = productInfoP1.basic.stats.countTalk.toIntOrZero(),
+                listOfYoutubeVideo = data.youtubeVideos,
+                productInfo = productInfo,
+                forceRefresh = forceRefresh,
+                isTokoNow = productInfoP1.basic.isTokoNow,
+                isGiftable = basic.isGiftable,
+                parentId = parentId
             )
         } ?: return ProductInfoParcelData()
-
     }
 }

@@ -16,7 +16,7 @@ data class ProductDetailInfoHeaderDataModel(
 ) : ProductDetailInfoVisitable {
 
     companion object {
-        private const val SPECIFICATION_SIZE_THRESHOLD = 8
+        const val SPECIFICATION_SIZE_THRESHOLD = 11
     }
 
     fun needToShowSpecification(): Boolean = (listOfInfo.size + listOfAnnotation.size) > SPECIFICATION_SIZE_THRESHOLD

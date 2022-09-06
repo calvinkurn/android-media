@@ -2,7 +2,7 @@ package com.tokopedia.product.info.view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.switchMap
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -21,9 +21,10 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 13/10/20
  */
-class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                       private val getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase,
-                                                       val userSession: UserSessionInterface
+class BsProductDetailInfoViewModel @Inject constructor(
+    dispatchers: CoroutineDispatchers,
+    private val getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase,
+    val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -32,31 +33,43 @@ class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDis
 
     private val parcelData = MutableLiveData<ProductInfoParcelData>()
 
-    val bottomSheetDetailData: LiveData<Result<List<ProductDetailInfoVisitable>>> = Transformations.switchMap(parcelData) {
-        val bottomSheetData = MutableLiveData<Result<List<ProductDetailInfoVisitable>>>()
-        launchCatchError(block = {
-            val requestParams = GetProductDetailBottomSheetUseCase.createParams(
-                    it.productId,
-                    it.shopId,
-                    it.parentId,
-                    it.isGiftable)
-            val responseData = getProductDetailBottomSheetUseCase.executeOnBackground(requestParams, it.forceRefresh)
-            val visitableData = ProductDetailInfoMapper.generateVisitable(responseData, it)
+    val bottomSheetDetailData: LiveData<Result<List<ProductDetailInfoVisitable>>> =
+        parcelData.switchMap {
+            val bottomSheetData = MutableLiveData<Result<List<ProductDetailInfoVisitable>>>()
+            launchCatchError(block = {
+                val requestParams = GetProductDetailBottomSheetUseCase.createParams(
+                    productId = it.productId,
+                    shopId = it.shopId,
+                    parentId = it.parentId,
+                    isGiftable = it.isGiftable
+                )
+                val responseData = getProductDetailBottomSheetUseCase.executeOnBackground(
+                    requestParams = requestParams,
+                    forceRefresh = it.forceRefresh
+                )
+                val visitableData = ProductDetailInfoMapper.generateVisitable(
+                    responseData = responseData,
+                    parcelData = it
+                )
 
-            bottomSheetData.postValue(visitableData.asSuccess())
-        }) {
-            logProductDetailBottomSheet(it)
-            bottomSheetData.postValue(it.asFail())
+                bottomSheetData.postValue(visitableData.asSuccess())
+            }) {
+                logProductDetailBottomSheet(it)
+                bottomSheetData.postValue(it.asFail())
+            }
+            bottomSheetData
         }
-        bottomSheetData
-    }
 
     fun setParams(parcelData: ProductInfoParcelData) {
         this.parcelData.value = parcelData
     }
 
     private fun logProductDetailBottomSheet(throwable: Throwable) {
-        ProductDetailLogger.logThrowable(throwable, ERROR_TYPE_DESCRIPTION_INFO, parcelData.value?.productId
-                ?: "", userSession.deviceId)
+        ProductDetailLogger.logThrowable(
+            throwable = throwable,
+            errorType = ERROR_TYPE_DESCRIPTION_INFO,
+            productId = parcelData.value?.productId.orEmpty(),
+            deviceId = userSession.deviceId
+        )
     }
 }
