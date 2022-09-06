@@ -42,6 +42,7 @@
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
     <string name="title_wishlist">Wishlist</string>
+    <string name="title_collection_wishlist">Wishlist Collection</string>
     <string name="recom_home_recommendation">Pilihan Tokopedia</string>
     <string name="title_recent_view">Terakhir Dilihat</string>
 
@@ -167,5 +168,8 @@
 
     <!-- Shop Flash Sale -->
     <string name="title_shop_flash_sale">Flash Sale Toko</string>
+
+<!--    Tokomember seller dashboard-->
+    <string name="title_tokomember" translatable="false">Tokomember</string>
 
 </resources>

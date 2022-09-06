@@ -2,7 +2,7 @@
 <com.tokopedia.merchantvoucher.common.widget.CustomVoucherView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_80"
+    android:layout_height="80dp"
     android:layout_marginTop="6dp"
     android:layout_marginBottom="6dp"
     android:paddingLeft="16dp"
@@ -12,7 +12,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_80"
+        android:layout_height="80dp"
         android:baselineAligned="false"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -28,14 +28,14 @@
             android:paddingBottom="8dp">
 
             <com.tokopedia.unifycomponents.LoaderUnify
-                android:layout_width="@dimen/dp_150"
+                android:layout_width="150dp"
                 android:layout_height="12dp"
                 android:layout_marginBottom="6dp"
                 app:loader_corner_radius="10dp"
                 app:loader_type="rect"/>
 
             <com.tokopedia.unifycomponents.LoaderUnify
-                android:layout_width="@dimen/dp_80"
+                android:layout_width="80dp"
                 android:layout_height="12dp"
                 app:loader_corner_radius="10dp"
                 app:loader_type="rect"/>
@@ -51,7 +51,7 @@
             android:orientation="vertical">
 
             <com.tokopedia.unifycomponents.LoaderUnify
-                android:layout_width="@dimen/dp_80"
+                android:layout_width="80dp"
                 android:layout_height="12dp"
                 app:loader_corner_radius="10dp"
                 app:loader_type="rect"/>

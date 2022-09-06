@@ -183,7 +183,7 @@ class PlayAnalytic(
         val (eventAction, eventLabel) = when(sectionInfo.config.type){
             ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = firstProduct, campaignId = sectionInfo.id))
             ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = firstProduct, campaignId = sectionInfo.id))
-            else -> Pair("view product", "$mChannelId - ${firstProduct.id} - ${mChannelType.value} - product in bottom sheet - is pinned product $firstProduct")
+            else -> Pair("view product", "$mChannelId - ${firstProduct.id} - ${mChannelType.value} - product in bottom sheet - is pinned product ${firstProduct.isPinned}")
         }
         trackingQueue.putEETracking(
                 event = EventModel(
@@ -426,7 +426,7 @@ class PlayAnalytic(
                 EventModel(
                     "productClick",
                     KEY_TRACK_GROUP_CHAT_ROOM,
-                    KEY_TRACK_CLICK,
+                    "click featured product tagging",
                     "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging",
                 ),
                 hashMapOf(

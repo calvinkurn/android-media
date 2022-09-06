@@ -1,23 +1,24 @@
 package com.tokopedia.gopay.kyc.presentation.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.gopay.kyc.presentation.GoPayKycBenefitAdapter
 import com.tokopedia.gopay.kyc.R
 import com.tokopedia.gopay.kyc.analytics.GoPayKycAnalytics
 import com.tokopedia.gopay.kyc.analytics.GoPayKycConstants
 import com.tokopedia.gopay.kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay.kyc.di.GoPayKycComponent
 import com.tokopedia.gopay.kyc.domain.data.GoPayPlusBenefit
+import com.tokopedia.gopay.kyc.presentation.GoPayKycBenefitFactory
 import com.tokopedia.gopay.kyc.presentation.activity.GoPayKtpInstructionActivity
 import com.tokopedia.gopay.kyc.presentation.fragment.base.GoPayKycBaseFragment
-import com.tokopedia.gopay.kyc.presentation.viewholder.GoPayPlusBenefitItemViewHolder
 import com.tokopedia.gopay.kyc.viewmodel.GoPayKycViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -36,7 +37,13 @@ class GoPayPlusKycBenefitFragment : GoPayKycBaseFragment() {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(GoPayKycViewModel::class.java)
     }
-    private val benefitList = ArrayList<GoPayPlusBenefit>()
+    private val benefitList = ArrayList<Visitable<*>>()
+
+    private fun getAdapterTypeFactory(): GoPayKycBenefitFactory = GoPayKycBenefitFactory()
+
+    private val goPayKycBenefitAdapter: GoPayKycBenefitAdapter by lazy {
+        GoPayKycBenefitAdapter(getAdapterTypeFactory())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,8 +56,13 @@ class GoPayPlusKycBenefitFragment : GoPayKycBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHeaderBackground()
+        setUpGoPayBenefitRecyclerView()
         initListeners()
-        context?.let { setInstructionListView(it) }
+    }
+
+    private fun setHeaderBackground(){
+       goPayHeaderBackground.setImageUrl(GOPAY_HEADER_BACKGROUND_IMAGE)
     }
 
     private fun initListeners() {
@@ -60,12 +72,16 @@ class GoPayPlusKycBenefitFragment : GoPayKycBaseFragment() {
         }
     }
 
-    private fun setInstructionListView(context: Context) {
-        val layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-        for (goPayPlusBenefit in benefitList) {
-            goPayBenefitLL.addView(
-                GoPayPlusBenefitItemViewHolder(context, layoutParams).bindData(goPayPlusBenefit)
-            )
+    private fun imageUrl(){
+
+    }
+
+    private fun setUpGoPayBenefitRecyclerView() {
+        goPayBenefitRV.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            adapter = goPayKycBenefitAdapter
+            goPayKycBenefitAdapter.addAllElements(benefitList)
         }
     }
 
@@ -100,40 +116,46 @@ class GoPayPlusKycBenefitFragment : GoPayKycBaseFragment() {
     private fun populateBenefits() {
         benefitList.apply {
             add(
+                EmptyModel()
+            )
+            add(
                 GoPayPlusBenefit(
-                    R.drawable.ic_gopay_wallet,
-                    getString(R.string.gopay_kyc_wallet_benefit_title_text),
-                    getString(R.string.gopay_kyc_wallet_benefit_description_text)
+                    getString(R.string.gopay_kyc_limit_balance_title_text),
+                    getString(R.string.gopay_kyc_limit_balance_gopay_text),
+                    getString(R.string.gopay_kyc_limit_balance_gopay_plus_text),
                 )
             )
             add(
                 GoPayPlusBenefit(
-                    R.drawable.ic_gopay_atm_benefit,
-                    getString(R.string.gopay_kyc_atm_benefit_title_text),
-                    getString(R.string.gopay_kyc_atm_benefit_description_text)
+                    getString(R.string.gopay_kyc_limit_transaction_per_month_title_text),
+                    getString(R.string.gopay_kyc_limit_transaction_per_month_gopay_text),
+                    getString(R.string.gopay_kyc_limit_transaction_per_month_gopay_plus_text),
                 )
             )
             add(
                 GoPayPlusBenefit(
-                    R.drawable.ic_gopay_transfer_money,
-                    getString(R.string.gopay_kyc_instant_debit_benefit_title_text),
-                    getString(R.string.gopay_kyc_instant_debit_benefit_description_text)
+                    getString(R.string.gopay_kyc_transfer_to_fellow_gopay_title_text),
+                    "",
+                    ""
                 )
             )
             add(
                 GoPayPlusBenefit(
-                    R.drawable.ic_gopay_friends,
-                    getString(R.string.gopay_kyc_friends_benefit_title_text),
-                    getString(R.string.gopay_kyc_friends_benefit_description_text)
+                    getString(R.string.gopay_kyc_transfer_to_bank_title_text),
+                    "",
+                    ""
                 )
             )
             add(
                 GoPayPlusBenefit(
-                    R.drawable.ic_gopay_guarantee,
-                    getString(R.string.gopay_kyc_payback_benefit_title_text),
-                    getString(R.string.gopay_kyc_payback_benefit_description_text)
+                    getString(R.string.gopay_kyc_guarantee_balance_return_title_text),
+                    "",
+                    "",
+                    isLastItem = true
                 )
+
             )
+
         }
     }
 
@@ -152,5 +174,6 @@ class GoPayPlusKycBenefitFragment : GoPayKycBaseFragment() {
 
     companion object {
         fun newInstance() = GoPayPlusKycBenefitFragment()
+        private const val GOPAY_HEADER_BACKGROUND_IMAGE="https://images.tokopedia.net/img/android/gopay_benefit_page/ic_gopay_benefit_blue_background.png"
     }
 }
