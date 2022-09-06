@@ -435,7 +435,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         String message = getMessageFromThrowable(getActivity(), throwable);
         if (getView() != null) {
             toasterSnackbar = Toaster.build(getView(), message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                    getString(R.string.retry_label), listener);
+                    getString(R.string.base_list_retry_label), listener);
             toasterSnackbar.show();
         }
     }
