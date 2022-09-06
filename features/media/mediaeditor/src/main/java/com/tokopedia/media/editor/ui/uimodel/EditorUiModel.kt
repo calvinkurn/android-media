@@ -9,7 +9,7 @@ class EditorUiModel(
     val editList = mutableListOf<EditorDetailUiModel>()
 
     var backValue = 0
-    var removeBackgroundStartState = 0
+    var removeBackgroundStartState: Int? = null
 
     val isVideo: Boolean = isVideoFormat(originalUrl)
     var isAutoCropped: Boolean = false
@@ -52,7 +52,9 @@ class EditorUiModel(
 
     fun getFilteredStateList(): List<EditorDetailUiModel>{
         val maxStateLimit = (editList.size) - backValue
-        val minStateLimit = if(maxStateLimit < removeBackgroundStartState) 0 else removeBackgroundStartState
+        val minStateLimit = removeBackgroundStartState?.let {
+            if(maxStateLimit < it) 0 else removeBackgroundStartState
+        } ?: 0
 
         return editList.subList(minStateLimit, maxStateLimit)
     }
