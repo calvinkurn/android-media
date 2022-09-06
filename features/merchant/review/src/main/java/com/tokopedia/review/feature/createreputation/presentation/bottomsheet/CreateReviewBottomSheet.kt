@@ -77,6 +77,9 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         private const val MAX_VIDEO_SIZE_BYTE = 250L * 1024L * 1024L
         private const val SHOW_TEXT_AREA_AUTO_SCROLL_DELAY = 500L
 
+        const val TEMPLATES_ROW_COUNT = 2
+        const val BAD_RATING_OTHER_ID = "6"
+
         fun createInstance(
             rating: Int,
             productId: String,
@@ -645,12 +648,12 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
         fun trackOnReceiveMediaFromMediaPicker(mediaCount: Int) {
             CreateReviewTracking.reviewOnImageUploadTracker(
-                viewModel.getOrderId(),
-                viewModel.getProductId(),
-                true,
-                mediaCount.toString(),
-                false,
-                viewModel.getFeedbackId()
+                orderId = viewModel.getOrderId(),
+                productId = viewModel.getProductId(),
+                isSuccessful = true,
+                imageNum = mediaCount.toString(),
+                isEditReview = false,
+                feedbackId = viewModel.getFeedbackId()
             )
         }
 
