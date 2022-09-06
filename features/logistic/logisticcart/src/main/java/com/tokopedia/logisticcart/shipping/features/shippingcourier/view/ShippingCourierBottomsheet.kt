@@ -91,14 +91,14 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     }
 
     fun setShippingCourierViewModels(shippingCourierUiModels: List<ShippingCourierUiModel>?,
-                                     cartPosition: Int, shipmentCartItemModel: ShipmentCartItemModel, preOrderModel: PreOrderModel?) {
+                                     cartPosition: Int, preOrderModel: PreOrderModel?) {
         hideLoading()
         if (shippingCourierUiModels != null && shippingCourierUiModels.isNotEmpty()) {
             mCourierModelList = shippingCourierUiModels
             mPreOrderModel = preOrderModel
             setupRecyclerView(cartPosition)
         } else if (activity != null) {
-            showErrorPage(activity!!.getString(R.string.message_error_shipping_general), shipmentCartItemModel, cartPosition)
+            showErrorPage(activity!!.getString(R.string.message_error_shipping_general))
         }
     }
 
@@ -192,13 +192,12 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         llContent?.visibility = View.VISIBLE
     }
 
-    private fun showErrorPage(message: String, shipmentCartItemModel: ShipmentCartItemModel, cartPosition: Int) {
+    private fun showErrorPage(message: String) {
         pbLoading?.visibility = View.GONE
         llContent?.visibility = View.GONE
         llNetworkErrorView?.visibility = View.VISIBLE
         NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) {
             showLoading()
-            shippingCourierBottomsheetListener?.onRetryReloadCourier(shipmentCartItemModel, cartPosition)
         }
     }
 

@@ -1348,11 +1348,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         }
 
                         override fun onCourierShipmentRecommendationCloseClicked() {}
-
-                        override fun onRetryReloadCourier(shipmentCartItemModel: ShipmentCartItemModel, cartPosition: Int) {
-                            viewModel.reloadRates()
-                            orderSummaryAnalytics.eventClickRefreshOnCourierSection(shipmentCartItemModel.shopId.toString())
-                        }
                     }, list, null, 0, true)
                 }
             }

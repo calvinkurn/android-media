@@ -2329,11 +2329,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    @Override
-    public void onRetryReloadCourier(ShipmentCartItemModel shipmentCartItemModel, int cartPosition) {
-        reloadCourier(shipmentCartItemModel, cartPosition, false);
-    }
-
     private void checkHasCourierPromo(List<ShippingCourierUiModel> shippingCourierUiModels) {
         boolean hasCourierPromo = false;
         for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
@@ -2436,14 +2431,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel) {
         if (shippingCourierBottomsheet != null) {
-            shippingCourierBottomsheet.setShippingCourierViewModels(null, cartPosition, shipmentCartItemModel, null);
+            shippingCourierBottomsheet.setShippingCourierViewModels(null, cartPosition, null);
         }
     }
 
     @Override
     public void updateCourierBottomssheetHasData(List<ShippingCourierUiModel> shippingCourierUiModels, int cartPosition, ShipmentCartItemModel shipmentCartItemModel, PreOrderModel preOrderModel) {
         if (shippingCourierBottomsheet != null) {
-            shippingCourierBottomsheet.setShippingCourierViewModels(shippingCourierUiModels, cartPosition, shipmentCartItemModel, preOrderModel);
+            shippingCourierBottomsheet.setShippingCourierViewModels(shippingCourierUiModels, cartPosition, preOrderModel);
         }
     }
 
