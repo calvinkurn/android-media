@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketplaceModuleBottomSheetInputPromoCodeBinding
@@ -130,6 +132,8 @@ class PromoInputBottomSheet() : BottomSheetUnify() {
 
     private fun dismissAfterSuccess(element: PromoInputUiModel) {
         if (element.uiState.needToDismissBottomsheet) {
+            val input = viewBinding?.root?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            input?.hideSoftInputFromWindow(viewBinding?.etInputPromo?.windowToken, 0)
             this.dismiss()
         }
     }
