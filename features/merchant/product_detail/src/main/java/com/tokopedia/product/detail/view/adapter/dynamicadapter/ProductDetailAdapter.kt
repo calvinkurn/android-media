@@ -37,6 +37,8 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
                            private val adapterTypeFactory: DynamicProductDetailAdapterFactory) :
         ListAdapter<DynamicPdpDataModel, AbstractViewHolder<*>>(asyncDifferConfig) {
 
+    var shouldRedrawLayout: Boolean = false
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = onCreateViewItem(parent, viewType)
         return adapterTypeFactory.createViewHolder(view, viewType)
@@ -82,17 +84,19 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
             (currentList[holder.adapterPosition] as? ContentWidgetDataModel)?.playWidgetState?.isLoading == true) {
             listener?.loadPlayWidget()
         }
-        if (holder is ProductRecommendationVerticalPlaceholderViewHolder &&
-            holder.adapterPosition < currentList.size &&
-            (currentList[holder.adapterPosition] as? ProductRecommendationVerticalPlaceholderDataModel)?.recomWidgetData == null) {
-            listener?.startVerticalRecommendation()
+        if (holder is ProductRecommendationVerticalPlaceholderViewHolder) {
+            if (holder.adapterPosition < currentList.size &&
+                (currentList[holder.adapterPosition] as? ProductRecommendationVerticalPlaceholderDataModel)?.recomWidgetData == null
+            ) listener?.startVerticalRecommendation()
+            shouldRedrawLayout = true
         }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
         super.onViewDetachedFromWindow(holder)
-        if (holder is ProductMediaViewHolder) {
-            holder.detachView()
+        when (holder) {
+            is ProductMediaViewHolder -> holder.detachView()
+            is ProductRecommendationVerticalPlaceholderViewHolder -> shouldRedrawLayout = false
         }
     }
 

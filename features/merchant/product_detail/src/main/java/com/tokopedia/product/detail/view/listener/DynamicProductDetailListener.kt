@@ -418,4 +418,5 @@ interface DynamicProductDetailListener {
         item: RecommendationItem,
         position: Int
     )
+    fun getRecommendationVerticalTrackData(): ComponentTrackDataModel?
 }

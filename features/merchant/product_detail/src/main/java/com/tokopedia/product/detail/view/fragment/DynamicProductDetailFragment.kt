@@ -5432,4 +5432,6 @@ open class DynamicProductDetailFragment :
             trackDataModel
         )
     }
+
+    override fun getRecommendationVerticalTrackData(): ComponentTrackDataModel? = verticalRecommendationTrackDataModel
 }

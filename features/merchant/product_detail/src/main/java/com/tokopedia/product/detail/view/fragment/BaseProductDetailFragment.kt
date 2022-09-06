@@ -164,7 +164,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
         rv.apply{
             isNestedScrollingEnabled = false
-            itemAnimator = null
+//            itemAnimator = null
             layoutManager = CenterLayoutManager(view.context).apply {
                 gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
             }
@@ -179,7 +179,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
 
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && productAdapter?.shouldRedrawLayout == true) {
                 (recyclerView.layoutManager as CenterLayoutManager).invalidateSpanAssignments()
                 recyclerView.invalidateItemDecorations()
             }
