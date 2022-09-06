@@ -51,7 +51,8 @@ object HomeRepurchaseMapper {
                 repurchaseProduct.parentProductId,
                 createProductCardModel(repurchaseProduct, miniCartData),
                 TokoNowLayoutType.REPURCHASE_PRODUCT,
-                index + ADDITIONAL_POSITION
+                index + ADDITIONAL_POSITION,
+                response.title
             )
         }
     }
