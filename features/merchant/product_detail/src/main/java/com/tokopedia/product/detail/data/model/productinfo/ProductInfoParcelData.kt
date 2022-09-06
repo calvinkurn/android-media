@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.data.model.productinfo
 
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 
 /**
  * Created by Yehezkiel on 20/10/20

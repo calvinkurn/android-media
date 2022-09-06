@@ -1,18 +1,18 @@
 package com.tokopedia.product.info.model.productdetail.uidata
 
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 
 /**
  * Created by Yehezkiel on 12/10/20
  */
 data class ProductDetailInfoHeaderDataModel(
-        var componentId: Int = 0,
-        var img: String = "",
-        var productTitle: String = "",
-        var listOfInfo: List<ProductDetailInfoContent> = listOf(),
-        var listOfAnnotation: List<ProductDetailInfoContent> = listOf(),
-        var isShowable: Boolean = false
+    var componentId: Int = 0,
+    var img: String = "",
+    var productTitle: String = "",
+    var listOfInfo: List<ProductDetailInfoContent> = listOf(),
+    var listOfAnnotation: List<ProductDetailInfoContent> = listOf(),
+    var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
 
     companion object {

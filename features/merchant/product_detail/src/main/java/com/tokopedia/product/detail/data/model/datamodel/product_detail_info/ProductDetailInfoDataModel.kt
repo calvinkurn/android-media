@@ -1,24 +1,26 @@
-package com.tokopedia.product.detail.data.model.datamodel
+package com.tokopedia.product.detail.data.model.datamodel.product_detail_info
 
 import android.os.Bundle
-import android.os.Parcelable
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.product.info.util.ProductDetailInfoConstant
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.DESCRIPTION_DETAIL_KEY
-import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by Yehezkiel on 12/10/20
  */
 data class ProductDetailInfoDataModel(
-        val name: String = "",
-        val type: String = "",
-        val dataContent: List<ProductDetailInfoContent> = listOf()
+    val name: String = "",
+    val type: String = "",
+    val title: String = "",
+    val catalogBottomSheet: ProductDetailInfoSeeMore? = null,
+    val bottomSheet: ProductDetailInfoSeeMore = ProductDetailInfoSeeMore(),
+    val dataContent: List<ProductDetailInfoContent> = listOf()
 ) : DynamicPdpDataModel {
 
     fun getShowableData(): List<ProductDetailInfoContent> {
-        return dataContent.filter { it.showAtFront }.filterNot { it.title.toLowerCase() == DESCRIPTION_DETAIL_KEY }
+        return dataContent.filter { it.showAtFront }
+            .filterNot { it.title.toLowerCase() == DESCRIPTION_DETAIL_KEY }
     }
 
     fun getDescription(): String {
@@ -54,13 +56,3 @@ data class ProductDetailInfoDataModel(
     }
 }
 
-@Parcelize
-data class ProductDetailInfoContent(
-        val icon: String = "",
-        val title: String = "",
-        var subtitle: String = "",
-        val applink: String = "",
-        val infoLink: String = "",
-        val showAtFront: Boolean = false,
-        val isAnnotation: Boolean = false
-) : Parcelable

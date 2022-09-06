@@ -1,6 +1,6 @@
 package com.tokopedia.product.info.view
 
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 
 /**
  * Created by Yehezkiel on 12/10/20
