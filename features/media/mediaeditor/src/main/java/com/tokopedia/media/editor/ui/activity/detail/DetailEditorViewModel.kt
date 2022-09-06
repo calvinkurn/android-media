@@ -76,6 +76,11 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     fun setRemoveBackground(filePath: String, onError: (t: Throwable) -> Unit) {
+        if(_removeBackground.value != null) {
+            _removeBackground.value = _removeBackground.value
+            return
+        }
+
         viewModelScope.launch {
             try {
                 removeBackgroundUseCase(filePath)

@@ -2,6 +2,7 @@ package com.tokopedia.media.editor.ui.fragment
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -28,7 +30,6 @@ import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.basecomponent.uiComponent
@@ -61,6 +62,7 @@ class DetailEditorFragment @Inject constructor(
     private var implementedBaseBitmap: Bitmap? = null
 
     private var removeBackgroundRetryLimit = 3
+    private var removeBackgroundType = 0
 
     private var isEdited = false
     private var initialImageMatrix: Matrix? = null
@@ -127,29 +129,45 @@ class DetailEditorFragment @Inject constructor(
         isEdited = true
     }
 
-    override fun onRemoveBackgroundClicked() {
+    override fun onRemoveBackgroundClicked(removeBgType: Int) {
         viewBinding?.imgUcropPreview?.let { _ ->
             data.resultUrl?.let { it ->
-                viewModel.setRemoveBackground(it) { _ ->
-                    viewBinding?.let {
-                        Toaster.build(
-                            it.editorFragmentDetailRoot,
-                            getString(editorR.string.editor_tool_remove_background_failed_normal),
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_NORMAL,
-                            getString(editorR.string.editor_tool_remove_background_failed_cta)
-                        ) {
-                            removeBackgroundRetryLimit--
-                            if (removeBackgroundRetryLimit == 0) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    getString(editorR.string.editor_tool_remove_background_failed_normal),
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                activity?.finish()
-                            } else
-                                onRemoveBackgroundClicked()
-                        }.show()
+                removeBackgroundType = removeBgType
+
+                if (removeBgType == RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_ORI) {
+                    loadImageWithEmptyTarget(requireContext(),
+                        it,
+                        {},
+                        mediaTarget = MediaBitmapEmptyTarget(
+                            onReady = { resultBitmap ->
+                                viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(
+                                    resultBitmap
+                                )
+                            }
+                        )
+                    )
+                } else {
+                    viewModel.setRemoveBackground(it) { _ ->
+                        viewBinding?.let {
+                            Toaster.build(
+                                it.editorFragmentDetailRoot,
+                                getString(editorR.string.editor_tool_remove_background_failed_normal),
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_NORMAL,
+                                getString(editorR.string.editor_tool_remove_background_failed_cta)
+                            ) {
+                                removeBackgroundRetryLimit--
+                                if (removeBackgroundRetryLimit == 0) {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(editorR.string.editor_tool_remove_background_failed_normal),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    activity?.finish()
+                                } else
+                                    onRemoveBackgroundClicked(removeBackgroundType)
+                            }.show()
+                        }
                     }
                 }
             }
@@ -246,11 +264,27 @@ class DetailEditorFragment @Inject constructor(
                     {},
                     mediaTarget = MediaBitmapEmptyTarget(
                         onReady = { resultBitmap ->
-                            viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(resultBitmap)
+                            when (removeBackgroundType) {
+                                RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_GRAY -> editorR.color.Unify_NN200
+                                RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_WHITE -> editorR.color.Unify_Static_White
+                                else -> null
+                            }?.let {
+                                val color = ContextCompat.getColor(requireContext(), it)
+
+                                val backgroundBitmap = Bitmap.createBitmap(resultBitmap.width, resultBitmap.height, resultBitmap.config)
+                                backgroundBitmap.eraseColor(color)
+
+                                val canvas = Canvas(backgroundBitmap)
+                                canvas.drawBitmap(resultBitmap, 0f, 0f, null)
+
+                                viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(backgroundBitmap)
+                            }
+
+                            isEdited = true
                         }
-                    ))
+                    )
+                )
             }
-            isEdited = true
         }
     }
 
