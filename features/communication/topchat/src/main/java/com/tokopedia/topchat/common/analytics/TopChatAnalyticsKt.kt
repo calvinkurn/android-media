@@ -327,7 +327,7 @@ object TopChatAnalyticsKt {
 
         val productIdList = getItemIdList(bundleItems)
 
-        eventDataLayer.putString(ITEM_LIST, productIdList.toString())
+        eventDataLayer.putString(ITEM_LIST, productIdList.joinToString())
         eventDataLayer.putParcelableArrayList(
             AddToCartExternalAnalytics.EE_VALUE_ITEMS,
             listItemBundles
@@ -373,7 +373,7 @@ object TopChatAnalyticsKt {
 
         val productIdList = getItemIdList(bundleItems)
 
-        eventDataLayer.putString(ITEM_LIST, productIdList.toString())
+        eventDataLayer.putString(ITEM_LIST, productIdList.joinToString())
         eventDataLayer.putParcelableArrayList(
             AddToCartExternalAnalytics.EE_VALUE_ITEMS,
             listItemBundles
@@ -447,7 +447,7 @@ object TopChatAnalyticsKt {
         itemBundle.putString(ITEM_ID, setValueOrDefault(product.productId))
         itemBundle.putString(ITEM_NAME, setValueOrDefault(product.productName))
         itemBundle.putString(ITEM_VARIANT, EE_VALUE_NONE_OTHER)
-        itemBundle.putString(PRICE, product.productPrice)
+        itemBundle.putString(PRICE, product.productPrice.slice(3 until product.productPrice.length))
 
         val itemBundleList = ArrayList<Bundle>()
         itemBundleList.add(itemBundle)
@@ -463,7 +463,7 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(TRACKER_ID, "14824")
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
-        eventDataLayer.putString(ITEM_LIST, productIdList.toString())
+        eventDataLayer.putString(ITEM_LIST, productIdList.joinToString())
         eventDataLayer.putParcelableArrayList(
             AddToCartExternalAnalytics.EE_VALUE_ITEMS,
             itemBundleList
@@ -738,7 +738,7 @@ object TopChatAnalyticsKt {
         const val VIEW_ON_PRODUCT_THUMBNAIL = "view on product thumbnail"
     }
 
-    private const val PRODUCT_INDEX = "1"
+    private const val PRODUCT_INDEX = "0"
 
     // default value
     private const val EE_VALUE_NONE_OTHER = "none / other"

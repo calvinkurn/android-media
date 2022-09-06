@@ -43,7 +43,7 @@ object AttachProductAnalytics {
             Action.CLICK_KIRIM_AFTER_PILIH_PRODUCT_VARIANT
         )
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
-        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, productIds.toString())
+        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, productIds.joinToString())
         eventDataLayer.putString(TRACKER_ID, "14823")
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
