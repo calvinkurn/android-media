@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 
+
 class AttachProductUseCase @Inject constructor(@ApplicationContext private val repository: GraphqlRepository,
                            private val graphQuery: String,
                            private val dispatcher: CoroutineDispatcher):
