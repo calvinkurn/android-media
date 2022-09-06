@@ -45,6 +45,7 @@ import com.tokopedia.deals.pdp.ui.adapter.DealsRecommendationAdapter
 import com.tokopedia.deals.pdp.ui.callback.DealsPDPCallbacks
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPViewModel
 import com.tokopedia.deals.pdp.widget.WidgetDealsPDPCarousel
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -87,7 +88,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private var progressBarLayout: FrameLayout? = null
     private var appBarLayout: AppBarLayout? = null
     private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
-    private var toolbar: Toolbar? = null
+    private var toolbar: HeaderUnify? = null
     private var menuPDP: Menu? = null
     private var clHeader: ConstraintLayout? = null
     private var imageCarousel: WidgetDealsPDPCarousel? = null
@@ -205,7 +206,6 @@ class DealsPDPFragment: BaseDaggerFragment() {
             viewModel.flowPDP.collect {
                 when (it) {
                     is Success -> {
-                        hideLoading()
                         showPDPData(it.data.eventProductDetail.productDetailData)
                         getRecommendation(it.data.eventProductDetail.productDetailData.childCategoryIds)
                         getRating(it.data.eventProductDetail.productDetailData.id)
@@ -250,12 +250,14 @@ class DealsPDPFragment: BaseDaggerFragment() {
             viewModel.flowRating.collect {
                 when (it) {
                     is Success -> {
+                        hideLoading()
                         it.data.data.first().apply {
                             setRating(productId.toString(), totalLikes, isLiked, )
                         }
                     }
 
                     is Fail -> {
+                        hideLoading()
                         setRating("0", Int.ZERO, false, isHideImageRating = true)
                     }
                 }
@@ -576,14 +578,16 @@ class DealsPDPFragment: BaseDaggerFragment() {
                             mainAppBarLayout.totalScrollRange - (toolbar?.height ?: Int.ZERO)
                         if (appVerticalOffset >= difference) {
                             if (displayName.isNotEmpty()) {
-                                collapsingToolbarLayout?.title = displayName
+                                toolbar?.headerTitle = displayName
+                                toolbar?.transparentMode = false
                             }
                             colorInt = ContextCompat.getColor(
                                 context,
                                 com.tokopedia.unifyprinciples.R.color.Unify_N400
                             )
                         } else {
-                            collapsingToolbarLayout?.title = ""
+                            toolbar?.headerTitle = ""
+                            toolbar?.transparentMode = true
                             colorInt = ContextCompat.getColor(
                                 context,
                                 com.tokopedia.unifyprinciples.R.color.Unify_N0
@@ -698,7 +702,9 @@ class DealsPDPFragment: BaseDaggerFragment() {
             val pattern = Pattern.compile(SALAM_REGEX_PATTERN)
             val matcher = pattern.matcher(valueText)
             if (matcher.find()) {
-                showGeneralWebview(matcher.group(URL_GROUP))
+                matcher.group(URL_GROUP)?.let {
+                    showGeneralWebview(it)
+                }
             }
         }
     }
@@ -718,8 +724,8 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
     private fun share(productdetail: ProductDetailData) {
         activity?.let { activity ->
-            val activity = WeakReference<Activity>(activity)
-            if(!::dealsSharePDP.isInitialized) dealsSharePDP = DealsPDPShare(activity)
+            val weakReference = WeakReference<Activity>(activity)
+            if(!::dealsSharePDP.isInitialized) dealsSharePDP = DealsPDPShare(weakReference)
             dealsSharePDP.shareEvent(productdetail, productdetail.displayName, requireContext(), { showShareLoading() }, { hideShareLoading() })
         }
     }
