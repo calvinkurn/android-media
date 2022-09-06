@@ -20,7 +20,7 @@ class RevampActionButtonUseCase @Inject constructor(
     private var params: Map<String, List<ActionButton>> = mapOf()
 
     override suspend fun executeOnBackground(): ActionButtonList {
-        val request = GraphqlRequest(QuerySetActionButton(), ActionButtonList::class.java, params, false)
+        val request = GraphqlRequest(QuerySetActionButton(), ActionButtonList::class.java, params)
         val gqlResponse = repository.response(listOf(request))
         val error = gqlResponse.getError(ActionButtonList::class.java)
         if (error == null || error.isEmpty()){
