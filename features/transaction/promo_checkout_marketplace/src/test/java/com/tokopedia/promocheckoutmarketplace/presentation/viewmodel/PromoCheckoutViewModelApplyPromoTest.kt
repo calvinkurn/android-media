@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoBoRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoEmptyRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantResponseSuccess
@@ -467,8 +468,30 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         assert(!request.orders.first().codes.contains(selectedBo.uiData.promoCode))
     }
 
-    // todo
     @Test
-    fun `WHEN unapply promo BO because clashing with other chosen promo THEN should add promo BO code in param to get red state`() {}
+    fun `WHEN unapply promo BO because clashing with other chosen promo THEN should add promo BO code in param to get red state`() {
+        // given bo not disabled and not clashing with other promo
+        val promoList = providePromoListWithBoPlusAsRecommendedPromo()
+        val boPromo = promoList[1] as PromoListItemUiModel
+        boPromo.uiState.isSelected = false
+        boPromo.uiState.isDisabled = true
+        val bboAppliedFromPreviousPage = arrayListOf<String>("PLUSAA")
+        val applyParam = provideApplyPromoBoRequest()
+        val response = provideApplyPromoMerchantResponseSuccess()
+        viewModel.setPromoListValue(promoList)
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { validateUseUseCase.setParam(any()) } returns validateUseUseCase
+        coEvery { validateUseUseCase.execute(any(), any()) } answers {
+            firstArg<(ValidateUsePromoRevampUiModel) -> Unit>().invoke(ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response.validateUsePromoRevamp))
+        }
+
+        //when
+        viewModel.applyPromo(applyParam, bboAppliedFromPreviousPage)
+
+        //then
+        print(applyParam.orders[0].codes)
+        assert(applyParam.orders[0].codes.isNotEmpty())
+    }
 
 }
