@@ -38,7 +38,7 @@ class GQLGetShopFavoriteStatusUseCase(val gqlQuery: String,
         private val DEFAULT_SHOP_FIELDS = listOf("favorite")
 
         @JvmStatic
-        fun createParams(shopIds: List<Long>, shopDomain: String? = null, fields: List<String> = DEFAULT_SHOP_FIELDS): RequestParams = RequestParams.create().apply {
+        fun createParams(shopIds: List<Int>, shopDomain: String? = null, fields: List<String> = DEFAULT_SHOP_FIELDS): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_IDS, shopIds)
             putObject(PARAM_SHOP_FIELDS, fields)
             putString(PARAM_SHOP_DOMAIN, shopDomain)

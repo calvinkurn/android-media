@@ -127,7 +127,7 @@ class CreatePostPresenter @Inject constructor(
                     }
             )
         } else {
-            getShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(listOf(userSession.shopId.toLong()), "")
+            getShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(listOf(userSession.shopId.toInt()), "")
             getShopFavoriteStatusUseCase.execute(
                     {
                         followersCount = it.favoriteData.totalFavorite
