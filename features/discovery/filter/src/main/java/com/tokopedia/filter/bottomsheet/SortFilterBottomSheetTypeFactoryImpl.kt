@@ -13,6 +13,9 @@ import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterViewHolder
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewHolder
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterListener
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterUiModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterViewHolder
 import com.tokopedia.filter.bottomsheet.sort.SortViewHolder
 import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
@@ -22,6 +25,7 @@ internal class SortFilterBottomSheetTypeFactoryImpl(
         private val filterViewListener: FilterViewListener,
         private val priceFilterViewListener: PriceFilterViewListener,
         private val keywordFilterListener: KeywordFilterListener,
+        private val priceRangeFilterListener: PriceRangeFilterListener
 ): SortFilterBottomSheetTypeFactory {
 
     private val recycledViewPool = RecycledViewPool()
@@ -41,12 +45,16 @@ internal class SortFilterBottomSheetTypeFactoryImpl(
     override fun type(keywordFilterDataView: KeywordFilterDataView) =
         KeywordFilterViewHolder.LAYOUT
 
+    override fun type(priceRangeFilterUiModel: PriceRangeFilterUiModel): Int =
+        PriceRangeFilterViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when(viewType) {
             SortViewHolder.LAYOUT -> SortViewHolder(view, sortViewListener)
             FilterViewHolder.LAYOUT -> FilterViewHolder(view, recycledViewPool, filterViewListener)
             PriceFilterViewHolder.LAYOUT -> PriceFilterViewHolder(view, priceFilterViewListener)
             KeywordFilterViewHolder.LAYOUT -> KeywordFilterViewHolder(view, keywordFilterListener)
+            PriceRangeFilterViewHolder.LAYOUT -> PriceRangeFilterViewHolder(view, priceRangeFilterListener)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         }
     }

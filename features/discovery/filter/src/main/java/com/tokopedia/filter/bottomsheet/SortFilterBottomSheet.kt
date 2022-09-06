@@ -23,6 +23,8 @@ import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterItemUiModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterListener
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -124,12 +126,22 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         }
     }
 
+    private val priceRangeFilterListener = object : PriceRangeFilterListener {
+        override fun onPriceRangeItemClicked(
+            priceRangeFilterItemUiModel: PriceRangeFilterItemUiModel,
+            isChecked: Boolean
+        ) {
+
+        }
+    }
+
     private val sortFilterBottomSheetAdapter = SortFilterBottomSheetAdapter(
             SortFilterBottomSheetTypeFactoryImpl(
                 sortViewListener,
                 filterViewListener,
                 priceFilterListener,
                 keywordFilterListener,
+                priceRangeFilterListener
             )
     )
 
