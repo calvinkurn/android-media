@@ -152,8 +152,6 @@ import kotlinx.android.synthetic.main.compose_message_area.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * @author by nisie on 23/11/18.
@@ -1133,8 +1131,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onClickRating(element: ChatRatingViewModel, rating: Int) {
         sendEvent(rating)
-        presenter.sendRating(messageId, rating, element.replyTimeNano.toString(), onError(),
-                onSuccessSendRating(rating, element))
+        presenter.sendRating(messageId, rating, element)
     }
 
     private fun sendEvent(rating: Int) {
@@ -1497,6 +1494,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             replyBubbleContainer.hide()
         }else{
             replyBubbleContainer.show()
+        }
+    }
+
+    override fun onSuccessSendRating(
+        pojo: SendRatingPojo,
+        rating: Int,
+        element: ChatRatingViewModel
+    ) {
+        (activity as Activity).run {
+            (viewState as ChatbotViewState).onSuccessSendRating(pojo, rating, element, this)
         }
     }
 

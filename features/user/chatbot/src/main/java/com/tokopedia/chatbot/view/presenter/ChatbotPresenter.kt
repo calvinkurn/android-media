@@ -61,6 +61,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
@@ -401,12 +402,22 @@ class ChatbotPresenter @Inject constructor(
         return json
     }
 
-    override fun sendRating(messageId: String, rating: Int, timestamp: String,
-                            onError: (Throwable) -> Unit,
-                            onSuccess: (SendRatingPojo) -> Unit) {
-        sendChatRatingUseCase.execute(SendChatRatingUseCase.generateParam(
-                messageId, rating, timestamp), SendRatingSubscriber(onError, onSuccess))
+    override fun sendRating(messageId: String, rating: Int, element: ChatRatingViewModel) {
+//        sendChatRatingUseCase.execute(SendChatRatingUseCase.generateParam(
+//                messageId, rating, timestamp), SendRatingSubscriber(onError, onSuccess))
+        sendChatRatingUseCase.sendChatRating(messageId, rating, element,
+            ::onSuccessSendRating,
+            ::onFailureSendRating)
     }
+
+    private fun onFailureSendRating(throwable: Throwable) {
+        view.onError(throwable)
+    }
+
+    private fun onSuccessSendRating(pojo : SendRatingPojo, rating: Int, element : ChatRatingViewModel) {
+        view.onSuccessSendRating(pojo, rating, element)
+    }
+
 
 //    private fun onSendRatingSuccess(sendRatingPojo: SendRatingPojo, rating: Int, element: ChatRatingViewModel) {
 //        view.onSuccessSendRating(rating, element)
@@ -822,9 +833,7 @@ class ChatbotPresenter @Inject constructor(
 
     override fun detachView() {
         destroyWebSocket()
-        sendChatRatingUseCase.unsubscribe()
         sendRatingReasonUseCase.unsubscribe()
-  //      chipGetChatRatingListUseCase.unsubscribe()
         job.cancel()
         super.detachView()
     }

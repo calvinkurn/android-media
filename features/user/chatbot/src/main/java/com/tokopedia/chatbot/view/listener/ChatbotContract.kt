@@ -17,6 +17,7 @@ import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -78,6 +79,8 @@ interface ChatbotContract {
         fun replyBubbleStateHandler(state: Boolean)
 
         fun visibilityReplyBubble(state: Boolean)
+
+        fun onSuccessSendRating(pojo : SendRatingPojo, rating: Int, element : ChatRatingViewModel)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -98,9 +101,7 @@ interface ChatbotContract {
 
         fun connectWebSocket(messageId: String)
 
-        fun sendRating(messageId : String, rating: Int, timestamp : String,
-                       onError: (Throwable) -> Unit,
-                       onSuccess: (SendRatingPojo) -> Unit)
+        fun sendRating(messageId : String, rating: Int, element: ChatRatingViewModel)
 
         fun sendReasonRating(messageId: String, reason: String, timestamp: String,
                              onError: (Throwable) -> Unit,

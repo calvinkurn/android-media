@@ -1,30 +1,50 @@
 package com.tokopedia.chatbot.domain.usecase
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.domain.gqlqueries.SendChatRatingQuery
+import com.tokopedia.chatbot.domain.gqlqueries.queries.GQL_INBOX_LIST
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import rx.Subscriber
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
+import kotlin.reflect.KFunction3
 
 /**
  * @author by nisie on 21/12/18.
  */
-class SendChatRatingUseCase @Inject constructor(val resources: Resources,
-                                                private val graphqlUseCase: GraphqlUseCase) {
 
-    fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.mutation_send_rating)
-        val graphqlRequest = GraphqlRequest(query,
-                SendRatingPojo::class.java, requestParams, false)
+@GqlQuery("TicketListQuery", GQL_INBOX_LIST)
+class SendChatRatingUseCase
+@Inject constructor(graphqlRepository: GraphqlRepository) :
+    GraphqlUseCase<SendRatingPojo>(graphqlRepository) {
 
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
+    fun sendChatRating(
+        messageId: String,
+        rating: Int,
+        element: ChatRatingViewModel,
+        onSuccess: KFunction3<SendRatingPojo, Int, ChatRatingViewModel, Unit>,
+        onError: (Throwable) -> Unit
+    ) {
+        try {
+            this.setTypeClass(SendRatingPojo::class.java)
+            val timestamp = element.replyTimeNano.toString()
+            this.setRequestParams(generateParam(messageId, rating, timestamp))
+            this.setGraphqlQuery(SendChatRatingQuery())
+
+            this.execute(
+                { result ->
+                    onSuccess(result, rating, element)
+                }, { error ->
+                    onError(error)
+                }
+            )
+
+        } catch (throwable: Throwable) {
+            onError(throwable)
+        }
     }
+
 
     companion object {
 
@@ -41,8 +61,5 @@ class SendChatRatingUseCase @Inject constructor(val resources: Resources,
         }
     }
 
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
-    }
 
 }
