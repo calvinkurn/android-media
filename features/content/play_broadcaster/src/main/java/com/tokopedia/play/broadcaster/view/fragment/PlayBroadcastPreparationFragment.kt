@@ -246,13 +246,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
                         if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
-                        else parentViewModel.submitAction(SwitchAccount)
+                        else parentViewModel.submitAction(SwitchAccount())
                     }
                 })
             }
             is UGCOnboardingParentFragment -> {
                 childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
-                    override fun onSuccess() {}
+                    override fun onSuccess() {
+                        parentViewModel.submitAction(SwitchAccount(true))
+                    }
 
                     override fun impressTncOnboarding() {}
 
@@ -860,7 +862,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     else getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
                 )
                 setSecondaryCTAClickListener {
-                    parentViewModel.submitAction(SwitchAccount)
+                    parentViewModel.submitAction(SwitchAccount())
                     if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
             }

@@ -350,7 +350,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
             is PlayBroadcastAction.GetAccountList -> handleGetAccountList()
-            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount()
+            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.isRefreshAccount)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -1495,11 +1495,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         })
     }
 
-    private fun handleSwitchAccount() {
+    private fun handleSwitchAccount(isRefreshAccount: Boolean = false) {
         if (!isAllowChangeAccount) return
         val currentSelected = switchAccount(
-            if (_selectedAccount.value.type == TYPE_SHOP) TYPE_USER
-            else TYPE_SHOP
+            when {
+                isRefreshAccount -> _selectedAccount.value.type
+                _selectedAccount.value.type == TYPE_SHOP -> TYPE_USER
+                else -> TYPE_SHOP
+            }
         )
         _observableConfigInfo.value = NetworkResult.Loading
         getConfiguration(currentSelected)
