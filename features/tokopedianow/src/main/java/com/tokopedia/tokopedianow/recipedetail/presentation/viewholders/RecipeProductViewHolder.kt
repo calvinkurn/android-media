@@ -155,7 +155,7 @@ class RecipeProductViewHolder(
     }
 
     private fun openSimilarProductBottomSheet() {
-        RouteManager.route(context, ApplinkConstInternalTokopediaNow.SIMILAR_PRODUCT_BOTTOMSHEET)
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_SIMILAR_PRODUCT_BOTTOM_SHEET)
     }
 
     private fun qtyEditorListener(product: RecipeProductUiModel): TextWatcher {
