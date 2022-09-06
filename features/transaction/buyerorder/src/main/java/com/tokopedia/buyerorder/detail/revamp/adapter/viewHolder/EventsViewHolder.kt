@@ -1,15 +1,9 @@
 package com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
-import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.ApplinkOMSConstant
@@ -20,15 +14,25 @@ import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.ItemsEvents
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.CONTENT_TYPE
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.DELIMITERS
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.E_TICKET_FORMAT
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.IS_ENTERTAIN
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.ITEM_EVENTS
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_BUTTON
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_POPUP
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_QRCODE
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_REDIRECT
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_REFRESH
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_VOUCHER_CODE
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.ZERO_QUANTITY
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.renderActionButtons
 import com.tokopedia.buyerorder.detail.revamp.widget.RedeemVoucherView
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 /**
  * created by @bayazidnasir on 23/8/2022
@@ -42,20 +46,6 @@ class EventsViewHolder(
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.voucher_item_card_events_new
-
-        private const val IS_ENTERTAIN = 1
-        private const val ZERO_QUANTITY = 0
-        private const val E_TICKET_FORMAT = "%s %s"
-        private const val STROKE_WIDTH = 1
-        private const val ZERO_MARGIN = 0
-        private const val KEY_REFRESH = "refresh"
-        private const val KEY_VOUCHER_CODE = "vouchercodes"
-        private const val KEY_BUTTON = "button"
-        private const val KEY_REDIRECT = "redirect"
-        private const val CONTENT_TYPE = "application/pdf"
-        private const val KEY_QRCODE = "qrcode"
-        private const val KEY_POPUP = "popup"
-        const val ITEM_EVENTS = 3
     }
 
     override fun bind(element: ItemsEvents) {
@@ -155,192 +145,153 @@ class EventsViewHolder(
             binding.tapActionEvents.removeAllViews()
             val totalTicketCount = metadata.quantity
 
-            if (item.actionButtons.size == ZERO_QUANTITY) setETicket(binding, totalTicketCount)
-            item.actionButtons.forEachIndexed { index, actionButton ->
-                val actionTextView = renderActionButtons(index, actionButton, item)
-                if (actionButton.control.equals(KEY_REFRESH, true)) {
-                    val redeemView = RedeemVoucherView(
-                        itemView.context,
-                        index,
-                        false,
-                        actionButton,
-                        item,
-                        { textView,  items, count ->
-                            eventDetailsListener.onTapActionDeals(textView, actionButton, items, count, adapterPosition)
-                        },
-                        {
-                            eventDetailsListener.showRetryButtonToaster(it)
-                        }
-                    )
-                    binding.tapActionEvents.addView(redeemView)
-                } else if (actionButton.control.equals(KEY_VOUCHER_CODE, true)) {
-                    if (actionButton.body.body.isNotEmpty()){
-                        val voucherCodes = actionButton.body.body.split(",")
-                        if (voucherCodes.isNotEmpty()){
-                            binding.voucerCodeLayout.visible()
-                            voucherCodes.forEachIndexed { i, voucher ->
-                                val bookingCodeView = BookingCodeView(
-                                    itemView.context,
-                                    voucher,
-                                    i,
-                                    getString(R.string.voucher_code_title),
-                                    voucherCodes.size
-                                ).apply {
-                                    background = null
-                                }
-                                binding.voucerCodeLayout.addView(bookingCodeView)
-                            }
-                        }
-                    }
-                } else {
-                    if (actionButton.control.equals(KEY_BUTTON, true)) {
-                        eventDetailsListener.setActionButtonGql(item.tapActions, adapterPosition, flag = true, true)
-                    } else {
-                        setActionButtonClick(actionTextView, actionButton, item)
-                    }
-                    binding.tapActionEvents.addView(actionTextView)
-                }
-                setEventInfo(binding, actionButton, totalTicketCount)
+            if (item.actionButtons.size == ZERO_QUANTITY) {
+                renderBrandName(
+                    binding,
+                    totalTicketCount,
+                    getString(R.string.event_ticket_voucher_multiple),
+                    getString(R.string.event_ticket_voucher_count)
+                )
             }
+
+            setActionButton(binding, item, totalTicketCount)
 
         }
     }
 
-    private fun setETicket(binding: VoucherItemCardEventsNewBinding, totalCount: Int){
-        if (totalCount > ZERO_QUANTITY) {
-            binding.tvBrandName.text = String.format(
-                E_TICKET_FORMAT,
-                totalCount,
-                getString(R.string.event_ticket_voucher_multiple))
-        } else {
-            binding.tvBrandName.text = getString(R.string.event_ticket_voucher_count)
+    private fun setActionButton(binding: VoucherItemCardEventsNewBinding, item: Items, totalCount: Int) {
+        item.actionButtons.forEachIndexed { index, actionButton ->
+            when{
+                actionButton.control.equals(KEY_REFRESH, true) -> {
+                    renderRedeemVoucher(binding, actionButton, item, index)
+                }
+                actionButton.control.equals(KEY_VOUCHER_CODE, true) -> {
+                    renderBookingCode(binding, actionButton)
+                }
+                else -> {
+                    setTapActions(binding, actionButton, item, index)
+                }
+            }
+            setEventInfo(binding, actionButton, totalCount)
         }
+    }
+
+    private fun renderRedeemVoucher(
+        binding: VoucherItemCardEventsNewBinding,
+        actionButton: ActionButton,
+        item: Items,
+        index: Int,
+    ) {
+        val redeemView = RedeemVoucherView(
+            itemView.context,
+            index,
+            false,
+            actionButton,
+            item,
+            { textView,  items, count ->
+                eventDetailsListener.onTapActionDeals(textView, actionButton, items, count, adapterPosition)
+            },
+            {
+                eventDetailsListener.showRetryButtonToaster(it)
+            }
+        )
+        binding.tapActionEvents.addView(redeemView)
+    }
+
+    private fun renderBookingCode(
+        binding: VoucherItemCardEventsNewBinding,
+        actionButton: ActionButton,
+    ) {
+        if (actionButton.body.body.isNotEmpty()){
+            val voucherCodes = actionButton.body.body.split(DELIMITERS)
+            if (voucherCodes.isNotEmpty()){
+                binding.voucerCodeLayout.visible()
+                voucherCodes.forEachIndexed { i, voucher ->
+                    val bookingCodeView = BookingCodeView(
+                        itemView.context,
+                        voucher,
+                        i,
+                        getString(R.string.voucher_code_title),
+                        voucherCodes.size
+                    ).apply {
+                        background = null
+                    }
+                    binding.voucerCodeLayout.addView(bookingCodeView)
+                }
+            }
+        }
+    }
+
+    private fun setTapActions(
+        binding: VoucherItemCardEventsNewBinding,
+        actionButton: ActionButton,
+        item: Items,
+        index: Int,
+    ) {
+        val actionTextView = renderActionButtons(itemView.context, index, actionButton, item)
+        if (actionButton.control.equals(KEY_BUTTON, true)) {
+            eventDetailsListener.setActionButtonGql(item.tapActions, adapterPosition, flag = true, true)
+        } else {
+            setActionButtonClick(actionTextView, actionButton, item)
+        }
+        binding.tapActionEvents.addView(actionTextView)
     }
 
     private fun setEventInfo(binding: VoucherItemCardEventsNewBinding, actionButton: ActionButton, totalCount: Int){
         when{
             actionButton.control.equals(KEY_REDIRECT, true)
-                    || actionButton.control.equals(KEY_REFRESH, true) -> {
-                        setETicket(binding, totalCount)
-                    }
+            || actionButton.control.equals(KEY_REFRESH, true) -> {
+                renderBrandName(
+                    binding,
+                    totalCount,
+                    getString(R.string.event_ticket_voucher_multiple),
+                    getString(R.string.event_ticket_voucher_count)
+                )
+            }
             actionButton.control.equals(KEY_POPUP, true) -> {
-                if (totalCount > ZERO_QUANTITY) {
-                    binding.tvBrandName.text = String.format(
-                        E_TICKET_FORMAT,
-                        totalCount,
-                        getString(R.string.event_ticket_qrcode_multiple)
-                    )
-                } else {
-                    binding.tvBrandName.text = getString(R.string.event_ticket_qrcode_count)
-                }
+                renderBrandName(
+                    binding,
+                    totalCount,
+                    getString(R.string.event_ticket_qrcode_multiple),
+                    getString(R.string.event_ticket_qrcode_count)
+                )
             }
             actionButton.control.equals(KEY_VOUCHER_CODE, true) -> {
-                if (totalCount > ZERO_QUANTITY) {
-                    binding.tvBrandName.text = String.format(
-                        E_TICKET_FORMAT,
-                        totalCount,
-                        getString(R.string.event_ticket_booking_multiple)
-                    )
-                } else {
-                    binding.tvBrandName.text = getString(R.string.event_ticket_booking_count)
-                }
+                renderBrandName(
+                    binding,
+                    totalCount,
+                    getString(R.string.event_ticket_booking_multiple),
+                    getString(R.string.event_ticket_booking_count)
+                )
             }
         }
     }
 
-    private fun renderActionButtons(
-        position: Int,
-        actionButton: ActionButton,
-        item: Items,
-    ) : Typography {
-        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-            setMargins(
-                ZERO_MARGIN,
-                getDimension(com.tokopedia.resources.common.R.dimen.dp_8),
-                ZERO_MARGIN,
-                ZERO_MARGIN,
+    private fun renderBrandName(
+        binding: VoucherItemCardEventsNewBinding,
+        totalCount: Int,
+        brandLabel: String,
+        brandName: String
+    ) {
+        if (totalCount > ZERO_QUANTITY) {
+            binding.tvBrandName.text = String.format(
+                E_TICKET_FORMAT,
+                totalCount,
+                brandLabel
             )
-        }
-
-        return Typography(itemView.context).apply {
-            setPadding(
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-            )
-            setTextColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N0))
-            layoutParams = params
-            gravity = Gravity.CENTER_HORIZONTAL
-            text = actionButton.label
-
-            val shape = GradientDrawable()
-            shape.shape = GradientDrawable.RECTANGLE
-
-            if (actionButton.actionColor.background.isNotEmpty()) {
-                shape.setColor(Color.parseColor(actionButton.actionColor.background))
-            } else {
-                shape.setColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G400))
-            }
-
-            if (actionButton.actionColor.border.isNotEmpty()) {
-                shape.setStroke(
-                    STROKE_WIDTH,
-                    Color.parseColor(actionButton.actionColor.border)
-                )
-            }
-
-            if (actionButton.actionColor.textColor.isNotEmpty()) {
-                setTextColor(Color.parseColor(actionButton.actionColor.textColor))
-            } else {
-                setTextColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N0))
-            }
-
-            if (position == item.actionButtons.size - 1 &&  item.actionButtons.isEmpty()){
-                val radius = context.resources.getDimension(unifyPrinciplesR.dimen.unify_space_4)
-                shape.cornerRadii = floatArrayOf(0F, 0F, 0F, 0F, radius, radius, radius, radius)
-            } else {
-                shape.cornerRadius = context.resources.getDimension(unifyPrinciplesR.dimen.unify_space_4)
-            }
-
-            background = shape
+        } else {
+            binding.tvBrandName.text = brandName
         }
     }
 
     private fun setActionButtonClick(textView: TextView?, actionButton: ActionButton, item: Items){
-
-        fun isDownloadable(actionButton: ActionButton): Boolean{
-            return if (actionButton.header.isNotEmpty()){
-                return actionButton.headerObject.contentType.equals(CONTENT_TYPE, true)
-            } else {
-                false
-            }
-        }
 
         when{
             actionButton.control.equals(KEY_REDIRECT, true) -> {
                 if (actionButton.body.body.isEmpty() && actionButton.body.appURL.isEmpty()){
                     return
                 }
-                when{
-                    textView == null -> {
-                        RouteManager.route(itemView.context, actionButton.body.appURL)
-                    }
-                    isDownloadable(actionButton) -> {
-                        textView.setOnClickListener {
-                            clickActionButton(itemView.context, actionButton.body.appURL, true,){
-                                eventDetailsListener.askPermission(it, true, getString(R.string.oms_order_detail_ticket_title))
-                            }
-                        }
-                    }
-                    else -> {
-                        textView.setOnClickListener {
-                            clickActionButton(itemView.context, actionButton.body.appURL, false){
-                                eventDetailsListener.askPermission(it, false, "")
-                            }
-                        }
-                    }
-                }
+                viewClick(textView, actionButton)
             }
             actionButton.control.equals(KEY_QRCODE, true) || actionButton.control.equals(KEY_POPUP, true) -> {
                 textView?.setOnClickListener {
@@ -350,7 +301,32 @@ class EventsViewHolder(
         }
     }
 
-    private fun getDimension(@DimenRes dimenId: Int): Int{
-        return itemView.context.resources.getDimension(dimenId).toIntSafely()
+    private fun viewClick(textView: TextView?, actionButton: ActionButton) {
+
+        val isDownloadable = if (actionButton.header.isNotEmpty()){
+            actionButton.headerObject.contentType.equals(CONTENT_TYPE, true)
+        } else {
+            false
+        }
+
+        when{
+            textView == null -> {
+                RouteManager.route(itemView.context, actionButton.body.appURL)
+            }
+            isDownloadable -> {
+                textView.setOnClickListener {
+                    clickActionButton(itemView.context, actionButton.body.appURL, true,){
+                        eventDetailsListener.askPermission(it, true, getString(R.string.oms_order_detail_ticket_title))
+                    }
+                }
+            }
+            else -> {
+                textView.setOnClickListener {
+                    clickActionButton(itemView.context, actionButton.body.appURL, false){
+                        eventDetailsListener.askPermission(it, false, "")
+                    }
+                }
+            }
+        }
     }
 }

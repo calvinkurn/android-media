@@ -7,12 +7,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.ApplinkOMSConstant
 import com.tokopedia.buyerorder.databinding.VoucherItemDealsBinding
+import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.ItemsDeals
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.DELIMITERS
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_TEXT
 import com.tokopedia.buyerorder.detail.revamp.widget.RedeemVoucherView
+import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.ITEM_DEALS
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -31,10 +35,6 @@ class DealsViewHolder(
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.voucher_item_deals
-
-        private const val KEY_TEXT = "text"
-        private const val DELIMITERS = ","
-        private const val ITEM_DEALS = 1
     }
 
     override fun bind(element: ItemsDeals) {
@@ -93,17 +93,7 @@ class DealsViewHolder(
                 }
 
                 binding.voucerCodeLayout.visible()
-                codes.forEachIndexed { index, code ->
-                    val bookingCodeView = BookingCodeView(
-                        itemView.context,
-                        code,
-                        index,
-                        getString(R.string.voucher_code_title),
-                        codes.size).apply {
-                        background = null
-                    }
-                    binding.voucerCodeLayout.addView(bookingCodeView)
-                }
+                renderBookingCode(binding, codes, getString(R.string.voucher_code_title))
             } else {
                 with(binding){
                     progBar.gone()
@@ -122,30 +112,46 @@ class DealsViewHolder(
 
                 item.actionButtons.forEachIndexed { index, actionButton ->
                     if (actionButton.control.equals(KEY_TEXT, true)) {
-                        val redeemView = RedeemVoucherView(
-                            itemView.context,
-                            index,
-                            false,
-                            actionButton,
-                            item,
-                            { textView, items, count ->
-                                eventDetailsListener.onTapActionDeals(textView, actionButton, items, count, adapterPosition)
-                            },
-                            {
-                                eventDetailsListener.showRetryButtonToaster(it)
-                            }
-                        )
-                        binding.tapActionDeals.addView(redeemView)
+                        renderRedeemVoucher(binding, actionButton, item, index)
                     } else {
                         val voucherCodes = actionButton.headerObject.voucherCodes.split(DELIMITERS)
-                        voucherCodes.forEachIndexed { i, code ->
-                            val bookingCodeView = BookingCodeView(itemView.context,code, i, actionButton.headerObject.itemLabel, voucherCodes.size )
-                            binding.tapActionDeals.addView(bookingCodeView)
-                        }
+                        renderBookingCode(binding, voucherCodes, actionButton.headerObject.itemLabel)
                     }
                 }
             }
         }
+    }
 
+    private fun renderRedeemVoucher(
+        binding: VoucherItemDealsBinding,
+        actionButton: ActionButton,
+        item: Items,
+        index: Int
+    ) {
+        val redeemView = RedeemVoucherView(
+            itemView.context,
+            index,
+            false,
+            actionButton,
+            item,
+            { textView, items, count ->
+                eventDetailsListener.onTapActionDeals(textView, actionButton, items, count, adapterPosition)
+            },
+            {
+                eventDetailsListener.showRetryButtonToaster(it)
+            }
+        )
+        binding.tapActionDeals.addView(redeemView)
+    }
+
+    private fun renderBookingCode(
+        binding: VoucherItemDealsBinding,
+        voucherCodes: List<String>,
+        bookingCodeTitle: String,
+    ) {
+        voucherCodes.forEachIndexed { index, code ->
+            val bookingCodeView = BookingCodeView(itemView.context,code, index, bookingCodeTitle, voucherCodes.size )
+            binding.tapActionDeals.addView(bookingCodeView)
+        }
     }
 }

@@ -1,15 +1,9 @@
 package com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
-import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerUtils.clickActionButton
@@ -19,12 +13,15 @@ import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.ItemsDefault
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.ITEMS_DEALS
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_BUTTON
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_REDIRECT
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_TEXT
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.ZERO_QUANTITY
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.renderActionButtons
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 /**
  * created by @bayazidnasir on 23/8/2022
@@ -38,14 +35,6 @@ class DefaultViewHolder(
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.voucher_item_default
-
-        private const val ZERO_QUANTITY = 0
-        private const val ZERO_MARGIN = 0
-        private const val STROKE_WIDTH = 1
-        private const val KEY_BUTTON = "button"
-        private const val KEY_REDIRECT = "redirect"
-        private const val KEY_TEXT = "text"
-        private const val ITEMS_DEALS = 1
     }
 
     private var hasViews = false
@@ -157,20 +146,24 @@ class DefaultViewHolder(
             if (item.tapActions.size == ZERO_QUANTITY) {
                 binding.tapAction.gone()
             } else {
-                binding.tapAction.visible()
-                binding.tapAction.removeAllViews()
-                item.tapActions.forEachIndexed { i, actionButton ->
-                    val actionTextView = renderActionButtons(i, actionButton, item)
-                    if (actionButton.control.equals(KEY_BUTTON, true)){
-                        eventDetailsListener.setActionButtonGql(item.actionButtons, adapterPosition, flag = true, true)
-                    } else {
-                        setActionButtonClick(actionTextView, actionButton)
-                    }
-                    binding.tapAction.addView(actionTextView)
-                }
+                renderTapActions(binding, item)
             }
         } else if (item.tapActions.isEmpty()){
             binding.progBar.gone()
+        }
+    }
+
+    private fun renderTapActions(binding: VoucherItemDefaultBinding, item: Items) {
+        binding.tapAction.visible()
+        binding.tapAction.removeAllViews()
+        item.tapActions.forEachIndexed { i, actionButton ->
+            val actionTextView = renderActionButtons(itemView.context, i, actionButton, item)
+            if (actionButton.control.equals(KEY_BUTTON, true)){
+                eventDetailsListener.setActionButtonGql(item.actionButtons, adapterPosition, flag = true, true)
+            } else {
+                setActionButtonClick(actionTextView, actionButton)
+            }
+            binding.tapAction.addView(actionTextView)
         }
     }
 
@@ -181,89 +174,33 @@ class DefaultViewHolder(
         if (item.actionButtons.isEmpty()) {
             binding.actionButton.gone()
         } else {
-            binding.actionButton.visible()
-            binding.actionButton.removeAllViews()
-
-            item.actionButtons.forEachIndexed { index, actionButton ->
-                val actionTextView = renderActionButtons(index, actionButton, item)
-
-                if (actionButton.control.equals(KEY_TEXT, true)){
-                    return@forEachIndexed
-                }
-
-                if (item.isActionButtonLoaded) {
-                    setActionButtonClick(null, actionButton)
-                } else {
-                    actionTextView.setOnClickListener {
-                        if (actionButton.control.equals(KEY_BUTTON, true)){
-                            eventDetailsListener.setActionButtonGql(item.actionButtons, adapterPosition, flag = true, true)
-                        } else {
-                            setActionButtonClick(actionTextView, actionButton)
-                        }
-                    }
-                }
-
-                binding.actionButton.addView(actionTextView)
-            }
+            renderButtonActions(binding, item)
         }
     }
 
-    private fun renderActionButtons(
-        position: Int,
-        actionButton: ActionButton,
-        item: Items,
-    ) : Typography {
-        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-            setMargins(
-                ZERO_MARGIN,
-                getDimension(com.tokopedia.resources.common.R.dimen.dp_8),
-                ZERO_MARGIN,
-                ZERO_MARGIN,
-            )
-        }
+    private fun renderButtonActions(binding: VoucherItemDefaultBinding, item: Items) {
+        binding.actionButton.visible()
+        binding.actionButton.removeAllViews()
+        item.actionButtons.forEachIndexed { index, actionButton ->
+            val actionTextView = renderActionButtons(itemView.context, index, actionButton, item)
 
-        return Typography(itemView.context).apply {
-            setPadding(
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-            )
-            setTextColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N0))
-            layoutParams = params
-            gravity = Gravity.CENTER_HORIZONTAL
-            text = actionButton.label
+            if (actionButton.control.equals(KEY_TEXT, true)){
+                return@forEachIndexed
+            }
 
-            val shape = GradientDrawable()
-            shape.shape = GradientDrawable.RECTANGLE
-
-            if (actionButton.actionColor.background.isNotEmpty()) {
-                shape.setColor(Color.parseColor(actionButton.actionColor.background))
+            if (item.isActionButtonLoaded) {
+                setActionButtonClick(null, actionButton)
             } else {
-                shape.setColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G400))
+                actionTextView.setOnClickListener {
+                    if (actionButton.control.equals(KEY_BUTTON, true)){
+                        eventDetailsListener.setActionButtonGql(item.actionButtons, adapterPosition, flag = true, true)
+                    } else {
+                        setActionButtonClick(actionTextView, actionButton)
+                    }
+                }
             }
 
-            if (actionButton.actionColor.border.isNotEmpty()) {
-                shape.setStroke(
-                    STROKE_WIDTH,
-                    Color.parseColor(actionButton.actionColor.border)
-                )
-            }
-
-            if (actionButton.actionColor.textColor.isNotEmpty()) {
-                setTextColor(Color.parseColor(actionButton.actionColor.textColor))
-            } else {
-                setTextColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N0))
-            }
-
-            if (position == item.actionButtons.size - 1 &&  item.actionButtons.isEmpty()){
-                val radius = context.resources.getDimension(unifyPrinciplesR.dimen.unify_space_4)
-                shape.cornerRadii = floatArrayOf(0F, 0F, 0F, 0F, radius, radius, radius, radius)
-            } else {
-                shape.cornerRadius = context.resources.getDimension(unifyPrinciplesR.dimen.unify_space_4)
-            }
-
-            background = shape
+            binding.actionButton.addView(actionTextView)
         }
     }
 
@@ -292,10 +229,6 @@ class DefaultViewHolder(
                 }
             }
         }
-    }
-
-    private fun getDimension(@DimenRes dimenId: Int): Int{
-        return itemView.context.resources.getDimension(dimenId).toIntSafely()
     }
 
 }

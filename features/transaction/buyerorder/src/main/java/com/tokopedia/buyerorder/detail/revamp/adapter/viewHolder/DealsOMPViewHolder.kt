@@ -1,17 +1,10 @@
 package com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
-import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
-import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.buyerorder.databinding.VoucherItemCardDealsBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
@@ -19,15 +12,19 @@ import com.tokopedia.buyerorder.detail.data.ItemsDealsOMP
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.DELIMITERS
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_POPUP
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_REDIRECT
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_REDIRECT_EXTERNAL
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_VOUCHER_CODE
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.renderActionButtons
 import com.tokopedia.buyerorder.detail.revamp.widget.RedeemVoucherView
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.unifyprinciples.Typography
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -45,14 +42,7 @@ class DealsOMPViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.voucher_item_card_deals
 
-        private const val KEY_VOUCHER_CODE = "vouchercodes"
-        private const val KEY_REDIRECT = "redirect"
-        private const val KEY_REDIRECT_EXTERNAL = "redirectexternal"
-        private const val KEY_POPUP = "popup"
-        private const val STROKE_WIDTH = 1
-        private const val ZERO_MARGIN = 0
         private const val DATE_FORMAT = " dd MMM yyyy hh:mm"
-        private const val DELIMITERS = ","
     }
 
     override fun bind(element: ItemsDealsOMP) {
@@ -108,109 +98,67 @@ class DealsOMPViewHolder(
         item.actionButtons.forEachIndexed { index, actionButton ->
             when (actionButton.control) {
                 KEY_VOUCHER_CODE -> {
-                    val codes = actionButton.body.body.split(DELIMITERS)
-
-                    if (codes.isEmpty()){
-                        return@forEachIndexed
-                    }
-
-                    codes.forEach { code ->
-                        val bookingView = BookingCodeView(itemView.context, code, adapterPosition, actionButton.label, 0).apply {
-                            background = null
-                        }
-                        binding.voucerCodeLayout.addView(bookingView)
-
-                    }
+                    renderBookingCode(binding, actionButton)
                 }
                 KEY_REDIRECT, KEY_REDIRECT_EXTERNAL -> {
-                    val redeemVoucherView = RedeemVoucherView(
-                        itemView.context,
-                        index,
-                        true,
-                        actionButton,
-                        item,
-                        { textView, items, count ->
-                            eventDetailsListener.onTapActionDeals(textView, actionButton, items, count, adapterPosition)
-                        },
-                        {
-                            eventDetailsListener.showRetryButtonToaster(it)
-                        }
-                    )
-                    binding.voucerCodeLayout.addView(redeemVoucherView)
+                    renderRedeemVoucher(binding, actionButton, item, index)
                 }
                 KEY_POPUP -> {
-                    val actionTextButton = renderActionButtons(index, actionButton, item)
-                    binding.voucerCodeLayout.addView(actionTextButton)
-                    actionTextButton.setOnClickListener {
-                        eventDetailsListener.openQRFragment(actionButton, item)
-                    }
+                    clickActionButton(binding, actionButton, item, index)
                 }
             }
         }
         binding.progBar.gone()
     }
 
-    private fun renderActionButtons(
-        position: Int,
-        actionButton: ActionButton,
-        item: Items,
-    ) : Typography {
-        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-            setMargins(
-                ZERO_MARGIN,
-                getDimension(com.tokopedia.resources.common.R.dimen.dp_8),
-                ZERO_MARGIN,
-                ZERO_MARGIN,
-            )
+    private fun renderBookingCode(binding: VoucherItemCardDealsBinding, actionButton: ActionButton) {
+        val codes = actionButton.body.body.split(DELIMITERS)
+
+        if (codes.isEmpty()){
+            return
         }
 
-        return Typography(itemView.context).apply {
-            setPadding(
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-                getDimension(unifyPrinciplesR.dimen.unify_space_16),
-            )
-            setTextColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N0))
-            layoutParams = params
-            gravity = Gravity.CENTER_HORIZONTAL
-            text = actionButton.label
-
-            val shape = GradientDrawable()
-            shape.shape = GradientDrawable.RECTANGLE
-
-            if (actionButton.actionColor.background.isNotEmpty()) {
-                shape.setColor(Color.parseColor(actionButton.actionColor.background))
-            } else {
-                shape.setColor(MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G400))
+        codes.forEach { code ->
+            val bookingView = BookingCodeView(itemView.context, code, adapterPosition, actionButton.label, 0).apply {
+                background = null
             }
-
-            if (actionButton.actionColor.border.isNotEmpty()) {
-                shape.setStroke(
-                    STROKE_WIDTH,
-                    Color.parseColor(actionButton.actionColor.border)
-                )
-            }
-
-            if (actionButton.actionColor.textColor.isNotEmpty()) {
-                setTextColor(Color.parseColor(actionButton.actionColor.textColor))
-            } else {
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            }
-
-            if (position == item.actionButtons.size - 1 &&  item.actionButtons.isEmpty()){
-                val radius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
-                shape.cornerRadii = floatArrayOf(0F, 0F, 0F, 0F, radius, radius, radius, radius)
-            } else {
-                shape.cornerRadius = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
-            }
-
-            background = shape
+            binding.voucerCodeLayout.addView(bookingView)
         }
     }
 
-    private fun getDimension(@DimenRes dimenId: Int): Int{
-        return itemView.context.resources.getDimension(dimenId).toIntSafely()
+    private fun renderRedeemVoucher(
+        binding: VoucherItemCardDealsBinding,
+        actionButton: ActionButton,
+        item: Items,
+        index: Int
+    ) {
+        val redeemVoucherView = RedeemVoucherView(
+            itemView.context,
+            index,
+            true,
+            actionButton,
+            item,
+            { textView, items, count ->
+                eventDetailsListener.onTapActionDeals(textView, actionButton, items, count, adapterPosition)
+            },
+            {
+                eventDetailsListener.showRetryButtonToaster(it)
+            }
+        )
+        binding.voucerCodeLayout.addView(redeemVoucherView)
+    }
+
+    private fun clickActionButton(
+        binding: VoucherItemCardDealsBinding,
+        actionButton: ActionButton,
+        item: Items,
+        index: Int
+    ) {
+        val actionTextButton = renderActionButtons(itemView.context, index, actionButton, item)
+        binding.voucerCodeLayout.addView(actionTextButton)
+        actionTextButton.setOnClickListener {
+            eventDetailsListener.openQRFragment(actionButton, item)
+        }
     }
 
     private fun getTimeMillis(date: String): String{

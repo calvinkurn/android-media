@@ -32,7 +32,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
-import com.tokopedia.unifyprinciples.R as UnifyPrinciplesR
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.databinding.DealsQrCodeLayoutBinding
@@ -55,9 +54,16 @@ import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListWebViewActivity
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
 import com.tokopedia.buyerorder.detail.revamp.adapter.OrderDetailTypeFactoryImpl
-import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.EventsViewHolder
 import com.tokopedia.buyerorder.detail.revamp.analytics.OrderDetailsAnalytics
 import com.tokopedia.buyerorder.detail.revamp.util.OrderCategory
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.ITEM_EVENTS
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_BUTTON
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_QRCODE
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_REDIRECT
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_REDIRECT_EXTERNAL
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_REFRESH
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_TEXT
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.TEXT_STYLE_BOLD
 import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
 import com.tokopedia.buyerorder.detail.revamp.viewModel.OrderDetailViewModel
 import com.tokopedia.buyerorder.detail.view.adapter.RedeemVoucherAdapter
@@ -83,6 +89,7 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.regex.Pattern
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as UnifyPrinciplesR
 
 /**
  * created by @bayazidnasir on 22/8/2022
@@ -664,7 +671,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                     setTopTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_68))
                     setBottomText(entityPassenger.value)
                     setBottomTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_96))
-                    setBottomTextStyle(BOLD_TEXT_STYLE)
+                    setBottomTextStyle(TEXT_STYLE_BOLD)
                 }
                 it.userInformationLayout.addView(doubleTextView)
             }
@@ -841,7 +848,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                         setTopTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_68))
                         setBottomText(passengerInformation.value)
                         setBottomTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_96))
-                        setBottomTextStyle(BOLD_TEXT_STYLE)
+                        setBottomTextStyle(TEXT_STYLE_BOLD)
                     }
                     it.userInformationLayout.addView(doubleTextView)
                 }
@@ -1010,7 +1017,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                     && orderDetails.payMethods.first().value.isNotEmpty()
         ) { "" }
 
-        val isCategoryEvent = categoryType == EventsViewHolder.ITEM_EVENTS
+        val isCategoryEvent = categoryType == ITEM_EVENTS
 
         orderAnalytics.sendThankYouEvent(
             metadata.entityProductId,
@@ -1100,11 +1107,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val KEY_ORDER_CATEGORY = "OrderCategory"
         private const val KEY_FROM_PAYMENT = "from_payment"
         private const val KEY_UPSTREAM = "upstream"
-        private const val KEY_BUTTON = "button"
-        private const val KEY_REDIRECT = "redirect"
-        private const val KEY_REDIRECT_EXTERNAL = "redirectexternal"
-        private const val KEY_REFRESH = "refresh"
-        private const val KEY_QRCODE = "qrcode"
         private const val KEY_CUSTOMER_NOTIFICATION = "customer_notification"
         private const val KEY_DEAL = "Deal"
         private const val URI_DOWNLOADABLE_PATTERN = "^.+\\.([pP][dD][fF])\$"
@@ -1117,21 +1119,18 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val TOTAL_SIZE_1 = 1
         private const val FIRST_INDEX = 0
         private const val DELAY_COACH_MARK_START = 500L
-        private const val KEY_TEXT = "text"
         private const val ENCODER = "UTF-8"
         private const val WEB_VIEW_TITLE_HELP = "Help Centre"
         private const val WEB_VIEW_TITLE_REDEEM = "Redeem Voucher"
         private const val CATEGORY_GIFT_CARD = "Gift-card"
         private const val IS_TRUE = "true"
         private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_deals_banner"
-        private const val BOLD_TEXT_STYLE = "bold"
         private const val TOASTER_FORMAT = "%s %s"
         private const val INSURANCE_CLAIM = "tokopedia://webview?allow_override=false&url=https://www.tokopedia.com/asuransi/klaim"
         private const val DEFAULT_MESSAGE_ERROR = "Something Error"
         private const val TAG_DEALS_QR = "qr_deals"
         private const val TAG_EVENTS_QR = "qr_events"
         private const val TAG_COACHMARK = "coachmark"
-        const val PREFERENCES_NAME = "deals_banner_preferences"
 
         fun getInstance(
             orderId: String,

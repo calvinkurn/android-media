@@ -12,6 +12,8 @@ import com.tokopedia.buyerorder.detail.data.ItemsInsurance
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.revamp.adapter.EventDetailsListener
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.TEXT_SIZE_LARGE
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.TEXT_STYLE_BOLD
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.utils.view.DoubleTextView
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
@@ -29,8 +31,6 @@ class InsuranceViewHolder(
         val LAYOUT = R.layout.voucher_item_insurance
 
         private const val CATEGORY_PRODUCT = "Kategori Produk"
-        private const val TEXT_STYLE_BOLD = "bold"
-        private const val TEXT_SIZE_LARGE = 14F
     }
 
     override fun bind(element: ItemsInsurance) {
