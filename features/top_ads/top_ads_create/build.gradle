@@ -34,6 +34,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     //test
