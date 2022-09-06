@@ -16,6 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.autocompletecomponent.AutocompleteIdlingResource
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselViewHolder
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineViewHolder
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -81,7 +82,7 @@ internal class UniversalSearchTrackingTest {
         val itemCount = recyclerView?.adapter?.itemCount ?: 0
 
         recyclerView?.let {
-            for (i in 0 until 1) {
+            for (i in 0 until itemCount) {
                 it.layoutManager?.smoothScrollToPosition(it, null, i)
                 Thread.sleep(1000)
                 performItemClick(it, i)
@@ -100,6 +101,11 @@ internal class UniversalSearchTrackingTest {
                         CommonActions.clickChildViewWithId(R.id.universalSearchCarouselSeeAll),
                     )
                 )
+
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 1)
+            }
+            is DoubleLineViewHolder -> {
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.universalSearchDoubleLineRecyclerView, 1)
             }
         }
     }

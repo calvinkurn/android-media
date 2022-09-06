@@ -10,21 +10,8 @@
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
-      "pageSource": ".*",
-      "eventLabel": ".*",
-      "component": ".*",
-      "campaignCode": "none"
-    },
-    {
-      "event": "clickSearch",
-      "eventCategory": "search component",
-      "eventAction": "click",
-      "pageDestination": "tokopedia:\\/\\/.*",
-      "businessUnit": "search",
-      "currentSite": "tokopediamarketplace",
-      "sessionIris": ".*",
-      "pageSource": ".*",
-      "eventLabel": ".*",
+      "pageSource": "none.none.global_search.none",
+      "eventLabel": "keyword:.* \\| value_id:.* \\| value_name:.*",
       "component": ".*",
       "campaignCode": "none"
     }
