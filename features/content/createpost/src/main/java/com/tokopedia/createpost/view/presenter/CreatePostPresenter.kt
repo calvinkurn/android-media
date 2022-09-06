@@ -110,7 +110,7 @@ class CreatePostPresenter @Inject constructor(
     override fun getFollowersCount(isAffiliateType: Boolean) {
         if (isAffiliateType) {
             getProfileHeaderUseCase.execute(
-                    GetProfileHeaderUseCase.createRequestParams(userSession.userId.toInt()),
+                    GetProfileHeaderUseCase.createRequestParams(userSession.userId.toLong()),
                     object : Subscriber<GraphqlResponse>() {
                         override fun onNext(t: GraphqlResponse?) {
                             followersCount = t?.let(::getFollowersCount)
@@ -127,7 +127,7 @@ class CreatePostPresenter @Inject constructor(
                     }
             )
         } else {
-            getShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(listOf(userSession.shopId.toIntOrZero()), "")
+            getShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(listOf(userSession.shopId.toLong()), "")
             getShopFavoriteStatusUseCase.execute(
                     {
                         followersCount = it.favoriteData.totalFavorite
@@ -194,7 +194,7 @@ class CreatePostPresenter @Inject constructor(
         if (type == ProductSuggestionItem.TYPE_SHOP) {
             getProductSuggestionUseCase.params =
                     GetShopProductSuggestionUseCase.createRequestParams(
-                            userSession.shopId.toIntOrZero()
+                            userSession.shopId.toLong()
                     )
         }
         getProductSuggestionUseCase.type = type

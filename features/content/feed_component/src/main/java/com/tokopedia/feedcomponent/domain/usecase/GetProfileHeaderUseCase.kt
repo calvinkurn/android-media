@@ -33,9 +33,9 @@ class GetProfileHeaderUseCase @Inject constructor(@ApplicationContext val contex
     companion object {
         const val PARAM_USER_ID_TARGET = "userIDTarget"
 
-        fun createRequestParams(targetUserId: Int): RequestParams {
+        fun createRequestParams(targetUserId: Long): RequestParams {
             val requestParams = RequestParams.create()
-            requestParams.putInt(PARAM_USER_ID_TARGET, targetUserId)
+            requestParams.putLong(PARAM_USER_ID_TARGET, targetUserId)
             return requestParams
         }
     }
