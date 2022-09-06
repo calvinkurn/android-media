@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.view.viewmodel.feeddetail
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 
@@ -35,10 +36,26 @@ data class FeedDetailProductModel (
         var description:String = "",
         var isTopads:Boolean = false,
         var adClickUrl:String = "",
-        var playChannelId: String = ""
+        var playChannelId: String = "",
+        val saleType: String = "",
+        val saleStatus: String = ""
 ) : Visitable<FeedPlusDetailTypeFactory> {
-    override fun type(typeFactory: FeedPlusDetailTypeFactory): Int {
-        return typeFactory.type(this)
-    }
+        override fun type(typeFactory: FeedPlusDetailTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+
+        val isUpcoming: Boolean
+                get() = saleStatus == Upcoming
+        val isOngoing: Boolean
+                get() = saleStatus == Ongoing
+        val isRilisanSpl: Boolean
+                get() = type == ASGC_RILISAN_SPECIAL
+
+        companion object {
+                private const val Upcoming = "upcoming"
+                private const val Ongoing = "ongoing"
+                private const val ASGC_RILISAN_SPECIAL = "Rilisan Spesial"
+
+        }
 }
 

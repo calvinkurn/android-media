@@ -137,5 +137,6 @@ dari Feed.</string>
     <string name="feed_detail_page_header">Dalam Post Ini</string>
     <string name="feed_play_header_text">Lagi Live, Nih!</string>
     <string name="feed_play_header_upcoming_text">Nantikan live seru lainnya!</string>
+    <string name="btn_add_to_cart_text">+ Keranjang</string>
 
 </resources>

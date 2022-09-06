@@ -87,6 +87,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private var shopId: String = ""
     private var shopName: String = ""
     private var postType: String = ""
+    private var saleType: String = ""
+    private var saleStatus: String = ""
     private var isFollowed: Boolean = false
     private var productList = mutableListOf<FeedXProduct>()
     private var activityId: String = ""
@@ -211,6 +213,20 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             arguments?.run {
                 getString(FeedPlusDetailActivity.PARAM_SHOP_NAME)?.let {
                     shopName = it
+                }
+            }
+        }
+        if (saleType.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_SALE_TYPE)?.let {
+                    saleType = it
+                }
+            }
+        }
+        if (saleStatus.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_SALE_STATUS)?.let {
+                    saleStatus = it
                 }
             }
         }
@@ -347,7 +363,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         productList.addAll(products)
         val ret = mapPostTag(products)
         adapter.addList(ret)
-      pagingHandler.setHasNext(ret.size > 1 && cursor.isNotEmpty())
+        pagingHandler.setHasNext(ret.size > 1 && cursor.isNotEmpty())
         adapter.notifyDataSetChanged()
     }
     private fun onErrorGetFeedDetail(error: Throwable) {
@@ -840,7 +856,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     isFollowed = isFollowed,
                     description = postDescription,
                     isTopads = postTagItem.isTopads,
-                    adClickUrl = adClickUrl
+                    adClickUrl = adClickUrl,
+                    saleStatus = saleStatus,
+                    saleType = saleType
             )
             item.feedType = "product"
             item.postId = activityId.toIntOrZero()

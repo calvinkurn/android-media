@@ -10,7 +10,7 @@
             android:id="@+id/button_add_to_wishlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_2"
+            android:padding="8dp"
             android:background="@drawable/wishlist_btn_bg"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -19,9 +19,8 @@
 
         <ImageView
             android:id="@+id/image_add_to_wishlist"
-            android:layout_width="@dimen/unify_space_32"
-            android:layout_height="@dimen/unify_space_32"
-            android:tint="@color/Unify_N400"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             app:srcCompat="@drawable/icon_add_to_wishlist"
             />
         </FrameLayout>

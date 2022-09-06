@@ -124,6 +124,17 @@ class ProductPostTagViewHolderNew(
         addToWishlistBtn.showWithCondition(item.isUpcoming || item.isOngoing)
         addToCartBtn.showWithCondition(item.isUpcoming || item.isOngoing)
         addToCartBtn.isEnabled = item.product.cartable
+        val isUpcomingAndRilisanSpecial = item.isUpcoming && item.isRilisanSpl
+        addToCartBtn.isEnabled = item.product.cartable && !isUpcomingAndRilisanSpecial
+
+        if (isUpcomingAndRilisanSpecial){
+            addToCartBtn.apply {
+                isEnabled = false
+                text =
+                    getString(R.string.btn_add_to_cart_text_disabled)
+            }
+        }
+
         if (item.isOngoing){
             setGradientColorForProgressBar(item)
         }
