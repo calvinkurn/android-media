@@ -25,3 +25,8 @@ kotlin_detekt.filtering_lines = true
 kotlin_detekt.gradle_task = "detektCheck"
 kotlin_detekt.report_file = "detekt_result.xml"
 kotlin_detekt.detekt(inline_mode: true)
+
+# Ktlin
+ktlint.skip_lint = true
+ktlint.report_file = 'ktlint-report.json'
+ktlint.lint(inline_mode: true)
