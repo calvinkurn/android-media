@@ -9,6 +9,7 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BUSINESS_UNI
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CURRENT_SITE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DEALS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DIMENSION_40
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_DEALS_CLICK
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.INDEX
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEMS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_BRAND
@@ -1010,18 +1011,21 @@ class DealsAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.VIEW_ITEM, eventDataLayer)
     }
 
+    fun pdpClick(action: String, brandName: String, displayName: String) {
+        val label = String.format("%s - %s", brandName, displayName)
+        val map = TrackAppUtils.gtmData(
+            EVENT_DEALS_CLICK, DealsAnalyticsConstants.Category.DIGITAL_DEALS, action,
+            label.lowercase() ?: ""
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
     private fun Bundle.generalTracker(event: String, action: String, label: String): Bundle {
         this.putString(TrackAppUtils.EVENT, event)
         this.putString(TrackAppUtils.EVENT_CATEGORY, DealsAnalyticsConstants.Category.DIGITAL_DEALS)
         this.putString(TrackAppUtils.EVENT_ACTION, action)
         this.putString(TrackAppUtils.EVENT_LABEL, label)
         return this
-    }
-
-    private fun getTrackingPDPWithHeader(): MutableMap<String, String> {
-        val map = mutableMapOf<String, String>()
-        map[DealsAnalyticsConstants.SESSION_IRIS] = getIrisSessionId()
-        return map
     }
 
 }

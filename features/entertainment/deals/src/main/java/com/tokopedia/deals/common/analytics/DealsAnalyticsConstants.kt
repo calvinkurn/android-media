@@ -12,6 +12,13 @@ object DealsAnalyticsConstants {
         const val VIEW_DEALS_IRIS = "viewDealsIris"
         const val OPEN_SCREEN = "openScreen"
         const val VIEW_ITEM = "view_item"
+        const val EVENT_DEALS_CLICK = "digitalDealsClick"
+        const val EVENT_CLICK_SEE_MORE_BRAND_DETAIL = "click selengkapnya - brand detail"
+        const val EVENT_CLICK_CHECK_LOCATION_PRODUCT_DETAIL = "click check location - product detail"
+        const val EVENT_CLICK_CHECK_TNC_PRODUCT_DETAIL = "click check term and condition - product detail"
+        const val EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL =
+            "check what you will get - product detail"
+        const val EVENT_CLICK_CHECK_REDEEM_INS_PRODUCT_DETAIL = "check how to redeem - product detail"
     }
 
     object Category {

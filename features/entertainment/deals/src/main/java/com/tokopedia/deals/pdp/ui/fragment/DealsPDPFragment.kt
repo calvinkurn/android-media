@@ -33,6 +33,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_LOCATION_PRODUCT_DETAIL
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_REDEEM_INS_PRODUCT_DETAIL
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_TNC_PRODUCT_DETAIL
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailBinding
@@ -428,6 +432,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
             }
 
             tgAllLocation?.setOnClickListener {
+                analytics.pdpClick(EVENT_CLICK_CHECK_LOCATION_PRODUCT_DETAIL, data.brand.title, data.displayName)
                 dealsPDPCallbacks?.onShowAllLocation(data.outlets)
             }
 
@@ -454,6 +459,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
             }, TIME_LAPSE)
 
             seeMoreButtonDesc?.setOnClickListener {
+                analytics.pdpClick(EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL, data.brand.title, data.displayName)
                 dealsPDPCallbacks?.onShowMoreDesc(
                     getString(com.tokopedia.deals.R.string.deals_pdp_show_description),
                     data.longRichDesc
@@ -478,6 +484,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 }
             }, TIME_LAPSE)
             seeMoreButtonTnc?.setOnClickListener {
+                analytics.pdpClick(EVENT_CLICK_CHECK_TNC_PRODUCT_DETAIL, data.brand.title, data.displayName)
                 dealsPDPCallbacks?.onShowMoreDesc(
                     getString(com.tokopedia.deals.R.string.deals_pdp_show_tnc),
                     data.tnc
@@ -488,6 +495,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
     private fun showRedeemInstruction(data: ProductDetailData) {
         clRedeemInstruction?.setOnClickListener {
+            analytics.pdpClick(EVENT_CLICK_CHECK_REDEEM_INS_PRODUCT_DETAIL, data.brand.title, data.displayName)
             if ((data.customText1.toIntSafely() and SALAM_VALUE) <= SALAM_INDICATOR) {
                 showGeneralWebview(REDEEM_URL)
             } else {
