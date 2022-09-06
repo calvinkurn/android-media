@@ -16,7 +16,6 @@ import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.removeAllItemDecoration
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
@@ -87,7 +86,6 @@ class BannerComponentViewHolder(itemView: View,
     override fun bind(element: BannerDataModel) {
         try {
             setHeaderComponent(element)
-            setChannelDivider(element)
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
@@ -122,14 +120,6 @@ class BannerComponentViewHolder(itemView: View,
 
     fun scrollTo(position: Int) {
         rvBanner.smoothScrollToPosition(position)
-    }
-
-    private fun setChannelDivider(element: BannerDataModel) {
-        ChannelWidgetUtil.validateHomeComponentDivider(
-            channelModel = element.channelModel,
-            dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter
-        )
     }
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
