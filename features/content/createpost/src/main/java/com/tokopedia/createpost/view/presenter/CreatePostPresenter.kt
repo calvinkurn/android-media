@@ -194,7 +194,7 @@ class CreatePostPresenter @Inject constructor(
         if (type == ProductSuggestionItem.TYPE_SHOP) {
             getProductSuggestionUseCase.params =
                     GetShopProductSuggestionUseCase.createRequestParams(
-                            userSession.shopId.toLong()
+                            userSession.shopId.toInt()
                     )
         }
         getProductSuggestionUseCase.type = type

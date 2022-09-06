@@ -24,7 +24,7 @@ class GetShopProductSuggestionUseCase @Inject constructor(
     companion object {
         private const val PARAM_SHOP_ID = "shopID"
 
-        fun createRequestParams(shopId: Long) = HashMap<String, Any>().apply {
+        fun createRequestParams(shopId: Int) = HashMap<String, Any>().apply {
             put(PARAM_SHOP_ID, shopId)
         }
     }
