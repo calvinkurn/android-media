@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="110dp">
+    android:layout_height="@dimen/play_engagement_carousel_size">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_engagement_widget"
         android:layout_width="wrap_content"
-        android:layout_height="110dp"
-        android:maxHeight="110dp"
+        android:layout_height="@dimen/play_engagement_carousel_size"
+        android:maxHeight="@dimen/play_engagement_carousel_size"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
