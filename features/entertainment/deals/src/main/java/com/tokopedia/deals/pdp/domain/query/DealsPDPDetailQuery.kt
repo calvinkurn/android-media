@@ -1,11 +1,17 @@
 package com.tokopedia.deals.pdp.domain.query
 
-import com.tokopedia.gql_query_annotation.GqlQueryInterface
+import com.tokopedia.deals.pdp.domain.query.DealsPDPDetailQuery.DEALS_PDP_DETAIL_OPERATION_NAME
+import com.tokopedia.deals.pdp.domain.query.DealsPDPDetailQuery.DEALS_PDP_DETAIL_QUERY
+import com.tokopedia.gql_query_annotation.GqlQuery
 
-object DealsPDPDetailQuery: GqlQueryInterface {
-    private const val OPERATION_NAME = "DealsProductDetail"
-    private val QUERY = """
-        query $OPERATION_NAME(${'$'}urlPDP:String!){
+@GqlQuery(
+    DEALS_PDP_DETAIL_OPERATION_NAME,
+    DEALS_PDP_DETAIL_QUERY
+)
+object DealsPDPDetailQuery {
+    const val DEALS_PDP_DETAIL_OPERATION_NAME = "DealsProductDetailQuery"
+    const val DEALS_PDP_DETAIL_QUERY = """
+        query $DEALS_PDP_DETAIL_OPERATION_NAME(${'$'}urlPDP:String!){
         event_product_detail_v3(URL:${'$'}urlPDP) {
             productDetailData {
                 id
@@ -246,7 +252,7 @@ object DealsPDPDetailQuery: GqlQueryInterface {
             }
         }
     }
-    """.trimIndent()
+    """
 
     private const val PRODUCT_ID_KEY = "urlPDP"
 
@@ -254,8 +260,4 @@ object DealsPDPDetailQuery: GqlQueryInterface {
     fun createRequestParam(productId: String) = HashMap<String, Any>().apply {
         put(PRODUCT_ID_KEY, productId)
     }
-
-    override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
-    override fun getQuery(): String = QUERY
-    override fun getTopOperationName(): String = OPERATION_NAME
 }

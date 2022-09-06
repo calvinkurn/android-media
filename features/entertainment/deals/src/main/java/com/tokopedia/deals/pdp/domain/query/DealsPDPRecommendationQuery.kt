@@ -1,13 +1,19 @@
 package com.tokopedia.deals.pdp.domain.query
 
 import com.tokopedia.deals.common.model.request.RequestParam
+import com.tokopedia.deals.pdp.domain.query.DealsPDPRecommendationQuery.DEALS_PDP_RECOMMENDATION_OPERATION_NAME
+import com.tokopedia.deals.pdp.domain.query.DealsPDPRecommendationQuery.DEALS_PDP_RECOMMENDATION_QUERY
 import com.tokopedia.deals.search.DealsSearchConstants
-import com.tokopedia.gql_query_annotation.GqlQueryInterface
+import com.tokopedia.gql_query_annotation.GqlQuery
 
-object DealsPDPRecommendationQuery: GqlQueryInterface {
-    private const val OPERATION_NAME = "DealsPDPRecommendationQuery"
-    private val QUERY = """
-        query $OPERATION_NAME(${'$'}params: [MapParamData]!){
+@GqlQuery(
+    DEALS_PDP_RECOMMENDATION_OPERATION_NAME,
+    DEALS_PDP_RECOMMENDATION_QUERY
+)
+object DealsPDPRecommendationQuery {
+    const val DEALS_PDP_RECOMMENDATION_OPERATION_NAME = "DealsPDPRecommendationsQuery"
+    const val DEALS_PDP_RECOMMENDATION_QUERY = """
+        query $DEALS_PDP_RECOMMENDATION_OPERATION_NAME(${'$'}params: [MapParamData]!){
           event_search(searchParams:${'$'}params)
           		{
           		brands{
@@ -54,7 +60,7 @@ object DealsPDPRecommendationQuery: GqlQueryInterface {
                 }
           }
         }
-    """.trimIndent()
+    """
 
     @JvmStatic
     fun createRequestParam(
@@ -70,8 +76,4 @@ object DealsPDPRecommendationQuery: GqlQueryInterface {
         hashMap.put(DealsSearchConstants.SEARCH_PARAM, pdpRecommendation)
         return hashMap
     }
-
-    override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
-    override fun getQuery(): String = QUERY
-    override fun getTopOperationName(): String = OPERATION_NAME
 }

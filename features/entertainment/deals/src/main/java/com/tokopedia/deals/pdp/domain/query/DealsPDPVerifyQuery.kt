@@ -1,12 +1,18 @@
 package com.tokopedia.deals.pdp.domain.query
 
 import com.tokopedia.deals.pdp.data.DealsVerifyRequest
-import com.tokopedia.gql_query_annotation.GqlQueryInterface
+import com.tokopedia.deals.pdp.domain.query.DealsPDPVerifyQuery.DEALS_PDP_VERIFY_OPERATION_NAME
+import com.tokopedia.deals.pdp.domain.query.DealsPDPVerifyQuery.DEALS_PDP_VERIFY_QUERY
+import com.tokopedia.gql_query_annotation.GqlQuery
 
-object DealsPDPVerifyQuery: GqlQueryInterface {
-    private const val OPERATION_NAME = "verify_v2"
-    private val QUERY = """
-        mutation $OPERATION_NAME(${'$'}eventVerify: VerifyRequest!) {
+@GqlQuery(
+    DEALS_PDP_VERIFY_OPERATION_NAME,
+    DEALS_PDP_VERIFY_QUERY
+)
+object DealsPDPVerifyQuery {
+    const val DEALS_PDP_VERIFY_OPERATION_NAME = "verifyV2Query"
+    const val DEALS_PDP_VERIFY_QUERY = """
+        mutation $DEALS_PDP_VERIFY_OPERATION_NAME(${'$'}eventVerify: VerifyRequest!) {
         event_verify(verifyRequestParam: ${'$'}eventVerify)
         {
             error
@@ -117,7 +123,7 @@ object DealsPDPVerifyQuery: GqlQueryInterface {
             gateway_code
         }
     }
-    """.trimIndent()
+    """
 
     private const val VERIFY_KEY = "eventVerify"
 
@@ -125,9 +131,4 @@ object DealsPDPVerifyQuery: GqlQueryInterface {
     fun createRequestParam(dealsVerifyRequest: DealsVerifyRequest) = HashMap<String, Any>().apply {
         put(VERIFY_KEY, dealsVerifyRequest)
     }
-
-    override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
-    override fun getQuery(): String = QUERY
-    override fun getTopOperationName(): String = OPERATION_NAME
-
 }

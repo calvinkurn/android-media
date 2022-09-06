@@ -2,6 +2,7 @@ package com.tokopedia.deals.pdp.domain
 
 import com.tokopedia.deals.pdp.data.DealsProductEventContent
 import com.tokopedia.deals.pdp.domain.query.DealsPDPContentQuery
+import com.tokopedia.deals.pdp.domain.query.EventContentByIdQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
@@ -10,7 +11,7 @@ class DealsPDPEventContentUseCase @Inject constructor(graphqlRepository: Graphql
     GraphqlUseCase<DealsProductEventContent>(graphqlRepository) {
 
         init {
-            setGraphqlQuery(DealsPDPContentQuery)
+            setGraphqlQuery(EventContentByIdQuery())
             setTypeClass(DealsProductEventContent::class.java)
         }
 
