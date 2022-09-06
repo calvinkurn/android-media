@@ -24,7 +24,4 @@ sealed class FeedASGCUpcomingReminderStatus {
     data class Off(val campaignId: Long) : FeedASGCUpcomingReminderStatus()
     object Unknown : FeedASGCUpcomingReminderStatus()
 }
-fun FeedASGCUpcomingReminderStatus.reversed(campaignId: Long): FeedASGCUpcomingReminderStatus =
-    if (this is FeedASGCUpcomingReminderStatus.Off) FeedASGCUpcomingReminderStatus.On(campaignId) else FeedASGCUpcomingReminderStatus.Off(
-        campaignId
-    )
+

@@ -602,7 +602,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             })
 
-            asgcReminderButtonStatus.observe(lifecycleOwner, Observer {
+            asgcReminderButtonStatus.observe(viewLifecycleOwner, Observer {
                 when (it) {
                     is Fail -> {
                         showToast(it.throwable.message ?: "", Toaster.TYPE_ERROR)
@@ -614,10 +614,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             })
 
-            asgcReminderButtonInitialStatus.observe(lifecycleOwner, Observer {
+            asgcReminderButtonInitialStatus.observe(viewLifecycleOwner, Observer {
                 when (it) {
-                    is Fail -> {
-                    }
                     is Success -> {
                         onSuccessFetchStatusIngnatSayaButton(it.data)
                     }

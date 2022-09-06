@@ -188,7 +188,7 @@ class FeedViewModel @Inject constructor(
 
     private suspend fun checkUpcomingCampaign(campaignId: Long): Boolean = withContext(baseDispatcher.io) {
         val response = checkUpcomingCampaignReminderUseCase.apply {
-            setRequestParams(CheckUpcomingCampaignReminderUseCase.createParam(campaignId).parameters)
+            setRequestParams(CheckUpcomingCampaignReminderUseCase.createParam(campaignId))
         }.executeOnBackground()
         return@withContext response.response.isAvailable
     }

@@ -4,6 +4,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatu
 
 data class FeedAsgcCampaignResponseModel(
     var rowNumber : Int = 0,
-    var campaignId: Long ,
+    var campaignId: Long,
     var reminderStatus: FeedASGCUpcomingReminderStatus
 )

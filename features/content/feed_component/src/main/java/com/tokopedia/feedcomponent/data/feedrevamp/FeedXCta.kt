@@ -15,5 +15,5 @@ data class FeedXCtaColorGradient(
     @SerializedName("color")
     val color: String = "",
     @SerializedName("position")
-    val position: Float ,
+    val position: Float,
 )

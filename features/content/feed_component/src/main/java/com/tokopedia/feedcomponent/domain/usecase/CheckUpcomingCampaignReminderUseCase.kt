@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
@@ -42,14 +41,11 @@ class CheckUpcomingCampaignReminderUseCase @Inject constructor(
             }
         """
 
-        fun createParam(campaignId: Long): RequestParams {
-            val params = mapOf(
+        fun createParam(campaignId: Long): Map<String, Any> {
+            return mapOf<String, Any>(
                 CAMPAIGN_ID to campaignId,
                 SOURCE_PARAM to SOURCE_PARAM_VALUE,
             )
-            return RequestParams.create().apply {
-                putObject(REQUEST_PARAM, params)
-            }
         }
     }
 }

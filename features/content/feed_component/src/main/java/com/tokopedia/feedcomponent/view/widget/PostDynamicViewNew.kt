@@ -67,6 +67,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.net.URLEncoder
 import kotlin.math.round
 
@@ -1814,14 +1815,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
             ),
         )
     }
-    private fun changeCTABtnColorAsPerColorGradientFromBE(colorArray: ArrayList<String>,) {
-        changeCTABtnColorGradient(
-            colorArray = colorArray,
-            secondaryColor = MethodChecker.getColor(
-                context,
-                unifyPrinciplesR.color.Unify_N0
-            ),
-        )
+    private fun changeCTABtnColorAsPerColorGradientFromBE(colorArray: ArrayList<String>?) {
+       colorArray?.let {
+           changeCTABtnColorGradient(
+               colorArray = it,
+               secondaryColor = MethodChecker.getColor(
+                   context,
+                   unifyPrinciplesR.color.Unify_N0
+               ),
+           )
+       }
     }
 
 
@@ -1865,7 +1868,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 if (card.isRilisanSpl || card.isFlashSaleToko) {
                     changeCTABtnColorAsPerColorGradientFromBE(colorGradient.map { colorGradient ->
                         colorGradient.color
-                    } as ArrayList<String>)
+                    } as? ArrayList<String>)
                 } else {
                     changeCTABtnColorAsPerColorCodeFromBE(card.cta.color)
                 }
@@ -1917,7 +1920,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 this.setBackgroundColor(Color.parseColor(colorArray[0]))
             }
         } catch (e: Exception) {
-
+            changeCTABtnColorToGreen()
         }
     }
 

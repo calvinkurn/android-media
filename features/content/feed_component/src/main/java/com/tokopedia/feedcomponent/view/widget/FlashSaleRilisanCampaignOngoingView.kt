@@ -6,12 +6,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.Nullable
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
@@ -55,7 +55,7 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
         postImageLayout = findViewById(R.id.ribbon_image_parent)
         fstSaleProductTitle = findViewById(R.id.flash_sale_ongoing_title)
         stockText = findViewById(R.id.stock_text)
-        stockProgressBar = findViewById(R.id.ongoing_progressBar)
+        stockProgressBar = findViewById(R.id.ongoing_progress_bar)
 
     }
     fun setData(
@@ -93,14 +93,12 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
                     show()
                 }
         }?: fstTimer.hide()
-//        fstTimer.onFinish = { mListener?.onTimerFinish() }
     }
-    fun setGradientColorForProgressBar(){
+    private fun setGradientColorForProgressBar(){
         val progressBarColor: IntArray = intArrayOf(
-            ContextCompat.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
-            ContextCompat.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
+            MethodChecker.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
+            MethodChecker.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
         )
-
         stockProgressBar.progressBarColor = progressBarColor
 
     }
