@@ -1,9 +1,27 @@
 package com.tokopedia.deals.common.analytics
 
+import android.os.Bundle
 import android.util.Log
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.deals.brand_detail.data.Product
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BRAND
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BUSINESS_UNIT
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CURRENT_SITE
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DEALS
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DIMENSION_40
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.INDEX
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEMS
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_BRAND
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_CATEGORY
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_ID
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_LIST
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_NAME
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_VARIANT
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRICE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRODUCT_CARD
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_PDP
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TOKOPEDIA_DIGITAL_DEALS
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TRAVELENTERTAINMENT_BU
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
@@ -15,10 +33,13 @@ import com.tokopedia.deals.home.ui.dataview.CuratedCategoryDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
 import com.tokopedia.deals.search.model.visitor.VoucherModel
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics
 import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.HashMap
 import javax.inject.Inject
 
 class DealsAnalytics @Inject constructor(
@@ -955,5 +976,52 @@ class DealsAnalytics @Inject constructor(
         return dataImpressions
     }
 
+    //pdp
+    fun pdpSendScreenName() {
+        val map = HashMap<String, String>()
+        map[BUSINESS_UNIT] = TRAVELENTERTAINMENT_BU
+        map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_DEALS
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME_DEALS_PDP, map)
+    }
+
+    fun pdpViewProduct(id:String, salesPrice: Long,  displayName:String, brandTitle: String){
+        val eventDataLayer = Bundle()
+        eventDataLayer.generalTracker(
+            DealsAnalyticsConstants.Event.VIEW_ITEM,
+            DealsAnalyticsConstants.Action.PDP_VIEW_PRODUCT,
+            brandTitle
+        )
+
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(Bundle().apply {
+            putString(ITEM_ID, id)
+            putLong(PRICE, salesPrice)
+            putString(DIMENSION_40,
+                String.format("%s - %s - %s", DEALS, BRAND, displayName))
+            putInt(INDEX, Int.ONE)
+            putString(ITEM_NAME, displayName)
+            putString(ITEM_BRAND, brandTitle)
+            putString(ITEM_VARIANT, "none")
+            putString(ITEM_CATEGORY, DEALS)
+        })
+        eventDataLayer.putString(ITEMS, "")
+        eventDataLayer.putParcelableArrayList(ITEM_LIST, arrayListOf())
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.VIEW_ITEM, eventDataLayer)
+    }
+
+    private fun Bundle.generalTracker(event: String, action: String, label: String): Bundle {
+        this.putString(TrackAppUtils.EVENT, event)
+        this.putString(TrackAppUtils.EVENT_CATEGORY, DealsAnalyticsConstants.Category.DIGITAL_DEALS)
+        this.putString(TrackAppUtils.EVENT_ACTION, action)
+        this.putString(TrackAppUtils.EVENT_LABEL, label)
+        return this
+    }
+
+    private fun getTrackingPDPWithHeader(): MutableMap<String, String> {
+        val map = mutableMapOf<String, String>()
+        map[DealsAnalyticsConstants.SESSION_IRIS] = getIrisSessionId()
+        return map
+    }
 
 }

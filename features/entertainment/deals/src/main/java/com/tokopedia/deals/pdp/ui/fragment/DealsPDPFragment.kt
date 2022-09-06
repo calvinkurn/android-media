@@ -32,6 +32,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.deals.R
+import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailBinding
@@ -73,9 +74,11 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var analytics: DealsAnalytics
+
     private lateinit var dealsSharePDP: DealsPDPShare
 
     private var productId: String = ""
@@ -358,6 +361,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     }
 
     private fun showPDPData(data: ProductDetailData) {
+        analytics.pdpSendScreenName()
         productDetailData = data
         showShareButton()
         showPDPOptionsMenu(data.displayName)
@@ -427,6 +431,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 dealsPDPCallbacks?.onShowAllLocation(data.outlets)
             }
 
+            analytics.pdpViewProduct(data.id, data.salesPrice.toIntSafely().toLong(), data.displayName, data.brand.title)
         } else {
             clOutlets?.hide()
         }
