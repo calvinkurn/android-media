@@ -51,11 +51,13 @@ class PlayBroadcastTimerImpl @Inject constructor(
 
 
     override fun setupDuration(duration: Long, maxDuration: Long) {
+        removeLastDurationMillis()
         setupDuration(duration)
         this.mMaxDuration = maxDuration
     }
 
     override fun setupPauseDuration(duration: Long) {
+        removeLastPauseMillis()
         mPauseDuration = duration
     }
 
@@ -66,7 +68,6 @@ class PlayBroadcastTimerImpl @Inject constructor(
     override fun start() {
         val lastDuration = cacheHandler.getLong(KEY_DURATION_MILLIS, 0L)
         if (lastDuration > 0) restart(lastDuration) else startCountUp()
-        removeLastPauseMillis()
     }
 
     override fun stop() {

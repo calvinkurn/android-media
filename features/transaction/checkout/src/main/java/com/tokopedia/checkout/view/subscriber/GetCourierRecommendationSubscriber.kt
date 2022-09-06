@@ -35,7 +35,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
         if (isInitialLoad || isForceReloadRates) {
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
-                if (shipmentCartItemModel.boCode.isNotEmpty()) {
+                if (!isForceReloadRates && shipmentCartItemModel.boCode.isNotEmpty()) {
                     val logisticPromo = shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == shipmentCartItemModel.boCode && !it.disabled }
                     if (logisticPromo != null) {
                         for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
@@ -133,6 +133,10 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
             // must get promo for tokonow
             logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
                 it.promoCode.isNotEmpty() && !it.disabled
+            }
+        } else if (isForceReloadRates) {
+            logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
+                !it.disabled && it.isApplied
             }
         }
         if (logisticPromoChosen?.shipperProductId != null && logisticPromoChosen.shipperProductId != courierItemData.shipperProductId) {
