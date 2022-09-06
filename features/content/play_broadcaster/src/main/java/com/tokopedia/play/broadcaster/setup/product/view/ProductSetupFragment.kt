@@ -63,7 +63,7 @@ class ProductSetupFragment @Inject constructor(
 
         override fun onShouldAddProduct(bottomSheet: ProductSummaryBottomSheet) {
             bottomSheet.dismiss()
-            openProductChooser()
+            openProductChooser(ChooserSource.Summary)
         }
 
         override fun onFinish(bottomSheet: ProductSummaryBottomSheet) {
@@ -75,10 +75,16 @@ class ProductSetupFragment @Inject constructor(
     private val productPickerUGCListener = object : ProductPickerUGCBottomSheet.Listener {
         override fun onCancelled(bottomSheet: ProductPickerUGCBottomSheet) {
             bottomSheet.dismiss()
+
+            when (chooserSource) {
+                ChooserSource.Preparation -> removeFragment()
+                ChooserSource.Summary -> openProductSummary()
+            }
         }
 
         override fun onFinished(bottomSheet: ProductPickerUGCBottomSheet) {
             bottomSheet.dismiss()
+            openProductSummary()
         }
     }
 
@@ -91,7 +97,7 @@ class ProductSetupFragment @Inject constructor(
 
         if (savedInstanceState != null) return
 
-        if (parentViewModel.productSectionList.isEmpty()) openProductChooser()
+        if (parentViewModel.productSectionList.isEmpty()) openProductChooser(ChooserSource.Preparation)
         else openProductSummary()
     }
 
@@ -117,9 +123,7 @@ class ProductSetupFragment @Inject constructor(
         ).show(childFragmentManager)
     }
 
-    private fun openShopProductChooser(chooserSource: ChooserSource) {
-        this.chooserSource = chooserSource
-
+    private fun openShopProductChooser() {
         ProductChooserBottomSheet.getFragment(
             childFragmentManager,
             requireActivity().classLoader,
@@ -140,10 +144,12 @@ class ProductSetupFragment @Inject constructor(
         ).showNow(childFragmentManager)
     }
 
-    private fun openProductChooser() {
+    private fun openProductChooser(chooserSource: ChooserSource) {
+        this.chooserSource = chooserSource
+
         val selectedAccount = parentViewModel.uiState.value.selectedContentAccount
         if (selectedAccount.isShop) {
-            openShopProductChooser(ChooserSource.Preparation)
+            openShopProductChooser()
         } else {
             openUGCProductChooser()
         }

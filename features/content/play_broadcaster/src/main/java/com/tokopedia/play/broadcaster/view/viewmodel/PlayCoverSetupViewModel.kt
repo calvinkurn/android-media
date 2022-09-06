@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.*
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -11,10 +10,8 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteV2UseCase
 import com.tokopedia.play.broadcaster.error.CoverChangeForbiddenException
-import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.view.state.*

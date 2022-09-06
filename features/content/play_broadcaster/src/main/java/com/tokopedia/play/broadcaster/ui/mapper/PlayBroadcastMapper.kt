@@ -29,14 +29,6 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
  */
 interface PlayBroadcastMapper {
 
-    fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel>
-
-    fun mapProductList(
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (String) -> Boolean,
-        isSelectableHandler: (Boolean) -> SelectableState
-    ): List<ProductContentUiModel>
-
     fun mapSearchSuggestionList(
         keyword: String,
         productsResponse: GetProductsByEtalaseResponse.GetProductListData

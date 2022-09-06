@@ -60,7 +60,7 @@ class PlaySetupSelectProductViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockAddedProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockAddedProduct))
             }
 
             state.selectedProductList.assertEqualTo(expectedSelectedProducts)
@@ -84,7 +84,7 @@ class PlaySetupSelectProductViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockAddedProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockAddedProduct))
             }
 
             state.selectedProductList
@@ -110,7 +110,7 @@ class PlaySetupSelectProductViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockUnselectedProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockUnselectedProduct))
             }
 
             state.selectedProductList
@@ -139,7 +139,7 @@ class PlaySetupSelectProductViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockAddedProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockAddedProduct))
             }
 
             Assertions.assertEquals(state.saveState.canSave, true)
@@ -168,7 +168,7 @@ class PlaySetupSelectProductViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockProduct))
             }
 
             Assertions.assertEquals(state.saveState.canSave, false)

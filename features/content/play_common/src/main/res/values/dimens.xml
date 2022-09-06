@@ -7,6 +7,8 @@
     <dimen name="play_dp_12">12dp</dimen>
     <dimen name="play_dp_14">14dp</dimen>
 
+    <dimen name="play_radius_8">8dp</dimen>
+
     <dimen name="play_spacing_size">1dp</dimen>
 
     <dimen name="play_placeholder_radius">8dp</dimen>

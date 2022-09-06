@@ -40,9 +40,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
 /**
  * Created by kenny.hadisaputra on 26/01/22
@@ -104,7 +106,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     val uiEvent: SharedFlow<PlayBroProductChooserEvent>
         get() = _uiEvent
 
-    val uiState = combine(
+    val uiState: StateFlow<ProductChooserUiState> = combine(
         _campaignAndEtalase,
         _focusedProductList,
         _selectedProductList,
@@ -137,6 +139,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             productTagSummary = productTagSummary
         )
     }
+
+    val selectedProducts: List<ProductUiModel>
+        get() = _selectedProductList.value
 
     init {
         getCampaignAndEtalaseList()
@@ -178,7 +183,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             is ProductSetupAction.SetSort -> handleSetSort(action.sort)
             is ProductSetupAction.SelectEtalase -> handleSelectEtalase(action.etalase)
             is ProductSetupAction.SelectCampaign -> handleSelectCampaign(action.campaign)
-            is ProductSetupAction.SelectProduct -> handleSelectProduct(action.product)
+            is ProductSetupAction.ToggleSelectProduct -> handleSelectProduct(action.product)
+            is ProductSetupAction.SetProducts -> handleSetProducts(action.products)
             is ProductSetupAction.LoadProductList -> handleLoadProductList(
                 param = _loadParam.value,
                 resetList = false,
@@ -258,6 +264,11 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                 products.filterNot { it.id == product.id }
             }
         }
+    }
+
+    private fun handleSetProducts(products: List<ProductUiModel>) = whenProductsNotSaving {
+        val productsSize = min(configStore.getMaxProduct(), products.size)
+        _selectedProductList.value = products.subList(0, productsSize).filterNot { it.stock <= 0 }
     }
 
     private fun handleLoadProductList(

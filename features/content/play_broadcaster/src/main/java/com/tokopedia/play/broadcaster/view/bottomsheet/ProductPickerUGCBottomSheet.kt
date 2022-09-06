@@ -7,6 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
@@ -14,9 +15,14 @@ import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayUgcProductPickerBinding
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
+import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.BaseProductSetupBottomSheet
+import com.tokopedia.play.broadcaster.type.PriceUnknown
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 /**
@@ -34,29 +40,33 @@ class ProductPickerUGCBottomSheet @Inject constructor(
 
     private val productTagListener = object : ProductTagParentFragment.Listener {
         override fun onCloseProductTag() {
-//            dismiss()
-            mListener?.onCancelled(this@ProductPickerUGCBottomSheet)
+            closeBottomSheet()
         }
 
         override fun onFinishProductTag(products: List<SelectedProductUiModel>) {
-//            products.forEach {
-//                viewModel.submitAction(
-//                    ProductSetupAction.SelectProduct(
-//                        ProductUiModel(
-//                            id = it.id,
-//                            name = it.name,
-//                            imageUrl = it.cover,
-//                            stock = 1,
-//                            price = PriceUnknown,
-//                        )
-//                    )
-//                )
-//            }
-//
-//            viewModel.submitAction(ProductSetupAction.SaveProducts)
-//
-//            dismiss()
-            mListener?.onFinished(this@ProductPickerUGCBottomSheet)
+            viewModel.submitAction(
+                ProductSetupAction.SetProducts(
+                    products.map {
+                        ProductUiModel(
+                            id = it.id,
+                            name = it.name,
+                            imageUrl = it.cover,
+                            stock = 1,
+                            price = PriceUnknown,
+                        )
+                    }
+                )
+            )
+
+            viewModel.submitAction(ProductSetupAction.SaveProducts)
+        }
+    }
+
+    private val productTagDataSource = object : ProductTagParentFragment.DataSource {
+        override fun getInitialSelectedProduct(): List<SelectedProductUiModel> {
+            return viewModel.selectedProducts.map {
+                SelectedProductUiModel.createOnlyId(it.id)
+            }
         }
     }
 
@@ -81,12 +91,16 @@ class ProductPickerUGCBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
+        setupObserve()
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
-            is ProductTagParentFragment -> childFragment.setListener(productTagListener)
+            is ProductTagParentFragment -> {
+                childFragment.setListener(productTagListener)
+                childFragment.setDataSource(productTagDataSource)
+            }
         }
     }
 
@@ -110,7 +124,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * SHEET_HEIGHT_PERCENT).toInt()
+            height = (getScreenHeight() * SHEET_HEIGHT_PERCENT).toInt() + bottomSheetWrapper.paddingTop
         }
 
         try {
@@ -135,7 +149,8 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                 .setAuthorId(selectedAccount.id)
                 .setShopBadge(selectedAccount.badge)
                 .setMultipleSelectionProduct(true)
-                .setMaxSelectedProduct(50)
+                .setMaxSelectedProduct(viewModel.maxProduct)
+                .setIsShowActionBarDivider(false)
         )
 
         childFragmentManager.beginTransaction()
@@ -153,12 +168,31 @@ class ProductPickerUGCBottomSheet @Inject constructor(
     }
 
     private fun closeBottomSheet() {
-        dismiss()
+        mListener?.onCancelled(this)
+    }
+
+    private fun setupObserve() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when (it) {
+                    PlayBroProductChooserEvent.SaveProductSuccess -> {
+                        mListener?.onFinished(this@ProductPickerUGCBottomSheet)
+                    }
+                    is PlayBroProductChooserEvent.ShowError -> {
+//                        toaster.showError(
+//                            err = it.error,
+//                            customErrMessage = getString(R.string.play_bro_product_chooser_error_save)
+//                        )
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 
     companion object {
         private const val TAG = "PlayUGCProductPickerBottomSheet"
-        private const val SHEET_HEIGHT_PERCENT = 0.85f
+        private const val SHEET_HEIGHT_PERCENT = 0.9f //a bit higher than the other bottomsheet to cater for no header height
 
         fun get(fragmentManager: FragmentManager): ProductPickerUGCBottomSheet? {
             return fragmentManager.findFragmentByTag(TAG) as? ProductPickerUGCBottomSheet
