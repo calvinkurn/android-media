@@ -45,7 +45,7 @@ class MerchantVoucherNewViewHolder(
         )
     }
 
-    fun bind(item: PlayVoucherUiModel.MerchantVoucherUiModel) {
+    fun bind(item: PlayVoucherUiModel.Merchant) {
         val isPrivate = item.type == MerchantVoucherType.Private
         tvVoucherTitle.text = item.title
         tvVoucherDescription.text = item.description
@@ -93,7 +93,7 @@ class MerchantVoucherNewViewHolder(
     }
 
     interface Listener {
-        fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel)
-        fun onVoucherItemClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel)
+        fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.Merchant)
+        fun onVoucherItemClicked(voucher: PlayVoucherUiModel.Merchant)
     }
 }

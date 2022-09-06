@@ -45,7 +45,7 @@ class PlayVoucherView : FrameLayout {
         }
     }
 
-    fun setupView(voucher: PlayVoucherUiModel.MerchantVoucherUiModel, voucherSize: Int) {
+    fun setupView(voucher: PlayVoucherUiModel.Merchant, voucherSize: Int) {
         binding.ivPromo.setImage(newIconId = getIcon(voucher.type))
         binding.tvVoucherCount.text = getDescription(voucherSize)
         binding.tvFirstVoucherTitle.text = voucher.title

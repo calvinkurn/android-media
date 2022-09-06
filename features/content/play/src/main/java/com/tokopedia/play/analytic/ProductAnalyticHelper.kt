@@ -18,7 +18,7 @@ class ProductAnalyticHelper(
     private val impressedProducts = mutableListOf<Pair<PlayProductUiModel.Product, Int>>()
 
     @TrackingField
-    private val impressedVouchers = mutableListOf<PlayVoucherUiModel.MerchantVoucherUiModel>()
+    private val impressedVouchers = mutableListOf<PlayVoucherUiModel.Merchant>()
 
     private var sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
 
@@ -34,7 +34,7 @@ class ProductAnalyticHelper(
         sectionInfo = section
     }
 
-    fun trackImpressedVouchers(vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel>) {
+    fun trackImpressedVouchers(vouchers: List<PlayVoucherUiModel.Merchant>) {
         if (vouchers.isNotEmpty()) impressedVouchers.addAll(vouchers)
     }
 
