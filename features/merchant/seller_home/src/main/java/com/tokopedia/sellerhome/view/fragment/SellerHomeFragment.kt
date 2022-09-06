@@ -36,6 +36,7 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -106,6 +107,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.FeedbackLoopOptionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LastUpdatedDataInterface
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
@@ -120,12 +122,14 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FeedbackLoopOptionsBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostMoreOptionBottomSheet
@@ -182,6 +186,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val DEFAULT_HEIGHT_DP = 720f
         private const val RV_TOP_POSITION = 0
         private const val TICKER_FIRST_INDEX = 0
+        private const val FEEDBACK_OPTION_1 = 0
+        private const val FEEDBACK_OPTION_2 = 1
+        private const val FEEDBACK_OPTION_3 = 2
+        private const val FEEDBACK_OPTION_4 = 3
+        private const val ANNOUNCEMENT_DISMISSAL_KEY = "widget.announcement.%s"
+        private const val POST_LIST_DISMISSAL_KEY = "widget.post.%s"
     }
 
     @Inject
@@ -309,6 +319,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeCustomTracePerformanceMonitoring()
         observeShopShareData()
         observeShopShareTracker()
+        observeWidgetDismissalStatus()
 
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
@@ -762,6 +773,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun setOnAnnouncementWidgetNoClicked(element: AnnouncementWidgetUiModel) {
         showFeedbackLoopOption(element)
+    }
+
+    override fun setOnAnnouncementWidgetCancelDismissal(element: AnnouncementWidgetUiModel) {
+        val param = SubmitWidgetDismissUiModel(
+            action = SubmitWidgetDismissUiModel.Action.CANCEL,
+            dismissKey = element.dismissToken
+        )
+        sellerHomeViewModel.submitWidgetDismissal(param)
     }
 
     override fun showProgressBarCoachMark(dataKey: String, view: View) {
@@ -1812,6 +1831,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    private fun observeWidgetDismissalStatus() {
+        observe(sellerHomeViewModel.submitWidgetDismissal) {
+            when (it) {
+                is Success -> setSubmitDismissalSuccess(it.data)
+                is Fail -> {
+
+                }
+            }
+        }
+    }
+
     private fun setViewBackground() = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
@@ -2406,7 +2436,76 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showFeedbackLoopOption(element: BaseWidgetUiModel<*>) {
         val bottomSheet = FeedbackLoopOptionsBottomSheet.createInstance()
+        val dismissObjectIDs: List<String>
+        val dismissKey = when (element) {
+            is AnnouncementWidgetUiModel -> {
+                dismissObjectIDs = listOf(element.id)
+                String.format(ANNOUNCEMENT_DISMISSAL_KEY, element.dataKey)
+            }
+            is PostListWidgetUiModel -> {
+                dismissObjectIDs = element.data?.postPagers?.flatMap { it.postList }
+                    ?.filter { it.isChecked }?.map { it.postItemId }.orEmpty()
+                String.format(POST_LIST_DISMISSAL_KEY, element.dataKey)
+            }
+            else -> {
+                dismissObjectIDs = emptyList()
+                String.EMPTY
+            }
+        }
+
+        bottomSheet.setOnSubmitClickedListener {
+            val param = SubmitWidgetDismissUiModel(
+                action = SubmitWidgetDismissUiModel.Action.DISMISS,
+                dismissKey = dismissKey,
+                feedbackReason1 = it.getOrNull(FEEDBACK_OPTION_1)?.isSelected.orFalse(),
+                feedbackReason2 = it.getOrNull(FEEDBACK_OPTION_2)?.isSelected.orFalse(),
+                feedbackReason3 = it.getOrNull(FEEDBACK_OPTION_3)?.isSelected.orFalse(),
+                feedbackReasonOther = (it.getOrNull(FEEDBACK_OPTION_4) as? FeedbackLoopOptionUiModel.Other)
+                    ?.value.orEmpty(),
+                feedbackWidgetIDParent = element.id,
+                dismissObjectIDs = dismissObjectIDs,
+                shopId = userSession.shopId
+            )
+            sellerHomeViewModel.submitWidgetDismissal(param)
+        }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun setSubmitDismissalSuccess(result: WidgetDismissalResultUiModel) {
+        var shouldUpdateWidget = false
+        val widgets: List<BaseWidgetUiModel<*>> = adapter.data.map {
+            return@map when {
+                it.id == result.widgetId && it is AnnouncementWidgetUiModel -> {
+                    shouldUpdateWidget = true
+                    getDismissalAnnouncementWidget(it, result)
+                }
+                it.id == result.widgetId && it is PostListWidgetUiModel -> {
+                    shouldUpdateWidget = true
+                    getDismissalPostListWidget(it)
+                }
+                else -> it
+            }
+        }
+
+        if (shouldUpdateWidget) {
+            notifyWidgetWithSdkChecking {
+                updateWidgets(widgets)
+            }
+        }
+    }
+
+    private fun getDismissalPostListWidget(widget: PostListWidgetUiModel): PostListWidgetUiModel {
+        return widget
+    }
+
+    private fun getDismissalAnnouncementWidget(
+        widget: AnnouncementWidgetUiModel, result: WidgetDismissalResultUiModel
+    ): BaseWidgetUiModel<*> {
+        return widget.copy(
+            dismissToken = result.dismissToken,
+            shouldShowDismissalTimer = !result.isError,
+            isDismissible = false
+        ).copyWidget()
     }
 
     interface Listener {

@@ -73,4 +73,5 @@
     <string name="shc_post_more_title">Atur Bacaan</string>
     <string name="shc_delate">Hapus</string>
     <string name="shc_thanks_for_your_insight">Terima kasih atas masukanmu, ya!</string>
+    <string name="shc_cancel_timer">Batalkan (%1$d detik)</string>
 </resources>

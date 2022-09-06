@@ -10,7 +10,6 @@ import com.tokopedia.sellerhomecommon.R
 
 sealed class FeedbackLoopOptionUiModel(
     open val title: String = String.EMPTY,
-    open var value: String = String.EMPTY,
     open var isSelected: Boolean = false
 ) {
 
@@ -28,11 +27,11 @@ sealed class FeedbackLoopOptionUiModel(
     data class Static(
         override val title: String = String.EMPTY,
         override var isSelected: Boolean = false
-    ) : FeedbackLoopOptionUiModel(title, title, isSelected)
+    ) : FeedbackLoopOptionUiModel(title, isSelected)
 
     data class Other(
         override val title: String = String.EMPTY,
-        override var value: String = String.EMPTY,
-        override var isSelected: Boolean = false
-    ) : FeedbackLoopOptionUiModel(title, value, isSelected)
+        override var isSelected: Boolean = false,
+        var value: String = String.EMPTY
+    ) : FeedbackLoopOptionUiModel(title, isSelected)
 }

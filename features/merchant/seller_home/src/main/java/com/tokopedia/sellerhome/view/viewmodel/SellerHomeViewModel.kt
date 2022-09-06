@@ -15,8 +15,44 @@ import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
-import com.tokopedia.sellerhomecommon.domain.usecase.*
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCalendarDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMilestoneDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.SubmitWidgetDismissUseCase
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -26,7 +62,9 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -102,6 +140,7 @@ class SellerHomeViewModel @Inject constructor(
     private val _unificationWidgetData = MutableLiveData<Result<List<UnificationDataUiModel>>>()
     private val _shopShareData = MutableLiveData<Result<ShopShareDataUiModel>>()
     private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
+    private val _submitWidgetDismissal = MutableLiveData<Result<WidgetDismissalResultUiModel>>()
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
@@ -145,6 +184,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _shopShareData
     val shopShareTracker: LiveData<Result<ShopQuestGeneralTracker>>
         get() = _shopShareTracker
+    val submitWidgetDismissal: LiveData<Result<WidgetDismissalResultUiModel>>
+        get() = _submitWidgetDismissal
 
     init {
         sellerHomeLayoutHelper.get().init(
@@ -414,11 +455,14 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun submitWidgetDismissal() {
+    fun submitWidgetDismissal(param: SubmitWidgetDismissUiModel) {
         launchCatchError(block = {
-            submitWidgetDismissUseCase
+            val useCase = submitWidgetDismissUseCase.get()
+            useCase.setParam(param)
+            val result = useCase.executeOnBackground()
+            _submitWidgetDismissal.value = Success(result)
         }, onError = {
-
+            _submitWidgetDismissal.value = Fail(it)
         })
     }
 

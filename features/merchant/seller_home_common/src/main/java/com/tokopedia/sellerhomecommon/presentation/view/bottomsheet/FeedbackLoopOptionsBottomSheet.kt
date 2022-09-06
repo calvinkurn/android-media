@@ -65,10 +65,6 @@ class FeedbackLoopOptionsBottomSheet : BaseBottomSheet<ShcBottomSheetFeedbackLoo
             }
 
             val mAdapter = FeedbackLoopOptionAdapter(feedbackItems) {
-                feedbackItems.forEach { f ->
-                    println("Feedback : $f")
-                }
-
                 setSendButtonEnabled()
             }
 

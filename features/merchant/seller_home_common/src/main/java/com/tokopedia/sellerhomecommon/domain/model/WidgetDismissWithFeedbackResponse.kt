@@ -12,6 +12,8 @@ data class WidgetDismissWithFeedbackResponse(
     val isError: Boolean,
     @SerializedName("errorMsg")
     val errorMsg: String = String.EMPTY,
+    @SerializedName("state")
+    val state: String = String.EMPTY,
     @SerializedName("dismissToken")
     val dismissToken: String = String.EMPTY
 )

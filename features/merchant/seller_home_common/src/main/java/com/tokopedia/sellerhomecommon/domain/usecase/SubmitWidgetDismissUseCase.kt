@@ -1,11 +1,15 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerhomecommon.domain.mapper.SubmitWidgetDismissalMapper
 import com.tokopedia.sellerhomecommon.domain.model.WidgetDismissWithFeedbackResponse
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -16,12 +20,46 @@ import javax.inject.Inject
 
 @GqlQuery("SubmitWidgetDismissalGqlMutation", SubmitWidgetDismissUseCase.QUERY)
 class SubmitWidgetDismissUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<WidgetDismissWithFeedbackResponse>(graphqlRepository) {
+    val mapper: SubmitWidgetDismissalMapper,
+    private val gqlRepository: GraphqlRepository
+) : BaseGqlUseCase<WidgetDismissalResultUiModel>() {
 
-    init {
-        setGraphqlQuery(SubmitWidgetDismissalGqlMutation())
-        setTypeClass(WidgetDismissWithFeedbackResponse::class.java)
+    private var param: SubmitWidgetDismissUiModel? = null
+
+    override suspend fun executeOnBackground(): WidgetDismissalResultUiModel {
+        param?.let {
+            val gqlRequest = GraphqlRequest(
+                SubmitWidgetDismissalGqlMutation(),
+                WidgetDismissWithFeedbackResponse::class.java,
+                params.parameters
+            )
+            val response = gqlRepository.response(listOf(gqlRequest))
+            val result = response.getSuccessData<WidgetDismissWithFeedbackResponse>()
+            return mapper.mapRemoteModelToUiModel(it, result)
+        }
+        throw MessageErrorException(NULL_PARAM_ERROR)
+    }
+
+    fun setParam(param: SubmitWidgetDismissUiModel) {
+        this.param = param
+        setRequestParam(param)
+    }
+
+    private fun setRequestParam(data: SubmitWidgetDismissUiModel) {
+        val gqlParams = RequestParams().apply {
+            putString(ACTION, data.action.name)
+            putString(DISMISS_KEY, data.dismissKey)
+            putObject(DISMISS_OBJECT_ID_LIST, data.dismissObjectIDs)
+            putString(DISMISS_SIGN, data.dismissSign)
+            putString(DISMISS_TOKEN, data.dismissToken)
+            putBoolean(FEEDBACK_REASON_1, data.feedbackReason1)
+            putBoolean(FEEDBACK_REASON_2, data.feedbackReason2)
+            putBoolean(FEEDBACK_REASON_3, data.feedbackReason3)
+            putString(FEEDBACK_REASON_OTHER, data.feedbackReasonOther)
+            putString(FEEDBACK_ID_PARENT, data.feedbackWidgetIDParent)
+            putLong(SHOP_ID, data.shopId.toLongOrZero())
+        }
+        params = gqlParams
     }
 
     companion object {
@@ -29,6 +67,7 @@ class SubmitWidgetDismissUseCase @Inject constructor(
         private const val DISMISS_KEY = "dismissKey"
         private const val DISMISS_OBJECT_ID_LIST = "dismissObjectIDList"
         private const val DISMISS_SIGN = "dismissSign"
+        private const val DISMISS_TOKEN = "dismissToken"
         private const val FEEDBACK_REASON_1 = "feedbackReason1"
         private const val FEEDBACK_REASON_2 = "feedbackReason2"
         private const val FEEDBACK_REASON_3 = "feedbackReason3"
@@ -39,6 +78,7 @@ class SubmitWidgetDismissUseCase @Inject constructor(
         internal const val QUERY = """
             mutation dashboardDismissWithFeedback($$ACTION: String!, $$DISMISS_KEY: String!, $$DISMISS_OBJECT_ID_LIST: [String!]!, $$DISMISS_SIGN: String!, $$FEEDBACK_REASON_1: Boolean!, $$FEEDBACK_REASON_2: Boolean!, $$FEEDBACK_REASON_3: Boolean!, $$FEEDBACK_REASON_OTHER: String!, $$FEEDBACK_ID_PARENT: String!, $$SHOP_ID: Int!) {
               dashboardDismissWithFeedback(action: $$ACTION, dismissKey: $$DISMISS_KEY, dismissObjectIDList: $DISMISS_OBJECT_ID_LIST, dismissSign: $$DISMISS_SIGN, feedbackReason1: $$FEEDBACK_REASON_1, feedbackReason2: $$FEEDBACK_REASON_2, feedbackReason3: $FEEDBACK_REASON_3, feedbackReasonOtherText: $$FEEDBACK_REASON_OTHER, feedbackWidgetIDParent: $$FEEDBACK_ID_PARENT, shopID: $$SHOP_ID, feedbackPositive: false, dismissToken: "") {
+                state
                 error
                 errorMsg
                 dismissToken
@@ -46,19 +86,6 @@ class SubmitWidgetDismissUseCase @Inject constructor(
             }
         """
 
-        fun createParam(data: SubmitWidgetDismissUiModel): RequestParams {
-            return RequestParams().apply {
-                putString(ACTION, data.action.name)
-                putString(DISMISS_KEY, data.dismissKey)
-                putObject(DISMISS_OBJECT_ID_LIST, data.dismissObjectIDs)
-                putString(DISMISS_SIGN, data.dismissSign)
-                putBoolean(FEEDBACK_REASON_1, data.feedbackReason1)
-                putBoolean(FEEDBACK_REASON_2, data.feedbackReason2)
-                putBoolean(FEEDBACK_REASON_3, data.feedbackReason3)
-                putString(FEEDBACK_REASON_OTHER, data.feedbackReasonOther)
-                putString(FEEDBACK_ID_PARENT, data.feedbackWidgetIDParent)
-                putLong(SHOP_ID, data.shopId.toLongOrZero())
-            }
-        }
+        private const val NULL_PARAM_ERROR = "Parameter is null, please invoke setParam(...) method"
     }
 }

@@ -14,6 +14,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcAnnouncementWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.view.customview.DismissalTimerView
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 
 /**
@@ -59,11 +60,18 @@ class AnnouncementViewHolder(
             shcAnnouncementLoadingState.gone()
             shcAnnouncementSuccessState.visible()
 
+            if (element.shouldShowDismissalTimer) {
+                showTimerState(element)
+                return
+            }
+
             val selectableItemBg = TypedValue()
             root.context.theme.resolveAttribute(
                 android.R.attr.selectableItemBackground,
                 selectableItemBg, true
             )
+            shcAnnouncementContainer.visible()
+            viewShcAnnouncementDismissal.gone()
             shcAnnouncementSuccessState.setBackgroundResource(selectableItemBg.resourceId)
 
             tvShcAnnouncementTitle.text = element.data?.title
@@ -83,6 +91,27 @@ class AnnouncementViewHolder(
             listener.showAnnouncementWidgetCoachMark(element.dataKey, itemView)
 
             setupDismissalView(element)
+        }
+    }
+
+    private fun showTimerState(element: AnnouncementWidgetUiModel) {
+        with(binding) {
+            shcAnnouncementContainer.gone()
+            viewShcAnnouncementDismissal.visible()
+
+            val title = root.context.getString(R.string.shc_info_deleted)
+            viewShcAnnouncementDismissal.startTimer(title, object : DismissalTimerView.Listener {
+                override fun onFinished() {
+                    element.shouldShowDismissalTimer = false
+                    showSuccessState(element)
+                }
+
+                override fun onCancelTimer() {
+                    element.shouldShowDismissalTimer = false
+                    showSuccessState(element)
+                    listener.setOnAnnouncementWidgetCancelDismissal(element)
+                }
+            })
         }
     }
 
@@ -130,5 +159,7 @@ class AnnouncementViewHolder(
         fun setOnAnnouncementWidgetYesClicked(element: AnnouncementWidgetUiModel) {}
 
         fun setOnAnnouncementWidgetNoClicked(element: AnnouncementWidgetUiModel) {}
+
+        fun setOnAnnouncementWidgetCancelDismissal(element: AnnouncementWidgetUiModel)
     }
 }

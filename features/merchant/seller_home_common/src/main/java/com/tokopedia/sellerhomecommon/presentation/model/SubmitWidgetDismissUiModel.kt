@@ -1,20 +1,23 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
+
 /**
  * Created by @ilhamsuaib on 02/09/22.
  */
 
 data class SubmitWidgetDismissUiModel(
     val action: Action,
-    val dismissKey: String,
-    val dismissObjectIDs: List<String>,
-    val dismissSign: String,
-    val feedbackReason1: Boolean,
-    val feedbackReason2: Boolean,
-    val feedbackReason3: Boolean,
-    val feedbackReasonOther: String,
-    val feedbackWidgetIDParent: String,
-    val shopId: String
+    val dismissKey: String = String.EMPTY,
+    val dismissObjectIDs: List<String> = emptyList(),
+    val dismissSign: String = String.EMPTY,
+    val dismissToken: String = String.EMPTY,
+    val feedbackReason1: Boolean = false,
+    val feedbackReason2: Boolean = false,
+    val feedbackReason3: Boolean = false,
+    val feedbackReasonOther: String = String.EMPTY,
+    val feedbackWidgetIDParent: String = String.EMPTY,
+    val shopId: String = String.EMPTY
 ) {
 
     companion object {
