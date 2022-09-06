@@ -131,7 +131,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private val saldoCoachMarkController: SaldoCoachMarkController by lazy {
         SaldoCoachMarkController(requireContext()) {
-            binding.spAppBarLayout.setExpanded(true)
+            binding?.spAppBarLayout.setExpanded(true)
         }
     }
 
@@ -161,7 +161,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     ): View {
         binding = FragmentSaldoDepositBinding.inflate(layoutInflater, container, false)
         initViews()
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -177,7 +177,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun addBalanceAnchorsForCoachMark(isBalanceShown: Boolean) {
-        binding.depositHeaderLayout.apply {
+        binding?.depositHeaderLayout.apply {
             saldoCoachMarkController.addBalanceAnchorsForCoachMark(
                 isBalanceShown,
                 listOf(saldoBuyerDepositText, saldoSellerDepositText)
@@ -194,7 +194,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private fun prepareSaldoCoachMark() {
         if (activity is SaldoDepositActivity) {
             saldoCoachMarkController.startCoachMark()
-            binding.spAppBarLayout.addOnOffsetChangedListener(AppBarLayout
+            binding?.spAppBarLayout.addOnOffsetChangedListener(AppBarLayout
                 .OnOffsetChangedListener { _, _ ->
                     saldoCoachMarkController.updateCoachMarkOnScroll(
                         expandLayout
@@ -210,7 +210,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         }
         setViewModelObservers()
         expandLayout = true
-        binding.depositHeaderLayout.apply {
+        binding?.depositHeaderLayout.apply {
             if (expandLayout) {
                 saldoTypeLl.show()
             } else {
@@ -229,13 +229,13 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         val saldoHistoryFragment = SaldoTransactionHistoryFragment()
         childFragmentManager.beginTransaction()
             .replace(
-                binding.saldoHistoryLayout.id,
+                binding?.saldoHistoryLayout.id,
                 saldoHistoryFragment,
                 "saldo History"
             )
             .commit()
         this.saldoHistoryFragment = saldoHistoryFragment
-        binding.depositHeaderLayout.merchantDetailsLl.apply {
+        binding?.depositHeaderLayout.merchantDetailsLl.apply {
             if (isSellerMigrationEnabled(context)) {
                 this.hide()
             } else {
@@ -326,7 +326,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun onUserSaldoBalanceLoaded(saldo: Saldo) {
         addBalanceAnchorsForCoachMark(true)
-        binding.depositHeaderLayout.apply {
+        binding?.depositHeaderLayout.apply {
             cardWithdrawBalance.visible()
             localLoadSaldoBalance.gone()
         }
@@ -370,7 +370,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private fun onSaldoBalanceLoadingError() {
         saldoDetailsAnalytics.sendApiFailureEvents(SaldoDetailsConstants.EventLabel.SALDO_FETCH_BALANCE)
         addBalanceAnchorsForCoachMark(false)
-        binding.depositHeaderLayout.apply {
+        binding?.depositHeaderLayout.apply {
             cardWithdrawBalance.gone()
             localLoadSaldoBalance.visible()
             localLoadSaldoBalance.refreshBtn?.setOnClickListener {
@@ -400,7 +400,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun initListeners() {
-        binding.depositHeaderLayout.apply {
+        binding?.depositHeaderLayout.apply {
             saldoDepositLayoutExpand.setOnClickListener {
                 if (expandLayout) {
                     saldoDepositLayoutExpand.animate().rotation(animationRotationValue).duration =
@@ -585,7 +585,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun initialVar() {
-        binding.depositHeaderLayout.apply {
+        binding?.depositHeaderLayout.apply {
             saldoDetailViewModel.isSeller = isSellerEnabled
             context?.resources?.let { res ->
                 saldoDepositText.text =
@@ -623,7 +623,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideUserFinancialStatusLayout() {
-        binding.depositHeaderLayout.merchantStatusLl.gone()
+        binding?.depositHeaderLayout.merchantStatusLl.gone()
     }
 
     private fun showBottomSheetInfoDialog(isSellerClicked: Boolean) {
@@ -677,7 +677,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun setBalance(summaryUsebleDepositIdr: String) {
-        binding.depositHeaderLayout.totalBalance.apply {
+        binding?.depositHeaderLayout.totalBalance.apply {
             if (!TextUtils.isEmpty(summaryUsebleDepositIdr)) {
                 this.text = summaryUsebleDepositIdr
                 this.show()
@@ -688,7 +688,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun setWithdrawButtonState(state: Boolean) {
-        binding.depositHeaderLayout.withdrawButton.apply {
+        binding?.depositHeaderLayout.withdrawButton.apply {
             buttonType = if (state) UnifyButton.Type.MAIN else UnifyButton.Type.ALTERNATE
             isEnabled = state
             isClickable = state
@@ -703,7 +703,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showHoldWarning(warningText: String) {
-        binding.depositHeaderLayout.holdBalanceLayout.apply {
+        binding?.depositHeaderLayout.holdBalanceLayout.apply {
             this.show()
             this.setHtmlDescription(
                 String.format(
@@ -728,7 +728,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideSaldoPrioritasFragment() {
-        binding.depositHeaderLayout.apply {
+        binding?.depositHeaderLayout.apply {
             saldoPrioritasWidget.show()
             Handler().postDelayed({
                 if (merchantCreditLineWidget.visibility != View.VISIBLE) {
@@ -739,7 +739,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideMerchantCreditLineFragment() {
-        binding.depositHeaderLayout.apply {
+        binding?.depositHeaderLayout.apply {
             merchantCreditLineWidget.gone()
             Handler().postDelayed({
                 if (saldoPrioritasWidget.visibility != View.VISIBLE) {
@@ -750,7 +750,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showTickerMessage(withdrawalTicker: String) {
-        binding.depositHeaderLayout.apply {
+        binding?.depositHeaderLayout.apply {
             tickerMessageLayout.show()
             tickerMessageText.text =
                 withdrawalTicker
@@ -759,7 +759,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun showTicker() {
         if (showMclBlockTickerFirebaseFlag) {
-            binding.layoutHoldwithdrawlDialog.apply {
+            binding?.layoutHoldwithdrawlDialog.apply {
                 this.visible()
                 this.tickerTitle =
                     getString(R.string.saldo_lock_tickerTitle)
@@ -784,7 +784,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                     }
 
                     override fun onDismiss() {
-                        binding.layoutHoldwithdrawlDialog.gone()
+                        binding?.layoutHoldwithdrawlDialog.gone()
                     }
 
                 })
@@ -793,7 +793,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideTickerMessage() {
-        binding.depositHeaderLayout.tickerMessageLayout.gone()
+        binding?.depositHeaderLayout.tickerMessageLayout.gone()
     }
 
     private fun setLateCount(count: Int) {
@@ -801,26 +801,26 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideWithdrawTicker() {
-        binding.layoutHoldwithdrawlDialog.gone()
+        binding?.layoutHoldwithdrawlDialog.gone()
     }
 
     private fun showSellerSaldoRL() {
-        binding.depositHeaderLayout.saldoSellerBalanceRl.show()
+        binding?.depositHeaderLayout.saldoSellerBalanceRl.show()
     }
 
     private fun setBuyerSaldoBalance(balance: Long, text: String) {
         saldoBalanceBuyer = balance
-        binding.depositHeaderLayout.buyerBalance.text = text
+        binding?.depositHeaderLayout.buyerBalance.text = text
     }
 
     private fun setSellerSaldoBalance(amount: Long, formattedAmount: String) {
         saldoBalanceSeller = amount
-        binding.depositHeaderLayout.sellerBalance
+        binding?.depositHeaderLayout.sellerBalance
             .text = formattedAmount
     }
 
     private fun showBuyerSaldoRL() {
-        binding.depositHeaderLayout.saldoBuyerBalanceRl.show()
+        binding?.depositHeaderLayout.saldoBuyerBalanceRl.show()
     }
 
     private fun showMerchantCreditLineFragment(response: GqlMerchantCreditResponse?) {
@@ -844,7 +844,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showMerchantCreditLineWidget(response: GqlMerchantCreditResponse?) {
-        binding.depositHeaderLayout.merchantStatusLl.show()
+        binding?.depositHeaderLayout.merchantStatusLl.show()
         val bundle = Bundle()
         saveInstanceCacheManager =
             context?.let { context -> SaveInstanceCacheManager(context, true) }
@@ -863,7 +863,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun showSaldoPrioritasFragment(gqlDetailsResponse: GqlDetailsResponse?) {
         if (gqlDetailsResponse != null && gqlDetailsResponse.isEligible) {
-            binding.depositHeaderLayout.merchantStatusLl.show()
+            binding?.depositHeaderLayout.merchantStatusLl.show()
             val bundle = Bundle()
             saveInstanceCacheManager =
                 context?.let { context -> SaveInstanceCacheManager(context, true) }
@@ -884,7 +884,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideWarning() {
-        binding.depositHeaderLayout.holdBalanceLayout.hide()
+        binding?.depositHeaderLayout.holdBalanceLayout.hide()
     }
 
     override fun onDestroy() {
