@@ -1300,11 +1300,6 @@
           "deeplink_variable": "ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER"
      }, 
      {
-          "destination_activity": "com.tokopedia.interestpick.view.activity.InterestPickActivity", 
-          "deeplink": "tokopedia-android-internal://interestpick", 
-          "deeplink_variable": ""
-     }, 
-     {
           "destination_activity": "com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity", 
           "deeplink": "tokopedia-android-internal://feedcommunicationdetail", 
           "deeplink_variable": "ApplinkConstInternalFeed.INTERNAL_FEED_DETAILS"
@@ -2373,6 +2368,11 @@
           "destination_activity": "com.tokopedia.moneyin.viewcontrollers.activity.MoneyInHomeActivity", 
           "deeplink": "tokopedia-android-internal://money_in/device_validation", 
           "deeplink_variable": "ApplinkConstInternalCategory.MONEYIN_INTERNAL"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.epharmacy.ui.activity.EPharmacyActivity", 
+          "deeplink": "tokopedia-android-internal://epharmacy", 
+          "deeplink_variable": "ApplinkConstInternalCategory.INTERNAL_E_PHARMACY"
      }, 
      {
           "destination_activity": "com.tokopedia.find_native.view.activity.FindNavActivity", 
