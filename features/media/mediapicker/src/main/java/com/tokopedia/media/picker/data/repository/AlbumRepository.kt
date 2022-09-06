@@ -41,7 +41,8 @@ open class AlbumRepository constructor(
                     albumMap[bucketName] = Album(
                         bucketId,
                         bucketName,
-                        media.uri
+                        media.uri,
+                        1
                     )
                 }
 
