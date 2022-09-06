@@ -2,7 +2,6 @@ package com.tokopedia.product.addedit.detail.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,7 +12,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
@@ -58,6 +56,8 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.LIGHT_BULB_ICON
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.ROUND_GREEN_CHECK_MARK_ICON
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TOP_SCROLL_MARGIN
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.*
@@ -333,7 +333,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         setupProductCategoryViews()
         setupSpecificationViews()
         setupProductPriceViews()
-        setupProductSuggestionViews()
+        setupPriceSuggestionViews()
         setupWholesaleViews()
         setupStockViews()
         setupPreOrderViews()
@@ -1219,7 +1219,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 val priceSuggestionRange = viewModel.getProductPriceSuggestionRange(viewModel.isEditing)
                 val isCompetitive = viewModel.isProductPriceCompetitive(productPriceInput.toDoubleOrZero(), priceSuggestionRange)
                 if (isCompetitive) {
-                    priceSuggestionStatusView?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_round_green_check_mark)
+                    priceSuggestionStatusView?.setImageUrl(ROUND_GREEN_CHECK_MARK_ICON)
                     priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
                 }
             }
@@ -1251,7 +1251,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             val priceSuggestionRange = viewModel.getProductPriceSuggestionRange(viewModel.isEditing)
             val isCompetitive = viewModel.isProductPriceCompetitive(productPriceInput.toDoubleOrZero(), priceSuggestionRange)
             if (isCompetitive) {
-                priceSuggestionStatusView?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_round_green_check_mark)
+                priceSuggestionStatusView?.setImageUrl(ROUND_GREEN_CHECK_MARK_ICON)
                 priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
             }
         }
@@ -1611,10 +1611,10 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     val isError = viewModel.isProductPriceInputError.value.orFalse()
                     val isCompetitive = viewModel.isProductPriceCompetitive(it.toDoubleOrZero(), priceSuggestionRange, isError)
                     if (isCompetitive) {
-                        priceSuggestionStatusView?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_round_green_check_mark)
+                        priceSuggestionStatusView?.setImageUrl(ROUND_GREEN_CHECK_MARK_ICON)
                         priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
                     } else {
-                        priceSuggestionStatusView?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_light_bulb)
+                        priceSuggestionStatusView?.setImageUrl(LIGHT_BULB_ICON)
                         priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_price_suggestion_range)
                     }
                 }
@@ -1632,7 +1632,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         }
     }
 
-    private fun setupProductSuggestionViews() {
+    private fun setupPriceSuggestionViews() {
         // store view references
         productPriceSuggestionLayout = binding?.addEditPriceSuggestionLayout?.root
         priceSuggestionLayout = binding?.addEditPriceSuggestionLayout?.priceSuggestionLayout
@@ -1641,6 +1641,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         priceSuggestionLabelView = binding?.addEditPriceSuggestionLayout?.tpgPriceSuggestionLabel
         priceSuggestionRangeView = binding?.addEditPriceSuggestionLayout?.tpgPriceSuggestionRange
         priceSuggestionCtaView = binding?.addEditPriceSuggestionLayout?.tpgCtaCheckDetail
+        // set default values
+        priceSuggestionStatusView?.setImageUrl(LIGHT_BULB_ICON)
         // setup lihat detail cta
         priceSuggestionCtaView?.setOnClickListener {
             val productId = viewModel.productInputModel.productId.toString()

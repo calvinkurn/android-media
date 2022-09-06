@@ -32,6 +32,10 @@ object AddEditProductConstants {
     const val PHOTO_TITLE_VALIDATION_SUCCESS = "https://images.tokopedia.net/img/android/product_service/product_title_bottomsheet_success.png"
     const val PHOTO_TITLE_VALIDATION_ERROR = "https://images.tokopedia.net/img/android/product_service/product_title_bottomsheet_error.png"
 
+    const val LIGHT_BULB_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/light_bulb_3x.png"
+    const val ROUND_GREEN_CHECK_MARK_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/round_green_checkmark_3x.png"
+    const val INFORMATION_ICON = "https://images.tokopedia.net/img/android/product-service/aep/icons/information_icon_3x.png"
+
     const val MAX_PRODUCT_IMAGE_SIZE_IN_MB = 30
     const val MAX_PRODUCT_IMAGE_SIZE_IN_KB = MAX_PRODUCT_IMAGE_SIZE_IN_MB * 1024
     const val TOP_SCROLL_MARGIN = 16

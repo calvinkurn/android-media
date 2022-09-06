@@ -132,10 +132,10 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_cta_information"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:srcCompat="@drawable/ic_price_recommendation_info" />
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <com.tokopedia.unifycomponents.DividerUnify

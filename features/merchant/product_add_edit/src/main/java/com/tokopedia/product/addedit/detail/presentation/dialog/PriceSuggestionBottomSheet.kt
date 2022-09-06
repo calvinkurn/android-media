@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.INFORMATION_ICON
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.filterDigit
 import com.tokopedia.product.addedit.common.util.getText
@@ -175,6 +176,7 @@ class PriceSuggestionBottomSheet : BottomSheetUnify(), SimilarProductViewHolder.
     }
 
     private fun setupCtaInformation(binding: BottomsheetPriceSuggestionLayoutBinding) {
+        binding.iuCtaInformation.setImageUrl(INFORMATION_ICON)
         binding.iuCtaInformation.setOnClickListener {
             ProductEditMainTracking.sendClickPriceSuggestionPopUpAboutPriceSuggestionEvent(isEditing)
             listener?.onPriceSuggestionInfoCtaClick()
