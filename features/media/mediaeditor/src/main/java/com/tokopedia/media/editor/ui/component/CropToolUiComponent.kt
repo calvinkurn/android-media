@@ -1,19 +1,34 @@
 package com.tokopedia.media.editor.ui.component
 
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class CropToolUiComponent constructor(
     viewGroup: ViewGroup,
     private val listener: Listener
-) : UiComponent(viewGroup, R.id.uc_tool_crop) {
+) : UiComponent(viewGroup, editorR.id.uc_tool_crop) {
+
+    private val viewRefList = mutableListOf<Pair<View, Typography>>()
+
+    private val activeColor = ContextCompat.getColor(this.context, unifyR.color.Unify_GN500)
+    private val inactiveColor = ContextCompat.getColor(this.context, unifyR.color.Unify_NN950)
 
     fun setupView(editorParam: EditorParam?) {
         (container() as LinearLayout).apply {
@@ -40,9 +55,9 @@ class CropToolUiComponent constructor(
     }
 
     private fun generateCropButton(widthRatio: Int, heightRatio: Int): View {
-        return View.inflate(container().context, R.layout.ui_component_crop_action_layout, null)
+        return View.inflate(container().context, editorR.layout.ui_component_crop_action_layout, null)
             .apply {
-                findViewById<View>(R.id.box_crop).apply {
+                val boxCrop = findViewById<View>(editorR.id.box_crop).apply {
                     val viewDefaultSize = DEFAULT_SIZE.toPx()
                     val limitSize = SIZE_LIMIT.toPx()
 
@@ -59,12 +74,28 @@ class CropToolUiComponent constructor(
                     ls.width = width
                     ls.height = height
                 }
-                findViewById<Typography>(R.id.text_crop).text = "$widthRatio:$heightRatio"
+
+                val boxCropText = findViewById<Typography>(editorR.id.text_crop)
+                boxCropText.text = "$widthRatio:$heightRatio"
+
+                viewRefList.add(Pair(boxCrop, boxCropText))
 
                 setOnClickListener {
+                    setCropInactive()
+
                     listener.onCropRatioClicked(widthRatio / heightRatio.toFloat())
+
+                    boxCrop.background.setColorFilter(activeColor, PorterDuff.Mode.SRC_ATOP)
+                    boxCropText.setTextColor(activeColor)
                 }
             }
+    }
+
+    private fun setCropInactive(){
+        viewRefList.forEach {
+            it.first.background.setColorFilter(inactiveColor, PorterDuff.Mode.SRC_ATOP)
+            it.second.setTextColor(inactiveColor)
+        }
     }
 
     interface Listener {
