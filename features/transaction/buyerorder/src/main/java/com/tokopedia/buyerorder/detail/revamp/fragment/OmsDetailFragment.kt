@@ -16,15 +16,12 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -34,9 +31,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerUtils
-import com.tokopedia.buyerorder.databinding.DealsQrCodeLayoutBinding
 import com.tokopedia.buyerorder.databinding.FragmentOmsListDetailBinding
-import com.tokopedia.buyerorder.databinding.LayoutScanQrCodeBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.ConditionalInfo
 import com.tokopedia.buyerorder.detail.data.Invoice
@@ -46,7 +41,6 @@ import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.data.PayMethod
 import com.tokopedia.buyerorder.detail.data.PaymentData
 import com.tokopedia.buyerorder.detail.data.Pricing
-import com.tokopedia.buyerorder.detail.data.RedeemVoucherModel
 import com.tokopedia.buyerorder.detail.data.Status
 import com.tokopedia.buyerorder.detail.data.Title
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
@@ -67,18 +61,14 @@ import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
 import com.tokopedia.buyerorder.detail.revamp.viewModel.OrderDetailViewModel
 import com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent.ActionButtonEventWrapper
 import com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent.UiEvent
-import com.tokopedia.buyerorder.detail.view.adapter.RedeemVoucherAdapter
 import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView
 import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.DownloadHelper
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -124,7 +114,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     private var isSingleButton = false
     private var isDownloadable = false
     private var upstream: String? = null
-    private var bottomSheetQr: BottomSheetUnify? = null
     private var listItems: List<Items>? = null
 
     override fun onCreateView(
@@ -146,7 +135,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         super.onActivityCreated(savedInstanceState)
 
         typeFactory = OrderDetailTypeFactoryImpl(this)
-        bottomSheetQr = BottomSheetUnify()
 
         arguments?.let {
             upstream = it.get(KEY_UPSTREAM).toString()
@@ -692,118 +680,15 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     override fun openQRFragment(actionButton: ActionButton, item: Items) {
         if (item.category.equals(VisitableMapper.CATEGORY_DEALS, true)
             || item.categoryID == VisitableMapper.DEALS_CATEGORY_ID ) {
-            showQRDeals(actionButton)
+            activity?.let {
+                val bottomSheet = QrDealsBottomSheet(actionButton)
+                bottomSheet.show(it.supportFragmentManager, TAG_DEALS_QR)
+            }
         } else {
-            showQREvent(actionButton)
-        }
-    }
-
-    private fun showQRDeals(actionButton: ActionButton){
-        val bottomView = DealsQrCodeLayoutBinding.inflate(LayoutInflater.from(context), binding?.mainView, false)
-        bottomSheetQr?.let {
-            it.setTitle(getString(R.string.text_redeem_voucher))
-            it.setChild(bottomView.root)
-        }
-
-        bottomView.apply {
-            if (actionButton.headerObject.statusLabel.isNotEmpty()){
-                redeemDialogExpiredView.visible()
-                redeemDialogExpiredText.visible()
-                redeemDialogExpiredText.text = actionButton.headerObject.statusLabel
+            activity?.let {
+                val bottomSheet = QrEventBottomSheet(actionButton)
+                bottomSheet.show(it.supportFragmentManager, TAG_EVENTS_QR)
             }
-
-            qrCode.loadImage(actionButton.body.appURL){
-                setPlaceHolder(UnifyPrinciplesR.color.Unify_N50)
-                setErrorDrawable(UnifyPrinciplesR.color.Unify_N50)
-            }
-
-            redeemDialogShopName.text = actionButton.headerObject.poweredBy
-            redeemDialogVoucherCode.text = actionButton.headerObject.voucherCodes
-
-            if (actionButton.headerObject.poweredBy.isEmpty()){
-                redeemDialogShopName.gone()
-                redeemDialogPoweredBy.gone()
-            }
-        }
-
-        activity?.let {
-            bottomSheetQr?.show(it.supportFragmentManager, TAG_DEALS_QR)
-        }
-    }
-
-    private fun showQREvent(actionButton: ActionButton){
-        val bottomSheetView = LayoutScanQrCodeBinding.inflate(LayoutInflater.from(context), binding?.mainView, false)
-        bottomSheetQr?.let {
-            it.setTitle(getString(R.string.text_redeem_voucher))
-            it.setChild(bottomSheetView.root)
-        }
-
-        bottomSheetView.apply {
-            var totalItem = 0
-            val voucherList = mutableListOf<RedeemVoucherModel>()
-            val indicatorItems = mutableListOf<ImageView>()
-
-            if (actionButton.body.body.isNotEmpty()){
-                val voucherCodes = actionButton.body.body.split(",")
-                voucherCodes.forEachIndexed { index, code ->
-                    voucherList.add(
-                        RedeemVoucherModel(
-                            actionButton.headerObject.powered_by,
-                            actionButton.body.appURL,
-                            code,
-                            actionButton.headerObject.statusLabel)
-                    )
-
-                    totalItem = voucherCodes.size
-
-                    val indicator = ImageView(context).apply {
-                        setPadding(PADDING_5, PADDING_0, PADDING_5, PADDING_0)
-                    }
-
-                    if (index == FIRST_INDEX) {
-                        indicator.setImageResource(R.drawable.ic_indicator_selected)
-                    } else {
-                        indicator.setImageResource(R.drawable.ic_indicator_unselected)
-                    }
-
-                    indicatorItems.add(indicator)
-                    itemIndicator.addView(indicator)
-                }
-
-                val isVoucherCodesNotEmpty = voucherCodes.size > 1
-
-               tvLabelCount.showWithCondition(isVoucherCodesNotEmpty)
-               itemIndicator.showWithCondition(isVoucherCodesNotEmpty)
-            }
-
-            tvLabelCount.text = getString(R.string.deals_voucher_label_count, 1, totalItem)
-
-            val redeemAdapter = RedeemVoucherAdapter(voucherList)
-            with(rvVoucher){
-                adapter = redeemAdapter
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                setHasFixedSize(true)
-            }
-
-            if (rvVoucher.onFlingListener == null){
-                val snapHelper = PagerSnapHelper()
-                snapHelper.attachToRecyclerView(rvVoucher)
-            }
-
-            redeemAdapter.setOnCopiedListener { voucherCode ->
-                context?.let { ctx ->
-                    BuyerUtils.copyTextToClipBoard(KEY_TEXT, voucherCode, ctx)
-                    Toaster.build(bottomSheetView.root, getString(R.string.deals_msg_copy)).show()
-                }
-            }
-
-            bottomSheetQr?.setOnDismissListener {
-               rvVoucher.onFlingListener = null
-            }
-        }
-
-        activity?.let {
-            bottomSheetQr?.show(it.supportFragmentManager, TAG_EVENTS_QR)
         }
     }
 
@@ -1112,14 +997,11 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         private const val KEY_CUSTOMER_NOTIFICATION = "customer_notification"
         private const val KEY_DEAL = "Deal"
         private const val URI_DOWNLOADABLE_PATTERN = "^.+\\.([pP][dD][fF])\$"
-        private const val PADDING_5 = 5
-        private const val PADDING_0 = 0
         private const val SHAPE_STROKE_2 = 2
         private const val SHAPE_CORNER_RADIUS_4 = 4f
         private const val SHAPE_CORNER_RADIUS_9 = 9f
         private const val TOTAL_SIZE_2 = 2
         private const val TOTAL_SIZE_1 = 1
-        private const val FIRST_INDEX = 0
         private const val DELAY_COACH_MARK_START = 500L
         private const val ENCODER = "UTF-8"
         private const val WEB_VIEW_TITLE_HELP = "Help Centre"
