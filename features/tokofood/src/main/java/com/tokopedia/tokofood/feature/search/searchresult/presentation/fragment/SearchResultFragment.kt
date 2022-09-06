@@ -12,10 +12,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
-import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.common.domain.response.Merchant
@@ -30,6 +32,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.v
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchEmptyWithoutFilterViewHolder
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchResultViewHolder
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.customview.TokofoodSearchFilterTab
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiEvent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel.TokofoodSearchResultPageViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -43,17 +46,15 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     MerchantSearchResultViewHolder.TokoFoodMerchantSearchResultListener,
     TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
     MerchantSearchEmptyWithFilterViewHolder.Listener,
-    MerchantSearchEmptyWithoutFilterViewHolder.Listener {
+    MerchantSearchEmptyWithoutFilterViewHolder.Listener,
+    SortFilterBottomSheet.Callback,
+    FilterGeneralDetailBottomSheet.Callback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(TokofoodSearchResultPageViewModel::class.java)
-    }
-
-    private val filterController by lazy(LazyThreadSafetyMode.NONE) {
-        FilterController()
     }
     private val adapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
         TokofoodSearchResultAdapterTypeFactory(this, this, this, this)
@@ -71,6 +72,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private var tokofoodSearchFilterTab: TokofoodSearchFilterTab? = null
     private var searchParameter: SearchParameter? = null
+    private var sortFilterBottomSheet: SortFilterBottomSheet? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -84,9 +86,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLayout()
-        collectSearchParameters()
-        collectSortFilterUiModels()
-        collectVisitables()
+        collectFlows()
         setLocalCacheModel()
     }
 
@@ -103,7 +103,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onOpenFullFilterBottomSheet() {
-        TODO("Not yet implemented")
+        viewModel.openDetailFilterBottomSheet()
     }
 
     override fun onOpenQuickFilterBottomSheet(sortList: List<Sort>) {
@@ -111,15 +111,15 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onOpenQuickFilterBottomSheet(filter: Filter) {
+        showQuickFilterBottomSheet(filter)
+    }
+
+    override fun onSelectSortChip(sort: Sort, isSelected: Boolean) {
         TODO("Not yet implemented")
     }
 
-    override fun onSelectSortChip(sort: Sort) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onSelectFilterChip(option: Option) {
-        TODO("Not yet implemented")
+    override fun onSelectFilterChip(filter: Filter) {
+        viewModel.applyFilter(filter)
     }
 
     override fun onClickRetryError() {
@@ -131,7 +131,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onImpressMerchant(merchant: Merchant, position: Int) {
-
+        // TODO: Add tracker
     }
 
     override fun onBranchButtonClicked(branchApplink: String) {
@@ -148,6 +148,27 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun onSearchInTokopediaButtonClicked() {
         TODO("Not yet implemented")
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        viewModel.resetParams(applySortFilterModel.selectedFilterMapParameter + applySortFilterModel.selectedSortMapParameter)
+    }
+
+    override fun getResultCount(mapParameter: Map<String, String>) {
+        showDetailFilterApplyButton()
+    }
+
+    override fun onApplyButtonClicked(optionList: List<Option>?) {
+        optionList?.let {
+            viewModel.applyOptions(it)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        tokofoodSearchFilterTab = null
+        searchParameter = null
+        sortFilterBottomSheet = null
     }
 
     fun setSearchResultViewUpdateListener(searchResultViewUpdateListener: SearchResultViewUpdateListener) {
@@ -172,12 +193,20 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         }
     }
 
+    private fun collectFlows() {
+        collectSearchParameters()
+        collectSortFilterUiModels()
+        collectVisitables()
+        collectUiEvent()
+        collectActiveFilterCount()
+    }
+
     private fun collectSearchParameters() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.searchParameters.collect {
                 searchParameter = it
                 if (it != null) {
-                    viewModel.loadSortFilter()
+                    viewModel.loadQuickSortFilter(it)
                     viewModel.getInitialMerchantSearchResult(it)
                 }
             }
@@ -216,6 +245,32 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         }
     }
 
+    private fun collectUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.uiEventFlow.collect { event ->
+                when(event.state) {
+                    TokofoodSearchUiEvent.EVENT_OPEN_DETAIL_BOTTOMSHEET -> {
+                        onOpenDetailFilterBottomSheet(event.data)
+                    }
+                    TokofoodSearchUiEvent.EVENT_SUCCESS_LOAD_DETAIL_FILTER -> {
+                        onSuccessLoadDetailFilter(event.data)
+                    }
+                    TokofoodSearchUiEvent.EVENT_FAILED_LOAD_DETAIL_FILTER -> {
+                        onFailedLoadDetailFilter(event.throwable)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun collectActiveFilterCount() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.appliedFilterCount.collect { count ->
+                binding?.filterTokofoodSearchResult?.indicatorCounter = count
+            }
+        }
+    }
+
     private fun setLocalCacheModel() {
         context?.let {
             val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
@@ -224,11 +279,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun applySearchFilterTab(uiModels: List<TokofoodSortFilterItemUiModel>) {
-        if (tokofoodSearchFilterTab == null) {
+        if (tokofoodSearchFilterTab == null && uiModels.isNotEmpty()) {
             binding?.filterTokofoodSearchResult?.let { sortFilter ->
                 tokofoodSearchFilterTab = TokofoodSearchFilterTab(
                     sortFilter,
-                    filterController,
                     this
                 )
             }
@@ -277,6 +331,57 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
         val itemCount = layoutManager?.itemCount.orZero()
         viewModel.onScrollProductList(lastVisibleItemIndex, itemCount)
+    }
+
+    private fun onOpenDetailFilterBottomSheet(data: Any?) {
+        val dynamicFilterModel = data as? DynamicFilterModel
+        showDetailFilterBottomSheet(dynamicFilterModel)
+    }
+
+    private fun onSuccessLoadDetailFilter(data: Any?) {
+        (data as? DynamicFilterModel)?.let { dynamicFilterModel ->
+            sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
+        }
+    }
+
+    private fun onFailedLoadDetailFilter(throwable: Throwable?) {
+        sortFilterBottomSheet?.dismiss()
+        throwable?.message?.let {
+            showToasterError(it)
+        }
+    }
+
+    private fun showDetailFilterBottomSheet(dynamicFilterModel: DynamicFilterModel?) {
+        if (!isAdded) return
+        if (sortFilterBottomSheet == null) {
+            sortFilterBottomSheet = SortFilterBottomSheet()
+        }
+        sortFilterBottomSheet?.show(
+            parentFragmentManager,
+            searchParameter?.getSearchParameterHashMap(),
+            dynamicFilterModel,
+            this
+        )
+    }
+
+    private fun showQuickSortBottomSheet(sort: List<Sort>) {
+
+    }
+
+    private fun showQuickFilterBottomSheet(filter: Filter) {
+        FilterGeneralDetailBottomSheet().show(
+            parentFragmentManager,
+            filter,
+            this
+        )
+    }
+
+    private fun showDetailFilterApplyButton() {
+        sortFilterBottomSheet?.setResultCountText(getApplyButtonText())
+    }
+
+    private fun getApplyButtonText(): String {
+        return context?.getString(com.tokopedia.tokofood.R.string.search_srp_filter_apply).orEmpty()
     }
 
 }

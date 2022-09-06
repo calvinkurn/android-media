@@ -12,7 +12,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.Tokofood
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [SearchResultViewModelModule::class])
+@Module(includes = [SearchResultFilterModule::class, SearchResultViewModelModule::class])
 internal class SearchResultModule {
 
     @TokoFoodScope

@@ -4,5 +4,6 @@ import com.tokopedia.sortfilter.SortFilterItem
 
 interface TokofoodSortFilterItemUiModel {
     val sortFilterItem: SortFilterItem
-    var isSelected: Boolean
+    var totalSelectedOptions: Int
+    var selectedKey: String?
 }

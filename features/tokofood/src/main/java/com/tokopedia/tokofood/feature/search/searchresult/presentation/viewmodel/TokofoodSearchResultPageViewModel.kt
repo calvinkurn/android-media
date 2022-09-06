@@ -4,8 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -21,6 +26,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.Tokofood
 import com.tokopedia.tokofood.feature.search.searchresult.domain.response.TokofoodSearchMerchantResponse
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithoutFilterUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiEvent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiState
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -47,23 +53,32 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.main) {
 
     private val _searchKeyword = MutableSharedFlow<String>(Int.ONE)
-    private val _searchQuery = MutableSharedFlow<String>(Int.ONE)
+    private val _searchMap = MutableSharedFlow<HashMap<String, String>>(Int.ONE)
     private val _uiState = MutableSharedFlow<TokofoodSearchUiState>(Int.ONE)
 
     @FlowPreview
-    val sortFilterUiModel = MutableSharedFlow<Result<List<TokofoodSortFilterItemUiModel>>>(Int.ONE)
+    private val _sortFilterUiModel = MutableSharedFlow<Result<List<TokofoodSortFilterItemUiModel>>>(Int.ONE)
+    val sortFilterUiModel: SharedFlow<Result<List<TokofoodSortFilterItemUiModel>>>
+        get() = _sortFilterUiModel
+
+    private val _uiEventFlow = MutableSharedFlow<TokofoodSearchUiEvent>(Int.ONE)
+    val uiEventFlow: SharedFlow<TokofoodSearchUiEvent>
+        get() = _uiEventFlow
+
+    private val _appliedFilterCount = MutableSharedFlow<Int>(Int.ONE)
+    val appliedFilterCount: SharedFlow<Int>
+        get() = _appliedFilterCount
 
     val searchParameters: SharedFlow<SearchParameter?> =
-        combine(_searchKeyword, _searchQuery) { keyword, query ->
-            if (keyword.isNotEmpty() || query.isNotEmpty()) {
-                val searchParameter = SearchParameter(query)
-                if (keyword.length >= MIN_SEARCH_KEYWORD_LENGTH) {
-                    searchParameter.set(SearchApiConst.Q, keyword)
-                }
-                searchParameter
-            } else {
-                null
+        combine(_searchKeyword, _searchMap) { keyword, map ->
+            val searchParameter = currentSearchParameter.value ?: SearchParameter(ApplinkConstInternalTokoFood.SEARCH)
+            map.entries.forEach {
+                searchParameter.set(it.key, it.value)
             }
+            if (keyword.length >= MIN_SEARCH_KEYWORD_LENGTH) {
+                searchParameter.set(SearchApiConst.Q, keyword)
+            }
+            searchParameter
         }.shareIn(
             scope = this,
             started = SharingStarted.WhileSubscribed(5000L),
@@ -84,29 +99,44 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     private val pageKeyLiveData = MutableLiveData<String>()
     private val currentVisitables = MutableLiveData<List<Visitable<*>>>()
     private val currentSearchParameter = MutableLiveData<SearchParameter>()
+    private val dynamicFilterModel = MutableLiveData<DynamicFilterModel>()
+    private val currentSortFilterUiModels = MutableLiveData<List<TokofoodSortFilterItemUiModel>>()
+
+    init {
+        _searchMap.tryEmit(hashMapOf())
+    }
 
     fun setKeyword(keyword: String) {
         _searchKeyword.tryEmit(keyword)
-        _searchQuery.tryEmit("")
     }
 
     fun setLocalCacheModel(localCacheModel: LocalCacheModel) {
         localCacheModelLiveData.value = localCacheModel
     }
 
-    fun loadSortFilter() {
-        launchCatchError(
-            block = {
-                val dataValue = withContext(dispatcher.io) {
-                    tokofoodFilterSortUseCase.execute("quick")
+    fun loadQuickSortFilter(searchParameter: SearchParameter) {
+        if (shouldLoadSortFilter(searchParameter)) {
+            launchCatchError(
+                block = {
+                    val uiModels = currentSortFilterUiModels.value.let { currentUiModels ->
+                        if (currentUiModels.isNullOrEmpty()) {
+                            val dataValue = withContext(dispatcher.io) {
+                                tokofoodFilterSortUseCase.execute(TokofoodFilterSortUseCase.TYPE_QUICK)
+                            }
+                            tokofoodFilterSortMapper.getQuickSortFilterUiModels(dataValue)
+                        } else {
+                            tokofoodFilterSortMapper.getAppliedSortFilterUiModels(searchParameter, currentUiModels)
+                        }
+                    }
+                    currentSortFilterUiModels.value = uiModels
+                    setIndicatorCount()
+                    _sortFilterUiModel.emit(Success(uiModels))
+                },
+                onError = {
+                    _sortFilterUiModel.emit(Fail(it))
                 }
-                val uiModels = tokofoodFilterSortMapper.getQuickSortFilterUiModels(dataValue)
-                sortFilterUiModel.emit(Success(uiModels))
-            },
-            onError = {
-                sortFilterUiModel.emit(Fail(it))
-            }
-        )
+            )
+        }
     }
 
     fun getInitialMerchantSearchResult(searchParameter: SearchParameter?) {
@@ -142,6 +172,121 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
             )
             loadMoreSearch()
         }
+    }
+
+    fun openDetailFilterBottomSheet() {
+        launchCatchError(
+            block = {
+                _uiEventFlow.emit(
+                    TokofoodSearchUiEvent(
+                        state = TokofoodSearchUiEvent.EVENT_OPEN_DETAIL_BOTTOMSHEET,
+                        data = dynamicFilterModel.value
+                    )
+                )
+            },
+            onError = {}
+        )
+        // TODO: Check whether we need to always load detail filter
+        if (dynamicFilterModel.value == null) {
+            loadDetailSortFilter()
+        }
+    }
+
+    fun applyFilter(filter: Filter) {
+        currentSearchParameter.value?.run {
+            getAppliedFilterMap(filter)?.let { (key, value) ->
+                set(key, value)
+            }
+
+            _searchMap.tryEmit(getSearchParameterHashMap())
+        }
+    }
+
+    fun applyOptions(options: List<Option>) {
+        currentSearchParameter.value?.run {
+            getAppliedFilterMap(options).entries.forEach {
+                set(it.key, it.value)
+            }
+
+            _searchMap.tryEmit(getSearchParameterHashMap())
+        }
+    }
+
+    fun resetParams(queryParams: Map<String, String>) {
+        currentSearchParameter.value?.run {
+            resetParams(queryParams)
+            _searchMap.tryEmit(getSearchParameterHashMap())
+        }
+    }
+
+    private fun setIndicatorCount() {
+        currentSearchParameter.value?.let { searchParameter ->
+            _appliedFilterCount.tryEmit(searchParameter.getActiveCount())
+        }
+    }
+
+    private fun SearchParameter.resetParams(queryParams: Map<String, String>) {
+        getSearchParameterHashMap().clear()
+        getSearchParameterHashMap().putAll(queryParams)
+    }
+
+    private fun SearchParameter.getActiveCount(): Int {
+        val searchMap = getSearchParameterHashMap().filter { it.value.isNotEmpty() }
+        return getSortFilterCount(searchMap)
+    }
+
+    private fun shouldLoadSortFilter(searchParameter: SearchParameter): Boolean {
+        return !getIsSortFilterLoaded() || isSearchParameterNew(searchParameter)
+    }
+
+    private fun getIsSortFilterLoaded(): Boolean {
+        return !currentSortFilterUiModels.value.isNullOrEmpty()
+    }
+
+    private fun isSearchParameterNew(searchParameter: SearchParameter): Boolean {
+        return currentSearchParameter.value?.getSearchParameterMap() == searchParameter.getSearchParameterMap()
+    }
+
+    private fun getAppliedFilterMap(filter: Filter): Pair<String, String>? {
+        val key = filter.options.firstOrNull()?.key ?: return null
+        val value = filter.options.filter { it.inputState == true.toString() }
+            .joinToString(TokofoodFilterSortMapper.OPTION_SEPARATOR) { it.value }
+        return key to value
+    }
+
+    private fun getAppliedFilterMap(options: List<Option>): Map<String, String> {
+        return options.groupBy { it.key }.mapValues {
+            it.value.filter { option -> option.inputState == true.toString() }
+                .joinToString(TokofoodFilterSortMapper.OPTION_SEPARATOR) { optionValue ->
+                    optionValue.value
+                }
+        }
+    }
+
+    private fun loadDetailSortFilter() {
+        launchCatchError(
+            block = {
+                val dataValue = withContext(dispatcher.io) {
+                    tokofoodFilterSortUseCase.execute(TokofoodFilterSortUseCase.TYPE_DETAIL)
+                }
+                val dynamicFilterModelResult = DynamicFilterModel(dataValue)
+                dynamicFilterModel.value = dynamicFilterModelResult
+                _uiEventFlow.emit(
+                    TokofoodSearchUiEvent(
+                        state = TokofoodSearchUiEvent.EVENT_SUCCESS_LOAD_DETAIL_FILTER,
+                        data = dynamicFilterModelResult
+                    )
+                )
+            },
+            onError = {
+                _uiEventFlow.emit(
+                    TokofoodSearchUiEvent(
+                        state = TokofoodSearchUiEvent.EVENT_FAILED_LOAD_DETAIL_FILTER,
+                        throwable = it
+                    )
+                )
+            }
+        )
     }
 
     private fun loadMoreSearch() {
