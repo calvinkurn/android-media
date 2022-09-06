@@ -83,9 +83,9 @@ class EditorActivity : BaseEditorActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == DetailEditorActivity.EDITOR_RESULT_CODE) {
-            val asd =
+            val editorDetailResultData =
                 data?.getParcelableExtra<EditorDetailUiModel>(DetailEditorActivity.EDITOR_RESULT_PARAM)
-            asd?.let {
+            editorDetailResultData?.let {
                 viewModel.addEditState(it.originalUrl, it)
             }
         }
