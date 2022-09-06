@@ -73,9 +73,14 @@ class EngagementCarouselViewComponent(
         if (size <= 1) return
         job?.cancel()
         job = scope.launch {
+            var count = 0
             repeat(Int.MAX_VALUE) {
                 delay(AUTO_SCROLL_DELAY)
-                val count = if (it == 0) it.inc() else if (it == size) it.dec() else it.dec()
+                when {
+                    count == size - 1 -> count = 0
+                    count >= 0 -> count++
+                    else -> count--
+                }
                 carousel.smoothScrollToPosition(count)
             }
         }
