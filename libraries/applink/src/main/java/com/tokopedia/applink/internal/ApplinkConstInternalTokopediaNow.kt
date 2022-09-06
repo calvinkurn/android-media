@@ -64,4 +64,8 @@ object ApplinkConstInternalTokopediaNow {
     //TokoNowRecipeSimilarProductActivity
     @JvmField
     val SIMILAR_PRODUCT_BOTTOMSHEET = "$INTERNAL_TOKOPEDIA_NOW/recipe/similar-product-bottomsheet"
+
+    //TokoNowRecipeSearchIngredientActivity
+    @JvmField
+    val INGREDIENT_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/recipe/ingredient-bottomsheet"
 }
