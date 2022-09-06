@@ -449,6 +449,9 @@ object TopChatAnalyticsKt {
         val itemBundleList = ArrayList<Bundle>()
         itemBundleList.add(itemBundle)
 
+        val productIdList = mutableListOf<String>()
+        productIdList += product.productId
+
         val eventDataLayer = Bundle()
         eventDataLayer.putString(TrackAppUtils.EVENT, VIEW_ITEM_LIST)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_ON_PRODUCT_THUMBNAIL)
@@ -457,6 +460,7 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(TRACKER_ID, "14824")
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+        eventDataLayer.putString(ITEM_LIST, productIdList.toString())
         eventDataLayer.putParcelableArrayList(
             AddToCartExternalAnalytics.EE_VALUE_ITEMS,
             itemBundleList
