@@ -9,6 +9,7 @@ import com.tokopedia.deals.pdp.data.DealsVerifyRequest
 import com.tokopedia.deals.pdp.data.DealsVerifyResponse
 import com.tokopedia.deals.pdp.data.EventVerifyResponse
 import com.tokopedia.deals.pdp.data.ItemMap
+import com.tokopedia.deals.pdp.data.Media
 import com.tokopedia.deals.pdp.data.MetaData
 import com.tokopedia.deals.pdp.data.Outlet
 import com.tokopedia.deals.pdp.data.ProductDetailData
@@ -212,14 +213,14 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
             saleEndTime = productDetailData.saleEndTime
             dateRange = productDetailData.dateRange
             cityName = productDetailData.cityName
-            //outlets = mappedOutlet(productDetailData.outlets)
+            outlets = mappedOutlet(productDetailData.outlets)
             rating = productDetailData.rating.toIntSafely()
             likes = productDetailData.likes
             catalog = mappedCatalog(productDetailData.catalog)
             savingPercentage = productDetailData.savingPercentage
             brand = mappedBrand(productDetailData.brand, productDetailData.brandId)
             recommendationUrl = productDetailData.recommendationUrl
-            //mediaUrl = mappedMediaUrl(productDetailData.mediaUrl)
+            mediaUrl = mappedMediaUrl(productDetailData.media)
             tnc = productDetailData.tnc
             seoUrl = productDetailData.seoUrl
             isLiked = productDetailData.isLiked
@@ -235,17 +236,49 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
 
 
 
-//    private fun mappedOutlet(outlets: List<Outlet>): List<com.tokopedia.digital_deals.view.model.Outlets> {
-//        val mappedOutlets = mutableListOf<com.tokopedia.digital_deals.view.model.Outlets>()
-//        outlets.forEach {
-//            val outlet = com.tokopedia.digital_deals.view.model.Outlets()
-//            outlet.id = it.id
-//            outlet.productId = it.productId
-//            mappedOutlets.add(outlet)
-//        }
-//
-//        return mappedOutlets
-//    }
+    private fun mappedOutlet(outlets: List<Outlet>): List<com.tokopedia.digital_deals.view.model.Outlet> {
+        val mappedOutlets = mutableListOf<com.tokopedia.digital_deals.view.model.Outlet>()
+        outlets.forEach {
+            val outlet = com.tokopedia.digital_deals.view.model.Outlet()
+            outlet.id = it.id
+            outlet.productId = it.productId
+            outlet.locationId = it.locationId
+            outlet.name = it.name
+            outlet.searchName = it.searchName
+            outlet.metaTitle = it.metaTitle
+            outlet.metaDescription = it.metaDescription
+            outlet.district = it.district
+            outlet.gmapAddress = it.gmapAddress
+            outlet.neighbourhood = it.neighbourhood
+            outlet.coordinates = it.coordinates
+            outlet.state = it.state
+            outlet.country = it.country
+            outlet.isSearchable = it.isSearchable
+            outlet.locationStatus = it.locationStatus
+            mappedOutlets.add(outlet)
+        }
+
+        return mappedOutlets.toList()
+    }
+
+    private fun mappedMediaUrl(media: List<Media>): List<com.tokopedia.digital_deals.view.model.Media> {
+        val mappedMedias = mutableListOf<com.tokopedia.digital_deals.view.model.Media>()
+        media.forEach {
+            val media = com.tokopedia.digital_deals.view.model.Media()
+            media.id = it.id
+            media.productId = it.productId
+            media.title = it.title
+            media.isThumbnail = it.isThumbnail
+            media.type = it.type
+            media.description = it.description
+            media.url = it.url
+            media.client = it.client
+            media.status = it.status
+            mappedMedias.add(media)
+        }
+
+        return mappedMedias.toList()
+    }
 
     private fun mappedBrand(brand: Brand, brandId: String): com.tokopedia.digital_deals.view.model.Brand {
         val mappedBrand = com.tokopedia.digital_deals.view.model.Brand()
