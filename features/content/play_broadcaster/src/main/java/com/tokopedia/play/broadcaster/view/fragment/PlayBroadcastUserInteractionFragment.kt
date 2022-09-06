@@ -394,11 +394,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         productTagAnalyticHelper.sendTrackingProduct()
     }
 
-    override fun onDestroy() {
-        try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
-        super.onDestroy()
-    }
-
     /**
      * Dismissing all dialog -> not ideal because the it doesn't eliminate the root cause
      * Need to revamp the flow of stopping live stream and all
