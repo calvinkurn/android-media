@@ -50,6 +50,13 @@ class EditorUiModel(
         return (editList.size - 1) - backValue
     }
 
+    fun getFilteredStateList(): List<EditorDetailUiModel>{
+        val maxStateLimit = (editList.size) - backValue
+        val minStateLimit = if(maxStateLimit < removeBackgroundStartState) 0 else removeBackgroundStartState
+
+        return editList.subList(minStateLimit, maxStateLimit)
+    }
+
     companion object {
         private const val UNDO_LIMIT_NON_CROP = 0
         private const val UNDO_LIMIT_AUTO_CROP = 1

@@ -143,22 +143,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                     editorToolType = type
                 )
 
-                // limit state according to undo
-                val stateLimit = (editorUiModel.editList.size - 1) - editorUiModel.backValue
-
-                editorUiModel.editList.forEachIndexed { index, item ->
-                    // stop loop if
-                    // 1. index is more than undo/redo state
-                    if (index > stateLimit) {
-                        return@forEachIndexed
-                    }
-
-                    // skip state if (AND), when state limit greater than removeBG index then dont bring previous value
-                    // 1. index is lower than state limit
-                    // 2. state limit greater than remove index
-                    if (editorUiModel.removeBackgroundStartState in index until stateLimit) {
-                        return@forEachIndexed
-                    }
+                editorUiModel.getFilteredStateList().forEachIndexed { index, item ->
 
                     paramData.brightnessValue = item.brightnessValue
                     paramData.contrastValue = item.contrastValue

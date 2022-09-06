@@ -38,11 +38,7 @@ class ToolsUiComponent constructor(
 
     @SuppressLint("NotifyDataSetChanged")
     fun setupActiveTools(editorUiModel: EditorUiModel) {
-        val editorStateList = editorUiModel.editList
-        val limit = editorStateList.size - editorUiModel.backValue
-        val tempEditorStateList = editorStateList.subList(0, limit)
-
-        adapter.stateList = tempEditorStateList
+        adapter.stateList = editorUiModel.getFilteredStateList()
         adapter.isAutoCropped = editorUiModel.isAutoCropped
         adapter.notifyDataSetChanged()
     }
