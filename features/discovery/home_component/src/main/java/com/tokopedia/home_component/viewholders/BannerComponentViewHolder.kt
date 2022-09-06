@@ -25,6 +25,7 @@ import com.tokopedia.home_component.viewholders.layoutmanager.PeekingLinearLayou
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -253,7 +254,7 @@ class BannerComponentViewHolder(itemView: View,
 
     private fun ChannelModel.convertToBannerItemModel(): List<BannerItemModel> {
         return try {
-            this.channelGrids.map{ BannerItemModel(it.id.toInt(), it.imageUrl) }
+            this.channelGrids.map{ BannerItemModel(it.id.toIntOrZero(), it.imageUrl) }
         } catch (e: NumberFormatException) {
             listOf()
         }
