@@ -21,6 +21,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
@@ -37,6 +38,7 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -650,11 +652,12 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         //Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isApplyLogisticPromo = false)
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(
                     PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "bbo",
                         shippingId = 1,
                         spId = 1,
                         type = "logistic",
@@ -683,6 +686,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                     PromoCheckoutVoucherOrdersItemUiModel(
                         shippingId = 1,
                         spId = 1,
+                        type = "logistic",
                         messageUiModel = MessageUiModel(state = "red")
                     )
                 )
@@ -837,5 +841,17 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.validateBboStacking()
         //then
         assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+    }
+
+    @Test
+    fun `test update promo state without calculate`(){
+        //Given
+        val promoUiModel = PromoUiModel()
+        orderSummaryPageViewModel.orderPromo.value = orderSummaryPageViewModel.orderPromo.value.copy(isDisabled = true)
+        //When
+        orderSummaryPageViewModel.updatePromoStateWithoutCalculate(promoUiModel)
+        //Then
+        assertEquals(orderSummaryPageViewModel.orderPromo.value.lastApply, LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
+        assertFalse(orderSummaryPageViewModel.orderPromo.value.isDisabled)
     }
 }
