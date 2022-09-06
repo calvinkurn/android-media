@@ -249,10 +249,15 @@ object TopChatAnalyticsKt {
         shopId: String = "",
         shopName: String = "",
         hasShopTypeValue: Boolean = false,
+        hasProductCategoryId: Boolean = false,
+        hasIndex: Boolean = true
     ): ArrayList<Bundle> {
         val listItemBundles = ArrayList<Bundle>()
         for (item in bundleItems) {
             val itemBundle = Bundle()
+            if (hasProductCategoryId){
+                itemBundle.putString(CATEGORY_ID, EE_VALUE_NONE_OTHER)
+            }
             itemBundle.putString(DIMENSION_117, setValueOrDefault(bundleType))
             itemBundle.putString(DIMENSION_118, setValueOrDefault(bundleId))
             itemBundle.putString(
@@ -260,7 +265,9 @@ object TopChatAnalyticsKt {
                 setValueOrDefault("/$source - product bundling - $bundleType")
             )
             itemBundle.putString(DIMENSION_87, setValueOrDefault(source))
-            itemBundle.putString(INDEX, bundleItems.indexOf(item).toString())
+            if (hasIndex){
+                itemBundle.putString(INDEX, bundleItems.indexOf(item).toString())
+            }
             itemBundle.putString(ITEM_BRAND, EE_VALUE_NONE_OTHER)
             itemBundle.putString(ITEM_CATEGORY, setValueOrDefault(""))
             itemBundle.putString(ITEM_ID, setValueOrDefault(item.productId))
@@ -397,7 +404,9 @@ object TopChatAnalyticsKt {
             true,
             shopId,
             shopName,
-            true
+            hasShopTypeValue = true,
+            hasProductCategoryId = true,
+            false
         )
 
         val eventDataLayer = Bundle()
