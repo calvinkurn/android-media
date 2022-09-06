@@ -94,7 +94,6 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID_INT
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST_INT
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
-import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2CleanerBottomSheetAdapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -1897,23 +1896,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
-    /*override fun onProductRecommItemClicked(recommendationItem: RecommendationItem) {
-        if(recommendationItem.isTopAds) {
-            TopAdsUrlHitter(context).hitClickUrl(
-                this::class.java.simpleName,
-                recommendationItem.clickUrl,
-                recommendationItem.productId.toString(),
-                recommendationItem.name,
-                recommendationItem.imageUrl
-            )
-        }
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                recommendationItem.productId.toString())
-            startActivity(intent)
-        }
-    }*/
-
     override fun onViewProductCard(wishlistItem: WishlistV2UiModel.Item, position: Int) {
         userSession.userId?.let { userId ->
             WishlistCollectionAnalytics.sendViewProductCardOnWishlistPageEvent(
@@ -2104,8 +2086,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         WishlistCollectionAnalytics.sendClickThreeDotsOnProductCardEvent()
     }
 
-    private fun onCheckAllBulkOption() {
-        // listSelectedProductIds = WishlistV2Utils.getListProductId() as ArrayList<String>
+    private fun setBottomButton() {
         val showButton = listSelectedProductIds.isNotEmpty()
 
         if (showButton) {
@@ -2130,7 +2111,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             listSelectedProductIds.remove(productId)
         }
         collectionItemsAdapter.setCheckbox(position, isChecked)
-        onCheckAllBulkOption()
+        setBottomButton()
     }
 
     private fun setLabelDeleteButton() {
@@ -2655,7 +2636,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         hitCountDeletion = false
         getCollectionItems()
         refreshLayout()
-        if (isBulkDeleteShow) onCheckAllBulkOption()
+        if (isBulkDeleteShow) setBottomButton()
     }
 
     private fun refreshLayout() {
@@ -2663,7 +2644,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         binding?.run {
             swipeRefreshLayout.isRefreshing = true
             wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.visible()
-            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.visible()
+            if (isBulkAddShow || isBulkDeleteShow) {
+                wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.gone()
+                wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.gone()
+            } else {
+                wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.visible()
+                wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.visible()
+            }
         }
         showLoader()
         addEndlessScrollListener()
