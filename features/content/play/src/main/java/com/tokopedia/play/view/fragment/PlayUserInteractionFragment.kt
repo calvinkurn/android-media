@@ -289,25 +289,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
         invalidateSystemUiVisibility()
         initAddress()
-//        testingPurpose()
-    }
-
-    private fun testingPurpose(){
-        val cal = Calendar.getInstance().apply {
-            add(Calendar.MINUTE, 2)
-        }
-        val interactive = InteractiveUiModel.Giveaway(
-            status = InteractiveUiModel.Giveaway.Status.Ongoing(cal),
-            waitingDuration = 5000L,
-            id = "1261",
-            title = "GA sendal",
-        )
-        val list = mutableListOf<EngagementUiModel>().apply {
-            add(EngagementUiModel.Promo(size = 4, info = PlayVoucherUiModel.MerchantVoucherUiModel(title = "Ada apa", id = "11", type = MerchantVoucherType.Discount, description = "A", code = "hehe", copyable = false, highlighted = false,voucherStock = 1,expiredDate = "1")))
-            add(EngagementUiModel.Game(interactive))
-            add(EngagementUiModel.Game(InteractiveUiModel.Quiz(status = InteractiveUiModel.Quiz.Status.Finished, waitingDuration = 3000L, id = "0", title = "QUIZ", listOfChoices = emptyList(), reward = "")))
-        }
-        engagementCarouselView.setData(list)
     }
 
     override fun onStart() {

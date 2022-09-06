@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
@@ -269,27 +268,6 @@ class PlayViewModel @AssistedInject constructor(
         },
     )
     }.flowOn(dispatchers.computation)
-
-    private val isNeedToAutoScroll: Boolean get() {
-        return when (val value = _interactive.value.interactive){
-            is InteractiveUiModel.Quiz -> return when (val endTime = value.status){
-                is InteractiveUiModel.Quiz.Status.Ongoing -> {
-                    TimeUnit.MILLISECONDS.toSeconds(endTime.endTime.time.time - DateUtil.getCurrentDate().time) > 15
-                }
-                else -> true
-            }
-            is InteractiveUiModel.Giveaway -> return when (val endTime = value.status){
-                is InteractiveUiModel.Giveaway.Status.Ongoing -> {
-                    TimeUnit.MILLISECONDS.toSeconds(endTime.endTime.time.time - DateUtil.getCurrentDate().time) > 15
-                }
-                is InteractiveUiModel.Giveaway.Status.Upcoming -> {
-                    TimeUnit.MILLISECONDS.toSeconds(endTime.endTime.time.time - DateUtil.getCurrentDate().time) > 15
-                }
-                else -> true
-            }
-            else -> false
-        }
-    }
 
     private val _featuredProducts = _tagItems.map { tagItems ->
         /**
@@ -1186,18 +1164,6 @@ class PlayViewModel @AssistedInject constructor(
             val tagItem = repo.getTagItem(channelId, warehouseId)
 
             _tagItems.value = tagItem.copy(voucher = createNewVoucherList(tagItem.voucher.voucherList))
-
-
-            val cal = Calendar.getInstance().apply {
-                add(Calendar.MINUTE, 2)
-            }
-
-            val interactive = InteractiveUiModel.Giveaway(
-                status = InteractiveUiModel.Giveaway.Status.Ongoing(cal),
-                waitingDuration = 5000L,
-                id = "1261",
-                title = "GA sendal",
-            )
 
             checkReminderStatus()
 
