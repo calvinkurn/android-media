@@ -71,6 +71,7 @@ import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendReasonRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
@@ -82,8 +83,19 @@ import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListRespons
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
-import com.tokopedia.chatbot.domain.subscriber.*
-import com.tokopedia.chatbot.domain.usecase.*
+import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
+import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
+import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
+import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
@@ -136,7 +148,6 @@ class ChatbotPresenter @Inject constructor(
         private val tkpdAuthInterceptor: TkpdAuthInterceptor,
         private val fingerprintInterceptor: FingerprintInterceptor,
         private val sendChatRatingUseCase: SendChatRatingUseCase,
-        private val sendRatingReasonUseCase: SendRatingReasonUseCase,
         private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
         private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
         private val leaveQueueUseCase: LeaveQueueUseCase,
@@ -403,8 +414,6 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun sendRating(messageId: String, rating: Int, element: ChatRatingViewModel) {
-//        sendChatRatingUseCase.execute(SendChatRatingUseCase.generateParam(
-//                messageId, rating, timestamp), SendRatingSubscriber(onError, onSuccess))
         sendChatRatingUseCase.sendChatRating(messageId, rating, element,
             ::onSuccessSendRating,
             ::onFailureSendRating)
@@ -418,21 +427,27 @@ class ChatbotPresenter @Inject constructor(
         view.onSuccessSendRating(pojo, rating, element)
     }
 
-
-//    private fun onSendRatingSuccess(sendRatingPojo: SendRatingPojo, rating: Int, element: ChatRatingViewModel) {
-//        view.onSuccessSendRating(rating, element)
-//    }
-//
-//    private fun onSendRatingError(throwable: Throwable) {
-//        view.onError(throwable)
-//    }
-
     override fun sendReasonRating(messageId: String, reason: String, timestamp: String,
                                   onError: (Throwable) -> Unit,
                                   onSuccess: (String) -> Unit) {
-        sendRatingReasonUseCase.execute(SendRatingReasonUseCase.generateParam(
-                messageId, reason, timestamp
-        ), SendRatingReasonSubscriber(onError, onSuccess))
+//        sendRatingReasonUseCase.execute(SendRatingReasonUseCase.generateParam(
+//                messageId, reason, timestamp
+//        ), SendRatingReasonSubscriber(onError, onSuccess))
+//        sendRatingReasonUseCase.sendRatingReason(
+//            messageId,
+//            reason,
+//            timestamp,
+//            ::onSuccessSendReasonRating,
+//            ::onErrorSendReasonRating
+//        )
+    }
+
+    private fun onSuccessSendReasonRating(sendReasonRatingPojo: SendReasonRatingPojo) {
+
+    }
+
+    private fun onErrorSendReasonRating(throwable: Throwable) {
+
     }
 
     override fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,
@@ -833,7 +848,6 @@ class ChatbotPresenter @Inject constructor(
 
     override fun detachView() {
         destroyWebSocket()
-        sendRatingReasonUseCase.unsubscribe()
         job.cancel()
         super.detachView()
     }

@@ -13,15 +13,13 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
-import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
-import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
@@ -34,7 +32,6 @@ import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
 import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
-import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -49,7 +46,6 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.spyk
@@ -57,8 +53,11 @@ import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
-import org.junit.*
+import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class ChatbotPresenterTest {
@@ -75,7 +74,6 @@ class ChatbotPresenterTest {
     private lateinit var tkpdAuthInterceptor: TkpdAuthInterceptor
     private lateinit var fingerprintInterceptor: FingerprintInterceptor
     private lateinit var sendChatRatingUseCase: SendChatRatingUseCase
-    private lateinit var sendRatingReasonUseCase: SendRatingReasonUseCase
     private lateinit var uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>
     private lateinit var submitCsatRatingUseCase: SubmitCsatRatingUseCase
     private lateinit var leaveQueueUseCase: LeaveQueueUseCase
@@ -127,7 +125,6 @@ class ChatbotPresenterTest {
                 tkpdAuthInterceptor,
                 fingerprintInterceptor,
                 sendChatRatingUseCase,
-                sendRatingReasonUseCase,
                 uploadImageUseCase,
                 submitCsatRatingUseCase,
                 leaveQueueUseCase,
@@ -708,54 +705,6 @@ class ChatbotPresenterTest {
 
         verify {
             view.loadChatHistory()
-        }
-
-    }
-
-    @Test
-    fun `sendRating success`() {
-        val params = mapOf<String, Any>()
-        mockkConstructor(SendRatingSubscriber::class)
-        mockkObject(SendChatRatingUseCase)
-
-        every {
-            SendChatRatingUseCase.generateParam(
-                any(), any(), any()
-            )
-        } returns params
-
-        every {
-            sendChatRatingUseCase.execute(any(), any())
-        } just runs
-
-        presenter.sendRating("", 1, "", {}, {})
-
-        verify {
-            sendChatRatingUseCase.execute(any(), any())
-        }
-
-    }
-
-    @Test
-    fun `sendReasonRating success`() {
-        val params = mapOf<String, Any>()
-        mockkConstructor(SendRatingReasonSubscriber::class)
-        mockkObject(SendRatingReasonUseCase)
-
-        every {
-            SendRatingReasonUseCase.generateParam(
-                any(), any(), any()
-            )
-        } returns params
-
-        every {
-            sendRatingReasonUseCase.execute(any(), any())
-        } just runs
-
-        presenter.sendReasonRating("", "", "", {}, {})
-
-        verify {
-            sendRatingReasonUseCase.execute(any(), any())
         }
 
     }

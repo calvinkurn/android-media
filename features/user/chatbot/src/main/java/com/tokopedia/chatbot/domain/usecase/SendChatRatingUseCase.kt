@@ -2,7 +2,7 @@ package com.tokopedia.chatbot.domain.usecase
 
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.domain.gqlqueries.SendChatRatingQuery
-import com.tokopedia.chatbot.domain.gqlqueries.queries.GQL_INBOX_LIST
+import com.tokopedia.chatbot.domain.gqlqueries.queries.SEND_CHAT_RATING_QUERY
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -14,7 +14,7 @@ import kotlin.reflect.KFunction3
  * @author by nisie on 21/12/18.
  */
 
-@GqlQuery("TicketListQuery", GQL_INBOX_LIST)
+@GqlQuery("post_rating", SEND_CHAT_RATING_QUERY)
 class SendChatRatingUseCase
 @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<SendRatingPojo>(graphqlRepository) {
