@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.campaign.components.adapter.ChooseProductAdapter
 import com.tokopedia.campaign.components.adapter.ChooseProductDelegateAdapter
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.entity.ChooseProductItem
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentChooseProductBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.MAX_PER_PAGE
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.viewmodel.ChooseProductViewModel
 import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -44,8 +47,33 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupObservers()
+        setupHeader()
+        setupSearchBar()
+    }
+
+    private fun setupSearchBar() {
+        binding?.searchBar?.searchBarTextField?.apply {
+            imeOptions = EditorInfo.IME_ACTION_SEARCH
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) loadInitialData()
+                return@setOnEditorActionListener actionId == EditorInfo.IME_ACTION_SEARCH
+            }
+        }
+    }
+
+    private fun setupHeader() {
+        binding?.header?.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+    }
+
+    private fun setupObservers() {
         viewModel.productList.observe(viewLifecycleOwner) {
-            renderList(it, it.size >= 10)
+            renderList(it, viewModel.hasNextPage)
+        }
+        viewModel.error.observe(viewLifecycleOwner) {
+            showGetListError(it)
         }
     }
 
@@ -61,14 +89,18 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
 
     override fun getRecyclerView(view: View): RecyclerView? = binding?.rvBundle
 
-    override fun getPerPage(): Int = 10
+    override fun getPerPage(): Int = MAX_PER_PAGE
 
     override fun addElementToAdapter(list: List<ChooseProductItem>) {
         chooseProductAdapter.addItems(list)
     }
 
     override fun loadData(page: Int, offset: Int) {
-        viewModel.getProductList(page, offset)
+        viewModel.getProductList(page, getPerPage(), getSearchBarText())
+    }
+
+    private fun getSearchBarText(): String {
+        return binding?.searchBar?.searchBarTextField?.text?.toString().orEmpty()
     }
 
     override fun clearAdapterData() {
@@ -84,10 +116,10 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     }
 
     override fun onDataEmpty() {
-        //
+        view?.showToasterError("Data Kosong")
     }
 
     override fun onGetListError(message: String) {
-        //
+        view?.showToasterError(message)
     }
 }

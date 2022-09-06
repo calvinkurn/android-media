@@ -9,9 +9,9 @@ data class GetFlashSaleProductListToReserveResponse(
     val getFlashSaleProductListToReserve: GetFlashSaleProductListToReserve = GetFlashSaleProductListToReserve()
 ) {
     data class GetFlashSaleProductListToReserve (
-        @SerializedName("submitted_product_ids" ) var submittedProductIds : List<Int>         = arrayListOf(),
+        @SerializedName("submitted_product_ids" ) var submittedProductIds : List<Long>        = emptyList(),
         @SerializedName("total_product"         ) var totalProduct        : Int               = 0,
-        @SerializedName("product_list"          ) var productList         : List<ProductList> = arrayListOf()
+        @SerializedName("product_list"          ) var productList         : List<ProductList> = emptyList()
     )
 
     data class ProductList (

@@ -25,7 +25,6 @@ class GetFlashSaleProductListToReserveUseCase @Inject constructor(
 
     companion object {
         private const val REQUEST_PARAM_KEY = "params"
-        private const val DEFAULT_PAGE_SIZE = 10
     }
 
     private val query = object : GqlQueryInterface {
