@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.common.domain.param
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.tokofood.common.util.TokofoodExt
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodParamFilterMerchant
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodParamSort
 
@@ -14,7 +15,8 @@ object TokoFoodMerchantListParamMapper {
     const val LIMIT_KEY = "limit"
 
     const val LIMIT = 10
-    const val TIMEZONE = "Asia/Jakarta"
+
+    val TIMEZONE = TokofoodExt.getLocalTimeZone()
 
     @JvmStatic
     fun createRequestParams(localCacheModel: LocalCacheModel?, option: Int = 0, brandUId: String = "",

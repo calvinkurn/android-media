@@ -97,7 +97,6 @@ class TokofoodSearchMerchantUseCase @Inject constructor(
                     TokoFoodMerchantListParamMapper.LAT_LONG_KEY,
                     TokoFoodMerchantListParamMapper.mapLocation(localCacheModel)
                 )
-                // Todo: Use Rizqi's method
                 put(
                     TokoFoodMerchantListParamMapper.TIMEZONE_KEY,
                     TokoFoodMerchantListParamMapper.TIMEZONE
