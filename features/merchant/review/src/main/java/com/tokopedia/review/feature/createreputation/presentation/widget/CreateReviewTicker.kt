@@ -24,7 +24,7 @@ class CreateReviewTicker @JvmOverloads constructor(
     override val binding = WidgetCreateReviewTickerBinding.inflate(LayoutInflater.from(context), this, true)
 
     private fun WidgetCreateReviewTickerBinding.showTicker(uiState: CreateReviewTickerUiState.Showing) {
-        with(root) {
+        with(tickerCreateReview) {
             setHtmlDescription(uiState.ticker.subtitle)
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
