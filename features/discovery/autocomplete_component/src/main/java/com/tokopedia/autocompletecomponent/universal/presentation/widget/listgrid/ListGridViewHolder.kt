@@ -2,14 +2,13 @@ package com.tokopedia.autocompletecomponent.universal.presentation.widget.listgr
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchListGridItemLayoutBinding
 import com.tokopedia.autocompletecomponent.universal.presentation.BaseUniversalDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.itemdecoration.ListGridItemDecoration
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedAdapter
-import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemListener
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemViewHolder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -24,6 +23,8 @@ class ListGridViewHolder(
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.universal_search_list_grid_item_layout
+
+        private const val SPAN_COUNT = 2
     }
 
     private var binding: UniversalSearchListGridItemLayoutBinding? by viewBinding()
@@ -60,15 +61,17 @@ class ListGridViewHolder(
             relatedItemListener,
             RelatedItemViewHolder.TYPE_LIST_GRID,
         ).apply {
-            val relatedItemDataList = mutableListOf<RelatedItemDataView>()
-            relatedItemDataList.addAll(data.related)
-
-            updateList(relatedItemDataList)
+            updateList(data.related)
         }
 
         binding?.universalSearchListGridRecyclerView?.let {
             it.adapter = adapter
-            it.layoutManager = LinearLayoutManager(itemView.context)
+            it.layoutManager = GridLayoutManager(
+                itemView.context,
+                SPAN_COUNT,
+                GridLayoutManager.HORIZONTAL,
+                false
+            )
             it.addItemDecoration(ListGridItemDecoration())
         }
     }

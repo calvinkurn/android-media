@@ -148,6 +148,10 @@ internal data class UniversalSearchModel(
         @SerializedName("badge")
         @Expose
         val badge: List<Badge> = listOf(),
+
+        @SerializedName("free_ongkir")
+        @Expose
+        val freeOngkir: FreeOngkir = FreeOngkir()
     )
 
     internal data class Shop(
@@ -176,6 +180,16 @@ internal data class UniversalSearchModel(
         @SerializedName("show")
         @Expose
         val show: Boolean = false,
+    )
+
+    internal data class FreeOngkir(
+        @SerializedName("img_url")
+        @Expose
+        val imgUrl: String = "",
+
+        @SerializedName("is_active")
+        @Expose
+        val isActive: Boolean = false
     )
 
     internal data class Curated(

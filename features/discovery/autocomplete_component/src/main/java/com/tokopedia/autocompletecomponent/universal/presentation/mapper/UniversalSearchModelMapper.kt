@@ -67,6 +67,7 @@ internal class UniversalSearchModelMapper(
                     city = it.shop.city,
                 ),
                 badge = it.badge.toBadgeDataView(),
+                freeOngkir = it.freeOngkir.toFreeOngkirDataView(),
                 keyword = keyword,
                 dimension90 = dimension90,
             )
@@ -111,5 +112,12 @@ internal class UniversalSearchModelMapper(
                 show = it.show,
             )
         }
+    }
+
+    private fun UniversalSearchModel.FreeOngkir.toFreeOngkirDataView(): CarouselDataView.Product.FreeOngkir {
+        return CarouselDataView.Product.FreeOngkir(
+            imgUrl = this.imgUrl,
+            isActive = this.isActive
+        )
     }
 }

@@ -73,6 +73,10 @@ internal class UniversalSearchUseCase(
                       discount_percentage
                       rating_average
                       count_sold
+                      free_ongkir {
+                        img_url
+                        is_active
+                      }
                       shop{
                         name
                         city

@@ -24,6 +24,7 @@ import com.tokopedia.autocompletecomponent.universal.presentation.typefactory.Un
 import com.tokopedia.autocompletecomponent.universal.presentation.viewmodel.UniversalSearchViewModel
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselListenerDelegate
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineListenerDelegate
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.errorstate.ErrorStateListenerDelegate
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.ListGridListenerDelegate
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemListenerDelegate
 import com.tokopedia.discovery.common.State
@@ -66,6 +67,9 @@ internal class UniversalSearchFragment: BaseDaggerFragment(), HasComponent<BaseA
     @Inject
     internal lateinit var relatedItemListenerDelegate: RelatedItemListenerDelegate
 
+    @Inject
+    internal lateinit var errorStateListenerDelegate: ErrorStateListenerDelegate
+
     private var binding by autoClearedNullable<UniversalSearchFragmentLayoutBinding>()
 
     override fun getScreenName(): String {
@@ -97,7 +101,7 @@ internal class UniversalSearchFragment: BaseDaggerFragment(), HasComponent<BaseA
         initViews()
         observeViewModelData()
 
-        universalSearchViewModel.onViewCreated()
+        universalSearchViewModel.loadData()
     }
 
     private fun initViewModel() {
@@ -139,6 +143,7 @@ internal class UniversalSearchFragment: BaseDaggerFragment(), HasComponent<BaseA
             doubleLineListener = doubleLineListenerDelegate,
             listGridListener = listGridListenerDelegate,
             relatedItemListener = relatedItemListenerDelegate,
+            errorStateListener = errorStateListenerDelegate,
         )
         universalSearchAdapter = UniversalSearchAdapter(typeFactory)
     }

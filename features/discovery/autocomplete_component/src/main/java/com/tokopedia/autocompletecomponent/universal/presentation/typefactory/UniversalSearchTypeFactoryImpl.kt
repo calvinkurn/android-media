@@ -10,6 +10,7 @@ import com.tokopedia.autocompletecomponent.universal.presentation.widget.doublel
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineListener
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineViewHolder
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.errorstate.ErrorStateDataView
+import com.tokopedia.autocompletecomponent.universal.presentation.widget.errorstate.ErrorStateListener
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.errorstate.ErrorStateViewHolder
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.ListGridDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.listgrid.ListGridListener
@@ -21,6 +22,7 @@ class UniversalSearchTypeFactoryImpl(
     private val doubleLineListener: DoubleLineListener,
     private val listGridListener: ListGridListener,
     private val relatedItemListener: RelatedItemListener,
+    private val errorStateListener: ErrorStateListener,
 ): UniversalSearchTypeFactory, BaseAdapterTypeFactory() {
     override fun type(carouselDataView: CarouselDataView): Int {
         return CarouselViewHolder.LAYOUT
@@ -51,7 +53,7 @@ class UniversalSearchTypeFactoryImpl(
                 listGridListener,
                 relatedItemListener,
             )
-            ErrorStateViewHolder.LAYOUT -> ErrorStateViewHolder(view)
+            ErrorStateViewHolder.LAYOUT -> ErrorStateViewHolder(view, errorStateListener)
             else -> super.createViewHolder(view, type)
         }
     }

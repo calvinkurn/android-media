@@ -111,7 +111,7 @@ public interface ApplinkConst {
     String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
     String DISCOVERY_SEARCH = "tokopedia://search";
     String DISCOVERY_SEARCH_AUTOCOMPLETE = "tokopedia://search-autocomplete";
-    String DISCOVERY_SEARCH_UNIVERSAL = "tokopedia://search-universal";
+    String DISCOVERY_SEARCH_UNIVERSAL = "tokopedia://universal-page";
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";

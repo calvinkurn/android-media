@@ -28,7 +28,7 @@ internal class LoadUniversalSearchTest: UniversalSearchDataViewTestFixtures() {
     }
 
     private fun `When universal search view created`() {
-        universalSearchViewModel.onViewCreated()
+        universalSearchViewModel.loadData()
     }
 
     private fun `Then assert universal search is successful`() {

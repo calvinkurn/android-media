@@ -85,28 +85,28 @@ class RelatedItemViewHolder(
     }
 
     private fun getImageDimension(type: Int): Int {
-        return if (type == TYPE_DOUBLE_LINE)
+        return if (type == TYPE_LIST_GRID)
             IMAGE_LARGE_DP.toPx()
         else
             IMAGE_SMALL_DP.toPx()
     }
 
     private fun getContainerWidth(type: Int): Int {
-        return if (type == TYPE_DOUBLE_LINE)
+        return if (type == TYPE_LIST_GRID)
             CONTAINER_SHORT_DP.toPx()
         else
             ConstraintLayout.LayoutParams.MATCH_PARENT
     }
 
     private fun getTextMarginLeft(type: Int): Int {
-        return if (type == TYPE_DOUBLE_LINE)
+        return if (type == TYPE_LIST_GRID)
             TEXT_MARGIN_LEFT_12_DP.toPx()
         else
             TEXT_MARGIN_LEFT_8_DP.toPx()
     }
 
     private fun getTextMaxLines(type: Int): Int {
-        return if (type == TYPE_DOUBLE_LINE)
+        return if (type == TYPE_LIST_GRID)
             TEXT_MAXLINES_2
         else
             TEXT_MAXLINES_1

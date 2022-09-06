@@ -2,14 +2,13 @@ package com.tokopedia.autocompletecomponent.universal.presentation.widget.double
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchDoubleLineItemLayoutBinding
 import com.tokopedia.autocompletecomponent.universal.presentation.BaseUniversalDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.itemdecoration.DoubleLineItemDecoration
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedAdapter
-import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemListener
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.related.RelatedItemViewHolder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -25,8 +24,6 @@ class DoubleLineViewHolder(
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.universal_search_double_line_item_layout
-
-        private const val SPAN_COUNT = 2
     }
 
     private var binding: UniversalSearchDoubleLineItemLayoutBinding? by viewBinding()
@@ -63,20 +60,12 @@ class DoubleLineViewHolder(
             relatedItemListener,
             RelatedItemViewHolder.TYPE_DOUBLE_LINE,
         ).apply {
-            val relatedItemDataList = mutableListOf<RelatedItemDataView>()
-            relatedItemDataList.addAll(data.related)
-
-            updateList(relatedItemDataList)
+            updateList(data.related)
         }
 
         binding?.universalSearchDoubleLineRecyclerView?.let {
             it.adapter = adapter
-            it.layoutManager = GridLayoutManager(
-                itemView.context,
-                SPAN_COUNT,
-                GridLayoutManager.HORIZONTAL,
-                false
-            )
+            it.layoutManager = LinearLayoutManager(itemView.context)
             it.addItemDecoration(DoubleLineItemDecoration())
         }
     }

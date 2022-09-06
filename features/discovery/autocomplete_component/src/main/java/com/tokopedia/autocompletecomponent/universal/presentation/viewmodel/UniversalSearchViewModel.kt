@@ -30,7 +30,7 @@ internal class UniversalSearchViewModel(
     private val universalSearchState = MutableLiveData<State<List<Visitable<*>>>>()
     private val universalSearchVisitableList = mutableListOf<Visitable<*>>()
 
-    fun onViewCreated() {
+    fun loadData() {
         loadUniversalSearch()
     }
 

@@ -38,6 +38,7 @@ class CarouselDataView(
         val countSold: String = "",
         val shop: Shop = Shop(),
         val badge: List<Badge> = listOf(),
+        val freeOngkir: FreeOngkir = FreeOngkir(),
         val keyword: String = "",
         val dimension90: String = "",
     ): ImpressHolder(),
@@ -58,6 +59,11 @@ class CarouselDataView(
             val title: String = "",
             val imageUrl: String = "",
             val show: Boolean = false,
+        )
+
+        class FreeOngkir(
+            val imgUrl: String = "",
+            val isActive: Boolean = false,
         )
     }
 }

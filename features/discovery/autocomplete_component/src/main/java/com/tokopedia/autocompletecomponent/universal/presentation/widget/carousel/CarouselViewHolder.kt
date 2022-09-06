@@ -72,14 +72,18 @@ class CarouselViewHolder(
                     shopBadgeList = it.badge.map { badge ->
                         ProductCardModel.ShopBadge(
                             isShown = badge.show,
-                            imageUrl = badge.imageUrl
+                            imageUrl = badge.imageUrl,
                         )
                     },
                     labelGroupList = listOf(ProductCardModel.LabelGroup(
                         position = "integrity",
                         title = it.countSold,
                         type = "textDarkGrey",
-                    ))
+                    )),
+                    freeOngkir = ProductCardModel.FreeOngkir(
+                        imageUrl = it.freeOngkir.imgUrl,
+                        isActive = it.freeOngkir.isActive,
+                    )
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
