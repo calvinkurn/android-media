@@ -27,6 +27,7 @@ object TokoFoodMerchantListQuery: GqlQueryInterface {
               etaFmt
               promo
               hasBranch
+              branchApplink
               isClosed
               addressLocality
             }

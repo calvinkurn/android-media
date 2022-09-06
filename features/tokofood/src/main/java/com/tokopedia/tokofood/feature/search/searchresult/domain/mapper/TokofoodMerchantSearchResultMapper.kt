@@ -12,8 +12,7 @@ class TokofoodMerchantSearchResultMapper @Inject constructor() {
         return response.tokofoodSearchMerchant.merchants.map {
             MerchantSearchResultUiModel(
                 id = it.id,
-                merchant = it,
-                branchApplink = null
+                merchant = it
             )
         }
     }

@@ -37,6 +37,8 @@ data class Merchant (
     val promo: String = "",
     @SerializedName("hasBranch")
     val hasBranch: Boolean = false,
+    @SerializedName("branchApplink")
+    val branchApplink: String = "",
     @SerializedName("isClosed")
     val isClosed: Boolean = false,
     @SerializedName("addressLocality")

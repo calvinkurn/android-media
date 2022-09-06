@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.PriceLevel
@@ -31,9 +32,6 @@ class MerchantSearchResultViewHolder(
 
     override fun bind(element: MerchantSearchResultUiModel) {
         setMerchantLayout(element.merchant)
-        element.branchApplink?.let {
-            setupBranchButton(it)
-        }
     }
 
     private fun setMerchantLayout(merchant: Merchant) {
@@ -46,17 +44,12 @@ class MerchantSearchResultViewHolder(
         setPriceLevel(merchant.priceLevel)
         setViewDividerCategoryPriceLevel(merchant.merchantCategories, merchant.priceLevel)
         setMerchantClosed(merchant.isClosed)
+        setOtherBranchButton(merchant.hasBranch, merchant.branchApplink)
         binding?.root?.setOnClickListener {
             listener?.onClickMerchant(merchant, adapterPosition)
         }
         itemView.addOnImpressionListener(merchant) {
             listener?.onImpressMerchant(merchant, adapterPosition)
-        }
-    }
-
-    private fun setupBranchButton(applink: String) {
-        binding?.btnTokofoodItemSrpBranch?.setOnClickListener {
-            listener?.onBranchButtonClicked(applink)
         }
     }
 
@@ -201,6 +194,15 @@ class MerchantSearchResultViewHolder(
             binding?.labelItemSrpMerchantClosed?.show()
         } else {
             binding?.labelItemSrpMerchantClosed?.hide()
+        }
+    }
+
+    private fun setOtherBranchButton(hasBranch: Boolean, branchApplink: String) {
+        binding?.btnTokofoodItemSrpBranch?.run {
+            showWithCondition(hasBranch)
+            setOnClickListener {
+                listener?.onBranchButtonClicked(branchApplink)
+            }
         }
     }
 
