@@ -37,4 +37,5 @@ enum class ImageRatioType(val id: Int, private val ratio: Pair<Int, Int>) : Parc
 
     fun getRatioX() = ratio.first
     fun getRatioY() = ratio.second
+    fun getRatio() = ratio.first.toFloat() / ratio.second
 }

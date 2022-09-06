@@ -302,7 +302,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeEditorParamModel() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            cropComponent.setupView(it)
+            cropComponent.setupView(it, data.cropRotateValue)
         }
     }
 

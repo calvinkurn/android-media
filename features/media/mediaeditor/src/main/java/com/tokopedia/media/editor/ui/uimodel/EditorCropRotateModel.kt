@@ -38,6 +38,10 @@ data class EditorCropRotateModel(
                 && data.isAutoCrop == isAutoCrop
     }
 
+    fun getRatio(): Float?{
+        return if(imageWidth == 0 && imageHeight == 0) null else imageWidth.toFloat() / imageHeight
+    }
+
     companion object{
         fun getEmptyEditorCropRotateModel(): EditorCropRotateModel{
             return EditorCropRotateModel(

@@ -12,6 +12,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
@@ -30,21 +31,27 @@ class CropToolUiComponent constructor(
     private val activeColor = ContextCompat.getColor(this.context, unifyR.color.Unify_GN500)
     private val inactiveColor = ContextCompat.getColor(this.context, unifyR.color.Unify_NN950)
 
-    fun setupView(editorParam: EditorParam?) {
+    fun setupView(editorParam: EditorParam?, detailRotateCrop: EditorCropRotateModel) {
         (container() as LinearLayout).apply {
             editorParam?.autoCropRatio?.let {
                 addView(
                     generateCropButton(
                         it.getRatioX(),
-                        it.getRatioY()
+                        it.getRatioY(),
+                        true
                     )
                 )
             } ?: kotlin.run {
-                editorParam?.ratioList?.forEach { ratio ->
+                editorParam?.ratioList?.forEachIndexed { index, ratio ->
+                    val isSelected = if(detailRotateCrop.getRatio() != null){
+                        detailRotateCrop.getRatio() == ratio.getRatio()
+                    } else index == 0
+
                     addView(
                         generateCropButton(
                             ratio.getRatioX(),
-                            ratio.getRatioY()
+                            ratio.getRatioY(),
+                            isSelected
                         )
                     )
                 }
@@ -54,7 +61,7 @@ class CropToolUiComponent constructor(
         container().show()
     }
 
-    private fun generateCropButton(widthRatio: Int, heightRatio: Int): View {
+    private fun generateCropButton(widthRatio: Int, heightRatio: Int, isSelected: Boolean = false): View {
         return View.inflate(container().context, editorR.layout.ui_component_crop_action_layout, null)
             .apply {
                 val boxCrop = findViewById<View>(editorR.id.box_crop).apply {
@@ -88,6 +95,8 @@ class CropToolUiComponent constructor(
                     boxCrop.background.setColorFilter(activeColor, PorterDuff.Mode.SRC_ATOP)
                     boxCropText.setTextColor(activeColor)
                 }
+
+                if(isSelected) performClick()
             }
     }
 
