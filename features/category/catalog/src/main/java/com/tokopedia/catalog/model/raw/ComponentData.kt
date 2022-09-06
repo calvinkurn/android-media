@@ -47,7 +47,11 @@ data class ComponentData(
         @Expose @SerializedName("reviews")
         val reviews: ArrayList<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>?,
         @Expose @SerializedName("totalHelpfulReview")
-        val totalHelpfulReview: String?
+        val totalHelpfulReview: String?,
+        @Expose @SerializedName("spec_list")
+        val specList: ArrayList<SpecList>,
+        @Expose @SerializedName("comparedData")
+        val comparedData: ComparedData
 
 ){
     @Parcelize
@@ -58,7 +62,49 @@ data class ComponentData(
             val value: String
     ) : Parcelable
 
+        @Parcelize
+        data class SpecList(
+                @Expose @SerializedName("title")
+                val comparisonTitle: String,
+                @Expose @SerializedName("subcard")
+                val subcard: ArrayList<Subcard>,
+        ) : Parcelable
+        {
+                @Parcelize
+                data class Subcard(
+                        @SerializedName("subTitle")
+                        val subTitle: String,
+                        @SerializedName("leftData")
+                        val leftData: String,
+                        @SerializedName("rightData")
+                        val rightData: String,
+                ) : Parcelable
+        }
+
+        @Parcelize
+        data class ComparedData (
+                @SerializedName("id")
+                val id: String,
+                @SerializedName("brand")
+                val brand: String,
+                @SerializedName("name")
+                val name: String,
+                @SerializedName("url")
+                val url: String,
+                @SerializedName("catalogImage")
+                val catalogImage: ArrayList<CatalogImage>?
+        ) : Parcelable
 }
+
+//@Parcelize
+//data class Subcard(
+//        @SerializedName("subTitle")
+//        val subTitle: String,
+//        @SerializedName("leftData")
+//        val leftData: String,
+//        @SerializedName("rightData")
+//        val rightData: String,
+//)
 
 @Parcelize
 data class FullSpecificationsComponentData(
@@ -92,6 +138,16 @@ data class ComparisionModel(
 
         val key : String?,
         val value : String?) : Parcelable
+
+@Parcelize
+data class ComparisonNewModel(
+        val id: String?,
+        val brand: String?,
+        val name: String?,
+        val price: String?,
+        val url: String?,
+        val specList: ArrayList<ComponentData.SpecList>
+) : Parcelable
 
 @Parcelize
 data class ReviewComponentData(
