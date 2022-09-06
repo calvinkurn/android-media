@@ -264,7 +264,7 @@ class PlayViewModel @AssistedInject constructor(
             if(game.interactive !is InteractiveUiModel.Unknown && isInteractiveAllowed)
                 add(EngagementUiModel.Game(interactive = game.interactive))
             if(vouchers.isNotEmpty())
-                add(EngagementUiModel.Promo(info = vouchers.first(), size = vouchers.size - 1))
+                add(EngagementUiModel.Promo(info = vouchers.first { it.highlighted }, size = vouchers.size - 1))
         },
     )
     }.flowOn(dispatchers.computation)
