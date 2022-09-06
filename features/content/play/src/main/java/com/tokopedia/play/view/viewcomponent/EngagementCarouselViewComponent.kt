@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 /**
  * @author by astidhiyaa on 24/08/22
@@ -39,7 +40,8 @@ class EngagementCarouselViewComponent(
             }
 
             override fun onWidgetTimerTick(engagement: EngagementUiModel.Game, timeInMillis: Long) {
-                //TODO("Not yet implemented")
+                val diff = TimeUnit.MILLISECONDS.toSeconds(timeInMillis)
+                if (diff < 15L) stopAutoScroll() else return
             }
         })
 
@@ -61,9 +63,13 @@ class EngagementCarouselViewComponent(
 
     fun setData(list: List<EngagementUiModel>) {
         carouselAdapter.setItemsAndAnimateChanges(list)
+        startAutoScroll()
     }
 
-    fun startAutoScroll(size: Int){
+    private fun startAutoScroll() {
+        val size = carouselAdapter.itemCount
+        if (size <= 1) return
+        job?.cancel()
         job = scope.launch {
             repeat(size) {
                 delay(AUTO_SCROLL_DELAY)
@@ -72,8 +78,10 @@ class EngagementCarouselViewComponent(
         }
     }
 
-    fun stopAutoScroll(){
-        job?.cancel()
+    private fun stopAutoScroll(){
+        if(job?.isActive == true){
+            job?.cancel()
+        }
     }
 
     interface Listener {

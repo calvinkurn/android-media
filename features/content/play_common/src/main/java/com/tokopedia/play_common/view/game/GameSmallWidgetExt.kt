@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.play_common.R
-import com.tokopedia.play_common.databinding.ViewGameInteractiveBinding
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
