@@ -76,7 +76,7 @@ class CampaignDetailViewModel @Inject constructor(
                 val result = getFlashSaleSubmittedProductListUseCase.execute(
                     campaignId = campaignId,
                     pagination = GetFlashSaleSubmittedProductListRequest.Pagination(
-                        PAGE_SIZE,
+                        10,
                         offset
                     )
                 )

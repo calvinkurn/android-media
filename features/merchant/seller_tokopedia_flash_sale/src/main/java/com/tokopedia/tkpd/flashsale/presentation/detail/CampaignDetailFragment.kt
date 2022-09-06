@@ -36,6 +36,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.Finis
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.OnSelectionProcessDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.WaitingForSelectionDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
+import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -45,7 +46,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignDetailFragment : BaseDaggerFragment(){
+class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
         private const val UPCOMING_TAB = "upcoming"
@@ -196,16 +197,20 @@ class CampaignDetailFragment : BaseDaggerFragment(){
             adapter = productAdapter
         }
 
+        val pagingConfig = HasPaginatedList.Config(
+            pageSize = PAGE_SIZE,
+            onLoadNextPage = {
+                productAdapter.addItem(LoadingItem)
+            }, onLoadNextPageFinished = {
+                productAdapter.removeItem(LoadingItem)
+            })
+
         binding?.nsvContent?.apply {
-            viewTreeObserver.addOnScrollChangedListener {
-                val scrollState: Int =
-                    this.getChildAt(this.childCount - Int.ONE).bottom - (this.height + this.scrollY)
-                if (scrollState == Int.ZERO) {
-                    val isInCheckBoxState = viewModel.isOnCheckBoxState()
-                    val hasNextPage = productAdapter.itemCount >= PAGE_SIZE
-                    if (hasNextPage && !isInCheckBoxState) {
-                        loadSubmittedProductListData(productAdapter.itemCount)
-                    }
+            attachPagingWithNestedScrollView(this, pagingConfig) {
+                val isInCheckBoxState = viewModel.isOnCheckBoxState()
+                val hasNextPage = productAdapter.itemCount >= PAGE_SIZE
+                if (hasNextPage && !isInCheckBoxState) {
+                    loadSubmittedProductListData(productAdapter.itemCount)
                 }
             }
         }
@@ -394,7 +399,6 @@ class CampaignDetailFragment : BaseDaggerFragment(){
                 binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
                 binding.timer.onFinish = onTimerFinished
             }
-            else -> onTimerFinished
         }
     }
 
@@ -486,19 +490,6 @@ class CampaignDetailFragment : BaseDaggerFragment(){
     private fun setupRegisteredMidData(flashSale: FlashSale) {
         registeredCdpMidBinding?.run {
             when (flashSale.status) {
-                FlashSaleStatus.NO_REGISTERED_PRODUCT -> {
-                    cardProductEligibleForSelection.hide()
-                    llSelectionProcessView.hide()
-                    llBeforeSelectionView.visible()
-                    tgRemainingQuotaValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_remaining_quota_placeholder,
-                            flashSale.remainingQuota,
-                            flashSale.maxProductSubmission
-                        )
-                    )
-                    setupRegisteredTimer(this, flashSale)
-                }
                 FlashSaleStatus.WAITING_FOR_SELECTION -> {
                     cardProductEligibleForSelection.hide()
                     llSelectionProcessView.hide()
@@ -576,6 +567,19 @@ class CampaignDetailFragment : BaseDaggerFragment(){
                         )
                     )
                 }
+                else -> {
+                    cardProductEligibleForSelection.hide()
+                    llSelectionProcessView.hide()
+                    llBeforeSelectionView.visible()
+                    tgRemainingQuotaValue.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_remaining_quota_placeholder,
+                            flashSale.remainingQuota,
+                            flashSale.maxProductSubmission
+                        )
+                    )
+                    setupRegisteredTimer(this, flashSale)
+                }
             }
         }
     }
@@ -635,7 +639,7 @@ class CampaignDetailFragment : BaseDaggerFragment(){
     }
 
     private fun onShowOrHideItemCheckBox() {
-        val oldItems = productAdapter.getItems() as List<WaitingForSelectionItem>
+        val oldItems = productAdapter.getItems().filterIsInstance<WaitingForSelectionItem>()
         val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
         val isShown = newItems[0].isCheckBoxShown
         productAdapter.submit(listOf())

@@ -1,7 +1,10 @@
 package com.tokopedia.campaign.delegates
 
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 class HasPaginatedListImpl : HasPaginatedList {
 
@@ -18,6 +21,16 @@ class HasPaginatedListImpl : HasPaginatedList {
         resetPaging()
     }
 
+    override fun attachPagingWithNestedScrollView(
+        nestedScrollView: NestedScrollView,
+        config: HasPaginatedList.Config,
+        loadNextPage: () -> Unit
+    ) {
+        this.config = config
+        enableNestedScrollViewPaging(nestedScrollView, config, loadNextPage)
+        resetPaging()
+    }
+
     private fun enablePaging(
         recyclerView: RecyclerView,
         config: HasPaginatedList.Config,
@@ -30,6 +43,28 @@ class HasPaginatedListImpl : HasPaginatedList {
             }
         }
         recyclerView.addOnScrollListener(scrollListener ?: return)
+    }
+
+    /**
+     * Listen to NestedScrollView scroll state
+     * loadNextPage does not pass any param such as offset since the data can't be provided
+     * use the adapter item size instead as the offset
+     */
+    private fun enableNestedScrollViewPaging(
+        nestedScrollView: NestedScrollView,
+        config: HasPaginatedList.Config,
+        loadNextPage: () -> Unit
+    ) {
+        nestedScrollView.apply {
+            viewTreeObserver.addOnScrollChangedListener {
+                val scrollState: Int =
+                    this.getChildAt(this.childCount - Int.ONE).bottom - (this.height + this.scrollY)
+                if (scrollState == Int.ZERO) {
+                    config.onLoadNextPage
+                    loadNextPage()
+                }
+            }
+        }
     }
 
     /**
@@ -52,6 +87,4 @@ class HasPaginatedListImpl : HasPaginatedList {
     override fun resetPaging() {
         scrollListener?.resetState()
     }
-
-
 }
