@@ -220,7 +220,7 @@ data class Tipping(
         val statusSubtitle: String = "",
         @SerializedName("last_driver")
         @Expose
-        @Deprecated("Use LastDriver instead")
+        @Deprecated("Use TrackingData.lastDriver instead")
         val lastDriver: LastDriver = LastDriver()
 )
 
