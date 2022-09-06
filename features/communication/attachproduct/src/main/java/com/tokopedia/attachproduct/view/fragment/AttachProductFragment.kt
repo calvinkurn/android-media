@@ -340,8 +340,8 @@ class AttachProductFragment :
             product.toResultProduct()
         } ?: listOf()
         val resultProduct = arrayListOf<ResultProduct>()
-        trackSendButtonClicked(resultProduct)
         resultProduct.addAll(products)
+        trackSendButtonClicked(resultProduct)
         activityContract?.finishActivityWithResult(resultProduct)
     }
 

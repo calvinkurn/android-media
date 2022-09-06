@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.view.tracking.AttachProductEventTracking
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.TrackApp
 
 object AttachProductAnalytics {
     val eventCheckProduct: AttachProductEventTracking
@@ -47,7 +48,10 @@ object AttachProductAnalytics {
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.CLICK_COMMUNICATION, eventDataLayer)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Event.CLICK_COMMUNICATION,
+            eventDataLayer
+        )
     }
 
     val eventClickChatAttachedProductImage: AttachProductEventTracking
