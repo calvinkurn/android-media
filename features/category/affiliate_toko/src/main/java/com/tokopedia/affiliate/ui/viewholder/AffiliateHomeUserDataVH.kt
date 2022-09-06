@@ -10,6 +10,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateHomeUserDataVH(itemView: View, onPerformaGridClick: AffiliatePerformaClickInterfaces?)
     : AbstractViewHolder<AffiliateUserPerformanceModel>(itemView) {
@@ -26,5 +27,8 @@ class AffiliateHomeUserDataVH(itemView: View, onPerformaGridClick: AffiliatePerf
         performRV.adapter = adapter
         adapter.resetList()
         adapter.addMoreData(element?.data)
+        itemView.findViewById<Typography>(R.id.head).apply {
+            setText(if (element?.affiliateShopAdpEnabled == true) R.string.link_dengan_performa else R.string.affiliate_promoted_products)
+        }
     }
 }

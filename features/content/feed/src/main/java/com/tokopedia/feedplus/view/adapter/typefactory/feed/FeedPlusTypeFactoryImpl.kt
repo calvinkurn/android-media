@@ -1,15 +1,11 @@
 package com.tokopedia.feedplus.view.adapter.typefactory.feed
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -17,30 +13,21 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.shimmer.ShimmerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.carouselplaycard.CarouselPlayCardViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
-import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.RetryModel
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
@@ -69,9 +56,6 @@ class FeedPlusTypeFactoryImpl(
     private val videoViewListener: VideoViewHolder.VideoViewListener
     private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener
     private val highlightListener: HighlightAdapter.HighlightListener
-    private val emptyFeedBeforeLoginListener: EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener
-    private val retryViewHolderListener: RetryViewHolder.RetryViewHolderListener
-    private val emptyFeedViewHolderListener: EmptyFeedViewHolder.EmptyFeedListener
     private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener
     private val topAdsHeadlineListener: TopAdsHeadlineListener
 
@@ -89,35 +73,12 @@ class FeedPlusTypeFactoryImpl(
         this.videoViewListener = context
         this.feedMultipleImageViewListener = context
         this.highlightListener = context
-        this.emptyFeedBeforeLoginListener = context
-        this.retryViewHolderListener = context
-        this.emptyFeedViewHolderListener = context
         this.topAdsBannerListener = context
         this.topAdsHeadlineListener = context
     }
 
-    override fun type(emptyModel: EmptyModel): Int {
-        return EmptyFeedViewHolder.LAYOUT
-    }
-
-    override fun type(emptyFeedBeforeLoginModel: EmptyFeedBeforeLoginModel): Int {
-        return EmptyFeedBeforeLoginViewHolder.LAYOUT
-    }
-
-    override fun type(retryModel: RetryModel): Int {
-        return RetryViewHolder.LAYOUT
-    }
-
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
         return DynamicPostViewHolder.LAYOUT
-    }
-
-    override fun type(feedRecommendationViewModel: FeedRecommendationViewModel): Int {
-        return FeedRecommendationViewHolder.LAYOUT
-    }
-
-    override fun type(bannerViewModel: BannerViewModel): Int {
-        return BannerViewHolder.LAYOUT
     }
 
     override fun type(topadsShopUiModel: TopadsShopUiModel): Int {
@@ -129,10 +90,6 @@ class FeedPlusTypeFactoryImpl(
     }
     override fun type(topadsHeadlineUiModel: TopadsHeadLineV2Model): Int {
         return TopAdsHeadlineV2ViewHolder.LAYOUT
-    }
-
-    override fun type(highlightViewModel: HighlightViewModel): Int {
-        return HighlightViewHolder.LAYOUT
     }
 
     override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
@@ -156,9 +113,6 @@ class FeedPlusTypeFactoryImpl(
         val viewHolder: AbstractViewHolder<*>
 
         when (type) {
-            EmptyFeedViewHolder.LAYOUT -> viewHolder = EmptyFeedViewHolder(view, emptyFeedViewHolderListener)
-            RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, retryViewHolderListener)
-            EmptyFeedBeforeLoginViewHolder.LAYOUT -> viewHolder = EmptyFeedBeforeLoginViewHolder(view, emptyFeedBeforeLoginListener)
             DynamicPostViewHolder.LAYOUT -> {
                 viewHolder = DynamicPostViewHolder(
                         view,
@@ -172,12 +126,6 @@ class FeedPlusTypeFactoryImpl(
                         feedMultipleImageViewListener,
                         userSession
                 )
-            }
-            FeedRecommendationViewHolder.LAYOUT -> {
-                viewHolder = FeedRecommendationViewHolder(view, recommendationCardListener, cardTitleListener)
-            }
-            BannerViewHolder.LAYOUT -> {
-                viewHolder = BannerViewHolder(view, bannerListener, cardTitleListener)
             }
             TopadsShopViewHolder.LAYOUT -> {
                 viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
@@ -215,9 +163,6 @@ class FeedPlusTypeFactoryImpl(
                     gridItemListener,
                     imagePostListener
                 )
-            }
-            HighlightViewHolder.LAYOUT -> {
-                viewHolder = HighlightViewHolder(view, highlightListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             }
             else -> viewHolder = super.createViewHolder(view, type)
         }
