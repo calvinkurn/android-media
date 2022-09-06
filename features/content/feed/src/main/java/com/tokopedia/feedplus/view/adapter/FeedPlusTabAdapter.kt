@@ -16,10 +16,17 @@ import com.tokopedia.videoTabComponent.view.VideoTabFragment
  * @author by astidhiyaa on 30/08/22
  */
 class FeedPlusTabAdapter(fm: FragmentManager, itemList: List<FeedTabs.FeedData>, bundle: Bundle?) :
-    FragmentStatePagerAdapter(fm) {
+    FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+
     private var itemList: List<FeedTabs.FeedData>
     private val bundle: Bundle?
     private val registeredFragment = SparseArrayCompat<Fragment>()
+
+    init {
+        this.itemList = itemList
+        this.bundle = bundle
+    }
+
     override fun getItem(position: Int): Fragment {
         val (_, key, _, _, type) = itemList[position]
         return if (type == FeedTabs.TYPE_FEEDS) {
@@ -86,10 +93,5 @@ class FeedPlusTabAdapter(fm: FragmentManager, itemList: List<FeedTabs.FeedData>,
 
     fun isContextExploreExist(): Boolean {
         return getContentExplore() != null
-    }
-
-    init {
-        this.itemList = itemList
-        this.bundle = bundle
     }
 }
