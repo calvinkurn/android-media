@@ -183,7 +183,6 @@ class PlayBroadcastActivity : BaseActivity(),
         super.onPause()
         releaseBroadcaster()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.sendLogs()
     }
 
     override fun onDestroy() {
