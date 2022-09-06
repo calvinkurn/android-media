@@ -46,6 +46,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper;
@@ -53,7 +54,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel;
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder;

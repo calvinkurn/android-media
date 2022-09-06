@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +30,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import javax.inject.Inject
 
 /**
@@ -38,7 +38,7 @@ import javax.inject.Inject
  */
 class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurationAdapterListener {
 
-    private var pbLoading: ProgressBar? = null
+    private var pbLoading: LoaderUnify? = null
     private var llNetworkErrorView: LinearLayout? = null
     private var llContent: LinearLayout? = null
     private var rvDuration: RecyclerView? = null
