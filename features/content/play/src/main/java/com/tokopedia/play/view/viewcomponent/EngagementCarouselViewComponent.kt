@@ -41,7 +41,7 @@ class EngagementCarouselViewComponent(
 
             override fun onWidgetTimerTick(engagement: EngagementUiModel.Game, timeInMillis: Long) {
                 val diff = TimeUnit.MILLISECONDS.toSeconds(timeInMillis)
-                if (diff < 15L) stopAutoScroll() else return
+                if (diff < STOP_SCROLL_TIME) stopAutoScroll() else return
             }
         })
 
@@ -95,5 +95,6 @@ class EngagementCarouselViewComponent(
 
     companion object {
         private const val AUTO_SCROLL_DELAY = 5000L
+        private const val STOP_SCROLL_TIME = 15L
     }
 }
