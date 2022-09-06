@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -28,8 +29,9 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class SearchContainerFragment: BaseDaggerFragment(),
-    GlobalSearchBarWidget.GlobalSearchBarWidgetListener, GlobalSearchBarWidget.SearchTextBoxListener,
+class SearchContainerFragment : BaseDaggerFragment(),
+    GlobalSearchBarWidget.GlobalSearchBarWidgetListener,
+    GlobalSearchBarWidget.SearchTextBoxListener,
     InitialStateViewUpdateListener, SearchResultViewUpdateListener {
 
     @Inject
@@ -91,12 +93,34 @@ class SearchContainerFragment: BaseDaggerFragment(),
             searchResultContainer.hide()
             initialStateContainer.show()
         }
+
+        initialStateFragment?.let { initialStateFragment ->
+            searchResultFragment?.let { searchResultFragment ->
+                val ft = childFragmentManager.beginTransaction()
+                if (searchResultFragment.isVisible && !initialStateFragment.isVisible) {
+                    ft.hide(searchResultFragment)
+                    ft.show(initialStateFragment)
+                }
+                ft.commit()
+            }
+        }
     }
 
     override fun showSearchResultView() {
         binding?.run {
-            searchResultContainer.show()
             initialStateContainer.hide()
+            searchResultContainer.show()
+        }
+
+        searchResultFragment?.let { searchResultFragment ->
+            initialStateFragment?.let { initialStateFragment ->
+                val ft = childFragmentManager.beginTransaction()
+                if (!searchResultFragment.isVisible && initialStateFragment.isVisible) {
+                    ft.hide(initialStateFragment)
+                    ft.show(searchResultFragment)
+                }
+                ft.commit()
+            }
         }
     }
 
@@ -105,12 +129,13 @@ class SearchContainerFragment: BaseDaggerFragment(),
     }
 
     override fun onBackButtonSearchBarClicked(keyword: String) {
-        (context as? AppCompatActivity)?.onBackPressed()
+        onBackPressed()
     }
 
     override fun onTransactionListClicked() {
         context?.let {
             RouteManager.route(it, ApplinkConst.TokoFood.TOKOFOOD_ORDER)
+            onBackPressed()
         }
     }
 
@@ -118,10 +143,6 @@ class SearchContainerFragment: BaseDaggerFragment(),
         context?.let {
             RouteManager.route(it, ApplinkConst.HOME_NAVIGATION)
         }
-    }
-
-    override fun onClearTextBoxListener() {
-        //TODO implement tracker
     }
 
     override fun onQueryTextChangeListener(keyword: String) {
@@ -144,7 +165,7 @@ class SearchContainerFragment: BaseDaggerFragment(),
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.keywordResult.collect { keyword ->
                 if (keyword.length < THREE_LETTERS) {
-                    proceedInitialState()
+                    proceedInitialState(keyword)
                 } else {
                     proceedSearchResult(keyword)
                 }
@@ -152,12 +173,18 @@ class SearchContainerFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun proceedInitialState() {
-        initialStateFragment?.showInitialSearchState()
+    private fun proceedInitialState(keyword: String) {
+        initialStateFragment?.showInitialSearchState(keyword)
     }
 
     private fun proceedSearchResult(keyword: String) {
         searchResultFragment?.showSearchResultState(keyword)
+    }
+
+    private fun onBackPressed() {
+        context?.let {
+            (it as? AppCompatActivity)?.onBackPressed()
+        }
     }
 
     companion object {

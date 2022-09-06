@@ -49,18 +49,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
 
     private fun MutableList<BaseInitialStateVisitable>.addRecentSearchSection(section: TokoFoodInitSearchStateResponse.TokofoodInitSearchState.Section) {
         val recentSearchSize = section.items.size
-        val recentSearchLimit = section.items.take(MAX_LIMIT_ITEM)
-        val recentSearchSeeMore = section.items.subList(THREE_INDEX, recentSearchSize)
-        val recentSearchSeeMoreList = recentSearchSeeMore.map {
-            RecentSearchItemUiModel(
-                sectionId = section.id,
-                itemId = it.itemId,
-                imageUrl = it.imageUrl,
-                title = it.title,
-                template = it.template,
-                imageActionUrl = it.shortcutImage
-            )
-        }
+        val recentSearchLimit = if (section.items.size > MAX_LIMIT_ITEM) section.items.take(MAX_LIMIT_ITEM) else section.items
         add(HeaderRecentSearchUiModel(section.header, section.labelText, section.labelAction))
         addAll(
             recentSearchLimit.map { item ->
@@ -74,7 +63,20 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
                 )
             }
         )
-        add(SeeMoreRecentSearchUiModel(section.id, recentSearchSeeMoreList))
+        if (section.items.size > MAX_LIMIT_ITEM) {
+            val recentSearchSeeMore = section.items.subList(THREE_INDEX, recentSearchSize)
+            val recentSearchSeeMoreList = recentSearchSeeMore.map {
+                RecentSearchItemUiModel(
+                    sectionId = section.id,
+                    itemId = it.itemId,
+                    imageUrl = it.imageUrl,
+                    title = it.title,
+                    template = it.template,
+                    imageActionUrl = it.shortcutImage
+                )
+            }
+            add(SeeMoreRecentSearchUiModel(section.id, recentSearchSeeMoreList))
+        }
     }
 
     private fun MutableList<BaseInitialStateVisitable>.addPopularSearchSection(section: TokoFoodInitSearchStateResponse.TokofoodInitSearchState.Section) {
@@ -92,18 +94,8 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
 
     private fun MutableList<BaseInitialStateVisitable>.addCuisineListSection(section: TokoFoodInitSearchStateResponse.TokofoodInitSearchState.Section) {
         val cuisineListSize = section.items.size
-        val cuisineListLimit = section.items.take(MAX_LIMIT_ITEM)
-        val cuisineListSeeMore = section.items.subList(THREE_INDEX, cuisineListSize)
-        val cuisineListSeeMoreList = cuisineListSeeMore.map {
-            CuisineItemUiModel(
-                sectionId = section.id,
-                itemId = it.itemId,
-                imageUrl = it.imageUrl,
-                title = it.title,
-                template = it.template,
-                appLink = it.applink
-            )
-        }
+        val cuisineListLimit = if (section.items.size > MAX_LIMIT_ITEM) section.items.take(MAX_LIMIT_ITEM) else section.items
+
         add(HeaderItemInitialStateUiModel(section.header, section.labelText, section.labelAction))
         addAll(
             cuisineListLimit.map { item ->
@@ -117,7 +109,20 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
                 )
             }
         )
-        add(SeeMoreCuisineUiModel(section.id, cuisineListSeeMoreList))
+        if (section.items.size > MAX_LIMIT_ITEM) {
+            val cuisineListSeeMore = section.items.subList(THREE_INDEX, cuisineListSize)
+            val cuisineListSeeMoreList = cuisineListSeeMore.map {
+                CuisineItemUiModel(
+                    sectionId = section.id,
+                    itemId = it.itemId,
+                    imageUrl = it.imageUrl,
+                    title = it.title,
+                    template = it.template,
+                    appLink = it.applink
+                )
+            }
+            add(SeeMoreCuisineUiModel(section.id, cuisineListSeeMoreList))
+        }
     }
 
     companion object {
