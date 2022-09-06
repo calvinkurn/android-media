@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.idling.OmsIdlingResource
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.databinding.FragmentOmsListDetailBinding
@@ -151,9 +152,18 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
         viewModel.omsDetail.observe(viewLifecycleOwner){
             when(it){
-                is UiEvent.Loading -> showProgressBar()
-                is UiEvent.Success -> renderDetailsData(it.data.orderDetails)
-                is UiEvent.Fail -> showError(it.error)
+                is UiEvent.Loading -> {
+                    showProgressBar()
+                    OmsIdlingResource.increment()
+                }
+                is UiEvent.Success -> {
+                    renderDetailsData(it.data.orderDetails)
+                    OmsIdlingResource.decrement()
+                }
+                is UiEvent.Fail -> {
+                    showError(it.error)
+                    OmsIdlingResource.decrement()
+                }
             }
         }
 

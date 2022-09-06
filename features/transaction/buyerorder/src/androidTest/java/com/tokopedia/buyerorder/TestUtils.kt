@@ -1,7 +1,7 @@
 package com.tokopedia.buyerorder
 
 import android.content.Context
-import com.tokopedia.buyerorder.detail.revamp.fragment.OmsDetailFragment
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.PREFERENCES_NAME
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -20,6 +20,6 @@ fun setupRemoteConfig(context: Context, isNew: Boolean){
 }
 
 fun disableCoachMark(context: Context){
-    val sharedPref = context.getSharedPreferences(OmsDetailFragment.PREFERENCES_NAME, Context.MODE_PRIVATE)
+    val sharedPref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
     sharedPref.edit().putBoolean("show_coach_mark_key_deals_banner", false).apply()
 }
