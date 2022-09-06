@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/credit_topads"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_NN1000"
             app:layout_constraintStart_toEndOf="@id/creditHistoryImage"
             app:layout_constraintTop_toBottomOf="@id/credit_topads"
             app:layout_constraintBottom_toBottomOf="@id/creditHistoryImage"

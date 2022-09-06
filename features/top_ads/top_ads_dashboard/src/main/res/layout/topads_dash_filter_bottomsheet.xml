@@ -13,7 +13,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
         android:text="@string/topads_dash_ad_placement"
-        android:textColor="@color/topads_heading_color"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_1" />
@@ -68,7 +68,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
         android:text="@string/topads_dash_status"
-        android:textColor="@color/topads_heading_color"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adPlacement"
         app:typographyType="body_1" />
@@ -130,7 +130,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/topads_dash_filter_title"
-        android:textColor="@color/topads_heading_color"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@id/status_title"
         app:layout_constraintTop_toBottomOf="@id/view"
         app:typographyType="body_1" />
