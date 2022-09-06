@@ -1021,7 +1021,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         if (boData != null) {
                             // if code is not in clear orders code, then add bo code
                             if (!order.codes.contains(boData.code)) {
-                                order.codes.add(visitable.uiData.promoCode)
+                                order.codes.add(boData.code)
                             }
                         }
                     }
