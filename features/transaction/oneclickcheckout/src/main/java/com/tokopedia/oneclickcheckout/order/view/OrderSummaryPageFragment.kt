@@ -104,7 +104,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
-import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
@@ -1525,17 +1525,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 viewModel.setInsuranceCheck(isChecked)
             }
 
-            override fun onClickInsuranceInfo(title: String, message: String, image: Int) {
-                context?.also { ctx ->
-                    GeneralBottomSheet().apply {
-                        setTitle(title)
-                        setDesc(message)
-                        setButtonText(getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
-                        setIcon(image)
-                        setButtonOnClickListener { it.dismiss() }
-                    }.show(ctx, parentFragmentManager)
-                }
+            override fun onClickInsuranceInfo(message: String) {
+                   showInsuranceBottomSheet(message)
             }
+        }
+    }
+
+    private fun showInsuranceBottomSheet(message: String) {
+        context?.let { ctx ->
+            InsuranceBottomSheet().apply {
+                setDesc(message)
+            }.show(getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance), ctx, parentFragmentManager)
         }
     }
 

@@ -15,7 +15,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.affiliate.AFFILIATE_WITHDRAWAL
 import com.tokopedia.affiliate.APP_LINK_KYC
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.KYC_DONE
@@ -49,7 +48,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -340,7 +338,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
     }
 
     private fun afterViewCreated() {
-        initUi()
+        setTarikSaldoButtonUI()
         view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
         view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.let {
             it.setOnRefreshListener {
@@ -383,23 +381,12 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
         affiliateIncomeViewModel.getAffiliateValidateUser(UserSession(context).email)
     }
 
-    private var enableTarikSaldo = false
-    private fun initUi() {
-        initTarikSaldo()
-        when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            AFFILIATE_WITHDRAWAL,
-            AFFILIATE_WITHDRAWAL
-        )) {
-            AFFILIATE_WITHDRAWAL -> enableTarikSaldo = true
-            else ->{
-                enableTarikSaldo = false
-                initTicker()
-            }
-        }
-    }
 
-    private fun initTicker() {
-        view?.findViewById<Ticker>(R.id.affiliate_income_ticker)?.show()
+
+    private fun setTarikSaldoButtonUI() {
+        view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.apply {
+            isEnabled = !affiliateIncomeViewModel.getIsBlackListed()
+        }
     }
 
     private fun openWithdrawalScreen() {
@@ -485,7 +472,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
 
     private fun initTarikSaldo() {
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.isEnabled =
-            isReviewed && enableTarikSaldo && !affiliateIncomeViewModel.getIsBlackListed() && !walletOnHold
+            isReviewed && !affiliateIncomeViewModel.getIsBlackListed() && !walletOnHold
     }
 
     override fun onUserRegistered() {

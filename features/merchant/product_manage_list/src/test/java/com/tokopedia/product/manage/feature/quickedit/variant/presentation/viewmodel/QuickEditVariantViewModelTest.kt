@@ -1,14 +1,14 @@
 package com.tokopedia.product.manage.feature.quickedit.variant.presentation.viewmodel
 
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.data.createGetVariantResponse
 import com.tokopedia.product.manage.data.createOptionResponse
 import com.tokopedia.product.manage.data.createProductVariant
 import com.tokopedia.product.manage.data.createProductVariantResponse
 import com.tokopedia.product.manage.data.createSelectionResponse
-import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
-import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
-import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
 class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
