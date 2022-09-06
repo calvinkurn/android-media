@@ -82,11 +82,10 @@ class ProductBundleMultipleViewHolder(
     }
 
     private fun initPreorderAndSoldItem(bundleDetail: BundleDetailUiModel) {
-        if (bundleDetail.isPreOrder) {
-            typographyBundlePreOrder?.text = bundleDetail.preOrderInfo
-        } else {
-            typographyBundlePreOrder?.text =
-                itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
+        typographyBundlePreOrder?.text = when {
+            bundleDetail.useProductSoldInfo -> bundleDetail.productSoldInfo
+            bundleDetail.isPreOrder -> bundleDetail.preOrderInfo
+            else -> itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
         }
     }
 

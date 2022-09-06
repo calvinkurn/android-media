@@ -30,8 +30,7 @@ public class NotificationSubscriber extends Subscriber<NotificationEntity> {
                 NotificationRequestMapper.notificationMapper(
                         notificationEntity.getNotifications(),
                         notificationEntity.getNotifcenterUnread(),
-                        notificationEntity.getFeed(),
-                        notificationEntity.getHomeFlag()
+                        notificationEntity.getFeed()
                 )
             );
     }

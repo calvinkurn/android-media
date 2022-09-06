@@ -54,6 +54,9 @@ import com.tokopedia.search.result.product.emptystate.EmptyStateListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavViewHolder
+import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListener
+import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleDataView
+import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleViewHolder
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.BigGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
@@ -100,6 +103,7 @@ class ProductListTypeFactoryImpl(
     private val inspirationSizeListener: InspirationSizeListener,
     private val violationListener: ViolationListener,
     private val videoCarouselListener: InspirationVideoCarouselListener,
+    private val inspirationBundleListener: InspirationBundleListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
     private val isUsingViewStub: Boolean = false,
@@ -217,6 +221,9 @@ class ProductListTypeFactoryImpl(
     override fun type(violationView: ViolationDataView): Int =
         ViolationViewHolder.LAYOUT
 
+    override fun type(inspirationProductBundleDataView: InspirationProductBundleDataView): Int =
+        InspirationProductBundleViewHolder.LAYOUT
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -240,6 +247,10 @@ class ProductListTypeFactoryImpl(
                     videoCarouselWidgetCoordinator,
                     networkMonitor
                 )
+            InspirationProductBundleViewHolder.LAYOUT -> InspirationProductBundleViewHolder(
+                view,
+                inspirationBundleListener,
+            )
             SearchLoadingMoreViewHolder.LAYOUT -> SearchLoadingMoreViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
             RecommendationItemViewHolder.LAYOUT ->

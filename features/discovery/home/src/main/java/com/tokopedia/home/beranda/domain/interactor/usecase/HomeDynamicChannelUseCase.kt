@@ -879,7 +879,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                      */
                     if (!isCacheExistForProcess) {
                         val dynamicChannelResponseValue = try {
-                            val dynamicChannelResponse = homeDynamicChannelsRepository.getRemoteData(
+                            val dynamicChannelResponse = homeDynamicChannelsRepository.
+                            getRemoteData(
                                 Bundle().apply {
                                     putInt(
                                         HomeDynamicChannelsRepository.NUM_OF_CHANNEL, CHANNEL_LIMIT_FOR_PAGINATION

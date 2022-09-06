@@ -14,8 +14,6 @@ fail("Please provide a JIRA ticket link") if github.pr_body.include? "https://ph
 
 # Give a warning when a PR is over expected size
 warn("This PR is quite a big one! Try splitting this into separate tasks next time 🙂") if git.lines_of_code > 2000
-message("Thank you for your hard work @#{github.pr_author} 🎉 You might find a few suggestions from me 😉")
-
 
 # AndroidLint
 android_lint.report_file = "report-result.xml"
