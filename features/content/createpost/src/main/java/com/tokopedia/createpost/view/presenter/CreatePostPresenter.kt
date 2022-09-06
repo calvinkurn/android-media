@@ -127,7 +127,7 @@ class CreatePostPresenter @Inject constructor(
                     }
             )
         } else {
-            getShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(listOf(userSession.shopId.toInt()), "")
+            getShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(listOf(userSession.shopId.toIntOrZero()), "")
             getShopFavoriteStatusUseCase.execute(
                     {
                         followersCount = it.favoriteData.totalFavorite
@@ -194,7 +194,7 @@ class CreatePostPresenter @Inject constructor(
         if (type == ProductSuggestionItem.TYPE_SHOP) {
             getProductSuggestionUseCase.params =
                     GetShopProductSuggestionUseCase.createRequestParams(
-                            userSession.shopId.toInt()
+                            userSession.shopId.toIntOrZero()
                     )
         }
         getProductSuggestionUseCase.type = type
