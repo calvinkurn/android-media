@@ -40,7 +40,7 @@ class VoucherInfoHeaderViewHolder(private val view: ItemPlayVoucherHeaderBinding
     BaseViewHolder(view.root) {
 
        fun bind(item: PlayVoucherUiModel.InfoHeader){
-            view.textView4.text = buildSpannedString {
+            view.tvHeader.text = buildSpannedString {
                 append(getString(R.string.play_voucher_header))
                 append(" ")
                 bold {
