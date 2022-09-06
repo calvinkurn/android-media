@@ -2,6 +2,7 @@ package com.tokopedia.media.editor.data.repository
 
 import android.net.Uri
 import com.tokopedia.media.editor.data.EditorNetworkServices
+import com.tokopedia.media.editor.utils.getEditorSaveFolderPath
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.image.ImageProcessingUtil.getCompressFormat
 import kotlinx.coroutines.flow.*
@@ -39,7 +40,7 @@ class RemoveBackgroundRepositoryImpl @Inject constructor(
             }
         }.map {
             val compressFormat = filePath.getCompressFormat()
-            ImageProcessingUtil.writeImageToTkpdPath(it.byteStream(), compressFormat)
+            ImageProcessingUtil.writeImageToTkpdPath(it.byteStream(), compressFormat, directoryRelativePath = getEditorSaveFolderPath())
         }
     }
 

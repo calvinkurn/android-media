@@ -94,6 +94,10 @@ class DetailEditorFragment @Inject constructor(
                     it
                 )?.path
 
+                if(data.isToolRemoveBackground()) {
+                    data.removeBackgroundUrl = data.resultUrl
+                }
+
                 finishPage()
             }
         }
@@ -258,7 +262,6 @@ class DetailEditorFragment @Inject constructor(
     private fun observeRemoveBackground() {
         viewModel.removeBackground.observe(viewLifecycleOwner) {
             it?.let {
-                data.removeBackgroundUrl = it.path
                 loadImageWithEmptyTarget(requireContext(),
                     it.path,
                     {},
