@@ -127,5 +127,7 @@ interface InitialStateContract {
         fun onProductLineClicked(item: BaseItemInitialStateSearch)
 
         fun onChipClicked(item: BaseItemInitialStateSearch)
+
+        fun onSearchBarEducationClick(item: BaseItemInitialStateSearch)
     }
 }

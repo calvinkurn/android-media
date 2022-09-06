@@ -24,6 +24,8 @@ import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTit
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.*
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.convertToRecentViewDataView
+import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
+import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.convertToSearchBarEducationDataView
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
@@ -263,6 +265,14 @@ class InitialStatePresenter @Inject constructor(
                             .insertChipWidgetTitle(initialStateData.header)
                     )
                 }
+                InitialStateData.INITIAL_STATE_SEARCHBAR_EDUCATION -> {
+                    initialStateData.convertToSearchBarEducationDataView(
+                        getDimension90(),
+                        keyword,
+                    )?.let {
+                        data.add(it)
+                    }
+                }
                 else -> {
                     if (initialStateData.header.isNotEmpty()) {
                         val titleDynamicInitialState =
@@ -286,6 +296,7 @@ class InitialStatePresenter @Inject constructor(
                 }
             }
         }
+        data.add(SearchBarEducationDataView("Tips and trick", "Pelajari"))
         return data
     }
 
@@ -752,6 +763,11 @@ class InitialStatePresenter @Inject constructor(
         val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
         view?.trackEventClickChip(getUserId(), label, item, item.featureId, item.dimension90)
 
+        view?.route(item.applink, searchParameter)
+        view?.finish()
+    }
+
+    override fun onSearchBarEducationClick(item: BaseItemInitialStateSearch) {
         view?.route(item.applink, searchParameter)
         view?.finish()
     }

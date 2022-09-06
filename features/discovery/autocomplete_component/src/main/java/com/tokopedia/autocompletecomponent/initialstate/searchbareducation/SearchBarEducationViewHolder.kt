@@ -1,0 +1,48 @@
+package com.tokopedia.autocompletecomponent.initialstate.searchbareducation
+
+import android.view.View
+import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.autocompletecomponent.R
+import com.tokopedia.autocompletecomponent.databinding.LayoutSearchbarEducationBinding
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.utils.view.binding.viewBinding
+
+class SearchBarEducationViewHolder(
+    itemView: View,
+    private val listener: SearchBarEducationListener
+): AbstractViewHolder<SearchBarEducationDataView>(itemView) {
+
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.layout_searchbar_education
+    }
+
+    private var binding: LayoutSearchbarEducationBinding? by viewBinding()
+
+
+    override fun bind(data: SearchBarEducationDataView) {
+        configCard()
+        bindClick(data)
+        bindTitle(data)
+        bindLabelAction(data)
+    }
+
+    private fun configCard() {
+        binding?.autocompleteSearchBarEducationContainer?.cardType = CardUnify2.TYPE_BORDER
+    }
+
+    private fun bindClick(data: SearchBarEducationDataView) {
+        binding?.autocompleteSearchBarEducationContainer?.setOnClickListener {
+            listener.onSearchBarEducationClick(data.item)
+        }
+    }
+
+    private fun bindTitle(data: SearchBarEducationDataView) {
+        binding?.autocompleteSearchBarEducationTitle?.text = data.header
+    }
+
+    private fun bindLabelAction(data: SearchBarEducationDataView) {
+        binding?.autocompleteSearchBarEducationAction?.text = data.labelAction
+    }
+}
