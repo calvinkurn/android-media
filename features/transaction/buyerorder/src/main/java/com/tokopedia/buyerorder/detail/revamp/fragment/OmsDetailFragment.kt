@@ -66,6 +66,7 @@ import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.TEXT_STYLE_BOLD
 import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
 import com.tokopedia.buyerorder.detail.revamp.viewModel.OrderDetailViewModel
 import com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent.ActionButtonEventWrapper
+import com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent.UiEvent
 import com.tokopedia.buyerorder.detail.view.adapter.RedeemVoucherAdapter
 import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView
 import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo
@@ -79,8 +80,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -151,7 +150,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
         arguments?.let {
             upstream = it.get(KEY_UPSTREAM).toString()
-            showProgressBar()
             viewModel.requestOmsDetail(
                 it.get(KEY_ORDER_ID).toString(),
                 it.get(KEY_ORDER_CATEGORY).toString(),
@@ -165,8 +163,9 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
 
         viewModel.omsDetail.observe(viewLifecycleOwner){
             when(it){
-                is Success -> renderDetailsData(it.data.orderDetails)
-                is Fail -> showError(it.throwable)
+                is UiEvent.Loading -> showProgressBar()
+                is UiEvent.Success -> renderDetailsData(it.data.orderDetails)
+                is UiEvent.Fail -> showError(it.error)
             }
         }
 
@@ -184,21 +183,23 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             }
         }
 
-        viewModel.errorMessage.observe(viewLifecycleOwner){ showToaster(it) }
-
         viewModel.eventEmail.observe(viewLifecycleOwner){
-            isShowLoaderActionButton(false)
             when(it){
-                is Success -> {
+                is UiEvent.Loading -> isShowLoaderActionButton(true)
+                is UiEvent.Success -> {
+                    isShowLoaderActionButton(false)
                     showToaster(getString(R.string.event_voucher_code_copied), getString(R.string.review_oke))
                     setActionButtonText(getString(R.string.event_voucher_code_success))
                 }
-                is Fail -> {
-                    showToaster(it.throwable.message, getString(R.string.review_oke))
+                is UiEvent.Fail -> {
+                    isShowLoaderActionButton(false)
+                    showToaster(it.error.message, getString(R.string.review_oke))
                     setActionButtonText(getString(R.string.event_voucher_code_fail))
                 }
             }
         }
+
+        viewModel.errorMessage.observe(viewLifecycleOwner){ showToaster(it) }
 
         viewModel.actionClickable.observe(viewLifecycleOwner){
             binding?.actionButton?.isClickable = it
@@ -893,7 +894,6 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         if (actionButton.control.equals(KEY_BUTTON, true)
             && actionButton.name.equals(KEY_CUSTOMER_NOTIFICATION, true)){
             viewModel.sendEventEmail(actionButton, orderDetails.metadata)
-            isShowLoaderActionButton(true)
             return
         }
 

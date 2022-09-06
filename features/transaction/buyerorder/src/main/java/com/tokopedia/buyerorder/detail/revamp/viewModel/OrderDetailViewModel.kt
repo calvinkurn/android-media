@@ -14,12 +14,10 @@ import com.tokopedia.buyerorder.detail.domain.RevampActionButtonUseCase
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase
 import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_REFRESH
 import com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent.ActionButtonEventWrapper
+import com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent.UiEvent
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
@@ -38,16 +36,16 @@ class OrderDetailViewModel @Inject constructor(
     dispatcher: CoroutineDispatcher,
 ): BaseViewModel(dispatcher) {
 
-    private val _omsDetail = MutableLiveData<Result<DetailsData>>()
-    val omsDetail: LiveData<Result<DetailsData>>
+    private val _omsDetail = MutableLiveData<UiEvent<DetailsData>>()
+    val omsDetail: LiveData<UiEvent<DetailsData>>
         get() = _omsDetail
 
     private val _actionButton = MutableLiveData<ActionButtonEventWrapper>()
     val actionButton: LiveData<ActionButtonEventWrapper>
         get() = _actionButton
 
-    private val _eventEmail = MutableLiveData<Result<SendEventEmail>>()
-    val eventEmail: LiveData<Result<SendEventEmail>>
+    private val _eventEmail = MutableLiveData<UiEvent<SendEventEmail>>()
+    val eventEmail: LiveData<UiEvent<SendEventEmail>>
         get() = _eventEmail
 
     private val _actionClickable = MutableLiveData<Boolean>()
@@ -61,15 +59,16 @@ class OrderDetailViewModel @Inject constructor(
     private var orderDetails : OrderDetails? = null
 
     fun requestOmsDetail(orderId: String, orderCategory: String, upstream: String?){
+        _omsDetail.postValue(UiEvent.Loading)
         launchCatchError(
             block = {
                 omsDetailUseCase.get().createParams(orderId, orderCategory, upstream)
                 val result = omsDetailUseCase.get().executeOnBackground()
                 orderDetails = result.orderDetails
-                _omsDetail.postValue(Success(result))
+                _omsDetail.postValue(UiEvent.Success(result))
             },
             onError = {
-                _omsDetail.postValue(Fail(it))
+                _omsDetail.postValue(UiEvent.Fail(it))
             }
         )
     }
@@ -106,11 +105,13 @@ class OrderDetailViewModel @Inject constructor(
             path = actionButton.uri
             body = metadata
 
+            _eventEmail.postValue(UiEvent.Loading)
+
             execute(object : Subscriber<Map<Type, RestResponse>>(){
                 override fun onCompleted() {/*no op*/}
 
                 override fun onError(e: Throwable?) {
-                    e?.let { _eventEmail.postValue(Fail(it)) }
+                    e?.let { _eventEmail.postValue(UiEvent.Fail(it)) }
                 }
 
                 override fun onNext(t: Map<Type, RestResponse>?) {
@@ -119,10 +120,10 @@ class OrderDetailViewModel @Inject constructor(
                     _actionClickable.postValue(false)
                     if (response?.code == RESPONSE_SUCCESS_CODE && response.errorBody == null) {
                         val result = response.getData<SendEventEmail>()
-                        _eventEmail.postValue(Success(result))
+                        _eventEmail.postValue(UiEvent.Success(result))
                     } else {
                         val result = gson.get().fromJson(response?.errorBody, SendEventEmail::class.java)
-                        _eventEmail.postValue(Fail(MessageErrorException(result.data.message)))
+                        _eventEmail.postValue(UiEvent.Fail(MessageErrorException(result.data.message)))
                     }
                 }
             })

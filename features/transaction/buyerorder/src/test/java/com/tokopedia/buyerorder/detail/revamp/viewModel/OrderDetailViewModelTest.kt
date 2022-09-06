@@ -12,11 +12,10 @@ import com.tokopedia.buyerorder.detail.domain.OmsDetailUseCase
 import com.tokopedia.buyerorder.detail.domain.RevampActionButtonUseCase
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase
 import com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent.ActionButtonEventWrapper
+import com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent.UiEvent
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -25,7 +24,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -75,7 +73,7 @@ class OrderDetailViewModelTest{
         viewModel.requestOmsDetail("", "", "")
 
         //Then
-        val result = viewModel.omsDetail.value as Success
+        val result = viewModel.omsDetail.value as UiEvent.Success
         assertNotNull(result)
         assertEquals(mockData, result.data)
 
@@ -97,9 +95,9 @@ class OrderDetailViewModelTest{
         viewModel.requestOmsDetail("", "", "")
 
         //then
-        val result = viewModel.omsDetail.value as Fail
+        val result = viewModel.omsDetail.value as UiEvent.Fail
         assertNotNull(result)
-        assertEquals(error.message, result.throwable.message)
+        assertEquals(error.message, result.error.message)
 
         verify { omsDetailUseCase.get().createParams(any(), any(), any()) }
         coVerify { omsDetailUseCase.get().executeOnBackground() }
@@ -191,6 +189,26 @@ class OrderDetailViewModelTest{
     }
 
     @Test
+    fun `request action button should be failed`(){
+        //Given
+        val mockData = Throwable("failed to fetch")
+
+        every { actionButtonUseCase.get().setParams(any()) } answers { mapOf<String, Any>() }
+        coEvery { actionButtonUseCase.get().executeOnBackground() } throws mockData
+
+        //When
+        viewModel.requestActionButton(emptyList(), 0, false, isCalledFromAdapter = false)
+
+        //Then
+        val result = viewModel.errorMessage.value
+        assertNotNull(result)
+        assertEquals(mockData.message, result)
+
+        verify { actionButtonUseCase.get().setParams(any()) }
+        coVerify { actionButtonUseCase.get().executeOnBackground() }
+    }
+
+    @Test
     fun `send event notification should be success`(){
         //Given
         val response = RestResponse(SendEventEmail(data = DataEmail(message = "test1")), 200, false)
@@ -206,7 +224,7 @@ class OrderDetailViewModelTest{
         viewModel.sendEventEmail(ActionButton(), "")
 
         //Then
-        val result = viewModel.eventEmail.value as Success
+        val result = viewModel.eventEmail.value as UiEvent.Success
         val actionClickable = viewModel.actionClickable.value
         assertNotNull(result)
         assertEquals(response.getData<SendEventEmail>().data.message, result.data.data.message)
@@ -232,7 +250,7 @@ class OrderDetailViewModelTest{
         viewModel.sendEventEmail(ActionButton(), "")
 
         //Then
-        val result = viewModel.eventEmail.value as Success
+        val result = viewModel.eventEmail.value as UiEvent.Success
         val actionClickable = viewModel.actionClickable.value
         assertNotNull(result)
         assertEquals(response.getData<SendEventEmail>().data.message, result.data.data.message)
@@ -253,9 +271,9 @@ class OrderDetailViewModelTest{
         viewModel.sendEventEmail(ActionButton(), "")
 
         //Then
-        val result = viewModel.eventEmail.value as Fail
+        val result = viewModel.eventEmail.value as UiEvent.Fail
         assertNotNull(result)
-        assertEquals("failed to fetch", result.throwable.message)
+        assertEquals("failed to fetch", result.error.message)
 
         verify { sendNotificationUseCase.get().execute(any()) }
     }
@@ -273,7 +291,8 @@ class OrderDetailViewModelTest{
 
         //Then
         val result = viewModel.eventEmail.value
-        assertNull(result)
+        assertNotNull(result)
+        assertEquals(UiEvent.Loading, result)
 
         verify { sendNotificationUseCase.get().execute(any()) }
     }
