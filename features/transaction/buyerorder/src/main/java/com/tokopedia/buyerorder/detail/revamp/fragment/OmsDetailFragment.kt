@@ -181,11 +181,11 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             isShowLoaderActionButton(false)
             when(it){
                 is Success -> {
-                    showToaster(getString(R.string.event_voucher_code_copied))
+                    showToaster(getString(R.string.event_voucher_code_copied), getString(R.string.review_oke))
                     setActionButtonText(getString(R.string.event_voucher_code_success))
                 }
                 is Fail -> {
-                    showToaster(it.throwable.message)
+                    showToaster(it.throwable.message, getString(R.string.review_oke))
                     setActionButtonText(getString(R.string.event_voucher_code_fail))
                 }
             }
@@ -602,59 +602,80 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             if (item.actionButtons.isEmpty()) {
                 it.actionButton.gone()
             } else {
-                it.dividerAboveActionButton.visible()
-                it.actionButton.visible()
-                it.actionButtonText.text = actionButton.label
-                it.actionButton.setOnClickListener {
-                    if (actionButton.control.equals(KEY_BUTTON, true)) {
-                        if (item.category.isNotEmpty() && item.category.equals(KEY_DEAL, true)){
-                            view?.let { v -> Toaster.build(v, String.format(
-                                TOASTER_FORMAT,
-                                getString(R.string.deal_voucher_code_copied),
-                                item.metadataInfo.entityAddress.email
-                            )).show() }
-                        } else {
-                            view?.let { v -> Toaster.build(v, String.format(
-                                TOASTER_FORMAT,
-                                getString(R.string.event_voucher_code_copied),
-                                item.metadataInfo.entityAddress.email
-                            )).show() }
-                        }
-
-                        viewModel.requestActionButton(item.actionButtons, 0, flag = false, false)
-
-                        return@setOnClickListener
-                    }
-
-                    if (actionButton.control.equals(KEY_REDIRECT, true )) {
-                        RouteManager.route(context, actionButton.body.appURL)
-                    }
-                }
+                showActionButton(actionButton, item)
             }
 
             if (!item.category.equals(OrderCategory.EVENT.category, true)) {
                 if (item.metadataInfo.entityPackages.isNotEmpty()) {
-                    it.userLabel.visible()
-                    it.userInformationLayout.visible()
-                    it.dividerAboveUserInfo.visible()
-                    it.userInformationLayout.removeAllViews()
-
-                    item.metadataInfo.entityPessengers.forEach { entityPassenger ->
-                        val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
-                            setTopText(entityPassenger.title)
-                            setTopTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_68))
-                            setBottomText(entityPassenger.value)
-                            setBottomTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_96))
-                            setBottomTextStyle(BOLD_TEXT_STYLE)
-                        }
-                        it.userInformationLayout.addView(doubleTextView)
-                    }
+                    showUserInformation(item)
                 } else {
-                    it.userLabel.gone()
-                    it.userInformationLayout.gone()
-                    it.dividerAboveUserInfo.gone()
+                    hideUserInformation()
                 }
             }
+        }
+    }
+
+    private fun showActionButton(actionButton: ActionButton, item: Items) {
+        binding?.let {
+            it.dividerAboveActionButton.visible()
+            it.actionButton.visible()
+            it.actionButtonText.text = actionButton.label
+            it.actionButton.setOnClickListener {
+                if (actionButton.control.equals(KEY_BUTTON, true)) {
+                    requestActionButton(item)
+                    return@setOnClickListener
+                }
+
+                if (actionButton.control.equals(KEY_REDIRECT, true )) {
+                    RouteManager.route(context, actionButton.body.appURL)
+                }
+            }
+        }
+    }
+
+    private fun requestActionButton(item: Items){
+        if (item.category.isNotEmpty() && item.category.equals(KEY_DEAL, true)){
+            showToaster(String.format(
+                TOASTER_FORMAT,
+                getString(R.string.deal_voucher_code_copied),
+                item.metadataInfo.entityAddress.email
+            ))
+        } else {
+            showToaster(String.format(
+                TOASTER_FORMAT,
+                getString(R.string.event_voucher_code_copied),
+                item.metadataInfo.entityAddress.email
+            ))
+        }
+
+        viewModel.requestActionButton(item.actionButtons, 0, flag = false, false)
+    }
+
+    private fun showUserInformation(item: Items){
+        binding?.let {
+            it.userLabel.visible()
+            it.userInformationLayout.visible()
+            it.dividerAboveUserInfo.visible()
+            it.userInformationLayout.removeAllViews()
+
+            item.metadataInfo.entityPessengers.forEach { entityPassenger ->
+                val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
+                    setTopText(entityPassenger.title)
+                    setTopTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_68))
+                    setBottomText(entityPassenger.value)
+                    setBottomTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_96))
+                    setBottomTextStyle(BOLD_TEXT_STYLE)
+                }
+                it.userInformationLayout.addView(doubleTextView)
+            }
+        }
+    }
+
+    private fun hideUserInformation(){
+        binding?.let {
+            it.userLabel.gone()
+            it.userInformationLayout.gone()
+            it.dividerAboveUserInfo.gone()
         }
     }
 
@@ -798,15 +819,16 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             return
         }
 
+        if (item.metadataInfo.passengerForms.isEmpty()){
+            hidePassengerForms()
+            return
+        }
+
+        renderPassengerForms(item)
+    }
+
+    private fun renderPassengerForms(item: Items) {
         binding?.let {
-            if (item.metadataInfo.passengerForms.isEmpty()){
-                it.userLabel.gone()
-                it.userInformationLayout.gone()
-                it.dividerAboveUserInfo.gone()
-
-                return@let
-            }
-
             it.userLabel.visible()
             it.userInformationLayout.visible()
             it.dividerAboveUserInfo.visible()
@@ -827,32 +849,54 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         }
     }
 
+    private fun hidePassengerForms(){
+        binding?.let {
+            it.userLabel.gone()
+            it.userInformationLayout.gone()
+            it.dividerAboveUserInfo.gone()
+        }
+    }
+
     override fun setActionButtonEvent(
         actionButton: ActionButton,
         item: Items,
         orderDetails: OrderDetails
     ) {
-        binding?.let {
-            if (orderDetails.actionButtons.isEmpty()) {
-                it.actionButton.gone()
-                it.dividerAboveActionButton.gone()
-            } else {
-                it.dividerAboveActionButton.visible()
-                it.actionButton.visible()
-                it.actionButtonText.text = actionButton.label
-                it.actionButton.setOnClickListener {
-                    if (actionButton.control.equals(KEY_BUTTON, true)
-                        && actionButton.name.equals(KEY_CUSTOMER_NOTIFICATION, true)){
-                        viewModel.sendEventEmail(actionButton, orderDetails.metadata)
-                        isShowLoaderActionButton(true)
-                        return@setOnClickListener
-                    }
+        if (orderDetails.actionButtons.isEmpty()) {
+            hideActionSendEmail()
+        } else {
+            renderActionSendEmail(actionButton, orderDetails)
+        }
+    }
 
-                    if (actionButton.control.equals(KEY_REDIRECT, true)) {
-                        RouteManager.route(context, actionButton.body.appURL)
-                    }
-                }
+    private fun renderActionSendEmail(actionButton: ActionButton, orderDetails: OrderDetails) {
+        binding?.let {
+            it.dividerAboveActionButton.visible()
+            it.actionButton.visible()
+            it.actionButtonText.text = actionButton.label
+            it.actionButton.setOnClickListener {
+                clickActionSendEmail(actionButton, orderDetails)
             }
+        }
+    }
+
+    private fun clickActionSendEmail(actionButton: ActionButton, orderDetails: OrderDetails) {
+        if (actionButton.control.equals(KEY_BUTTON, true)
+            && actionButton.name.equals(KEY_CUSTOMER_NOTIFICATION, true)){
+            viewModel.sendEventEmail(actionButton, orderDetails.metadata)
+            isShowLoaderActionButton(true)
+            return
+        }
+
+        if (actionButton.control.equals(KEY_REDIRECT, true)) {
+            RouteManager.route(context, actionButton.body.appURL)
+        }
+    }
+
+    private fun hideActionSendEmail() {
+        binding?.let {
+            it.actionButton.gone()
+            it.dividerAboveActionButton.gone()
         }
     }
 
@@ -1034,9 +1078,13 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
         startActivity(intent)
     }
 
-    private fun showToaster(message: String?){
+    private fun showToaster(message: String?, actionText: String = ""){
         view?.let {
-            Toaster.build(it, message ?: DEFAULT_MESSAGE_ERROR, Toaster.LENGTH_INDEFINITE, actionText = getString(R.string.review_oke)).show()
+            if (actionText.isNotEmpty()) {
+                Toaster.build(it, message ?: DEFAULT_MESSAGE_ERROR, Toaster.LENGTH_INDEFINITE, actionText = actionText).show()
+            } else {
+                Toaster.build(it, message ?: DEFAULT_MESSAGE_ERROR).show()
+            }
         }
     }
 
