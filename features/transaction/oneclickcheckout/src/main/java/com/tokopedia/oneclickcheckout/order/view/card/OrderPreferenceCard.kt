@@ -17,10 +17,8 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
-import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.logisticcart.shipping.model.NotifierModel
-import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceBinding
@@ -319,19 +317,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 if (profile.enable) {
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
-                        val list: ArrayList<RatesViewModelType> = ArrayList()
-                        for (shippingDurationViewModel in shippingRecommendationData.shippingDurationUiModels) {
-                            if (shippingDurationViewModel.isSelected) {
-                                if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
-                                    list.add(NotifierModel())
-                                }
-                                val filteredList = shippingDurationViewModel.shippingCourierViewModelList
-                                    .filter { !it.productData.isUiRatesHidden }
-                                list.addAll(filteredList)
-                                break
-                            }
-                        }
-                        listener.chooseCourier(shipping, list)
+                        val courierList: List<ShippingCourierUiModel> = shippingRecommendationData.shippingDurationUiModels.find { it.isSelected }?.shippingCourierViewModelList ?: listOf()
+                        listener.chooseCourier(shipping, ArrayList(courierList))
                     }
                 }
             }
@@ -349,19 +336,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 if (profile.enable) {
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
-                        val list: ArrayList<RatesViewModelType> = ArrayList()
-                        for (shippingDurationViewModel in shippingRecommendationData.shippingDurationUiModels) {
-                            if (shippingDurationViewModel.isSelected) {
-                                if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
-                                    list.add(NotifierModel())
-                                }
-                                val filteredList = shippingDurationViewModel.shippingCourierViewModelList
-                                    .filter { !it.productData.isUiRatesHidden }
-                                list.addAll(filteredList)
-                                break
-                            }
-                        }
-                        listener.chooseCourier(shipping, list)
+                        val courierList: List<ShippingCourierUiModel> = shippingRecommendationData.shippingDurationUiModels.find { it.isSelected }?.shippingCourierViewModelList ?: listOf()
+                        listener.chooseCourier(shipping, ArrayList(courierList))
                     }
                 }
             }
@@ -930,7 +906,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         fun chooseAddress(currentAddressId: String)
 
-        fun chooseCourier(shipment: OrderShipment, list: ArrayList<RatesViewModelType>)
+        fun chooseCourier(shipment: OrderShipment, list: ArrayList<ShippingCourierUiModel>)
 
         fun chooseDuration(isDurationError: Boolean, currentSpId: String, shippingRecommendationData: ShippingRecommendationData)
 

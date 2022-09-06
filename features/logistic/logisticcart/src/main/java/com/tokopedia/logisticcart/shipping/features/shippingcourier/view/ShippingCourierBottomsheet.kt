@@ -43,6 +43,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     private var mCourierModelList: List<ShippingCourierUiModel> = ArrayList()
     private var mPreOrderModel: PreOrderModel? = null
     private var mRecipientAddress: RecipientAddressModel? = null
+    private var isOcc: Boolean = false
 
     @Inject
     lateinit var shippingCourierAdapter: ShippingCourierAdapter
@@ -55,9 +56,10 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
              shippingCourierBottomsheetListener: ShippingCourierBottomsheetListener,
              shippingCourierUiModels: List<ShippingCourierUiModel>?,
              recipientAddressModel: RecipientAddressModel?,
-             cartPosition: Int) {
+             cartPosition: Int, isOcc: Boolean) {
         this.activity = activity
         this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener
+        this.isOcc = isOcc
         initData(shippingCourierUiModels, recipientAddressModel, cartPosition)
         initBottomSheet(activity)
         initView(activity)
@@ -89,14 +91,14 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     }
 
     fun setShippingCourierViewModels(shippingCourierUiModels: List<ShippingCourierUiModel>?,
-                                     cartPosition: Int, shipmentCartItemModel: ShipmentCartItemModel, preOrderModel: PreOrderModel?) {
+                                     cartPosition: Int, preOrderModel: PreOrderModel?) {
         hideLoading()
         if (shippingCourierUiModels != null && shippingCourierUiModels.isNotEmpty()) {
             mCourierModelList = shippingCourierUiModels
             mPreOrderModel = preOrderModel
             setupRecyclerView(cartPosition)
         } else if (activity != null) {
-            showErrorPage(activity!!.getString(R.string.message_error_shipping_general), shipmentCartItemModel, cartPosition)
+            showErrorPage(activity!!.getString(R.string.message_error_shipping_general))
         }
     }
 
@@ -137,7 +139,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
 
     private fun setupRecyclerView(cartPosition: Int) {
         shippingCourierAdapter.setShippingCourierAdapterListener(this)
-        shippingCourierAdapter.setShippingCourierViewModels(mCourierModelList, mPreOrderModel)
+        shippingCourierAdapter.setShippingCourierViewModels(mCourierModelList, mPreOrderModel, isOcc)
         shippingCourierAdapter.setCartPosition(cartPosition)
         val linearLayoutManager = LinearLayoutManager(
                 activity, LinearLayoutManager.VERTICAL, false)
@@ -148,13 +150,15 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     override fun onCourierChoosen(shippingCourierUiModel: ShippingCourierUiModel, cartPosition: Int, isNeedPinpoint: Boolean) {
         val productData = shippingCourierUiModel.productData
         val spId = shippingCourierUiModel.productData.shipperProductId
-        if (shippingCourierUiModel.productData.error != null) {
-            // Not updating when it has Error Pinpoint Needed
-            if (shippingCourierUiModel.productData.error.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED) {
+        if (!isOcc) {
+            if (shippingCourierUiModel.productData.error != null) {
+                // Not updating when it has Error Pinpoint Needed
+                if (shippingCourierUiModel.productData.error.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                    courierConverter.updateSelectedCourier(mCourierModelList, spId)
+                }
+            } else {
                 courierConverter.updateSelectedCourier(mCourierModelList, spId)
             }
-        } else {
-            courierConverter.updateSelectedCourier(mCourierModelList, spId)
         }
         val courierItemData = courierConverter.convertToCourierItemData(shippingCourierUiModel)
         val isCod = productData.codProductData != null && productData.codProductData.isCodAvailable == 1
@@ -165,11 +169,15 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     }
 
     override fun isToogleYearEndPromotionOn(): Boolean {
-        if (activity != null) {
-            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
-            return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
+        if (isOcc) {
+            return false
+        } else {
+            if (activity != null) {
+                val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity)
+                return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
+            }
+            return false
         }
-        return false
     }
 
     override fun showLoading() {
@@ -184,13 +192,12 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         llContent?.visibility = View.VISIBLE
     }
 
-    private fun showErrorPage(message: String, shipmentCartItemModel: ShipmentCartItemModel, cartPosition: Int) {
+    private fun showErrorPage(message: String) {
         pbLoading?.visibility = View.GONE
         llContent?.visibility = View.GONE
         llNetworkErrorView?.visibility = View.VISIBLE
         NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) {
             showLoading()
-            shippingCourierBottomsheetListener?.onRetryReloadCourier(shipmentCartItemModel, cartPosition)
         }
     }
 
