@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse
+package com.tokopedia.purchase_platform.common.feature.ethicaldrug
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
