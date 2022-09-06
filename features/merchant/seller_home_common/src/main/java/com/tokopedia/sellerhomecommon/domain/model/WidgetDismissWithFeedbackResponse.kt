@@ -8,12 +8,15 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
  */
 
 data class WidgetDismissWithFeedbackResponse(
+    @SerializedName("dashboardDismissWithFeedback")
+    val data: WidgetDismissWithFeedbackModel = WidgetDismissWithFeedbackModel()
+)
+
+data class WidgetDismissWithFeedbackModel(
     @SerializedName("error")
-    val isError: Boolean,
+    val isError: Boolean = false,
     @SerializedName("errorMsg")
     val errorMsg: String = String.EMPTY,
-    @SerializedName("state")
-    val state: String = String.EMPTY,
     @SerializedName("dismissToken")
     val dismissToken: String = String.EMPTY
 )

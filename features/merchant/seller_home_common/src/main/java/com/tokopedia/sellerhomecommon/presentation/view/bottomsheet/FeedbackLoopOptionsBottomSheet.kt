@@ -44,6 +44,9 @@ class FeedbackLoopOptionsBottomSheet : BaseBottomSheet<ShcBottomSheetFeedbackLoo
         setTitle(root.context.getString(R.string.shc_feedback_bottom_sheet_title))
         tvShcFeedbackLoopTitle.text = root.context
             .getString(R.string.shc_feedback_content_bottom_sheet_title)
+        btnShcFeedbackLoopOptions.setOnClickListener {
+            onSubmitClicked(feedbackItems)
+        }
     }
 
     fun show(fm: FragmentManager) {
@@ -75,7 +78,7 @@ class FeedbackLoopOptionsBottomSheet : BaseBottomSheet<ShcBottomSheetFeedbackLoo
 
     private fun setSendButtonEnabled() {
         binding?.run {
-            val isEligibleSubmit = feedbackItems.any { it.isSelected && it.value.isNotBlank() }
+            val isEligibleSubmit = feedbackItems.any { it.isSelected }
             btnShcFeedbackLoopOptions.isEnabled = isEligibleSubmit
         }
     }

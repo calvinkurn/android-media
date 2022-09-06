@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
-import android.util.TypedValue
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -50,6 +49,7 @@ class AnnouncementViewHolder(
                     listener.onRemoveWidget(adapterPosition)
                     itemView.toggleWidgetHeight(false)
                 }
+                binding.shcAnnouncementTimerView.gone()
             }
             else -> showSuccessState(element)
         }
@@ -65,14 +65,8 @@ class AnnouncementViewHolder(
                 return
             }
 
-            val selectableItemBg = TypedValue()
-            root.context.theme.resolveAttribute(
-                android.R.attr.selectableItemBackground,
-                selectableItemBg, true
-            )
             shcAnnouncementContainer.visible()
-            viewShcAnnouncementDismissal.gone()
-            shcAnnouncementSuccessState.setBackgroundResource(selectableItemBg.resourceId)
+            shcAnnouncementTimerView.gone()
 
             tvShcAnnouncementTitle.text = element.data?.title
             tvShcAnnouncementSubTitle.text = element.data?.subtitle.orEmpty().parseAsHtml()
@@ -97,13 +91,13 @@ class AnnouncementViewHolder(
     private fun showTimerState(element: AnnouncementWidgetUiModel) {
         with(binding) {
             shcAnnouncementContainer.gone()
-            viewShcAnnouncementDismissal.visible()
+            shcAnnouncementTimerView.visible()
 
             val title = root.context.getString(R.string.shc_info_deleted)
-            viewShcAnnouncementDismissal.startTimer(title, object : DismissalTimerView.Listener {
+            shcAnnouncementTimerView.startTimer(title, object : DismissalTimerView.Listener {
+
                 override fun onFinished() {
-                    element.shouldShowDismissalTimer = false
-                    showSuccessState(element)
+                    listener.removeWidget(adapterPosition, element)
                 }
 
                 override fun onCancelTimer() {
@@ -146,6 +140,7 @@ class AnnouncementViewHolder(
         with(binding) {
             shcAnnouncementSuccessState.gone()
             shcAnnouncementLoadingState.visible()
+            shcAnnouncementTimerView.gone()
         }
     }
 
@@ -160,6 +155,6 @@ class AnnouncementViewHolder(
 
         fun setOnAnnouncementWidgetNoClicked(element: AnnouncementWidgetUiModel) {}
 
-        fun setOnAnnouncementWidgetCancelDismissal(element: AnnouncementWidgetUiModel)
+        fun setOnAnnouncementWidgetCancelDismissal(element: AnnouncementWidgetUiModel) {}
     }
 }

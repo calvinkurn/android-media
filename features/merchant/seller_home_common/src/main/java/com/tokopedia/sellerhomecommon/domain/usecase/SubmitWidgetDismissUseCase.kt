@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @GqlQuery("SubmitWidgetDismissalGqlMutation", SubmitWidgetDismissUseCase.QUERY)
 class SubmitWidgetDismissUseCase @Inject constructor(
-    val mapper: SubmitWidgetDismissalMapper,
+    private val mapper: SubmitWidgetDismissalMapper,
     private val gqlRepository: GraphqlRepository
 ) : BaseGqlUseCase<WidgetDismissalResultUiModel>() {
 
@@ -35,7 +35,11 @@ class SubmitWidgetDismissUseCase @Inject constructor(
             )
             val response = gqlRepository.response(listOf(gqlRequest))
             val result = response.getSuccessData<WidgetDismissWithFeedbackResponse>()
-            return mapper.mapRemoteModelToUiModel(it, result)
+            if (result.data.isError) {
+                throw MessageErrorException(result.data.errorMsg)
+            } else {
+                return mapper.mapRemoteModelToUiModel(it, result)
+            }
         }
         throw MessageErrorException(NULL_PARAM_ERROR)
     }
@@ -47,7 +51,7 @@ class SubmitWidgetDismissUseCase @Inject constructor(
 
     private fun setRequestParam(data: SubmitWidgetDismissUiModel) {
         val gqlParams = RequestParams().apply {
-            putString(ACTION, data.action.name)
+            putString(ACTION, data.action.actionName)
             putString(DISMISS_KEY, data.dismissKey)
             putObject(DISMISS_OBJECT_ID_LIST, data.dismissObjectIDs)
             putString(DISMISS_SIGN, data.dismissSign)
@@ -76,9 +80,8 @@ class SubmitWidgetDismissUseCase @Inject constructor(
         private const val SHOP_ID = "shopID"
 
         internal const val QUERY = """
-            mutation dashboardDismissWithFeedback($$ACTION: String!, $$DISMISS_KEY: String!, $$DISMISS_OBJECT_ID_LIST: [String!]!, $$DISMISS_SIGN: String!, $$FEEDBACK_REASON_1: Boolean!, $$FEEDBACK_REASON_2: Boolean!, $$FEEDBACK_REASON_3: Boolean!, $$FEEDBACK_REASON_OTHER: String!, $$FEEDBACK_ID_PARENT: String!, $$SHOP_ID: Int!) {
-              dashboardDismissWithFeedback(action: $$ACTION, dismissKey: $$DISMISS_KEY, dismissObjectIDList: $DISMISS_OBJECT_ID_LIST, dismissSign: $$DISMISS_SIGN, feedbackReason1: $$FEEDBACK_REASON_1, feedbackReason2: $$FEEDBACK_REASON_2, feedbackReason3: $FEEDBACK_REASON_3, feedbackReasonOtherText: $$FEEDBACK_REASON_OTHER, feedbackWidgetIDParent: $$FEEDBACK_ID_PARENT, shopID: $$SHOP_ID, feedbackPositive: false, dismissToken: "") {
-                state
+            mutation dashboardDismissWithFeedback($$ACTION: String!, $$DISMISS_KEY: String!, $$DISMISS_OBJECT_ID_LIST: [String!]!, $$DISMISS_SIGN: String!, $$FEEDBACK_REASON_1: Boolean!, $$FEEDBACK_REASON_2: Boolean!, $$FEEDBACK_REASON_3: Boolean!, $$FEEDBACK_REASON_OTHER: String!, $$FEEDBACK_ID_PARENT: String!, $$SHOP_ID: Int!, $$DISMISS_TOKEN: String!) {
+              dashboardDismissWithFeedback($ACTION: $$ACTION, $DISMISS_KEY: $$DISMISS_KEY, $DISMISS_OBJECT_ID_LIST: $$DISMISS_OBJECT_ID_LIST, $DISMISS_SIGN: $$DISMISS_SIGN, $FEEDBACK_REASON_1: $$FEEDBACK_REASON_1, $FEEDBACK_REASON_2: $$FEEDBACK_REASON_2, $FEEDBACK_REASON_3: $$FEEDBACK_REASON_3, $FEEDBACK_REASON_OTHER: $$FEEDBACK_REASON_OTHER, $FEEDBACK_ID_PARENT: $$FEEDBACK_ID_PARENT, $SHOP_ID: $$SHOP_ID, $DISMISS_TOKEN: $$DISMISS_TOKEN, feedbackPositive: false) {
                 error
                 errorMsg
                 dismissToken

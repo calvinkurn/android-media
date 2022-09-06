@@ -155,6 +155,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -768,7 +769,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun setOnAnnouncementWidgetYesClicked(element: AnnouncementWidgetUiModel) {
-
+        val param = SubmitWidgetDismissUiModel(
+            action = SubmitWidgetDismissUiModel.Action.KEEP,
+            dismissKey = String.format(ANNOUNCEMENT_DISMISSAL_KEY, element.dataKey),
+            feedbackWidgetIDParent = element.id,
+            dismissObjectIDs = listOf(element.id),
+            shopId = userSession.shopId
+        )
+        sellerHomeViewModel.submitWidgetDismissal(param)
     }
 
     override fun setOnAnnouncementWidgetNoClicked(element: AnnouncementWidgetUiModel) {
@@ -1836,7 +1844,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             when (it) {
                 is Success -> setSubmitDismissalSuccess(it.data)
                 is Fail -> {
-
+                    Timber.e(it.throwable)
                 }
             }
         }
@@ -2435,7 +2443,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun showFeedbackLoopOption(element: BaseWidgetUiModel<*>) {
-        val bottomSheet = FeedbackLoopOptionsBottomSheet.createInstance()
         val dismissObjectIDs: List<String>
         val dismissKey = when (element) {
             is AnnouncementWidgetUiModel -> {
@@ -2453,6 +2460,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
+        val bottomSheet = FeedbackLoopOptionsBottomSheet.createInstance()
         bottomSheet.setOnSubmitClickedListener {
             val param = SubmitWidgetDismissUiModel(
                 action = SubmitWidgetDismissUiModel.Action.DISMISS,
@@ -2467,6 +2475,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 shopId = userSession.shopId
             )
             sellerHomeViewModel.submitWidgetDismissal(param)
+            bottomSheet.dismiss()
         }
         bottomSheet.show(childFragmentManager)
     }
@@ -2501,10 +2510,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun getDismissalAnnouncementWidget(
         widget: AnnouncementWidgetUiModel, result: WidgetDismissalResultUiModel
     ): BaseWidgetUiModel<*> {
+        val isDismissAction = result.action == SubmitWidgetDismissUiModel.Action.DISMISS
+        val isKeepAction = result.action == SubmitWidgetDismissUiModel.Action.KEEP
         return widget.copy(
             dismissToken = result.dismissToken,
-            shouldShowDismissalTimer = !result.isError,
-            isDismissible = false
+            shouldShowDismissalTimer = isDismissAction,
+            isDismissible = isKeepAction
         ).copyWidget()
     }
 

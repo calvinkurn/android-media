@@ -18,10 +18,8 @@ class SubmitWidgetDismissalMapper @Inject constructor() {
         return WidgetDismissalResultUiModel(
             widgetId = param.feedbackWidgetIDParent,
             itemIds = param.dismissObjectIDs,
-            isError = model.isError,
-            errorMsg = model.errorMsg,
-            dismissToken = model.dismissToken,
-            state = model.state
+            dismissToken = model.data.dismissToken,
+            action = param.action
         )
     }
 }

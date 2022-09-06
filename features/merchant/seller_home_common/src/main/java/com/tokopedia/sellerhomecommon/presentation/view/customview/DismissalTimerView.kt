@@ -19,18 +19,10 @@ class DismissalTimerView : ConstraintLayout {
         private const val INTERVAL = 1000L
     }
 
+    private var isTimerRunning = false
     private var binding: ShcDismissalTimerViewBinding? = null
     private var listener: Listener? = null
-    private val timer: CountDownTimer = object : CountDownTimer(DURATION, INTERVAL) {
-
-        override fun onTick(millisUntilFinished: Long) {
-            onTimerTicked(millisUntilFinished)
-        }
-
-        override fun onFinish() {
-            listener?.onFinished()
-        }
-    }
+    private var timer: CountDownTimer? = null
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -49,9 +41,23 @@ class DismissalTimerView : ConstraintLayout {
     }
 
     fun startTimer(title: String, listener: Listener) {
-        this.listener = listener
-        binding?.tvShcDismissalTitle?.text = title
-        timer.start()
+        if (!isTimerRunning) {
+            this.listener = listener
+            binding?.tvShcDismissalTitle?.text = title
+            timer = object : CountDownTimer(DURATION, INTERVAL) {
+
+                override fun onTick(millisUntilFinished: Long) {
+                    isTimerRunning = true
+                    onTimerTicked(millisUntilFinished)
+                }
+
+                override fun onFinish() {
+                    isTimerRunning = false
+                    this@DismissalTimerView.listener?.onFinished()
+                }
+            }
+            timer?.start()
+        }
     }
 
     private fun initView(context: Context) {
@@ -61,7 +67,8 @@ class DismissalTimerView : ConstraintLayout {
 
         binding?.run {
             tvShcDismissalTimer.setOnClickListener {
-                timer.cancel()
+                timer?.cancel()
+                isTimerRunning = false
                 listener?.onCancelTimer()
             }
         }

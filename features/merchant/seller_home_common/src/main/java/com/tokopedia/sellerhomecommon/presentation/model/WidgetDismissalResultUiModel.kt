@@ -9,8 +9,6 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 data class WidgetDismissalResultUiModel(
     val widgetId: String = String.EMPTY,
     val itemIds: List<String> = emptyList(),
-    val isError: Boolean = false,
-    val errorMsg: String = String.EMPTY,
     val dismissToken: String = String.EMPTY,
-    val state: String = String.EMPTY
+    val action: SubmitWidgetDismissUiModel.Action
 )

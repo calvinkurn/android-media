@@ -26,7 +26,7 @@ data class SubmitWidgetDismissUiModel(
         private const val KEEP_NAME = "keep"
     }
 
-    enum class Action(name: String) {
+    enum class Action(val actionName: String) {
         DISMISS(DISMISS_NAME),
         CANCEL(CANCEL_NAME),
         KEEP(KEEP_NAME)
