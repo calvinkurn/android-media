@@ -10,8 +10,10 @@ import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -139,6 +141,11 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         }
     }
 
+    fun resetFilterSearch() {
+        currentSearchParameter.value = null
+        _searchMap.tryEmit(hashMapOf())
+    }
+
     fun getInitialMerchantSearchResult(searchParameter: SearchParameter?) {
         pageKeyLiveData.value = null
         currentSearchParameter.value = searchParameter
@@ -190,6 +197,16 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         if (dynamicFilterModel.value == null) {
             loadDetailSortFilter()
         }
+    }
+
+    fun applySort(sort: Sort, isSelected: Boolean) {
+        val value =
+            if (isSelected) {
+                sort.value
+            } else {
+                String.EMPTY
+            }
+        currentSearchParameter.value?.set(sort.key, value)
     }
 
     fun applyFilter(filter: Filter) {

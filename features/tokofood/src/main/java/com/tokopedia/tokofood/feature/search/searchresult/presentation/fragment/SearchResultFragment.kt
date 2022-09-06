@@ -11,6 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
@@ -18,10 +23,12 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
+import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentSearchResultBinding
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
 import com.tokopedia.tokofood.feature.search.searchresult.di.component.DaggerSearchResultComponent
@@ -74,6 +81,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private var searchParameter: SearchParameter? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
 
+    private var keyword: String = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -107,7 +116,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onOpenQuickFilterBottomSheet(sortList: List<Sort>) {
-        TODO("Not yet implemented")
+        showQuickSortBottomSheet(sortList)
     }
 
     override fun onOpenQuickFilterBottomSheet(filter: Filter) {
@@ -115,7 +124,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onSelectSortChip(sort: Sort, isSelected: Boolean) {
-        TODO("Not yet implemented")
+        viewModel.applySort(sort, isSelected)
     }
 
     override fun onSelectFilterChip(filter: Filter) {
@@ -123,11 +132,11 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onClickRetryError() {
-        TODO("Not yet implemented")
+        viewModel.getInitialMerchantSearchResult(searchParameter)
     }
 
     override fun onClickMerchant(merchant: Merchant, position: Int) {
-        TODO("Not yet implemented")
+        goToMerchantPage(merchant)
     }
 
     override fun onImpressMerchant(merchant: Merchant, position: Int) {
@@ -135,19 +144,19 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onBranchButtonClicked(branchApplink: String) {
-        TODO("Not yet implemented")
+        TokofoodRouteManager.routePrioritizeInternal(context, branchApplink)
     }
 
     override fun onResetFilterButtonClicked() {
-        viewModel.getInitialMerchantSearchResult(searchParameter)
+        viewModel.resetFilterSearch()
     }
 
     override fun onCheckKeywordButtonClicked() {
-        TODO("Not yet implemented")
+        this.searchResultViewUpdateListener?.onResetKeyword()
     }
 
     override fun onSearchInTokopediaButtonClicked() {
-        TODO("Not yet implemented")
+        goToDiscoverySearchPage()
     }
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
@@ -177,6 +186,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     fun showSearchResultState(keyword: String) {
         this.searchResultViewUpdateListener?.showSearchResultView()
+        this.keyword = keyword
         viewModel.setKeyword(keyword)
     }
 
@@ -365,7 +375,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun showQuickSortBottomSheet(sort: List<Sort>) {
-
+        // TODO: Create new sort bottomsheet
     }
 
     private fun showQuickFilterBottomSheet(filter: Filter) {
@@ -382,6 +392,22 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun getApplyButtonText(): String {
         return context?.getString(com.tokopedia.tokofood.R.string.search_srp_filter_apply).orEmpty()
+    }
+
+    private fun goToMerchantPage(merchant: Merchant) {
+        val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, String.EMPTY)
+        TokofoodRouteManager.routePrioritizeInternal(context, merchantApplink)
+    }
+
+    private fun goToDiscoverySearchPage() {
+        context?.let {
+            val discoveryApplink =
+                UriUtil.buildUriAppendParams(
+                    ApplinkConstInternalDiscovery.SEARCH_RESULT,
+                    mapOf(SearchApiConst.Q to keyword)
+                )
+            RouteManager.route(it, discoveryApplink)
+        }
     }
 
 }

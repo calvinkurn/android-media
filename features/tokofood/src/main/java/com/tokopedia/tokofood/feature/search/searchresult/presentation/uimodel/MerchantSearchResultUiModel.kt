@@ -6,8 +6,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.T
 
 data class MerchantSearchResultUiModel(
     val id: String,
-    val merchant: Merchant,
-    val branchApplink: String?
+    val merchant: Merchant
 ) : Visitable<TokofoodSearchResultTypeFactory> {
 
     override fun type(typeFactory: TokofoodSearchResultTypeFactory): Int {
