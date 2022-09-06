@@ -25,4 +25,5 @@
     <string name="path_tokopedia_now_recipe_search" translatable="false">/recipe-search</string>
     <string name="path_tokopedia_now_recipe_autocomplete" translatable="false">/recipe-auto-complete</string>
     <string name="path_tokopedia_now_recipe_filter" translatable="false">/recipe-filter</string>
+    <string name="path_tokopedia_now_recipe_product" translatable="false">/recipe/similar-product-bottomsheet</string>
 </resources>

@@ -89,18 +89,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textPrice"
         app:typographyType="paragraph_3"
-        tools:visibility="invisible" />
+        tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/imageChevron"
-        android:layout_width="6dp"
-        android:layout_height="10dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="15dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
+        app:icon_name="CHEVRON_RIGHT"
+        app:icon_color_light_enable="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="@id/textSimilarProduct"
         app:layout_constraintStart_toEndOf="@id/textSimilarProduct"
-        app:layout_constraintTop_toTopOf="@id/textSimilarProduct"
-        app:srcCompat="@drawable/tokopedianow_ic_chevron_right_green" />
+        app:layout_constraintTop_toTopOf="@id/textSimilarProduct" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnProductCta"

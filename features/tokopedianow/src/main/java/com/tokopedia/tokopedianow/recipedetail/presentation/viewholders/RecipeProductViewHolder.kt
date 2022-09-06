@@ -7,6 +7,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -14,18 +15,19 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeProductBinding
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeProductUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeProductViewHolder(
     itemView: View,
-    private val recipeDetailView: RecipeDetailView?
+    private val listener: RecipeProductListener?
 ) : AbstractViewHolder<RecipeProductUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_tokopedianow_recipe_product
     }
+
+    private val context by lazy { itemView.context }
 
     private var binding: ItemTokopedianowRecipeProductBinding? by viewBinding()
 
@@ -79,16 +81,16 @@ class RecipeProductViewHolder(
     private fun renderProductButton(product: RecipeProductUiModel) {
         binding?.btnProductCta?.apply {
             if (product.stock == 0) {
-                text = itemView.context.getString(R.string.tokopedianow_stock_empty_text)
+                text = context.getString(R.string.tokopedianow_stock_empty_text)
                 buttonVariant = UnifyButton.Variant.FILLED
                 isEnabled = false
             } else {
-                text = itemView.context.getString(R.string.tokopedianow_add_to_cart_text)
+                text = context.getString(R.string.tokopedianow_add_to_cart_text)
                 buttonVariant = UnifyButton.Variant.GHOST
                 isEnabled = true
 
                 setOnClickListener {
-                    recipeDetailView?.addItemToCart(
+                    listener?.addItemToCart(
                         productId = product.id,
                         shopId = product.shopId,
                         quantity = product.minOrder
@@ -134,7 +136,7 @@ class RecipeProductViewHolder(
 
     private fun renderDeleteBtn(product: RecipeProductUiModel) {
         binding?.btnDeleteCart?.setOnClickListener {
-            recipeDetailView?.deleteCartItem(product.id)
+            listener?.deleteCartItem(product.id)
         }
     }
 
@@ -142,14 +144,18 @@ class RecipeProductViewHolder(
         binding?.root?.setOnClickListener {
             goToProductDetailPage(item)
         }
+
+        binding?.textSimilarProduct?.setOnClickListener {
+            openSimilarProductBottomSheet()
+        }
     }
 
     private fun goToProductDetailPage(item: RecipeProductUiModel) {
-        RouteManager.route(
-            itemView.context,
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            item.id
-        )
+        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
+    }
+
+    private fun openSimilarProductBottomSheet() {
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.SIMILAR_PRODUCT_BOTTOMSHEET)
     }
 
     private fun qtyEditorListener(product: RecipeProductUiModel): TextWatcher {
@@ -166,7 +172,7 @@ class RecipeProductViewHolder(
                 val input = p0?.toString()
 
                 if(input?.isNotEmpty() == true) {
-                    recipeDetailView?.onQuantityChanged(
+                    listener?.onQuantityChanged(
                         productId = product.id,
                         shopId = product.shopId,
                         quantity = input.toIntOrZero()
@@ -174,5 +180,11 @@ class RecipeProductViewHolder(
                 }
             }
         }
+    }
+
+    interface RecipeProductListener {
+        fun deleteCartItem(productId: String)
+        fun onQuantityChanged(productId: String, shopId: String, quantity: Int)
+        fun addItemToCart(productId: String, shopId: String, quantity: Int)
     }
 }
