@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.feature.search.container.presentation.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.databinding.FragmentSearchContainerBinding
 import com.tokopedia.tokofood.feature.search.container.di.component.DaggerSearchContainerComponent
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.InitialStateViewUpdateListener
@@ -49,6 +51,17 @@ class SearchContainerFragment : BaseDaggerFragment(),
     private var initialStateFragment: InitialStateFragment? = null
     private var globalSearchBarWidget: GlobalSearchBarWidget? = null
 
+    private var keyword: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val bundle = arguments?.getString(Constant.DATA_KEY).orEmpty()
+        if (bundle.isNotBlank()) {
+            val uri = Uri.parse(bundle)
+            keyword = uri.getQueryParameter(KEYWORD_PARAM).orEmpty()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,12 +75,14 @@ class SearchContainerFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         observeSearchKeyword()
+        keyword?.let { setKeywordSearchBarView(it) }
     }
 
     override fun onDestroyView() {
         initialStateFragment = null
         searchResultFragment = null
         globalSearchBarWidget = null
+        keyword = null
         super.onDestroyView()
     }
 
@@ -188,5 +203,6 @@ class SearchContainerFragment : BaseDaggerFragment(),
         }
 
         const val THREE_LETTERS = 3
+        const val KEYWORD_PARAM = "q"
     }
 }
