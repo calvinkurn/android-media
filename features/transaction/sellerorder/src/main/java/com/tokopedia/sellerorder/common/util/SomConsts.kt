@@ -30,6 +30,7 @@ object SomConsts {
     const val STATUS_NAME_ALL_ORDER = "Semua Pesanan"
 
     const val DETAIL_HEADER_TYPE = "header"
+    const val DETAIL_RESO_TYPE = "reso"
     const val DETAIL_PRODUCTS_TYPE = "products"
     const val DETAIL_SHIPPING_TYPE = "shipping"
     const val DETAIL_PAYMENT_TYPE = "payment"

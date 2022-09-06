@@ -4,21 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
-import com.tokopedia.sellerorder.detail.data.model.GetSomDetailResponse
-import com.tokopedia.sellerorder.detail.data.model.SetDeliveredResponse
-import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
-import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectParam
-import com.tokopedia.sellerorder.detail.domain.usecase.SomGetOrderDetailUseCase
-import com.tokopedia.sellerorder.detail.domain.usecase.SomReasonRejectUseCase
-import com.tokopedia.sellerorder.detail.domain.usecase.SomSetDeliveredUseCase
+import com.tokopedia.sellerorder.detail.data.model.*
+import com.tokopedia.sellerorder.detail.domain.usecase.*
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
+import java.util.HashMap
 import javax.inject.Inject
 
 /**
@@ -32,7 +30,7 @@ class SomDetailViewModel @Inject constructor(
     somValidateOrderUseCase: SomValidateOrderUseCase,
     userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers,
-    private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
+    private val somGetOrderDetailUseCase: SomGetOrderDetailWithResolutionUseCase,
     private val somReasonRejectUseCase: SomReasonRejectUseCase,
     private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
     authorizeSomDetailAccessUseCase: AuthorizeAccessUseCase,

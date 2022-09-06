@@ -7,17 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailDividerViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailHeaderViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailMVCUsageViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailNonProductBundleCardViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailPaymentsViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailProductBundleCardViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailProductsViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailShippingViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.*
 import com.tokopedia.sellerorder.detail.presentation.model.DividerUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
+import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 
 class SomDetailAdapterFactoryImpl(
     private val actionListener: ActionListener,
@@ -27,6 +21,9 @@ class SomDetailAdapterFactoryImpl(
         return when (typeLayout) {
             SomConsts.DETAIL_HEADER_TYPE -> {
                 SomDetailHeaderViewHolder.LAYOUT
+            }
+            SomConsts.DETAIL_RESO_TYPE -> {
+                SomDetailResolutionViewHolder.LAYOUT
             }
             SomConsts.DETAIL_PRODUCTS_TYPE -> {
                 SomDetailProductsViewHolder.LAYOUT
@@ -61,6 +58,11 @@ class SomDetailAdapterFactoryImpl(
             SomDetailHeaderViewHolder.LAYOUT -> {
                 SomDetailHeaderViewHolder(parent, actionListener)
             }
+
+            SomDetailResolutionViewHolder.LAYOUT -> {
+                SomDetailResolutionViewHolder(parent, actionListener)
+            }
+
             SomDetailProductsViewHolder.LAYOUT -> {
                 SomDetailProductsViewHolder(parent)
             }
@@ -98,5 +100,6 @@ class SomDetailAdapterFactoryImpl(
         fun onClickProduct(orderDetailId: Long)
         fun onCopiedAddress(address: String, str: String)
         fun onCopyAddOnDescription(label: String, description: CharSequence)
+        fun onResoClicked(redirectPath: String)
     }
 }

@@ -385,7 +385,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     isDetailChanged = if (detailResponse == null) false else detailResponse != it.data.getSomDetail
                     detailResponse = it.data.getSomDetail
                     dynamicPriceResponse = it.data.somDynamicPriceResponse
-                    renderDetail(it.data.getSomDetail, it.data.somDynamicPriceResponse)
+                    renderDetail(it.data.getSomDetail, it.data.somDynamicPriceResponse, it.data.somResolution)
                 }
                 is Fail -> {
                     it.throwable.showGlobalError()
@@ -544,7 +544,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     protected open fun renderDetail(
         somDetail: SomDetailOrder.Data.GetSomDetail?,
-        somDynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice?
+        somDynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice?,
+        resolutionTicketStatusResponse: GetResolutionTicketStatusResponse
+                                            .ResolutionGetTicketStatus.ResolutionData?
     ) {
         showSuccessState()
         renderButtons()
@@ -553,17 +555,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
         somDetailAdapter.setElements(
             SomDetailMapper.mapSomGetOrderDetailResponseToVisitableList(
-                somDetail, somDynamicPriceResponse
+                somDetail, somDynamicPriceResponse, resolutionTicketStatusResponse
             )
         )
-        somDetail?.hasResoStatus?.let { hasResoStatus ->
-            if (hasResoStatus) {
-                observeOrderResolution()
-                somDetailViewModel.loadReso(somDetail?.orderId)
-            } else {
-                showSuccessState()
-            }
-        }
     }
 
     private fun renderButtons() {
@@ -956,6 +950,13 @@ open class SomDetailFragment : BaseDaggerFragment(),
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, description))
         showCommonToaster(getString(R.string.som_detail_add_on_description_copied_message))
+    }
+
+    override fun onResoClicked(redirectPath: String) {
+        RouteManager.route(
+            context,
+            String.format("%s?url=%s", ApplinkConst.WEBVIEW, redirectPath)
+        )
     }
 
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {

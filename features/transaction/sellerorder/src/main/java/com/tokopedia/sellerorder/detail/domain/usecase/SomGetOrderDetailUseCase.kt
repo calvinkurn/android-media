@@ -58,6 +58,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
               get_som_detail(orderID: ${'$'}orderID, lang: ${'$'}lang) {
                 order_id
                 status
+                has_reso_status
                 status_text
                 status_text_color
                 status_indicator_color
