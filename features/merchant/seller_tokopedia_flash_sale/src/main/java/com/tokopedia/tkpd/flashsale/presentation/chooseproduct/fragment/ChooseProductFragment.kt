@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.campaign.components.adapter.ChooseProductAdapter
@@ -14,6 +15,8 @@ import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentChooseProductBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.DetailCategoryFlashSaleBottomSheet
+import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.adapter.CriteriaSelectionAdapter
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.MAX_PER_PAGE
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.viewmodel.ChooseProductViewModel
 import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
@@ -21,12 +24,14 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChooseProductItem>(),
-    ChooseProductDelegateAdapter.ChooseProductListener {
+    ChooseProductDelegateAdapter.ChooseProductListener,
+    CriteriaSelectionAdapter.CriteriaSelectionAdapterListener {
 
     @Inject
     lateinit var viewModel: ChooseProductViewModel
     private var binding by autoClearedNullable<StfsFragmentChooseProductBinding>()
-    private val chooseProductAdapter: ChooseProductAdapter = ChooseProductAdapter()
+    private val chooseProductAdapter = ChooseProductAdapter()
+    private val criteriaSelectionAdapter = CriteriaSelectionAdapter(this)
 
     override fun getScreenName(): String = ChooseProductFragment::class.java.canonicalName.orEmpty()
 
@@ -50,6 +55,15 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         setupObservers()
         setupHeader()
         setupSearchBar()
+        setupCategorySelection()
+    }
+
+    private fun setupCategorySelection() {
+        binding?.rvCategory?.apply {
+            adapter = criteriaSelectionAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
+        viewModel.getCriteriaList()
     }
 
     private fun setupSearchBar() {
@@ -71,6 +85,9 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     private fun setupObservers() {
         viewModel.productList.observe(viewLifecycleOwner) {
             renderList(it, viewModel.hasNextPage)
+        }
+        viewModel.criteriaList.observe(viewLifecycleOwner) {
+            criteriaSelectionAdapter.setDataList(it)
         }
         viewModel.error.observe(viewLifecycleOwner) {
             showGetListError(it)
@@ -121,5 +138,15 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
 
     override fun onGetListError(message: String) {
         view?.showToasterError(message)
+    }
+
+    override fun onCriteriaMoreClicked(
+        categoryTitleComplete: String,
+        selectionCount: Int,
+        selectionCountMax: Int,
+    ) {
+        val bottomsheet = DetailCategoryFlashSaleBottomSheet.newInstance(categoryTitleComplete,
+            selectionCount, selectionCountMax)
+        bottomsheet.show(childFragmentManager, "")
     }
 }
