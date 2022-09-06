@@ -16,7 +16,7 @@ class ComparisonFeatureNewViewHolder(val view: View) : RecyclerView.ViewHolder(v
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
     fun bind(specList: ComponentData.SpecList, catalogDetailListener: CatalogDetailListener){
         setUpAccordionData(specList)
-        initRecyclerView(specList.subcard)
+        specList.subcard?.let { initRecyclerView(it) }
     }
 
     private fun setUpAccordionData(specList: ComponentData.SpecList?){

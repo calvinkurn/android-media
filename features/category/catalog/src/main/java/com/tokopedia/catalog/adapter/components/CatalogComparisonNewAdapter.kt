@@ -5,12 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.listener.CatalogDetailListener
-import com.tokopedia.catalog.model.raw.ComparisonNewModel
+import com.tokopedia.catalog.model.raw.ComponentData
 import com.tokopedia.catalog.viewholder.components.ComparisonDetailNewViewHolder
 import com.tokopedia.catalog.viewholder.components.ComparisonFeatureNewViewHolder
 
-class CatalogComparisonNewAdapter(val list: ArrayList<ComparisonNewModel>,
-                                  val catalogDetailListener: CatalogDetailListener
+class CatalogComparisonNewAdapter(
+    private val specsList: ArrayList<ComponentData.SpecList>,
+    val catalogDetailListener: CatalogDetailListener
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object ViewType {
@@ -37,12 +38,16 @@ class CatalogComparisonNewAdapter(val list: ArrayList<ComparisonNewModel>,
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(position == FIRST_POSITION){
-            (holder as ComparisonDetailNewViewHolder).bind(list[position], list[position], catalogDetailListener)
+            (holder as ComparisonDetailNewViewHolder).bind(
+                specsList[position].subcard?.firstOrNull()?.featureLeftData,
+                specsList[position].subcard?.firstOrNull()?.featureRightData,
+                catalogDetailListener)
         } else {
-            (holder as ComparisonFeatureNewViewHolder).bind(list[position].specList[position], catalogDetailListener)
+            (holder as ComparisonFeatureNewViewHolder).bind(specsList[position],
+                catalogDetailListener)
         }
     }
 
-    override fun getItemCount() = list.size
+    override fun getItemCount() = specsList.size
 
 }

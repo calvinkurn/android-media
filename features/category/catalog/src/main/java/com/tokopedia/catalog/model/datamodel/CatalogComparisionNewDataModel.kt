@@ -5,7 +5,7 @@ import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.model.raw.*
 
 data class CatalogComparisionNewDataModel(
-    val name: String = "", val type: String = "", val comparisonNewModel: ArrayList<ComparisonNewModel>
+    val name: String = "", val type: String = "", val specsList: ArrayList<ComponentData.SpecList>?
 ) : BaseCatalogDataModel {
     override fun name(): String = name
 

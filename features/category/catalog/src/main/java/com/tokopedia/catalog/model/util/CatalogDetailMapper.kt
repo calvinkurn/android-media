@@ -63,8 +63,13 @@ object CatalogDetailMapper {
                             listOfComponents.add(getComparisonComponent(comparedCatalogId,catalogGetDetailModular,
                                 baseCatalogTopSpecs,
                                 comparisonData))
-                            listOfComponents.add(getNewComparisonComponent(catalogGetDetailModular, comparisonData))
                         }
+                    }
+                }
+
+                CatalogConstant.COMPARISON_NEW -> {
+                    component.data?.firstOrNull()?.let { comparisonDataNew ->
+                        listOfComponents.add(getNewComparisonComponent(catalogGetDetailModular, comparisonDataNew))
                     }
                 }
             }
@@ -75,7 +80,6 @@ object CatalogDetailMapper {
                 listOfComponents.add(getComparisonComponent(comparedCatalogId,catalogGetDetailModular,
                     baseCatalogTopSpecs,
                     this))
-                listOfComponents.add(getNewComparisonComponent(catalogGetDetailModular,this))
             }
         }
         return listOfComponents
@@ -131,27 +135,34 @@ object CatalogDetailMapper {
     }
 
     private fun getNewComparisonComponent(catalogGetDetailModular: CatalogResponseData.CatalogGetDetailModular,
-                                          comparisonComponentData: ComponentData) : CatalogComparisionNewDataModel {
-        val comparisonNewModelList = ArrayList<ComparisonNewModel>()
-        catalogGetDetailModular.basicInfo.run {
-            comparisonNewModelList.add(ComparisonNewModel(
-                null,
-                null,
-                null,
-                "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}",
-                catalogImage?.firstOrNull()?.imageURL,
-                comparisonComponentData.specList))
-//            comparisonComponentData.comparedData.run {
-//                comparisonNewModelList.add(ComparisonNewModel(id, brand, null, null, null, arrayListOf()))
-//            }
+                                          comparisonComponentDataNew: ComponentData) : CatalogComparisionNewDataModel {
+
+        val specsListCombined = arrayListOf<ComponentData.SpecList>()
+        specsListCombined.add(
+            ComponentData.SpecList("", arrayListOf(
+                ComponentData.SpecList.Subcard(
+                "","","",ComparisonNewModel(
+                        catalogGetDetailModular.basicInfo.id,
+                        catalogGetDetailModular.basicInfo.brand,
+                        catalogGetDetailModular.basicInfo.name,
+                        "${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.minFmt} - ${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.maxFmt}",
+                        catalogGetDetailModular.basicInfo.url
+                ),
+                    ComparisonNewModel(
+                        comparisonComponentDataNew.comparedData?.id ?: "",
+                        comparisonComponentDataNew.comparedData?.brand ?: "",
+                        comparisonComponentDataNew.comparedData?.name ?: "",
+                        "${comparisonComponentDataNew.marketPrice?.firstOrNull()?.minFmt} - ${comparisonComponentDataNew.marketPrice?.firstOrNull()?.maxFmt}",
+                        comparisonComponentDataNew.comparedData?.url ?: "",
+                        )
+            )))
+        )
+
+        comparisonComponentDataNew.specList?.forEach {
+            specsListCombined.add(it)
         }
-        comparisonComponentData.comparedData.run {
-                comparisonNewModelList.add(ComparisonNewModel(id, brand, name, null, null, arrayListOf()))
-            }
-        comparisonComponentData.run {
-            comparisonNewModelList.add(ComparisonNewModel(null, null, null, null, null, specList))
-        }
-        return CatalogComparisionNewDataModel(CatalogConstant.COMPARISON, CatalogConstant.COMPARISON, comparisonNewModelList)
+
+        return CatalogComparisionNewDataModel(CatalogConstant.COMPARISON_NEW, CatalogConstant.COMPARISON_NEW, comparisonComponentDataNew.specList)
     }
 
     private fun mapIntoReviewDataModel(catalogName : String, catalogId : String, componentName : String,

@@ -15,12 +15,14 @@ class CatalogComparisonContainerNewViewHolder(private val view : View,
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
 
     companion object {
-        val LAYOUT = R.layout.item_catalog_comparision_container
+        val LAYOUT = R.layout.item_catalog_comparision_new_container
     }
 
     override fun bind(element: CatalogComparisionNewDataModel) {
-        val comparisonRV = view.findViewById<RecyclerView>(R.id.catalog_comparision_rv)
-        comparisonRV.layoutManager = layoutManager
-        comparisonRV.adapter = CatalogComparisonNewAdapter(element.comparisonNewModel, catalogDetailListener)
+        if(element.specsList?.isNullOrEmpty() == false){
+            val comparisonRV = view.findViewById<RecyclerView>(R.id.catalog_comparision_rv)
+            comparisonRV.layoutManager = layoutManager
+            comparisonRV.adapter = CatalogComparisonNewAdapter(element.specsList, catalogDetailListener)
+        }
     }
 }

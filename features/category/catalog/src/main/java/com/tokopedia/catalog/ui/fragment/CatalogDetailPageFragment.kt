@@ -301,9 +301,7 @@ class CatalogDetailPageFragment : Fragment(),
                         if(component is CatalogComparisionDataModel && comparisonCatalogId.isBlank()){
                             recommendedCatalogId = (component).comparisionCatalog[CatalogConstant.COMPARISION_DETAIL]?.id ?: ""
                         }else if(component is CatalogComparisionNewDataModel && comparisonCatalogId.isBlank()){
-                            component.comparisonNewModel.forEach { comparisonNewModel ->
-                                recommendedCatalogId = comparisonNewModel.id ?: ""
-                            }
+                            recommendedCatalogId = component.specsList?.firstOrNull()?.subcard?.firstOrNull()?.featureRightData?.id ?: ""
                         }
                     }
                     catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
