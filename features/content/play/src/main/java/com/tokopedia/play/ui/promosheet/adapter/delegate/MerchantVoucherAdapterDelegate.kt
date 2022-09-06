@@ -1,9 +1,11 @@
 package com.tokopedia.play.ui.promosheet.adapter.delegate
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.R
+import com.tokopedia.play.databinding.ItemShopCouponBinding
 import com.tokopedia.play.ui.promosheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 
@@ -19,6 +21,7 @@ class MerchantVoucherAdapterDelegate(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): MerchantVoucherNewViewHolder {
-        return MerchantVoucherNewViewHolder(basicView, this)
+        val binding = ItemShopCouponBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MerchantVoucherNewViewHolder(binding, this)
     }
 }

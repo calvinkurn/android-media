@@ -2,15 +2,12 @@ package com.tokopedia.play.ui.promosheet.viewholder
 
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.view.View
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
+import com.tokopedia.play.databinding.ItemShopCouponBinding
 import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
@@ -21,16 +18,9 @@ import com.tokopedia.unifyprinciples.R as unifyR
  * @author by astidhiyaa on 30/11/21
  */
 class MerchantVoucherNewViewHolder(
-    itemView: View,
+    private val binding: ItemShopCouponBinding,
     private val listener: Listener
-) : BaseViewHolder(itemView) {
-
-    private val tvVoucherTitle: TextView = itemView.findViewById(R.id.tv_coupon_title)
-    private val tvVoucherDescription: TextView = itemView.findViewById(R.id.tv_min_transaction)
-    private val tvVoucherExpiredDate: TextView = itemView.findViewById(R.id.tv_expired_date)
-    private val viewCopyable: ConstraintLayout = itemView.findViewById(R.id.view_voucher_copyable)
-    private val ivCopyVoucher: IconUnify = itemView.findViewById(R.id.iv_play_voucher_copy)
-    private val tvVoucherCode: TextView = itemView.findViewById(R.id.tv_play_voucher_code)
+) : BaseViewHolder(binding.root) {
 
     private val baseColor: ForegroundColorSpan by lazy {
         ForegroundColorSpan(MethodChecker.getColor(itemView.context, unifyR.color.Unify_RN500))
@@ -47,11 +37,11 @@ class MerchantVoucherNewViewHolder(
 
     fun bind(item: PlayVoucherUiModel.Merchant) {
         val isPrivate = item.type == MerchantVoucherType.Private
-        tvVoucherTitle.text = item.title
-        tvVoucherDescription.text = item.description
+        binding.tvCouponTitle.text = item.title
+        binding.tvMinTransaction.text = item.description
 
-        tvVoucherExpiredDate.shouldShowWithAction(item.expiredDate.isNotEmpty()) {
-            tvVoucherExpiredDate.text = buildSpannedString {
+        binding.tvExpiredDate.shouldShowWithAction(item.expiredDate.isNotEmpty()) {
+            binding.tvExpiredDate.text = buildSpannedString {
                 append(
                     getString(
                         R.string.play_voucher_sheet_coupon_expired,
@@ -74,14 +64,14 @@ class MerchantVoucherNewViewHolder(
             }
         }
 
-        viewCopyable.showWithCondition(item.copyable)
-        tvVoucherCode.text = item.code
+        binding.viewVoucherCopyable.root.showWithCondition(item.copyable)
+        binding.viewVoucherCopyable.tvPlayVoucherCode.text = item.code
 
-        ivCopyVoucher.setOnClickListener {
+        binding.viewVoucherCopyable.ivPlayVoucherCopy.setOnClickListener {
             if (!isPrivate) return@setOnClickListener
             listener.onCopyItemVoucherClicked(item)
         }
-        itemView.setOnClickListener {
+        binding.root.setOnClickListener {
             if (isPrivate) return@setOnClickListener
             listener.onVoucherItemClicked(item)
         }
