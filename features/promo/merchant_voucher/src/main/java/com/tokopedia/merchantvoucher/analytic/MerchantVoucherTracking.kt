@@ -2,15 +2,11 @@ package com.tokopedia.merchantvoucher.analytic
 
 import java.util.HashMap
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.util.BaseTrackerConst
 
 
-class MerchantVoucherTracking{
+class MerchantVoucherTracking : BaseTrackerConst(){
     companion object{
-        private const val EVENT = "event"
-        private const val EVENT_CATEGORY = "eventCategory"
-        private const val EVENT_ACTION = "eventAction"
-        private const val EVENT_LABEL = "eventLabel"
-
         private const val CLICK_PDP = "clickPDP"
         private const val PDP = "product detail page"
         private const val CLICK_MVC_DETAIL = "click - mvc list - mvc detail"
@@ -22,10 +18,10 @@ class MerchantVoucherTracking{
 
     private fun createMap(event : String = "", category: String = "", action : String = "", label:String="") : HashMap<String , Any>{
         val eventMap: HashMap<String, Any> = HashMap()
-        eventMap[EVENT]=event
-        eventMap[EVENT_CATEGORY]= category
-        eventMap[EVENT_ACTION]=action
-        eventMap[EVENT_LABEL]=label
+        eventMap[Event.KEY]=event
+        eventMap[Category.KEY]= category
+        eventMap[Action.KEY]=action
+        eventMap[Label.KEY]=label
         return eventMap
     }
 
