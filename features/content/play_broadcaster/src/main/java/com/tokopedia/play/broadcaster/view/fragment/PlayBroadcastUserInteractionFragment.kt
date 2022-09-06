@@ -1144,6 +1144,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun pauseBroadcast() {
+        if (parentViewModel.isBroadcastStopped) return
         showLoading(false)
         errorLiveNetworkLossView.hide()
         broadcaster.pause()

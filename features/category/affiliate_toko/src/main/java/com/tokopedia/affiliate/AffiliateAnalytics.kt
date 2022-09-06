@@ -278,6 +278,10 @@ object AffiliateAnalytics {
             const val AFFILIATE_HOME_FRAGMENT = "/affiliate portal - affiliate home page - "
             const val AFFILIATE_PROMOSIKAN_PAGE = "/affiliate portal - affiliate promosikan page"
             const val AFFILIATE_PENDAPATAN_PAGE = "/affiliate portal - affiliate pendapatan page"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_ORDER_SHOP = "/affiliate portal - affiliate pendapatan page - transaction detail - order - shop"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_ORDER_PRODUCT = "/affiliate portal - affiliate pendapatan page - transaction detail - order - product"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_TRAFFIC_SHOP = "/affiliate portal - affiliate pendapatan page - transaction detail - traffic - shop"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_TRAFFIC_PRODUCT = "/affiliate portal - affiliate pendapatan page - transaction detail - traffic - product"
         }
     }
 
