@@ -411,7 +411,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 ds.isUnderlineText = false
                 context?.let {
                     ds.color =
-                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Green_G500)
+                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
 
                 }
             }
