@@ -1091,46 +1091,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun getToBeClearedPromoCodes(validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>): ArrayList<String> {
-        val toBeRemovedPromoCodes = ArrayList<String>()
-
-        // Add unselected promo
-        addUnSelectedPromoCodes(toBeRemovedPromoCodes)
-
-        // Add invalid promo
-        // Invalid promo code is promo code from outside promo page (cart/checkout) which previously selected,
-        // but become invalid or not selected on promo page, except promo BBO
-        addInvalidPromo(validateUsePromoRequest, bboPromoCodes, toBeRemovedPromoCodes)
-
-        return toBeRemovedPromoCodes
-    }
-
-    private fun addInvalidPromo(validateUsePromoRequest: ValidateUsePromoRequest,
-                                bboPromoCodes: ArrayList<String>,
-                                toBeRemovedPromoCodes: ArrayList<String>) {
-        validateUsePromoRequest.codes.forEach { promoGlobalCode ->
-            if (!bboPromoCodes.contains(promoGlobalCode) && !toBeRemovedPromoCodes.contains(promoGlobalCode)) {
-                toBeRemovedPromoCodes.add(promoGlobalCode)
-            }
-        }
-
-        validateUsePromoRequest.orders.forEach { order ->
-            order.codes.forEach {
-                if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
-                    toBeRemovedPromoCodes.add(it)
-                }
-            }
-        }
-    }
-
-    private fun addUnSelectedPromoCodes(toBeRemovedPromoCodes: ArrayList<String>) {
-        promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && !toBeRemovedPromoCodes.containsPromoCode(visitable)) {
-                toBeRemovedPromoCodes.addPromo(visitable)
-            }
-        }
-    }
-
     private fun setClearPromoStateSuccess(clearPromoUiModel: ClearPromoUiModel, tmpValidateUsePromoRequest: ValidateUsePromoRequest) {
         clearPromoResponse.value?.let {
             it.state = ClearPromoResponseAction.ACTION_STATE_SUCCESS
