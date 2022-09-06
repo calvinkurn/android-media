@@ -101,8 +101,6 @@ class PaymentListViewModel @Inject constructor(
         )
     }
 
-    fun clearGQlPaymentList() =
-        this.gqlPaymentList.clear()
 
     private fun onPaymentListSuccess(paymentList: PaymentList?) {
         paymentList?.let {

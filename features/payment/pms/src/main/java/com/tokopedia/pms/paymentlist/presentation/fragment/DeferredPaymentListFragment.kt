@@ -89,7 +89,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     override fun onStart() {
         (recycler_view.adapter as DeferredPaymentListAdapter).clearAllElements()
-        viewModel.clearGQlPaymentList()
+        viewModel.refreshPage()
         viewModel.getPaymentListCount()
         super.onStart()
     }
