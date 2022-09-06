@@ -29,26 +29,25 @@ object ChannelWidgetUtil {
     ) {
         dividerTop?.layoutParams?.height = DIVIDER_HEIGHT.dpToPx().toInt()
         dividerBottom?.layoutParams?.height = DIVIDER_HEIGHT.dpToPx().toInt()
-        dividerTop?.invisible()
-        dividerBottom?.visible()
 //        when(channelModel?.channelConfig?.dividerType) {
-//            ChannelConfig.DIVIDER_NO_DIVIDER -> {
-//                dividerTop?.invisible()
-//                dividerBottom?.gone()
-//            }
-//            ChannelConfig.DIVIDER_TOP -> {
-//                dividerTop?.visible()
-//                dividerBottom?.gone()
-//            }
-//            ChannelConfig.DIVIDER_BOTTOM -> {
-//                dividerTop?.invisible()
-//                dividerBottom?.visible()
-//            }
-//            ChannelConfig.DIVIDER_TOP_AND_BOTTOM -> {
-//                dividerTop?.visible()
-//                dividerBottom?.visible()
-//            }
-//        }
+        when(ChannelConfig.DIVIDER_TOP) {
+            ChannelConfig.DIVIDER_NO_DIVIDER -> {
+                dividerTop?.invisible()
+                dividerBottom?.gone()
+            }
+            ChannelConfig.DIVIDER_TOP -> {
+                dividerTop?.visible()
+                dividerBottom?.gone()
+            }
+            ChannelConfig.DIVIDER_BOTTOM -> {
+                dividerTop?.invisible()
+                dividerBottom?.visible()
+            }
+            ChannelConfig.DIVIDER_TOP_AND_BOTTOM -> {
+                dividerTop?.visible()
+                dividerBottom?.visible()
+            }
+        }
     }
 }
 
