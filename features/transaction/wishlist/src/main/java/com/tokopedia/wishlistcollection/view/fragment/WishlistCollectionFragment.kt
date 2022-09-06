@@ -696,7 +696,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_COLLECTION_DETAIL && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_COLLECTION_DETAIL) {
             getWishlistCollections()
             binding?.run { rvWishlistCollection.scrollToPosition(0) }
 
@@ -750,13 +750,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             )
         }
         activity?.let {
-            if (recommendationItem.appUrl.isNotEmpty()) {
-                RouteManager.route(it, recommendationItem.appUrl)
+            val intent = if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.getIntent(it, recommendationItem.appUrl)
             } else {
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     recommendationItem.productId.toString())
-                startActivity(intent)
             }
+            startActivityForResult(intent, REQUEST_CODE_COLLECTION_DETAIL)
         }
     }
 
