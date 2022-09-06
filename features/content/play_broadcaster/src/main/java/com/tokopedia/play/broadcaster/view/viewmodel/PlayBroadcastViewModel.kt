@@ -1483,7 +1483,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             if (accountList.isNotEmpty()) {
                 updateSelectedAccount(
-                    getAccountFromCachedOrDefault(
+                    getSelectedAccount(
                         cacheSelectedType = sharedPref.getLastSelectedAccount(),
                         accountList = accountList
                     )
@@ -1558,7 +1558,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     // TODO need to refactor this for entry point from user profile
-    private fun getAccountFromCachedOrDefault(
+    private fun getSelectedAccount(
         cacheSelectedType: String,
         accountList: List<ContentAccountUiModel>,
     ): ContentAccountUiModel {
