@@ -38,7 +38,6 @@ import com.tokopedia.buyerorder.databinding.DealsQrCodeLayoutBinding
 import com.tokopedia.buyerorder.databinding.FragmentOmsListDetailBinding
 import com.tokopedia.buyerorder.databinding.LayoutScanQrCodeBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
-import com.tokopedia.buyerorder.detail.data.ActionButtonEventWrapper
 import com.tokopedia.buyerorder.detail.data.ConditionalInfo
 import com.tokopedia.buyerorder.detail.data.Invoice
 import com.tokopedia.buyerorder.detail.data.Items
@@ -66,6 +65,7 @@ import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_TEXT
 import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.TEXT_STYLE_BOLD
 import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
 import com.tokopedia.buyerorder.detail.revamp.viewModel.OrderDetailViewModel
+import com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent.ActionButtonEventWrapper
 import com.tokopedia.buyerorder.detail.view.adapter.RedeemVoucherAdapter
 import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView
 import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo
@@ -183,6 +183,8 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
                 }
             }
         }
+
+        viewModel.errorMessage.observe(viewLifecycleOwner){ showToaster(it) }
 
         viewModel.eventEmail.observe(viewLifecycleOwner){
             isShowLoaderActionButton(false)

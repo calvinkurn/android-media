@@ -1,4 +1,6 @@
-package com.tokopedia.buyerorder.detail.data
+package com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent
+
+import com.tokopedia.buyerorder.detail.data.ActionButton
 
 /**
  * created by @bayazidnasir on 25/8/2022

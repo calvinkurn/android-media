@@ -3,7 +3,6 @@ package com.tokopedia.buyerorder.detail.revamp.viewModel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.buyerorder.detail.data.ActionButton
-import com.tokopedia.buyerorder.detail.data.ActionButtonEventWrapper
 import com.tokopedia.buyerorder.detail.data.ActionButtonList
 import com.tokopedia.buyerorder.detail.data.DataEmail
 import com.tokopedia.buyerorder.detail.data.DetailsData
@@ -12,6 +11,7 @@ import com.tokopedia.buyerorder.detail.data.SendEventEmail
 import com.tokopedia.buyerorder.detail.domain.OmsDetailUseCase
 import com.tokopedia.buyerorder.detail.domain.RevampActionButtonUseCase
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase
+import com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent.ActionButtonEventWrapper
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider

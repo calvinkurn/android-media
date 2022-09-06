@@ -6,14 +6,14 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.buyerorder.detail.data.ActionButton
-import com.tokopedia.buyerorder.detail.data.ActionButtonEventWrapper
 import com.tokopedia.buyerorder.detail.data.DetailsData
 import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.data.SendEventEmail
 import com.tokopedia.buyerorder.detail.domain.OmsDetailUseCase
 import com.tokopedia.buyerorder.detail.domain.RevampActionButtonUseCase
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase
-import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter
+import com.tokopedia.buyerorder.detail.revamp.util.Utils.Const.KEY_REFRESH
+import com.tokopedia.buyerorder.detail.revamp.viewModel.uiEvent.ActionButtonEventWrapper
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -22,7 +22,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.launch
 import rx.Subscriber
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -55,6 +54,10 @@ class OrderDetailViewModel @Inject constructor(
     val actionClickable: LiveData<Boolean>
         get() = _actionClickable
 
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String>
+        get() = _errorMessage
+
     private var orderDetails : OrderDetails? = null
 
     fun requestOmsDetail(orderId: String, orderCategory: String, upstream: String?){
@@ -72,26 +75,30 @@ class OrderDetailViewModel @Inject constructor(
     }
 
     fun requestActionButton(actionButton: List<ActionButton>, position: Int, flag: Boolean, isCalledFromAdapter: Boolean){
-        launch {
-            actionButtonUseCase.get().setParams(actionButton)
-            val result = actionButtonUseCase.get().executeOnBackground()
+        launchCatchError(
+            block = {
+                actionButtonUseCase.get().setParams(actionButton)
+                val result = actionButtonUseCase.get().executeOnBackground()
 
-            if (isCalledFromAdapter){
-                if (flag){
-                    _actionButton.postValue(ActionButtonEventWrapper.TapActionButton(position, result.actionButtonList))
-                    result.actionButtonList.forEachIndexed { index, it ->
-                        if (it.control.equals(ItemsAdapter.KEY_REFRESH, true)){
-                            it.body = actionButton[index].body
+                if (isCalledFromAdapter){
+                    if (flag){
+                        _actionButton.postValue(ActionButtonEventWrapper.TapActionButton(position, result.actionButtonList))
+                        result.actionButtonList.forEachIndexed { index, it ->
+                            if (it.control.equals(KEY_REFRESH, true)){
+                                it.body = actionButton[index].body
+                            }
                         }
+                    } else {
+                        _actionButton.postValue(ActionButtonEventWrapper.SetActionButton(position, result.actionButtonList))
                     }
                 } else {
-                    _actionButton.postValue(ActionButtonEventWrapper.SetActionButton(position, result.actionButtonList))
+                    _actionButton.postValue(ActionButtonEventWrapper.RenderActionButton(result.actionButtonList))
                 }
-            } else {
-                _actionButton.postValue(ActionButtonEventWrapper.RenderActionButton(result.actionButtonList))
+            },
+            onError = {
+                _errorMessage.postValue(it.message)
             }
-
-        }
+        )
     }
 
     fun sendEventEmail(actionButton: ActionButton, metadata: String){
