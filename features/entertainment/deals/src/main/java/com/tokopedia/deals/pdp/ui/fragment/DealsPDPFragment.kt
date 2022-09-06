@@ -45,6 +45,7 @@ import com.tokopedia.deals.pdp.ui.adapter.DealsRecommendationAdapter
 import com.tokopedia.deals.pdp.ui.callback.DealsPDPCallbacks
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPViewModel
 import com.tokopedia.deals.pdp.widget.WidgetDealsPDPCarousel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -85,7 +86,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private var dealsPDPCallbacks: DealsPDPCallbacks? = null
 
     private var progressBar: LoaderUnify? = null
-    private var progressBarLayout: FrameLayout? = null
+    private var secondaryBarLayout: FrameLayout? = null
     private var appBarLayout: AppBarLayout? = null
     private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
     private var toolbar: HeaderUnify? = null
@@ -119,6 +120,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private var btnCheckout: UnifyButton? = null
     private var tgRecommendation: Typography? = null
     private var rvRecommendation: RecyclerView? = null
+    private var globalError: GlobalError? = null
     private var productDetailData: ProductDetailData = ProductDetailData()
 
     override fun onAttach(activity: Activity) {
@@ -164,7 +166,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private fun setupUi() {
         view?.apply {
             progressBar = binding?.progressBar
-            progressBarLayout = binding?.progressBarLayout
+            secondaryBarLayout = binding?.secondaryLayout
             appBarLayout = binding?.appBarLayout
             collapsingToolbarLayout = binding?.collapsingToolbar
             toolbar = binding?.toolbar
@@ -197,6 +199,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
             btnCheckout = binding?.btnBuynow
             tgRecommendation = binding?.subView?.tgRecommendedDeals
             rvRecommendation = binding?.subView?.recyclerView
+            globalError = binding?.globalError
             updateCollapsingToolbar()
         }
     }
@@ -213,6 +216,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
                     is Fail -> {
                         hideLoading()
+                        showErrorState()
                     }
                 }
             }
@@ -329,13 +333,28 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
     private fun showLoading() {
         progressBar?.show()
-        progressBarLayout?.show()
+        secondaryBarLayout?.show()
         imageCarousel?.shimmering()
     }
 
     private fun hideLoading() {
         progressBar?.hide()
-        progressBarLayout?.hide()
+        secondaryBarLayout?.hide()
+    }
+
+    private fun showErrorState() {
+        secondaryBarLayout?.show()
+        globalError?.show()
+        globalError?.setActionClickListener {
+            hideErrorState()
+            getPDP()
+        }
+        globalError?.errorSecondaryAction?.hide()
+    }
+
+    private fun hideErrorState() {
+        globalError?.hide()
+        secondaryBarLayout?.hide()
     }
 
     private fun showPDPData(data: ProductDetailData) {

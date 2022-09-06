@@ -100,7 +100,7 @@
     </androidx.cardview.widget.CardView>
 
     <FrameLayout
-        android:id="@+id/progress_bar_layout"
+        android:id="@+id/secondary_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/Unify_Background"
@@ -113,7 +113,19 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
+            android:visibility="gone"
             />
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_marginStart="25dp"
+            app:globalerrors_type="NO_CONNECTION"
+            />
+
     </FrameLayout>
 
 
