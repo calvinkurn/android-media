@@ -1,11 +1,8 @@
 package com.tokopedia.buyerorder.detail.revamp.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.buyerorder.detail.data.ActionButton
-import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
-import java.util.*
+import java.util.Collections
 import javax.inject.Inject
 
 /**
@@ -16,17 +13,8 @@ class OrderDetailsAnalytics @Inject constructor() {
 
     companion object{
         private object Event {
-            const val EVENT_NAME = "clickPurchaseList"
-            const val EVENT_DETAIL = "my purchase list detail - mp"
-            const val EVENT_ACTION_DOWNLOAD_INVOICE = "click button download invoice"
-            const val EVENT_ACTION_CLICK_SEE_INVOICE = "click lihat invoice"
-            const val EVENT_ACTION_CLICK_COPY_BUTTON = "click copy button"
-            const val EVENT_ACTION_CLICK_PRIMARY_BUTTON = "click primary button"
-            const val EVENT_ACTION_CLICK_SECONDARY_BUTTON = "click secondary button"
             const val EVENT_TRANSACTION = "transaction"
             const val EVENT_CATEGORY = "digital-deals"
-            const val EVENT_CATEGORY_BUY_AGAIN_DETAIL_DG = "my purchase list detail - dg"
-            const val EVENT_CATEGORY_ORDER_DETAIL_PAGE = "digital - order detail page"
             const val EVENT_RECHARGE_BUSINESS_UNIT = "recharge"
         }
 
@@ -47,8 +35,6 @@ class OrderDetailsAnalytics @Inject constructor() {
             const val BRAND = "brand"
             const val VARIANT = "variant"
             const val SHIPPING = "shipping"
-            const val CATEGORY = "category"
-            const val ATTRIBUTION = "attribution"
             const val TAX = "tax"
             const val COUPON_CODE = "coupon"
             const val KEY_PRODUCTS = "products"
@@ -72,37 +58,16 @@ class OrderDetailsAnalytics @Inject constructor() {
         }
 
         private object Action {
-            const val PRODUCT_CLICK = "productClick"
-            const val CLICK_ON_WIDGET_RECOMMENDATION = "click on widget recommendation"
-            const val PRODUCT_VIEW = "productView"
-            const val IMPRESSION_ON_WIDGET_RECOMMENDATION = "impression on widget recommendation"
-            const val CLICK_CHECKOUT = "clickCheckout"
             const val EVENT = "event"
             const val EVENT_CATEGORY = "eventCategory"
             const val EVENT_ACTION = "eventAction"
             const val EVENT_LABEL = "eventLabel"
             const val ECOMMERCE = "ecommerce"
-            const val LIST = "list"
-            const val POSITION = "position"
-            const val ACTION_FIELD = "actionField"
-            const val PRODUCTS = "products"
-            const val CLICK = "click"
-            const val IMPRESSIONS = "impressions"
             const val CURRENT_SITE = "tokopediadigital"
         }
 
-        private const val ZERO_PRICE = 0
         private const val TYPE_DEALS = 1
         private const val CATEGORY_EVENTS_FORMAT = "%s - %s"
-    }
-
-    fun sendDownloadEventData(eventLabel: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-            Event.EVENT_NAME,
-            Event.EVENT_DETAIL,
-            Event.EVENT_ACTION_DOWNLOAD_INVOICE,
-            eventLabel
-        ))
     }
 
     fun sendThankYouEvent(
@@ -195,60 +160,6 @@ class OrderDetailsAnalytics @Inject constructor() {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(getScreenName(), map)
     }
 
-    fun eventWidgetListView(contentItemTab: RecommendationItem, position: Int) {
-        val eventCategory = "my purchase list - ${contentItemTab.title}"
-        val eventLabel = "${contentItemTab.trackingData?.itemType} - ${contentItemTab.trackingData?.categoryName} - ${1 + position}"
-        val ecommerce = DataLayer.mapOf(
-            Key.CURRENCY_CODE, Key.IDR,
-            Action.IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
-                Key.NAME, contentItemTab.subtitle,
-                Key.ID, contentItemTab.trackingData?.productID,
-                Key.PRICE, ZERO_PRICE,
-                Action.LIST, contentItemTab.title,
-                Action.POSITION, (position + 1),
-                Key.CATEGORY, contentItemTab.trackingData?.categoryName,
-                Key.VARIANT, contentItemTab.trackingData?.itemType
-            ))
-        )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-            Action.EVENT, Action.PRODUCT_VIEW,
-            Action.EVENT_CATEGORY, eventCategory,
-            Action.EVENT_ACTION, Action.IMPRESSION_ON_WIDGET_RECOMMENDATION,
-            Action.EVENT_LABEL, eventLabel,
-            Action.ECOMMERCE, ecommerce
-        ))
-    }
-
-    fun eventWidgetClick(contentItemTab: RecommendationItem, position: Int) {
-        val eventLabel = "${contentItemTab.trackingData?.itemType} - ${contentItemTab.trackingData?.categoryName} - ${(1 + position)}"
-        val products = DataLayer.mapOf(
-            Key.NAME, contentItemTab.subtitle,
-            Key.ID, contentItemTab.trackingData?.productID,
-            Key.PRICE, ZERO_PRICE,
-            Key.BRAND, Key.NONE,
-            Key.CATEGORY, contentItemTab.trackingData?.categoryName,
-            Key.VARIANT, contentItemTab.trackingData?.itemType,
-            Action.LIST, contentItemTab.title,
-            Action.POSITION, (position + 1),
-            Key.ATTRIBUTION, Key.NONE
-        )
-        val actionField = DataLayer.mapOf(Action.LIST, contentItemTab.title)
-        val clicks = DataLayer.mapOf(
-            Action.ACTION_FIELD, actionField,
-            Action.PRODUCTS, products
-        )
-        val ecommerce = DataLayer.mapOf(
-            Action.CLICK, clicks
-        )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-            Action.EVENT, Action.PRODUCT_CLICK,
-            Action.EVENT_CATEGORY, Event.EVENT_CATEGORY_BUY_AGAIN_DETAIL_DG,
-            Action.EVENT_ACTION, Action.CLICK_ON_WIDGET_RECOMMENDATION,
-            Action.EVENT_LABEL, eventLabel,
-            Action.ECOMMERCE, ecommerce,
-        ))
-    }
-
     fun sendOrderDetailImpression(userId: String) {
         val isLoggedInStatus = if (userId.isEmpty()) "false" else "true"
 
@@ -257,59 +168,6 @@ class OrderDetailsAnalytics @Inject constructor() {
             Key.CURRENT_SITE, Action.CURRENT_SITE,
             Key.USER_ID, userId,
             Key.IS_LOGIN_STATUS, isLoggedInStatus
-        ))
-    }
-
-    fun sendInvoiceCLickEvent(categoryName: String, productName: String, userId: String) {
-        val eventLabel = String.format(CATEGORY_EVENTS_FORMAT, categoryName, productName)
-        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-            Action.EVENT, Action.CLICK_CHECKOUT,
-            Action.EVENT_CATEGORY, Event.EVENT_CATEGORY_ORDER_DETAIL_PAGE,
-            Action.EVENT_ACTION, Event.EVENT_ACTION_CLICK_SEE_INVOICE,
-            Action.EVENT_LABEL, eventLabel,
-            Key.BUSINESS_UNIT, Event.EVENT_RECHARGE_BUSINESS_UNIT,
-            Key.CURRENT_SITE, Action.CURRENT_SITE,
-            Key.USER_ID, userId
-        ))
-    }
-
-    fun sendCopyButtonClickEvent(categoryName: String, productName: String, userId: String) {
-        val eventLabel = String.format(CATEGORY_EVENTS_FORMAT, categoryName, productName)
-        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-            Action.EVENT, Action.CLICK_CHECKOUT,
-            Action.EVENT_CATEGORY, Event.EVENT_CATEGORY_ORDER_DETAIL_PAGE,
-            Action.EVENT_ACTION, Event.EVENT_ACTION_CLICK_COPY_BUTTON,
-            Action.EVENT_LABEL, eventLabel,
-            Key.BUSINESS_UNIT, Event.EVENT_RECHARGE_BUSINESS_UNIT,
-            Key.CURRENT_SITE, Action.CURRENT_SITE,
-            Key.USER_ID, userId
-        ))
-    }
-
-    fun sendActionButtonClickEvent(
-        categoryName: String,
-        productName: String,
-        buttonId: String,
-        buttonName: String,
-        userId: String
-    ) {
-        val eventAction = if (buttonId == ActionButton.PRIMARY_BUTTON) {
-            Event.EVENT_ACTION_CLICK_PRIMARY_BUTTON
-        } else Event.EVENT_ACTION_CLICK_SECONDARY_BUTTON
-
-        val eventLabel = String.format(
-            "%s - %s - %s",
-            categoryName, productName, buttonName
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-            Action.EVENT, Action.CLICK_CHECKOUT,
-            Action.EVENT_CATEGORY, Event.EVENT_CATEGORY_ORDER_DETAIL_PAGE,
-            Action.EVENT_ACTION, eventAction,
-            Action.EVENT_LABEL, eventLabel,
-            Key.BUSINESS_UNIT, Event.EVENT_RECHARGE_BUSINESS_UNIT,
-            Key.CURRENT_SITE, Action.CURRENT_SITE,
-            Key.USER_ID, userId
         ))
     }
 
