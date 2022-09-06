@@ -31,6 +31,8 @@ data class ReminderTickerUiModel(
     var tickerType: String = "",
 ) : Visitable<TopChatTypeFactory> {
     val impressHolder = ImpressHolder()
+    var localId : String = ""
+
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -59,9 +61,10 @@ data class ReminderTickerUiModel(
                 subText = reminderPojo.subText?: "",
                 url = reminderPojo.url?: "",
                 urlLabel = reminderPojo.urlLabel?: "",
-                replyId = reminderPojo.replyId?: "",
                 tickerType = reminderPojo.tickerType?: ""
-            )
+            ).apply {
+                localId = reminderPojo.localId?: ""
+            }
         }
     }
 }
