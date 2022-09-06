@@ -1610,7 +1610,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     private fun MutableMap<String, Any>.getHomeGeneralTracker(): MutableMap<String, Any> {
-        this[TrackAppUtils.EVENT] = EVENT_CLICK_TOKONOW
         this[KEY_CURRENT_SITE] = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
         this[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
         return this
