@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
