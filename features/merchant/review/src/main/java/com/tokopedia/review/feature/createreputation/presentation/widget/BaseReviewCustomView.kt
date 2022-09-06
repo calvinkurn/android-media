@@ -60,6 +60,12 @@ abstract class BaseReviewCustomView<VB: ViewBinding> @JvmOverloads constructor(
         return binding.root.measuredHeight
     }
 
+    protected fun updateRootHeight(height: Int) {
+        val layoutParamsCopy = binding.root.layoutParams
+        layoutParamsCopy.height = height
+        binding.root.layoutParams = layoutParamsCopy
+    }
+
     private fun createAnimatorSet(
         vararg animator: Animator,
         onAnimationStart: (() -> Unit)? = null,
@@ -101,12 +107,6 @@ abstract class BaseReviewCustomView<VB: ViewBinding> @JvmOverloads constructor(
             interpolator = if (end == MIN_ALPHA) DecelerateInterpolator() else AccelerateInterpolator()
             addUpdateListener { newValue -> binding.root.alpha = newValue.animatedValue as Float }
         }
-    }
-
-    private fun updateRootHeight(height: Int) {
-        val layoutParamsCopy = binding.root.layoutParams
-        layoutParamsCopy.height = height
-        binding.root.layoutParams = layoutParamsCopy
     }
 
     fun animateShow(onAnimationStart: (() -> Unit)? = null, onAnimationEnd: (() -> Unit)? = null) {
