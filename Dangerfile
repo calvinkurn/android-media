@@ -3,10 +3,10 @@ warn("PR is classed as Work in Progress") if github.pr_title.include? "[WIP]"
 
 # Give a warning if the PR description is empty
 desc = github.pr_body.split('Phab Link')[0].gsub(/\s+/, "")
-warn("Your Pull Request description is empty. Please provide PR description so we understand what do you want to merge") if desc.length <= 15
+warn("@#{github.pr_author} your Pull Request description is empty. Please provide PR description so we understand what do you want to merge") if desc.length <= 15
 
 # Give a warning if the PR Jira Link is empty
-warn("Please provide a JIRA ticket link or type /create jira @sonoda-bot will help you to create the Jira Ticket") if github.pr_body.include? "https://phab.tokopedia.com/XXXXX"
+warn("@#{github.pr_author} please provide a JIRA ticket link or type /create jira @sonoda-bot will help you to create the Jira Ticket") if github.pr_body.include? "https://phab.tokopedia.com/XXXXX"
 
 # Give a warning when a PR is over expected size
 warn("This PR is quite a big one! Try splitting this into separate tasks next time 🙂") if git.lines_of_code > 2000
