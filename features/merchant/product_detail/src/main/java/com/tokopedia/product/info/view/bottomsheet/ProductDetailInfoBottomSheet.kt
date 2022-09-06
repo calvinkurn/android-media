@@ -90,13 +90,12 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         ProductDetailInfoAdapterFactoryImpl(this)
     }
 
-    fun show(childFragmentManager: FragmentManager,
-             daggerProductDetailComponent: ProductDetailComponent?,
-             listener: ProductDetailBottomSheetListener) {
+    fun setup(
+        daggerProductDetailComponent: ProductDetailComponent?,
+        listener: ProductDetailBottomSheetListener
+    ) {
         this.productDetailComponent = daggerProductDetailComponent
         this.listener = listener
-
-        show(childFragmentManager, PRODUCT_DETAIL_BOTTOM_SHEET_KEY)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

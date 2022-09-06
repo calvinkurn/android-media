@@ -962,7 +962,7 @@ open class DynamicProductDetailFragment :
                 listener = this,
                 p1Data = viewModel.getDynamicProductInfoP1,
                 sizeChartImageUrl = viewModel.variantData?.sizeChart,
-                detailInfoContent = infoData.getShowableData(),
+                infoData = infoData,
                 forceRefresh = shouldRefreshProductInfoBottomSheet,
             )
             shouldRefreshProductInfoBottomSheet = false

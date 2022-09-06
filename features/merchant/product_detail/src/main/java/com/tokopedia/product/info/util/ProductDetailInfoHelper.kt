@@ -5,7 +5,9 @@ import androidx.fragment.app.FragmentActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
@@ -13,35 +15,38 @@ import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 
 object ProductDetailInfoHelper {
 
-    fun showBottomSheetInfo(fragmentActivity: FragmentActivity,
-                            daggerComponent: ProductDetailComponent?,
-                            listener: ProductDetailBottomSheetListener,
-                            p1Data: DynamicProductInfoP1?,
-                            sizeChartImageUrl: String?,
-                            detailInfoContent: List<ProductDetailInfoContent>,
-                            forceRefresh: Boolean) {
-
+    fun showBottomSheetInfo(
+        fragmentActivity: FragmentActivity,
+        daggerComponent: ProductDetailComponent?,
+        listener: ProductDetailBottomSheetListener,
+        p1Data: DynamicProductInfoP1?,
+        sizeChartImageUrl: String?,
+        infoData: ProductDetailInfoDataModel,
+        forceRefresh: Boolean
+    ) {
         val cacheManager = SaveInstanceCacheManager(fragmentActivity, true)
         val parcelData = generateProductInfoParcel(
-                p1Data,
-                sizeChartImageUrl ?: "",
-                detailInfoContent,
-                forceRefresh
+            p1Data,
+            sizeChartImageUrl.orEmpty(),
+            infoData.dataContent,
+            forceRefresh
         )
         cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
 
-        ProductDetailInfoBottomSheet().also {
-            it.arguments = Bundle().apply {
-                putString(
+        showImmediately(
+            fragmentManager = fragmentActivity.supportFragmentManager,
+            tag = ProductDetailInfoBottomSheet.PRODUCT_DETAIL_BOTTOM_SHEET_KEY
+        ) {
+            ProductDetailInfoBottomSheet().apply {
+                setup(daggerProductDetailComponent = daggerComponent, listener = listener)
+                arguments = Bundle().apply {
+                    putString(
                         ProductDetailInfoBottomSheet.PRODUCT_DETAIL_INFO_PARCEL_KEY,
                         cacheManager.id
-                )
+                    )
+                }
             }
-        }.show(
-                childFragmentManager = fragmentActivity.supportFragmentManager,
-                daggerProductDetailComponent = daggerComponent,
-                listener = listener
-        )
+        }
     }
 
     private fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?,
