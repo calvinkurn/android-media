@@ -457,9 +457,9 @@ class FeedViewModel @Inject constructor(
         try {
             val result = FeedPromotedShopViewModel()
             val params =
-                ToggleFavouriteShopUseCase.createRequestParam(promotedShopViewModel.shop.id)
+                ToggleFavouriteShopUseCase.createRequestParam(promotedShopViewModel.shop?.id)
 
-            params.putString(PARAM_SHOP_DOMAIN, promotedShopViewModel.shop.domain)
+            params.putString(PARAM_SHOP_DOMAIN, promotedShopViewModel.shop?.domain)
             params.putString(PARAM_SRC, DEFAULT_VALUE_SRC)
             params.putString(PARAM_AD_KEY, promotedShopViewModel.adRefKey)
             val requestSuccess =

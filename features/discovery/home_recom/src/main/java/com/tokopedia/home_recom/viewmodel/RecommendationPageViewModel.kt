@@ -273,7 +273,7 @@ open class RecommendationPageViewModel @Inject constructor(
                 }
 
                 override fun onNext(wishlistModel: WishlistModel) {
-                    if (wishlistModel.data != null && wishlistModel.data.isSuccess) {
+                    if (wishlistModel.data != null && wishlistModel.data?.isSuccess == true) {
                         callback.invoke(true, null)
                     } else {
                         callback.invoke(false, Throwable())

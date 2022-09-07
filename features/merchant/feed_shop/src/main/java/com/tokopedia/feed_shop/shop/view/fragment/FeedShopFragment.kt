@@ -34,6 +34,13 @@ import com.tokopedia.feed_shop.R
 import com.tokopedia.feed_shop.analytics.ShopAnalytics
 import com.tokopedia.feed_shop.databinding.FragmentFeedShopBinding
 import com.tokopedia.feed_shop.di.DaggerFeedShopComponent
+import com.tokopedia.feed_shop.shop.domain.WhitelistDomain
+import com.tokopedia.feed_shop.shop.view.InterfaceShopPageFab
+import com.tokopedia.feed_shop.shop.view.adapter.factory.FeedShopFactoryImpl
+import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
+import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
+import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
+import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
@@ -58,7 +65,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -75,13 +81,6 @@ import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.util.goToInformationWebview
 import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.feed_shop.shop.domain.WhitelistDomain
-import com.tokopedia.feed_shop.shop.view.InterfaceShopPageFab
-import com.tokopedia.feed_shop.shop.view.adapter.factory.FeedShopFactoryImpl
-import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
-import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
-import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
-import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
@@ -843,7 +842,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (adapter.list[positionInFeed] is TopadsShopUiModel) {
             val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopUiModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                presenter.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
+                presenter.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop?.imageShop?.xsEcs ?: "", true)
             }
         }
     }
