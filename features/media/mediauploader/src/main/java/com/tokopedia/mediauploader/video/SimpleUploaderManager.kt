@@ -1,6 +1,5 @@
 package com.tokopedia.mediauploader.video
 
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
@@ -23,10 +22,8 @@ class SimpleUploaderManager @Inject constructor(
     private var maxRetryTranscoding = 0
 
     suspend operator fun invoke(file: File, sourceId: String, withTranscode: Boolean): UploadResult {
-        val policy = policyManager.get()
-
         val uploader = simpleUploaderUseCase(SimpleUploadParam(
-            timeOut = policy?.timeOut.orZero().toString(),
+            timeOut = policyManager.get().timeOutString(),
             sourceId = sourceId,
             file = file
         ))

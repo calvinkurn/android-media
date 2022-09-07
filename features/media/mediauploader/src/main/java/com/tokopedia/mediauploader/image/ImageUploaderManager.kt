@@ -1,6 +1,5 @@
 package com.tokopedia.mediauploader.image
 
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
@@ -62,7 +61,7 @@ class ImageUploaderManager @Inject constructor(
 
     private suspend fun upload(file: File, sourceId: String, policy: SourcePolicy): UploadResult {
         val upload = imageUploaderUseCase(ImageUploadParam(
-            timeOut = policy.timeOut.orZero().toString(),
+            timeOut = policy.timeOutString(),
             hostUrl = policy.host,
             sourceId = sourceId,
             file = file,

@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 
 object MediaUploaderNetwork {
 
-    const val BASE_URL = "https://upedia.tokopedia.net/"
+    private const val BASE_URL = "https://upedia.tokopedia.net/"
     private const val MAX_LENGTH_CHUCKER_CONTENT = 1000L
 
     fun okHttpClientBuilder(

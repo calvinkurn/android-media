@@ -45,7 +45,7 @@ class LargeUploaderManager @Inject constructor(
         withTranscode: Boolean
     ): UploadResult {
         val policy = policyManager.get()
-        val videoPolicy = policy?.videoPolicy ?: return UploadResult.Error(POLICY_NOT_FOUND)
+        val videoPolicy = policy.videoPolicy ?: return UploadResult.Error(POLICY_NOT_FOUND)
 
         // 1. init the uploader
         getLastState(sourceId, file.name) {
@@ -247,6 +247,7 @@ class LargeUploaderManager @Inject constructor(
 
     private fun resetUpload() {
         uploadStateManager.clear()
+        policyManager.clear()
 
         chunkTotal = 0
         partNumber = 1
