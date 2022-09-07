@@ -10,7 +10,6 @@ import com.tokopedia.report.data.model.ProductReportReason
 
 @Stable
 data class ProductReportUiState(
-    val isLoading: Boolean = false,
     val data: List<ProductReportReason> = emptyList(),
     val error: String? = null
 )

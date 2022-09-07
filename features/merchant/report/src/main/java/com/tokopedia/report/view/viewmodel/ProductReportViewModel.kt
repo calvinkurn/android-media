@@ -78,15 +78,13 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     private fun getReportReason() = viewModelScope.launch {
-        _uiState.update { it.copy(isLoading = true) }
-
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(query, ProductReportReason.Response::class.java)
             val data = graphqlRepository.response(listOf(graphqlRequest))
             val list = data.getSuccessData<ProductReportReason.Response>().data
-            _uiState.update { it.copy(isLoading = false, data = list) }
+            _uiState.update { it.copy(data = list) }
         }){ throwable ->
-            _uiState.update { it.copy(isLoading = false, error = throwable.message) }
+            _uiState.update { it.copy(error = throwable.message) }
         }
     }
 }

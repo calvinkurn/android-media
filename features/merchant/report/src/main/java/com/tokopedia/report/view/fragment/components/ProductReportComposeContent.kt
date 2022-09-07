@@ -5,7 +5,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
 
@@ -18,12 +20,6 @@ import com.tokopedia.report.view.fragment.models.ProductReportUiState
 fun ProductReportComposeContent(
     uiState: ProductReportUiState
 ) {
-    if (uiState.isLoading) {
-        Text(
-            text = "Loading...",
-        )
-    }
-
     if (uiState.error.isNullOrBlank().not()) {
         Text(
             text = "error: ${uiState.error.orEmpty()}",
@@ -31,12 +27,21 @@ fun ProductReportComposeContent(
         )
     }
 
-    if (uiState.data.isNotEmpty()) {
-        val data = uiState.data
-        LazyColumn {
-            items(data) { item ->
-                Text(text = item.strLabel)
-            }
+    LazyColumn {
+        item {
+            ProductReportReasonHeader(
+                text = stringResource(id = R.string.product_report_header)
+            )
+        }
+
+        items(uiState.data) { item ->
+            Text(text = item.strLabel)
+        }
+
+        item {
+            ProductReportReasonFooter(
+                text = stringResource(id = R.string.product_report_see_all_types)
+            )
         }
     }
 }
@@ -64,7 +69,7 @@ fun ProductReportComposeContentPreview() {
 @Composable
 fun ProductReportComposeContentLoadingPreview() {
     ProductReportComposeContent(
-        uiState = ProductReportUiState(isLoading = true)
+        uiState = ProductReportUiState()
     )
 }
 
