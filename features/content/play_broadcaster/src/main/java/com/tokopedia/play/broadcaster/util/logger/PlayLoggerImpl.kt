@@ -20,6 +20,17 @@ class PlayLoggerImpl @Inject constructor(
         const val LIMIT_LOG = 20
         private const val TAG_SCALYR = "PLAY_BROADCASTER"
         private const val TAG_PLAY_BROADCASTER_MONITORING = "PLAY_BROADCASTER_MONITORING"
+
+        private const val CHANNEL_ID_TAG = "channelID"
+        private const val LOG_TRACE_TAG = "log_trace"
+        private const val VIDEO_BITRATE_TAG = "videoBitrate"
+        private const val AUDIO_BITRATE_TAG = "audioBitrate"
+        private const val RESOLUTION_TAG = "resolution"
+        private const val BANDWIDTH_TAG = "bandwidth"
+        private const val FPS_TAG = "fps"
+        private const val TRAFFIC_TAG = "traffic"
+        private const val VIDEO_BUFFER_TIMESTAMP_TAG = "videoBufferTimestamp"
+        private const val AUTHOR_ID_TAG = "authorID"
     }
 
     /***
@@ -51,8 +62,8 @@ class PlayLoggerImpl @Inject constructor(
         collector.getAll().chunked(LIMIT_LOG).forEach {
             sendLog(
                 mapOf(
-                    "channel_id" to channelId,
-                    "log_trace" to it.toString()
+                    CHANNEL_ID_TAG to channelId,
+                    LOG_TRACE_TAG to it.toString()
                 )
             )
             collector.getAll().removeAll(it)
@@ -64,15 +75,15 @@ class PlayLoggerImpl @Inject constructor(
      */
     override fun sendBroadcasterLog(metric: PlayBroadcasterMetric) {
         val metrics = mapOf(
-            "videoBitrate" to "${metric.videoBitrate}",
-            "audioBitrate" to "${metric.audioBitrate}",
-            "resolution" to metric.resolution,
-            "bandwidth" to "${metric.bandwidth}",
-            "fps" to "${metric.fps}",
-            "traffic" to "${metric.traffic}",
-            "videoBufferTimestamp" to "${metric.videoBufferTimestamp}",
-            "channelID" to metric.channelId,
-            "authorID" to metric.authorId,
+            VIDEO_BITRATE_TAG to "${metric.videoBitrate}",
+            AUDIO_BITRATE_TAG to "${metric.audioBitrate}",
+            RESOLUTION_TAG to metric.resolution,
+            BANDWIDTH_TAG to "${metric.bandwidth}",
+            FPS_TAG to "${metric.fps}",
+            TRAFFIC_TAG to "${metric.traffic}",
+            VIDEO_BUFFER_TIMESTAMP_TAG to "${metric.videoBufferTimestamp}",
+            CHANNEL_ID_TAG to metric.channelId,
+            AUTHOR_ID_TAG to metric.authorId,
         )
         ServerLogger.log(Priority.P2, TAG_PLAY_BROADCASTER_MONITORING, metrics)
     }
