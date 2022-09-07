@@ -2,6 +2,7 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,6 +55,9 @@ class EngagementCarouselViewComponent(
     private val linearLayoutManager =
         LinearLayoutManager(rootView.context, LinearLayoutManager.VERTICAL, false)
 
+    private val size: Int
+        get() = carouselAdapter.itemCount
+
     init {
         carousel.apply {
             adapter = carouselAdapter
@@ -66,10 +70,17 @@ class EngagementCarouselViewComponent(
     fun setData(list: List<EngagementUiModel>) {
         carouselAdapter.setItemsAndAnimateChanges(list)
         startAutoScroll()
+        resize()
+    }
+
+    private fun resize() {
+        if (size == 1)
+            carousel.updateLayoutParams {
+                height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
     }
 
     private fun startAutoScroll() {
-        val size = carouselAdapter.itemCount
         if (size <= 1) return
         job?.cancel()
         job = scope.launchCatchError(block = {
@@ -86,14 +97,14 @@ class EngagementCarouselViewComponent(
         }, onError = {})
     }
 
-    private fun stopAutoScroll(){
-        if(job?.isActive == true){
+    private fun stopAutoScroll() {
+        if (job?.isActive == true) {
             job?.cancel()
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy(){
+    fun onDestroy() {
         stopAutoScroll()
     }
 
