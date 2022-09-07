@@ -20,11 +20,11 @@ class SendChatRatingUseCase
     GraphqlUseCase<SendRatingPojo>(graphqlRepository) {
 
     fun sendChatRating(
+        onSuccess: KFunction3<SendRatingPojo, Int, ChatRatingViewModel, Unit>,
+        onError: (Throwable) -> Unit,
         messageId: String,
         rating: Int,
         element: ChatRatingViewModel,
-        onSuccess: KFunction3<SendRatingPojo, Int, ChatRatingViewModel, Unit>,
-        onError: (Throwable) -> Unit
     ) {
         try {
             this.setTypeClass(SendRatingPojo::class.java)

@@ -71,7 +71,6 @@ import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
-import com.tokopedia.chatbot.domain.pojo.chatrating.SendReasonRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
@@ -362,7 +361,7 @@ class ChatbotPresenter @Inject constructor(
 
     }
 
-    private fun leaveQueue(dividerTime: String): () -> Unit {
+    fun leaveQueue(dividerTime: String): () -> Unit {
         return {
             leaveQueueUseCase.cancelJobs()
             leaveQueueUseCase.execute(
@@ -391,7 +390,6 @@ class ChatbotPresenter @Inject constructor(
 
     override fun showErrorSnackbar(stringId: Int) {
         view.showSnackbarError(stringId)
-
     }
 
     override fun sendReadEvent(messageId: String) {
@@ -414,9 +412,13 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun sendRating(messageId: String, rating: Int, element: ChatRatingViewModel) {
-        sendChatRatingUseCase.sendChatRating(messageId, rating, element,
+        sendChatRatingUseCase.sendChatRating(
             ::onSuccessSendRating,
-            ::onFailureSendRating)
+            ::onFailureSendRating,
+            messageId,
+            rating,
+            element
+        )
     }
 
     private fun onFailureSendRating(throwable: Throwable) {
@@ -425,29 +427,6 @@ class ChatbotPresenter @Inject constructor(
 
     private fun onSuccessSendRating(pojo : SendRatingPojo, rating: Int, element : ChatRatingViewModel) {
         view.onSuccessSendRating(pojo, rating, element)
-    }
-
-    override fun sendReasonRating(messageId: String, reason: String, timestamp: String,
-                                  onError: (Throwable) -> Unit,
-                                  onSuccess: (String) -> Unit) {
-//        sendRatingReasonUseCase.execute(SendRatingReasonUseCase.generateParam(
-//                messageId, reason, timestamp
-//        ), SendRatingReasonSubscriber(onError, onSuccess))
-//        sendRatingReasonUseCase.sendRatingReason(
-//            messageId,
-//            reason,
-//            timestamp,
-//            ::onSuccessSendReasonRating,
-//            ::onErrorSendReasonRating
-//        )
-    }
-
-    private fun onSuccessSendReasonRating(sendReasonRatingPojo: SendReasonRatingPojo) {
-
-    }
-
-    private fun onErrorSendReasonRating(throwable: Throwable) {
-
     }
 
     override fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,

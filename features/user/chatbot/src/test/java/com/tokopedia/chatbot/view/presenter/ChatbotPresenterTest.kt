@@ -9,11 +9,14 @@ import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
+import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
@@ -103,7 +106,6 @@ class ChatbotPresenterTest {
         tkpdAuthInterceptor = mockk(relaxed = true)
         fingerprintInterceptor = mockk(relaxed = true)
         sendChatRatingUseCase = mockk(relaxed = true)
-        sendRatingReasonUseCase = mockk(relaxed = true)
         uploadImageUseCase = mockk(relaxed = true)
         submitCsatRatingUseCase = mockk(relaxed = true)
         leaveQueueUseCase = mockk(relaxed = true)
@@ -276,10 +278,6 @@ class ChatbotPresenterTest {
         }
 
     }
-
-
-    //LEaveQueueUseCase
-
 
     @Test
     fun `sendMessage without parent reply`() {
@@ -708,6 +706,108 @@ class ChatbotPresenterTest {
         }
 
     }
+
+    @Test
+    fun `checkForSession success if newSession is in response calls startNewSession`() {
+        val response = mockk<TopBotNewSessionResponse>(relaxed = true)
+        val isNewSession = true
+
+        coEvery {
+            getTopBotNewSessionUseCase.getTopBotUserSession(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(TopBotNewSessionResponse) -> Unit>().invoke(response)
+        }
+
+        every {
+            response.topBotGetNewSession.isNewSession
+        } returns isNewSession
+
+        presenter.checkForSession("123456")
+
+        verify {
+            view.startNewSession()
+        }
+
+    }
+
+    @Test
+    fun `checkForSession success if newSession is in response calls loadChatHistory`() {
+        val response = mockk<TopBotNewSessionResponse>(relaxed = true)
+        val isNewSession = false
+
+        coEvery {
+            getTopBotNewSessionUseCase.getTopBotUserSession(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(TopBotNewSessionResponse) -> Unit>().invoke(response)
+        }
+
+        every {
+            response.topBotGetNewSession.isNewSession
+        } returns isNewSession
+
+        presenter.checkForSession("123456")
+
+        verify {
+            view.loadChatHistory()
+        }
+
+    }
+
+    @Test
+    fun `checkForSession failure  calls loadChatHistory`() {
+
+        coEvery {
+            getTopBotNewSessionUseCase.getTopBotUserSession(any(), captureLambda(), any())
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        presenter.checkForSession("123456")
+
+        verify {
+            view.loadChatHistory()
+        }
+
+    }
+
+    @Test
+    fun `sendRating success `() {
+        val response = mockk<SendRatingPojo>(relaxed = true)
+
+        coEvery {
+            sendChatRatingUseCase.sendChatRating(captureLambda(), any(), any(),any(), any())
+        } coAnswers {
+            firstArg<(SendRatingPojo) -> Unit>().invoke(response)
+        }
+
+        presenter.sendRating("123456", 5, ChatRatingViewModel())
+
+        verify {
+            view.onSuccessSendRating(any(), any(), any())
+        }
+
+    }
+
+    @Test
+    fun `sendRating throws exception `() {
+
+        coEvery {
+            sendChatRatingUseCase.sendChatRating(captureLambda(), any(), any(),any(), any())
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        presenter.sendRating("123456", 5, ChatRatingViewModel())
+
+        verify {
+            view.onError(any())
+        }
+
+    }
+
+    //hitGqlforOptionList
+    //leaveQueue
+    //OnClickLeaveQueue
 
     /******************************* Socket Related Unit Tests************************************/
 

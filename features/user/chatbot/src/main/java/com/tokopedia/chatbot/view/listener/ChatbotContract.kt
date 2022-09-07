@@ -103,10 +103,6 @@ interface ChatbotContract {
 
         fun sendRating(messageId : String, rating: Int, element: ChatRatingViewModel)
 
-        fun sendReasonRating(messageId: String, reason: String, timestamp: String,
-                             onError: (Throwable) -> Unit,
-                             onSuccess: (String) -> Unit)
-
         fun submitCsatRating(inputItem: InputItem)
 
         fun showTickerData()
