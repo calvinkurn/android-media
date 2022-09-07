@@ -6,7 +6,6 @@ import com.tokopedia.play.analytic.share.PlayShareExperienceAnalytic
 import com.tokopedia.play.analytic.socket.PlaySocketAnalytic
 import com.tokopedia.play.analytic.tagitem.PlayTagItemsAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
-import com.tokopedia.play.analytic.voucher.PlayVoucherAnalytic
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.assisted.Assisted
@@ -25,14 +24,12 @@ class PlayAnalytic2 @AssistedInject constructor(
     upcomingAnalytic: PlayUpcomingAnalytic,
     shareExperienceAnalytic: PlayShareExperienceAnalytic,
     tagItemsAnalytic: PlayTagItemsAnalytic.Factory,
-    playVoucherAnalytic: PlayVoucherAnalytic.Factory,
 ) : PlayPartnerAnalytic by partnerAnalytic,
     PlayLikeAnalytic by likeAnalytic,
     PlaySocketAnalytic by socketAnalytic,
     PlayUpcomingAnalytic by upcomingAnalytic,
     PlayShareExperienceAnalytic by shareExperienceAnalytic,
-    PlayTagItemsAnalytic by tagItemsAnalytic.create(trackingQueue, channelInfo),
-    PlayVoucherAnalytic by playVoucherAnalytic.create(channelInfo) {
+    PlayTagItemsAnalytic by tagItemsAnalytic.create(trackingQueue, channelInfo) {
 
     @AssistedFactory
     interface Factory {

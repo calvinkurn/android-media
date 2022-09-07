@@ -1836,6 +1836,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onWidgetSwipe(view: EngagementCarouselViewComponent, id: String) {
+        newAnalytic.swipeWidget(id)
     }
 
     companion object {

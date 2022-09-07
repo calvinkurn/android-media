@@ -1,26 +1,20 @@
 package com.tokopedia.play.analytic.voucher
 
 import com.tokopedia.play.analytic.*
-import com.tokopedia.play.analytic.KEY_SESSION_IRIS
-import com.tokopedia.play.analytic.KEY_TRACK_BUSINESS_UNIT
-import com.tokopedia.play.analytic.KEY_TRACK_CURRENT_SITE
-import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
-import com.tokopedia.play.analytic.KEY_TRACK_VIEW_CONTENT_IRIS
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 06/09/22
  */
-class PlayVoucherAnalyticImpl @AssistedInject constructor(
+class PlayVoucherAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface,
-    @Assisted private val channelInfo: PlayChannelInfoUiModel,
 ) : PlayVoucherAnalytic {
+
+    private var channelInfo = PlayChannelInfoUiModel()
 
     private val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else "0"
@@ -34,12 +28,8 @@ class PlayVoucherAnalyticImpl @AssistedInject constructor(
     private val channelType: String
         get() = channelInfo.channelType.value
 
-
-    @AssistedFactory
-    interface Factory : PlayVoucherAnalytic.Factory {
-        override fun create(
-            channelInfo: PlayChannelInfoUiModel,
-        ): PlayVoucherAnalyticImpl
+    override fun setData(channelInfoUiModel: PlayChannelInfoUiModel){
+        channelInfo = channelInfoUiModel
     }
 
     override fun impressVoucherWidget(voucherId: String) {

@@ -74,7 +74,7 @@ abstract class PlayBindModule {
 
     @Binds
     @PlayScope
-    abstract fun bindVoucherAnalytic(factory: PlayVoucherAnalyticImpl.Factory): PlayVoucherAnalytic.Factory
+    abstract fun bindVoucherAnalytic(analytic: PlayVoucherAnalyticImpl): PlayVoucherAnalytic
 
     /**
      * Utils
