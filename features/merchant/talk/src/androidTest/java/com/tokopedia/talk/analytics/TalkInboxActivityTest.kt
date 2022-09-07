@@ -11,7 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.talk.R
 import com.tokopedia.talk.analytics.util.*
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_ITEM_THREAD_MESSAGE_PATH
@@ -22,7 +22,6 @@ import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInbo
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
 import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,7 +31,6 @@ import org.junit.runner.RunWith
 class TalkInboxActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(targetContext)
     private val userSession = UserSession(targetContext)
 
     @get:Rule
@@ -55,10 +53,8 @@ class TalkInboxActivityTest {
         }
     }
 
-    @Before
-    fun setup() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
-    }
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @After
     fun tear() {
@@ -75,8 +71,7 @@ class TalkInboxActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, TALK_ITEM_THREAD_MESSAGE_PATH)
-            gtmLogDBSource.finishTest()
+            validate(cassavaRule, TALK_ITEM_THREAD_MESSAGE_PATH)
         }
     }
 
@@ -87,8 +82,7 @@ class TalkInboxActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, TALK_VIEW_INBOX_THREAD)
-            gtmLogDBSource.finishTest()
+            validate(cassavaRule, TALK_VIEW_INBOX_THREAD)
         }
     }
 
@@ -99,8 +93,7 @@ class TalkInboxActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, TALK_VIEW_INBOX_TAB)
-            gtmLogDBSource.finishTest()
+            validate(cassavaRule, TALK_VIEW_INBOX_TAB)
         }
     }
 

@@ -410,7 +410,7 @@ data class DataItem(
         var titleLogoUrl: String? = null,
 
         @SerializedName("notify_campaign_id")
-        var notifyCampaignId: Int = 0,
+        var notifyCampaignId: String = "",
 
         @SerializedName("hasAddToCartButton")
         var hasATC: Boolean = false,
