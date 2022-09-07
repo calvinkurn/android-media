@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
-    android:layout_marginTop="16dp">
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgProduct"
@@ -16,10 +17,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imgProduct"
         app:layout_constraintTop_toTopOf="@id/imgProduct"
         app:typographyType="display_3"
@@ -97,8 +101,8 @@
         android:layout_height="28dp"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
-        app:icon_name="CHEVRON_RIGHT"
         app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="@id/textSimilarProduct"
         app:layout_constraintStart_toEndOf="@id/textSimilarProduct"
         app:layout_constraintTop_toTopOf="@id/textSimilarProduct" />
@@ -107,13 +111,12 @@
         android:id="@+id/btnProductCta"
         android:layout_width="152dp"
         android:layout_height="32dp"
-        android:layout_marginEnd="16dp"
         android:text="@string/tokopedianow_add_to_cart_text"
         android:textSize="12sp"
-        app:unifyButtonSize="small"
         app:layout_constraintBottom_toBottomOf="@id/textSimilarProduct"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/textSimilarProduct"
+        app:unifyButtonSize="small"
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost"
         tools:visibility="gone" />
@@ -122,7 +125,6 @@
         android:id="@+id/quantityEditor"
         android:layout_width="112dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/textSimilarProduct"
         app:layout_constraintEnd_toEndOf="parent"
