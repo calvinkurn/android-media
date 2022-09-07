@@ -110,7 +110,7 @@ class RevampOrderListDetailActivityDoubleTicker {
         onView(withId(R.id.status_label)).check(matches(isDisplayed()))
         onView(withId(R.id.status_value)).check(matches(isDisplayed()))
         onView(withId(R.id.status_label)).check(matches(withText("Status")))
-        onView(withId(R.id.status_value)).check(matches(withText("Transaksi Dibatalkan")))
+        onView(withId(R.id.status_value)).check(matches(withText("Transaksi Berhasil")))
         onView(withId(R.id.ticker_status)).check(matches(isDisplayed()))
     }
 
