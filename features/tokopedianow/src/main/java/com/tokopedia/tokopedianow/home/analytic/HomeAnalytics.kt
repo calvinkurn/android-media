@@ -665,7 +665,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             productBrand = product.brandId,
             productCategory = product.categoryId
         )
-        productItem.putString(KEY_DIMENSION_90, "")
+        productItem.putString(KEY_DIMENSION_90, PRODUCT_PAGE_SOURCE)
 
         val items = arrayListOf(productItem)
 
