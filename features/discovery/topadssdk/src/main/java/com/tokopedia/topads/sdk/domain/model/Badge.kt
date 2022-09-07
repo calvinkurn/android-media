@@ -9,16 +9,17 @@ import org.json.JSONObject
 data class Badge(
     @SerializedName("title")
     @Expose
-    var title: String? = "",
+    var title: String = "",
 
     @SerializedName("image_url")
     @Expose
-    var imageUrl: String? = "",
+    var imageUrl: String = "",
 
     @SerializedName("show")
     @Expose
-    var isShow: Boolean? = false
+    var isShow: Boolean = false
 ) : Parcelable {
+
 
     constructor(jSONObject: JSONObject) : this() {
         if (!jSONObject.isNull("title")) {
@@ -32,17 +33,16 @@ data class Badge(
         }
     }
 
-    constructor(parcel: Parcel) : this() {
-        parcel.readString()
-        parcel.readString()
-        val tmpShow = parcel.readByte()
-        isShow = if (tmpShow.toInt() == 0) null else tmpShow.toInt() == 1
-    }
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readByte() != 0.toByte()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(title)
         parcel.writeString(imageUrl)
-        parcel.writeByte((if (isShow == null) 0 else if (isShow!!) 1 else 2).toByte())
+        parcel.writeByte(if (isShow) 1 else 0)
     }
 
     override fun describeContents(): Int {
@@ -58,4 +58,5 @@ data class Badge(
             return arrayOfNulls(size)
         }
     }
+
 }

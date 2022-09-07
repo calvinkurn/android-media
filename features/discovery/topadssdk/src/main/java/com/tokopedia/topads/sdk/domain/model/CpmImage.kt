@@ -8,13 +8,13 @@ import org.json.JSONObject
 
 data class CpmImage(
     @SerializedName("full_url")
-    var fullUrl: String? = null,
+    var fullUrl: String = "",
 
     @SerializedName("full_ecs")
-    var fullEcs: String? = null,
+    var fullEcs: String = "",
 
     @SerializedName("illustration_url")
-    var ilustrationUrl: String? = null
+    var ilustrationUrl: String = ""
 ) : ImpressHolder(), Parcelable {
 
     constructor(jSONObject: JSONObject) : this() {
@@ -30,15 +30,15 @@ data class CpmImage(
     }
 
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString()
+        parcel.readString()?:"",
+        parcel.readString()?:"",
+        parcel.readString()?:""
     )
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(fullUrl)
-        parcel.writeString(fullEcs)
-        parcel.writeString(ilustrationUrl)
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(fullUrl)
+        dest.writeString(fullEcs)
+        dest.writeString(ilustrationUrl)
     }
 
     override fun describeContents(): Int {

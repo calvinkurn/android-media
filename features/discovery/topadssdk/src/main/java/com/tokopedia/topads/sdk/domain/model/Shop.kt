@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import org.json.JSONObject
-import java.util.ArrayList
+import java.util.*
 
 private const val KEY_ID = "id"
 private const val KEY_NAME = "name"
@@ -28,33 +28,33 @@ private const val KEY_SHOP_RATING_AVG = "shop_rating_avg"
 data class Shop(
     @SerializedName(KEY_ID)
     @Expose
-    var id: String? = "",
-    var adRefKey: String? = "",
-    var adId: String? = "",
+    var id: String = "",
+    var adRefKey: String = "",
+    var adId: String = "",
 
     @SerializedName(KEY_NAME)
     @Expose
-    var name: String? = "",
+    var name: String = "",
 
     @SerializedName(KEY_DOMAIN)
     @Expose
-    var domain: String? = "",
+    var domain: String = "",
 
     @SerializedName(KEY_TAGLINE)
     @Expose
-    var tagline: String? = "",
+    var tagline: String = "",
 
     @SerializedName(KEY_LOCATION)
     @Expose
-    var location: String? = "",
+    var location: String = "",
 
     @SerializedName(KEY_CITY)
     @Expose
-    var city: String? = "",
+    var city: String = "",
 
     @SerializedName(KEY_IMAGE_SHOP)
     @Expose
-    var imageShop: ImageShop? = ImageShop(),
+    var imageShop: ImageShop = ImageShop(),
 
     @SerializedName(KEY_GOLD_SHOP)
     @Expose
@@ -66,7 +66,7 @@ data class Shop(
 
     @SerializedName(KEY_LUCKY_SHOP)
     @Expose
-    var luckyShop: String? = "",
+    var luckyShop: String = "",
 
     @SerializedName(KEY_SHOP_IS_OFFICIAL)
     @Expose
@@ -74,7 +74,7 @@ data class Shop(
 
     @SerializedName(KEY_URI)
     @Expose
-    var uri: String? = "",
+    var uri: String = "",
 
     @SerializedName(KEY_IMAGE_PRODUCT)
     @Expose
@@ -82,7 +82,7 @@ data class Shop(
 
     @SerializedName(KEY_OWNER_ID)
     @Expose
-    var ownerId: String? = null,
+    var ownerId: String = "",
 
     @SerializedName(KEY_IS_OWNER)
     @Expose
@@ -91,11 +91,11 @@ data class Shop(
 
     @SerializedName(KEY_BADGES)
     @Expose
-    var badges: MutableList<Badge>? = ArrayList(),
+    var badges: MutableList<Badge> = ArrayList(),
 
     @SerializedName(KEY_SHOP_RATING_AVG)
     @Expose
-    var shopRatingAvg: String? = ""
+    var shopRatingAvg: String = ""
 ) : Parcelable {
 
 
@@ -160,25 +160,25 @@ data class Shop(
     }
 
     constructor(parcel: Parcel) : this() {
-        id = parcel.readString()
-        adRefKey = parcel.readString()
-        adId = parcel.readString()
-        name = parcel.readString()
-        domain = parcel.readString()
-        tagline = parcel.readString()
-        location = parcel.readString()
-        city = parcel.readString()
-        imageShop = parcel.readParcelable(ImageShop::class.java.classLoader)
-        isGoldShop = parcel.readByte().toInt() != 0
-        isGoldShopBadge = parcel.readByte().toInt() != 0
-        luckyShop = parcel.readString()
-        isShop_is_official = parcel.readByte().toInt() != 0
-        uri = parcel.readString()
-        imageProduct = parcel.createTypedArrayList(ImageProduct.CREATOR)
-        ownerId = parcel.readString()
-        isOwner = parcel.readByte().toInt() != 0
-        badges = parcel.createTypedArrayList(Badge)
-        shopRatingAvg = parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readParcelable(ImageShop::class.java.classLoader) ?: ImageShop()
+        parcel.readByte().toInt() != 0
+        parcel.readByte().toInt() != 0
+        parcel.readString()
+        parcel.readByte().toInt() != 0
+        parcel.readString()
+        parcel.createTypedArrayList(ImageProduct.CREATOR)
+        parcel.readString()
+        parcel.readByte().toInt() != 0
+        parcel.createTypedArrayList(Badge)
+        parcel.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

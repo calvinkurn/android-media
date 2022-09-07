@@ -21,22 +21,22 @@ private const val KEY_LOCATION = "location"
 
 data class CpmShop(
     @SerializedName(KEY_ID)
-    var id: String? = null,
+    var id: String = "",
 
     @SerializedName(KEY_NAME)
-    var name: String? = null,
+    var name: String = "",
 
     @SerializedName(KEY_DOMAIN)
-    var domain: String? = null,
+    var domain: String = "",
 
     @SerializedName(KEY_TAGLINE)
-    var tagline: String? = null,
+    var tagline: String = "",
 
     @SerializedName(KEY_SLOGAN)
-    var slogan: String? = null,
+    var slogan: String = "",
 
     @SerializedName(KEY_PRODUCT)
-    var products: MutableList<Product>? = ArrayList(),
+    var products: MutableList<Product> = ArrayList(),
 
     @SerializedName(KEY_IMAGE_SHOP)
     var imageShop: ImageShop? = null,
@@ -54,20 +54,20 @@ data class CpmShop(
     var isFollowed: Boolean = false,
 
     @SerializedName(KEY_LOCATION)
-    var location: String? = null,
+    var location: String = "",
 
     @SerializedName(KEY_MERCHANT_VOUCHERS)
     var merchantVouchers: MutableList<String> = ArrayList()
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this() {
-        id = parcel.readString()
-        name = parcel.readString()
-        domain = parcel.readString()
-        tagline = parcel.readString()
-        slogan = parcel.readString()
-        location = parcel.readString()
-        products = parcel.createTypedArrayList(Product.CREATOR)
+        id = parcel.readString() ?: ""
+        name = parcel.readString() ?: ""
+        domain = parcel.readString() ?: ""
+        tagline = parcel.readString() ?: ""
+        slogan = parcel.readString() ?: ""
+        location = parcel.readString() ?: ""
+        products = parcel.createTypedArrayList(Product.CREATOR) ?: ArrayList()
         imageShop = parcel.readParcelable(ImageShop::class.java.classLoader)
         isOfficial = parcel.readByte().toInt() != 0
         isPMPro = parcel.readByte().toInt() != 0
@@ -94,7 +94,7 @@ data class CpmShop(
         if (!jSONObject.isNull(KEY_PRODUCT)) {
             val productArray = jSONObject.getJSONArray(KEY_PRODUCT)
             for (i in 0 until productArray.length()) {
-                products!!.add(Product(productArray.getJSONObject(i)))
+                products.add(Product(productArray.getJSONObject(i)))
             }
         }
         if (!jSONObject.isNull(KEY_IMAGE_SHOP)) {

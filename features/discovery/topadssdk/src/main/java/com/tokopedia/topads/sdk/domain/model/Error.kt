@@ -17,11 +17,11 @@ data class Error(
 
     @SerializedName(KEY_TITLE)
     @Expose
-    var title: String? = null,
+    var title: String = "",
 
     @SerializedName(KEY_DETAIL)
     @Expose
-    var detail: String? = null
+    var detail: String = ""
 ) : Parcelable {
 
     constructor(jSONObject: JSONObject) : this() {
@@ -38,8 +38,8 @@ data class Error(
 
     constructor(parcel: Parcel) : this() {
         code = parcel.readInt()
-        title = parcel.readString()
-        detail = parcel.readString()
+        title = parcel.readString() ?: ""
+        detail = parcel.readString() ?: ""
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

@@ -15,22 +15,22 @@ private const val KEY_XS_ECS = "xs_ecs"
 
 data class ProductImage(
     @SerializedName(KEY_M_URL)
-    var m_url: String? = "",
+    var m_url: String = "",
 
     @SerializedName(KEY_S_URL)
-    var s_url: String? = "",
+    var s_url: String = "",
 
     @SerializedName(KEY_XS_URL)
-    var xs_url: String? = "",
+    var xs_url: String = "",
 
     @SerializedName(KEY_M_ECS)
-    var m_ecs: String? = "",
+    var m_ecs: String = "",
 
     @SerializedName(KEY_S_ECS)
-    var s_ecs: String? = "",
+    var s_ecs: String = "",
 
     @SerializedName(KEY_XS_ECS)
-    var xs_ecs: String? = ""
+    var xs_ecs: String = ""
 ) : ImpressHolder(), Parcelable {
 
 
@@ -60,12 +60,12 @@ data class ProductImage(
     }
 
     constructor(parcel: Parcel) : this() {
-        m_url = parcel.readString()
-        s_url = parcel.readString()
-        xs_url = parcel.readString()
-        m_ecs = parcel.readString()
-        s_ecs = parcel.readString()
-        xs_ecs = parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

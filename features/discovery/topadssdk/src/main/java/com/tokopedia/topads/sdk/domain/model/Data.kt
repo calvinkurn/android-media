@@ -22,35 +22,35 @@ private const val KEY_TAG = "tag"
 data class Data(
     @SerializedName(KEY_ID)
     @Expose
-    var id: String? = "",
+    var id: String = "",
 
     @SerializedName(KEY_AD_REF)
     @Expose
-    var adRefKey: String? = "",
+    var adRefKey: String = "",
 
     @SerializedName(KEY_REDIRECT)
     @Expose
-    var redirect: String? = "",
+    var redirect: String = "",
 
     @SerializedName(KEY_STICKER_ID)
     @Expose
-    var stickerId: String? = "",
+    var stickerId: String = "",
 
     @SerializedName(KEY_STICKER_IMAGE)
     @Expose
-    var stickerImage: String? = "",
+    var stickerImage: String = "",
 
     @SerializedName(KEY_PRODUCT_CLICK_URL)
     @Expose
-    var productClickUrl: String? = "",
+    var productClickUrl: String = "",
 
     @SerializedName(KEY_PRODUCT_WISHLIST_URL)
     @Expose
-    var productWishlistUrl: String? = "",
+    var productWishlistUrl: String = "",
 
     @SerializedName(KEY_SHOP_CLICK_URL)
     @Expose
-    var shopClickUrl: String? = "",
+    var shopClickUrl: String = "",
 
     @SerializedName(KEY_TAG)
     @Expose
@@ -66,7 +66,7 @@ data class Data(
 
     @SerializedName(KEY_APPLINKS)
     @Expose
-    var applinks: String? = "",
+    var applinks: String = "",
     var isFavorit: Boolean = false
 ) : Parcelable {
 
@@ -111,19 +111,19 @@ data class Data(
     }
 
     constructor(parcel: Parcel) : this() {
-        id = parcel.readString()
-        adRefKey = parcel.readString()
-        redirect = parcel.readString()
-        stickerId = parcel.readString()
-        stickerImage = parcel.readString()
-        productClickUrl = parcel.readString()
-        productWishlistUrl = parcel.readString()
-        shopClickUrl = parcel.readString()
+        id = parcel.readString() ?: ""
+        adRefKey = parcel.readString() ?: ""
+        redirect = parcel.readString() ?: ""
+        stickerId = parcel.readString() ?: ""
+        stickerImage = parcel.readString() ?: ""
+        productClickUrl = parcel.readString() ?: ""
+        productWishlistUrl = parcel.readString() ?: ""
+        shopClickUrl = parcel.readString() ?: ""
         tag = parcel.readInt()
         shop = parcel.readParcelable(Shop::class.java.classLoader)
         product = parcel.readParcelable(Product::class.java.classLoader)
         isFavorit = parcel.readByte().toInt() != 0
-        applinks = parcel.readString()
+        applinks = parcel.readString() ?: ""
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

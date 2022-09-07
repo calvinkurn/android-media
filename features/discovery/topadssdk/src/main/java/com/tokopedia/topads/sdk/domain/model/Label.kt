@@ -12,7 +12,7 @@ const val KEY_COLOR = "color"
 data class Label(
     @SerializedName(KEY_TITLE)
     @Expose
-    var title: String? = "",
+    var title: String = "",
 
     @SerializedName(KEY_COLOR)
     @Expose
@@ -29,8 +29,8 @@ data class Label(
     }
 
     constructor(parcel: Parcel) : this() {
-        title = parcel.readString()
-        color = parcel.readString()
+        parcel.readString()
+        parcel.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

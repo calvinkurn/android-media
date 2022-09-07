@@ -15,22 +15,22 @@ private const val KEY_XS_ECS = "xs_ecs"
 
 data class ImageShop(
     @SerializedName(KEY_COVER)
-    var cover: String? = "",
+    var cover: String = "",
 
     @SerializedName(KEY_S_URL)
-    var sUrl: String? = "",
+    var sUrl: String = "",
 
     @SerializedName(KEY_XS_URL)
-    var xsUrl: String? = "",
+    var xsUrl: String = "",
 
     @SerializedName(KEY_COVER_ECS)
-    var coverEcs: String? = "",
+    var coverEcs: String = "",
 
     @SerializedName(KEY_S_ECS)
-    var sEcs: String? = "",
+    var sEcs: String = "",
 
     @SerializedName(KEY_XS_ECS)
-    var xsEcs: String? = ""
+    var xsEcs: String = ""
 ) : ImpressHolder(), Parcelable {
 
 
@@ -56,12 +56,12 @@ data class ImageShop(
     }
 
     constructor(parcel: Parcel) : this() {
-        cover = parcel.readString()
-        sUrl = parcel.readString()
-        xsUrl = parcel.readString()
-        coverEcs = parcel.readString()
-        sEcs = parcel.readString()
-        xsEcs = parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

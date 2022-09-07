@@ -15,19 +15,19 @@ private const val KEY_IMAGE_CLICK_URL = "image_click_url"
 data class ImageProduct(
     @SerializedName(KEY_PRODUCT_ID)
     @Expose
-    var productId: String? = "",
+    var productId: String = "",
 
     @SerializedName(KEY_PRODUCT_NAME)
     @Expose
-    var productName: String? = "",
+    var productName: String = "",
 
     @SerializedName(KEY_IMAGE_URL)
     @Expose
-    var imageUrl: String? = "",
+    var imageUrl: String = "",
 
     @SerializedName(KEY_IMAGE_CLICK_URL)
     @Expose
-    var imageClickUrl: String? = "",
+    var imageClickUrl: String = "",
 ) : ImpressHolder(), Parcelable {
 
 
@@ -47,10 +47,10 @@ data class ImageProduct(
     }
 
     constructor(parcel: Parcel) : this() {
-        productId = parcel.readString()
-        productName = parcel.readString()
-        imageUrl = parcel.readString()
-        imageClickUrl = parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

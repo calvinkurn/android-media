@@ -14,19 +14,19 @@ private const val KEY_URL = "url"
 data class LabelGroup(
     @SerializedName(KEY_POSITION)
     @Expose
-    var position: String? = null,
+    var position: String = "",
 
     @SerializedName(KEY_TYPE)
     @Expose
-    var type: String? = null,
+    var type: String = "",
 
     @SerializedName(KEY_TITLE)
     @Expose
-    var title: String? = null,
+    var title: String = "",
 
     @SerializedName(KEY_URL)
     @Expose
-    var imageUrl: String? = ""
+    var imageUrl: String = ""
 ) : Parcelable {
 
 
@@ -46,10 +46,10 @@ data class LabelGroup(
     }
 
     constructor(parcel: Parcel) : this() {
-        position = parcel.readString()
-        type = parcel.readString()
-        title = parcel.readString()
-        imageUrl = parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

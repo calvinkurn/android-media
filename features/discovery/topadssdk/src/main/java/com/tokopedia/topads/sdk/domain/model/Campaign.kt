@@ -13,7 +13,7 @@ private const val KEY_DISCOUNT_PERCENTAGE = "discount_percentage"
 data class Campaign(
     @SerializedName(KEY_ORIGINAL_PRICE)
     @Expose
-    var originalPrice: String? = "",
+    var originalPrice: String = "",
 
     @SerializedName(KEY_DISCOUNT_PERCENTAGE)
     @Expose
@@ -40,8 +40,8 @@ data class Campaign(
     }
 
     constructor(parcel: Parcel) : this() {
-        originalPrice = parcel.readString()
-        discountPercentage = parcel.readInt()
+        parcel.readString()
+        parcel.readInt()
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

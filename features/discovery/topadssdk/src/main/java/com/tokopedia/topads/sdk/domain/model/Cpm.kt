@@ -24,28 +24,28 @@ data class Cpm(
     var templateId: Int = 0,
 
     @SerializedName(KEY_NAME)
-    var name: String? = "",
+    var name: String = "",
 
     @SerializedName(KEY_CPM_IMAGE)
-    var cpmImage: CpmImage? = null,
+    var cpmImage: CpmImage = CpmImage(),
 
     @SerializedName(KEY_BADGES)
     var badges: MutableList<Badge>? = ArrayList(),
 
     @SerializedName(KEY_PROMOTED_TEXT)
-    var promotedText: String? = "",
+    var promotedText: String = "",
 
     @SerializedName(KEY_URI)
-    var uri: String? = "",
+    var uri: String = "",
 
     @SerializedName(KEY_DESCRIPTION)
-    var decription: String? = "",
+    var decription: String = "",
 
     @SerializedName(KEY_SHOP)
-    var cpmShop: CpmShop? = null,
+    var cpmShop: CpmShop = CpmShop(),
 
     @SerializedName(KEY_CTA_TEXT)
-    var cta: String? = "",
+    var cta: String = "",
 
     @SerializedName(KEY_LAYOUT)
     var layout: Int = 0,
@@ -54,25 +54,25 @@ data class Cpm(
     var position: Int = 0,
 
     @SerializedName(KEY_WIDGET_TITLE)
-    var widgetTitle: String? = "",
+    var widgetTitle: String = "",
 
     @SerializedName(KEY_WIDGET_IMAGE_URL)
-    var widgetImageUrl: String? = ""
+    var widgetImageUrl: String = ""
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
-        parcel.readString(),
-        parcel.readParcelable(CpmImage::class.java.classLoader),
+        parcel.readString() ?: "",
+        parcel.readParcelable(CpmImage::class.java.classLoader) ?: CpmImage(),
         parcel.createTypedArrayList(Badge.CREATOR),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readParcelable(CpmShop::class.java.classLoader),
-        parcel.readString(),
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readParcelable(CpmShop::class.java.classLoader) ?: CpmShop(),
+        parcel.readString() ?: "",
         parcel.readInt(),
         parcel.readInt(),
-        parcel.readString()
+        parcel.readString() ?: ""
     )
 
     constructor(jSONObject: JSONObject) : this() {

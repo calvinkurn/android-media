@@ -16,7 +16,7 @@ data class FreeOngkir(
 
     @SerializedName(KEY_IMG_URL)
     @Expose
-    var imageUrl: String? = ""
+    var imageUrl: String = ""
 ) : Parcelable {
 
 
@@ -31,7 +31,7 @@ data class FreeOngkir(
 
     constructor(parcel: Parcel) : this() {
         isActive = parcel.readByte().toInt() != 0
-        imageUrl = parcel.readString()
+        imageUrl = parcel.readString() ?: ""
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

@@ -13,15 +13,15 @@ private const val KEY_PRICE = "price_format"
 data class WholesalePrice(
     @SerializedName(KEY_QUANTITY_MIN)
     @Expose
-    var quantityMinFormat: String? = "",
+    var quantityMinFormat: String = "",
 
     @SerializedName(KEY_QUANTITY_MAX)
     @Expose
-    var quantityMaxFormat: String? = "",
+    var quantityMaxFormat: String = "",
 
     @SerializedName(KEY_PRICE)
     @Expose
-    var priceFormat: String? = ""
+    var priceFormat: String = ""
 ) : Parcelable {
 
 
@@ -38,9 +38,9 @@ data class WholesalePrice(
     }
 
     constructor(parcel: Parcel) : this() {
-        quantityMinFormat = parcel.readString()
-        quantityMaxFormat = parcel.readString()
-        priceFormat = parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

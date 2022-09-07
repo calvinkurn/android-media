@@ -10,7 +10,7 @@ private const val KEY_IS_AD = "is_ad"
 
 data class Template(
     @SerializedName(KEY_NAME)
-    var name: String? = "",
+    var name: String = "",
 
     @SerializedName(KEY_IS_AD)
     var isIsAd: Boolean = false
@@ -18,7 +18,7 @@ data class Template(
 
 
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
+        parcel.readString() ?: "",
         parcel.readByte() != 0.toByte()
     ) {
     }

@@ -7,22 +7,22 @@ import org.json.JSONObject
 
 data class CpmData(
     @SerializedName("id")
-    var id: String? = null,
+    var id: String = "",
 
     @SerializedName("ad_ref_key")
-    var adRefKey: String? = null,
+    var adRefKey: String = "",
 
     @SerializedName("redirect")
-    var redirect: String? = null,
+    var redirect: String = "",
 
     @SerializedName("ad_click_url")
-    var adClickUrl: String? = null,
+    var adClickUrl: String = "",
 
     @SerializedName("headline")
     var cpm: Cpm? = null,
 
     @SerializedName("applinks")
-    var applinks: String? = null
+    var applinks: String = ""
 ) : Parcelable {
 
     constructor(jSONObject: JSONObject) : this() {
@@ -47,12 +47,12 @@ data class CpmData(
     }
 
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
         parcel.readParcelable(Cpm::class.java.classLoader),
-        parcel.readString()
+        parcel.readString() ?: ""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

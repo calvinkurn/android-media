@@ -43,13 +43,13 @@ private const val KEY_CUSTOM_VIDEO_URL = "customvideo_url"
 data class Product(
     @SerializedName(KEY_ID)
     @Expose
-    var id: String? = "",
-    var adRefKey: String? = "",
-    var adId: String? = "",
+    var id: String = "",
+    var adRefKey: String = "",
+    var adId: String = "",
 
     @SerializedName(KEY_NAME)
     @Expose
-    var name: String? = "",
+    var name: String = "",
 
     @SerializedName(KEY_WISHLIST)
     @Expose
@@ -57,30 +57,30 @@ data class Product(
 
     @SerializedName(KEY_IMAGE)
     @Expose
-    var image: ProductImage? = ProductImage(),
+    var image: ProductImage = ProductImage(),
 
     @SerializedName(KEY_URI)
     @Expose
-    var uri: String? = "",
+    var uri: String = "",
 
     @SerializedName(KEY_RELATIVE_URI)
     @Expose
-    var relativeUri: String? = "",
+    var relativeUri: String = "",
 
     @SerializedName(KEY_PRICE_FORMAT)
     @Expose
-    var priceFormat: String? = "",
+    var priceFormat: String = "",
 
     @SerializedName(KEY_COUNT_TALK_FORMAT)
     @Expose
-    var countTalkFormat: String? = "",
+    var countTalkFormat: String = "",
 
     @SerializedName(KEY_COUNT_REVIEW_FORMAT)
-    var countReviewFormat: String? = "0",
+    var countReviewFormat: String = "0",
 
     @SerializedName(KEY_CATEGORY)
     @Expose
-    var category: Category? = Category(),
+    var category: Category = Category(),
 
     @SerializedName(KEY_PRODUCT_PREORDER)
     @Expose
@@ -92,7 +92,7 @@ data class Product(
 
     @SerializedName(KEY_FREERETURN)
     @Expose
-    var freeReturn: String? = "",
+    var freeReturn: String = "",
 
     @SerializedName(KEY_PRODUCT_CASHBACK)
     @Expose
@@ -100,7 +100,7 @@ data class Product(
 
     @SerializedName(KEY_PRODUCT_CASHBACK_RATE)
     @Expose
-    var productCashbackRate: String? = "",
+    var productCashbackRate: String = "",
 
     @SerializedName(KEY_PRODUCT_NEW_LABEL)
     @Expose
@@ -108,7 +108,7 @@ data class Product(
 
     @SerializedName(KEY_PRODUCT_RATE_FORMAT)
     @Expose
-    var productRatingFormat: String? = "",
+    var productRatingFormat: String = "",
 
     @SerializedName(KEY_PRODUCT_RATE)
     @Expose
@@ -116,7 +116,7 @@ data class Product(
 
     @SerializedName(KEY_APPLINKS)
     @Expose
-    var applinks: String? = "",
+    var applinks: String = "",
 
     @SerializedName(KEY_WHOLESALE_PRICE)
     @Expose
@@ -291,39 +291,39 @@ data class Product(
     }
 
     constructor(parcel: Parcel) : this() {
-        id = parcel.readString()
-        adRefKey = parcel.readString()
-        adId = parcel.readString()
-        name = parcel.readString()
-        isWishlist = parcel.readByte().toInt() != 0
-        image = parcel.readParcelable(ProductImage::class.java.classLoader)
-        uri = parcel.readString()
-        relativeUri = parcel.readString()
-        priceFormat = parcel.readString()
-        countTalkFormat = parcel.readString()
-        countReviewFormat = parcel.readString()
-        category = parcel.readParcelable(Category::class.java.classLoader)
-        isProductPreorder = parcel.readByte().toInt() != 0
-        isProductWholesale = parcel.readByte().toInt() != 0
-        freeReturn = parcel.readString()
-        isProductCashback = parcel.readByte().toInt() != 0
-        productCashbackRate = parcel.readString()
-        isProductNewLabel = parcel.readByte().toInt() != 0
-        productRatingFormat = parcel.readString()
-        productRating = parcel.readInt()
-        applinks = parcel.readString()
-        wholesalePrice = parcel.createTypedArrayList(WholesalePrice.CREATOR)
-        labels = parcel.createTypedArrayList(Label.CREATOR)
-        topLabels = parcel.createStringArrayList()
-        bottomLabels = parcel.createStringArrayList()
-        imageProduct = parcel.readParcelable(ImageProduct::class.java.classLoader)
-        campaign = parcel.readParcelable(Campaign::class.java.classLoader)
-        labelGroupList = parcel.createTypedArrayList(LabelGroup.CREATOR)
-        freeOngkir = parcel.readParcelable(FreeOngkir::class.java.classLoader)
-        categoryBreadcrumb = parcel.readString()
-        countSold = parcel.readString()
-        productMinimumOrder = parcel.readInt()
-        headlineProductRatingAverage = parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readByte().toInt() != 0
+        parcel.readParcelable(ProductImage::class.java.classLoader) ?: ProductImage()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readString()
+        parcel.readParcelable(Category::class.java.classLoader) ?: Category()
+        parcel.readByte().toInt() != 0
+        parcel.readByte().toInt() != 0
+        parcel.readString()
+        parcel.readByte().toInt() != 0
+        parcel.readString()
+        parcel.readByte().toInt() != 0
+        parcel.readString()
+        parcel.readInt()
+        parcel.readString()
+        parcel.createTypedArrayList(WholesalePrice.CREATOR)
+        parcel.createTypedArrayList(Label.CREATOR)
+        parcel.createStringArrayList()
+        parcel.createStringArrayList()
+        parcel.readParcelable(ImageProduct::class.java.classLoader) ?: ImageProduct()
+        parcel.readParcelable(Campaign::class.java.classLoader) ?: Campaign()
+        parcel.createTypedArrayList(LabelGroup.CREATOR)
+        parcel.readParcelable(FreeOngkir::class.java.classLoader) ?: FreeOngkir()
+        parcel.readString()
+        parcel.readString()
+        parcel.readInt()
+        parcel.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

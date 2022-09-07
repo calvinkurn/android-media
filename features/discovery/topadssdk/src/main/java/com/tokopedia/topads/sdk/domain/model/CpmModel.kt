@@ -14,16 +14,16 @@ private const val KEY_ERROR = "errors"
 
 data class CpmModel(
     @SerializedName(KEY_ERROR)
-    var error: Error? = Error(),
+    var error: Error = Error(),
 
     @SerializedName(KEY_STATUS)
-    var status: Status? = Status(),
+    var status: Status = Status(),
 
     @SerializedName(KEY_HEADER)
-    var header: Header? = Header(),
+    var header: Header = Header(),
 
     @SerializedName(KEY_DATA)
-    var data: MutableList<CpmData>? = ArrayList()
+    var data: MutableList<CpmData> = ArrayList()
 ) : Parcelable {
 
     constructor(jsonObject: JSONObject) : this() {
@@ -39,16 +39,16 @@ data class CpmModel(
         if (!jsonObject.isNull(KEY_DATA)) {
             val dataArray = jsonObject.getJSONArray(KEY_DATA)
             for (i in 0 until dataArray.length()) {
-                data?.add(CpmData(dataArray.getJSONObject(i)))
+                data.add(CpmData(dataArray.getJSONObject(i)))
             }
         }
     }
 
     constructor(parcel: Parcel) : this(
-        parcel.readParcelable(Error::class.java.classLoader),
-        parcel.readParcelable(Status::class.java.classLoader),
-        parcel.readParcelable(Header::class.java.classLoader),
-        parcel.createTypedArrayList(CpmData.CREATOR)
+        parcel.readParcelable(Error::class.java.classLoader) ?: Error(),
+        parcel.readParcelable(Status::class.java.classLoader) ?: Status(),
+        parcel.readParcelable(Header::class.java.classLoader) ?: Header(),
+        parcel.createTypedArrayList(CpmData.CREATOR) ?: ArrayList()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

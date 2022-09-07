@@ -15,11 +15,11 @@ private const val KEY_ERROR = "errors"
 data class TopAdsModel(
     @SerializedName(KEY_ERROR)
     @Expose
-    var error: Error? = Error(),
+    var error: Error = Error(),
 
     @SerializedName(KEY_STATUS)
     @Expose
-    var status: Status? = Status(),
+    var status: Status = Status(),
 
     @SerializedName(KEY_HEADER)
     @Expose
@@ -27,10 +27,10 @@ data class TopAdsModel(
 
     @SerializedName(KEY_DATA)
     @Expose
-    var data: MutableList<Data>? = ArrayList(),
+    var data: MutableList<Data> = ArrayList(),
 
     @SerializedName(KEY_TEMPLATE)
-    var templates: MutableList<Template>? = ArrayList(),
+    var templates: MutableList<Template> = ArrayList(),
 
     @Expose(deserialize = false, serialize = false)
     var adsPosition: Int = 0
@@ -49,24 +49,24 @@ data class TopAdsModel(
         if (!jSONObject.isNull(KEY_DATA)) {
             val dataArray = jSONObject.getJSONArray(KEY_DATA)
             for (i in 0 until dataArray.length()) {
-                data?.add(Data(dataArray.getJSONObject(i)))
+                data.add(Data(dataArray.getJSONObject(i)))
             }
         }
         if (!jSONObject.isNull(KEY_TEMPLATE)) {
             val dataArray = jSONObject.getJSONArray(KEY_TEMPLATE)
             for (i in 0 until dataArray.length()) {
-                templates?.add(Template(dataArray.getJSONObject(i)))
+                templates.add(Template(dataArray.getJSONObject(i)))
             }
         }
     }
 
     constructor(parcel: Parcel) : this() {
-        error = parcel.readParcelable(Error::class.java.classLoader)
-        status = parcel.readParcelable(Status::class.java.classLoader)
-        header = parcel.readParcelable(Header::class.java.classLoader)
-        data = parcel.createTypedArrayList(Data.CREATOR)
-        templates = parcel.createTypedArrayList(Template.CREATOR)
-        adsPosition = parcel.readInt()
+        parcel.readParcelable(Error::class.java.classLoader) ?: Error()
+        parcel.readParcelable(Status::class.java.classLoader) ?: Status()
+        parcel.readParcelable(Header::class.java.classLoader) ?: Header()
+        parcel.createTypedArrayList(Data.CREATOR)
+        parcel.createTypedArrayList(Template.CREATOR)
+        parcel.readInt()
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

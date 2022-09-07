@@ -15,7 +15,7 @@ data class Status(
     var errorCode: Int = 0,
 
     @SerializedName(KEY_MESSAGE)
-    var message: String? = ""
+    var message: String = ""
 ) : Parcelable {
 
     constructor(jsonObject: JSONObject) : this() {
@@ -28,8 +28,8 @@ data class Status(
     }
 
     constructor(parcel: Parcel) : this() {
-        errorCode = parcel.readInt()
-        message = parcel.readString()
+        parcel.readInt()
+        parcel.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
