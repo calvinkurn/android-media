@@ -191,7 +191,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
-    private val _accountStateInfo = MutableStateFlow(AccountStateInfo.Empty)
+    private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
     lateinit var warningInfoType: WarningType
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
@@ -1518,13 +1518,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         configUiModel: ConfigurationUiModel,
         selectedAccount: ContentAccountUiModel,
     ): Boolean {
+        _accountStateInfo.update { AccountStateInfo() }
         return when {
             !configUiModel.streamAllowed -> {
                 _accountStateInfo.update {
                     AccountStateInfo(
                         type = AccountStateInfoType.Banned,
                         selectedAccount = selectedAccount,
-                        tnc = emptyList(),
                     )
                 }
                 warningInfoType = WarningType.BANNED
@@ -1535,7 +1535,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     AccountStateInfo(
                         type = AccountStateInfoType.Live,
                         selectedAccount = selectedAccount,
-                        tnc = emptyList(),
                     )
                 }
                 warningInfoType = WarningType.LIVE
@@ -1556,15 +1555,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     AccountStateInfo(
                         type = AccountStateInfoType.NoUsername,
                         selectedAccount = selectedAccount,
-                        tnc = emptyList(),
                     )
                 }
                 false
             }
-            else -> {
-                _accountStateInfo.update { AccountStateInfo.Empty }
-                true
-            }
+            else -> true
         }
     }
 

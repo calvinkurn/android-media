@@ -58,7 +58,7 @@ data class PlayBroadcastUiState(
                 onBoarding = OnboardingUiModel.Empty,
                 quizBottomSheetUiState = QuizBottomSheetUiState.Empty,
                 selectedContentAccount = ContentAccountUiModel.Empty,
-                accountStateInfo = AccountStateInfo.Empty,
+                accountStateInfo = AccountStateInfo(),
             )
     }
 }

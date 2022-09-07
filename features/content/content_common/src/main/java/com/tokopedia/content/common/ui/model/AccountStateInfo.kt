@@ -4,19 +4,10 @@ package com.tokopedia.content.common.ui.model
  * Created by fachrizalmrsln on 31/08/22
  */
 data class AccountStateInfo(
-    val type: AccountStateInfoType,
-    val selectedAccount: ContentAccountUiModel,
-    val tnc: List<TermsAndConditionUiModel>,
-) {
-    companion object {
-        val Empty: AccountStateInfo
-            get() = AccountStateInfo(
-                type = AccountStateInfoType.Unknown,
-                selectedAccount = ContentAccountUiModel.Empty,
-                tnc = emptyList(),
-            )
-    }
-}
+    val type: AccountStateInfoType = AccountStateInfoType.Unknown,
+    val selectedAccount: ContentAccountUiModel = ContentAccountUiModel.Empty,
+    val tnc: List<TermsAndConditionUiModel> = emptyList(),
+)
 
 sealed class AccountStateInfoType {
     object Live : AccountStateInfoType()
