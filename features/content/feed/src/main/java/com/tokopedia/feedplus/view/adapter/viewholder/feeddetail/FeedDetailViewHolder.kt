@@ -114,6 +114,12 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
                         getString(com.tokopedia.feedcomponent.R.string.btn_add_to_cart_text_disabled)
                 }
             }
+            btnAddToCart.setOnClickListener {
+                viewListener.onAddToCartButtonClicked(feedDetailProductModel)
+            }
+            btnAddToWishlist.setOnClickListener {
+                viewListener.onAddToWishlistButtonClicked(feedDetailProductModel)
+            }
 
             setOnClickListener {
                 viewListener.onGoToProductDetail(

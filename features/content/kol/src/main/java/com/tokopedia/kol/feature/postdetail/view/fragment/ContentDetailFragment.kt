@@ -1508,6 +1508,40 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
         onGoToLink(redirectUrl)
     }
+
+    override fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew) {
+        val finalID =
+            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+
+        addToWishList(
+            finalID,
+            item.id,
+            item.postType,
+            item.isFollowed,
+            item.shopId,
+            item.playChannelId,
+            item.mediaType,
+            item.positionInFeed
+        )
+    }
+
+    override fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew) {
+        val finalID =
+            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+
+        onTagSheetItemBuy(
+            finalID,
+            item.positionInFeed,
+            item.product,
+            item.shopId,
+            item.postType,
+            item.isFollowed,
+            item.playChannelId,
+            item.shopName,
+            item.mediaType
+        )
+    }
+
     private fun onTagSheetItemBuy(
         activityId: String,
         positionInFeed: Int,

@@ -2270,7 +2270,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 productTagBS.dismissedByClosing = true
                 productTagBS.dismiss()
             }
-            feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId)
+            feedViewModel.addtoCartProduct(postTagItem, shopId, type, isFollowed, activityId)
         } else {
             onGoToLogin()
         }
@@ -3620,6 +3620,36 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 false,
                 mediaType = mediaType
             )
+    }
+
+    override fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew) {
+        val finalID =
+            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+        addToWishList(
+            finalID,
+            item.id,
+            item.postType,
+            item.isFollowed,
+            item.shopId,
+            item.playChannelId,
+            item.mediaType
+        )
+    }
+
+    override fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew) {
+        val finalID =
+            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+        onTagSheetItemBuy(
+            finalID,
+            item.positionInFeed,
+            item.product,
+            item.shopId,
+            item.postType,
+            item.isFollowed,
+            item.playChannelId,
+            item.shopName,
+            item.mediaType
+        )
     }
 
     override fun onTaggedProductCardClicked(

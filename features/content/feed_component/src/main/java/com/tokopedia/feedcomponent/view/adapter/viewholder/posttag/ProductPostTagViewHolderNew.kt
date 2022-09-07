@@ -127,7 +127,10 @@ class ProductPostTagViewHolderNew(
         val isUpcomingAndRilisanSpecial = item.isUpcoming && item.isRilisanSpl
         addToCartBtn.isEnabled = item.product.cartable && !isUpcomingAndRilisanSpecial
 
-        if (isUpcomingAndRilisanSpecial){
+        addToCartBtn.setOnClickListener { listener.onAddToCartButtonClicked(item) }
+        addToWishlistBtn.setOnClickListener { listener.onAddToWishlistButtonClicked(item) }
+
+        if (isUpcomingAndRilisanSpecial) {
             addToCartBtn.apply {
                 isEnabled = false
                 text =
@@ -135,7 +138,7 @@ class ProductPostTagViewHolderNew(
             }
         }
 
-        if (item.isOngoing){
+        if (item.isOngoing) {
             setGradientColorForProgressBar(item)
         }
     }

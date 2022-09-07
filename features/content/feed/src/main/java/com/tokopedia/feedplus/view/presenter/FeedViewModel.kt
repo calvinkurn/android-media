@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
@@ -32,6 +32,8 @@ import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -64,7 +66,7 @@ class FeedViewModel @Inject constructor(
     private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
     private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
     private val likeKolPostUseCase: LikeKolPostUseCase,
-    private val atcUseCase: AddToCartUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
     private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
     private val deletePostUseCase: DeletePostUseCase,
     private val sendTopAdsUseCase: SendTopAdsUseCase,
@@ -353,10 +355,10 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doAtc(postTagItem: FeedXProduct, shopId: String, type: String, isFollowed: Boolean, activityId: String) {
+    fun addtoCartProduct(postTagItem: FeedXProduct, shopId: String, type: String, isFollowed: Boolean, activityId: String) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                atc(postTagItem, shopId, type, isFollowed, activityId)
+                addToCart(postTagItem, shopId, type, isFollowed, activityId)
             }
             atcResp.value = Success(results)
         }) {
@@ -657,38 +659,44 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun atc(
+
+    private suspend fun addToCart(
         postTagItem: FeedXProduct,
         shopId: String,
         type: String,
         isFollowed: Boolean,
         activityId: String
-    ): AtcViewModel {
-        try {
-            val data = AtcViewModel()
-            data.applink = postTagItem.appLink
-            data.activityId = activityId
-            data.postType = type
-            data.isFollowed = isFollowed
-            data.shopId = shopId
-
+    ): AtcViewModel =
+        withContext(baseDispatcher.io) {
             val params = AddToCartUseCase.getMinimumParams(
                 postTagItem.id,
                 shopId,
-                productName = postTagItem.name,
+                productName = postTagItem.productName,
                 price = postTagItem.price.toString(),
-                userId = userId
+                userId = userSession.userId
             )
-            val result = atcUseCase.createObservable(params).toBlocking().single()
-            data.isSuccess = result.data.success == 1
-            if (result.isStatusError()) {
-                data.errorMsg = result.errorMessage.firstOrNull() ?: ""
+            try {
+                val data = AtcViewModel()
+                data.applink = postTagItem.appLink
+                data.activityId = activityId
+                data.postType = type
+                data.isFollowed = isFollowed
+                data.shopId = shopId
+
+                addToCartUseCase.setParams(params)
+                val response = addToCartUseCase.executeOnBackground()
+                if (response.isDataError()) throw MessageErrorException(response.getAtcErrorMessage())
+                data.isSuccess = !response.isStatusError()
+                if (response.isStatusError()) {
+                    data.errorMsg = response.errorMessage.firstOrNull() ?: ""
+                }
+                return@withContext data
+            } catch (e: Throwable) {
+                if (e is ResponseErrorException) throw MessageErrorException(e.localizedMessage)
+                else throw e
             }
-            return data
-        } catch (e: Throwable) {
-            throw e
         }
-    }
+
 
     private fun toggleFavoriteShop(
         rowNumber: Int,

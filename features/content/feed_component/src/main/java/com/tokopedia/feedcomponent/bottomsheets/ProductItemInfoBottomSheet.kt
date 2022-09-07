@@ -197,5 +197,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             itemPosition: Int,
             mediaType: String
         )
+        fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew)
+        fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew)
     }
 }
