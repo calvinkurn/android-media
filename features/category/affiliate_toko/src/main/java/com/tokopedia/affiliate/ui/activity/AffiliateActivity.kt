@@ -19,6 +19,7 @@ import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.FIRST_TAB
 import com.tokopedia.affiliate.FOURTH_TAB
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
+import com.tokopedia.affiliate.PAGE_SEGMENT_ONBOARDING
 import com.tokopedia.affiliate.PAGE_SEGMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.SECOND_TAB
 import com.tokopedia.affiliate.THIRD_TAB
@@ -72,6 +73,11 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        intent?.data?.pathSegments?.firstOrNull()?.let {
+            if(it.contains(PAGE_SEGMENT_ONBOARDING)) {
+                showLoginPortal(intent?.data?.getQueryParameter(intent.data?.queryParameterNames?.first()))
+            }
+        }
         afterViewCreated()
     }
 
@@ -88,6 +94,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                 selectItem(HELP_MENU, R.id.menu_help_affiliate, true)
             }else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
                 selectItem(INCOME_MENU, R.id.menu_withdrawal_affiliate, true)
+            }else if(it.contains(PAGE_SEGMENT_ONBOARDING)) {
+                showLoginPortal(intent?.data?.getQueryParameter(intent.data?.queryParameterNames?.first()))
             }
         }
     }
@@ -122,8 +130,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         else showLoginPortal()
     }
 
-    private fun showLoginPortal() {
-        AffiliateRegistrationActivity.newInstance(this)
+    private fun showLoginPortal(productId: String? = null) {
+        AffiliateRegistrationActivity.newInstance(this, productId = productId)
         finish()
     }
 

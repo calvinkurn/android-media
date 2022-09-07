@@ -15,6 +15,7 @@ const val AFFILIATE_TRANSACTION_HISTORY = "tokopedia://affiliate/transaction-his
 const val PAGE_ZERO = 0
 const val PAGE_SEGMENT_HELP = "help"
 const val PAGE_SEGMENT_TRANSACTION_HISTORY = "transaction-history"
+const val PAGE_SEGMENT_ONBOARDING = "onboarding"
 const val KYC_DONE = 1
 
 const val TRANSACTION_ID = "TransactionID"

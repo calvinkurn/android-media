@@ -38,6 +38,8 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
     lateinit var affiliateRegistrationSharedViewModel: AffiliateRegistrationSharedViewModel
 
+    private var productId: String? = null
+
     override fun getViewModelType(): Class<AffiliateRegistrationSharedViewModel> {
         return AffiliateRegistrationSharedViewModel::class.java
     }
@@ -48,6 +50,7 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        productId = intent.getStringExtra(PRODUCT_ID_KEY)
         setupView(savedInstanceState == null)
     }
 
@@ -97,7 +100,11 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
     private val splashRunnable = Runnable {
         findViewById<Group>(R.id.splash_group)?.hide()
-        openAffiliate()
+        if (productId.isNullOrEmpty()) {
+            openAffiliate()
+        }else {
+            openPdp()
+        }
     }
 
     override fun onDestroy() {
@@ -107,6 +114,10 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
     private fun openAffiliate() {
         RouteManager.route(this,"tokopedia://affiliate")
+        finish()
+    }
+    private fun openPdp() {
+        RouteManager.route(this,"tokopedia://product/$productId")
         finish()
     }
 
@@ -136,8 +147,11 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
             .build()
 
     companion object{
-        fun newInstance(context: Context){
-            context.startActivity(Intent(context,AffiliateRegistrationActivity::class.java))
+        private const val PRODUCT_ID_KEY = "productId"
+        fun newInstance(context: Context, productId:String?){
+            context.startActivity(Intent(context,AffiliateRegistrationActivity::class.java).apply {
+                putExtra(PRODUCT_ID_KEY, productId)
+            })
         }
     }
 
