@@ -27,6 +27,7 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
@@ -66,7 +67,6 @@ import com.tokopedia.chatbot.data.sessionchange.SessionChangeAttributes
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
-import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
@@ -102,6 +102,8 @@ import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
+import com.tokopedia.chatbot.util.ChatbotVideoUploadResult
+import com.tokopedia.chatbot.util.VideoUploadData
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
@@ -131,6 +133,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -149,6 +156,9 @@ import kotlin.coroutines.CoroutineContext
 /**
  * @author by nisie on 05/12/18.
  */
+
+typealias MediaUploadJobMap = Map<String, Job>
+typealias MediaUploadResultMap = Map<String, ChatbotVideoUploadResult>
 class ChatbotPresenter @Inject constructor(
     var getExistingChatUseCase: GetExistingChatUseCase,
     override var userSession: UserSessionInterface,
@@ -203,11 +213,16 @@ class ChatbotPresenter @Inject constructor(
     private var isErrorOnLeaveQueue = false
     private lateinit var chatResponse:ChatSocketPojo
     private val job= SupervisorJob()
-    var mapForVideoUploadJobs = HashMap<String, Job>()
+
+    private var mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
+    var mediaUploadResults = MutableStateFlow<MediaUploadResultMap>(mapOf())
+    private val shouldResetFailedUploadStatus = MutableStateFlow(false)
+    val mediaUris = MutableStateFlow<List<VideoUploadData>>(emptyList())
 
     init {
         mSubscription = CompositeSubscription()
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
+        observeMediaUrisForUpload()
     }
 
     override val coroutineContext: CoroutineContext
@@ -793,7 +808,6 @@ class ChatbotPresenter @Inject constructor(
         chipSubmitHelpfulQuestionsUseCase.unsubscribe()
         chipSubmitChatCsatUseCase.unsubscribe()
         job.cancel()
-        mapForVideoUploadJobs.clear()
         chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
         super.detachView()
     }
@@ -850,39 +864,97 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    override fun uploadVideo(
-        videoUploadUiModel: VideoUploadUiModel,
-        sourceId: String,
-        startTime: String,
-        messageId: String,
-        onErrorVideoUpload: (String, VideoUploadUiModel) -> Unit
-    ) {
-        val originalFile = File(videoUploadUiModel.videoUrl)
+    fun filterMediaUploadJobs(originalPaths: List<String>) {
+        mediaUploadJobs.value.filterKeys(originalPaths::contains)
+    }
 
-        val videoUrl = videoUploadUiModel.videoUrl
-        if (videoUrl != null && !mapForVideoUploadJobs.contains(videoUrl)) {
-            mapForVideoUploadJobs[videoUrl] =
-                launchCatchError(
-                    block = {
-                        val param = uploaderUseCase.createParams(
-                            filePath = originalFile,
-                            sourceId = sourceId
+    fun updateMediaUris(paths : List<VideoUploadData>) {
+        mediaUris.value = paths
+    }
+
+    private fun updateMediaUploadJobs(uri: String, newUploadJob: Job) {
+        mediaUploadJobs.value = mutableMapOf<String, Job>().apply {
+            putAll(mediaUploadJobs.value)
+            put(uri, newUploadJob)
+        }
+    }
+
+    private fun observeMediaUrisForUpload() {
+        launch {
+            combine(
+                shouldResetFailedUploadStatus,
+                mediaUris
+            ) { shouldResetFailedUploadStatus, uris ->
+                shouldResetFailedUploadStatus to uris
+            }.collectLatest(::tryUploadMedia)
+        }
+    }
+
+    private suspend fun tryUploadMedia(data: Pair<Boolean, List<VideoUploadData>>) {
+        val (shouldResetFailedUploadStatus, videoData) = data
+        if (shouldResetFailedUploadStatus) {
+            mediaUploadResults.value = mediaUploadResults.value.filterValues { uploadResult ->
+                uploadResult is ChatbotVideoUploadResult.Success
+            }
+            this@ChatbotPresenter.shouldResetFailedUploadStatus.value = false
+        } else {
+            videoData.forEach {
+
+                val currentUri = it.videoPath ?: ""
+                val hasActiveUploadJob = mediaUploadJobs.value[currentUri]?.isActive == true
+                val needToStartNewJob = !hasActiveUploadJob
+                if (needToStartNewJob) {
+                    updateMediaUploadJobs(
+                        currentUri,
+                        startNewUploadMediaJob(
+                            currentUri,
+                            it.messageId,
+                            it.startTime
                         )
+                    )
+                    mediaUploadJobs.value.values.joinAll()
+                }
+            }
+        }
+    }
 
-                        val result = uploaderUseCase.invoke(param)
-                        when (result) {
-                            is UploadResult.Success -> {
-                                sendVideoAttachment(result.videoUrl, startTime, messageId)
-                            }
-                            is UploadResult.Error -> {
-                                onErrorVideoUpload(result.message, videoUploadUiModel)
-                            }
-                        }
-                    },
-                    onError = {
-                        onErrorVideoUpload(it.message ?: "", videoUploadUiModel)
+    private fun startNewUploadMediaJob(
+        uri: String,
+        messageId: String,
+        startTime: String,
+    ): Job {
+
+        return launchCatchError(block = {
+            val filePath = File(uri)
+            val params = uploaderUseCase.createParams(
+                sourceId = ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD,
+                filePath = filePath,
+                withTranscode = false
+            )
+            val uploadMediaResult = uploaderUseCase(params).let {
+                when (it) {
+                    is UploadResult.Success -> {
+                        sendVideoAttachment(it.videoUrl,startTime,messageId)
+                        ChatbotVideoUploadResult.Success(it.uploadId, it.videoUrl)
                     }
-                )
+                    is UploadResult.Error -> {
+                        ChatbotVideoUploadResult.Error(it.message)
+                    }
+                }
+            }
+            updateMediaUploadResults(uri, uploadMediaResult)
+        }, onError = {
+            updateMediaUploadResults(uri, ChatbotVideoUploadResult.Error(it.message.orEmpty()))
+        })
+    }
+
+    private fun updateMediaUploadResults(
+        uri: String,
+        uploadMediaResult: ChatbotVideoUploadResult
+    ) {
+        mediaUploadResults.value = mutableMapOf<String, ChatbotVideoUploadResult>().apply {
+            putAll(mediaUploadResults.value)
+            put(uri, uploadMediaResult)
         }
     }
 
@@ -901,7 +973,7 @@ class ChatbotPresenter @Inject constructor(
                     filePath = file,
                     sourceId = sourceId
             )
-                mapForVideoUploadJobs[file]?.cancel()
+                mediaUploadJobs.value.get(file)?.cancel()
             },
             onError = {
                 onErrorVideoUpload(it)
@@ -923,7 +995,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun onFailureVideoUploadEligibility(throwable: Throwable) {
-
+        //Add new Relic Here
     }
 
     override fun clearGetChatUseCase() {

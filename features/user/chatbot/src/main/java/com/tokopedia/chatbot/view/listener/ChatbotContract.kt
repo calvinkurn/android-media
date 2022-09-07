@@ -73,6 +73,8 @@ interface ChatbotContract {
         fun sessionChangeStateHandler(state : Boolean)
 
         fun videoUploadEligibilityHandler(state : Boolean)
+
+        fun onVideoUploadChangeView(uiModel : VideoUploadUiModel)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -150,13 +152,13 @@ interface ChatbotContract {
 
         fun getValuesForArticleEntry(uri: Uri): Map<String, String>
 
-        fun uploadVideo(
-            videoModel: VideoUploadUiModel,
-            sourceId: String,
-            startTime: String,
-            messageId: String,
-            onErrorVideoUpload: (String,VideoUploadUiModel) -> Unit
-        )
+//        suspend fun uploadVideo(
+//            videoModel: VideoUploadUiModel,
+//            sourceId: String,
+//            startTime: String,
+//            messageId: String,
+//            onErrorVideoUpload: (String,VideoUploadUiModel) -> Unit
+//        )
 
         fun sendVideoAttachment(filePath: String, startTime: String, messageId: String)
 

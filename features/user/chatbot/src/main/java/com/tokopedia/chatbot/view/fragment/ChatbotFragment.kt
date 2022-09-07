@@ -18,6 +18,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -106,6 +107,7 @@ import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
 import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
 import com.tokopedia.chatbot.util.SmoothScroller
+import com.tokopedia.chatbot.util.VideoUploadData
 import com.tokopedia.chatbot.util.VideoUtil
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.util.convertMessageIdToLong
@@ -1037,19 +1039,22 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun uploadVideo(data: Intent) {
         val paths = MediaPicker.result(data)
-        paths.originalPaths.forEach { path ->
-            processVideoPathToUpload(path)?.let { videoUploadUiModel ->
-                getViewState()?.onVideoUpload(videoUploadUiModel)
-                sendAnalyticsForVideoUpload(path)
-                presenter.uploadVideo(
-                    videoUploadUiModel,
-                    SOURCE_ID_FOR_VIDEO_UPLOAD,
-                    SendableUiModel.generateStartTime(),
-                    messageId,
-                    onErrorVideoUpload()
-                )
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            presenter.filterMediaUploadJobs(paths.originalPaths)
+            val list = mutableListOf<VideoUploadData>()
+            paths.originalPaths.forEach {
+                list.add(VideoUploadData(it, messageId, SendableUiModel.generateStartTime()))
+                processVideoPathToUpload(it)?.let { videoUploadUiModel ->
+                    getViewState()?.onVideoUpload(videoUploadUiModel)
+                }
+                sendAnalyticsForVideoUpload(it)
             }
+            presenter.updateMediaUris(list)
         }
+    }
+
+    override fun onVideoUploadChangeView(uiModel: VideoUploadUiModel) {
+        getViewState()?.onVideoUpload(uiModel)
     }
 
     //TODO clear doubts here - do we need to release it
@@ -1448,7 +1453,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         bottomSheetPage.dismiss()
         element.isRetry = false
         getViewState()?.onVideoUpload(element)
-        presenter.uploadVideo(element, SOURCE_ID_FOR_VIDEO_UPLOAD, SendableUiModel.generateStartTime(), messageId, onErrorVideoUpload())
+        presenter.updateMediaUris(listOf(VideoUploadData(element.videoUrl, messageId, SendableUiModel.generateStartTime())))
+ //       presenter.uploadVideo(element, SOURCE_ID_FOR_VIDEO_UPLOAD, SendableUiModel.generateStartTime(), messageId, onErrorVideoUpload())
     }
 
     private fun handleVideoDeleteBottomSheet(element: VideoUploadUiModel,bottomSheetPage: BottomSheetUnify) {

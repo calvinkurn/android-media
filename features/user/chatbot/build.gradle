@@ -69,6 +69,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayer
+
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 }
 
 project.ext {
