@@ -170,6 +170,7 @@
     <string name="search_srp_find_in_tokopedia">Cari di Tokopedia</string>
     <string name="search_srp_check_keyword">Periksa Kata Kunci</string>
     <string name="search_srp_filter_apply">Terapkan</string>
+    <string name="search_srp_quick_sort_title">Urutkan restoran</string>
 
     <!-- id -->
     <item name="product_ui_model" type="id" />

@@ -38,7 +38,9 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.T
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchEmptyWithFilterViewHolder
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchEmptyWithoutFilterViewHolder
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchResultViewHolder
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.bottomsheet.TokofoodQuickSortBottomSheet
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.customview.TokofoodSearchFilterTab
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiEvent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel.TokofoodSearchResultPageViewModel
@@ -55,7 +57,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     MerchantSearchEmptyWithFilterViewHolder.Listener,
     MerchantSearchEmptyWithoutFilterViewHolder.Listener,
     SortFilterBottomSheet.Callback,
-    FilterGeneralDetailBottomSheet.Callback {
+    FilterGeneralDetailBottomSheet.Callback,
+    TokofoodQuickSortBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -173,6 +176,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         }
     }
 
+    override fun onApplySort(uiModel: TokofoodQuickSortUiModel) {
+        viewModel.applySortSelected(uiModel)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         tokofoodSearchFilterTab = null
@@ -268,6 +275,9 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                     TokofoodSearchUiEvent.EVENT_FAILED_LOAD_DETAIL_FILTER -> {
                         onFailedLoadDetailFilter(event.throwable)
                     }
+                    TokofoodSearchUiEvent.EVENT_OPEN_QUICK_SORT_BOTTOMSHEET -> {
+                        onOpenQuickSortBottomSheet(event.data)
+                    }
                 }
             }
         }
@@ -361,6 +371,13 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         }
     }
 
+    private fun onOpenQuickSortBottomSheet(data: Any?) {
+        (data as? List<*>)?.filterIsInstance(TokofoodQuickSortUiModel::class.java)?.let { uiModels ->
+            TokofoodQuickSortBottomSheet.createInstance(ArrayList(uiModels), this)
+                .show(parentFragmentManager)
+        }
+    }
+
     private fun showDetailFilterBottomSheet(dynamicFilterModel: DynamicFilterModel?) {
         if (!isAdded) return
         if (sortFilterBottomSheet == null) {
@@ -375,7 +392,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun showQuickSortBottomSheet(sort: List<Sort>) {
-        // TODO: Create new sort bottomsheet
+        viewModel.showQuickSortBottomSheet(sort)
     }
 
     private fun showQuickFilterBottomSheet(filter: Filter) {

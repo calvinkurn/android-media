@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodFilterItemUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortItemUiModel
 import javax.inject.Inject
@@ -25,6 +26,8 @@ class TokofoodFilterSortMapper @Inject constructor(@ApplicationContext private v
 
     fun getAppliedSortFilterUiModels(searchParameters: SearchParameter,
                                      uiModels: List<TokofoodSortFilterItemUiModel>): List<TokofoodSortFilterItemUiModel> {
+
+        // TODO: Divide into methods
         return uiModels.map { item ->
             when(item) {
                 is TokofoodFilterItemUiModel -> {
@@ -64,6 +67,18 @@ class TokofoodFilterSortMapper @Inject constructor(@ApplicationContext private v
                 }
                 else -> item
             }
+        }
+    }
+
+    fun getQuickSortUiModels(sortList: List<Sort>,
+                             selectedSortValue: String): List<TokofoodQuickSortUiModel> {
+        return sortList.map {
+            TokofoodQuickSortUiModel(
+                name = it.name,
+                key = it.key,
+                value = it.value,
+                isSelected = it.value == selectedSortValue
+            )
         }
     }
 

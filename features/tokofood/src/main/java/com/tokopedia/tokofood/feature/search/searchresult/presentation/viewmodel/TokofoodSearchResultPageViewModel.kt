@@ -28,6 +28,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.Tokofood
 import com.tokopedia.tokofood.feature.search.searchresult.domain.response.TokofoodSearchMerchantResponse
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithoutFilterUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiEvent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiState
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
@@ -206,7 +207,17 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
             } else {
                 String.EMPTY
             }
-        currentSearchParameter.value?.set(sort.key, value)
+        currentSearchParameter.value?.run {
+            set(sort.key, value)
+            _searchMap.tryEmit(getSearchParameterHashMap())
+        }
+    }
+
+    fun applySortSelected(uiModel: TokofoodQuickSortUiModel) {
+        currentSearchParameter.value?.run {
+            set(uiModel.key, uiModel.value)
+            _searchMap.tryEmit(getSearchParameterHashMap())
+        }
     }
 
     fun applyFilter(filter: Filter) {
@@ -233,6 +244,14 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         currentSearchParameter.value?.run {
             resetParams(queryParams)
             _searchMap.tryEmit(getSearchParameterHashMap())
+        }
+    }
+
+    fun showQuickSortBottomSheet(sort: List<Sort>) {
+        sort.firstOrNull()?.key?.let { currentKey ->
+            currentSearchParameter.value?.get(currentKey)?.let { selectedSortValue ->
+                showQuickSortBottomSheet(sort, selectedSortValue)
+            }
         }
     }
 
@@ -450,6 +469,16 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         return (uiState.data as? TokofoodSearchMerchantResponse)?.let { response ->
             currentVisitables.value.orEmpty() + tokofoodMerchantSearchResultMapper.mapResponseToVisitables(response)
         }.orEmpty()
+    }
+
+    private fun showQuickSortBottomSheet(sortList: List<Sort>,
+                                         selectedSortValue: String) {
+        _uiEventFlow.tryEmit(
+            TokofoodSearchUiEvent(
+                state = TokofoodSearchUiEvent.EVENT_OPEN_QUICK_SORT_BOTTOMSHEET,
+                data = tokofoodFilterSortMapper.getQuickSortUiModels(sortList, selectedSortValue)
+            )
+        )
     }
 
     companion object {
