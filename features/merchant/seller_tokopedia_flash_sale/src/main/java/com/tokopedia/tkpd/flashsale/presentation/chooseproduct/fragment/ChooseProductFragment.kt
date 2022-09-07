@@ -91,15 +91,20 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         setupFilterData()
     }
 
-    override fun onChooseProductClicked(index: Int, item: ChooseProductItem, selected: Boolean) {
-        println(item)
+    override fun onChooseProductClicked(index: Int) {
+        adapter?.getItems()?.let {
+            viewModel.selectSelectedProduct(it)
+        }
     }
 
     override fun onDetailClicked(index: Int) {
         println("click $index")
     }
 
-    override fun createAdapter(): CompositeAdapter = chooseProductAdapter.getRecyclerViewAdapter()
+    override fun createAdapter(): CompositeAdapter {
+        chooseProductAdapter.setListener(this)
+        return chooseProductAdapter.getRecyclerViewAdapter()
+    }
 
     override fun getRecyclerView(view: View): RecyclerView? = binding?.rvBundle
 
@@ -228,6 +233,13 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         viewModel.error.observe(viewLifecycleOwner) {
             showGetListError(it)
         }
+        viewModel.selectedProductCount.observe(viewLifecycleOwner) {
+            displaySelectionCount(it)
+        }
+    }
+
+    private fun displaySelectionCount(count: Int) {
+        binding?.tfSelectedProductCount?.text = count.toString()
     }
 
     private fun getSearchBarText(): String {

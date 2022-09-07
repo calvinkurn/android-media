@@ -27,7 +27,7 @@ class ChooseProductDelegateAdapter:
     }
 
     interface ChooseProductListener {
-        fun onChooseProductClicked(index: Int, item: ChooseProductItem, selected: Boolean)
+        fun onChooseProductClicked(index: Int)
         fun onDetailClicked(index: Int)
     }
 }

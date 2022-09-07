@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.tkpd.flashsale.domain.entity.Category
 import com.tokopedia.tkpd.flashsale.domain.entity.CategorySelection
@@ -12,6 +13,7 @@ import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductListToRese
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductPerCriteriaUseCase
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.FILTER_PRODUCT_CRITERIA_PASSED
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.MAX_PER_PAGE
+import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.mapper.ChooseProductUiMapper
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
@@ -30,20 +32,14 @@ class ChooseProductViewModel @Inject constructor(
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
+    private val _selectedProductList = MutableLiveData<List<DelegateAdapterItem>>()
+
     val categoryAllList = Transformations.map(criteriaList) {
-        collectAllCategory(it)
+        ChooseProductUiMapper.collectAllCategory(it)
     }
 
-    private fun collectAllCategory(categories: List<CategorySelection>): MutableList<Category> {
-        val result = mutableListOf<Category>()
-        categories.forEach { category ->
-            category.categoryList.forEach { categoryData ->
-                if (!result.any { it.categoryId == categoryData.categoryId}) {
-                    result.add(categoryData)
-                }
-            }
-        }
-        return result
+    val selectedProductCount = Transformations.map(_selectedProductList) {
+        ChooseProductUiMapper.getSelectedProductCount(it)
     }
 
     val hasNextPage: Boolean get() = productList.value?.size == MAX_PER_PAGE
@@ -83,5 +79,9 @@ class ChooseProductViewModel @Inject constructor(
                 _error.postValue(error)
             }
         )
+    }
+
+    fun selectSelectedProduct(items: List<DelegateAdapterItem>) {
+        _selectedProductList.value = items
     }
 }

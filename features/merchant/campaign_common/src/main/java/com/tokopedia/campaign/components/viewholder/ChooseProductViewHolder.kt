@@ -43,8 +43,11 @@ class ChooseProductViewHolder(
             tvCheckDetail.isVisible = item.showCheckDetailCta
             checkboxItem.isChecked = item.isSelected
             checkboxItem.setOnClickListener {
-                listener?.onChooseProductClicked(adapterPosition, item, !checkboxItem.isChecked)
+                item.isSelected = !checkboxItem.isChecked
+                listener?.onChooseProductClicked(adapterPosition)
             }
+            labelVariantCount.isVisible = item.hasVariant
+            tvVariantTips.isVisible = item.hasVariant
             setEnable(item.isEnabled, binding)
         }
     }

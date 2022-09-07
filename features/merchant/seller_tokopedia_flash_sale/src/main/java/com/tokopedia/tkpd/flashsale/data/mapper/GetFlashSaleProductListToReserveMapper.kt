@@ -19,6 +19,7 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor() {
             priceText = mapPrice(it.variantMeta.countVariants, it.price),
             stockText = "Total Stok ${it.stock} di ${it.countEligibleWarehouses} lokasi",
             errorMessage = it.disableDetail.disableTitle,
+            hasVariant = it.variantMeta.countVariants.isMoreThanZero(),
             isError = it.disableDetail.isDisabled,
             isEnabled = !it.disableDetail.isDisabled,
             showCheckDetailCta = it.disableDetail.showCriteriaCheckingCta,

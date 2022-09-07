@@ -11,6 +11,7 @@ data class ChooseProductItem (
     val priceText: String = "",
     val stockText: String = "",
     val errorMessage: String = "",
+    val hasVariant: Boolean = false,
     val isError: Boolean = false,
     val isEnabled: Boolean = false,
     val showCheckDetailCta: Boolean = false,
