@@ -23,6 +23,7 @@ import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
 import com.tokopedia.home_component.viewholders.layoutmanager.PeekingLinearLayoutManager
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -166,7 +167,7 @@ class BannerComponentViewHolder(itemView: View,
         rvBanner.onFlingListener = null
 
         val layoutParams = rvBanner.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.setMargins(0, 0, 0, itemView.resources.getDimensionPixelOffset(dimenMarginBottom))
+        layoutParams.setMargins(MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO, itemView.resources.getDimensionPixelOffset(dimenMarginBottom))
         layoutParams.goneTopMargin = itemView.resources.getDimensionPixelOffset(dimenMarginTop)
         rvBanner.layoutParams = layoutParams
 
@@ -271,5 +272,6 @@ class BannerComponentViewHolder(itemView: View,
         private const val STATE_RUNNING = 0
         private const val STATE_PAUSED = 1
         private const val INITIAL_PAGE_POSITION = 0
+        private const val MARGIN_ZERO = 0
     }
 }
