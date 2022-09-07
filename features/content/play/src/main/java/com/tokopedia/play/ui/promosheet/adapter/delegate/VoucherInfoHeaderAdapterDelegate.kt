@@ -3,13 +3,12 @@ package com.tokopedia.play.ui.promosheet.adapter.delegate
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.bold
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayVoucherHeaderBinding
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
+import com.tokopedia.play_common.util.extension.bold
 import com.tokopedia.play_common.util.extension.buildSpannedString
 
 /**
