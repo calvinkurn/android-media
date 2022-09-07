@@ -11,16 +11,15 @@ class OrderRoomDatasource(
     private val orderDao: OrderDao
 ) {
     fun saveOrderList(orderList: OrderListModel) {
-        orderDao.insertOrderProducts(orderList.mapModelToProductEntity())
         orderDao.insertOrderList(orderList.mapModelToOrderEntity())
+        orderDao.insertOrderProducts(orderList.mapModelToProductEntity())
     }
 
     fun getNewOrderList() : Flow<List<OrderWithProduct>>{
         return orderDao.getNewOrderList()
     }
 
-    //Example
     fun getReadyToDeliverOrderList() : Flow<List<OrderWithProduct>>{
-        return orderDao.getNewOrderList()
+        return orderDao.getReadyToDeliverOrderList()
     }
 }

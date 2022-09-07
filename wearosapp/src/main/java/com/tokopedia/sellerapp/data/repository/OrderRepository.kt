@@ -15,7 +15,6 @@ class OrderRepository @Inject constructor(
         return orderRoomDatasource.getNewOrderList()
     }
 
-    //Example
     fun getCachedReadyToDeliverOrderList() : Flow<List<OrderWithProduct>>{
         return orderRoomDatasource.getReadyToDeliverOrderList()
     }

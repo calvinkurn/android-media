@@ -13,8 +13,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface OrderDao{
     companion object {
-        private const val STATUS_NEW_ORDER = 220
-        private const val STATUS_READY_TO_DELIVER = 330
+        private const val STATUS_NEW_ORDER = 0 // Actual value should be 220, but temporary hardcoded to 0 for testing purpose
+        private const val STATUS_READY_TO_DELIVER = 10 // temporary, to be confirmed later
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -24,13 +24,10 @@ interface OrderDao{
     fun insertOrderProducts(list: List<ProductEntity>)
 
     @Transaction
-    @Query("SELECT * FROM WearOrder wo INNER JOIN WearOrderProduct wop " +
-            "ON wo.order_id = wop.order_id WHERE wo.order_status_id == $STATUS_NEW_ORDER")
+    @Query("SELECT * FROM WearOrder wo WHERE wo.order_status_id = $STATUS_NEW_ORDER")
     fun getNewOrderList() : Flow<List<OrderWithProduct>>
 
-    //Example
     @Transaction
-    @Query("SELECT * FROM WearOrder wo INNER JOIN WearOrderProduct wop " +
-            "ON wo.order_id = wop.order_id WHERE wo.order_status_id == $STATUS_READY_TO_DELIVER")
+    @Query("SELECT * FROM WearOrder wo WHERE wo.order_status_id = $STATUS_READY_TO_DELIVER")
     fun getReadyToDeliverOrderList() : Flow<List<OrderWithProduct>>
 }

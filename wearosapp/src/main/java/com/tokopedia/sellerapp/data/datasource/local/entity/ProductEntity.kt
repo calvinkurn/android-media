@@ -2,8 +2,18 @@ package com.tokopedia.sellerapp.data.datasource.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 
-@Entity(tableName = "WearOrderProduct", primaryKeys = ["product_id", "order_id"])
+@Entity(
+    tableName = "WearOrderProduct",
+    primaryKeys = ["product_id", "order_id"],
+    foreignKeys = [ForeignKey(
+        entity = OrderEntity::class,
+        parentColumns = ["order_id"],
+        childColumns = ["order_id"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
 data class ProductEntity(
     @ColumnInfo(name = "order_id")
     var orderId: String = "",

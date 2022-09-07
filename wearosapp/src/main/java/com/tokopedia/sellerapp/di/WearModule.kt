@@ -11,6 +11,7 @@ import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.data.repository.OrderRepository
 import com.tokopedia.sellerapp.data.repository.WearCacheActionImpl
 import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCaseImpl
+import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,8 +40,7 @@ class WearModule {
     fun provideWearCacheImpl(
         orderRoomDatasource: OrderRoomDatasource,
         dispatchers: CoroutineDispatchers
-    ) =
-        WearCacheActionImpl(dispatchers, orderRoomDatasource)
+    ) = WearCacheActionImpl(dispatchers, orderRoomDatasource)
 
     @Provides
     fun provideOrderRemoteDatasource(
@@ -58,9 +58,16 @@ class WearModule {
     }
 
     @Provides
-    fun provideOrderUseCaseImpl(
+    fun provideNewOrderUseCaseImpl(
         orderRepository: OrderRepository
     ): NewOrderUseCaseImpl {
         return NewOrderUseCaseImpl(orderRepository)
+    }
+
+    @Provides
+    fun provideReadyToDeliverOrderUseCaseImpl(
+        orderRepository: OrderRepository
+    ): ReadyToDeliverOrderUseCaseImpl {
+        return ReadyToDeliverOrderUseCaseImpl(orderRepository)
     }
 }

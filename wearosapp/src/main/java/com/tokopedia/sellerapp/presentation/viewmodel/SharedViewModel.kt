@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCaseImpl
+import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCaseImpl
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.TITLE_NEW_ORDER
+import com.tokopedia.sellerapp.presentation.model.TITLE_READY_TO_DELIVER
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
-    private val newOrderUseCaseImpl: NewOrderUseCaseImpl
+    private val newOrderUseCaseImpl: NewOrderUseCaseImpl,
+    private val readyToDeliverOrderUseCaseImpl: ReadyToDeliverOrderUseCaseImpl
 ) : BaseViewModel(dispatchers.io) {
 
     private val _homeMenu: MutableStateFlow<List<MenuItem>> = MutableStateFlow(generateInitialMenu())
@@ -26,6 +29,16 @@ class SharedViewModel @Inject constructor(
 
     val newOrderList: StateFlow<UiState<List<OrderModel>>> = newOrderUseCaseImpl().map {
         updateMenuCounter(it.size, TITLE_NEW_ORDER)
+        UiState.Success(data = it)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = UiState.Idle()
+    )
+
+
+    val readyToDeliverOrderList: StateFlow<UiState<List<OrderModel>>> = readyToDeliverOrderUseCaseImpl().map {
+        updateMenuCounter(it.size, TITLE_READY_TO_DELIVER)
         UiState.Success(data = it)
     }.stateIn(
         scope = viewModelScope,
