@@ -14,17 +14,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iconUnify"
+        android:id="@+id/iu_search"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_marginStart="56dp"
         app:icon_name="SEARCH"
-        app:layout_constraintBottom_toBottomOf="@+id/typography2"
+        app:layout_constraintBottom_toBottomOf="@+id/tp_desc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/typography2" />
+        app:layout_constraintTop_toTopOf="@+id/tp_desc" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography2"
+        android:id="@+id/tp_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -33,7 +33,7 @@
         android:text="@string/tokopedianow_recipe_autocomplete_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/iconUnify"
+        app:layout_constraintStart_toEndOf="@+id/iu_search"
         app:layout_constraintTop_toBottomOf="@+id/search_bar"
         app:typographyType="body_2" />
 
