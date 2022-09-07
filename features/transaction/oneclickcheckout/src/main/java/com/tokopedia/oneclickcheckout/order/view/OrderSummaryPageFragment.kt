@@ -54,12 +54,13 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
-import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
@@ -1416,19 +1417,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
         }
 
-        override fun chooseCourier(shipment: OrderShipment, list: ArrayList<RatesViewModelType>) {
+        override fun chooseCourier(shipment: OrderShipment, list: ArrayList<ShippingCourierUiModel>) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderSummaryAnalytics.eventChangeCourierOSP(shipment.getRealShipperId().toString())
-                ShippingCourierOccBottomSheet().showBottomSheet(this@OrderSummaryPageFragment, list, object : ShippingCourierOccBottomSheetListener {
-                    override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
-                        orderSummaryAnalytics.eventChooseCourierSelectionOSP(shippingCourierViewModel.productData.shipperId.toString())
-                        viewModel.chooseCourier(shippingCourierViewModel)
-                    }
+                activity?.let {
+                    ShippingCourierBottomsheet().show(it, parentFragmentManager, object : ShippingCourierBottomsheetListener {
+                        override fun onCourierChoosen(shippingCourierUiModel: ShippingCourierUiModel, courierItemData: CourierItemData, recipientAddressModel: RecipientAddressModel?,
+                                                     cartPosition: Int, isCod: Boolean, isPromoCourier: Boolean, isNeedPinpoint: Boolean, shippingCourierList: List<ShippingCourierUiModel>) {
+                            orderSummaryAnalytics.eventChooseCourierSelectionOSP(shippingCourierUiModel.productData.shipperId.toString())
+                            viewModel.chooseCourier(shippingCourierUiModel)
+                        }
 
-                    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-                        onLogisticPromoClick(data)
-                    }
-                })
+                        override fun onCourierShipmentRecommendationCloseClicked() {}
+                    }, list, null, 0, true)
+                }
             }
         }
 

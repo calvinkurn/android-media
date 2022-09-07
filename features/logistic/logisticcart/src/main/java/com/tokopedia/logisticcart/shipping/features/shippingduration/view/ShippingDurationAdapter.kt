@@ -3,7 +3,13 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.DividerModel
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.NotifierModel
+import com.tokopedia.logisticcart.shipping.model.NotifierModel.Companion.TYPE_DEFAULT
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 
 /**
  * Created by Irfan Khoirul on 08/08/18.
@@ -40,7 +46,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         }
         if (!isOcc) {
             if (shippingDurationUiModels[0].etaErrorCode == 1) {
-                this.mData.add(0, NotifierModel())
+                this.mData.add(0, NotifierModel(TYPE_DEFAULT))
             }
         }
         notifyDataSetChanged()
@@ -98,6 +104,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             is PreOrderViewHolder -> holder.bindData(mData[position] as PreOrderModel)
             is ShippingDurationViewHolder -> holder.bindData(mData[position] as ShippingDurationUiModel, shippingDurationAdapterListener, isDisableOrderPrioritas)
             is ArmyViewHolder -> holder.bindData(mData[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
+            is NotifierViewHolder -> holder.bindData(mData[position] as NotifierModel)
         }
     }
 
