@@ -28,6 +28,10 @@ object GetPromoListDataProvider {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_with_bo_promo.json"), CouponListRecommendationResponse::class.java)
     }
 
+    fun provideGetPromoListResponseSuccessWithSelectedPromoBoClashing(): CouponListRecommendationResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_with_selected_promo_bo_clashing.json"), CouponListRecommendationResponse::class.java)
+    }
+
     fun provideGetPromoListResponseSuccessWithBoPromoNotSelected(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_with_bo_promo_unselected.json"), CouponListRecommendationResponse::class.java)
     }
@@ -318,6 +322,28 @@ object GetPromoListDataProvider {
         val boClashingPromo = response.couponListRecommendation.data.couponSections[0].subSections[2].coupons[0]
         val boClashingPromoUiModel = uiModelmapper.mapPromoListItemUiModel(boClashingPromo, subSectionWithBoClashingPromo, section, 0, emptyList())
         promoListUiModelList.add(boClashingPromoUiModel)
+
+        return promoListUiModelList
+    }
+
+    fun providePromoListWithMultipleClashingBoPromo(): ArrayList<Visitable<*>> {
+        val promoListUiModelList = ArrayList<Visitable<*>>()
+        val response = provideGetPromoListResponseSuccessWithBoPromo()
+
+        val section = response.couponListRecommendation.data.couponSections[0]
+        val subSectionWithBoClashingPromo = response.couponListRecommendation.data.couponSections[0].subSections[2]
+        val selectedPromoHeaderUiModel = uiModelmapper.mapPromoListHeaderUiModel(subSectionWithBoClashingPromo, section, 0, true)
+        promoListUiModelList.add(selectedPromoHeaderUiModel)
+        val boClashingPromo = response.couponListRecommendation.data.couponSections[0].subSections[2].coupons[0]
+        val boClashingPromoUiModel = uiModelmapper.mapPromoListItemUiModel(boClashingPromo, subSectionWithBoClashingPromo, section, 0, emptyList())
+        promoListUiModelList.add(boClashingPromoUiModel)
+
+        val otherSubSectionWithBoClashingPromo = response.couponListRecommendation.data.couponSections[0].subSections[3]
+        val otherPromoHeaderUiModel = uiModelmapper.mapPromoListHeaderUiModel(otherSubSectionWithBoClashingPromo, section, 1, true)
+        promoListUiModelList.add(otherPromoHeaderUiModel)
+        val otherBoClashingPromo = response.couponListRecommendation.data.couponSections[0].subSections[3].coupons[0]
+        val otherBoClashingPromoUiModel = uiModelmapper.mapPromoListItemUiModel(otherBoClashingPromo, otherSubSectionWithBoClashingPromo, section, 1, emptyList())
+        promoListUiModelList.add(otherBoClashingPromoUiModel)
 
         return promoListUiModelList
     }
