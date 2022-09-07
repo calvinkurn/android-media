@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -38,6 +39,7 @@ class HomeProductRecomViewHolder(
     private var isOoc = false
 
     override fun bind(element: HomeProductRecomUiModel) {
+        val scrollToPosition = listener?.onGetCarouselScrollPosition(adapterPosition)
         channelId = element.id
         isOoc = element.id == PRODUCT_RECOM_OOC
         binding?.carouselProductRecom?.bind(
@@ -46,7 +48,8 @@ class HomeProductRecomViewHolder(
                 state = RecommendationCarouselData.STATE_READY,
             ),
             basicListener = this,
-            tokonowListener = this
+            tokonowListener = this,
+            scrollToPosition = scrollToPosition.orZero(),
         )
         setOnScrollListener()
         restoreScrollState()
@@ -56,6 +59,11 @@ class HomeProductRecomViewHolder(
             val spaceSixTeen = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             binding?.carouselProductRecom?.setMargin(spaceZero, spaceSixTeen, spaceZero, spaceZero)
         }
+    }
+
+    override fun onViewRecycled() {
+        saveCarouselScrollPosition()
+        super.onViewRecycled()
     }
 
     override fun onRecomBannerImpressed(
@@ -129,6 +137,7 @@ class HomeProductRecomViewHolder(
         adapterPosition: Int,
         quantity: Int
     ) {
+        saveCarouselScrollPosition()
         listener?.onProductRecomNonVariantClick(recomItem, quantity, data.recommendationData.title, channelId, adapterPosition.toString())
     }
 
@@ -137,6 +146,8 @@ class HomeProductRecomViewHolder(
         recomItem: RecommendationItem,
         adapterPosition: Int
     ) {
+        saveCarouselScrollPosition()
+
         AtcVariantHelper.goToAtcVariant(
             context = itemView.context,
             productId = recomItem.productId.toString(),
@@ -158,7 +169,21 @@ class HomeProductRecomViewHolder(
         binding?.carouselProductRecom?.restoreScrollState(scrollState)
     }
 
+    private fun saveCarouselScrollPosition() {
+        val adapterPosition = this.adapterPosition
+        val carouselScrollPosition = binding?.carouselProductRecom?.getCurrentPosition() ?: 0
+
+        listener?.onSaveCarouselScrollPosition(
+            adapterPosition = adapterPosition,
+            scrollPosition = carouselScrollPosition,
+        )
+    }
+
     interface HomeProductRecomListener {
+        fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int)
+
+        fun onGetCarouselScrollPosition(adapterPosition: Int): Int
+
         fun onRecomProductCardClicked(
             recomItem: RecommendationItem,
             channelId: String,
