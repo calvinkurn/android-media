@@ -59,9 +59,9 @@ class ToolTipInfoBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bottomSheetWrapper.setPadding(0, bottomSheetWrapper.paddingTop, 0, bottomSheetWrapper.paddingBottom)
-        bottomSheetAction.setMargin(marginRight = 16.toPx())
-        bottomSheetClose.setMargin(marginLeft = 16.toPx(), marginTop = 4.toPx(), marginRight = 12.toPx())
+        bottomSheetWrapper.setPadding(MARGIN_0, bottomSheetWrapper.paddingTop, MARGIN_0, bottomSheetWrapper.paddingBottom)
+        bottomSheetAction.setMargin(marginRight = MARGIN_16.toPx())
+        bottomSheetClose.setMargin(marginLeft = MARGIN_16.toPx(), marginTop = MARGIN_4.toPx(), marginRight = MARGIN_12.toPx())
         isDragable = true
         isHideable = true
         customPeekHeight = getScreenHeight().toDp()
@@ -72,14 +72,19 @@ class ToolTipInfoBottomSheet : BottomSheetUnify() {
         private const val TOOLTIP_INFO_DESCRIPTION = "infoDescription"
         private const val TAG_TOOLTIP_INFO_BOTTOM_SHEET = "tag_tooltip_info_bottom_sheet"
 
-        fun openTooltipInfoBottomSheet(activity:FragmentActivity?, infoTitle:String,infoDescription:String) {
+        private const val MARGIN_16 = 16
+        private const val MARGIN_4 = 16
+        private const val MARGIN_12 = 16
+        private const val MARGIN_0 = 0
+
+        fun openTooltipInfoBottomSheet(activity:FragmentActivity?, infoTitle:String?,infoDescription:String?) {
             activity?.apply {
                 val invoiceBottomSheet = getToolTipInfoFragment(infoTitle,infoDescription)
                 invoiceBottomSheet.show(supportFragmentManager, TAG_TOOLTIP_INFO_BOTTOM_SHEET)
             }
         }
 
-        private fun getToolTipInfoFragment(infoTitle:String,infoDescription:String)
+        private fun getToolTipInfoFragment(infoTitle:String?,infoDescription:String?)
                 : ToolTipInfoBottomSheet = ToolTipInfoBottomSheet().apply {
             val bundle = Bundle()
             bundle.putString(TOOLTIP_INFO_TITLE, infoTitle)

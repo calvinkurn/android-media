@@ -75,7 +75,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             if(previousAmount>0){
                 val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(previousAmount,
                     false)
-                return FeeDetail(PREV_ORDER_AMOUNT_VA, formattedAmountStr,"","","")
+                return FeeDetail(PREV_ORDER_AMOUNT_VA, formattedAmountStr)
             }
         }
         return null

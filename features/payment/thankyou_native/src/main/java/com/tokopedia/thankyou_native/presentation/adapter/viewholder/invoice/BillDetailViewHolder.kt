@@ -52,11 +52,13 @@ class BillDetailViewHolder(val view: View) : AbstractViewHolder<TotalFee>(view) 
     }
 
     private fun setUpToolTipInfoIcon(context: Context,toolTipIconView:ImageUnify,feeDetail: FeeDetail){
-        if(feeDetail.showToolTip.toBoolean()){
-            toolTipIconView.visible()
-            toolTipIconView.setOnClickListener {
-                openTooltipInfoBottomSheet(
-                    context as FragmentActivity,feeDetail.tooltipTitle,feeDetail.tooltipDesc)
+        feeDetail.showToolTip?.let {
+            if(feeDetail.showToolTip.toBoolean()){
+                toolTipIconView.visible()
+                toolTipIconView.setOnClickListener {
+                    openTooltipInfoBottomSheet(
+                        context as FragmentActivity,feeDetail.tooltipTitle,feeDetail.tooltipDesc)
+                }
             }
         }
     }
