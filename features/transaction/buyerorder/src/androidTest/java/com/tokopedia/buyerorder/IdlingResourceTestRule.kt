@@ -7,6 +7,8 @@ import org.junit.runners.model.Statement
 
 /**
  * created by @bayazidnasir on 6/9/2022
+ *
+ * A Test Rule that cleanups Idling Resource before and after running test
  */
 
 class IdlingResourceTestRule: TestRule {
