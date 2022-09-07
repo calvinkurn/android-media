@@ -11,12 +11,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TokoNowRecipeSimilarProductViewModel @Inject constructor(
-    userSession: UserSessionInterface,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addressData: TokoNowLocalAddress,
+    userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseTokoNowViewModel(
     addToCartUseCase,
