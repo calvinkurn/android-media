@@ -59,7 +59,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
-    implementation projectOrAar(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.discovery2)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)

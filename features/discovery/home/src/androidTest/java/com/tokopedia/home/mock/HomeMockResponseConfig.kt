@@ -12,6 +12,7 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_2 = "\"param\": \"channel_ids=45397\""
 
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY = "getDynamicChannel"
+        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_V2 = "getHomeChannelV2"
         const val KEY_QUERY_DYNAMIC_POSITION = "dynamicPosition"
         const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
         const val KEY_QUERY_DYNAMIC_POSITION_TICKER = "homeTicker"
@@ -86,6 +87,12 @@ internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Bo
         addMockResponse(
             KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
             getRawString(context, R.raw.response_mock_data_dynamic_home_channel_screenshot),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_QUERY_DYNAMIC_HOME_CHANNEL_V2,
+            getRawString(context, R.raw.response_mock_data_dynamic_home_channel_screenshot_v2),
             FIND_BY_CONTAINS
         )
 

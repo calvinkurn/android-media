@@ -879,9 +879,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun goToDetailOpponent() {
-        if (opponentRole.toLowerCase() == ChatRoomHeaderUiModel.Companion.ROLE_USER) {
+        if (opponentRole.lowercase(Locale.getDefault()) == ChatRoomHeaderUiModel.Companion.ROLE_USER) {
             goToProfile(opponentId)
-        } else if (opponentRole.toLowerCase()
+        } else if (opponentRole.lowercase(Locale.getDefault())
                 .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP)
         ) {
             onGoToShop()
@@ -3345,7 +3345,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         const val AB_TEST_NEW_SRW = "srw_new_design"
         const val AB_TEST_OLD_SRW = "control_variant"
-        const val ROLLENCE_ENABLE_MEDIA_PICKER = "android_chat_picker"
+        const val ROLLENCE_ENABLE_MEDIA_PICKER = "and_chat_picker_v2"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

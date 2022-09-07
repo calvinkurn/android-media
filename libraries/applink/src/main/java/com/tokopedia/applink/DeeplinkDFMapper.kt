@@ -27,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELA
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_CATALOG
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_EXPLORE_CATEGORY
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_E_PHARMACY
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_FIND
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_HOTLIST_REVAMP
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTERNAL
@@ -138,6 +139,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
@@ -247,6 +249,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DF_CATEGORY_TRADE_IN, R.string.money_in))
             add(DFP({ it.startsWith(INTERNAL_EXPLORE_CATEGORY) }, DF_BASE, R.string.applink_title_explore_category))
             add(DFP({ it.startsWith(INTERNAL_CATALOG) }, DF_BASE, R.string.applink_title_catalog))
+            add(DFP({ it.startsWith(INTERNAL_E_PHARMACY) }, DF_BASE, R.string.applink_title_e_pharmacy))
             add(DFP({ it.startsWith(INTERNAL_FIND) }, DF_BASE, R.string.applink_title_find_native))
             add(DFP({ it.startsWith(INTERNAL_CATEGORY) }, DF_BASE, R.string.label_category))
 
@@ -576,6 +579,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
             add(DFP({ it.startsWith(WISHLIST_V2) }, DF_BASE, R.string.title_wishlist))
             add(DFP({ it.startsWith(ADD_ON_GIFTING) }, DF_BASE, R.string.add_on_gifting_module_title_activity_add_on_selection))
+            add(DFP({ it.startsWith(WISHLIST_COLLECTION) }, DF_BASE, R.string.title_collection_wishlist))
 
             // buyerorder
             add(DFP({

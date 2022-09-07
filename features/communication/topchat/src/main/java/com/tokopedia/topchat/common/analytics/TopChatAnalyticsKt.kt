@@ -302,6 +302,151 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventViewOperationalInsightTicker(
+        shopId: String,
+        stateReport: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_IMPRESS_REPORT_TICKER,
+                label = "$shopId - $stateReport",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33142"
+            )
+        )
+    }
+
+    fun eventClickOperationalInsightTicker(
+        shopId: String,
+        stateReport: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_REPORT_TICKER,
+                label = "$shopId - $stateReport",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33143"
+            )
+        )
+    }
+
+    fun eventClickCloseOperationalInsightTicker(
+        shopId: String,
+        stateReport: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_CLOSE_REPORT_TICKER,
+                label = "$shopId - $stateReport",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33144"
+            )
+        )
+    }
+
+    fun eventViewOperationalInsightBottomSheet(
+        shopId: String,
+        stateReport: String,
+        replyChatRate: String,
+        targetReplyChatRate: String,
+        replyChatSpeed: String,
+        targetReplyChatSpeed: String,
+    ) {
+        val label = generateOperationalInsightLabel(
+            shopId, stateReport,
+            replyChatRate, targetReplyChatRate,
+            replyChatSpeed, targetReplyChatSpeed
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_IMPRESS_TICKER_BOTTOMSHEET,
+                label = label,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33145"
+            )
+        )
+    }
+
+    fun eventClickShopPerformanceOperationalInsightBottomSheet(
+        shopId: String,
+        stateReport: String,
+        replyChatRate: String,
+        targetReplyChatRate: String,
+        replyChatSpeed: String,
+        targetReplyChatSpeed: String,
+    ) {
+        val label = generateOperationalInsightLabel(
+            shopId, stateReport,
+            replyChatRate, targetReplyChatRate,
+            replyChatSpeed, targetReplyChatSpeed
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_SHOP_PERFORMANCE,
+                label = label,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33146"
+            )
+        )
+    }
+
+    fun eventClickOperationalInsightCta(
+        shopId: String,
+        stateReport: String,
+        replyChatRate: String,
+        targetReplyChatRate: String,
+        replyChatSpeed: String,
+        targetReplyChatSpeed: String
+    ) {
+        val label = generateOperationalInsightLabel(
+            shopId, stateReport,
+            replyChatRate, targetReplyChatRate,
+            replyChatSpeed, targetReplyChatSpeed
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_OPERATIONAL_INSIGHT_CTA,
+                label = label,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33147"
+            )
+        )
+    }
+
+    private fun generateOperationalInsightLabel(
+        shopId: String,
+        stateReport: String,
+        replyChatRate: String,
+        targetReplyChatRate: String,
+        replyChatSpeed: String,
+        targetReplyChatSpeed: String
+    ): String {
+        return """
+            $shopId - $stateReport - $replyChatRate - $targetReplyChatRate - $replyChatSpeed - $targetReplyChatSpeed
+        """.trimIndent()
+    }
+
     fun eventViewTicker(
         tickerType: String,
         isSeller: Boolean,
@@ -408,6 +553,7 @@ object TopChatAnalyticsKt {
 
     object Category {
         const val CHAT_DETAIL = "chat detail"
+        const val INBOX_CHAT = "inbox-chat"
         const val PUSH_NOTIF_CHAT = "push notification chat"
     }
 
@@ -424,10 +570,16 @@ object TopChatAnalyticsKt {
         const val CLICK_CLOSE_SRW_ONBOARDING = "click close on srw onboarding"
         const val VIEW_BUNDLING_PRODUCT_CARD = "view on bundling product card"
         const val CLICK_BUNDLING_PRODUCT_CTA = "click on bundling product card"
+        const val SELLER_IMPRESS_REPORT_TICKER = "seller impress on report ticker"
         const val CLICK_SEND_MSG_ON_NOTIF = "click sent msg on notifpush"
         const val VIEW_BUNDLE_CART_CHATROOM = "view on bundle card in chatroom"
         const val CLICK_PRODUCT_BUNDLE = "click on product attachment on bundle card"
         const val CLICK_ADD_TO_CART_BUNDLE = "click on add to cart from bundle card"
+        const val SELLER_CLICK_REPORT_TICKER = "seller click on report ticker"
+        const val SELLER_CLICK_CLOSE_REPORT_TICKER = "seller click close on report ticker"
+        const val SELLER_IMPRESS_TICKER_BOTTOMSHEET = "seller impress ticker bottomsheet"
+        const val SELLER_CLICK_SHOP_PERFORMANCE = "seller click performa toko in bottomsheet"
+        const val SELLER_CLICK_OPERATIONAL_INSIGHT_CTA = "seller click cta wawasan in bottomsheet"
         const val VIEW_TICKER = "user impress ticker"
         const val CLICK_LINK_INSIDE_TICKER = "user click link inside ticker"
         const val CLICK_CLOSE_TICKER = "user click close ticker"

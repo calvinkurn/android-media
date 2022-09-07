@@ -1,45 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/goKycBenefitParentView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/unify_space_16"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/goPayPlusBenefitImage"
-        android:layout_width="@dimen/go_pay_kyc_dp_40"
-        android:layout_height="@dimen/go_pay_kyc_dp_40"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/gopayKycBenefitRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_gopay_atm_benefit"
-        android:scaleType="centerInside"
-        app:unify_image_corner_radius="0"
-        app:unify_image_type="rect" />
+        android:gravity="center">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/goPayItemBenefitTitle"
-        android:layout_width="@dimen/unify_space_0"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        android:layout_marginStart="@dimen/unify_space_12"
-        app:layout_constraintStart_toEndOf="@+id/goPayPlusBenefitImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Isi saldo sampai Rp10 juta" />
+        <View
+            android:id="@+id/verticalLineView"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_NN200" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/goPayItemBenefitDescription"
-        android:layout_width="@dimen/unify_space_0"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_68"
-        app:typographyType="body_3"
-        android:layout_marginStart="@dimen/unify_space_12"
-        app:layout_constraintStart_toEndOf="@+id/goPayPlusBenefitImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/goPayItemBenefitTitle"
-        tools:text="Nggak perlu kartu kredit atau debit. Cukup cari ATM terdekat lalu tarik GoPay-mu." />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/goPayBenefitTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:paddingHorizontal="@dimen/unify_space_12"
+            android:paddingTop="@dimen/go_pay_kyc_dp_10"
+            android:paddingBottom="@dimen/go_pay_kyc_dp_10"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_3"
+            tools:text="Batas Saldo"/>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/goPayBenefitLL"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/goPayBenefit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/unify_space_12"
+            android:paddingTop="@dimen/go_pay_kyc_dp_10"
+            android:paddingBottom="@dimen/go_pay_kyc_dp_10"
+            tools:text="Rp1.00.00"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="display_3"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/goPayBenefitCancelImage"
+            android:layout_height="@dimen/go_pay_kyc_dp_20"
+            android:layout_width="@dimen/go_pay_kyc_dp_20"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_cancel_icon"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="circle"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/goPayPlusBenefitLL"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/bg_gopay_benefit_plus_column"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/goPayPlusBenefit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/unify_space_12"
+                android:paddingTop="@dimen/go_pay_kyc_dp_10"
+                android:paddingBottom="@dimen/go_pay_kyc_dp_10"
+                tools:text="Rp1.00.00"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_3"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/goPayPlusBenefitImage"
+                android:layout_width="@dimen/go_pay_kyc_dp_20"
+                android:layout_height="@dimen/go_pay_kyc_dp_20"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/ic_tick_icon"
+                app:unify_image_corner_radius="0"
+                app:unify_image_type="circle"
+                android:visibility="gone"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/go_pay_kyc_dp_1"
+        android:background="@color/Unify_NN200"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gopayKycBenefitRow" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
