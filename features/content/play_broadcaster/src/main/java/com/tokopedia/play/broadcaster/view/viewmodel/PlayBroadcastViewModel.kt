@@ -1419,10 +1419,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 } else {
                     _uiEvent.emit(PlayBroadcastEvent.BroadcastReady(channelInfo.ingestUrl))
                 }
-            } else {
-                stopTimer()
-                _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
-            }
+            } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
         }) {
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 doResumeBroadcaster(shouldContinue)
@@ -1437,10 +1434,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     if (channelInfo.status.isPause) updateChannelStatus(PlayChannelStatusType.Live)
                 _uiEvent.emit(PlayBroadcastEvent.BroadcastRecovered)
                 updateCurrentInteractiveStatus()
-            } else {
-                stopTimer()
-                _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
-            }
+            } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
         }) {
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 handleBroadcasterRecovered()
