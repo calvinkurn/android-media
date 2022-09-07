@@ -1049,6 +1049,41 @@ class DealsAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.ADD_TO_CART, eventDataLayer)
     }
 
+
+    fun pdpRecommendationClick(id:String, index: Int, salesPrice: Long,  displayName:String, brandTitle: String){
+        val eventDataLayer = Bundle()
+        val label = java.lang.String.format(
+            "%s - %s", displayName, index.toString())
+        val list = java.lang.String.format(
+            "%s - %s - %s - %s",
+            "/" + DEALS,
+            brandTitle,
+            index,
+            displayName
+        )
+        eventDataLayer.generalTracker(
+            DealsAnalyticsConstants.Event.SELECT_CONTENT,
+            DealsAnalyticsConstants.Action.CLICK_RECOMMENDATION,
+            label.lowercase()
+        )
+
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(Bundle().apply {
+            putString(ITEM_ID, id)
+            putLong(PRICE, salesPrice)
+            putString(DIMENSION_40, "")
+            putInt(INDEX, index)
+            putString(ITEM_NAME, displayName)
+            putString(ITEM_BRAND, brandTitle)
+            putString(ITEM_VARIANT, "none")
+            putString(ITEM_CATEGORY, DEALS)
+        })
+        eventDataLayer.putString(ITEM_LIST, list)
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.SELECT_CONTENT, eventDataLayer)
+    }
+
     private fun Bundle.generalTracker(event: String, action: String, label: String): Bundle {
         this.putString(TrackAppUtils.EVENT, event)
         this.putString(TrackAppUtils.EVENT_CATEGORY, DealsAnalyticsConstants.Category.DIGITAL_DEALS)

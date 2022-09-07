@@ -710,7 +710,9 @@ class DealsPDPFragment: BaseDaggerFragment() {
                         RouteManager.route(context, brandUrl)
                     }
 
-                    override fun onClickDealsProduct(pdpUrl: String) {
+                    override fun onClickDealsProduct(pdpUrl: String, productDetail: EventProductDetail, index: Int) {
+                        analytics.pdpRecommendationClick(productDetail.id, (index + Int.ONE), productDetail.salesPrice.toLong(),
+                            productDetail.displayName, productDetail.brand.title)
                         RouteManager.route(context, pdpUrl)
                     }
                 })

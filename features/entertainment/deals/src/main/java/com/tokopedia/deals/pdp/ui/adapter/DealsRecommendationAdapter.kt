@@ -80,7 +80,7 @@ class DealsRecommendationAdapter (private val recommendationListener: Recommenda
                 }
 
                 itemView.setOnClickListener {
-                    recommendationListener?.onClickDealsProduct(product.appUrl)
+                    recommendationListener?.onClickDealsProduct(product.appUrl, product, adapterPosition)
                 }
             }
         }
@@ -92,6 +92,6 @@ class DealsRecommendationAdapter (private val recommendationListener: Recommenda
 
     interface RecommendationListener {
         fun onClickDealsBrand(brandUrl: String)
-        fun onClickDealsProduct(pdpUrl: String)
+        fun onClickDealsProduct(pdpUrl: String, product: EventProductDetail, index: Int)
     }
 }
