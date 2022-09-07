@@ -85,7 +85,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
     private lateinit var dealsSharePDP: DealsPDPShare
 
-    private var productId: String = ""
+    private var productId: String? = null
     private var binding by autoClearedNullable<FragmentDealsDetailBinding>()
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(DealsPDPViewModel::class.java)
@@ -136,7 +136,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        productId = arguments?.getString(EXTRA_PRODUCT_ID, "") ?: ""
+        productId = arguments?.getString(EXTRA_PRODUCT_ID)
         super.onCreate(savedInstanceState)
     }
 
@@ -302,7 +302,9 @@ class DealsPDPFragment: BaseDaggerFragment() {
 
     private fun getPDP() {
         showLoading()
-        viewModel.setPDP(productId)
+        productId?.let {
+            viewModel.setPDP(it)
+        }
     }
 
     private fun getRecommendation(childCategoryId: String) {
