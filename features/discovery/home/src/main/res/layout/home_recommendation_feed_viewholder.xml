@@ -8,7 +8,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/recom_divider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         />
     <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout

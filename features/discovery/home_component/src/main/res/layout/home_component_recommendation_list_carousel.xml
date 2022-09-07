@@ -27,7 +27,6 @@
             android:layout_height="0dp"
             android:visibility="gone"
             tools:visibility="visible"
-            android:translationY="-5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
@@ -57,13 +56,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            tools:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/list_carousel_view"
-            android:layout_marginTop="8dp"
-            android:paddingBottom="12dp">
+            android:layout_marginTop="8dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/list_carousel_title"
