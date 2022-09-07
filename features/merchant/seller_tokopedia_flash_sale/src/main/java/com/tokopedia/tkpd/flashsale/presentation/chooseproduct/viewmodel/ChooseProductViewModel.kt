@@ -2,12 +2,15 @@ package com.tokopedia.tkpd.flashsale.presentation.chooseproduct.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.entity.ChooseProductItem
+import com.tokopedia.tkpd.flashsale.domain.entity.Category
 import com.tokopedia.tkpd.flashsale.domain.entity.CategorySelection
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductListToReserveUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductPerCriteriaUseCase
+import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.FILTER_PRODUCT_CRITERIA_PASSED
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.MAX_PER_PAGE
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
@@ -15,7 +18,7 @@ import javax.inject.Inject
 class ChooseProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getFlashSaleProductListToReserveUseCase: GetFlashSaleProductListToReserveUseCase,
-    private val getFlashSaleProductPerCriteriaUseCase: GetFlashSaleProductPerCriteriaUseCase,
+    private val getFlashSaleProductPerCriteriaUseCase: GetFlashSaleProductPerCriteriaUseCase
 ) : BaseViewModel(dispatchers.main){
 
     private val _productList = MutableLiveData<List<ChooseProductItem>>()
@@ -27,17 +30,38 @@ class ChooseProductViewModel @Inject constructor(
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
+    val categoryAllList = Transformations.map(criteriaList) {
+        collectAllCategory(it)
+    }
+
+    private fun collectAllCategory(categories: List<CategorySelection>): MutableList<Category> {
+        val result = mutableListOf<Category>()
+        categories.forEach { category ->
+            category.categoryList.forEach { categoryData ->
+                if (!result.any { it.categoryId == categoryData.categoryId}) {
+                    result.add(categoryData)
+                }
+            }
+        }
+        return result
+    }
+
     val hasNextPage: Boolean get() = productList.value?.size == MAX_PER_PAGE
+    var filterCriteria: String = FILTER_PRODUCT_CRITERIA_PASSED
+    var filterCategory: List<Long> = emptyList()
+    var campaignId: Long = 0 //829856
 
     fun getProductList(page: Int, perPage: Int, keyword: String) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val param = GetFlashSaleProductListToReserveUseCase.Param(
-                    campaignId = 829856,
+                    campaignId = campaignId,
                     filterKeyword = keyword,
                     row = perPage,
                     offset = page,
+                    listType = filterCriteria,
+                    filterCategoryIds = filterCategory
                 )
                 val result = getFlashSaleProductListToReserveUseCase.execute(param)
                 _productList.postValue(result)
@@ -52,7 +76,7 @@ class ChooseProductViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = getFlashSaleProductPerCriteriaUseCase.execute(829856)
+                val result = getFlashSaleProductPerCriteriaUseCase.execute(campaignId)
                 _criteriaList.postValue(result)
             },
             onError = { error ->

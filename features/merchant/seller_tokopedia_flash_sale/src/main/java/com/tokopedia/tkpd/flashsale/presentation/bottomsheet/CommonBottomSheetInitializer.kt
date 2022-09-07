@@ -86,4 +86,15 @@ class CommonBottomSheetInitializer @Inject constructor(@ApplicationContext priva
         }
     }
 
+    fun initCategoryFilterBottomSheet(selectedItemId: String): SingleSelectionBottomSheet{
+        val items = getResourceListSingle(R.array.criteria_filter_items_id, R.array.criteria_filter_items)
+        val title = context.getString(R.string.commonbs_criteria_filter_title)
+        val actionText = context.getString(R.string.action_apply)
+        val bottomSheet = SingleSelectionBottomSheet.newInstance(selectedItemId, items)
+        return bottomSheet.apply {
+            setBottomSheetTitle(title)
+            setBottomSheetButtonTitle(actionText)
+        }
+    }
+
 }
