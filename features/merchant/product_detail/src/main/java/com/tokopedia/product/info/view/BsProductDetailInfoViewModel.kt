@@ -45,7 +45,7 @@ class BsProductDetailInfoViewModel @Inject constructor(
                 )
                 val responseData = getProductDetailBottomSheetUseCase.executeOnBackground(
                     requestParams = requestParams,
-                    forceRefresh = it.forceRefresh
+                    forceRefresh = true//it.forceRefresh
                 )
                 val visitableData = ProductDetailInfoMapper.generateVisitable(
                     responseData = responseData,

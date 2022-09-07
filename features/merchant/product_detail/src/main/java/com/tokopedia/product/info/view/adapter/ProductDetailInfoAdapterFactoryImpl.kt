@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCardDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCatalogDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoDiscussionDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
@@ -12,6 +13,7 @@ import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHe
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.viewholder.productdetail.ProductDetailInfoCardViewHolder
+import com.tokopedia.product.info.view.viewholder.productdetail.ProductDetailInfoCatalogViewHolder
 import com.tokopedia.product.info.view.viewholder.productdetail.ProductDetailInfoDiscussionViewHolder
 import com.tokopedia.product.info.view.viewholder.productdetail.ProductDetailInfoExpandableImageViewHolder
 import com.tokopedia.product.info.view.viewholder.productdetail.ProductDetailInfoExpandableListViewHolder
@@ -22,7 +24,9 @@ import com.tokopedia.product.info.view.viewholder.productdetail.ProductDetailInf
 /**
  * Created by Yehezkiel on 12/10/20
  */
-class ProductDetailInfoAdapterFactoryImpl(private val listener: ProductDetailInfoListener) : BaseAdapterTypeFactory(), ProductDetailInfoAdapterFactory {
+class ProductDetailInfoAdapterFactoryImpl(
+    private val listener: ProductDetailInfoListener
+) : BaseAdapterTypeFactory(), ProductDetailInfoAdapterFactory {
 
     override fun type(data: ProductDetailInfoHeaderDataModel): Int {
         return ProductDetailInfoHeaderViewHolder.LAYOUT
@@ -52,16 +56,37 @@ class ProductDetailInfoAdapterFactoryImpl(private val listener: ProductDetailInf
         return ProductDetailInfoCardViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        return when (type) {
-            ProductDetailInfoHeaderViewHolder.LAYOUT -> ProductDetailInfoHeaderViewHolder(view, listener)
-            ProductDetailInfoLoadingViewHolder.LAYOUT -> ProductDetailInfoLoadingViewHolder(view)
-            ProductDetailInfoExpandableViewHolder.LAYOUT -> ProductDetailInfoExpandableViewHolder(view, listener)
-            ProductDetailInfoExpandableImageViewHolder.LAYOUT -> ProductDetailInfoExpandableImageViewHolder(view, listener)
-            ProductDetailInfoExpandableListViewHolder.LAYOUT -> ProductDetailInfoExpandableListViewHolder(view, listener)
-            ProductDetailInfoDiscussionViewHolder.LAYOUT -> ProductDetailInfoDiscussionViewHolder(view, listener)
-            ProductDetailInfoCardViewHolder.LAYOUT -> ProductDetailInfoCardViewHolder(view, listener)
-            else -> super.createViewHolder(view, type)
-        }
+    override fun type(data: ProductDetailInfoCatalogDataModel): Int {
+        return ProductDetailInfoCatalogViewHolder.LAYOUT
+    }
+
+    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> = when (type) {
+        ProductDetailInfoHeaderViewHolder.LAYOUT -> ProductDetailInfoHeaderViewHolder(
+            view = view,
+            listener = listener
+        )
+        ProductDetailInfoLoadingViewHolder.LAYOUT -> ProductDetailInfoLoadingViewHolder(view)
+        ProductDetailInfoExpandableViewHolder.LAYOUT -> ProductDetailInfoExpandableViewHolder(
+            view = view,
+            listener = listener
+        )
+        ProductDetailInfoExpandableImageViewHolder.LAYOUT -> ProductDetailInfoExpandableImageViewHolder(
+            view = view,
+            listener = listener
+        )
+        ProductDetailInfoExpandableListViewHolder.LAYOUT -> ProductDetailInfoExpandableListViewHolder(
+            view = view,
+            listener = listener
+        )
+        ProductDetailInfoDiscussionViewHolder.LAYOUT -> ProductDetailInfoDiscussionViewHolder(
+            view = view,
+            listener = listener
+        )
+        ProductDetailInfoCardViewHolder.LAYOUT -> ProductDetailInfoCardViewHolder(
+            view = view,
+            listener = listener
+        )
+        ProductDetailInfoCatalogViewHolder.LAYOUT -> ProductDetailInfoCatalogViewHolder(view = view)
+        else -> super.createViewHolder(view, type)
     }
 }

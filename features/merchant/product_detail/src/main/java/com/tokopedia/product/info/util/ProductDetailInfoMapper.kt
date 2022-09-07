@@ -3,6 +3,7 @@ package com.tokopedia.product.info.util
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCardDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCatalogDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoDiscussionDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
@@ -33,8 +34,9 @@ object ProductDetailInfoMapper {
                     val productInfoData = dataContent.filter {
                         it.title.lowercase() != DESCRIPTION_DETAIL_KEY
                     }.take(ProductDetailInfoHeaderDataModel.SPECIFICATION_SIZE_THRESHOLD)
-                    val annotationData =
-                        dataContent.filter { it.title.lowercase() != DESCRIPTION_DETAIL_KEY && it.isAnnotation }
+                    val annotationData = dataContent.filter {
+                        it.title.lowercase() != DESCRIPTION_DETAIL_KEY && it.isAnnotation
+                    }
 
                     listOfComponent.add(
                         ProductDetailInfoHeaderDataModel(
@@ -99,7 +101,13 @@ object ProductDetailInfoMapper {
                     )
                 }
                 CATALOG -> {
-                    // TODO
+                    listOfComponent.add(
+                        ProductDetailInfoCatalogDataModel(
+                            componentName = index,
+                            title = it.title,
+                            items = it.row
+                        )
+                    )
                 }
                 else -> {
                     if (it.value.isNotEmpty()) {
