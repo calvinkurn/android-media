@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.home_component.customview.DynamicChannelHeaderView
         android:id="@+id/home_component_header_view"
@@ -20,6 +21,6 @@
         app:layout_constraintTop_toBottomOf="@id/home_component_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_goneMarginTop="8dp"
-        android:layout_marginBottom="8dp"/>
+        tools:layout_goneMarginTop="12dp"
+        tools:layout_marginBottom="12dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
