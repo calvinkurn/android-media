@@ -44,7 +44,7 @@ class CropToolUiComponent constructor(
             } ?: kotlin.run {
                 editorParam?.ratioList?.forEachIndexed { index, ratio ->
                     val isSelected = if(detailRotateCrop.getRatio() != null){
-                        detailRotateCrop.getRatio() == ratio.getRatio()
+                        detailRotateCrop.getRatio()?.toInt() == ratio.getRatio().toInt()
                     } else index == 0
 
                     addView(

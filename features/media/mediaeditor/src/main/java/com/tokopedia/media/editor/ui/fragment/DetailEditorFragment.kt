@@ -396,13 +396,14 @@ class DetailEditorFragment @Inject constructor(
             overlayView.setupCropBounds()
             cropView.zoomInImage(cropRotateData.scale)
 
+            // if crop state is not produce from auto crop on beginning of landing page
             if (!cropRotateData.isAutoCrop) {
-                cropView.post {
+                cropView.postDelayed({
                     val cropImageMatrix = cropView.imageMatrix.values()
                     val ax = (cropImageMatrix[2] * -1) + cropRotateData.translateX
                     val ay = (cropImageMatrix[5] * -1) + cropRotateData.translateY
                     cropView.postTranslate(ax, ay)
-                }
+                }, DELAY_IMPLEMENT_CROP)
             }
         }
     }
@@ -612,5 +613,7 @@ class DetailEditorFragment @Inject constructor(
         private const val DEFAULT_VALUE_BRIGHTNESS = 0f
 
         private const val DEFAULT_VALUE_SHOP_TEXT = "Shop Name"
+
+        private const val DELAY_IMPLEMENT_CROP = 500L
     }
 }
