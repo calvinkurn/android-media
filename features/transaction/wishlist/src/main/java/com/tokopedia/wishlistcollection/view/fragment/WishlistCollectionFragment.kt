@@ -1,6 +1,7 @@
 package com.tokopedia.wishlistcollection.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
