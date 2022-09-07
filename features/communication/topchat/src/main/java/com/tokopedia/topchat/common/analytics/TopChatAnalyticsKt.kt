@@ -255,7 +255,7 @@ object TopChatAnalyticsKt {
         val listItemBundles = ArrayList<Bundle>()
         for (item in bundleItems) {
             val itemBundle = Bundle()
-            if (hasProductCategoryId){
+            if (hasProductCategoryId) {
                 itemBundle.putString(CATEGORY_ID, EE_VALUE_NONE_OTHER)
             }
             itemBundle.putString(DIMENSION_117, setValueOrDefault(bundleType))
@@ -265,7 +265,7 @@ object TopChatAnalyticsKt {
                 setValueOrDefault("/$source - product bundling - $bundleType")
             )
             itemBundle.putString(DIMENSION_87, setValueOrDefault(source))
-            if (hasIndex){
+            if (hasIndex) {
                 itemBundle.putString(INDEX, bundleItems.indexOf(item).toString())
             }
             itemBundle.putString(ITEM_BRAND, EE_VALUE_NONE_OTHER)
@@ -304,17 +304,12 @@ object TopChatAnalyticsKt {
         blastId: String,
         statusBundle: String,
         bundleId: String,
-        bundleType: String,
-        source: String,
-        bundleItems: List<BundleItem>,
         shopId: String,
         userId: String
     ) {
-        val listItemBundles = getItemBundle(bundleItems, bundleId, bundleType, source)
-
         val eventDataLayer = Bundle()
 
-        eventDataLayer.putString(TrackAppUtils.EVENT, VIEW_ITEM_LIST)
+        eventDataLayer.putString(TrackAppUtils.EVENT, Event.VIEW_COMMUNICATION_IRIS)
         eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, Action.VIEW_BUNDLE_CART_CHATROOM)
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
         eventDataLayer.putString(
@@ -325,17 +320,13 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION)
         eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA)
 
-        val productIdList = getItemIdList(bundleItems)
-
-        eventDataLayer.putString(ITEM_LIST, productIdList.joinToString())
-        eventDataLayer.putParcelableArrayList(
-            AddToCartExternalAnalytics.EE_VALUE_ITEMS,
-            listItemBundles
-        )
         eventDataLayer.putString(USER_ID, userId)
         eventDataLayer.putString(SHOP_ID, shopId)
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            Event.VIEW_COMMUNICATION_IRIS,
+            eventDataLayer
+        )
     }
 
     fun eventClickProductAttachmentOnProductBundlingBroadcast(

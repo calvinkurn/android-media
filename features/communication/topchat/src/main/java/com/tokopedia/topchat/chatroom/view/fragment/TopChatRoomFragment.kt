@@ -3237,19 +3237,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         element.productBundling.bundleType
         if (seenAttachmentProductBundling.add(element.productBundling.bundleId ?: "")) {
             if (element.isBroadcast()) {
-                element.productBundling.bundleItem?.let {
-                    if (element.getBundleTypeMapped().isNotEmpty()) {
-                        TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
-                            element.blastId,
-                            element.productBundling.bundleStatus.toString(),
-                            element.productBundling.bundleId.toString(),
-                            element.getBundleTypeMapped(),
-                            "broadcast",
-                            it,
-                            getBroadcastSenderShopId(element),
-                            session.userId
-                        )
-                    }
+                element.productBundling.bundleId?.let {
+                    TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
+                        it,
+                        element.productBundling.bundleStatus.toString(),
+                        element.productBundling.bundleId.toString(),
+                        getBroadcastSenderShopId(element),
+                        session.userId
+                    )
                 }
             } else {
                 TopChatAnalyticsKt.eventViewProductBundling(
