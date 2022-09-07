@@ -530,6 +530,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         `in`.hideSoftInputFromWindow(navSearchBarController.etSearch?.windowToken, 0)
     }
 
+    fun setSearchbarText(text: String) {
+        navSearchBarController.etSearch?.setText(text)
+    }
+
     fun getCurrentSearchbarText(): String {
         return navSearchBarController.etSearch?.text?.toString() ?: ""
     }

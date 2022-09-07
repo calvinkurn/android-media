@@ -69,6 +69,10 @@ class TokoNowNavToolbar(
         navToolbar?.setIcon(iconBuilder)
     }
 
+    fun setSearchbarText(text: String) {
+        navToolbar?.setSearchbarText(text)
+    }
+
     private fun setupScrollListener() {
         navToolbar?.let {
             scrollListener = NavRecyclerViewScrollListener(

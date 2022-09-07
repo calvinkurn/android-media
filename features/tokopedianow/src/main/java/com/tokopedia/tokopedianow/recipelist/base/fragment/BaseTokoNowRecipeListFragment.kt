@@ -186,6 +186,10 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
         observe(viewModel.showHeaderBackground) {
             setHeaderBackgroundVisibility(it)
         }
+
+        observe(viewModel.searchKeyword) {
+            setSearchbarText(it)
+        }
     }
 
     private fun submitList(items: List<Visitable<*>>) {
@@ -201,6 +205,10 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
                 ivHeaderBackground.hide()
             }
         }
+    }
+
+    private fun setSearchbarText(keyword: String) {
+        navToolbar?.setSearchbarText(keyword)
     }
 
     private fun IconBuilder.addNotebookIcon(): IconBuilder {

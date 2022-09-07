@@ -228,4 +228,5 @@
 
     <string name="tokopedianow_filter">Filter</string>
     <string name="tokopedianow_duration_format">%02d:%02d</string>
+    <string name="tokopedianow_recipe_autocomplete_info">Silakan cari resep berdasarkan namanya. Contoh: “Soto Ayam”</string>
 </resources>
