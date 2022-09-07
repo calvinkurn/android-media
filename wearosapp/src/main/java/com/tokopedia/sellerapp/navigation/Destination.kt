@@ -23,12 +23,13 @@ fun NavGraphBuilder.splashComposable(
 }
 
 fun NavGraphBuilder.homeComposable(
-    navigateToNewOrderSummary: () -> Unit
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
 ) {
     composable(
         route = ScreenConstant.HOME_SCREEN
     ) {
-        HomeScreen(navigateToNewOrderSummary)
+        HomeScreen(screenNavigation, sharedViewModel)
     }
 }
 

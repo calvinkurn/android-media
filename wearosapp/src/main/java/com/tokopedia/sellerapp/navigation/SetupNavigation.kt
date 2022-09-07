@@ -28,7 +28,8 @@ fun SetupNavigation(
             navigateToHomeScreen = nav.toHomeScreen
         )
         homeComposable(
-            navigateToNewOrderSummary = nav.toNewOrderSummaryScreen
+            screenNavigation = nav,
+            sharedViewModel = sharedViewModel
         )
         newOrderSummaryScreenComposable(
             navigateToNewOrderList = nav.toNewOrderListScreen

@@ -47,6 +47,7 @@ class GetOrderListUseCase(
             query OrderList(${'$'}input: OrderListArgs!) {
               orderList(input: ${'$'}input) {
                 list {
+                  order_id
                   order_status_id
                   order_total_price
                   order_date

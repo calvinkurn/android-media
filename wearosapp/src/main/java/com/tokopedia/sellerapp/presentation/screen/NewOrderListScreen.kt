@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.presentation.screen
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,7 +34,8 @@ fun NewOrderListScreen(
             }) {
                 when(orderList) {
                     is UiState.Success -> {
-                        Text(text = orderList.data?.firstOrNull().orEmpty())
+                        // Needs to be updated with required information
+                        Text(text = orderList.data?.firstOrNull()?.order?.orderId.orEmpty())
                     }
                     else -> {
                         Text(text = "Test")

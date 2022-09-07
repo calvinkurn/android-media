@@ -8,11 +8,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.tkpd.R
-import com.tokopedia.iconunify.R.drawable as iconR
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
@@ -25,62 +26,19 @@ import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import androidx.wear.compose.material.rememberScalingLazyListState
+import com.tokopedia.sellerapp.navigation.ScreenNavigation
+import com.tokopedia.sellerapp.presentation.model.TITLE_NEW_ORDER
 import com.tokopedia.sellerapp.presentation.theme.ChipGrayColor
 import com.tokopedia.sellerapp.presentation.theme.TextGrayColor
-
-const val TITLE_NOTIF = "Notifikasi"
-const val TITLE_CHAT = "Chat"
-const val TITLE_NEW_ORDER = "Pesanan Baru"
-const val TITLE_READY_TO_DELIVER = "Siap Dikirim"
-val ICON_NOTIF = iconR.iconunify_bell
-val ICON_CHAT = iconR.iconunify_chat
-val ICON_NEW_ORDER = iconR.iconunify_product
-val ICON_READY_TO_DELIVER = iconR.iconunify_product_move
-
-private fun generateMenuItem(
-    navigateToNotification: () -> Unit,
-    navigateToChat: () -> Unit,
-    navigateToNewOrderList: () -> Unit,
-    navigateToNewOrderSummary: () -> Unit
-) = listOf(
-    MenuItem(
-        title = TITLE_NOTIF,
-        unreadCount = 1,
-        icon = ICON_NOTIF,
-        navigateToThePage = navigateToNotification
-    ),
-    MenuItem(
-        title = TITLE_CHAT,
-        unreadCount = 1,
-        icon = ICON_CHAT,
-        navigateToThePage = navigateToChat
-    ),
-    MenuItem(
-        title = TITLE_NEW_ORDER,
-        unreadCount = 4,
-        icon = ICON_NEW_ORDER,
-        navigateToThePage = navigateToNewOrderList
-    ),
-    MenuItem(
-        title = TITLE_READY_TO_DELIVER,
-        unreadCount = 2,
-        icon = ICON_READY_TO_DELIVER,
-        navigateToThePage = navigateToNewOrderSummary
-    )
-)
+import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 
 @Composable
 fun HomeScreen(
-    navigateToNewOrderSummary: () -> Unit
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
 ) {
     val listState = rememberScalingLazyListState()
-
-    val menuItems = generateMenuItem(
-        navigateToNotification = {},
-        navigateToChat = {},
-        navigateToNewOrderList = {},
-        navigateToNewOrderSummary = navigateToNewOrderSummary
-    )
+    val menuItems by sharedViewModel.homeMenu.collectAsState()
 
     Scaffold(
         timeText = {
@@ -110,7 +68,7 @@ fun HomeScreen(
                 }
             }
             items(menuItems.size){
-                MenuChip(Modifier.fillMaxWidth(), menuItems[it])
+                MenuChip(Modifier.fillMaxWidth(), menuItems[it], screenNavigation)
             }
         }
     }
@@ -119,17 +77,23 @@ fun HomeScreen(
 @Composable
 fun MenuChip(
     modifier: Modifier = Modifier,
-    menuItem: MenuItem
+    menuItem: MenuItem,
+    navigation: ScreenNavigation
 ) {
     Chip(
         modifier = modifier,
         onClick = {
-            menuItem.navigateToThePage()
+            menuClickNavigation(menuItem, navigation)
         },
         label = {
+            val labelText = if(menuItem.unreadCount == 0) {
+                menuItem.title
+            } else {
+                String.format("%s (%d)", menuItem.title, menuItem.unreadCount)
+            }
             Text(
                 modifier = Modifier.padding(start = 4.dp),
-                text = String.format("%s (%d)", menuItem.title, menuItem.unreadCount),
+                text = labelText,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -146,4 +110,14 @@ fun MenuChip(
             backgroundColor = ChipGrayColor,
         ),
     )
+}
+
+private fun menuClickNavigation(
+    menuItem: MenuItem,
+    navigation: ScreenNavigation
+) {
+    when(menuItem.title){
+        TITLE_NEW_ORDER -> navigation.toNewOrderSummaryScreen
+        else -> { }
+    }
 }

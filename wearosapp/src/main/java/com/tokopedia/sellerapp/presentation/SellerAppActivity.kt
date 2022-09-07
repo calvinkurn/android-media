@@ -40,11 +40,11 @@ class SellerAppActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        messageClient.addListener(sharedViewModel)
+        messageClient.addListener(sharedViewModel.orderRepository.orderRemoteDatasource)
     }
 
     override fun onPause() {
         super.onPause()
-        messageClient.removeListener(sharedViewModel)
+        messageClient.removeListener(sharedViewModel.orderRepository.orderRemoteDatasource)
     }
 }
