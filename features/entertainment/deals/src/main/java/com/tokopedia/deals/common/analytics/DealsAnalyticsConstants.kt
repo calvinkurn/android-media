@@ -12,8 +12,8 @@ object DealsAnalyticsConstants {
         const val VIEW_DEALS_IRIS = "viewDealsIris"
         const val OPEN_SCREEN = "openScreen"
         const val VIEW_ITEM = "view_item"
+        const val ADD_TO_CART = "add_to_cart"
         const val EVENT_DEALS_CLICK = "digitalDealsClick"
-        const val EVENT_CLICK_SEE_MORE_BRAND_DETAIL = "click selengkapnya - brand detail"
         const val EVENT_CLICK_CHECK_LOCATION_PRODUCT_DETAIL = "click check location - product detail"
         const val EVENT_CLICK_CHECK_TNC_PRODUCT_DETAIL = "click check term and condition - product detail"
         const val EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL =
@@ -68,6 +68,7 @@ object DealsAnalyticsConstants {
         const val IMPRESSION_PRODUCT_BRAND = "impression product brand"
         const val CLICK_PRODUCT_BRAND = "click product brand"
         const val PDP_VIEW_PRODUCT = "view product detail"
+        const val CLICK_BELI = "click beli"
     }
 
     object Label {
@@ -170,6 +171,9 @@ object DealsAnalyticsConstants {
     const val ITEMS = "items"
     const val ITEM_LIST = "item_list"
     const val ITEM_ID = "item_id"
+    const val CATEGORY_ID = "category_id"
+    const val QUANTITY = "quantity"
+    const val CART_ID = "cart_id"
     const val PRICE = "price"
     const val INDEX = "index"
     const val DIMENSION_40 = "dimension40"

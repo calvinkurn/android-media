@@ -6,6 +6,8 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.deals.brand_detail.data.Product
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BRAND
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BUSINESS_UNIT
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CART_ID
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CATEGORY_ID
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CURRENT_SITE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DEALS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DIMENSION_40
@@ -20,6 +22,7 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_NAME
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_VARIANT
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRICE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRODUCT_CARD
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.QUANTITY
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_PDP
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TOKOPEDIA_DIGITAL_DEALS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TRAVELENTERTAINMENT_BU
@@ -37,6 +40,7 @@ import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -990,7 +994,7 @@ class DealsAnalytics @Inject constructor(
         eventDataLayer.generalTracker(
             DealsAnalyticsConstants.Event.VIEW_ITEM,
             DealsAnalyticsConstants.Action.PDP_VIEW_PRODUCT,
-            brandTitle
+            brandTitle.lowercase()
         )
 
         val itemBundles = arrayListOf<Bundle>()
@@ -1005,8 +1009,8 @@ class DealsAnalytics @Inject constructor(
             putString(ITEM_VARIANT, "none")
             putString(ITEM_CATEGORY, DEALS)
         })
-        eventDataLayer.putString(ITEMS, "")
-        eventDataLayer.putParcelableArrayList(ITEM_LIST, arrayListOf())
+        eventDataLayer.putString(ITEM_LIST, "")
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.VIEW_ITEM, eventDataLayer)
     }
@@ -1018,6 +1022,31 @@ class DealsAnalytics @Inject constructor(
             label.lowercase() ?: ""
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun pdpCheckout(id:String, categoryId: String, salesPrice: Long,  displayName:String, brandTitle: String){
+        val eventDataLayer = Bundle()
+        eventDataLayer.generalTracker(
+            DealsAnalyticsConstants.Event.ADD_TO_CART,
+            DealsAnalyticsConstants.Action.CLICK_BELI,
+            brandTitle.lowercase()
+        )
+
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(Bundle().apply {
+            putString(CART_ID, Int.ZERO.toString())
+            putInt(QUANTITY, Int.ZERO)
+            putString(ITEM_ID, id)
+            putString(CATEGORY_ID, categoryId)
+            putLong(PRICE, salesPrice)
+            putString(ITEM_NAME, displayName)
+            putString(ITEM_VARIANT, "none")
+            putString(ITEM_CATEGORY, DEALS)
+        })
+        eventDataLayer.putString(ITEM_LIST, "")
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.ADD_TO_CART, eventDataLayer)
     }
 
     private fun Bundle.generalTracker(event: String, action: String, label: String): Bundle {
