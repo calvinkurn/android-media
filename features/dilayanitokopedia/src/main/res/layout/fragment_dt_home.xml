@@ -1,14 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".home.presentation.fragment.DtHomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/dtHomeNavToolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:elevation="2dp"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarBackButton="back"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialTheme="light"
+        app:toolbarInvertSearchBarColor="true"
+        app:toolbarPageName="/" />
 
-</FrameLayout>
+    <View
+        android:id="@+id/dtHomeStatusBarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:background="@color/Unify_G500"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/dtViewBackgroundImage"
+        android:layout_width="match_parent"
+        android:src="@drawable/dt_background_header"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/dtSwipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@id/dtHomeNavToolbar"
+        tools:visibility="visible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:descendantFocusability="beforeDescendants" />
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

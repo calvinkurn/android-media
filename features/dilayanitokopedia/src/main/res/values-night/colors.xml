@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dt_header_background_dms_color_1">#FFFBDE87</color>
+    <color name="dt_header_background_dms_color_2">#FF2E8728</color>
+    <color name="dt_header_background_dms_color_3">#196816</color>
+    <color name="dt_header_background_dms_color_4">#196816</color>
+    <color name="dt_header_background_dms_color_5">#2E8728</color>
+<!--    <color name="dt_cardview_background_dms_color">@color/Unify_NN50</color>-->
+<!--    <color name="dt_cardview_inactive_background_dms_color">@color/Unify_NN100</color>-->
+<!--    <color name="dt_circle_progressbar_background_dms_color">@color/Unify_NN0</color>-->
+</resources>
