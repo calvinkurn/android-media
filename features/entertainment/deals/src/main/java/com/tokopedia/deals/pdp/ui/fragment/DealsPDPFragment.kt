@@ -290,6 +290,14 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowRecommendationTracking.collect {}
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowRecentSearchTracking.collect {}
+        }
     }
 
     private fun getPDP() {
@@ -367,6 +375,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private fun showPDPData(data: ProductDetailData) {
         analytics.pdpSendScreenName()
         productDetailData = data
+        trackPDP(data)
         showShareButton()
         showPDPOptionsMenu(data.displayName)
         showHeader(data.displayName)
@@ -377,6 +386,13 @@ class DealsPDPFragment: BaseDaggerFragment() {
         showTnc(data)
         showRedeemInstruction(data)
         showCheckout(data)
+    }
+
+    private fun trackPDP(data: ProductDetailData) {
+        if (userSession.isLoggedIn) {
+            viewModel.setTrackingRecommendation(data.id, userSession.userId)
+            viewModel.setTrackingRecentSearch(data, userSession.userId)
+        }
     }
 
     private fun showHeader(displayName: String) {
