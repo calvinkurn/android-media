@@ -29,12 +29,12 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.usecase.UseCase as RxUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
+import com.tokopedia.usecase.UseCase as RxUseCase
 
 class SuggestionPresenter @Inject constructor(
     @Named(GET_SUGGESTION_USE_CASE)
@@ -111,9 +111,9 @@ class SuggestionPresenter @Inject constructor(
         val typePosition = hashMapOf<String, Int?>()
         shouldAddSeparator = true
         val items = suggestionUniverse.data.items
-
         shopSuggestionProcessing.processData(
-            HeadlineAdsIdList(suggestionUniverse.cpmModel.data.map { it.cpm.cpmShop.id }),
+            HeadlineAdsIdList(suggestionUniverse.cpmModel.data?.map { it.cpm?.cpmShop?.id ?: "" }
+                ?: listOf()),
             SuggestionItemIdList(items.map { it.suggestionId })
         )
 
@@ -179,8 +179,8 @@ class SuggestionPresenter @Inject constructor(
         cpmModel: CpmModel,
         renderedShopId: String,
     ) {
-        val cpmData = cpmModel.data.firstOrNull {
-            it.cpm.cpmShop.id == renderedShopId
+        val cpmData = cpmModel.data?.firstOrNull {
+            it.cpm?.cpmShop?.id == renderedShopId
         } ?: return
 
         typePosition.incrementPosition(TYPE_SHOP)
