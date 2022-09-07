@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -283,7 +282,6 @@ class TokoNowHomeFragment: Fragment(),
     private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
     private var switcherCoachMark: SwitcherCoachMark? = null
     private var playWidgetCoordinator: PlayWidgetCoordinator? = null
-    protected val carouselScrollPosition = SparseIntArray()
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -442,14 +440,6 @@ class TokoNowHomeFragment: Fragment(),
     override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
         analytics.trackCategoryImpression(data, warehouseId)
-    }
-
-    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
-        carouselScrollPosition.put(adapterPosition, scrollPosition)
-    }
-
-    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
-        return carouselScrollPosition.get(adapterPosition)
     }
 
     override fun onRecomProductCardClicked(
@@ -871,7 +861,6 @@ class TokoNowHomeFragment: Fragment(),
         carouselScrollState.clear()
         carouselParallaxState.clear()
         isRefreshed = true
-        carouselScrollPosition.clear()
         loadLayout()
     }
 
