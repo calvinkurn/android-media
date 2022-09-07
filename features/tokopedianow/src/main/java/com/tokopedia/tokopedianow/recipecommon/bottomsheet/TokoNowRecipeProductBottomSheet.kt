@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.recipecommon.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,6 +55,11 @@ class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         configureMaxHeight()
         setupRecyclerView()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        activity?.finish()
     }
 
     fun show(fm: FragmentManager) {
