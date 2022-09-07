@@ -641,7 +641,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
     private fun onShowOrHideItemCheckBox() {
         val oldItems = productAdapter.getItems().filterIsInstance<WaitingForSelectionItem>()
         val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
-        val isShown = newItems[0].isCheckBoxShown
+        val isShown = newItems[Int.ZERO].isCheckBoxShown
         productAdapter.submit(listOf())
         productAdapter.submit(newItems)
         viewModel.setCheckBoxStateStatus(isShown)
@@ -676,6 +676,17 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                 btnDelete.gone()
                 btnEdit.gone()
             }
+        }
+    }
+
+    private fun onCheckBoxClicked(itemPosition: Int, isCheckBoxChecked: Boolean) {
+        val selectedProduct = productAdapter.getItems()[itemPosition]
+        val selectedProductId = selectedProduct.id() as Long
+
+        if (isCheckBoxChecked) {
+            viewModel.setSelectedItem(selectedProductId)
+        } else {
+            viewModel.removeSelectedItem(selectedProductId)
         }
     }
 
@@ -731,16 +742,5 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         val selectedProduct = productAdapter.getItems()[itemPosition]
         val selectedProductId = selectedProduct.id()
         //TODO: Open detail product bottom sheet
-    }
-
-    private fun onCheckBoxClicked(itemPosition: Int, isCheckBoxChecked: Boolean) {
-        val selectedProduct = productAdapter.getItems()[itemPosition]
-        val selectedProductId = selectedProduct.id() as Long
-
-        if (isCheckBoxChecked) {
-            viewModel.setSelectedItem(selectedProductId)
-        } else {
-            viewModel.removeSelectedItem(selectedProductId)
-        }
     }
 }
