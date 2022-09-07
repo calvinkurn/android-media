@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutSearchbarEducationBinding
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SearchBarEducationViewHolder(
@@ -22,15 +21,10 @@ class SearchBarEducationViewHolder(
     private var binding: LayoutSearchbarEducationBinding? by viewBinding()
 
     override fun bind(data: SearchBarEducationDataView) {
-        configCard()
         bindClick(data)
         bindTitle(data)
         bindLabelAction(data)
         bindIcon(data)
-    }
-
-    private fun configCard() {
-        binding?.autocompleteSearchBarEducationContainer?.cardType = CardUnify2.TYPE_BORDER
     }
 
     private fun bindClick(data: SearchBarEducationDataView) {
