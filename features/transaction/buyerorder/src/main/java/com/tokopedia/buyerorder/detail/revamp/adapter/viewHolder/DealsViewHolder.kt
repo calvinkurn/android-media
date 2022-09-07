@@ -2,6 +2,7 @@ package com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
@@ -29,7 +30,8 @@ import com.tokopedia.media.loader.loadImageCircle
 
 class DealsViewHolder(
     itemView: View,
-    private val eventDetailsListener: EventDetailsListener
+    private val gson: Gson,
+    private val eventDetailsListener: EventDetailsListener,
 ): AbstractViewHolder<ItemsDeals>(itemView) {
 
     companion object{
@@ -39,7 +41,7 @@ class DealsViewHolder(
 
     override fun bind(element: ItemsDeals) {
         val binding = VoucherItemDealsBinding.bind(itemView)
-        val metadata = element.item.metadataInfo
+        val metadata = element.item.getMetaDataInfo(gson)
 
         renderProducts(binding, metadata, element.item, element.orderDetails)
         setTapAction(binding, element.item)

@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorder.detail.revamp.adapter
 
 import android.view.View
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -22,7 +23,8 @@ import com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder.InsuranceViewHo
  */
 
 class OrderDetailTypeFactoryImpl constructor(
-    private val listener: EventDetailsListener
+    private val gson: Gson,
+    private val listener: EventDetailsListener,
 ): BaseAdapterTypeFactory(), OrderDetailTypeFactory {
 
     override fun type(item: ItemsDealsShort): Int {
@@ -51,12 +53,12 @@ class OrderDetailTypeFactoryImpl constructor(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
-            DefaultViewHolder.LAYOUT -> DefaultViewHolder(parent, listener)
-            InsuranceViewHolder.LAYOUT -> InsuranceViewHolder(parent, listener)
-            EventsViewHolder.LAYOUT -> EventsViewHolder(parent, listener)
-            DealsShortViewHolder.LAYOUT -> DealsShortViewHolder(parent)
-            DealsOMPViewHolder.LAYOUT -> DealsOMPViewHolder(parent, listener)
-            DealsViewHolder.LAYOUT -> DealsViewHolder(parent, listener)
+            DefaultViewHolder.LAYOUT -> DefaultViewHolder(parent, gson, listener)
+            InsuranceViewHolder.LAYOUT -> InsuranceViewHolder(parent, gson, listener)
+            EventsViewHolder.LAYOUT -> EventsViewHolder(parent, gson, listener)
+            DealsShortViewHolder.LAYOUT -> DealsShortViewHolder(parent, gson)
+            DealsOMPViewHolder.LAYOUT -> DealsOMPViewHolder(parent, gson, listener)
+            DealsViewHolder.LAYOUT -> DealsViewHolder(parent, gson, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

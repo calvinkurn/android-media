@@ -58,6 +58,8 @@ data class Items(
 
     var isActionButtonLoaded: Boolean = false
 ) : Serializable {
-    val metadataInfo: MetaDataInfo
-        get() = Gson().fromJson(metaData, MetaDataInfo::class.java)
+
+    fun getMetaDataInfo(gson: Gson) : MetaDataInfo {
+        return gson.fromJson(metaData, MetaDataInfo::class.java)
+    }
 }

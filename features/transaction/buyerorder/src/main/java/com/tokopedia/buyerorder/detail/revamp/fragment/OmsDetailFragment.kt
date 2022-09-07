@@ -22,6 +22,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -99,6 +100,9 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var gson: Gson
+
     private lateinit var typeFactory: OrderDetailTypeFactoryImpl
     private lateinit var adapter: BaseAdapter<OrderDetailTypeFactoryImpl>
 
@@ -135,7 +139,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        typeFactory = OrderDetailTypeFactoryImpl(this)
+        typeFactory = OrderDetailTypeFactoryImpl(gson, this)
 
         arguments?.let {
             upstream = it.get(KEY_UPSTREAM).toString()
@@ -614,7 +618,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             }
 
             if (!item.category.equals(OrderCategory.EVENT.category, true)) {
-                if (item.metadataInfo.entityPackages.isNotEmpty()) {
+                if (item.getMetaDataInfo(gson).entityPackages.isNotEmpty()) {
                     showUserInformation(item)
                 } else {
                     hideUserInformation()
@@ -646,13 +650,13 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             showToaster(String.format(
                 TOASTER_FORMAT,
                 getString(R.string.deal_voucher_code_copied),
-                item.metadataInfo.entityAddress.email
+                item.getMetaDataInfo(gson).entityAddress.email
             ))
         } else {
             showToaster(String.format(
                 TOASTER_FORMAT,
                 getString(R.string.event_voucher_code_copied),
-                item.metadataInfo.entityAddress.email
+                item.getMetaDataInfo(gson).entityAddress.email
             ))
         }
 
@@ -666,7 +670,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             it.dividerAboveUserInfo.visible()
             it.userInformationLayout.removeAllViews()
 
-            item.metadataInfo.entityPessengers.forEach { entityPassenger ->
+            item.getMetaDataInfo(gson).entityPessengers.forEach { entityPassenger ->
                 val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
                     setTopText(entityPassenger.title)
                     setTopTextColor(getColor(UnifyPrinciplesR.color.Unify_N700_68))
@@ -724,7 +728,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             return
         }
 
-        if (item.metadataInfo.passengerForms.isEmpty()){
+        if (item.getMetaDataInfo(gson).passengerForms.isEmpty()){
             hidePassengerForms()
             return
         }
@@ -739,7 +743,7 @@ class OmsDetailFragment: BaseDaggerFragment(), EventDetailsListener {
             it.dividerAboveUserInfo.visible()
             it.userInformationLayout.removeAllViews()
 
-            item.metadataInfo.passengerForms.forEach { passengerForm ->
+            item.getMetaDataInfo(gson).passengerForms.forEach { passengerForm ->
                 passengerForm.passengerInformations.forEach { passengerInformation ->
                     val doubleTextView = DoubleTextView(context, LinearLayout.VERTICAL).apply {
                         setTopText(passengerInformation.title)

@@ -2,6 +2,7 @@ package com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
@@ -26,7 +27,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageCircle
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 /**
@@ -35,7 +37,8 @@ import java.util.concurrent.TimeUnit
 
 class DealsOMPViewHolder(
     itemView: View,
-    private val eventDetailsListener: EventDetailsListener
+    private val gson: Gson,
+    private val eventDetailsListener: EventDetailsListener,
 ) : AbstractViewHolder<ItemsDealsOMP>(itemView) {
 
     companion object{
@@ -47,8 +50,9 @@ class DealsOMPViewHolder(
 
     override fun bind(element: ItemsDealsOMP) {
         val binding = VoucherItemCardDealsBinding.bind(itemView)
+        val metadata = element.item.getMetaDataInfo(gson)
 
-        renderProducts(binding, element.item.metadataInfo, element.item)
+        renderProducts(binding, metadata, element.item)
         setActionButton(binding, element.item, element.orderDetails)
     }
 

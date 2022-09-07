@@ -3,6 +3,7 @@ package com.tokopedia.buyerorder.detail.revamp.adapter.viewHolder
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
@@ -29,7 +30,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 
 class DefaultViewHolder(
     itemView: View,
-    private val eventDetailsListener: EventDetailsListener
+    private val gson: Gson,
+    private val eventDetailsListener: EventDetailsListener,
 ) : AbstractViewHolder<ItemsDefault>(itemView) {
 
     companion object{
@@ -41,7 +43,7 @@ class DefaultViewHolder(
 
     override fun bind(element: ItemsDefault) {
         val binding = VoucherItemDefaultBinding.bind(itemView)
-        val metadata = element.item.metadataInfo
+        val metadata = element.item.getMetaDataInfo(gson)
 
         eventDetailsListener.sendThankYouEvent(metadata, ITEMS_DEALS, element.orderDetails)
         eventDetailsListener.sendOpenScreenDeals(false)
