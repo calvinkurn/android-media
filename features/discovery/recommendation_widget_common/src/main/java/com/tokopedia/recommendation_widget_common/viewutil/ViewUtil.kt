@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
-import com.tokopedia.unifycomponents.dpToPx
 
 /**
  * Created by yfsx on 5/3/21.
@@ -45,10 +44,7 @@ object ChannelWidgetUtil {
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?
     ) {
-        dividerTop?.layoutParams?.height = DIVIDER_HEIGHT.dpToPx().toInt()
-        dividerBottom?.layoutParams?.height = DIVIDER_HEIGHT.dpToPx().toInt()
-//        when(dividerType) {
-        when(DIVIDER_TOP) {
+        when(dividerType) {
             DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
                 dividerBottom?.gone()
