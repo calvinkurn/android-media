@@ -555,7 +555,7 @@
           "deeplink_variable": "ApplinkConsInternalDigital.CAMERA_OCR"
      }, 
      {
-          "destination_activity": "com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity", 
+          "destination_activity": "com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity",
           "deeplink": "tokopedia-android-internal://digital/favoritenumber", 
           "deeplink_variable": "ApplinkConsInternalDigital.FAVORITE_NUMBER"
      }, 
