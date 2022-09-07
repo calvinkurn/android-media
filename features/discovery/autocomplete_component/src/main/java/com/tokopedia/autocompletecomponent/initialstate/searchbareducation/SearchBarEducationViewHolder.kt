@@ -21,7 +21,6 @@ class SearchBarEducationViewHolder(
 
     private var binding: LayoutSearchbarEducationBinding? by viewBinding()
 
-
     override fun bind(data: SearchBarEducationDataView) {
         configCard()
         bindClick(data)
