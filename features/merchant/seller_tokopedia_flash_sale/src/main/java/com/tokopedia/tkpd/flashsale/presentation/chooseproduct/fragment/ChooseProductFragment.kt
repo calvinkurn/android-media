@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentChooseProductBinding
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.domain.entity.ProductReserveResult
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.CommonBottomSheetInitializer
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.DetailCategoryFlashSaleBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.adapter.CriteriaSelectionAdapter
@@ -52,7 +53,6 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     @Inject
     lateinit var commonBottomSheetInitializer: CommonBottomSheetInitializer
 
-    private var binding by autoClearedNullable<StfsFragmentChooseProductBinding>()
     private val campaignId by lazy {
         arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orZero()
     }
@@ -61,6 +61,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     private val filterData = ArrayList<SortFilterItem>()
     private val filterCriteria = SortFilterItem("Memenuhi Kriteria")
     private val filterCategory = SortFilterItem("Semua Kategori")
+    private var binding by autoClearedNullable<StfsFragmentChooseProductBinding>()
     private var criteriaFilterBottomSheet: SingleSelectionBottomSheet? = null
     private var categoryFilterBottomSheet: MultipleSelectionBottomSheet? = null
     private var maxSelectedProductCount: Int = 0
@@ -92,11 +93,14 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         setupSearchBar()
         setupCategorySelection()
         setupFilterData()
+        binding?.btnAddProduct?.setOnClickListener {
+            viewModel.reserveProduct()
+        }
     }
 
     override fun onChooseProductClicked(index: Int) {
         adapter?.getItems()?.let {
-            viewModel.selectSelectedProduct(it)
+            viewModel.setSelectedProduct(it)
         }
     }
 
@@ -247,6 +251,17 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         viewModel.maxSelectedProduct.observe(viewLifecycleOwner) {
             maxSelectedProductCount = it
             updateSelectionCount()
+        }
+        viewModel.productReserveResult.observe(viewLifecycleOwner) {
+            handleReserveResult(it)
+        }
+    }
+
+    private fun handleReserveResult(reserveResult: ProductReserveResult) {
+        if (reserveResult.isSuccess) {
+            activity?.finish()
+        } else {
+            view?.showToasterError(reserveResult.errorMessage)
         }
     }
 

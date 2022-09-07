@@ -15,7 +15,8 @@ data class ChooseProductItem (
     val isError: Boolean = false,
     val isEnabled: Boolean = false,
     val showCheckDetailCta: Boolean = false,
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
+    val criteriaId: Long = 0L
 ) : DelegateAdapterItem {
     override fun id() = productId
 }

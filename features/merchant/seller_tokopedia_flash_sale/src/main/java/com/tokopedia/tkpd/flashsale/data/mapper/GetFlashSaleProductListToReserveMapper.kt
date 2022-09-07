@@ -12,7 +12,7 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor() {
     fun map(response: GetFlashSaleProductListToReserveResponse) = ProductToReserve(
         selectedProductIds = response.getFlashSaleProductListToReserve.submittedProductIds,
         selectedProductCount = response.getFlashSaleProductListToReserve.submittedProductIds.size,
-        productList = mapProduct(response),
+        productList = mapProduct(response)
     )
 
     fun mapProduct(response: GetFlashSaleProductListToReserveResponse) = response.getFlashSaleProductListToReserve.productList.map {
@@ -31,7 +31,8 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor() {
             isError = it.disableDetail.isDisabled,
             isEnabled = !it.disableDetail.isDisabled && !isSubmitted, // only enable not submitted data
             showCheckDetailCta = it.disableDetail.showCriteriaCheckingCta,
-            isSelected = isSubmitted
+            isSelected = isSubmitted,
+            criteriaId = it.productCriteria.criteriaId
         )
     }
 

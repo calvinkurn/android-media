@@ -7,20 +7,25 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.entity.ChooseProductItem
-import com.tokopedia.tkpd.flashsale.domain.entity.Category
 import com.tokopedia.tkpd.flashsale.domain.entity.CategorySelection
+import com.tokopedia.tkpd.flashsale.domain.entity.ProductReserveResult
+import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductListToReserveUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductPerCriteriaUseCase
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.FILTER_PRODUCT_CRITERIA_PASSED
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.MAX_PER_PAGE
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.mapper.ChooseProductUiMapper
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 class ChooseProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getFlashSaleProductListToReserveUseCase: GetFlashSaleProductListToReserveUseCase,
-    private val getFlashSaleProductPerCriteriaUseCase: GetFlashSaleProductPerCriteriaUseCase
+    private val getFlashSaleProductPerCriteriaUseCase: GetFlashSaleProductPerCriteriaUseCase,
+    private val doFlashSaleProductReserveUseCase: DoFlashSaleProductReserveUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main){
 
     private val _productList = MutableLiveData<List<ChooseProductItem>>()
@@ -31,6 +36,9 @@ class ChooseProductViewModel @Inject constructor(
 
     private val _criteriaList = MutableLiveData<List<CategorySelection>>()
     val criteriaList: LiveData<List<CategorySelection>> get() = _criteriaList
+
+    private val _productReserveResult = MutableLiveData<ProductReserveResult>()
+    val productReserveResult: LiveData<ProductReserveResult> get() = _productReserveResult
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
@@ -89,7 +97,22 @@ class ChooseProductViewModel @Inject constructor(
         )
     }
 
-    fun selectSelectedProduct(items: List<DelegateAdapterItem>) {
+    fun setSelectedProduct(items: List<DelegateAdapterItem>) {
         _selectedProductList.value = items
+    }
+
+    fun reserveProduct() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val reservationId = userSession.shopId + Date().time.toString()
+                val param = ChooseProductUiMapper.mapToReserveParam(campaignId, reservationId, _selectedProductList.value)
+                val result = doFlashSaleProductReserveUseCase.execute(param)
+                _productReserveResult.postValue(result)
+            },
+            onError = { error ->
+                _error.postValue(error)
+            }
+        )
     }
 }

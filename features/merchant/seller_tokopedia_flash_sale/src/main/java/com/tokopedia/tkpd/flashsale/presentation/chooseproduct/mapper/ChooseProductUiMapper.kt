@@ -2,8 +2,10 @@ package com.tokopedia.tkpd.flashsale.presentation.chooseproduct.mapper
 
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.entity.ChooseProductItem
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.Category
 import com.tokopedia.tkpd.flashsale.domain.entity.CategorySelection
+import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseCase
 
 object ChooseProductUiMapper {
 
@@ -21,7 +23,7 @@ object ChooseProductUiMapper {
 
     fun getProductList(list: List<DelegateAdapterItem>) = list.filterIsInstance<ChooseProductItem>()
 
-    fun getSelectedProduct(list: List<DelegateAdapterItem>): List<DelegateAdapterItem> {
+    fun getSelectedProduct(list: List<DelegateAdapterItem>): List<ChooseProductItem> {
         return getProductList(list).filter { it.isSelected && it.isEnabled }
     }
 
@@ -33,5 +35,16 @@ object ChooseProductUiMapper {
             max += it.selectionCountMax
         }
         return max
+    }
+
+    fun mapToReserveParam(campaignId: Long, reservationId: String, selectedProducts: List<DelegateAdapterItem>?): DoFlashSaleProductReserveUseCase.Param {
+        val productList = getSelectedProduct(selectedProducts.orEmpty())
+        return DoFlashSaleProductReserveUseCase.Param(
+            campaignId,
+            reservationId,
+            productList.map {
+                Pair(it.productId.toLongOrZero(), it.criteriaId)
+            }
+        )
     }
 }
