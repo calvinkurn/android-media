@@ -31,7 +31,7 @@ class TopAdsHeadlineViewModel(private val applicationContext: Application) : And
                     val addressData = TopAdsAddressHelper(applicationContext).getAddressData()
                     getTopAdsHeadlineUseCase.setParams(params, addressData)
                     val data = getTopAdsHeadlineUseCase.executeOnBackground()
-                    if (data.displayAds.data.isNotEmpty()) {
+                    if (data.displayAds.data?.isNotEmpty() == true) {
                         onSuccess?.invoke(data.displayAds)
                     } else {
                         onError?.invoke()

@@ -31,7 +31,6 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView.Companion.escapeHTML
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
-import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 private const val PRODUCT_CARD_COUNT_THREE = 3
@@ -87,8 +86,8 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         )
         setHeader(shopAdsWithThreeProductModel)
         setBackgroundAsFirstCard(
-            shopAdsWithThreeProductModel.items.cpm.cta,
-            shopAdsWithThreeProductModel.items.cpm.cpmShop.slogan,
+            shopAdsWithThreeProductModel.items.cpm?.cta ?: "",
+            shopAdsWithThreeProductModel.items.cpm?.cpmShop?.slogan ?: "",
             shopAdsWithThreeProductModel.shopWidgetImageUrl
         )
         setWidget(
@@ -97,10 +96,12 @@ class ShopAdsWithThreeProducts : BaseCustomView {
             shopAdsWithThreeProductModel.adsClickUrl,
             shopAdsWithThreeProductModel.hasAddToCartButton
         )
-        setShopWidgetBackground(
-            shopAdsWithThreeProductModel.items.cpm.cpmShop,
-            shopAdsWithThreeProductModel.variant
-        )
+        shopAdsWithThreeProductModel.items.cpm?.cpmShop?.let {
+            setShopWidgetBackground(
+                it,
+                shopAdsWithThreeProductModel.variant
+            )
+        }
         setShopImpression(
             shopAdsWithThreeProductModel.items,
             shopAdsWithThreeProductModel.impressionListener
@@ -117,7 +118,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
                     it.onImpressionHeadlineAdsItem(Int.ZERO, items)
                     topAdsUrlHitter.hitImpressionUrl(
                         this::class.java.name,
-                        items.cpm.cpmImage.fullUrl,
+                        items.cpm?.cpmImage?.fullUrl,
                         "",
                         "",
                         ""
@@ -219,22 +220,23 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         items.add(EmptyShopCardModel(cpmData, shopApplink, adsClickUrl))
         if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
             val productCardModelList: ArrayList<ProductCardModel> =
-                getProductCardModels(cpmData.cpm.cpmShop.products, hasAddToCartButton)
+                getProductCardModels(cpmData.cpm?.cpmShop?.products, hasAddToCartButton)
             for (i in 0 until productCardModelList.size) {
                 if (i < PRODUCT_CARD_COUNT_THREE) {
-                    val product = cpmData.cpm.cpmShop.products[i]
+                    val product = cpmData.cpm?.cpmShop?.products?.get(i)
                     val model = ProductItemModel(
                         cpmData = cpmData,
                         productCardModel = productCardModelList[i],
-                        applinks = cpmData.cpm.cpmShop.products[i].applinks,
-                        mUrl = cpmData.cpm.cpmShop.products[i].image.m_url,
-                        adsClickUrl = cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl,
-                        productId = product.id,
-                        productName = product.name,
-                        productMinOrder = product.productMinimumOrder,
-                        productCategory = product.categoryBreadcrumb,
-                        productPrice = product.priceFormat,
-                        shopId = cpmData.cpm.cpmShop.id
+                        applinks = cpmData.cpm?.cpmShop?.products?.get(i)?.applinks ?: "",
+                        mUrl = cpmData.cpm?.cpmShop?.products?.get(i)?.image?.m_url ?: "",
+                        adsClickUrl = cpmData.cpm?.cpmShop?.products?.get(i)?.imageProduct?.imageClickUrl
+                            ?: "",
+                        productId = product?.id ?: "",
+                        productName = product?.name ?: "",
+                        productMinOrder = product?.productMinimumOrder ?: 0,
+                        productCategory = product?.categoryBreadcrumb ?: "",
+                        productPrice = product?.priceFormat ?: "",
+                        shopId = cpmData.cpm?.cpmShop?.id ?: ""
                     )
                     items.add(model)
                 }
@@ -249,11 +251,11 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     }
 
     private fun getProductCardModels(
-        products: List<Product>,
+        products: List<Product>?,
         hasAddToCartButton: Boolean
     ): ArrayList<ProductCardModel> {
         return ArrayList<ProductCardModel>().apply {
-            products.map {
+            products?.map {
                 add(getProductCardViewModel(it, hasAddToCartButton))
             }
         }
@@ -264,22 +266,28 @@ class ShopAdsWithThreeProducts : BaseCustomView {
         hasAddToCartButton: Boolean
     ): ProductCardModel {
         return ProductCardModel(
-            productImageUrl = product.imageProduct.imageUrl,
-            productName = product.name,
-            discountPercentage = if (product.campaign.discountPercentage != Int.ZERO) "${product.campaign.discountPercentage}%" else "",
-            slashedPrice = product.campaign.originalPrice,
-            formattedPrice = product.priceFormat,
+            productImageUrl = product.imageProduct?.imageUrl ?: "",
+            productName = product.name ?: "",
+            discountPercentage = if (product.campaign?.discountPercentage != Int.ZERO) "${product.campaign?.discountPercentage}%" else "",
+            slashedPrice = product.campaign?.originalPrice ?: "",
+            formattedPrice = product.priceFormat ?: "",
             reviewCount = product.countReviewFormat.toIntOrZero(),
             ratingCount = product.productRating,
-            ratingString = product.productRatingFormat,
-            countSoldRating = product.headlineProductRatingAverage,
+            ratingString = product.productRatingFormat ?: "",
+            countSoldRating = product.headlineProductRatingAverage ?: "",
             freeOngkir = ProductCardModel.FreeOngkir(
-                product.freeOngkir.isActive,
-                product.freeOngkir.imageUrl
+                product.freeOngkir?.isActive ?: false,
+                product.freeOngkir?.imageUrl ?: ""
             ),
             labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                product.labelGroupList.map {
-                    add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
+                product.labelGroupList?.map {
+                    add(
+                        ProductCardModel.LabelGroup(
+                            it.position ?: "0",
+                            it.title ?: "",
+                            it.type ?: ""
+                        )
+                    )
                 }
             },
             hasAddToCartButton = hasAddToCartButton,
