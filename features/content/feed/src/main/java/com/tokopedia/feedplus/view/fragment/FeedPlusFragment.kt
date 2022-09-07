@@ -2354,6 +2354,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int) {
+        if (userSession.isLoggedIn) {
+            feedViewModel.setUnsetReminder(card.campaign, positionInFeed)
+        } else {
+            onGoToLogin()
+        }
         feedViewModel.setUnsetReminder(card.campaign, positionInFeed)
     }
 
