@@ -1145,7 +1145,15 @@ class PlayViewModel @AssistedInject constructor(
             val warehouseId = _warehouseInfo.value.warehouseId
             val tagItem = repo.getTagItem(channelId, warehouseId)
 
-            _tagItems.value = tagItem.copy(voucher = createNewVoucherList(tagItem.voucher.voucherList))
+            _tagItems.update {
+                it.copy(
+                    product = tagItem.product,
+                    voucher = createNewVoucherList(tagItem.voucher.voucherList),
+                    maxFeatured = tagItem.maxFeatured,
+                    bottomSheetTitle = tagItem.bottomSheetTitle,
+                    resultState = tagItem.resultState
+                )
+            }
 
             checkReminderStatus()
 

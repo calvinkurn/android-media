@@ -7,7 +7,7 @@ import com.tokopedia.play.view.type.MerchantVoucherType
 /**
  * Created by jegul on 03/03/20
  */
-sealed class PlayVoucherUiModel {
+sealed interface PlayVoucherUiModel {
         data class Merchant(
                 val id: String,
                 val type: MerchantVoucherType,
@@ -19,9 +19,9 @@ sealed class PlayVoucherUiModel {
                 val voucherStock: Int,
                 val expiredDate: String,
                 @TrackingField val impressHolder: ImpressHolder = ImpressHolder()
-        ) : PlayVoucherUiModel()
+        ) : PlayVoucherUiModel
 
-        data class InfoHeader(val shopName: String) : PlayVoucherUiModel()
+        data class InfoHeader(val shopName: String) : PlayVoucherUiModel
 
-        object Placeholder : PlayVoucherUiModel()
+        object Placeholder : PlayVoucherUiModel
 }
