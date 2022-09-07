@@ -350,7 +350,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
             is PlayBroadcastAction.GetAccountList -> handleGetAccountList()
-            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.isRefreshAccount)
+            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount()
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -398,6 +398,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             setChannelId(configUiModel.channelId)
             _configInfo.value = configUiModel
 
+            if (!checkSelectedAccountConfiguration(configUiModel, selectedAccount)) {
+                _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+                return@launchCatchError
+            }
+
             // create channel when there are no channel exist
             if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
 
@@ -434,7 +439,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 configUiModel.durationConfig.pauseDuration
             )
 
-            checkSelectedAccountConfiguration(configUiModel, selectedAccount)
             updateSelectedAccount(selectedAccount)
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
@@ -1495,11 +1499,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         })
     }
 
-    private fun handleSwitchAccount(isRefreshAccount: Boolean = false) {
+    private fun handleSwitchAccount() {
         val currentSelected = switchAccount(
-            when {
-                isRefreshAccount -> _selectedAccount.value.type
-                _selectedAccount.value.type == TYPE_SHOP -> TYPE_USER
+            when (_selectedAccount.value.type) {
+                TYPE_SHOP -> TYPE_USER
                 else -> TYPE_SHOP
             }
         )
@@ -1514,40 +1517,54 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun checkSelectedAccountConfiguration(
         configUiModel: ConfigurationUiModel,
         selectedAccount: ContentAccountUiModel,
-    ) {
-        when {
+    ): Boolean {
+        return when {
             !configUiModel.streamAllowed -> {
-                _accountStateInfo.value = AccountStateInfo(
-                    type = AccountStateInfoType.Banned,
-                    selectedAccount = selectedAccount,
-                    tnc = emptyList(),
-                )
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.Banned,
+                        selectedAccount = selectedAccount,
+                        tnc = emptyList(),
+                    )
+                }
                 warningInfoType = WarningType.BANNED
+                false
             }
             configUiModel.channelStatus == ChannelStatus.Live -> {
-                _accountStateInfo.value = AccountStateInfo(
-                    type = AccountStateInfoType.Live,
-                    selectedAccount = selectedAccount,
-                    tnc = emptyList(),
-                )
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.Live,
+                        selectedAccount = selectedAccount,
+                        tnc = emptyList(),
+                    )
+                }
                 warningInfoType = WarningType.LIVE
+                false
             }
             !selectedAccount.hasAcceptTnc -> {
-                _accountStateInfo.value = AccountStateInfo(
-                    type = AccountStateInfoType.NotAcceptTNC,
-                    selectedAccount = selectedAccount,
-                    tnc = configUiModel.tnc,
-                )
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.NotAcceptTNC,
+                        selectedAccount = selectedAccount,
+                        tnc = configUiModel.tnc,
+                    )
+                }
+                false
             }
-            !selectedAccount.hasUsername -> {
-                if (selectedAccount.isShop) return
-                _accountStateInfo.value = AccountStateInfo(
-                    type = AccountStateInfoType.NoUsername,
-                    selectedAccount = selectedAccount,
-                    tnc = emptyList(),
-                )
+            selectedAccount.isUser && !selectedAccount.hasUsername -> {
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.NoUsername,
+                        selectedAccount = selectedAccount,
+                        tnc = emptyList(),
+                    )
+                }
+                false
             }
-            else -> _accountStateInfo.value = AccountStateInfo.Empty
+            else -> {
+                _accountStateInfo.update { AccountStateInfo.Empty }
+                true
+            }
         }
     }
 

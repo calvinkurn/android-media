@@ -246,14 +246,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
                         if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
-                        else parentViewModel.submitAction(SwitchAccount())
+                        else parentViewModel.submitAction(SwitchAccount)
                     }
                 })
             }
             is UGCOnboardingParentFragment -> {
                 childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
-                        parentViewModel.submitAction(SwitchAccount(true))
+                        parentViewModel.submitAction(SwitchAccount)
                     }
 
                     override fun impressTncOnboarding() {}
@@ -462,7 +462,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
                 renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
-                renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
+                renderAccountStateInfo(state.accountStateInfo)
             }
         }
     }
@@ -575,8 +575,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun renderScheduleMenu(
         state: ScheduleUiModel
     ) {
-        binding.viewPreparationMenu.showScheduleMenu(state.canSchedule)
-
         binding.viewPreparationMenu.isSetScheduleChecked(
             state.schedule is BroadcastScheduleUiModel.Scheduled
         )
@@ -600,12 +598,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun renderAccountStateInfo(
-        prevState: AccountStateInfo?,
-        state: AccountStateInfo,
-    ) {
-        if (prevState == state) return
-
+    private fun renderAccountStateInfo(state: AccountStateInfo) {
         when(state.type) {
             AccountStateInfoType.Live, AccountStateInfoType.Banned -> showWaringInfoBottomSheet()
             AccountStateInfoType.NotAcceptTNC -> {
@@ -862,7 +855,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     else getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
                 )
                 setSecondaryCTAClickListener {
-                    parentViewModel.submitAction(SwitchAccount())
+                    parentViewModel.submitAction(SwitchAccount)
                     if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
             }
