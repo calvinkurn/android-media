@@ -7,6 +7,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerCategoryUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerUseCase
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.FinishedFlashSaleItem
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.RegisteredFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.UpcomingFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEvent
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiState
@@ -106,7 +107,7 @@ class FlashSaleListViewModelTest {
             flashSaleReview,
             "",
             flashSaleStartDate,
-            TabConstant.TAB_ID_UPCOMING,
+            tabId,
             "Pendaftaran berakhir",
             flashSaleSubmission,
             flashSaleSubmission,
@@ -195,7 +196,7 @@ class FlashSaleListViewModelTest {
             flashSaleReview,
             "",
             flashSaleStartDate,
-            TabConstant.TAB_ID_FINISHED,
+            tabId,
             "Selesai",
             flashSaleSubmission,
             flashSaleSubmission,
@@ -218,6 +219,100 @@ class FlashSaleListViewModelTest {
             )
 
         )
+        val response = FlashSaleData(1, listOf(flashSale))
+
+        coEvery { getFlashSaleListForSellerUseCase.execute(params) } returns response
+
+        val emittedValues = arrayListOf<FlashSaleListUiState>()
+        val job = launch {
+            viewModel.uiState.toList(emittedValues)
+        }
+
+        //When
+        viewModel.processEvent(FlashSaleListUiEvent.LoadPage(tabId, tabName, offset, currentDate))
+
+        //Then
+        val actualTabName = emittedValues.last().tabName
+        val actualOffset = emittedValues.last().offset
+        val actualTabId = emittedValues.last().tabId
+        val actualItems = emittedValues.last().allItems
+
+        assertEquals(tabName, actualTabName)
+        assertEquals(offset, actualOffset)
+        assertEquals(tabId, actualTabId)
+        assertEquals(expected, actualItems)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `When fetch registered flash sale from remote success, should successfully receive the data`() = runBlockingTest {
+        //Given
+        val tabId =  TabConstant.TAB_ID_REGISTERED
+        val tabName = "registered"
+        val offset = 0
+
+        val params = GetFlashSaleListForSellerUseCase.Param(
+            tabName,
+            offset,
+            categoryIds = listOf(),
+            statusIds = listOf(),
+            sortOrderBy = "DEFAULT_VALUE_PLACEHOLDER",
+            sortOrderRule = "ASC",
+            requestProductMetaData = false
+        )
+
+        val productMeta = FlashSale.ProductMeta(5, 5, 10, 5, 5, 0)
+        val currentDate = GregorianCalendar(2022, 10,10, 0,0,0).time
+        val flashSaleStartDate = GregorianCalendar(2022, 10,10, 7,0,0).time
+        val flashSaleEndDate = GregorianCalendar(2022, 10,20, 0,0,0).time
+        val flashSaleReview = GregorianCalendar(2022, 10,10, 5,0,0).time
+        val flashSaleSubmission = GregorianCalendar(2022, 10,1, 7,0,0).time
+
+        val flashSale = FlashSale(
+            1,
+            "",
+            "",
+            "",
+            flashSaleEndDate,
+            1,
+            "Flash Sale 1",
+            true,
+            productMeta,
+            1,
+            flashSaleReview,
+            flashSaleReview,
+            "",
+            flashSaleStartDate,
+            tabId,
+            "Proses Seleksi",
+            flashSaleSubmission,
+            flashSaleSubmission,
+            false,
+            FlashSale.FormattedDate("", ""),
+            FlashSaleStatus.WAITING_FOR_SELECTION
+        )
+
+        val expected = listOf(
+            RegisteredFlashSaleItem(
+                1,
+                "Flash Sale 1",
+                "",
+                flashSaleStartDate,
+                flashSaleEndDate,
+                "",
+                "",
+                flashSaleReview,
+                flashSaleReview,
+                7,
+                5,
+                5,
+                FlashSaleStatus.WAITING_FOR_SELECTION,
+                "Proses Seleksi"
+            )
+
+        )
+
         val response = FlashSaleData(1, listOf(flashSale))
 
         coEvery { getFlashSaleListForSellerUseCase.execute(params) } returns response
