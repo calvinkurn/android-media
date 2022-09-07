@@ -614,6 +614,6 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DEFAULT_VALUE_SHOP_TEXT = "Shop Name"
 
-        private const val DELAY_IMPLEMENT_CROP = 500L
+        private const val DELAY_IMPLEMENT_CROP = 300L
     }
 }
