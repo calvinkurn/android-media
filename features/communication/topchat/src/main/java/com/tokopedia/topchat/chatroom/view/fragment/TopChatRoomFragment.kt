@@ -3187,8 +3187,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         )
 
         if (linkUrl.isNotEmpty()) {
-            val intent = RouteManager.getIntent(context, linkUrl)
-            startActivity(intent)
+            RouteManager.route(context, linkUrl)
         }
     }
 
