@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.fragment.factory
+package com.tokopedia.abstraction.base.view.fragment
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -6,10 +6,10 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 /**
- * Created by jegul on 27/05/20
+ * Created by kenny.hadisaputra on 30/08/22
  */
-class PlayBroadcastFragmentFactory @Inject constructor(
-        private val fragmentProviders: Map<Class<out Fragment>, @JvmSuppressWildcards Provider<Fragment>>
+class TkpdFragmentFactory @Inject constructor(
+    private val fragmentProviders: Map<Class<out Fragment>, @JvmSuppressWildcards Provider<Fragment>>
 ) : FragmentFactory() {
 
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
