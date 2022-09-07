@@ -28,5 +28,6 @@ kotlin_detekt.detekt(inline_mode: true)
 
 # Ktlin
 ktlint.skip_lint = true
+ktlint.filtering = true
 ktlint.report_file = 'ktlint-report.json'
 ktlint.lint(inline_mode: true)
