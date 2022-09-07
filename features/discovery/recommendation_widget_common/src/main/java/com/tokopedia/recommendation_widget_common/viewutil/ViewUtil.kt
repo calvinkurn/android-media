@@ -37,7 +37,6 @@ object ChannelWidgetUtil {
     private const val DIVIDER_TOP = 1
     private const val DIVIDER_BOTTOM = 2
     private const val DIVIDER_TOP_AND_BOTTOM = 3
-    private const val DIVIDER_HEIGHT = 1f
 
     fun validateHomeComponentDivider(
         dividerType: Int,
