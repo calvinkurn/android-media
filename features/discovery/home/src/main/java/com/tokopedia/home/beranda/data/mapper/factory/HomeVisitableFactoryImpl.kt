@@ -351,14 +351,7 @@ class HomeVisitableFactoryImpl(
                         )
                     )
                 )
-                visitableList.add(
-                    BannerDataModel(
-                        channelModel = channelModel,
-                        isCache = isCache,
-                        dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
-                        dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design
-                    )
-                )
+                visitableList.add(BannerDataModel(channelModel = channelModel, isCache = isCache))
             }
         }
     }

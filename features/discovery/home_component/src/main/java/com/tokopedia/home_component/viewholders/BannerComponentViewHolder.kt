@@ -2,11 +2,7 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
+import androidx.recyclerview.widget.*
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
@@ -17,6 +13,7 @@ import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.removeAllItemDecoration
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
@@ -25,16 +22,9 @@ import com.tokopedia.home_component.viewholders.layoutmanager.PeekingLinearLayou
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -87,6 +77,7 @@ class BannerComponentViewHolder(itemView: View,
     override fun bind(element: BannerDataModel) {
         try {
             setHeaderComponent(element)
+            setChannelDivider(element)
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
@@ -94,7 +85,7 @@ class BannerComponentViewHolder(itemView: View,
             channelModel?.let { it ->
                 this.isCache = element.isCache
                 try {
-                    initBanner(it.convertToBannerItemModel(), element.dimenMarginTop, element.dimenMarginBottom)
+                    initBanner(it.convertToBannerItemModel())
                 } catch (e: NumberFormatException) {
                     e.printStackTrace()
                 }
@@ -121,6 +112,14 @@ class BannerComponentViewHolder(itemView: View,
 
     fun scrollTo(position: Int) {
         rvBanner.smoothScrollToPosition(position)
+    }
+
+    private fun setChannelDivider(element: BannerDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
+        )
     }
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
@@ -159,17 +158,11 @@ class BannerComponentViewHolder(itemView: View,
         return layoutManager
     }
 
-    private fun initBanner(list: List<BannerItemModel>, dimenMarginTop: Int, dimenMarginBottom: Int){
+    private fun initBanner(list: List<BannerItemModel>){
         rvBanner.clearOnScrollListeners()
 
         val snapHelper: SnapHelper = PagerSnapHelper()
         rvBanner.onFlingListener = null
-
-        val layoutParams = rvBanner.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.setMargins(0, 0, 0, itemView.resources.getDimensionPixelOffset(dimenMarginBottom))
-        layoutParams.goneTopMargin = itemView.resources.getDimensionPixelOffset(dimenMarginTop)
-        rvBanner.layoutParams = layoutParams
-
         snapHelper.attachToRecyclerView(rvBanner)
         rvBanner.layoutManager = getLayoutManager(list)
         rvBanner.removeAllItemDecoration()
@@ -251,7 +244,7 @@ class BannerComponentViewHolder(itemView: View,
 
     private fun ChannelModel.convertToBannerItemModel(): List<BannerItemModel> {
         return try {
-            this.channelGrids.map{ BannerItemModel(it.id.toIntOrZero(), it.imageUrl) }
+            this.channelGrids.map{ BannerItemModel(it.id.toInt(), it.imageUrl) }
         } catch (e: NumberFormatException) {
             listOf()
         }
