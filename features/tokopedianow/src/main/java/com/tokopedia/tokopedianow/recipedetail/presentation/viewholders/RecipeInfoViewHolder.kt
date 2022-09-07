@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.recipedetail.presentation.viewholders
 
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -11,6 +10,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeInfoBinding
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeInfoViewHolder(itemView: View): AbstractViewHolder<RecipeInfoUiModel>(itemView) {
@@ -115,7 +115,7 @@ class RecipeInfoViewHolder(itemView: View): AbstractViewHolder<RecipeInfoUiModel
         return viewId
     }
 
-    private fun TextView.setDrawableLeft(@DrawableRes drawableRes: Int) {
+    private fun Typography.setDrawableLeft(@DrawableRes drawableRes: Int) {
         val icon = ContextCompat.getDrawable(itemView.context, drawableRes)
         setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, null, null)
         compoundDrawablePadding = itemView.context.resources

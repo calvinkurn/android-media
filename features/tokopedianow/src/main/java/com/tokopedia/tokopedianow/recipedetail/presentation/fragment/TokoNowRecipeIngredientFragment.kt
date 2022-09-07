@@ -15,11 +15,13 @@ import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailCo
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeIngredientAdapter
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeIngredientAdapterTypeFactory
 import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
+import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.OutOfCoverageViewHolder.OutOfCoverageListener
+import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewmodel.TokoNowRecipeIngredientViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class TokoNowRecipeIngredientFragment : Fragment() {
+class TokoNowRecipeIngredientFragment : Fragment(), RecipeProductListener, OutOfCoverageListener {
 
     companion object {
 
@@ -58,6 +60,22 @@ class TokoNowRecipeIngredientFragment : Fragment() {
         super.onAttach(context)
     }
 
+    override fun deleteCartItem(productId: String) {
+        recipeDetailView?.deleteCartItem(productId)
+    }
+
+    override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
+        recipeDetailView?.onQuantityChanged(productId, shopId, quantity)
+    }
+
+    override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
+        recipeDetailView?.addItemToCart(productId, shopId, quantity)
+    }
+
+    override fun onCLickChangeAddress() {
+        recipeDetailView?.showChooseAddressBottomSheet()
+    }
+
     fun setRecipeDetailView(recipeDetailView: RecipeDetailView) {
         this.recipeDetailView = recipeDetailView
     }
@@ -67,9 +85,12 @@ class TokoNowRecipeIngredientFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = RecipeIngredientAdapter(RecipeIngredientAdapterTypeFactory(
-            recipeDetailView = recipeDetailView
-        ))
+        adapter = RecipeIngredientAdapter(
+            RecipeIngredientAdapterTypeFactory(
+                productListener = this,
+                outOfCoverageListener = this
+            )
+        )
 
         binding?.rvIngredient?.apply {
             adapter = this@TokoNowRecipeIngredientFragment.adapter

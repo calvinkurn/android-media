@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.recipedetail.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeIngredientTypeFactory
+import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeProductTypeFactory
 
 data class RecipeProductUiModel(
     val id: String,
@@ -16,8 +16,8 @@ data class RecipeProductUiModel(
     val imageUrl: String,
     val slashedPrice: String = "",
     val discountPercentage: String = ""
-) : Visitable<RecipeIngredientTypeFactory> {
-    override fun type(typeFactory: RecipeIngredientTypeFactory): Int {
+) : Visitable<RecipeProductTypeFactory> {
+    override fun type(typeFactory: RecipeProductTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
