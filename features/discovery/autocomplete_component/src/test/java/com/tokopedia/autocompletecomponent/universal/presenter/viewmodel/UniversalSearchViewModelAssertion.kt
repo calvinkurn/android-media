@@ -95,6 +95,7 @@ internal fun CarouselDataView.Product.assertProductCarouselDataView(
     this.badge.forEachIndexed { index, badge ->
         badge.assertProductBadgeCarouselDataView(item.badge[index])
     }
+    this.freeOngkir.assertProductFreeOngkirDataView(item.freeOngkir)
 }
 
 internal fun CarouselDataView.Product.Shop.assertProductShopCarouselDataView(item: UniversalSearchModel.Shop) {
@@ -106,6 +107,12 @@ internal fun CarouselDataView.Product.Badge.assertProductBadgeCarouselDataView(i
     this.title shouldBe item.title
     this.imageUrl shouldBe item.imageUrl
     this.show shouldBe item.show
+}
+
+
+internal fun CarouselDataView.Product.FreeOngkir.assertProductFreeOngkirDataView(item: UniversalSearchModel.FreeOngkir) {
+    this.imgUrl shouldBe item.imgUrl
+    this.isActive shouldBe item.isActive
 }
 
 internal fun RelatedItemDataView.assertRelatedItemDataView(
