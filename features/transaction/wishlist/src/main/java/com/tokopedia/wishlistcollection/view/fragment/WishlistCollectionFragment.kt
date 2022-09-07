@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -72,6 +73,7 @@ import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewMod
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+@Keep
 class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener,
     BottomSheetKebabMenuWishlistCollectionItem.ActionListener, ActionListenerFromCollectionPage,
     BottomSheetUpdateWishlistCollectionName.ActionListener,
