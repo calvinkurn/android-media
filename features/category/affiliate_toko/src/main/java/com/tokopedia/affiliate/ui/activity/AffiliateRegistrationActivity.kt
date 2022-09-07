@@ -102,7 +102,7 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
         findViewById<Group>(R.id.splash_group)?.hide()
         if (productId.isNullOrEmpty()) {
             openAffiliate()
-        }else {
+        } else {
             openPdp()
         }
     }
@@ -113,11 +113,11 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
     }
 
     private fun openAffiliate() {
-        RouteManager.route(this,"tokopedia://affiliate")
+        RouteManager.route(this, "tokopedia://affiliate")
         finish()
     }
     private fun openPdp() {
-        RouteManager.route(this,"tokopedia://product/$productId")
+        RouteManager.route(this, "tokopedia://product/$productId")
         finish()
     }
 
@@ -148,10 +148,12 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
     companion object{
         private const val PRODUCT_ID_KEY = "productId"
-        fun newInstance(context: Context, productId:String?){
-            context.startActivity(Intent(context,AffiliateRegistrationActivity::class.java).apply {
-                putExtra(PRODUCT_ID_KEY, productId)
-            })
+        fun newInstance(context: Context, productId: String?) {
+            context.startActivity(
+                Intent(context, AffiliateRegistrationActivity::class.java).apply {
+                    putExtra(PRODUCT_ID_KEY, productId)
+                }
+            )
         }
     }
 

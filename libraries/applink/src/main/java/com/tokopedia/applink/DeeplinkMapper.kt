@@ -273,7 +273,7 @@ object DeeplinkMapper {
             return getRegisteredNavigationTokopediaNowSearch(deeplink)
         }
 
-        if (uri.pathSegments[0] == ApplinkConst.AFFILIATE_TOKO_HOST){
+        if (uri.pathSegments[0] == ApplinkConst.AFFILIATE_TOKO_HOST) {
             return DeeplinkMapperCategory.getRegisteredNavigationAffiliateFromHttp(uri)
         }
 

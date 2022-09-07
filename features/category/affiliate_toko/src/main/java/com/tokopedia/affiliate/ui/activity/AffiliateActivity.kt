@@ -74,7 +74,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         intent?.data?.pathSegments?.firstOrNull()?.let {
-            if(it.contains(PAGE_SEGMENT_ONBOARDING)) {
+            if (it.contains(PAGE_SEGMENT_ONBOARDING)) {
                 showLoginPortal(intent?.data?.getQueryParameter(intent.data?.queryParameterNames?.first()))
             }
         }
@@ -92,10 +92,13 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             if (it.contains(PAGE_SEGMENT_HELP)) {
                 selectItem(HELP_MENU, R.id.menu_help_affiliate, true)
-            }else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
+            } else if (it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
                 selectItem(INCOME_MENU, R.id.menu_withdrawal_affiliate, true)
-            }else if(it.contains(PAGE_SEGMENT_ONBOARDING)) {
-                showLoginPortal(intent?.data?.getQueryParameter(intent.data?.queryParameterNames?.first()))
+            } else if (it.contains(PAGE_SEGMENT_ONBOARDING)) {
+                if (intent?.data?.queryParameterNames.isNullOrEmpty())
+                    showLoginPortal()
+                else
+                    showLoginPortal(intent?.data?.getQueryParameter(intent.data?.queryParameterNames?.first()))
             }
         }
     }
