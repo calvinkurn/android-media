@@ -18,7 +18,6 @@ import com.tokopedia.buyerorder.ORDER_DETAIL_APPLINK
 import com.tokopedia.buyerorder.ORDER_ID_KEY
 import com.tokopedia.buyerorder.ORDER_ID_VALUE
 import com.tokopedia.buyerorder.common.idling.OmsIdlingResource
-import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListDetailActivity
 import com.tokopedia.buyerorder.detail.view.activity.environment.InstrumentTestOrderListDetailActivity
 import com.tokopedia.buyerorder.setupRemoteConfig
 import com.tokopedia.buyerorder.test.R
