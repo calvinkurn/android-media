@@ -1,11 +1,8 @@
-package com.tokopedia.loginregister.redefine_register_email.common
+package com.tokopedia.loginregister.redefine_register_email.input_phone.abstraction
 
-import com.tokopedia.encryption.security.RsaUtils
-import com.tokopedia.encryption.security.decodeBase64
-import com.tokopedia.loginregister.redefine_register_email.domain.GenerateKeyUseCase
-import com.tokopedia.loginregister.redefine_register_email.domain.RegisterV2UseCase
-import com.tokopedia.loginregister.redefine_register_email.domain.data.Register
-import com.tokopedia.loginregister.redefine_register_email.domain.data.RegisterV2Param
+import com.tokopedia.loginregister.redefine_register_email.input_phone.domain.RegisterV2UseCase
+import com.tokopedia.loginregister.redefine_register_email.input_phone.domain.data.Register
+import com.tokopedia.loginregister.redefine_register_email.input_phone.domain.data.RegisterV2Param
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.coroutines.Fail
@@ -55,7 +52,7 @@ abstract class RegisterV2Abstraction(
         return result
     }
 
-    private fun onSuccessRegisterV2Request(result: Register) : Result<Register> {
+    private fun onSuccessRegisterV2Request(result: Register): Result<Register> {
         userSession.clearToken()
         return when {
             result.accessToken.isNotEmpty() && result.refreshToken.isNotEmpty() && result.tokenType.isNotEmpty() -> {

@@ -8,7 +8,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 
-fun intentGoToVerification(phone: String = "", email: String = "", otpType: Int, source: String = "", context: Context): Intent {
+fun intentGoToVerification(
+    phone: String = "",
+    email: String = "",
+    otpType: Int,
+    source: String = "",
+    token: String = "",
+    context: Context
+): Intent {
     val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
@@ -17,16 +24,35 @@ fun intentGoToVerification(phone: String = "", email: String = "", otpType: Int,
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
+    intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, token)
     return intent
 }
 
-fun intentGoToInputPhone(email: String, encryptedPassword: String, name: String, source: String, isRequiredInputPhone: Boolean, token: String, hash: String, context: Context): Intent {
-    val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.REDEFINE_REGISTER_INPUT_PHONE)
+fun intentGoToInputPhone(
+    email: String,
+    encryptedPassword: String,
+    name: String,
+    source: String,
+    isRequiredInputPhone: Boolean,
+    token: String,
+    hash: String,
+    context: Context
+): Intent {
+    val intent = RouteManager.getIntent(
+        context,
+        ApplinkConstInternalUserPlatform.REDEFINE_REGISTER_INPUT_PHONE
+    )
     intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_VALUE_EMAIL, email)
-    intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_VALUE_ENCRYPTED_PASSWORD, encryptedPassword)
+    intent.putExtra(
+        ApplinkConstInternalUserPlatform.PARAM_VALUE_ENCRYPTED_PASSWORD,
+        encryptedPassword
+    )
     intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_VALUE_NAME, name)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-    intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE, isRequiredInputPhone)
+    intent.putExtra(
+        ApplinkConstInternalUserPlatform.PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE,
+        isRequiredInputPhone
+    )
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, token)
     intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_HASH, hash)
     return intent

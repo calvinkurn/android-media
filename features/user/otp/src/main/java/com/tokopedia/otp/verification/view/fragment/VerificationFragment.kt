@@ -200,7 +200,16 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
 
         if (isCountdownFinished()) {
-            if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
+            if (otpData.otpType == OtpConstant.OtpType.OTP_TYPE_168) {
+                viewModel.sendOtp168(
+                    otpType = otpData.otpType.toString(),
+                    mode = modeListData.modeText,
+                    msisdn = otpData.msisdn,
+                    email = otpData.email,
+                    otpDigit = modeListData.otpDigit,
+                    validateToken = otpData.accessToken
+                )
+            } else if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
                 viewModel.sendOtp2FA(
                         otpType = otpData.otpType.toString(),
                         mode = modeListData.modeText,
@@ -240,7 +249,16 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 analytics.trackClickVerificationButton(otpData.otpType)
             }
         }
-        if ((otpData.otpType.toString() == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() ||
+        if (otpData.otpType == OtpConstant.OtpType.OTP_TYPE_168) {
+            viewModel.otpValidate168(
+                code = code,
+                otpType = otpData.otpType.toString(),
+                mode = modeListData.modeText,
+                msisdn = otpData.msisdn,
+                email = otpData.email,
+                validateToken = otpData.accessToken
+            )
+        } else if ((otpData.otpType.toString() == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() ||
                         otpData.otpType.toString() == OtpConstant.OtpType.RESET_PIN.toString()) &&
                 otpData.userIdEnc.isNotEmpty()) {
             viewModel.otpValidate2FA(

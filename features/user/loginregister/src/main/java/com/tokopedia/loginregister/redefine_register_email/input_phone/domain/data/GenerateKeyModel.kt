@@ -1,13 +1,16 @@
-package com.tokopedia.loginregister.redefine_register_email.domain.data
+package com.tokopedia.loginregister.redefine_register_email.input_phone.domain.data
 
 import com.google.gson.annotations.SerializedName
 
 data class GenerateKeyModel(
+
     @SerializedName("generate_key")
     var keyData: KeyData = KeyData()
+
 )
 
 data class KeyData(
+
     @SerializedName("key")
     var key: String = "",
 
@@ -16,4 +19,5 @@ data class KeyData(
 
     @SerializedName("h")
     var hash: String = ""
+
 )
