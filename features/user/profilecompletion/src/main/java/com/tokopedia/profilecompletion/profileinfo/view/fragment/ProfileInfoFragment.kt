@@ -65,11 +65,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.UserSessionDataStore
-import com.tokopedia.user.session.datastore.value
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import com.tokopedia.utils.phonenumber.PhoneNumberUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import dagger.Lazy
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.File
 import java.net.ConnectException
@@ -165,17 +166,14 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
     private fun setProfilePicture() {
         lifecycleScope.launch {
-            val profilePicture = try {
-                var tempPict = userSessionDataStore.get().getProfilePicture().value()
-                if(tempPict.isEmpty()){
-                    tempPict = userSession.profilePicture
+            userSessionDataStore.get().getProfilePicture()
+                .catch {
+                    logDataStoreError("profilePicture", it)
+                    binding?.profileInfoImageUnify?.setImageUrl(userSession.profilePicture)
+                }.collect {
+                    val profilePicture = it.ifEmpty { userSession.profilePicture }
+                    binding?.profileInfoImageUnify?.setImageUrl(profilePicture)
                 }
-                tempPict
-            } catch (e: Exception) {
-                logDataStoreError("profilePicture", e)
-                userSession.profilePicture
-            }
-            binding?.profileInfoImageUnify?.setImageUrl(profilePicture)
         }
     }
 
