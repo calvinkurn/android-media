@@ -58,7 +58,7 @@ class MerchantSearchResultViewHolder(
     }
 
     private fun setTitleMerchant(title: String) {
-        if (title.isEmpty()) {
+        if (title.isBlank()) {
             binding?.tgTokofoodItemSrpMerchantTitle?.hide()
         } else {
             binding?.tgTokofoodItemSrpMerchantTitle?.show()
@@ -67,7 +67,7 @@ class MerchantSearchResultViewHolder(
     }
 
     private fun setLabelDiscount(label: String, priceLevel: PriceLevel) {
-        if (label.isEmpty()) {
+        if (label.isBlank()) {
             binding?.labelItemSrpMerchantDiskon?.hide()
         } else {
             binding?.labelItemSrpMerchantDiskon?.show()
@@ -76,7 +76,7 @@ class MerchantSearchResultViewHolder(
 
         binding?.labelItemSrpMerchantDiskon?.run {
             val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
-            if (priceLevel.fareCount <= 0) {
+            if (priceLevel.fareCount <= Int.ZERO) {
                 labelParams.topToBottom =
                     binding?.tgTokofoodItemSrpMerchantCategory?.id ?: ConstraintLayout.LayoutParams.UNSET
             } else {
@@ -207,14 +207,7 @@ class MerchantSearchResultViewHolder(
     }
 
     private fun getCategoryString(categories: List<String>): String {
-        val category = StringBuilder()
-        categories.forEachIndexed { index, it ->
-            category.append(it)
-            if (index != (categories.size - Int.ONE)) {
-                category.append(", ")
-            }
-        }
-        return category.toString()
+        return categories.joinToString()
     }
 
     private fun getPriceLevelString(priceLevel: PriceLevel): String {

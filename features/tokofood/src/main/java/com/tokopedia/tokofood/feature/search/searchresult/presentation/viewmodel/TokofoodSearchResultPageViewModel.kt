@@ -84,7 +84,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
             searchParameter
         }.shareIn(
             scope = this,
-            started = SharingStarted.WhileSubscribed(5000L),
+            started = SharingStarted.WhileSubscribed(SHARING_DELAY_MILLIS),
             replay = Int.ONE
         )
 
@@ -94,7 +94,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
             getVisitablesFlow(uiState)
         }.shareIn(
             scope = this,
-            started = SharingStarted.WhileSubscribed(5000L),
+            started = SharingStarted.WhileSubscribed(SHARING_DELAY_MILLIS),
             replay = Int.ONE
         )
 
@@ -483,6 +483,8 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
     companion object {
         private const val MIN_SEARCH_KEYWORD_LENGTH = 3
+
+        private const val SHARING_DELAY_MILLIS = 5000L
     }
 
 }

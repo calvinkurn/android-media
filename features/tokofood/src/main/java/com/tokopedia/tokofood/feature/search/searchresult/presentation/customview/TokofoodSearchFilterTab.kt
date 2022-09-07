@@ -1,10 +1,12 @@
 package com.tokopedia.tokofood.feature.search.searchresult.presentation.customview
 
+import android.content.Context
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilter
@@ -16,6 +18,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 
 class TokofoodSearchFilterTab(
     private val sortFilter: SortFilter,
+    private val context: Context?,
     private val listener: Listener
 ) {
 
@@ -29,7 +32,7 @@ class TokofoodSearchFilterTab(
             sortFilterItems.removeAllViews()
             if (sortFilterItemList.isNotEmpty()) {
                 visible()
-                sortFilterHorizontalScrollView.scrollX = 0
+                sortFilterHorizontalScrollView.scrollX = Int.ZERO
                 addItem(sortFilterItemList as ArrayList)
                 chipItems?.forEach {
                     it.updateSelectedRef = { _,_,_,_,_ -> }
@@ -60,7 +63,7 @@ class TokofoodSearchFilterTab(
 
     private fun TokofoodSortItemUiModel.getSortFilterItem(): SortFilterItem? {
         return sortFilterItem.takeIf { sortList.isNotEmpty() }?.also { item ->
-            if (sortList.size > 1) {
+            if (sortList.size > Int.ONE) {
                 item.listener = {
                     listener.onOpenQuickFilterBottomSheet(sortList)
                 }
@@ -78,6 +81,7 @@ class TokofoodSearchFilterTab(
                 }
             }
             item.setActive(selectedSort != null)
+            item.title = context?.getString(com.tokopedia.tokofood.R.string.search_srp_sort_title).orEmpty()
         }
     }
 
@@ -106,21 +110,11 @@ class TokofoodSearchFilterTab(
 
     private fun SortFilterItem.setActive(filter: Filter) {
         val isActive = filter.options.any { it.inputState == true.toString() }
-        type =
-            if (isActive) {
-                ChipsUnify.TYPE_SELECTED
-            } else {
-                ChipsUnify.TYPE_NORMAL
-            }
+        setSelected(isActive)
     }
 
     private fun SortFilterItem.setActive(isSortSelected: Boolean) {
-        type =
-            if (isSortSelected) {
-                ChipsUnify.TYPE_SELECTED
-            } else {
-                ChipsUnify.TYPE_NORMAL
-            }
+        setSelected(isSortSelected)
     }
 
     private fun toggleActiveChip(sortFilterItem: SortFilterItem, sort: Sort) {
@@ -134,6 +128,15 @@ class TokofoodSearchFilterTab(
             options.firstOrNull()?.inputState = isSelected.toString()
         }
         listener.onSelectFilterChip(filter)
+    }
+
+    private fun SortFilterItem.setSelected(isSelected: Boolean) {
+        type =
+            if (isSelected) {
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                ChipsUnify.TYPE_NORMAL
+            }
     }
 
     interface Listener {

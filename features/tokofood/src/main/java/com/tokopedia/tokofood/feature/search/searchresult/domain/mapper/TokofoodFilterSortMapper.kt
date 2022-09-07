@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.feature.search.searchresult.domain.mapper
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
@@ -14,9 +12,8 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.T
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortItemUiModel
-import javax.inject.Inject
 
-class TokofoodFilterSortMapper @Inject constructor(@ApplicationContext private val context: Context) {
+class TokofoodFilterSortMapper {
 
     fun getQuickSortFilterUiModels(dataValue: DataValue): List<TokofoodSortFilterItemUiModel> {
         val filterItems = dataValue.filter.map(::convertToFilterItemUiModel)
@@ -105,15 +102,7 @@ class TokofoodFilterSortMapper @Inject constructor(@ApplicationContext private v
     }
 
     private fun getSortingSortFilterItem(): SortFilterItem {
-        return SortFilterItem(getSortChipTitle())
-    }
-
-    private fun getSortChipTitle(): String {
-        return try {
-            context.getString(com.tokopedia.tokofood.R.string.search_srp_sort_title)
-        } catch (ex: Exception) {
-            String.EMPTY
-        }
+        return SortFilterItem(String.EMPTY)
     }
 
     private fun getFilterFromSearchParameter(searchParameters: SearchParameter,

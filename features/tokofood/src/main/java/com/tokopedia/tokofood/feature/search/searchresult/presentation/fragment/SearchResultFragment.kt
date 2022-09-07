@@ -350,6 +350,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
             binding?.filterTokofoodSearchResult?.let { sortFilter ->
                 tokofoodSearchFilterTab = TokofoodSearchFilterTab(
                     sortFilter,
+                    context,
                     this
                 )
             }
