@@ -44,8 +44,8 @@ class ProductViewHolder(
         showProductButton(product)
 
         showProductImage(product)
-        showStockHintImage(product)
         showNotifyMeBuyer(product)
+        showStockHintImage(product)
         showStockAlertImage(product)
         showStockAlertActiveImage(product)
 
@@ -66,8 +66,7 @@ class ProductViewHolder(
             }
         }
 
-        if (binding?.imageStockReminder?.isVisible.orTrue()
-            && !binding?.imageNotifyMeBuyer?.isVisible.orTrue()) {
+        if (binding?.imageStockReminder?.isVisible.orTrue()) {
             listener.onImpressionProductStockReminder()
         } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION
             && GlobalConfig.isSellerApp()
@@ -201,6 +200,7 @@ class ProductViewHolder(
             ?.showWithCondition(
                 product.hasStockAlert && !product.stockAlertActive
                         && !binding?.imageStockInformation?.isVisible.orTrue()
+                        && !product.haveNotifyMeOOS
             )
         binding?.clImage
             ?.showWithCondition(
@@ -217,6 +217,7 @@ class ProductViewHolder(
             ?.showWithCondition(
                 product.stockAlertActive
                         && !binding?.imageStockInformation?.isVisible.orTrue()
+                        && !product.haveNotifyMeOOS
 
             )
         binding?.clImage
@@ -370,6 +371,5 @@ class ProductViewHolder(
         fun onImpressionMoreOption()
         fun onImpressionProductStockReminder()
         fun onImpressionNotifyMe()
-
     }
 }

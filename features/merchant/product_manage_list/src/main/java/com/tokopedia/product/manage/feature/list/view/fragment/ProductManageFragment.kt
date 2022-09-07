@@ -186,6 +186,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.HAS_STOCK_ALERT_STATUS
@@ -310,7 +311,7 @@ open class ProductManageFragment :
                         coachMarkNotifyMe?.dismissCoachMark()
                     }
                 }
-                if(!isShowCoachMarkNotifyMe){
+                if (!isShowCoachMarkNotifyMe) {
                     if (haveSetReminder == -1) {
                         if (coachMarkMoreOption?.isDismissed == true && abs(dy) <= RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD) {
                             reshowMoreOptionCoachMark(dy < Int.ZERO)
@@ -334,19 +335,22 @@ open class ProductManageFragment :
                         if (coachMarkStockReminder?.isDismissed == true && abs(dy) <= RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD) {
                             reshowStockReminderCoachMark(dy < Int.ZERO)
                         } else if (coachMarkStockReminder?.isDismissed == false) {
-                            val layoutManager = productManageLayoutManager!!
-                            val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
-                            val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
-                            val currentProductStockReminder =
-                                layoutManager.findViewByPosition(currentPositionStockReminderCoachMark)
-                                    ?.findViewById<IconUnify>(R.id.imageStockReminder)
-                            if (coachMarkStockReminder?.isDismissed == false && (currentPositionStockReminderCoachMark !in firstVisibleIndex..lastVisibleIndex ||
-                                        (currentProductStockReminder != null && getVisiblePercent(
-                                            currentProductStockReminder
-                                        ) == -1))
-                            ) {
-                                coachMarkStockReminder?.dismissCoachMark()
+                            productManageLayoutManager?.let { layoutManager ->
+                                val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
+                                val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
+                                val currentProductStockReminder =
+                                    layoutManager.findViewByPosition(
+                                        currentPositionStockReminderCoachMark
+                                    )
+                                        ?.findViewById<IconUnify>(R.id.imageStockReminder)
+                                if (coachMarkStockReminder?.isDismissed == false && (currentPositionStockReminderCoachMark !in firstVisibleIndex..lastVisibleIndex ||
+                                            (currentProductStockReminder != null && getVisiblePercent(
+                                                currentProductStockReminder
+                                            ) == -1))
+                                ) {
+                                    coachMarkStockReminder?.dismissCoachMark()
 
+                                }
                             }
                         }
                     }
@@ -603,7 +607,6 @@ open class ProductManageFragment :
         setupSelectAll()
         setupErrorPage()
         setupNoAccessPage()
-        setCoachMarkFlagStockReminder()
         renderCheckedView()
 
         observeShopInfo()
@@ -1206,9 +1209,11 @@ open class ProductManageFragment :
 
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
                     showLoadingProgress()
                     isLoadingInitialData = true
                     getProductList()
+                    dismissAllCoachMark()
                     clearFocus()
                     true
                 } else {
@@ -1457,7 +1462,6 @@ open class ProductManageFragment :
         filterTab?.getSelectedFilter()?.let {
             filterOptions.add(FilterByStatus(it))
         }
-
         if (isRefreshFromSortFilter) {
             tabSortFilter?.show()
             shimmerSortFilter?.hide()
@@ -2070,10 +2074,10 @@ open class ProductManageFragment :
             if (getVisiblePercent(item) == 0) {
                 isShowCoachMarkNotifyMe = true
                 recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
-                recyclerView?.addOnScrollListener(recyclerViewScrollListener)
                 coachMarkNotifyMe?.showCoachMark(
                     step = getCoachMarkNotifyMe(item)
                 )
+                recyclerView?.addOnScrollListener(recyclerViewScrollListener)
                 coachMarkNotifyMe?.setOnDismissListener {
                     CoachMarkPreference.setShown(
                         item.context,
@@ -2086,10 +2090,10 @@ open class ProductManageFragment :
                         productManageLayoutManager?.findViewByPosition(stockReminderPosition)
                             ?.findViewById<IconUnify>(R.id.imageStockReminder)
 
-                    if (imageStockReminder != null) {
+                    if (imageStockReminder?.isVisible.orFalse()) {
                         showCoachProductWithStockReminder()
                     } else {
-                        showCoachMoreOptionMenu()
+                        showCoachMoreOptionMenu(true)
                     }
                 }
             }
@@ -2427,12 +2431,7 @@ open class ProductManageFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (hidden) {
-            if (coachMarkMoreOption?.isDismissed == false) {
-                coachMarkMoreOption?.dismissCoachMark()
-            }
-            if (coachMarkStockReminder?.isDismissed == false) {
-                coachMarkStockReminder?.dismissCoachMark()
-            }
+            dismissAllCoachMark()
         }
     }
 
@@ -3271,7 +3270,7 @@ open class ProductManageFragment :
                     it,
                     SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK
                 ) && !isShowCoachMarkNotifyMe -> {
-                    showCoachMoreOptionMenu()
+                    showCoachMoreOptionMenu(false)
                 }
             }
         }
@@ -3333,14 +3332,25 @@ open class ProductManageFragment :
     }
 
 
-    private fun showCoachMoreOptionMenu() {
+    private fun showCoachMoreOptionMenu(fromNotifyMe: Boolean = false) {
         haveSetReminder =
             getProductWithStockReminder(adapter.data.filterIsInstance<ProductUiModel>())
+
+
+        val visibleStockReminder = if(haveSetReminder != -1){
+            val itemReminder = productManageLayoutManager?.findViewByPosition(haveSetReminder)
+                ?.findViewById<IconUnify>(R.id.imageStockReminder)
+            itemReminder?.let { getVisiblePercent(it) }
+        }else{
+            -1
+        }
 
         val item = productManageLayoutManager?.findViewByPosition(Int.ZERO)
             ?.findViewById<IconUnify>(R.id.btnMoreOptions)
 
-        if (item != null && haveSetReminder == -1) {
+        if ((item != null && visibleStockReminder != 0 && !isShowCoachMarkNotifyMe)
+            || (item != null && fromNotifyMe)
+        ) {
             if (getVisiblePercent(item) == 0) {
                 isShowCoachFlagStockReminder = true
                 CoachMarkPreference.setShown(
@@ -3350,10 +3360,11 @@ open class ProductManageFragment :
                 )
 
                 recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
-                recyclerView?.addOnScrollListener(recyclerViewScrollListener)
                 coachMarkMoreOption?.showCoachMark(
                     step = getCoachMarkMoreMenu(item)
                 )
+                recyclerView?.addOnScrollListener(recyclerViewScrollListener)
+
             }
 
         }
@@ -3374,25 +3385,27 @@ open class ProductManageFragment :
             if (getVisiblePercent(item) == 0) {
                 isShowCoachFlagStockReminder = true
                 currentPositionStockReminderCoachMark = stockReminderPosition
-                recyclerView?.addOnScrollListener(recyclerViewScrollListener)
                 coachMarkStockReminder?.stepButtonTextLastChild =
                     activity?.resources?.getString(com.tokopedia.abstraction.R.string.label_done)
                         .orEmpty()
+
+                val itemCoachMark = getCoachMarkFlagStockReminder(item)
+                setCoachMarkFlagStockReminder()
                 coachMarkStockReminder?.showCoachMark(
-                    step = getCoachMarkFlagStockReminder(item),
+                    step = itemCoachMark,
                     index = 0
                 )
+                recyclerView?.addOnScrollListener(recyclerViewScrollListener)
             }
         }
     }
 
     private fun showCoachMenuReminder(view: View) {
-        if (haveSetReminder == -1
-        ) {
+        if (haveSetReminder == -1) {
             if (getVisiblePercent(view) == 0 && !CoachMarkPreference.hasShown(
                     view.context,
                     SHARED_PREF_STOCK_REMINDER_MENU_COACH_MARK
-                ) && !coachMarkNotifyMe?.isShowing.orTrue()
+                )
             ) {
                 CoachMarkPreference.setShown(
                     view.context,
@@ -3410,15 +3423,7 @@ open class ProductManageFragment :
     private fun refreshCoachMark() {
         haveSetReminder = -1
         recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
-        if (coachMarkMoreOption?.isDismissed == false) {
-            coachMarkMoreOption?.dismissCoachMark()
-            coachMarkMoreOption?.isDismissed = false
-        }
-        if (coachMarkStockReminder?.isDismissed == false) {
-            coachMarkStockReminder?.dismissCoachMark()
-            coachMarkStockReminder?.isDismissed = false
-
-        }
+        dismissAllCoachMark()
     }
 
     private fun getCoachMarkNotifyMe(notifyMeIcon: View): ArrayList<CoachMark2Item> {
@@ -3444,6 +3449,22 @@ open class ProductManageFragment :
     private fun getProductWithNotifyMe(data: List<ProductUiModel>): Int {
         return data.indexOfFirst {
             it.haveNotifyMeOOS
+        }
+    }
+
+    private fun dismissAllCoachMark() {
+        if (coachMarkNotifyMe?.isDismissed == false) {
+            coachMarkNotifyMe?.dismissCoachMark()
+            coachMarkNotifyMe?.isDismissed = false
+        }
+        if (coachMarkMoreOption?.isDismissed == false) {
+            coachMarkMoreOption?.dismissCoachMark()
+            coachMarkMoreOption?.isDismissed = false
+        }
+        if (coachMarkStockReminder?.isDismissed == false) {
+            coachMarkStockReminder?.dismissCoachMark()
+            coachMarkStockReminder?.isDismissed = false
+
         }
     }
 
