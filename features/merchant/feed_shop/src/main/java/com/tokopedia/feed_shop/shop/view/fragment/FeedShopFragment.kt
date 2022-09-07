@@ -808,13 +808,19 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 trackingPostModel.mediaUrl,
                     positionInFeed)
         }
-        val finaAppLink = Uri.parse(redirectLink)
+        val finaApplink = getUpdatedApplinkForContentDetailPage(redirectLink)
+        onGoToLink(finaApplink)
+    }
+
+    /**
+     * Here we are appending the source of opening content detail page to the original applink
+     * source = shop_page here
+     */
+    private fun getUpdatedApplinkForContentDetailPage(originalRedirectlink: String) =
+        Uri.parse(originalRedirectlink)
             .buildUpon()
             .appendQueryParameter(PARAM_SOURCE, SHOP_PAGE)
             .build().toString()
-
-        onGoToLink(finaAppLink)
-    }
 
     override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
                                   redirectLink: String, isSingleItem: Boolean) {
