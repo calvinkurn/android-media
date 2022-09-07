@@ -7,11 +7,11 @@ import javax.inject.Inject
 
 class SubScribeToUseCase @Inject constructor(val pushStatusRepository: PushStatusRepository) {
 
-    suspend fun subscribeToPush(campaignId: Int): PushSubscriptionResponse {
+    suspend fun subscribeToPush(campaignId: Long): PushSubscriptionResponse {
         return pushStatusRepository.subscribeToPush(campaignId)
     }
 
-    suspend fun unSubscribeToPush(campaignId: Int): PushUnSubscriptionResponse {
+    suspend fun unSubscribeToPush(campaignId: Long): PushUnSubscriptionResponse {
         return pushStatusRepository.unsSubscribeToPush(campaignId)
     }
 }
