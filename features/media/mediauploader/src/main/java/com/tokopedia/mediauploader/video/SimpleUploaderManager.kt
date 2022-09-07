@@ -23,7 +23,7 @@ class SimpleUploaderManager @Inject constructor(
 
     suspend operator fun invoke(file: File, sourceId: String, withTranscode: Boolean): UploadResult {
         val uploader = simpleUploaderUseCase(SimpleUploadParam(
-            timeOut = policyManager.get().timeOutString(),
+            timeOut = policyManager.policy().timeOutString(),
             sourceId = sourceId,
             file = file
         ))

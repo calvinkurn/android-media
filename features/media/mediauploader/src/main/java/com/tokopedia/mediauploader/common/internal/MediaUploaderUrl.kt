@@ -7,7 +7,7 @@ class MediaUploaderUrl @Inject constructor(
 ) {
 
     private val host: String
-        get() = policyManager.get().host
+        get() = policyManager.policy().host
 
     fun imageUpload(sourceId: String)
         = "$host/$UPEDIA_VERSION/upload/image/$sourceId"
