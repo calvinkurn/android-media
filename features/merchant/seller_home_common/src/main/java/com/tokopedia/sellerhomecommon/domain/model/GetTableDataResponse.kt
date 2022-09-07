@@ -67,5 +67,8 @@ data class ColumnModel(
         val type: Int = 0,
         @Expose
         @SerializedName("value")
-        val value: String = ""
+        val value: String = "",
+        @Expose
+        @SerializedName("iconUrl")
+        val iconUrl: String? = ""
 )
