@@ -5,7 +5,7 @@ import com.tokopedia.sellerapp.data.datasource.local.entity.OrderEntity
 import com.tokopedia.sellerapp.data.datasource.local.entity.ProductEntity
 import com.tokopedia.sellerapp.data.datasource.remote.OrderListModel
 
-object OrderMapper {
+object OrderDataMapper {
     fun String.mapMessageDataToModel() : OrderListModel {
         return Gson().fromJson(this, OrderListModel::class.java)
     }
@@ -15,10 +15,12 @@ object OrderMapper {
             OrderEntity(
                 orderId = it.orderId,
                 orderStatusId = it.orderStatusId,
+                status = it.status,
                 orderTotalPrice = it.orderTotalPrice,
                 orderDate = it.orderDate,
                 deadLineText = it.deadLineText,
                 courierName = it.courierName,
+                courierType = it.courierType,
                 destinationProvince = it.destinationProvince,
             )
         }
@@ -30,8 +32,11 @@ object OrderMapper {
             order.products.forEach { prod ->
                 list.add(
                     ProductEntity(
+                        productId = prod.productId,
                         orderId = order.orderId,
                         productName = prod.productName,
+                        productQty = prod.productQty,
+                        picture = prod.picture,
                         orderNote = prod.orderNote
                     )
                 )

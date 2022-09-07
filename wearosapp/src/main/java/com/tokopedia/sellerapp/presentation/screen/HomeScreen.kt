@@ -37,8 +37,9 @@ fun HomeScreen(
     screenNavigation: ScreenNavigation,
     sharedViewModel: SharedViewModel
 ) {
-    val listState = rememberScalingLazyListState()
     val menuItems by sharedViewModel.homeMenu.collectAsState()
+
+    val listState = rememberScalingLazyListState()
 
     Scaffold(
         timeText = {

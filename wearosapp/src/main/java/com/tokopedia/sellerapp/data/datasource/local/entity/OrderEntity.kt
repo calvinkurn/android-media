@@ -13,6 +13,9 @@ data class OrderEntity(
     @ColumnInfo(name = "order_status_id")
     var orderStatusId: String = "",
 
+    @ColumnInfo(name = "status")
+    var status: String = "",
+
     @ColumnInfo(name = "order_total_price")
     var orderTotalPrice: String = "",
 
@@ -24,6 +27,9 @@ data class OrderEntity(
 
     @ColumnInfo(name = "courier_name")
     var courierName: String = "",
+
+    @ColumnInfo(name = "courier_product_name")
+    var courierType: String = "",
 
     @Nullable @ColumnInfo(name = "destination_province")
     var destinationProvince: String = "",

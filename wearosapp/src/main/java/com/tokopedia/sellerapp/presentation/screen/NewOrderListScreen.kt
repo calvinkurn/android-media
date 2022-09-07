@@ -6,25 +6,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.Text
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.NodeClient
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
-import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.UiState
 
 @Composable
 fun NewOrderListScreen(
     sharedViewModel: SharedViewModel,
-    messageClient: MessageClient,
-    nodeClient: NodeClient
 ) {
-    val orderList by sharedViewModel.orderList.collectAsState()
+    val orderList by sharedViewModel.newOrderList.collectAsState()
 
-    sharedViewModel.sendAction(
-        action = Action.GET_ORDER_LIST,
-        messageClient = messageClient,
-        nodeClient = nodeClient
-    )
+    sharedViewModel.sendRequest()
 
     LazyColumn {
         item {
@@ -34,7 +25,7 @@ fun NewOrderListScreen(
                 when(orderList) {
                     is UiState.Success -> {
                         // Needs to be updated with required information
-                        Text(text = orderList.data?.firstOrNull()?.order?.orderId.orEmpty())
+                        Text(text = orderList.data?.firstOrNull()?.orderId.orEmpty())
                     }
                     else -> {
                         Text(text = "Test")

@@ -2,17 +2,24 @@ package com.tokopedia.sellerapp.data.datasource.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
-import org.jetbrains.annotations.Nullable
 
-@Entity(tableName = "WearOrderProduct")
+@Entity(tableName = "WearOrderProduct", primaryKeys = ["product_id", "order_id"])
 data class ProductEntity(
-    @PrimaryKey @ColumnInfo(name = "order_id")
+    @ColumnInfo(name = "order_id")
     var orderId: String = "",
 
-    @Nullable @ColumnInfo(name = "product_name")
+    @ColumnInfo(name = "product_id")
+    var productId: String = "",
+
+    @ColumnInfo(name = "product_name")
     val productName: String = "",
 
-    @Nullable @ColumnInfo(name = "order_note")
+    @ColumnInfo(name = "product_qty")
+    val productQty: Int = 0,
+
+    @ColumnInfo(name = "picture")
+    val picture: String = "",
+
+    @ColumnInfo(name = "order_note")
     val orderNote: String = "",
 )

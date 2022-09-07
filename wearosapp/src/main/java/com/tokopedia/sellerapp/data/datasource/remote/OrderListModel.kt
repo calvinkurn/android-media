@@ -24,6 +24,10 @@ data class OrderListModel(
         @Expose
         val orderStatusId: String = "",
 
+        @SerializedName("status")
+        @Expose
+        val status: String = "",
+
         @SerializedName("order_total_price")
         @Expose
         val orderTotalPrice: String = "",
@@ -40,6 +44,10 @@ data class OrderListModel(
         @Expose
         val courierName: String = "",
 
+        @SerializedName("courier_product_name")
+        @Expose
+        val courierType: String = "",
+
         @SerializedName("destination_province")
         @Expose
         val destinationProvince: String = "",
@@ -50,9 +58,21 @@ data class OrderListModel(
     )
 
     data class Product(
+        @SerializedName("product_id")
+        @Expose
+        val productId: String = "",
+
         @SerializedName("product_name")
         @Expose
         val productName: String = "",
+
+        @SerializedName("product_qty")
+        @Expose
+        val productQty: Int = 0,
+
+        @SerializedName("picture")
+        @Expose
+        val picture: String = "",
 
         @SerializedName("order_note")
         @Expose

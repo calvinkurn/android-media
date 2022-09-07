@@ -8,19 +8,19 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.navigation.NavHostController
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.NodeClient
-import com.google.android.gms.wearable.Wearable
+import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SellerAppActivity : ComponentActivity() {
 
     private lateinit var navController: NavHostController
 
-    private val nodeClient: NodeClient by lazy { Wearable.getNodeClient(this) }
-    private val messageClient: MessageClient by lazy { Wearable.getMessageClient(this) }
+    @Inject
+    lateinit var clientMessageDatasource: ClientMessageDatasource
+
     private val sharedViewModel: SharedViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,8 +31,6 @@ class SellerAppActivity : ComponentActivity() {
                 SetupNavigation(
                     navController = navController,
                     sharedViewModel = sharedViewModel,
-                    messageClient = messageClient,
-                    nodeClient = nodeClient
                 )
             }
         }
@@ -40,11 +38,11 @@ class SellerAppActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        messageClient.addListener(sharedViewModel.orderRepository.orderRemoteDatasource)
+        clientMessageDatasource.addMessageClientListener()
     }
 
     override fun onPause() {
         super.onPause()
-        messageClient.removeListener(sharedViewModel.orderRepository.orderRemoteDatasource)
+        clientMessageDatasource.removeMessageClientListener()
     }
 }

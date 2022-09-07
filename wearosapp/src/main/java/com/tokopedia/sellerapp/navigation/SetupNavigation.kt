@@ -16,8 +16,6 @@ import com.tokopedia.sellerapp.util.ScreenConstant.SPLASH_SCREEN
 fun SetupNavigation(
     navController: NavHostController,
     sharedViewModel: SharedViewModel,
-    messageClient: MessageClient,
-    nodeClient: NodeClient
 ) {
     val nav = ScreenNavigation(navController)
     SwipeDismissableNavHost(
@@ -36,8 +34,6 @@ fun SetupNavigation(
         )
         newOrderListComposable(
             sharedViewModel = sharedViewModel,
-            messageClient = messageClient,
-            nodeClient = nodeClient
         )
         newOrderDetailComposable()
     }

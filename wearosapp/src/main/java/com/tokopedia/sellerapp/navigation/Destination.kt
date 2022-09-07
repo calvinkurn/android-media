@@ -35,16 +35,12 @@ fun NavGraphBuilder.homeComposable(
 
 fun NavGraphBuilder.newOrderListComposable(
     sharedViewModel: SharedViewModel,
-    messageClient: MessageClient,
-    nodeClient: NodeClient
 ) {
     composable(
         route = ScreenConstant.NEW_ORDER_LIST_SCREEN
     ) {
         NewOrderListScreen(
             sharedViewModel = sharedViewModel,
-            messageClient = messageClient,
-            nodeClient = nodeClient
         )
     }
 }

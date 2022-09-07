@@ -4,7 +4,7 @@ import com.tokopedia.iconunify.R.drawable as iconR
 
 data class MenuItem(
     val title: String = "",
-    var unreadCount: Int = 0,
+    val unreadCount: Int = 0,
     val icon: Int = -1,
 )
 
@@ -12,10 +12,10 @@ const val TITLE_NOTIF = "Notifikasi"
 const val TITLE_CHAT = "Chat"
 const val TITLE_NEW_ORDER = "Pesanan Baru"
 const val TITLE_READY_TO_DELIVER = "Siap Dikirim"
-private val ICON_NOTIF = iconR.iconunify_bell
-private val ICON_CHAT = iconR.iconunify_chat
-private val ICON_NEW_ORDER = iconR.iconunify_product
-private val ICON_READY_TO_DELIVER = iconR.iconunify_product_move
+val ICON_NOTIF = iconR.iconunify_bell
+val ICON_CHAT = iconR.iconunify_chat
+val ICON_NEW_ORDER = iconR.iconunify_product
+val ICON_READY_TO_DELIVER = iconR.iconunify_product_move
 
 fun generateInitialMenu() = listOf(
     MenuItem(

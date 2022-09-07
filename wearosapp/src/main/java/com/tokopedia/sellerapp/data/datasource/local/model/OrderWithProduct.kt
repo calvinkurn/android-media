@@ -5,14 +5,14 @@ import androidx.room.Relation
 import com.tokopedia.sellerapp.data.datasource.local.entity.OrderEntity
 import com.tokopedia.sellerapp.data.datasource.local.entity.ProductEntity
 
-data class OrderModel(
+data class OrderWithProduct(
     @Embedded
-    var order: OrderEntity? = null,
+    var order: OrderEntity,
 
     @Relation(
         parentColumn = "order_id",
         entityColumn = "order_id",
         entity = ProductEntity::class
     )
-    var product: ProductEntity? = null
+    var products: List<ProductEntity>
 )
