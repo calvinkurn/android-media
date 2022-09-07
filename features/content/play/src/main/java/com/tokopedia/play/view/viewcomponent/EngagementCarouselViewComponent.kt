@@ -7,6 +7,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.engagement.adapter.EngagementWidgetAdapter
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
@@ -15,7 +16,6 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 /**
@@ -72,7 +72,7 @@ class EngagementCarouselViewComponent(
         val size = carouselAdapter.itemCount
         if (size <= 1) return
         job?.cancel()
-        job = scope.launch {
+        job = scope.launchCatchError(block = {
             var count = 0
             repeat(Int.MAX_VALUE) {
                 delay(AUTO_SCROLL_DELAY)
@@ -83,7 +83,7 @@ class EngagementCarouselViewComponent(
                 }
                 carousel.smoothScrollToPosition(count)
             }
-        }
+        }, onError = {})
     }
 
     private fun stopAutoScroll(){
