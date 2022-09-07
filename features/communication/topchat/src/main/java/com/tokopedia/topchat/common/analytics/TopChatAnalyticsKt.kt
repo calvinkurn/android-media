@@ -322,8 +322,8 @@ object TopChatAnalyticsKt {
             "$blastId - $statusBundle - $bundleId - bundling"
         )
         eventDataLayer.putString(TRACKER_ID, "35596")
-        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
-        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION)
+        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA)
 
         val productIdList = getItemIdList(bundleItems)
 
@@ -368,8 +368,8 @@ object TopChatAnalyticsKt {
         )
 
         eventDataLayer.putString(TRACKER_ID, "35598")
-        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
-        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION)
+        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA)
 
         val productIdList = getItemIdList(bundleItems)
 
@@ -421,8 +421,8 @@ object TopChatAnalyticsKt {
         )
 
         eventDataLayer.putString(TRACKER_ID, "35599")
-        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
-        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION)
+        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA)
 
         eventDataLayer.putParcelableArrayList(
             AddToCartExternalAnalytics.EE_VALUE_ITEMS,
@@ -447,7 +447,7 @@ object TopChatAnalyticsKt {
         itemBundle.putString(ITEM_ID, setValueOrDefault(product.productId))
         itemBundle.putString(ITEM_NAME, setValueOrDefault(product.productName))
         itemBundle.putString(ITEM_VARIANT, EE_VALUE_NONE_OTHER)
-        itemBundle.putString(PRICE, product.productPrice.slice(3 until product.productPrice.length))
+        itemBundle.putDouble(PRICE, product.priceNumber + 0.0)
 
         val itemBundleList = ArrayList<Bundle>()
         itemBundleList.add(itemBundle)
@@ -461,8 +461,8 @@ object TopChatAnalyticsKt {
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
         eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, eventLabel)
         eventDataLayer.putString(TRACKER_ID, "14824")
-        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
-        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION)
+        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA)
         eventDataLayer.putString(ITEM_LIST, productIdList.joinToString())
         eventDataLayer.putParcelableArrayList(
             AddToCartExternalAnalytics.EE_VALUE_ITEMS,

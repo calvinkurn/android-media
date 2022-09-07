@@ -45,8 +45,8 @@ object AttachProductAnalytics {
         eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, Category.CHAT_DETAIL)
         eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, productIds.joinToString())
         eventDataLayer.putString(TRACKER_ID, "14823")
-        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION_MEDIA)
-        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE)
+        eventDataLayer.putString(KEY_BUSINESS_UNIT, COMMUNICATION)
+        eventDataLayer.putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA)
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.CLICK_COMMUNICATION,
@@ -89,4 +89,6 @@ object AttachProductAnalytics {
     //Other
     private const val CURRENT_SITE = "attachproduct"
     private const val COMMUNICATION_MEDIA = "Communication & Media"
+    private const val COMMUNICATION = "communication"
+    private const val CURRENT_SITE_TOKOPEDIA = "tokopediamarketplace"
 }
