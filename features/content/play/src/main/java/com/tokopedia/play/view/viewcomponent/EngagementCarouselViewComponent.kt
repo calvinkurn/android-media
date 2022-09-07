@@ -48,6 +48,10 @@ class EngagementCarouselViewComponent(
                 val diff = TimeUnit.MILLISECONDS.toSeconds(timeInMillis)
                 if (diff < STOP_SCROLL_TIME) stopAutoScroll() else return
             }
+
+            override fun onWidgetImpressed(engagement: EngagementUiModel) {
+                listener.onWidgetImpressed(this@EngagementCarouselViewComponent, engagement)
+            }
         })
 
     private val snapHelper by lazy(LazyThreadSafetyMode.NONE) {
@@ -114,6 +118,7 @@ class EngagementCarouselViewComponent(
 
         fun onWidgetClicked(view: EngagementCarouselViewComponent, engagement: EngagementUiModel)
         fun onWidgetSwipe(view: EngagementCarouselViewComponent, id: String)
+        fun onWidgetImpressed(view: EngagementCarouselViewComponent, engagement: EngagementUiModel)
     }
 
     companion object {

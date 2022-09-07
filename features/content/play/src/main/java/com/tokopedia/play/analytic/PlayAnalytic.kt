@@ -467,23 +467,6 @@ class PlayAnalytic(
         )
     }
 
-    fun clickCopyVoucher(voucher: PlayVoucherUiModel.MerchantVoucherUiModel) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_EVENT_ACTION to "click copy on private voucher",
-                        KEY_EVENT_LABEL to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                        KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                        KEY_CHANNEL to mChannelName,
-                        KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                )
-        )
-    }
-
     fun clickFeaturedProductSeeMore() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(

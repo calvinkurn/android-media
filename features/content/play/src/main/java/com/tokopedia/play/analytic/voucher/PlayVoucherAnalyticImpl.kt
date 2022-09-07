@@ -144,4 +144,18 @@ class PlayVoucherAnalyticImpl @Inject constructor(
             .build()
             .send()
     }
+
+    override fun clickCopyVoucher(voucherId: String) {
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEventAction("click copy on private voucher")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel("$channelId - $voucherId - $channelType")
+            .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
+            .setCurrentSite(KEY_TRACK_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
 }

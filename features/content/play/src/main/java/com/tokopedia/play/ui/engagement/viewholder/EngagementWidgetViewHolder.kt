@@ -1,6 +1,8 @@
 package com.tokopedia.play.ui.engagement.viewholder
 
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.R as playR
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
@@ -15,10 +17,15 @@ class EngagementWidgetViewHolder(
 ) :
     BaseViewHolder(binding) {
 
+    private val impressHolder by lazy(LazyThreadSafetyMode.NONE) { ImpressHolder() }
+
     fun bindPromo(item: EngagementUiModel.Promo){
         binding.setupPromo(title = item.info.title, description = getPromoDescription(item), id = item.info.id)
         binding.setOnClickListener {
             listener.onWidgetClicked(engagement = item)
+        }
+        binding.addOnImpressionListener(impressHolder){
+            listener.onWidgetImpressed(engagement = item)
         }
     }
 
@@ -43,6 +50,9 @@ class EngagementWidgetViewHolder(
         }
         binding.setOnClickListener {
             listener.onWidgetClicked(engagement = item)
+        }
+        binding.addOnImpressionListener(impressHolder){
+            listener.onWidgetImpressed(engagement = item)
         }
     }
 
@@ -93,6 +103,7 @@ class EngagementWidgetViewHolder(
         fun onWidgetGameEnded(engagement: EngagementUiModel.Game)
         fun onWidgetClicked(engagement: EngagementUiModel)
         fun onWidgetTimerTick(engagement: EngagementUiModel.Game, timeInMillis: Long)
+        fun onWidgetImpressed(engagement: EngagementUiModel)
     }
 }
 
