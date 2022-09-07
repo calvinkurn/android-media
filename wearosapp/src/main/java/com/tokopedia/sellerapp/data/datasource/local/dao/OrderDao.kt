@@ -1,12 +1,13 @@
 package com.tokopedia.sellerapp.data.datasource.local.dao
 
-import androidx.room.*
+import androidx.room.Insert
+import androidx.room.Dao
+import androidx.room.OnConflictStrategy
+import androidx.room.Transaction
+import androidx.room.Query
 import com.tokopedia.sellerapp.data.datasource.local.entity.OrderEntity
 import com.tokopedia.sellerapp.data.datasource.local.entity.ProductEntity
 import com.tokopedia.sellerapp.data.datasource.local.model.OrderModel
-import com.tokopedia.sellerapp.data.datasource.remote.OrderListModel
-import com.tokopedia.sellerapp.data.mapper.OrderMapper.mapModelToOrderEntity
-import com.tokopedia.sellerapp.data.mapper.OrderMapper.mapModelToProductEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

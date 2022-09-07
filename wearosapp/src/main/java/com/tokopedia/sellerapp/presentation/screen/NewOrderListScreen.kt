@@ -1,6 +1,5 @@
 package com.tokopedia.sellerapp.presentation.screen
 
-import android.util.Log
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

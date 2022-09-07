@@ -3,12 +3,8 @@ package com.tokopedia.sellerapp.data.datasource.remote
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.NodeClient
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.MessageConstant
-import com.tokopedia.sellerapp.util.UiState
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await

@@ -1,7 +1,5 @@
 package com.tokopedia.sellerapp.presentation.model
 
-import com.tokopedia.iconunify.R
-import com.tokopedia.sellerapp.presentation.screen.*
 import com.tokopedia.iconunify.R.drawable as iconR
 
 data class MenuItem(

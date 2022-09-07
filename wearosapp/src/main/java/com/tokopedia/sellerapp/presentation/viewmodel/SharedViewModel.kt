@@ -2,7 +2,6 @@ package com.tokopedia.sellerapp.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.NodeClient
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -13,15 +12,10 @@ import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.TITLE_NEW_ORDER
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.Action
-import com.tokopedia.sellerapp.util.MessageConstant.ACCEPT_BULK_ORDER_PATH
-import com.tokopedia.sellerapp.util.MessageConstant.GET_ORDER_LIST_PATH
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
