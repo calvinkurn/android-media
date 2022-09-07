@@ -56,7 +56,7 @@ class GetShopInfoByIDUseCase @Inject constructor(
         """
 
         fun createParams(
-            shopIds: List<Int>,
+            shopIds: List<Long>,
         ): Map<String, Any> {
             return mapOf(
                 KEY_SHOP_IDS to shopIds,

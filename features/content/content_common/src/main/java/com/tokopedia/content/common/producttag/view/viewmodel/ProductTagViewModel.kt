@@ -134,6 +134,8 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private val _selectedProduct = MutableStateFlow<List<SelectedProductUiModel>>(emptyList())
 
+    private val _isSubmitting = MutableStateFlow(false)
+
     /** Ui State */
     private val _productTagSourceUiState = combine(
         _productTagSourceList, _productTagSourceStack
@@ -214,9 +216,10 @@ class ProductTagViewModel @AssistedInject constructor(
         _globalSearchShopUiState,
         _shopProductUiState,
         _selectedProduct,
+        _isSubmitting,
     ) { productTagSource, lastTaggedProduct, lastPurchasedProduct,
             myShopProduct, globalSearchProduct, globalSearchShop,
-            shopProduct, selectedProduct ->
+            shopProduct, selectedProduct, isSubmitting ->
         ProductTagUiState(
             productTagSource = productTagSource,
             lastTaggedProduct = lastTaggedProduct,
@@ -226,6 +229,7 @@ class ProductTagViewModel @AssistedInject constructor(
             globalSearchShop = globalSearchShop,
             shopProduct = shopProduct,
             selectedProduct = selectedProduct,
+            isSubmitting = isSubmitting,
         )
     }
 
@@ -294,6 +298,8 @@ class ProductTagViewModel @AssistedInject constructor(
             /** Shop Product */
             ProductTagAction.LoadShopProduct -> handleLoadShopProduct()
             is ProductTagAction.SearchShopProduct -> handleSearchShopProduct(action.query)
+
+            is ProductTagAction.LoadingSubmitProduct -> handleLoadingSubmit(action.isLoading)
         }
     }
 
@@ -351,7 +357,7 @@ class ProductTagViewModel @AssistedInject constructor(
                     }
                 }
                 ProductTagSource.Shop -> {
-                    val shop = repo.getShopInfoByID(listOf(shopId.toInt()))
+                    val shop = repo.getShopInfoByID(listOf(shopId.toLong()))
                     _shopProduct.setValue {
                         ShopProductUiModel.Empty.copy(
                             shop = shop,
@@ -376,6 +382,8 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleProductSelected(product: ProductUiModel) {
+        if (_isSubmitting.value) return
+
         viewModelScope.launch {
             if(isMultipleSelectionProduct) {
 
@@ -911,6 +919,10 @@ class ProductTagViewModel @AssistedInject constructor(
             )
         }
         handleLoadShopProduct()
+    }
+
+    private fun handleLoadingSubmit(isLoading: Boolean) {
+        _isSubmitting.value = isLoading
     }
 
     /** Util */

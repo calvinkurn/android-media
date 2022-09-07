@@ -22,7 +22,10 @@ import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -61,6 +64,10 @@ class ProductPickerUGCBottomSheet @Inject constructor(
             viewModel.submitAction(ProductSetupAction.SaveProducts)
         }
     }
+
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
+    )
 
     private val productTagDataSource = object : ProductTagParentFragment.DataSource {
         override fun getInitialSelectedProduct(): List<SelectedProductUiModel> {
@@ -168,10 +175,18 @@ class ProductPickerUGCBottomSheet @Inject constructor(
     }
 
     private fun closeBottomSheet() {
+        if (viewModel.uiState.value.saveState.isLoading) return
         mListener?.onCancelled(this)
     }
 
     private fun setupObserve() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiState.collectLatest {
+                getProductPickerUGCFragment()
+                    ?.setLoading(it.saveState.isLoading)
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 when (it) {
@@ -179,15 +194,19 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                         mListener?.onFinished(this@ProductPickerUGCBottomSheet)
                     }
                     is PlayBroProductChooserEvent.ShowError -> {
-//                        toaster.showError(
-//                            err = it.error,
-//                            customErrMessage = getString(R.string.play_bro_product_chooser_error_save)
-//                        )
+                        toaster.showError(
+                            err = it.error,
+                            customErrMessage = it.error.message,
+                        )
                     }
                     else -> {}
                 }
             }
         }
+    }
+
+    private fun getProductPickerUGCFragment(): ProductTagParentFragment? {
+        return ProductTagParentFragment.findFragment(childFragmentManager)
     }
 
     companion object {

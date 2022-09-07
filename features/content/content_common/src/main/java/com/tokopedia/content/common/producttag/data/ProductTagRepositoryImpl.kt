@@ -132,7 +132,7 @@ class ProductTagRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getShopInfoByID(shopIds: List<Int>): ShopUiModel {
+    override suspend fun getShopInfoByID(shopIds: List<Long>): ShopUiModel {
         return withContext(dispatchers.io) {
             val response = getShopInfoByIDUseCase.apply {
                 setRequestParams(GetShopInfoByIDUseCase.createParams(

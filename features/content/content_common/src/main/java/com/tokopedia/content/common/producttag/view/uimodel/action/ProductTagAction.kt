@@ -56,4 +56,6 @@ sealed interface ProductTagAction {
     /** Shop Product */
     object LoadShopProduct : ProductTagAction
     data class SearchShopProduct(val query: String) : ProductTagAction
+
+    data class LoadingSubmitProduct(val isLoading: Boolean) : ProductTagAction
 }

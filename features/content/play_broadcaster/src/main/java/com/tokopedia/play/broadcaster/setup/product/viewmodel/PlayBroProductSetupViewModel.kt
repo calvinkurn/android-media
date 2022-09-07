@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
@@ -342,9 +343,11 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleSaveProducts() {
-        _saveState.update {
+        val currentState = _saveState.getAndUpdate {
             it.copy(isLoading = true)
         }
+        if (currentState.isLoading) return
+
         viewModelScope.launchCatchError(dispatchers.io, block = {
             repo.setProductTags(
                 channelId = configStore.getChannelId(),
