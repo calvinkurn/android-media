@@ -166,12 +166,13 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun prepareLoaderLottieTask(): LottieTask<LottieComposition>? {
-        try {
+        return try {
             val lottieFileZipStream =
                 ZipInputStream(requireContext().assets.open(LOADER_JSON_ZIP_FILE))
-            return LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
-        }catch (ignore:Exception){ }
-        return null
+            LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+        }catch (ignore:IllegalStateException){
+            null
+        }
     }
 
     private fun addLottieAnimationToView() {
