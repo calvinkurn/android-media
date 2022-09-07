@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.sellerhomecommon.common.DismissibleState
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 
 /**
@@ -29,7 +30,7 @@ data class AnnouncementWidgetUiModel(
     override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
     val isDismissible: Boolean = false,
-    val dismissibleState: String = String.EMPTY,
+    val dismissibleState: DismissibleState = DismissibleState.NONE,
     val dismissToken: String = String.EMPTY,
     var shouldShowDismissalTimer: Boolean = false
 ) : BaseWidgetUiModel<AnnouncementDataUiModel> {

@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.DismissibleState
 import com.tokopedia.sellerhomecommon.databinding.ShcAnnouncementWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.DismissalTimerView
@@ -91,7 +92,9 @@ class AnnouncementViewHolder(
     private fun showTimerState(element: AnnouncementWidgetUiModel) {
         with(binding) {
             shcAnnouncementContainer.gone()
+            shcAnnouncementSuccessState.gone()
             shcAnnouncementTimerView.visible()
+            shcAnnouncementTimerView.setBackgroundResource(R.drawable.shc_dashed_background)
 
             val title = root.context.getString(R.string.shc_info_deleted)
             shcAnnouncementTimerView.startTimer(title, object : DismissalTimerView.Listener {
@@ -111,21 +114,45 @@ class AnnouncementViewHolder(
 
     private fun setupDismissalView(element: AnnouncementWidgetUiModel) {
         binding.run {
-            if (element.isDismissible) {
-                viewShcAnnouncementDismissal.visible()
-                tvShcAnnouncementDismissYes.setOnClickListener {
-                    tvShcAnnouncementDismissYes.gone()
-                    tvShcAnnouncementDismissNo.gone()
-                    tvShcAnnouncementDismiss.text = root.context.getText(
-                        R.string.shc_thanks_for_your_insight
-                    )
-                    listener.setOnAnnouncementWidgetYesClicked(element)
+            when {
+                element.isDismissible && element.dismissibleState == DismissibleState.ALWAYS -> {
+                    showDismissibleView(element)
                 }
-                tvShcAnnouncementDismissNo.setOnClickListener {
-                    listener.setOnAnnouncementWidgetNoClicked(element)
+                element.isDismissible && element.dismissibleState == DismissibleState.TRIGGER -> {
+                    hideDismissibleView()
+                    cardShcAnnouncement.setOnLongClickListener {
+                        showDismissibleView(element)
+                        return@setOnLongClickListener true
+                    }
                 }
-            } else {
-                viewShcAnnouncementDismissal.gone()
+                else -> {
+                    hideDismissibleView()
+                }
+            }
+        }
+    }
+
+    private fun hideDismissibleView() {
+        with(binding) {
+            shcAnnouncementContainer.gone()
+            viewShcSpacer.gone()
+        }
+    }
+
+    private fun showDismissibleView(element: AnnouncementWidgetUiModel) {
+        binding.run {
+            shcAnnouncementContainer.visible()
+            viewShcSpacer.visible()
+            tvShcAnnouncementDismissYes.setOnClickListener {
+                tvShcAnnouncementDismissYes.gone()
+                tvShcAnnouncementDismissNo.gone()
+                tvShcAnnouncementDismiss.text = root.context.getText(
+                    R.string.shc_thanks_for_your_insight
+                )
+                listener.setOnAnnouncementWidgetYesClicked(element)
+            }
+            tvShcAnnouncementDismissNo.setOnClickListener {
+                listener.setOnAnnouncementWidgetNoClicked(element)
             }
         }
     }

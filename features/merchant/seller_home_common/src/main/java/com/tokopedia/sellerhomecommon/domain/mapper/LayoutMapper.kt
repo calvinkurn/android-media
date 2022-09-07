@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.common.DismissibleState
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
@@ -401,7 +402,11 @@ class LayoutMapper @Inject constructor(
             isFromCache = isFromCache,
             emptyState = widget.emptyStateModel.mapToUiModel(),
             isDismissible = widget.isDismissible,
-            dismissibleState = widget.dismissibleState
+            dismissibleState = when (widget.dismissibleState) {
+                DismissibleState.ALWAYS.value -> DismissibleState.ALWAYS
+                DismissibleState.TRIGGER.value -> DismissibleState.TRIGGER
+                else -> DismissibleState.NONE
+            }
         )
     }
 

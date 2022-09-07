@@ -786,7 +786,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun setOnAnnouncementWidgetCancelDismissal(element: AnnouncementWidgetUiModel) {
         val param = SubmitWidgetDismissUiModel(
             action = SubmitWidgetDismissUiModel.Action.CANCEL,
-            dismissKey = element.dismissToken
+            dismissToken = element.dismissToken,
+            shopId = userSession.shopId
         )
         sellerHomeViewModel.submitWidgetDismissal(param)
     }
