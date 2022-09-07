@@ -1656,9 +1656,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun onSuccessClickATCFromProductAttachment(element: AddToCartParam) {
         trackSuccessDoBuyAndAtc(
-            element, element.dataModel,
+            element,
+            element.dataModel,
             topchatViewState?.chatRoomViewModel?.shopName ?: "",
-            element.getAtcEventAction(), getUserSession().userId
+            element.getAtcEventAction(),
+            getUserSession().userId
         )
         val msg = element.dataModel?.message?.getOrNull(0) ?: ""
         rvContainer?.let { view ->
@@ -3255,9 +3257,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-
     override fun onClickProductBundlingImage(item: BundleItem, element: ProductBundlingUiModel) {
-
         if (element.isBroadcast()) {
             element.productBundling.bundleItem?.let {
                 if (element.getBundleTypeMapped().isNotEmpty()) {
@@ -3298,7 +3298,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             ""
         }
     }
-
 
     private fun isUsingMediaPicker(): Boolean {
         return abTestPlatform.getString(ROLLENCE_ENABLE_MEDIA_PICKER) == ROLLENCE_ENABLE_MEDIA_PICKER
