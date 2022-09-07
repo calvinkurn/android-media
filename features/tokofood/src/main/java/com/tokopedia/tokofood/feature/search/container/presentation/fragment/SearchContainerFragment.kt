@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
@@ -121,6 +122,10 @@ class SearchContainerFragment : BaseDaggerFragment(),
                 ft.commit()
             }
         }
+    }
+
+    override fun onResetKeyword() {
+        globalSearchBarWidget?.setKeywordSearchBar(String.EMPTY)
     }
 
     override fun onBackButtonSearchBarClicked(keyword: String) {

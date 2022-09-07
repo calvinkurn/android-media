@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.feature.home.presentation.adapter
+package com.tokopedia.tokofood.common.presentation.adapter
 
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryEmptyStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel

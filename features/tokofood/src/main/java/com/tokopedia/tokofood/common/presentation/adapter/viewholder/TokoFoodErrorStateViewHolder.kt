@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder
+package com.tokopedia.tokofood.common.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes

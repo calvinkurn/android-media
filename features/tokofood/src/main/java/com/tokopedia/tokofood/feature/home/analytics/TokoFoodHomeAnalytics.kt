@@ -37,13 +37,13 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.TRACKE
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.TRACKER_ID_35766
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.VIEW_ITEM
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.addGeneralTracker
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.getItemATC
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.getProductIds
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.getPromotionMerchant
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType
 import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
-import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.util.BaseTrackerConst
