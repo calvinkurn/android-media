@@ -1496,7 +1496,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleSwitchAccount(isRefreshAccount: Boolean = false) {
-        if (!isAllowChangeAccount) return
         val currentSelected = switchAccount(
             when {
                 isRefreshAccount -> _selectedAccount.value.type
