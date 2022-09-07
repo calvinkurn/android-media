@@ -6,6 +6,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object DeeplinkMapperDeals {
 
@@ -21,9 +22,9 @@ object DeeplinkMapperDeals {
             uri.pathSegments.size == 1 && uri.pathSegments[0] == "order"->
                 ""
             // tokopedia://deals/{id}
-            uri.pathSegments.size == 1->
+            uri.pathSegments.size == 1-> if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_DEALS_ENABLE_PDP))
                 "${ApplinkConstInternalDeals.DEALS_PRODUCT_DETAIL_PAGE}?${uri.lastPathSegment}"
-                        //UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.pathSegments[0])
+            else UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.pathSegments[0])
 
             //tokopedia://deals/brand/{slug}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "brand" ->
@@ -31,8 +32,9 @@ object DeeplinkMapperDeals {
 
             //tokopedia://deals/i/{slug}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "i" ->
+                if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_DEALS_ENABLE_PDP))
                 "${ApplinkConstInternalDeals.DEALS_PRODUCT_DETAIL_PAGE}?${uri.lastPathSegment}"
-                //UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.lastPathSegment)
+                else UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.lastPathSegment)
 
             //tokopedia://deals/allbrands/{isVoucher}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "allbrands"->
