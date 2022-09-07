@@ -36,7 +36,6 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
-
     val readyToDeliverOrderList: StateFlow<UiState<List<OrderModel>>> = readyToDeliverOrderUseCaseImpl().map {
         updateMenuCounter(it.size, TITLE_READY_TO_DELIVER)
         UiState.Success(data = it)
@@ -54,7 +53,7 @@ class SharedViewModel @Inject constructor(
         launchCatchError(block = {
             _action.value = UiState.Loading()
 
-            newOrderUseCaseImpl.sendRequest()
+            // call usecase method
 
             _action.value = UiState.Success()
         }, onError = { throwable ->

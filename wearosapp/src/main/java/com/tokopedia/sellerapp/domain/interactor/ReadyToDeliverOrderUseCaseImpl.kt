@@ -12,10 +12,6 @@ class ReadyToDeliverOrderUseCaseImpl @Inject constructor(
     private val orderRepository: OrderRepository
 ) : OrderUseCase {
 
-    override suspend fun sendRequest(){
-        orderRepository.sendMessagesToNodes(Action.GET_ORDER_LIST)
-    }
-
     override fun invoke(): Flow<List<OrderModel>> {
         return orderRepository.getCachedReadyToDeliverOrderList().map { it.mapToDomainModel() }
     }

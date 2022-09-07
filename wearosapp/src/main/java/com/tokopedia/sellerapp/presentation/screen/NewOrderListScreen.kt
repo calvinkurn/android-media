@@ -15,8 +15,6 @@ fun NewOrderListScreen(
 ) {
     val orderList by sharedViewModel.newOrderList.collectAsState()
 
-    sharedViewModel.sendRequest()
-
     LazyColumn {
         item {
             Button(onClick = { 

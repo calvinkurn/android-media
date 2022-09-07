@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface OrderUseCase {
     operator fun invoke() : Flow<List<OrderModel>>
-    suspend fun sendRequest()
+    suspend fun sendRequest() { }
 }
