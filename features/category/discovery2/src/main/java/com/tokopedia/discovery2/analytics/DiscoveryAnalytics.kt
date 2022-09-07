@@ -1198,9 +1198,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val componentName = banner.parentComponentName ?: EMPTY_STRING
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "$componentName - ${banner.name} - ${banner.imageClickUrl}")
         val list = ArrayList<Map<String, Any>>()
-        var keyName = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - $componentName"
-        if (componentType == SHOP_CARD) {
-            keyName = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - $componentType - - $SHOP_CARD_BANNER"
+        val keyName = if (componentType == SHOP_CARD) {
+            "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - $componentType - - $SHOP_CARD_BANNER"
+        } else{
+            "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - $componentName"
         }
         list.add(mapOf(
                 KEY_ID to if (banner.id == null) DEFAULT_ID else if (banner.id!!.isNotEmpty()) banner.id!! else DEFAULT_ID,
@@ -2011,9 +2012,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackShopCardImpression(componentsItems: ComponentsItem) {
         val list = ArrayList<Map<String, Any>>()
         val shopMap = HashMap<String, Any>()
-        var keyName = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - $SHOP_CARD_BANNER"
-        if (componentsItems.parentComponentName == ComponentsList.ShopCardInfinite.componentName) {
-            keyName = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - $RILISAN_SPESIAL - - $SHOP_CARD_INFINITE"
+        val keyName : String = if (componentsItems.parentComponentName == ComponentsList.ShopCardInfinite.componentName) {
+            "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - $RILISAN_SPESIAL - - $SHOP_CARD_INFINITE"
+        }else{
+            "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - $SHOP_CARD_BANNER"
         }
         componentsItems.data?.firstOrNull()?.let {
             shopMap[KEY_NAME] = keyName
@@ -2043,11 +2045,14 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventClickShopCard(componentsItems: ComponentsItem) {
         val list = ArrayList<Map<String, Any>>()
         val shopMap = HashMap<String, Any>()
-        var shopName : String = SHOP_CARD_BANNER
-        var keyName = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - $SHOP_CARD_BANNER"
+        val shopName : String
+        val keyName : String
         if(componentsItems.parentComponentName == ComponentsList.ShopCardInfinite.componentName){
             keyName = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - $RILISAN_SPESIAL - - $SHOP_CARD_INFINITE"
             shopName = SHOP_CARD_INFINITE
+        }else{
+            keyName = "/discovery/${removedDashPageIdentifier} - ${pageType} - ${getParentPosition(componentsItems) + 1} - ${componentsItems.properties?.shopInfo ?: ""} - - $SHOP_CARD_BANNER"
+            shopName= SHOP_CARD_BANNER
         }
         componentsItems.data?.firstOrNull().let {
             shopMap[KEY_NAME] = keyName
