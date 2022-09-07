@@ -439,6 +439,7 @@ public class ShipmentDataConverter {
         shipmentUpsellModel.setAppLink(upsellData.getAppLink());
         shipmentUpsellModel.setImage(upsellData.getImage());
         shipmentUpsellModel.setPrice(upsellData.getPrice());
+        shipmentUpsellModel.setPriceWording(upsellData.getPriceWording());
         shipmentUpsellModel.setDuration(upsellData.getDuration());
         shipmentUpsellModel.setSummaryInfo(upsellData.getSummaryInfo());
         shipmentUpsellModel.setButtonText(upsellData.getButtonText());

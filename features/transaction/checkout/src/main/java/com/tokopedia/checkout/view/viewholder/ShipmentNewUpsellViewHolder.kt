@@ -41,7 +41,7 @@ class ShipmentNewUpsellViewHolder(itemView: View, private val shipmentAdapterAct
             button.layoutParams.width = 82.toPx()
         } else {
             container.setContainerColor(ContainerUnify.GREY)
-            val spannedString = SpannableString("${CurrencyFormatUtil.convertPriceValueToIdrFormat(data.price, false).removeDecimalSuffix()}/${data.duration}")
+            val spannedString = SpannableString("${data.priceWording}/${data.duration}")
             spannedString.setSpan(RelativeSizeSpan(0.875f), spannedString.lastIndexOf("/") + 1, spannedString.length, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE)
             description.text = spannedString
             description.visible()

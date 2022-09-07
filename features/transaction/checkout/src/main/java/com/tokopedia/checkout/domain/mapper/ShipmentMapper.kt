@@ -6,6 +6,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.EthicalDrugResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
@@ -13,7 +14,6 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAd
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.EthicalDrugResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
@@ -1015,25 +1015,26 @@ class ShipmentMapper @Inject constructor() {
 
     private fun mapUpsell(upsell: Upsell): UpsellData {
         return UpsellData(
-                true,
-                "upsell.title",
-                "upsell.description",
-                "upsell.appLink",
-                "https://images.tokopedia.net/img/plus/logo/account/globalmenu/checkout/Logo%20Area%20Entrypoints@4x.png"
+                upsell.isShow,
+                upsell.title,
+                upsell.description,
+                upsell.appLink,
+                upsell.image
         )
     }
 
     private fun mapUpsell(upsell: NewUpsell): NewUpsellData {
         return NewUpsellData(
-                true,
-                true,
-                "Yay, <b>PLUS</b> ditambahkan ke keranjang! Nikmati keuntungannya di transaksi ini",
-                "https://staging.tokopedia.com/gotoplus?source=pg_checkout_v2",
-                "https://images.tokopedia.net/img/plus/logo/account/globalmenu/checkout/Logo%20Area%20Entrypoints@4x.png",
-                300000,
-                "6 bulan",
-                "Langganan 6 bulan",
-                "Cek PLUS",
+                upsell.isShow,
+                upsell.isSelected,
+                upsell.description,
+                upsell.appLink,
+                upsell.image,
+                upsell.price,
+                upsell.priceWording,
+                upsell.duration,
+                upsell.summaryInfo,
+                upsell.button.text,
                 upsell.id,
                 upsell.additionalVerticalId,
                 upsell.transactionType

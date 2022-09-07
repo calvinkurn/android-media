@@ -13,10 +13,10 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -944,6 +944,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 image = "image",
                 isSelected = true,
                 price = 100,
+                priceWording = "Rp100",
                 duration = "duration",
                 summaryInfo = "wording",
                 buttonText = "button"
@@ -965,6 +966,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 image = "image",
                 isSelected = true,
                 price = 100,
+                priceWording = "Rp100",
                 duration = "duration",
                 summaryInfo = "wording",
                 buttonText = "button"

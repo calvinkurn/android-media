@@ -20,6 +20,7 @@ data class NewUpsellData(
         val appLink: String = "",
         val image: String = "",
         val price: Long = 0,
+        val priceWording: String = "",
         val duration: String = "",
         val summaryInfo: String = "",
         val buttonText: String = "",

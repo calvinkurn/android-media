@@ -174,6 +174,7 @@ class ShipmentPresenterUpsellTest {
                 image = "image",
                 isSelected = true,
                 price = 100,
+                priceWording = "Rp100",
                 duration = "duration",
                 summaryInfo = "wording",
                 buttonText = "button"
@@ -227,6 +228,7 @@ class ShipmentPresenterUpsellTest {
                 image = "image",
                 isSelected = true,
                 price = 100,
+                priceWording = "Rp100",
                 duration = "duration",
                 summaryInfo = "wording",
                 buttonText = "button"
@@ -278,6 +280,7 @@ class ShipmentPresenterUpsellTest {
                 image = "image",
                 isSelected = true,
                 price = 100,
+                priceWording = "Rp100",
                 duration = "duration",
                 summaryInfo = "wording",
                 buttonText = "button"
@@ -330,6 +333,7 @@ class ShipmentPresenterUpsellTest {
                 image = "image",
                 isSelected = true,
                 price = 100,
+                priceWording = "Rp100",
                 duration = "duration",
                 summaryInfo = "wording",
                 buttonText = "button"
@@ -380,6 +384,7 @@ class ShipmentPresenterUpsellTest {
                 image = "image",
                 isSelected = false,
                 price = 100,
+                priceWording = "Rp100",
                 duration = "duration",
                 summaryInfo = "wording",
                 buttonText = "button"
@@ -432,6 +437,7 @@ class ShipmentPresenterUpsellTest {
                 image = "image",
                 isSelected = false,
                 price = 100,
+                priceWording = "Rp100",
                 duration = "duration",
                 summaryInfo = "wording",
                 buttonText = "button"

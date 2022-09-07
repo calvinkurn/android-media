@@ -7,6 +7,7 @@ data class ShipmentNewUpsellModel(
         var appLink: String = "",
         var image: String = "",
         var price: Long = 0,
+        var priceWording: String = "",
         var duration: String = "",
         var summaryInfo: String = "",
         var buttonText: String = "",

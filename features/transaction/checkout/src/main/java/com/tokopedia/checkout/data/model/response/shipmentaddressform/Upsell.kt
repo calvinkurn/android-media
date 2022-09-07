@@ -30,6 +30,8 @@ class NewUpsell(
         @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Long = 0,
+        @SerializedName("price_fmt")
+        val priceWording: String = "",
         @SerializedName("duration")
         val duration: String = "",
         @SerializedName("summary_info")
