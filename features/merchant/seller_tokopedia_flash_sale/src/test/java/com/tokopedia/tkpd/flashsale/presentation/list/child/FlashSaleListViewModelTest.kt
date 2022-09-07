@@ -138,6 +138,44 @@ class FlashSaleListViewModelTest {
     }
 
     @Test
+    fun `When fetch flash sale from remote error, should update loading state to false`() = runBlockingTest {
+        //Given
+        val tabId = TabConstant.TAB_ID_UPCOMING
+        val tabName = "upcoming"
+        val offset = 0
+        val error = MessageErrorException("Server Error")
+        val currentDate = Date()
+
+        val params = GetFlashSaleListForSellerUseCase.Param(
+            tabName,
+            offset,
+            categoryIds = listOf(),
+            statusIds = listOf(),
+            sortOrderBy = "DEFAULT_VALUE_PLACEHOLDER",
+            sortOrderRule = "ASC",
+            requestProductMetaData = false
+        )
+
+        coEvery { getFlashSaleListForSellerUseCase.execute(params) }  throws error
+
+        val emittedValues = arrayListOf<FlashSaleListUiState>()
+
+        val job = launch {
+            viewModel.uiState.toList(emittedValues)
+        }
+
+        //When
+        viewModel.processEvent(FlashSaleListUiEvent.LoadPage(tabId, tabName, offset, currentDate))
+
+        //Then
+        val actualValues = emittedValues.last()
+
+        assertEquals(false, actualValues.isLoading)
+
+        job.cancel()
+    }
+
+    @Test
     fun `When fetch upcoming flash sale from remote success, should successfully receive the data`() = runBlockingTest {
         //Given
         val tabId = TabConstant.TAB_ID_UPCOMING
