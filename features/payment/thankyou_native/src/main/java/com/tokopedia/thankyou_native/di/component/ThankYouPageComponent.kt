@@ -8,7 +8,10 @@ import com.tokopedia.thankyou_native.di.module.ThankYouPageModule
 import com.tokopedia.thankyou_native.di.module.ViewModelModule
 import com.tokopedia.thankyou_native.di.scope.ThankYouPageScope
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
-import com.tokopedia.thankyou_native.presentation.fragment.*
+import com.tokopedia.thankyou_native.presentation.fragment.InvoiceFragment
+import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
+import com.tokopedia.thankyou_native.presentation.fragment.ThankYouBaseFragment
+import com.tokopedia.thankyou_native.presentation.fragment.ToolTipInfoBottomSheet
 import dagger.Component
 
 @ThankYouPageScope
