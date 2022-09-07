@@ -1,7 +1,10 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,12 +57,18 @@ class EngagementCarouselViewComponent(
     private val linearLayoutManager =
         LinearLayoutManager(rootView.context, LinearLayoutManager.VERTICAL, false)
 
+    private val touchListener = View.OnTouchListener { v, event ->
+        if (event?.action == MotionEvent.ACTION_UP || event?.action == MotionEvent.ACTION_UP)
+            listener.onWidgetSwipe(this@EngagementCarouselViewComponent, v?.findViewById<ConstraintLayout>(R.id.cl_vh_engagement)?.tag.toString())
+        false
+    }
+
     init {
         carousel.apply {
             adapter = carouselAdapter
             layoutManager = linearLayoutManager
+            setOnTouchListener(touchListener)
         }
-
         snapHelper.attachToRecyclerView(carousel)
     }
 
@@ -86,14 +95,14 @@ class EngagementCarouselViewComponent(
         }
     }
 
-    private fun stopAutoScroll(){
-        if(job?.isActive == true){
+    private fun stopAutoScroll() {
+        if (job?.isActive == true) {
             job?.cancel()
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy(){
+    fun onDestroy() {
         stopAutoScroll()
     }
 
@@ -104,6 +113,7 @@ class EngagementCarouselViewComponent(
         )
 
         fun onWidgetClicked(view: EngagementCarouselViewComponent, engagement: EngagementUiModel)
+        fun onWidgetSwipe(view: EngagementCarouselViewComponent, id: String)
     }
 
     companion object {

@@ -16,7 +16,7 @@ class EngagementWidgetViewHolder(
     BaseViewHolder(binding) {
 
     fun bindPromo(item: EngagementUiModel.Promo){
-        binding.setupPromo(title = item.info.title, description = getPromoDescription(item))
+        binding.setupPromo(title = item.info.title, description = getPromoDescription(item), id = item.info.id)
         binding.setOnClickListener {
             listener.onWidgetClicked(engagement = item)
         }
@@ -56,7 +56,8 @@ class EngagementWidgetViewHolder(
                 },
                 onTick = {
                     listener.onWidgetTimerTick(item,it)
-                }
+                },
+                id = item.interactive.id,
             )
             is InteractiveUiModel.Giveaway.Status.Ongoing -> binding.setupOngoingGiveaway(
                 title = giveaway.title,
@@ -66,7 +67,8 @@ class EngagementWidgetViewHolder(
                 },
                 onTick = {
                     listener.onWidgetTimerTick(item,it)
-                }
+                },
+                id = item.interactive.id,
             )
         }
     }
@@ -81,7 +83,8 @@ class EngagementWidgetViewHolder(
                 },
                 onTick = {
                     listener.onWidgetTimerTick(item,it)
-                }
+                },
+                id = item.interactive.id,
             )
         }
     }

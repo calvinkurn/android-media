@@ -40,6 +40,12 @@ class GameSmallWidgetView : FrameLayout {
             binding.tvEngagementDesc.text = value
         }
 
+    var id: String = ""
+        set(value) {
+            field = value
+            binding.clVhEngagement.tag = value
+        }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         binding.timerEngagementTools.pause()

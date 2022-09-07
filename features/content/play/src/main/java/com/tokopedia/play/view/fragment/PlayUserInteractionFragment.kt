@@ -1835,6 +1835,9 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
+    override fun onWidgetSwipe(view: EngagementCarouselViewComponent, id: String) {
+    }
+
     companion object {
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
 
