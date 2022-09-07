@@ -628,6 +628,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 is_selected
                 price
                 price_fmt
+                duration
                 description
                 summary_info
                 image
