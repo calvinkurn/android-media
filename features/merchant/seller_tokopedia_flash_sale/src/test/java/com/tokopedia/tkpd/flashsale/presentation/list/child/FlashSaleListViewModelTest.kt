@@ -21,6 +21,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
@@ -30,6 +31,7 @@ import org.junit.Test
 import java.util.Date
 import java.util.GregorianCalendar
 
+@ExperimentalCoroutinesApi
 class FlashSaleListViewModelTest {
 
     @RelaxedMockK
