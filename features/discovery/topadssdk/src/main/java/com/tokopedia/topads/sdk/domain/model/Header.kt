@@ -1,99 +1,63 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+private const val KEY_META_DATA = "meta"
+private const val KEY_TOTAL_DATA = "total_data"
+private const val KEY_PROCESS_TIME = "process_time"
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-/**
- * Created by errysuprayogi on 3/27/17.
- */
-public class Header implements Parcelable {
+data class Header(
     @SerializedName(KEY_TOTAL_DATA)
     @Expose
-    private int totalData;
+    var totalData: Int = 0,
 
     @SerializedName(KEY_PROCESS_TIME)
     @Expose
-    private double processTime;
+    var processTime: Double = 0.0,
 
     @SerializedName(KEY_META_DATA)
     @Expose
-    private MetaData metaData = new MetaData();
+    var metaData: MetaData = MetaData()
+) : Parcelable {
 
-    private static final String KEY_META_DATA = "meta";
-    private static final String KEY_TOTAL_DATA = "total_data";
-    private static final String KEY_PROCESS_TIME = "process_time";
 
-    public Header() {
-    }
-
-    public Header(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_META_DATA)) {
-            setMetaData(new MetaData(object.getJSONObject(KEY_META_DATA)));
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull(KEY_META_DATA)) {
+            metaData = MetaData(jSONObject.getJSONObject(KEY_META_DATA))
         }
-        if(!object.isNull(KEY_PROCESS_TIME)) {
-            setProcessTime(object.getDouble(KEY_PROCESS_TIME));
+        if (!jSONObject.isNull(KEY_PROCESS_TIME)) {
+            processTime = jSONObject.getDouble(KEY_PROCESS_TIME)
         }
-        if(!object.isNull(KEY_TOTAL_DATA)) {
-            setTotalData(object.getInt(KEY_TOTAL_DATA));
+        if (!jSONObject.isNull(KEY_TOTAL_DATA)) {
+            totalData = jSONObject.getInt(KEY_TOTAL_DATA)
         }
     }
 
-    protected Header(Parcel in) {
-        totalData = in.readInt();
-        processTime = in.readDouble();
+    constructor(parcel: Parcel) : this() {
+        totalData = parcel.readInt()
+        processTime = parcel.readDouble()
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(totalData);
-        dest.writeDouble(processTime);
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeInt(totalData)
+        dest.writeDouble(processTime)
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public static final Creator<Header> CREATOR = new Creator<Header>() {
-        @Override
-        public Header createFromParcel(Parcel in) {
-            return new Header(in);
+    companion object CREATOR : Parcelable.Creator<Header> {
+        override fun createFromParcel(parcel: Parcel): Header {
+            return Header(parcel)
         }
 
-        @Override
-        public Header[] newArray(int size) {
-            return new Header[size];
+        override fun newArray(size: Int): Array<Header?> {
+            return arrayOfNulls(size)
         }
-    };
-
-    public int getTotalData() {
-        return totalData;
     }
-
-    public void setTotalData(int totalData) {
-        this.totalData = totalData;
-    }
-
-    public double getProcessTime() {
-        return processTime;
-    }
-
-    public void setProcessTime(double processTime) {
-        this.processTime = processTime;
-    }
-
-    public MetaData getMetaData() {
-        return metaData;
-    }
-
-    public void setMetaData(MetaData metaData) {
-        this.metaData = metaData;
-    }
-
 }

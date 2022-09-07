@@ -2,7 +2,6 @@ package com.tokopedia.topads.sdk.base;
 
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.view.DisplayMode;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -24,7 +23,6 @@ public class Config {
     private boolean withPreferedCategory;
     private boolean withMerlinCategory;
     private TopAdsParams topAdsParams;
-    private DisplayMode displayMode;
 
     public Config(Builder builder) {
         this.baseUrl = builder.baseUrl;
@@ -36,7 +34,6 @@ public class Config {
         this.withMerlinCategory = builder.withMerlinCategory;
         this.endpoint = builder.endpoint;
         this.topAdsParams = builder.topAdsParams;
-        this.displayMode = builder.displayMode;
     }
 
     public void setWithPreferedCategory(boolean withPreferedCategory) {
@@ -103,14 +100,6 @@ public class Config {
         this.topAdsParams = topAdsParams;
     }
 
-    public DisplayMode getDisplayMode() {
-        return displayMode;
-    }
-
-    public void setDisplayMode(DisplayMode displayMode) {
-        this.displayMode = displayMode;
-    }
-
     public TopAdsParams getTopAdsParams() {
         return topAdsParams;
     }
@@ -125,7 +114,6 @@ public class Config {
         private Endpoint endpoint;
         private boolean withPreferedCategory;
         private boolean withMerlinCategory;
-        private DisplayMode displayMode;
         private TopAdsParams topAdsParams;
 
         public Builder() {
@@ -157,11 +145,6 @@ public class Config {
 
         public Builder withMerlinCategory() {
             this.withMerlinCategory = true;
-            return this;
-        }
-
-        public Builder displayMode(DisplayMode displayMode) {
-            this.displayMode = displayMode;
             return this;
         }
 

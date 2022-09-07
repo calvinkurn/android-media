@@ -97,11 +97,6 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
         itemClickListener.onAddFavorite(position, dataShop);
     }
 
-    @Override
-    public void onAddWishLish(int position, Data data) {
-
-    }
-
     public void setImpressionListener(DynamicFeedShopAdapter.TopAdsShopImpressionListener impressionListener) {
         adapter.setItemImpressionListener(impressionListener);
     }

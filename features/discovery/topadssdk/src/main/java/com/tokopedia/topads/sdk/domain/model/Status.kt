@@ -1,87 +1,55 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+private const val KEY_ERROR_CODE = "error_code"
+private const val KEY_MESSAGE = "message"
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-/**
- * Created by errysuprayogi on 3/27/17.
- */
-public class Status implements Parcelable {
-
+data class Status(
     @SerializedName(KEY_ERROR_CODE)
     @Expose
-    private int errorCode;
+    var errorCode: Int = 0,
 
     @SerializedName(KEY_MESSAGE)
-    private String message = "";
+    var message: String? = ""
+) : Parcelable {
 
-    private static final String KEY_ERROR_CODE = "error_code";
-    private static final String KEY_MESSAGE = "message";
-
-    public Status() {
-    }
-
-    public Status(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_ERROR_CODE)) {
-            setErrorCode(object.getInt(KEY_ERROR_CODE));
+    constructor(jsonObject: JSONObject) : this() {
+        if (!jsonObject.isNull(KEY_ERROR_CODE)) {
+            errorCode = jsonObject.getInt(KEY_ERROR_CODE)
         }
-        if(!object.isNull(KEY_MESSAGE)) {
-            setMessage(object.getString(KEY_MESSAGE));
+        if (!jsonObject.isNull(KEY_MESSAGE)) {
+            message = jsonObject.getString(KEY_MESSAGE)
         }
     }
 
-    public Status(int errorCode, String message) {
-        this.errorCode = errorCode;
-        this.message = message;
+    constructor(parcel: Parcel) : this() {
+        errorCode = parcel.readInt()
+        message = parcel.readString()
     }
 
-    protected Status(Parcel in) {
-        errorCode = in.readInt();
-        message = in.readString();
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(errorCode)
+        parcel.writeString(message)
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(errorCode);
-        dest.writeString(message);
+    override fun describeContents(): Int {
+        return 0
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    public static final Creator<Status> CREATOR = new Creator<Status>() {
-        @Override
-        public Status createFromParcel(Parcel in) {
-            return new Status(in);
+    companion object CREATOR : Parcelable.Creator<Status> {
+        override fun createFromParcel(parcel: Parcel): Status {
+            return Status(parcel)
         }
 
-        @Override
-        public Status[] newArray(int size) {
-            return new Status[size];
+        override fun newArray(size: Int): Array<Status?> {
+            return arrayOfNulls(size)
         }
-    };
-
-    public int getErrorCode() {
-        return errorCode;
     }
 
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

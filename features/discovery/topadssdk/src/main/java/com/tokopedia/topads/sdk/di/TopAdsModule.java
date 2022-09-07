@@ -4,9 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase;
-import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
 import com.tokopedia.topads.sdk.repository.TopAdsRepository;
 import com.tokopedia.topads.sdk.utils.CacheHandler;
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession;
@@ -24,18 +22,6 @@ public class TopAdsModule {
     @Provides
     UserSessionInterface provideUserSession(@ApplicationContext Context context){
         return new UserSession(context);
-    }
-
-    @TopAdsScope
-    @Provides
-    public TopAdsGqlUseCase provideTopAdsGqlUseCase(@ApplicationContext Context context){
-        return new TopAdsGqlUseCase(context);
-    }
-
-    @TopAdsScope
-    @Provides
-    BannerAdsPresenter provideBannerAdsPresenter(@ApplicationContext Context context){
-        return new BannerAdsPresenter(context);
     }
 
     @TopAdsScope

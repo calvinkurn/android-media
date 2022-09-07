@@ -1,120 +1,74 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
+import java.util.*
 
-import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+private const val KEY_HEADER = "header"
+private const val KEY_STATUS = "status"
+private const val KEY_DATA = "data"
+private const val KEY_ERROR = "errors"
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by errysuprayogi on 12/28/17.
- */
-
-public class CpmModel implements Parcelable {
-
-    private static final String KEY_HEADER = "header";
-    private static final String KEY_STATUS = "status";
-    private static final String KEY_DATA = "data";
-    private static final String KEY_ERROR = "errors";
-
+data class CpmModel(
     @SerializedName(KEY_ERROR)
-    private Error error = new Error();
+    var error: Error? = Error(),
+
     @SerializedName(KEY_STATUS)
-    private Status status = new Status();
+    var status: Status? = Status(),
+
     @SerializedName(KEY_HEADER)
-    private Header header = new Header();
+    var header: Header? = Header(),
+
     @SerializedName(KEY_DATA)
-    private List<CpmData> data = new ArrayList<>();
+    var data: MutableList<CpmData>? = ArrayList()
+) : Parcelable {
 
-    public CpmModel() {
-    }
-
-    public CpmModel(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_ERROR)){
-            JSONObject error = object.getJSONArray(KEY_ERROR).getJSONObject(0);
-            setError(new Error(error));
+    constructor(jsonObject: JSONObject) : this() {
+        if (!jsonObject.isNull(KEY_ERROR)) {
+            error = Error(jsonObject.getJSONArray(KEY_ERROR).getJSONObject(0))
         }
-        if(!object.isNull(KEY_HEADER)) {
-            setHeader(new Header(object.getJSONObject(KEY_HEADER)));
+        if (!jsonObject.isNull(KEY_HEADER)) {
+            header = Header(jsonObject.getJSONObject(KEY_HEADER))
         }
-        if(!object.isNull(KEY_STATUS)) {
-            setStatus(new Status(object.getJSONObject(KEY_STATUS)));
+        if (!jsonObject.isNull(KEY_STATUS)) {
+            status = Status(jsonObject.getJSONObject(KEY_STATUS))
         }
-        if(!object.isNull(KEY_DATA)) {
-            JSONArray dataArray = object.getJSONArray(KEY_DATA);
-            for (int i = 0; i < dataArray.length(); i++) {
-                data.add(new CpmData(dataArray.getJSONObject(i)));
+        if (!jsonObject.isNull(KEY_DATA)) {
+            val dataArray = jsonObject.getJSONArray(KEY_DATA)
+            for (i in 0 until dataArray.length()) {
+                data?.add(CpmData(dataArray.getJSONObject(i)))
             }
         }
     }
 
-    protected CpmModel(Parcel in) {
-        error = in.readParcelable(Error.class.getClassLoader());
-        status = in.readParcelable(Status.class.getClassLoader());
-        header = in.readParcelable(Header.class.getClassLoader());
-        data = in.createTypedArrayList(CpmData.CREATOR);
+    constructor(parcel: Parcel) : this(
+        parcel.readParcelable(Error::class.java.classLoader),
+        parcel.readParcelable(Status::class.java.classLoader),
+        parcel.readParcelable(Header::class.java.classLoader),
+        parcel.createTypedArrayList(CpmData.CREATOR)
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeParcelable(error, flags)
+        parcel.writeParcelable(status, flags)
+        parcel.writeParcelable(header, flags)
+        parcel.writeTypedList(data)
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(error, flags);
-        dest.writeParcelable(status, flags);
-        dest.writeParcelable(header, flags);
-        dest.writeTypedList(data);
+    override fun describeContents(): Int {
+        return 0
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<CpmModel> CREATOR = new Creator<CpmModel>() {
-        @Override
-        public CpmModel createFromParcel(Parcel in) {
-            return new CpmModel(in);
+    companion object CREATOR : Parcelable.Creator<CpmModel> {
+        override fun createFromParcel(parcel: Parcel): CpmModel {
+            return CpmModel(parcel)
         }
 
-        @Override
-        public CpmModel[] newArray(int size) {
-            return new CpmModel[size];
+        override fun newArray(size: Int): Array<CpmModel?> {
+            return arrayOfNulls(size)
         }
-    };
-
-    public List<CpmData> getData() {
-        return data;
-    }
-
-    public void setData(List<CpmData> data) {
-        this.data = data;
-    }
-
-    public Error getError() {
-        return error;
-    }
-
-    public void setError(Error error) {
-        this.error = error;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Header getHeader() {
-        return header;
-    }
-
-    public void setHeader(Header header) {
-        this.header = header;
     }
 }

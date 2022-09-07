@@ -15,7 +15,4 @@ public abstract class TopAdsItemImpressionListener {
     public void onImpressionHeadlineAdsItem(int position, CpmData data){
     }
 
-    public void onAddWishlist(boolean isWishlist){
-    }
-
 }

@@ -1,161 +1,98 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
-import android.os.Parcel;
-import android.os.Parcelable;
+private const val KEY_HEADER = "header"
+private const val KEY_STATUS = "status"
+private const val KEY_DATA = "data"
+private const val KEY_TEMPLATE = "template"
+private const val KEY_ERROR = "errors"
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by errysuprayogi on 3/27/17.
- */
-
-public class TopAdsModel implements Parcelable {
-
-    private static final String KEY_HEADER = "header";
-    private static final String KEY_STATUS = "status";
-    private static final String KEY_DATA = "data";
-    private static final String KEY_TEMPLATE = "template";
-    private static final String KEY_ERROR = "errors";
-
+data class TopAdsModel(
     @SerializedName(KEY_ERROR)
     @Expose
-    private Error error = new Error();
+    var error: Error? = Error(),
 
     @SerializedName(KEY_STATUS)
     @Expose
-    private Status status = new Status();
+    var status: Status? = Status(),
 
     @SerializedName(KEY_HEADER)
     @Expose
-    private Header header = new Header();
+    var header: Header? = Header(),
 
     @SerializedName(KEY_DATA)
     @Expose
-    private List<Data> data = new ArrayList<>();
+    var data: MutableList<Data>? = ArrayList(),
+
     @SerializedName(KEY_TEMPLATE)
-    private List<Template> templates = new ArrayList<>();
+    var templates: MutableList<Template>? = ArrayList(),
+
     @Expose(deserialize = false, serialize = false)
-    private int adsPosition = 0;
+    var adsPosition: Int = 0
+) : Parcelable {
 
-    public TopAdsModel() {
-    }
-
-    public TopAdsModel(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_ERROR)){
-            JSONObject error = object.getJSONArray(KEY_ERROR).getJSONObject(0);
-            setError(new Error(error));
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull(KEY_ERROR)) {
+            error = Error(jSONObject.getJSONArray(KEY_ERROR).getJSONObject(0))
         }
-        if(!object.isNull(KEY_HEADER)) {
-            setHeader(new Header(object.getJSONObject(KEY_HEADER)));
+        if (!jSONObject.isNull(KEY_HEADER)) {
+            header = Header(jSONObject.getJSONObject(KEY_HEADER))
         }
-        if(!object.isNull(KEY_STATUS)) {
-            setStatus(new Status(object.getJSONObject(KEY_STATUS)));
+        if (!jSONObject.isNull(KEY_STATUS)) {
+            status = Status(jSONObject.getJSONObject(KEY_STATUS))
         }
-        if(!object.isNull(KEY_DATA)) {
-            JSONArray dataArray = object.getJSONArray(KEY_DATA);
-            for (int i = 0; i < dataArray.length(); i++) {
-                data.add(new Data(dataArray.getJSONObject(i)));
+        if (!jSONObject.isNull(KEY_DATA)) {
+            val dataArray = jSONObject.getJSONArray(KEY_DATA)
+            for (i in 0 until dataArray.length()) {
+                data?.add(Data(dataArray.getJSONObject(i)))
             }
         }
-        if(!object.isNull(KEY_TEMPLATE)) {
-            JSONArray dataArray = object.getJSONArray(KEY_TEMPLATE);
-            for (int i = 0; i < dataArray.length(); i++) {
-                templates.add(new Template(dataArray.getJSONObject(i)));
+        if (!jSONObject.isNull(KEY_TEMPLATE)) {
+            val dataArray = jSONObject.getJSONArray(KEY_TEMPLATE)
+            for (i in 0 until dataArray.length()) {
+                templates?.add(Template(dataArray.getJSONObject(i)))
             }
         }
     }
 
-
-    protected TopAdsModel(Parcel in) {
-        error = in.readParcelable(Error.class.getClassLoader());
-        status = in.readParcelable(Status.class.getClassLoader());
-        header = in.readParcelable(Header.class.getClassLoader());
-        data = in.createTypedArrayList(Data.CREATOR);
-        templates = in.createTypedArrayList(Template.CREATOR);
-        adsPosition = in.readInt();
+    constructor(parcel: Parcel) : this() {
+        error = parcel.readParcelable(Error::class.java.classLoader)
+        status = parcel.readParcelable(Status::class.java.classLoader)
+        header = parcel.readParcelable(Header::class.java.classLoader)
+        data = parcel.createTypedArrayList(Data.CREATOR)
+        templates = parcel.createTypedArrayList(Template.CREATOR)
+        adsPosition = parcel.readInt()
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(error, flags);
-        dest.writeParcelable(status, flags);
-        dest.writeParcelable(header, flags);
-        dest.writeTypedList(data);
-        dest.writeTypedList(templates);
-        dest.writeInt(adsPosition);
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeParcelable(error, flags)
+        dest.writeParcelable(status, flags)
+        dest.writeParcelable(header, flags)
+        dest.writeTypedList(data)
+        dest.writeTypedList(templates)
+        dest.writeInt(adsPosition)
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public static final Creator<TopAdsModel> CREATOR = new Creator<TopAdsModel>() {
-        @Override
-        public TopAdsModel createFromParcel(Parcel in) {
-            return new TopAdsModel(in);
+    companion object {
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<TopAdsModel> = object : Parcelable.Creator<TopAdsModel> {
+            override fun createFromParcel(parcel: Parcel): TopAdsModel {
+                return TopAdsModel(parcel)
+            }
+
+            override fun newArray(size: Int): Array<TopAdsModel?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public TopAdsModel[] newArray(int size) {
-            return new TopAdsModel[size];
-        }
-    };
-
-    public Error getError() {
-        return error;
-    }
-
-    public void setError(Error error) {
-        this.error = error;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Header getHeader() {
-        return header;
-    }
-
-    public void setHeader(Header header) {
-        this.header = header;
-    }
-
-    public List<Data> getData() {
-        return data;
-    }
-
-    public void setData(List<Data> data) {
-        this.data = data;
-    }
-
-    public int getAdsPosition() {
-        return adsPosition;
-    }
-
-    public void setAdsPosition(int adsPosition) {
-        this.adsPosition = adsPosition;
-    }
-
-    public List<Template> getTemplates() {
-        return templates;
-    }
-
-    public void setTemplates(List<Template> templates) {
-        this.templates = templates;
     }
 }

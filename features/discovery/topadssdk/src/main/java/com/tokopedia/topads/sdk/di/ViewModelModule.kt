@@ -20,6 +20,6 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(TopAdsImageViewViewModel::class)
-    internal abstract fun provideDailyBudgetViewModel(viewModel: TopAdsImageViewViewModel): ViewModel
+    internal abstract fun provideTopAdsImageViewViewModel(viewModel: TopAdsImageViewViewModel): ViewModel
 
 }

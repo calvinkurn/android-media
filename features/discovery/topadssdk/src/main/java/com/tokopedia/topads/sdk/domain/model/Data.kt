@@ -1,273 +1,162 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
-/**
- * Created by errysuprayogi on 3/27/17.
- */
-public class Data implements Parcelable {
+private const val KEY_ID = "id"
+private const val KEY_AD_REF = "ad_ref_key"
+private const val KEY_REDIRECT = "redirect"
+private const val KEY_STICKER_ID = "sticker_id"
+private const val KEY_STICKER_IMAGE = "sticker_image"
+private const val KEY_PRODUCT_CLICK_URL = "product_click_url"
+private const val KEY_PRODUCT_WISHLIST_URL = "product_wishlist_url"
+private const val KEY_SHOP_CLICK_URL = "shop_click_url"
+private const val KEY_SHOP = "shop"
+private const val KEY_PRODUCT = "product"
+private const val KEY_APPLINKS = "applinks"
+private const val KEY_TAG = "tag"
 
-    private static final String KEY_ID = "id";
-    private static final String KEY_AD_REF = "ad_ref_key";
-    private static final String KEY_REDIRECT = "redirect";
-    private static final String KEY_STICKER_ID = "sticker_id";
-    private static final String KEY_STICKER_IMAGE = "sticker_image";
-    private static final String KEY_PRODUCT_CLICK_URL = "product_click_url";
-    private static final String KEY_PRODUCT_WISHLIST_URL = "product_wishlist_url";
-    private static final String KEY_SHOP_CLICK_URL = "shop_click_url";
-    private static final String KEY_SHOP = "shop";
-    private static final String KEY_PRODUCT = "product";
-    private static final String KEY_APPLINKS = "applinks";
-    private static final String KEY_TAG = "tag";
-
+data class Data(
     @SerializedName(KEY_ID)
     @Expose
-    private String id = "";
+    var id: String? = "",
 
     @SerializedName(KEY_AD_REF)
     @Expose
-    private String adRefKey = "";
+    var adRefKey: String? = "",
 
     @SerializedName(KEY_REDIRECT)
     @Expose
-    private String redirect = "";
+    var redirect: String? = "",
 
     @SerializedName(KEY_STICKER_ID)
     @Expose
-    private String stickerId = "";
+    var stickerId: String? = "",
 
     @SerializedName(KEY_STICKER_IMAGE)
     @Expose
-    private String stickerImage = "";
+    var stickerImage: String? = "",
 
     @SerializedName(KEY_PRODUCT_CLICK_URL)
     @Expose
-    private String productClickUrl = "";
+    var productClickUrl: String? = "",
 
     @SerializedName(KEY_PRODUCT_WISHLIST_URL)
     @Expose
-    private String productWishlistUrl = "";
+    var productWishlistUrl: String? = "",
 
     @SerializedName(KEY_SHOP_CLICK_URL)
     @Expose
-    private String shopClickUrl = "";
+    var shopClickUrl: String? = "",
 
     @SerializedName(KEY_TAG)
     @Expose
-    private int tag = 0;
+    var tag: Int = 0,
 
     @SerializedName(KEY_SHOP)
     @Expose
-    private Shop shop = new Shop();
+    var shop: Shop? = Shop(),
 
     @SerializedName(KEY_PRODUCT)
     @Expose
-    private Product product = new Product();
+    var product: Product? = Product(),
 
     @SerializedName(KEY_APPLINKS)
     @Expose
-    private String applinks = "";
+    var applinks: String? = "",
+    var isFavorit: Boolean = false
+) : Parcelable {
 
-    private boolean favorit = false;
 
-    public Data() {
-    }
-
-    public Data(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_ID)) {
-            setId(object.getString(KEY_ID));
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull(KEY_ID)) {
+            id = jSONObject.getString(KEY_ID)
         }
-        if(!object.isNull(KEY_AD_REF)) {
-            setAdRefKey(object.getString(KEY_AD_REF));
+        if (!jSONObject.isNull(KEY_AD_REF)) {
+            adRefKey = jSONObject.getString(KEY_AD_REF)
         }
-        if(!object.isNull(KEY_REDIRECT)) {
-            setRedirect(object.getString(KEY_REDIRECT));
+        if (!jSONObject.isNull(KEY_REDIRECT)) {
+            redirect = jSONObject.getString(KEY_REDIRECT)
         }
-        if(!object.isNull(KEY_STICKER_ID)) {
-            setStickerId(object.getString(KEY_STICKER_ID));
+        if (!jSONObject.isNull(KEY_STICKER_ID)) {
+            stickerId = jSONObject.getString(KEY_STICKER_ID)
         }
-        if(!object.isNull(KEY_STICKER_IMAGE)) {
-            setStickerImage(object.getString(KEY_STICKER_IMAGE));
+        if (!jSONObject.isNull(KEY_STICKER_IMAGE)) {
+            stickerImage = jSONObject.getString(KEY_STICKER_IMAGE)
         }
-        if(!object.isNull(KEY_PRODUCT_CLICK_URL)) {
-            setProductClickUrl(object.getString(KEY_PRODUCT_CLICK_URL));
+        if (!jSONObject.isNull(KEY_PRODUCT_CLICK_URL)) {
+            productClickUrl = jSONObject.getString(KEY_PRODUCT_CLICK_URL)
         }
-        if(!object.isNull(KEY_PRODUCT_WISHLIST_URL)) {
-            setProductWishlistUrl(object.getString(KEY_PRODUCT_WISHLIST_URL));
+        if (!jSONObject.isNull(KEY_PRODUCT_WISHLIST_URL)) {
+            productWishlistUrl = jSONObject.getString(KEY_PRODUCT_WISHLIST_URL)
         }
-        if(!object.isNull(KEY_SHOP_CLICK_URL)) {
-            setShopClickUrl(object.getString(KEY_SHOP_CLICK_URL));
+        if (!jSONObject.isNull(KEY_SHOP_CLICK_URL)) {
+            shopClickUrl = jSONObject.getString(KEY_SHOP_CLICK_URL)
         }
-        if(!object.isNull(KEY_TAG)){
-            setTag(object.getInt(KEY_TAG));
+        if (!jSONObject.isNull(KEY_TAG)) {
+            tag = jSONObject.getInt(KEY_TAG)
         }
-        if(!object.isNull(KEY_PRODUCT)) {
-            setProduct(new Product(object.getJSONObject(KEY_PRODUCT)));
+        if (!jSONObject.isNull(KEY_PRODUCT)) {
+            product = Product(jSONObject.getJSONObject(KEY_PRODUCT))
         }
-        if(!object.isNull(KEY_SHOP)) {
-            setShop(new Shop(object.getJSONObject(KEY_SHOP)));
+        if (!jSONObject.isNull(KEY_SHOP)) {
+            shop = Shop(jSONObject.getJSONObject(KEY_SHOP))
         }
-        if(!object.isNull(KEY_APPLINKS)){
-            setApplinks(object.getString(KEY_APPLINKS));
+        if (!jSONObject.isNull(KEY_APPLINKS)) {
+            applinks = jSONObject.getString(KEY_APPLINKS)
         }
     }
 
-    protected Data(Parcel in) {
-        id = in.readString();
-        adRefKey = in.readString();
-        redirect = in.readString();
-        stickerId = in.readString();
-        stickerImage = in.readString();
-        productClickUrl = in.readString();
-        productWishlistUrl = in.readString();
-        shopClickUrl = in.readString();
-        tag = in.readInt();
-        shop = in.readParcelable(Shop.class.getClassLoader());
-        product = in.readParcelable(Product.class.getClassLoader());
-        favorit = in.readByte() != 0;
-        applinks = in.readString();
+    constructor(parcel: Parcel) : this() {
+        id = parcel.readString()
+        adRefKey = parcel.readString()
+        redirect = parcel.readString()
+        stickerId = parcel.readString()
+        stickerImage = parcel.readString()
+        productClickUrl = parcel.readString()
+        productWishlistUrl = parcel.readString()
+        shopClickUrl = parcel.readString()
+        tag = parcel.readInt()
+        shop = parcel.readParcelable(Shop::class.java.classLoader)
+        product = parcel.readParcelable(Product::class.java.classLoader)
+        isFavorit = parcel.readByte().toInt() != 0
+        applinks = parcel.readString()
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(adRefKey);
-        dest.writeString(redirect);
-        dest.writeString(stickerId);
-        dest.writeString(stickerImage);
-        dest.writeString(productClickUrl);
-        dest.writeString(productWishlistUrl);
-        dest.writeString(shopClickUrl);
-        dest.writeInt(tag);
-        dest.writeParcelable(shop, flags);
-        dest.writeParcelable(product, flags);
-        dest.writeByte((byte) (favorit ? 1 : 0));
-        dest.writeString(applinks);
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(adRefKey)
+        parcel.writeString(redirect)
+        parcel.writeString(stickerId)
+        parcel.writeString(stickerImage)
+        parcel.writeString(productClickUrl)
+        parcel.writeString(productWishlistUrl)
+        parcel.writeString(shopClickUrl)
+        parcel.writeInt(tag)
+        parcel.writeParcelable(shop, flags)
+        parcel.writeParcelable(product, flags)
+        parcel.writeByte((if (isFavorit) 1 else 0).toByte())
+        parcel.writeString(applinks)
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public static final Creator<Data> CREATOR = new Creator<Data>() {
-        @Override
-        public Data createFromParcel(Parcel in) {
-            return new Data(in);
+    companion object {
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<Data> = object : Parcelable.Creator<Data> {
+            override fun createFromParcel(parcel: Parcel): Data {
+                return Data(parcel)
+            }
+
+            override fun newArray(size: Int): Array<Data?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public Data[] newArray(int size) {
-            return new Data[size];
-        }
-    };
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getAdRefKey() {
-        return adRefKey;
-    }
-
-    public void setAdRefKey(String adRefKey) {
-        this.adRefKey = adRefKey;
-    }
-
-    public String getRedirect() {
-        return redirect;
-    }
-
-    public void setRedirect(String redirect) {
-        this.redirect = redirect;
-    }
-
-    public String getShopClickUrl() {
-        return shopClickUrl;
-    }
-
-    public void setShopClickUrl(String shopClickUrl) {
-        this.shopClickUrl = shopClickUrl;
-    }
-
-    public Shop getShop() {
-        return shop;
-    }
-
-    public void setShop(Shop shop) {
-        this.shop = shop;
-    }
-
-    public String getStickerId() {
-        return stickerId;
-    }
-
-    public void setStickerId(String stickerId) {
-        this.stickerId = stickerId;
-    }
-
-    public String getStickerImage() {
-        return stickerImage;
-    }
-
-    public void setStickerImage(String stickerImage) {
-        this.stickerImage = stickerImage;
-    }
-
-    public String getProductClickUrl() {
-        return productClickUrl;
-    }
-
-    public void setProductClickUrl(String productClickUrl) {
-        this.productClickUrl = productClickUrl;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public boolean isFavorit() {
-        return favorit;
-    }
-
-    public void setFavorit(boolean favorit) {
-        this.favorit = favorit;
-    }
-
-    public String getProductWishlistUrl() {
-        return productWishlistUrl;
-    }
-
-    public void setProductWishlistUrl(String productWishlistUrl) {
-        this.productWishlistUrl = productWishlistUrl;
-    }
-
-    public int getTag() {
-        return tag;
-    }
-
-    public void setTag(int tag) {
-        this.tag = tag;
-    }
-
-    public String getApplinks() {
-        return applinks;
-    }
-
-    public void setApplinks(String applinks) {
-        this.applinks = applinks;
     }
 }

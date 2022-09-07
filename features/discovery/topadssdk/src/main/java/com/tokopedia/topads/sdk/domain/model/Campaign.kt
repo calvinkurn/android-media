@@ -1,89 +1,69 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.json.JSONException
+import org.json.JSONObject
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+private const val KEY_ORIGINAL_PRICE = "original_price"
+private const val KEY_DISCOUNT_PERCENTAGE = "discount_percentage"
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-public class Campaign implements Parcelable {
-
-    private static final String KEY_ORIGINAL_PRICE = "original_price";
-    private static final String KEY_DISCOUNT_PERCENTAGE = "discount_percentage";
-
+data class Campaign(
     @SerializedName(KEY_ORIGINAL_PRICE)
     @Expose
-    private String originalPrice = "";
+    var originalPrice: String? = "",
 
     @SerializedName(KEY_DISCOUNT_PERCENTAGE)
     @Expose
-    private int discountPercentage = 0;
+    var discountPercentage: Int = 0
+) : Parcelable {
 
-    public Campaign() {
-
+    constructor(jSONObject: JSONObject) : this() {
+        setOriginalPriceFromJSONObject(jSONObject)
+        setDiscountPercentageFromJSONObject(jSONObject)
     }
 
-    public Campaign(JSONObject object) throws JSONException {
-        setOriginalPriceFromJSONObject(object);
-        setDiscountPercentageFromJSONObject(object);
-    }
-
-    private void setOriginalPriceFromJSONObject(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_ORIGINAL_PRICE)) {
-            setOriginalPrice(object.getString(KEY_ORIGINAL_PRICE));
+    @Throws(JSONException::class)
+    private fun setOriginalPriceFromJSONObject(jSONObject: JSONObject) {
+        if (!jSONObject.isNull(KEY_ORIGINAL_PRICE)) {
+            originalPrice = jSONObject.getString(KEY_ORIGINAL_PRICE)
         }
     }
 
-    private void setDiscountPercentageFromJSONObject(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_DISCOUNT_PERCENTAGE)) {
-            setDiscountPercentage(object.getInt(KEY_DISCOUNT_PERCENTAGE));
+    @Throws(JSONException::class)
+    private fun setDiscountPercentageFromJSONObject(jSONObject: JSONObject) {
+        if (!jSONObject.isNull(KEY_DISCOUNT_PERCENTAGE)) {
+            discountPercentage = jSONObject.getInt(KEY_DISCOUNT_PERCENTAGE)
         }
     }
 
-    protected Campaign(Parcel in) {
-        originalPrice = in.readString();
-        discountPercentage = in.readInt();
+    constructor(parcel: Parcel) : this() {
+        originalPrice = parcel.readString()
+        discountPercentage = parcel.readInt()
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(originalPrice);
-        dest.writeInt(discountPercentage);
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(originalPrice)
+        dest.writeInt(discountPercentage)
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public static final Creator<Campaign> CREATOR = new Creator<Campaign>() {
-        @Override
-        public Campaign createFromParcel(Parcel in) {
-            return new Campaign(in);
+    companion object {
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<Campaign> = object : Parcelable.Creator<Campaign> {
+            override fun createFromParcel(parcel: Parcel): Campaign {
+                return Campaign(parcel)
+            }
+
+            override fun newArray(size: Int): Array<Campaign?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public Campaign[] newArray(int size) {
-            return new Campaign[size];
-        }
-    };
-
-    public void setOriginalPrice(String originalPrice) {
-        this.originalPrice = originalPrice;
-    }
-
-    public String getOriginalPrice() {
-        return this.originalPrice;
-    }
-
-    public void setDiscountPercentage(int discountPercentage) {
-        this.discountPercentage = discountPercentage;
-    }
-
-    public int getDiscountPercentage() {
-        return this.discountPercentage;
     }
 }

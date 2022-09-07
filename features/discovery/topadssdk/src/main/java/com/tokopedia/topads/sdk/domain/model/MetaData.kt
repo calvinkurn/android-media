@@ -1,34 +1,16 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
-import org.json.JSONException;
-import org.json.JSONObject;
+data class MetaData(
+    @SerializedName("display")
+    var display: String? = null
+) {
 
-/**
- * Created by errysuprayogi on 3/27/17.
- */
-public class MetaData {
-
-    @SerializedName(KEY_DISPLAY)
-    private String display;
-
-    private static final String KEY_DISPLAY = "display";
-
-    public MetaData() {
-    }
-
-    public MetaData(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_DISPLAY)) {
-            setDisplay(object.getString(KEY_DISPLAY));
+    constructor(jsonObject: JSONObject) : this() {
+        if (!jsonObject.isNull("display")) {
+            display = jsonObject.getString("display")
         }
-    }
-
-    public String getDisplay() {
-        return display;
-    }
-
-    public void setDisplay(String display) {
-        this.display = display;
     }
 }

@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
@@ -34,12 +33,9 @@ import com.tokopedia.topads.sdk.TopAdsConstants.DILYANI_TOKOPEDIA
 import com.tokopedia.topads.sdk.TopAdsConstants.FULFILLMENT
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_9
-import com.tokopedia.topads.sdk.base.Config
 import com.tokopedia.topads.sdk.base.adapter.Item
-import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.*
-import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -57,11 +53,9 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
-import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_a_pager.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
 import org.apache.commons.text.StringEscapeUtils
-import javax.inject.Inject
 
 /**
  * Created by errysuprayogi on 12/28/17.
@@ -77,7 +71,6 @@ private const val ITEM_3 = 3
 private const val ITEM_4 = 4
 
 class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
-    private var adsListener: TopAdsListener? = null
     private var topAdsBannerClickListener: TopAdsBannerClickListener? = null
     private var impressionListener: TopAdsItemImpressionListener? = null
     private var topAdsShopFollowBtnClickListener: TopAdsShopFollowBtnClickListener? = null
@@ -93,20 +86,15 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         TopAdsUrlHitter(context)
     }
 
-    @Inject
-    lateinit var bannerPresenter: BannerAdsPresenter
     private var template = NO_TEMPLATE
 
     constructor(context: Context) : super(context) {
-        init()
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init()
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
     }
 
     @Throws(Exception::class)
@@ -124,7 +112,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             val list = findViewById<RecyclerView>(R.id.list)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
-            list.addOnScrollListener(CustomScrollListner(back_view))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
 
@@ -146,7 +133,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
         if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 && cpmData?.cpm?.layout != LAYOUT_8 && cpmData?.cpm?.layout != LAYOUT_9) {
             if (isEligible(cpmData)) {
-                if (cpmData != null && (cpmData.cpm.layout == LAYOUT_2)) {
+                if (cpmData != null && (cpmData.cpm?.layout == LAYOUT_2)) {
                     list?.gone()
                     shopDetail?.gone()
                     topAdsCarousel.hide()
@@ -168,9 +155,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     adsBannerShopCardView?.gone()
                     list.isNestedScrollingEnabled = false
 
-                    if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
+                    if (cpmData.cpm?.cpmShop?.isPowerMerchant == true && cpmData.cpm?.cpmShop?.isOfficial == false) {
                         container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
-                    } else if (cpmData.cpm.cpmShop.isOfficial) {
+                    } else if (cpmData.cpm?.cpmShop?.isOfficial == true) {
                         container?.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
                     } else {
                         container?.background = ContextCompat.getDrawable(context, R.drawable.bg_rm_gradient)
@@ -180,7 +167,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     shop_badge?.let {
                         if (cpmData.cpm?.badges?.size ?: 0 > 0) {
                             shop_badge.show()
-                            Glide.with(shop_badge).load(cpmData.cpm.badges[0].imageUrl).into(shop_badge)
+                            Glide.with(shop_badge).load(cpmData.cpm?.badges?.firstOrNull()?.imageUrl).into(shop_badge)
                         } else {
                             shop_badge.hide()
                         }
@@ -188,10 +175,14 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     shop_name?.text = MethodChecker.fromHtml(cpmData.cpm?.cpmShop?.name)
                     description?.text = cpmData.cpm?.cpmShop?.slogan
                     if (cpmData.cpm?.cpmShop?.isFollowed != null && topAdsShopFollowBtnClickListener != null) {
-                        bindFavorite(cpmData.cpm.cpmShop.isFollowed)
+                        cpmData.cpm?.cpmShop?.isFollowed?.let { bindFavorite(it) }
                         btnFollow.setOnClickListener {
-                            cpmData.cpm?.cpmShop?.id?.let { it1 -> topAdsShopFollowBtnClickListener?.onFollowClick(it1, cpmData.id) }
-                            if (!cpmData.cpm.cpmShop.isFollowed) {
+                            cpmData.cpm?.cpmShop?.id?.let { it1 -> cpmData.id?.let { id ->
+                                topAdsShopFollowBtnClickListener?.onFollowClick(it1,
+                                    id
+                                )
+                            } }
+                            if (cpmData.cpm?.cpmShop?.isFollowed == false) {
                                 topAdsUrlHitter.hitClickUrl(className, cpmData.adClickUrl, "", "", "")
                             }
                         }
@@ -214,7 +205,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                             shop_image.addOnImpressionListener(it1) {
                                 impressionListener?.let {
                                     it.onImpressionHeadlineAdsItem(0, cpmData)
-                                    topAdsUrlHitter.hitImpressionUrl(className, cpmData.cpm.cpmImage.fullUrl, "", "", "")
+                                    topAdsUrlHitter.hitImpressionUrl(className, cpmData.cpm?.cpmImage?.fullUrl, "", "", "")
                                 }
                             }
                         }
@@ -225,28 +216,31 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     val items = ArrayList<Item<*>>()
                     items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl, isShowCta))
                     if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
-                        val productCardModelList: ArrayList<ProductCardModel> = getProductCardModels(cpmData.cpm.cpmShop.products)
-                        for (i in 0 until productCardModelList.size) {
-                            if (i < ITEM_3) {
-                                val model = BannerShopProductViewModel(cpmData, productCardModelList[i],
-                                        cpmData.cpm.cpmShop.products[i].applinks,
-                                        cpmData.cpm.cpmShop.products[i].image.m_url,
-                                        cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl)
-                                val product = cpmData.cpm.cpmShop.products[i]
-                                model.apply {
-                                    productId = product.id
-                                    productName = product.name
-                                    productMinOrder = product.productMinimumOrder
-                                    productCategory = product.categoryBreadcrumb
-                                    productPrice = product.priceFormat
-                                    shopId = cpmData.cpm.cpmShop.id
+                        val productCardModelList: ArrayList<ProductCardModel>? =  cpmData.cpm?.cpmShop?.products?.let { getProductCardModels(it) }
+                        if (productCardModelList != null) {
+                            for (i in 0 until productCardModelList.size) {
+                                if (i < ITEM_3) {
+                                    val model = BannerShopProductViewModel(cpmData, productCardModelList[i],
+                                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.applinks,
+                                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.image?.m_url,
+                                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.imageProduct?.imageClickUrl)
+                                    val product = cpmData.cpm?.cpmShop?.products?.getOrNull(i)
+                                    model.apply {
+                                        productId = product?.id
+                                        productName = product?.name
+                                        productMinOrder = product?.productMinimumOrder?:0
+                                        productCategory = product?.categoryBreadcrumb
+                                        productPrice = product?.priceFormat
+                                        shopId = cpmData.cpm?.cpmShop?.id
+                                    }
+                                    items.add(model)
                                 }
-                                items.add(model)
+                            }
+                            if (productCardModelList.size < ITEM_3) {
+                                items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
                             }
                         }
-                        if (productCardModelList.size < ITEM_3) {
-                            items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
-                        }
+
                     } else {
                         repeat(ITEM_3) { items.add(BannerProductShimmerViewModel()) }
                     }
@@ -291,10 +285,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     ) {
         shopAdsWithThreeProducts?.setWidgetModel(
             ShopAdsWithThreeProductModel(
-                isOfficial = cpmData.cpm.cpmShop.isPowerMerchant,
-                isPMPro = cpmData.cpm.cpmShop.isPMPro,
-                isPowerMerchant = cpmData.cpm.cpmShop.isPowerMerchant,
-                shopBadge = cpmData.cpm.badges.firstOrNull()?.imageUrl?:"",
+                isOfficial = cpmData.cpm?.cpmShop?.isPowerMerchant ?: false,
+                isPMPro = cpmData.cpm?.cpmShop?.isPMPro ?: false,
+                isPowerMerchant = cpmData.cpm?.cpmShop?.isPowerMerchant ?: false,
+                shopBadge = cpmData.cpm?.badges?.firstOrNull()?.imageUrl?:"",
                 shopName = cpmData.cpm?.cpmShop?.name?:"",
                 shopImageUrl = cpmData.cpm?.cpmImage?.fullEcs?:"",
                 shopWidgetImageUrl = cpmData.cpm?.widgetImageUrl?:"",
@@ -317,23 +311,23 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl, isShowCta))
         if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
             val productCardModelList: ArrayList<ProductCardModel> =
-                getProductCardModels(cpmData.cpm.cpmShop.products)
+                getProductCardModels(cpmData.cpm?.cpmShop?.products)
             for (i in 0 until productCardModelList.size) {
                 if (i < ITEM_3) {
                     val model = BannerShopProductViewModel(
                         cpmData, productCardModelList[i],
-                        cpmData.cpm.cpmShop.products[i].applinks,
-                        cpmData.cpm.cpmShop.products[i].image.m_url,
-                        cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl,
+                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.applinks,
+                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.image?.m_url,
+                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.imageProduct?.imageClickUrl,
                     )
-                    val product = cpmData.cpm.cpmShop.products[i]
+                    val product = cpmData.cpm?.cpmShop?.products?.getOrNull(i)
                     model.apply {
-                        productId = product.id
-                        productName = product.name
-                        productMinOrder = product.productMinimumOrder
-                        productCategory = product.categoryBreadcrumb
-                        productPrice = product.priceFormat
-                        shopId = cpmData.cpm.cpmShop.id
+                        productId = product?.id
+                        productName = product?.name
+                        productMinOrder = product?.productMinimumOrder ?: 0
+                        productCategory = product?.categoryBreadcrumb
+                        productPrice = product?.priceFormat
+                        shopId = cpmData.cpm?.cpmShop?.id
                     }
                     items.add(model)
                 }
@@ -387,17 +381,17 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val list = arrayListOf<ShopProductModel.ShopProductModelItem>()
         cpmModel.data?.forEachIndexed { index, it ->
             val item = ShopProductModel.ShopProductModelItem(
-                imageUrl = it.cpm.cpmShop.products.firstOrNull()?.imageProduct?.imageUrl ?: "",
-                shopIcon = it.cpm.cpmImage.fullEcs,
-                shopName = it.cpm.cpmShop.name,
-                ratingCount = it.cpm.cpmShop.products.firstOrNull()?.countReviewFormat ?: "",
-                ratingAverage = it.cpm.cpmShop.products.firstOrNull()?.headlineProductRatingAverage
+                imageUrl = it.cpm?.cpmShop?.products?.firstOrNull()?.imageProduct?.imageUrl ?: "",
+                shopIcon = it.cpm?.cpmImage?.fullEcs ?: "",
+                shopName = it.cpm?.cpmShop?.name ?: "",
+                ratingCount = it.cpm?.cpmShop?.products?.firstOrNull()?.countReviewFormat ?: "",
+                ratingAverage = it.cpm?.cpmShop?.products?.firstOrNull()?.headlineProductRatingAverage
                     ?: "",
                 isOfficial = it.cpm?.cpmShop?.isOfficial ?: false,
                 isPMPro = it.cpm?.cpmShop?.isPMPro ?: false,
                 goldShop = if (it.cpm?.cpmShop?.isPowerMerchant == true) 1 else 0,
                 impressHolder = it.cpm?.cpmShop?.imageShop,
-                location = it.cpm.cpmShop.location,
+                location = it.cpm?.cpmShop?.location ?: "",
                 position = index
             )
             list.add(item)
@@ -453,10 +447,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         )
                         topAdsUrlHitter.hitClickUrl(
                             className,
-                            product.imageProduct.imageClickUrl,
+                            product.imageProduct?.imageClickUrl,
                             product.id,
                             product.uri,
-                            product.imageProduct.imageUrl
+                            product.imageProduct?.imageUrl
                         )
                     }
 
@@ -469,24 +463,24 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val list = arrayListOf<TopAdsCarouselModel.TopAdsCarouselItem>()
         cpmModel?.data?.forEachIndexed { index, it ->
             val item = TopAdsCarouselModel.TopAdsCarouselItem(
-                    imageUrlOne = it.cpm.cpmShop.products.getOrNull(0)?.imageProduct?.imageUrl ?: "",
-                    imageUrlTwo = it.cpm.cpmShop.products.getOrNull(1)?.imageProduct?.imageUrl ?: "",
-                    brandIcon = it.cpm.cpmImage.fullEcs,
-                    brandName = it.cpm.cpmShop.name,
-                    isOfficial = it.cpm?.cpmShop?.isOfficial ?: false,
-                    isPMPro = it.cpm?.cpmShop?.isPMPro ?: false,
-                    goldShop = if (it.cpm?.cpmShop?.isPowerMerchant == true) 1 else 0,
-                    impressHolder = it.cpm?.cpmShop?.imageShop,
-                    position = index
+                imageUrlOne = it.cpm?.cpmShop?.products?.getOrNull(0)?.imageProduct?.imageUrl ?: "",
+                imageUrlTwo = it.cpm?.cpmShop?.products?.getOrNull(1)?.imageProduct?.imageUrl ?: "",
+                brandIcon = it.cpm?.cpmImage?.fullEcs ?: "",
+                brandName = it.cpm?.cpmShop?.name ?: "",
+                isOfficial = it.cpm?.cpmShop?.isOfficial ?: false,
+                isPMPro = it.cpm?.cpmShop?.isPMPro ?: false,
+                goldShop = if (it.cpm?.cpmShop?.isPowerMerchant == true) 1 else 0,
+                impressHolder = it.cpm?.cpmShop?.imageShop,
+                position = index
             )
             list.add(item)
         }
         return list
     }
 
-    private fun getProductCardModels(products: List<Product>): ArrayList<ProductCardModel> {
+    private fun getProductCardModels(products: List<Product>?): ArrayList<ProductCardModel> {
         return ArrayList<ProductCardModel>().apply {
-            products.map {
+            products?.map {
                 add(getProductCardViewModel(it))
             }
         }
@@ -495,15 +489,15 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun getProductCardViewModel(product: Product): ProductCardModel {
         val isAvailAble = checkIfDTAvailable(product.labelGroupList)
         val productCardModel = ProductCardModel(
-            productImageUrl = product.imageProduct.imageUrl,
-            productName = product.name,
-            discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
-            formattedPrice = product.priceFormat,
+            productImageUrl = product.imageProduct?.imageUrl ?: "",
+            productName = product.name ?: "",
+            discountPercentage = if (product.campaign?.discountPercentage != 0) "${product.campaign?.discountPercentage}%" else "",
+            formattedPrice = product.priceFormat ?: "",
             reviewCount = product.countReviewFormat.toIntOrZero(),
-            ratingString = product.productRatingFormat,
+            ratingString = product.productRatingFormat ?: "",
             freeOngkir = ProductCardModel.FreeOngkir(
-                product.freeOngkir.isActive,
-                product.freeOngkir.imageUrl
+                product.freeOngkir?.isActive ?: false,
+                product.freeOngkir?.imageUrl ?: ""
             ),
             hasAddToCartButton = this.hasAddToCartButton,
             addToCartButtonType = UnifyButton.Type.MAIN
@@ -518,27 +512,33 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         productCardModel: ProductCardModel
     ): ProductCardModel {
         if (isAvailAble) {
-            return if (!product.campaign.originalPrice.isNullOrEmpty()) {
+            return if (!product.campaign?.originalPrice.isNullOrEmpty()) {
                 productCardModel.copy(
-                    slashedPrice = product.campaign.originalPrice,
+                    slashedPrice = product.campaign?.originalPrice ?: "",
                     labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                        product.labelGroupList.map {
-                            if (it.position != "integrity"){
-                                add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
+                        product.labelGroupList?.map {
+                            if (it.position != "integrity") {
+                                add(
+                                    ProductCardModel.LabelGroup(
+                                        it.position ?: "",
+                                        it.title ?: "",
+                                        it.type ?: ""
+                                    )
+                                )
                             }
                         }
                     })
             } else {
                 productCardModel.copy(
                     labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                        product.labelGroupList.map {
-                            if (it.position != "integrity"){
+                        product.labelGroupList?.map {
+                            if (it.position != "integrity") {
                                 add(
                                     ProductCardModel.LabelGroup(
-                                        it.position,
-                                        it.title,
-                                        it.type,
-                                        it.imageUrl
+                                        it.position ?: "",
+                                        it.title ?: "",
+                                        it.type ?: "",
+                                        it.imageUrl ?: ""
                                     )
                                 )
                             }
@@ -549,20 +549,26 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         }
 
         return productCardModel.copy(
-            slashedPrice = product.campaign.originalPrice,
-            countSoldRating = product.headlineProductRatingAverage,
+            slashedPrice = product.campaign?.originalPrice ?: "",
+            countSoldRating = product.headlineProductRatingAverage ?: "",
             labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                product.labelGroupList.map {
-                    add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
+                product.labelGroupList?.map {
+                    add(
+                        ProductCardModel.LabelGroup(
+                            it.position ?: "",
+                            it.title ?: "",
+                            it.type ?: ""
+                        )
+                    )
                 }
             })
     }
 
 
-    private fun checkIfDTAvailable(labelGroupList: List<LabelGroup>): Boolean {
+    private fun checkIfDTAvailable(labelGroupList: List<LabelGroup>?): Boolean {
         var isAvailable = false
         run breaking@ {
-            labelGroupList.forEach {
+            labelGroupList?.forEach {
                 if (it.position == FULFILLMENT && it.title == DILYANI_TOKOPEDIA){
                     isAvailable = true
                     return@breaking
@@ -626,8 +632,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         productList = productList.map {
                             ShopCardModel.ShopItemProduct(
                                     id = it.id.toIntOrZero(),
-                                    name = it.name,
-                                    priceFormat = it.priceFormat,
+                                    name = it.name?:"",
+                                    priceFormat = it.priceFormat?:"",
                                     imageUrl = it.imageProduct?.imageUrl ?: ""
                             )
                         },
@@ -641,9 +647,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                         topAdsUrlHitter.hitImpressionUrl(
                                 className,
-                                cpmData.cpm.cpmImage.fullUrl,
-                                cpmData.cpm.cpmShop.id,
-                                cpmData.cpm.uri,
+                                cpmData.cpm?.cpmImage?.fullUrl,
+                                cpmData.cpm?.cpmShop?.id,
+                                cpmData.cpm?.uri,
                                 cpmData.cpm?.cpmImage?.fullEcs
                         )
                     }
@@ -654,8 +660,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         topAdsUrlHitter.hitClickUrl(
                                 className,
                                 adsClickUrl,
-                                cpmData.cpm.cpmShop.id,
-                                cpmData.cpm.uri,
+                                cpmData.cpm?.cpmShop?.id,
+                                cpmData.cpm?.uri,
                                 cpmData.cpm?.cpmImage?.fullEcs
                         )
                     }
@@ -671,10 +677,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                         topAdsUrlHitter.hitClickUrl(
                                 className,
-                                product.imageProduct.imageClickUrl,
+                                product.imageProduct?.imageClickUrl,
                                 product.id,
                                 product.uri,
-                                product.imageProduct.imageUrl
+                                product.imageProduct?.imageUrl
                         )
                     }
                 }
@@ -683,8 +689,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun isEligible(cpmData: CpmData?) =
             cpmData != null
-                    && cpmData.cpm.cpmShop != null
-                    && (cpmData.cpm.cpmShop.products.size > 1 || showProductShimmer)
+                    && cpmData.cpm?.cpmShop != null
+                    && (cpmData.cpm?.cpmShop?.products?.size?:0 > 1 || showProductShimmer)
 
     private fun activityIsFinishing(context: Context): Boolean {
         return if (context is Activity) {
@@ -707,12 +713,12 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         try {
             Glide.with(context)
                     .asBitmap()
-                    .load(cpm.cpmImage.fullEcs)
+                    .load(cpm.cpmImage?.fullEcs)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             if (image != null) {
                                 image.setImageBitmap(resource)
-                                topAdsUrlHitter.hitImpressionUrl(className, cpm.cpmImage.fullUrl, "", "", "")
+                                topAdsUrlHitter.hitImpressionUrl(className, cpm.cpmImage?.fullUrl, "", "", "")
                             }
                         }
 
@@ -720,21 +726,13 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                         }
                     })
-            name.text = escapeHTML(if (cpm.name == null) "" else cpm.name)
-            description.text = escapeHTML(if (cpm.decription == null) "" else cpm.decription)
+            name.text = escapeHTML(cpm.name ?: "")
+            description.text = escapeHTML(cpm.decription ?: "")
             cta_btn.text = if (cpm.cta == null) "" else cpm.cta
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
-    }
-
-    fun setConfig(config: Config) {
-        bannerPresenter.setConfig(config)
-    }
-
-    fun setAdsListener(adsListener: TopAdsListener) {
-        this.adsListener = adsListener
     }
 
     fun setTopAdsBannerClickListener(topAdsBannerClickListener: TopAdsBannerClickListener) {
@@ -780,13 +778,21 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     override fun displayAds(cpmModel: CpmModel?, index: Int) {
         try {
-            if (cpmModel != null && cpmModel.data.size > 0) {
-                val data = cpmModel.data[0]
-                if (data != null && data.cpm != null) {
-                    if (data.cpm.cpmShop != null && isResponseValid(data)) {
-                        renderViewCpmShop(context, cpmModel, data.applinks, data.adClickUrl, index)
-                    } else if (data.cpm.templateId == ITEM_4) {
-                        renderViewCpmDigital(context, data.cpm)
+            if (cpmModel?.data?.size?:0 > 0) {
+                val data = cpmModel?.data?.first()
+                if (data?.cpm != null) {
+                    if (data.cpm?.cpmShop != null && isResponseValid(data)) {
+                        if (data.applinks != null && data.adClickUrl != null) {
+                            renderViewCpmShop(
+                                context,
+                                cpmModel,
+                                data.applinks ?: "",
+                                data.adClickUrl ?: "",
+                                index
+                            )
+                        }
+                    } else if (data.cpm?.templateId == ITEM_4) {
+                        data.cpm?.let {renderViewCpmDigital(context, it)  }
                         setOnClickListener {
                             if (topAdsBannerClickListener != null) {
                                 topAdsBannerClickListener!!.onBannerAdsClicked(0, data.applinks, data)
@@ -796,9 +802,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     }
                 }
             }
-            if (adsListener != null) {
-                adsListener!!.onTopAdsLoaded(null)
-            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -806,7 +809,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     private fun isResponseValid(data: CpmData): Boolean {
-        return data.cpm.cta.isNotEmpty() && data.cpm.promotedText.isNotEmpty()
+        return data.cpm?.cta?.isNotEmpty()?:false && data.cpm?.promotedText?.isNotEmpty()?:false
     }
 
     override fun onCanceled() {
@@ -817,29 +820,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     }
 
-    override fun loadTopAds() {
-        bannerPresenter.loadTopAds()
-    }
-
-    override fun notifyAdsErrorLoaded(errorCode: Int, message: String) {
-        if (adsListener != null) {
-            adsListener!!.onTopAdsFailToLoad(errorCode, message)
-        }
-    }
-
-    fun init() {
-        val application = context.applicationContext as BaseMainApplication
-        val component = DaggerTopAdsComponent.builder()
-                .baseAppComponent(application.baseAppComponent)
-                .build()
-        component.inject(this)
-        component.inject(bannerPresenter)
-        bannerPresenter.attachView(this)
-    }
-
     companion object {
-
-        private val TAG = TopAdsBannerView::class.java.simpleName
 
         fun escapeHTML(s: String): String {
             return try {

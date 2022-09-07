@@ -1,257 +1,150 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
-import com.google.gson.annotations.SerializedName;
+private const val KEY_TEMPLATE_ID = "template_id"
+private const val KEY_NAME = "name"
+private const val KEY_CPM_IMAGE = "image"
+private const val KEY_BADGES = "badges"
+private const val KEY_PROMOTED_TEXT = "promoted_text"
+private const val KEY_DESCRIPTION = "description"
+private const val KEY_URI = "uri"
+private const val KEY_SHOP = "shop"
+private const val KEY_CTA_TEXT = "button_text"
+private const val KEY_LAYOUT = "layout"
+private const val KEY_POSITION = "position"
+private const val KEY_WIDGET_TITLE = "widget_title"
+private const val KEY_WIDGET_IMAGE_URL = "widget_image_url"
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class Cpm implements Parcelable {
-
-    private static final String KEY_TEMPLATE_ID = "template_id";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_CPM_IMAGE = "image";
-    private static final String KEY_BADGES = "badges";
-    private static final String KEY_PROMOTED_TEXT = "promoted_text";
-    private static final String KEY_DESCRIPTION = "description";
-    private static final String KEY_URI = "uri";
-    private static final String KEY_SHOP = "shop";
-    private static final String KEY_CTA_TEXT = "button_text";
-    private static final String KEY_LAYOUT = "layout";
-    private static final String KEY_POSITION = "position";
-    private static final String KEY_WIDGET_TITLE = "widget_title";
-    private static final String KEY_WIDGET_IMAGE_URL = "widget_image_url";
-
+data class Cpm(
     @SerializedName(KEY_TEMPLATE_ID)
-    private int templateId;
+    var templateId: Int = 0,
+
     @SerializedName(KEY_NAME)
-    private String name = "";
+    var name: String? = "",
+
     @SerializedName(KEY_CPM_IMAGE)
-    private CpmImage cpmImage;
+    var cpmImage: CpmImage? = null,
+
     @SerializedName(KEY_BADGES)
-    private List<Badge> badges = new ArrayList<>();
+    var badges: MutableList<Badge>? = ArrayList(),
+
     @SerializedName(KEY_PROMOTED_TEXT)
-    private String promotedText = "";
+    var promotedText: String? = "",
+
     @SerializedName(KEY_URI)
-    private String uri = "";
+    var uri: String? = "",
+
     @SerializedName(KEY_DESCRIPTION)
-    private String decription = "";
+    var decription: String? = "",
+
     @SerializedName(KEY_SHOP)
-    private CpmShop cpmShop;
+    var cpmShop: CpmShop? = null,
+
     @SerializedName(KEY_CTA_TEXT)
-    private String cta = "";
+    var cta: String? = "",
+
     @SerializedName(KEY_LAYOUT)
-    private int layout = 0;
+    var layout: Int = 0,
+
     @SerializedName(KEY_POSITION)
-    private int position = 0;
+    var position: Int = 0,
+
     @SerializedName(KEY_WIDGET_TITLE)
-    private String widgetTitle = "";
+    var widgetTitle: String? = "",
+
     @SerializedName(KEY_WIDGET_IMAGE_URL)
-    private String widgetImageUrl  = "";
+    var widgetImageUrl: String? = ""
+) : Parcelable {
 
-    public Cpm() {
-    }
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readParcelable(CpmImage::class.java.classLoader),
+        parcel.createTypedArrayList(Badge.CREATOR),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readParcelable(CpmShop::class.java.classLoader),
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readString()
+    )
 
-    public Cpm(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_TEMPLATE_ID)){
-            setTemplateId(object.getInt(KEY_TEMPLATE_ID));
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull(KEY_TEMPLATE_ID)) {
+            templateId = jSONObject.getInt(KEY_TEMPLATE_ID)
         }
-        if(!object.isNull(KEY_NAME)){
-            setName(object.getString(KEY_NAME));
+        if (!jSONObject.isNull(KEY_NAME)) {
+            name = jSONObject.getString(KEY_NAME)
         }
-        if(!object.isNull(KEY_CPM_IMAGE)){
-            setCpmImage(new CpmImage(object.getJSONObject(KEY_CPM_IMAGE)));
+        if (!jSONObject.isNull(KEY_CPM_IMAGE)) {
+            cpmImage = CpmImage(jSONObject.getJSONObject(KEY_CPM_IMAGE))
         }
-        if(!object.isNull(KEY_BADGES)) {
-            JSONArray badgeArray = object.getJSONArray(KEY_BADGES);
-            for (int i = 0; i < badgeArray.length(); i++) {
-                badges.add(new Badge(badgeArray.getJSONObject(i)));
+        if (!jSONObject.isNull(KEY_BADGES)) {
+            val badgeArray = jSONObject.getJSONArray(KEY_BADGES)
+            for (i in 0 until badgeArray.length()) {
+                badges!!.add(Badge(badgeArray.getJSONObject(i)))
             }
         }
-        if(!object.isNull(KEY_PROMOTED_TEXT)){
-            setPromotedText(object.getString(KEY_PROMOTED_TEXT));
+        if (!jSONObject.isNull(KEY_PROMOTED_TEXT)) {
+            promotedText = jSONObject.getString(KEY_PROMOTED_TEXT)
         }
-        if(!object.isNull(KEY_URI)){
-            setUri(object.getString(KEY_URI));
+        if (!jSONObject.isNull(KEY_URI)) {
+            uri = jSONObject.getString(KEY_URI)
         }
-        if(!object.isNull(KEY_DESCRIPTION)){
-            setDecription(object.getString(KEY_DESCRIPTION));
+        if (!jSONObject.isNull(KEY_DESCRIPTION)) {
+            decription = jSONObject.getString(KEY_DESCRIPTION)
         }
-        if(!object.isNull(KEY_SHOP)){
-            setCpmShop(new CpmShop(object.getJSONObject(KEY_SHOP)));
+        if (!jSONObject.isNull(KEY_SHOP)) {
+            cpmShop = CpmShop(jSONObject.getJSONObject(KEY_SHOP))
         }
-        if(!object.isNull(KEY_CTA_TEXT)) {
-            setCta(object.getString(KEY_CTA_TEXT));
+        if (!jSONObject.isNull(KEY_CTA_TEXT)) {
+            cta = jSONObject.getString(KEY_CTA_TEXT)
         }
-        if(!object.isNull(KEY_LAYOUT)) {
-            setLayout(object.getInt(KEY_LAYOUT));
+        if (!jSONObject.isNull(KEY_LAYOUT)) {
+            layout = jSONObject.getInt(KEY_LAYOUT)
         }
-        if(!object.isNull(KEY_POSITION)) {
-            setPosition(object.getInt(KEY_POSITION));
+        if (!jSONObject.isNull(KEY_POSITION)) {
+            position = jSONObject.getInt(KEY_POSITION)
         }
-        if(!object.isNull(KEY_WIDGET_TITLE)){
-            setWidgetTitle(object.getString(KEY_WIDGET_TITLE));
+        if (!jSONObject.isNull(KEY_WIDGET_TITLE)) {
+            widgetTitle = jSONObject.getString(KEY_WIDGET_TITLE)
         }
     }
 
-    protected Cpm(Parcel in) {
-        templateId = in.readInt();
-        name = in.readString();
-        cpmImage = in.readParcelable(CpmImage.class.getClassLoader());
-        badges = in.createTypedArrayList(Badge.CREATOR);
-        promotedText = in.readString();
-        uri = in.readString();
-        decription = in.readString();
-        widgetTitle = in.readString();
-        widgetImageUrl = in.readString();
-        cpmShop = in.readParcelable(CpmShop.class.getClassLoader());
-        cta = in.readString();
-        layout = in.readInt();
-        position = in.readInt();
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(templateId)
+        parcel.writeString(name)
+        parcel.writeParcelable(cpmImage, flags)
+        parcel.writeString(promotedText)
+        parcel.writeString(uri)
+        parcel.writeString(decription)
+        parcel.writeParcelable(cpmShop, flags)
+        parcel.writeString(cta)
+        parcel.writeInt(layout)
+        parcel.writeInt(position)
+        parcel.writeString(widgetTitle)
+        parcel.writeTypedList(badges)
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(templateId);
-        dest.writeString(name);
-        dest.writeParcelable(cpmImage, flags);
-        dest.writeTypedList(badges);
-        dest.writeString(promotedText);
-        dest.writeString(uri);
-        dest.writeString(decription);
-        dest.writeString(widgetTitle);
-        dest.writeString(widgetImageUrl);
-        dest.writeParcelable(cpmShop, flags);
-        dest.writeString(cta);
-        dest.writeInt(layout);
-        dest.writeInt(position);
+    override fun describeContents(): Int {
+        return 0
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Cpm> CREATOR = new Creator<Cpm>() {
-        @Override
-        public Cpm createFromParcel(Parcel in) {
-            return new Cpm(in);
+    companion object CREATOR : Parcelable.Creator<Cpm> {
+        override fun createFromParcel(parcel: Parcel): Cpm {
+            return Cpm(parcel)
         }
 
-        @Override
-        public Cpm[] newArray(int size) {
-            return new Cpm[size];
+        override fun newArray(size: Int): Array<Cpm?> {
+            return arrayOfNulls(size)
         }
-    };
-
-    public String getCta() {
-        return cta;
-    }
-
-    public void setCta(String cta) {
-        this.cta = cta;
-    }
-
-    public String getDecription() {
-        return decription;
-    }
-
-    public void setDecription(String decription) {
-        this.decription = decription;
-    }
-
-    public CpmShop getCpmShop() {
-        return cpmShop;
-    }
-
-    public void setCpmShop(CpmShop cpmShop) {
-        this.cpmShop = cpmShop;
-    }
-
-    public int getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(int templateId) {
-        this.templateId = templateId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public CpmImage getCpmImage() {
-        return cpmImage;
-    }
-
-    public void setCpmImage(CpmImage cpmImage) {
-        this.cpmImage = cpmImage;
-    }
-
-    public List<Badge> getBadges() {
-        return badges;
-    }
-
-    public void setBadges(List<Badge> badges) {
-        this.badges = badges;
-    }
-
-    public String getPromotedText() {
-        return promotedText;
-    }
-
-    public void setPromotedText(String promotedText) {
-        this.promotedText = promotedText;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public void setLayout(int layout) {
-        this.layout = layout;
-    }
-
-    public int getLayout() {
-        return this.layout;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public int getPosition() {
-        return this.position;
-    }
-
-    public String getWidgetTitle() {
-        return widgetTitle;
-    }
-
-    public void setWidgetTitle(String widgetTitle) {
-        this.widgetTitle = widgetTitle;
-    }
-
-    public String getWidgetImageUrl() {
-        return widgetImageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.widgetImageUrl = imageUrl;
     }
 
 }

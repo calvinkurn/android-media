@@ -1,78 +1,59 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+private const val KEY_IS_ACTIVE = "is_active"
+private const val KEY_IMG_URL = "img_url"
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-public class FreeOngkir implements Parcelable {
-
-    private static final String KEY_IS_ACTIVE = "is_active";
-    private static final String KEY_IMG_URL = "img_url";
-
+data class FreeOngkir(
     @SerializedName(KEY_IS_ACTIVE)
     @Expose
-    private boolean isActive = false;
+    var isActive: Boolean = false,
 
     @SerializedName(KEY_IMG_URL)
     @Expose
-    private String imageUrl = "";
+    var imageUrl: String? = ""
+) : Parcelable {
 
-    public FreeOngkir() {
 
-    }
-
-    public FreeOngkir(boolean isActive, String imageUrl) {
-        this.isActive = isActive;
-        this.imageUrl = imageUrl;
-    }
-
-    public FreeOngkir(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_IS_ACTIVE)){
-            this.isActive = object.getBoolean(KEY_IS_ACTIVE);
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull(KEY_IS_ACTIVE)) {
+            isActive = jSONObject.getBoolean(KEY_IS_ACTIVE)
         }
-        if(!object.isNull(KEY_IMG_URL)) {
-            this.imageUrl = object.getString(KEY_IMG_URL);
+        if (!jSONObject.isNull(KEY_IMG_URL)) {
+            imageUrl = jSONObject.getString(KEY_IMG_URL)
         }
     }
 
-    protected FreeOngkir(Parcel in) {
-        isActive = in.readByte() != 0;
-        imageUrl = in.readString();
+    constructor(parcel: Parcel) : this() {
+        isActive = parcel.readByte().toInt() != 0
+        imageUrl = parcel.readString()
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (isActive ? 1 : 0));
-        dest.writeString(imageUrl);
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeByte((if (isActive) 1 else 0).toByte())
+        dest.writeString(imageUrl)
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public static final Creator<FreeOngkir> CREATOR = new Creator<FreeOngkir>() {
-        @Override
-        public FreeOngkir createFromParcel(Parcel in) {
-            return new FreeOngkir(in);
+    companion object {
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<FreeOngkir> = object : Parcelable.Creator<FreeOngkir> {
+            override fun createFromParcel(parcel: Parcel): FreeOngkir {
+                return FreeOngkir(parcel)
+            }
+
+            override fun newArray(size: Int): Array<FreeOngkir?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public FreeOngkir[] newArray(int size) {
-            return new FreeOngkir[size];
-        }
-    };
-
-    public boolean isActive() {
-        return this.isActive;
-    }
-
-    public String getImageUrl() {
-        return this.imageUrl;
     }
 }

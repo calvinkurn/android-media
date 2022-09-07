@@ -1,80 +1,58 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+private const val KEY_TITLE = "title"
+const val KEY_COLOR = "color"
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-/**
- * Created by errysuprayogi on 3/27/17.
- */
-public class Label implements Parcelable {
-
-    public static final String KEY_TITLE = "title";
-    public static final String KEY_COLOR = "color";
-
+data class Label(
     @SerializedName(KEY_TITLE)
     @Expose
-    private String title = "";
+    var title: String? = "",
 
     @SerializedName(KEY_COLOR)
     @Expose
-    private String color = "";
+    var color: String? = ""
+) : Parcelable {
 
-    public Label(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_TITLE)) {
-            setTitle(object.getString(KEY_TITLE));
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull(KEY_TITLE)) {
+            title = jSONObject.getString(KEY_TITLE)
         }
-        if(!object.isNull(KEY_COLOR)){
-            setColor(object.getString(KEY_COLOR));
+        if (!jSONObject.isNull(KEY_COLOR)) {
+            color = jSONObject.getString(KEY_COLOR)
         }
     }
 
-    protected Label(Parcel in) {
-        title = in.readString();
-        color = in.readString();
+    constructor(parcel: Parcel) : this() {
+        title = parcel.readString()
+        color = parcel.readString()
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(color);
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(title)
+        parcel.writeString(color)
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public static final Creator<Label> CREATOR = new Creator<Label>() {
-        @Override
-        public Label createFromParcel(Parcel in) {
-            return new Label(in);
+    companion object {
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<Label> = object : Parcelable.Creator<Label> {
+            override fun createFromParcel(parcel: Parcel): Label {
+                return Label(parcel)
+            }
+
+            override fun newArray(size: Int): Array<Label?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public Label[] newArray(int size) {
-            return new Label[size];
-        }
-    };
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 }

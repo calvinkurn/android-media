@@ -1,97 +1,57 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
+import org.json.JSONObject
 
-import com.google.gson.annotations.SerializedName;
+data class CpmImage(
+    @SerializedName("full_url")
+    var fullUrl: String? = null,
 
-import org.json.JSONException;
-import org.json.JSONObject;
+    @SerializedName("full_ecs")
+    var fullEcs: String? = null,
 
-/**
- * Created by errysuprayogi on 12/28/17.
- */
+    @SerializedName("illustration_url")
+    var ilustrationUrl: String? = null
+) : ImpressHolder(), Parcelable {
 
-public class CpmImage extends ImpressHolder implements Parcelable {
-
-    private static final String KEY_FULL_URL = "full_url";
-    private static final String KEY_FULL_ECS = "full_ecs";
-    private static final String KEY_ILUSTRATION_URL = "illustration_url";
-
-    @SerializedName(KEY_FULL_URL)
-    private String fullUrl;
-    @SerializedName(KEY_FULL_ECS)
-    private String fullEcs;
-    @SerializedName(KEY_ILUSTRATION_URL)
-    private String ilustrationUrl;
-
-    public CpmImage(){
-    }
-
-    public CpmImage(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_FULL_URL)){
-            setFullUrl(object.getString(KEY_FULL_URL));
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull("full_url")) {
+            fullUrl = jSONObject.getString("full_url")
         }
-        if(!object.isNull(KEY_FULL_ECS)){
-            setFullEcs(object.getString(KEY_FULL_ECS));
+        if (!jSONObject.isNull("full_ecs")) {
+            fullEcs = jSONObject.getString("full_ecs")
         }
-        if(!object.isNull(KEY_ILUSTRATION_URL)){
-            setIlustrationUrl(object.getString(KEY_ILUSTRATION_URL));
+        if (!jSONObject.isNull("illustration_url")) {
+            ilustrationUrl = jSONObject.getString("illustration_url")
         }
     }
 
-    protected CpmImage(Parcel in) {
-        fullUrl = in.readString();
-        fullEcs = in.readString();
-        ilustrationUrl = in.readString();
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(fullUrl)
+        parcel.writeString(fullEcs)
+        parcel.writeString(ilustrationUrl)
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(fullUrl);
-        dest.writeString(fullEcs);
-        dest.writeString(ilustrationUrl);
+    override fun describeContents(): Int {
+        return 0
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<CpmImage> CREATOR = new Creator<CpmImage>() {
-        @Override
-        public CpmImage createFromParcel(Parcel in) {
-            return new CpmImage(in);
+    companion object CREATOR : Parcelable.Creator<CpmImage> {
+        override fun createFromParcel(parcel: Parcel): CpmImage {
+            return CpmImage(parcel)
         }
 
-        @Override
-        public CpmImage[] newArray(int size) {
-            return new CpmImage[size];
+        override fun newArray(size: Int): Array<CpmImage?> {
+            return arrayOfNulls(size)
         }
-    };
-
-    public void setIlustrationUrl(String ilustrationUrl) {
-        this.ilustrationUrl = ilustrationUrl;
-    }
-
-    public String getIlustrationUrl() {
-        return ilustrationUrl;
-    }
-
-    public String getFullUrl() {
-        return fullUrl;
-    }
-
-    public void setFullUrl(String fullUrl) {
-        this.fullUrl = fullUrl;
-    }
-
-    public String getFullEcs() {
-        return fullEcs;
-    }
-
-    public void setFullEcs(String fullEcs) {
-        this.fullEcs = fullEcs;
     }
 }
-

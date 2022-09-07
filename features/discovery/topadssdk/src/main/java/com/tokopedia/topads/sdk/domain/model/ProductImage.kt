@@ -1,147 +1,96 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
+import org.json.JSONObject
 
-import com.google.gson.annotations.SerializedName;
+private const val KEY_M_URL = "m_url"
+private const val KEY_S_URL = "s_url"
+private const val KEY_XS_URL = "xs_url"
+private const val KEY_M_ECS = "m_ecs"
+private const val KEY_S_ECS = "s_ecs"
+private const val KEY_XS_ECS = "xs_ecs"
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-/**
- * @author by errysuprayogi on 4/3/17.
- */
-public class ProductImage extends ImpressHolder implements Parcelable {
-
-    private static final String KEY_M_URL = "m_url";
-    private static final String KEY_S_URL = "s_url";
-    private static final String KEY_XS_URL = "xs_url";
-    private static final String KEY_M_ECS = "m_ecs";
-    private static final String KEY_S_ECS = "s_ecs";
-    private static final String KEY_XS_ECS = "xs_ecs";
-
+data class ProductImage(
     @SerializedName(KEY_M_URL)
-    private String m_url = "";
+    var m_url: String? = "",
+
     @SerializedName(KEY_S_URL)
-    private String s_url = "";
+    var s_url: String? = "",
+
     @SerializedName(KEY_XS_URL)
-    private String xs_url = "";
+    var xs_url: String? = "",
+
     @SerializedName(KEY_M_ECS)
-    private String m_ecs = "";
+    var m_ecs: String? = "",
+
     @SerializedName(KEY_S_ECS)
-    private String s_ecs = "";
+    var s_ecs: String? = "",
+
     @SerializedName(KEY_XS_ECS)
-    private String xs_ecs = "";
+    var xs_ecs: String? = ""
+) : ImpressHolder(), Parcelable {
 
-    public ProductImage() {
-    }
 
-    public ProductImage(JSONObject object) throws JSONException {
-        if (!object.isNull(KEY_M_URL)) {
-            setM_url(object.getString(KEY_M_URL));
-        } else if (!object.isNull(KEY_S_URL)) {
-            setM_url(object.getString(KEY_S_URL));
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull(KEY_M_URL)) {
+            m_url = jSONObject.getString(KEY_M_URL)
+        } else if (!jSONObject.isNull(KEY_S_URL)) {
+            m_url = jSONObject.getString(KEY_S_URL)
         }
-        if (!object.isNull(KEY_S_URL)) {
-            setS_url(object.getString(KEY_S_URL));
+        if (!jSONObject.isNull(KEY_S_URL)) {
+            s_url = jSONObject.getString(KEY_S_URL)
         }
-        if (!object.isNull(KEY_XS_URL)) {
-            setXs_url(object.getString(KEY_XS_URL));
+        if (!jSONObject.isNull(KEY_XS_URL)) {
+            xs_url = jSONObject.getString(KEY_XS_URL)
         }
-        if (!object.isNull(KEY_M_ECS)) {
-            setM_ecs(object.getString(KEY_M_ECS));
-        } else if (!object.isNull(KEY_S_ECS)) {
-            setM_ecs(object.getString(KEY_S_ECS));
+        if (!jSONObject.isNull(KEY_M_ECS)) {
+            m_ecs = jSONObject.getString(KEY_M_ECS)
+        } else if (!jSONObject.isNull(KEY_S_ECS)) {
+            m_ecs = jSONObject.getString(KEY_S_ECS)
         }
-        if (!object.isNull(KEY_S_ECS)) {
-            setS_ecs(object.getString(KEY_S_ECS));
+        if (!jSONObject.isNull(KEY_S_ECS)) {
+            s_ecs = jSONObject.getString(KEY_S_ECS)
         }
-        if (!object.isNull(KEY_XS_ECS)) {
-            setXs_ecs(object.getString(KEY_XS_ECS));
+        if (!jSONObject.isNull(KEY_XS_ECS)) {
+            xs_ecs = jSONObject.getString(KEY_XS_ECS)
         }
     }
 
-    protected ProductImage(Parcel in) {
-        m_url = in.readString();
-        s_url = in.readString();
-        xs_url = in.readString();
-        m_ecs = in.readString();
-        s_ecs = in.readString();
-        xs_ecs = in.readString();
+    constructor(parcel: Parcel) : this() {
+        m_url = parcel.readString()
+        s_url = parcel.readString()
+        xs_url = parcel.readString()
+        m_ecs = parcel.readString()
+        s_ecs = parcel.readString()
+        xs_ecs = parcel.readString()
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(m_url);
-        dest.writeString(s_url);
-        dest.writeString(xs_url);
-        dest.writeString(m_ecs);
-        dest.writeString(s_ecs);
-        dest.writeString(xs_ecs);
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(m_url)
+        dest.writeString(s_url)
+        dest.writeString(xs_url)
+        dest.writeString(m_ecs)
+        dest.writeString(s_ecs)
+        dest.writeString(xs_ecs)
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public static final Creator<ProductImage> CREATOR = new Creator<ProductImage>() {
-        @Override
-        public ProductImage createFromParcel(Parcel in) {
-            return new ProductImage(in);
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<ProductImage> = object : Parcelable.Creator<ProductImage> {
+            override fun createFromParcel(parcel: Parcel): ProductImage {
+                return ProductImage(parcel)
+            }
+
+            override fun newArray(size: Int): Array<ProductImage?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public ProductImage[] newArray(int size) {
-            return new ProductImage[size];
-        }
-    };
-
-    public String getM_url() {
-        return m_url;
-    }
-
-    public void setM_url(String m_url) {
-        this.m_url = m_url;
-    }
-
-    public String getS_url() {
-        return s_url;
-    }
-
-    public void setS_url(String s_url) {
-        this.s_url = s_url;
-    }
-
-    public String getXs_url() {
-        return xs_url;
-    }
-
-    public void setXs_url(String xs_url) {
-        this.xs_url = xs_url;
-    }
-
-    public String getM_ecs() {
-        return m_ecs;
-    }
-
-    public void setM_ecs(String m_ecs) {
-        this.m_ecs = m_ecs;
-    }
-
-    public String getS_ecs() {
-        return s_ecs;
-    }
-
-    public void setS_ecs(String s_ecs) {
-        this.s_ecs = s_ecs;
-    }
-
-    public String getXs_ecs() {
-        return xs_ecs;
-    }
-
-    public void setXs_ecs(String xs_ecs) {
-        this.xs_ecs = xs_ecs;
     }
 }

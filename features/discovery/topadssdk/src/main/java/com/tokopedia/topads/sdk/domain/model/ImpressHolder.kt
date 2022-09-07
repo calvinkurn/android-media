@@ -1,53 +1,41 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.Expose
 
-import com.google.gson.annotations.Expose;
-
-/**
- * Author errysuprayogi on 29,January,2019
- */
-public class ImpressHolder implements Parcelable {
-
+open class ImpressHolder() : Parcelable {
     @Expose(serialize = false, deserialize = false)
-    private boolean invoke;
+    var isInvoke = false
+        private set
 
-    protected ImpressHolder(Parcel in) {
-        invoke = in.readByte() != 0;
+    protected constructor(`in`: Parcel) : this() {
+        isInvoke = `in`.readByte().toInt() != 0
     }
 
-    public ImpressHolder() {
-
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeByte((if (isInvoke) 1 else 0).toByte())
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (invoke ? 1 : 0));
+    override fun describeContents(): Int {
+        return 0
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    operator fun invoke() {
+        isInvoke = true
     }
 
-    public static final Creator<ImpressHolder> CREATOR = new Creator<ImpressHolder>() {
-        @Override
-        public ImpressHolder createFromParcel(Parcel in) {
-            return new ImpressHolder(in);
-        }
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<ImpressHolder> =
+            object : Parcelable.Creator<ImpressHolder> {
+                override fun createFromParcel(`in`: Parcel): ImpressHolder {
+                    return ImpressHolder(`in`)
+                }
 
-        @Override
-        public ImpressHolder[] newArray(int size) {
-            return new ImpressHolder[size];
-        }
-    };
-
-    public boolean isInvoke() {
-        return invoke;
-    }
-
-    public void invoke(){
-        this.invoke = true;
+                override fun newArray(size: Int): Array<ImpressHolder?> {
+                    return arrayOfNulls(size)
+                }
+            }
     }
 }

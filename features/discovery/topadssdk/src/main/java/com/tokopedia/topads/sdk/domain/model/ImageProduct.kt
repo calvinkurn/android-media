@@ -1,122 +1,79 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
+import org.json.JSONObject
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+private const val KEY_PRODUCT_ID = "product_id"
+private const val KEY_PRODUCT_NAME = "product_name"
+private const val KEY_IMAGE_URL = "image_url"
+private const val KEY_IMAGE_CLICK_URL = "image_click_url"
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-/**
- * Created by errysuprayogi on 3/27/17.
- */
-
-public class ImageProduct extends ImpressHolder implements Parcelable {
-
-    private static final String KEY_PRODUCT_ID = "product_id";
-    private static final String KEY_PRODUCT_NAME = "product_name";
-    private static final String KEY_IMAGE_URL = "image_url";
-    private static final String KEY_IMAGE_CLICK_URL = "image_click_url";
-
+data class ImageProduct(
     @SerializedName(KEY_PRODUCT_ID)
     @Expose
-    private String productId = "";
+    var productId: String? = "",
 
     @SerializedName(KEY_PRODUCT_NAME)
     @Expose
-    private String productName = "";
+    var productName: String? = "",
 
     @SerializedName(KEY_IMAGE_URL)
     @Expose
-    private String imageUrl = "";
+    var imageUrl: String? = "",
 
     @SerializedName(KEY_IMAGE_CLICK_URL)
     @Expose
-    private String imageClickUrl = "";
-    private boolean loaded;
+    var imageClickUrl: String? = "",
+) : ImpressHolder(), Parcelable {
 
-    public ImageProduct() {
-    }
 
-    public ImageProduct(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_PRODUCT_ID)) {
-            setProductId(object.getString(KEY_PRODUCT_ID));
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull(KEY_PRODUCT_ID)) {
+            productId = jSONObject.getString(KEY_PRODUCT_ID)
         }
-        if(!object.isNull(KEY_PRODUCT_NAME)) {
-            setProductName(object.getString(KEY_PRODUCT_NAME));
+        if (!jSONObject.isNull(KEY_PRODUCT_NAME)) {
+            productName = jSONObject.getString(KEY_PRODUCT_NAME)
         }
-        if(!object.isNull(KEY_IMAGE_URL)) {
-            setImageUrl(object.getString(KEY_IMAGE_URL));
+        if (!jSONObject.isNull(KEY_IMAGE_URL)) {
+            imageUrl = jSONObject.getString(KEY_IMAGE_URL)
         }
-        if(!object.isNull(KEY_IMAGE_CLICK_URL)) {
-            setImageClickUrl(object.getString(KEY_IMAGE_CLICK_URL));
+        if (!jSONObject.isNull(KEY_IMAGE_CLICK_URL)) {
+            imageClickUrl = jSONObject.getString(KEY_IMAGE_CLICK_URL)
         }
     }
 
-    protected ImageProduct(Parcel in) {
-        productId = in.readString();
-        productName = in.readString();
-        imageUrl = in.readString();
-        imageClickUrl = in.readString();
+    constructor(parcel: Parcel) : this() {
+        productId = parcel.readString()
+        productName = parcel.readString()
+        imageUrl = parcel.readString()
+        imageClickUrl = parcel.readString()
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(productId);
-        dest.writeString(productName);
-        dest.writeString(imageUrl);
-        dest.writeString(imageClickUrl);
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(productId)
+        dest.writeString(productName)
+        dest.writeString(imageUrl)
+        dest.writeString(imageClickUrl)
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public static final Creator<ImageProduct> CREATOR = new Creator<ImageProduct>() {
-        @Override
-        public ImageProduct createFromParcel(Parcel in) {
-            return new ImageProduct(in);
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<ImageProduct> = object : Parcelable.Creator<ImageProduct> {
+            override fun createFromParcel(parcel: Parcel): ImageProduct {
+                return ImageProduct(parcel)
+            }
+
+            override fun newArray(size: Int): Array<ImageProduct?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public ImageProduct[] newArray(int size) {
-            return new ImageProduct[size];
-        }
-    };
-
-    public String getImageClickUrl() {
-        return imageClickUrl;
     }
-
-    public void setImageClickUrl(String imageClickUrl) {
-        this.imageClickUrl = imageClickUrl;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
 }

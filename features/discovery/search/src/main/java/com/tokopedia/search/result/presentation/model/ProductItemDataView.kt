@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
@@ -59,7 +60,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     val isAds: Boolean
         get() = isTopAds || isOrganicAds
     val pageNumber: Int
-        get() = (position - 1) / SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt() + 1
+        get() = (position - 1) / SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toIntOrZero() + 1
     val categoryString: String?
         get() = if (StringUtils.isBlank(categoryName)) categoryBreadcrumb else categoryName
     var dimension90: String = ""
@@ -135,40 +136,40 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             externalReference: String,
         ): ProductItemDataView {
             val item = ProductItemDataView()
-            item.productID = topAds.product.id
+            item.productID = topAds.product?.id ?: ""
             item.isTopAds = true
-            item.topadsImpressionUrl = topAds.product.image.s_url
+            item.topadsImpressionUrl = topAds.product?.image?.s_url
             item.topadsClickUrl = topAds.productClickUrl
             item.topadsWishlistUrl = topAds.productWishlistUrl
             item.topadsClickShopUrl = topAds.shopClickUrl
             item.topadsTag = topAds.tag
-            item.productName = topAds.product.name
-            item.price = topAds.product.priceFormat
-            item.shopCity = topAds.shop.location
-            item.imageUrl = topAds.product.image.s_ecs
-            item.imageUrl300 = topAds.product.image.m_ecs
-            item.imageUrl700 = topAds.product.image.m_ecs
-            item.isWishlisted = topAds.product.isWishlist
-            item.ratingString = topAds.product.productRatingFormat
-            item.badgesList = mapBadges(topAds.shop.badges)
-            item.isNew = topAds.product.isProductNewLabel
-            item.shopID = topAds.shop.id
-            item.shopName = topAds.shop.name
-            item.isShopOfficialStore = topAds.shop.isShop_is_official
-            item.isShopPowerMerchant = topAds.shop.isGoldShop
-            item.shopUrl = topAds.shop.uri
-            item.originalPrice = topAds.product.campaign.originalPrice
-            item.discountPercentage = topAds.product.campaign.discountPercentage
-            item.labelGroupList = mapLabelGroupList(topAds.product.labelGroupList)
-            item.freeOngkirDataView = mapFreeOngkir(topAds.product.freeOngkir)
+            item.productName = topAds.product?.name ?: ""
+            item.price = topAds.product?.priceFormat ?: ""
+            item.shopCity = topAds.shop?.location ?: ""
+            item.imageUrl = topAds.product?.image?.s_ecs ?: ""
+            item.imageUrl300 = topAds.product?.image?.m_ecs ?: ""
+            item.imageUrl700 = topAds.product?.image?.m_ecs ?: ""
+            item.isWishlisted = topAds.product?.isWishlist ?: false
+            item.ratingString = topAds.product?.productRatingFormat ?: ""
+            item.badgesList = topAds.shop?.badges?.let { mapBadges(it) }
+            item.isNew = topAds.product?.isProductNewLabel ?: false
+            item.shopID = topAds.shop?.id ?: ""
+            item.shopName = topAds.shop?.name ?: ""
+            item.isShopOfficialStore = topAds.shop?.isShop_is_official ?: false
+            item.isShopPowerMerchant = topAds.shop?.isGoldShop ?: false
+            item.shopUrl = topAds.shop?.uri ?: ""
+            item.originalPrice = topAds.product?.campaign?.originalPrice ?: ""
+            item.discountPercentage = topAds.product?.campaign?.discountPercentage ?: 0
+            item.labelGroupList = topAds.product?.labelGroupList?.let { mapLabelGroupList(it) }
+            item.freeOngkirDataView = mapFreeOngkir(topAds.product?.freeOngkir)
             item.position = position
-            item.categoryID = topAds.product.category.id
-            item.categoryBreadcrumb = topAds.product.categoryBreadcrumb
-            item.productUrl = topAds.product.uri
-            item.minOrder = topAds.product.productMinimumOrder
+            item.categoryID = topAds.product?.category?.id ?: 0
+            item.categoryBreadcrumb = topAds.product?.categoryBreadcrumb
+            item.productUrl = topAds.product?.uri ?: ""
+            item.minOrder = topAds.product?.productMinimumOrder ?: 0
             item.dimension90 = dimension90
-            item.applink = topAds.applinks
-            item.customVideoURL = topAds.product.customVideoUrl
+            item.applink = topAds.applinks ?: ""
+            item.customVideoURL = topAds.product?.customVideoUrl ?: ""
             item.productListType = productListType
             item.dimension131 = externalReference
             return item
@@ -176,20 +177,23 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
 
         private fun mapBadges(badges: List<Badge>): List<BadgeItemDataView> {
             return badges.map { badge ->
-                BadgeItemDataView(badge.imageUrl, badge.title, badge.isShow)
+                BadgeItemDataView(badge.imageUrl ?: "", badge.title ?: "", badge.isShow ?: false)
             }
         }
 
         private fun mapLabelGroupList(labelGroupList: List<LabelGroup>): List<LabelGroupDataView> {
             return labelGroupList.map { labelGroup ->
                 LabelGroupDataView(
-                    labelGroup.position, labelGroup.type, labelGroup.title, labelGroup.imageUrl
+                    labelGroup.position ?: "0",
+                    labelGroup.type ?: "",
+                    labelGroup.title ?: "",
+                    labelGroup.imageUrl ?: ""
                 )
             }
         }
 
-        private fun mapFreeOngkir(freeOngkir: FreeOngkir): FreeOngkirDataView {
-            return FreeOngkirDataView(freeOngkir.isActive, freeOngkir.imageUrl)
+        private fun mapFreeOngkir(freeOngkir: FreeOngkir?): FreeOngkirDataView {
+            return FreeOngkirDataView(freeOngkir?.isActive ?: false, freeOngkir?.imageUrl ?: "")
         }
     }
 }

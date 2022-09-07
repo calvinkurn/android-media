@@ -1,34 +1,13 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-/**
- * Author errysuprayogi on 04,December,2018
- */
-public class WishlistModel {
-
+class WishlistModel {
     @SerializedName("data")
-    private Data data;
+    var data: Data? = null
 
-    public Data getData() {
-        return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
-    }
-
-    public static class Data {
-
+    class Data {
         @SerializedName("success")
-        private boolean success;
-
-        public boolean isSuccess() {
-            return success;
-        }
-
-        public void setSuccess(boolean success) {
-            this.success = success;
-        }
+        var isSuccess = false
     }
 }

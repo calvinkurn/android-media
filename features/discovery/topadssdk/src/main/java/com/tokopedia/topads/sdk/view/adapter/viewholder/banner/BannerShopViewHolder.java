@@ -24,7 +24,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel> {
 
     @LayoutRes
-    public static int LAYOUT = R.layout.layout_ads_banner_shop_a;
+    public static int LAYOUT = com.tokopedia.topads.sdk.R.layout.layout_ads_banner_shop_a;
     private static final String TAG = BannerShopViewHolder.class.getSimpleName();
     private TextView descriptionTxt;
     private TextView ctaTxt;
@@ -80,7 +80,10 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 }
             }
             if(shopImage!=null){
-                Glide.with(shopImage).load(cpm.getCpmShop().getImageShop().getsEcs()).into(shopImage);
+                if (cpm.getCpmShop().getImageShop().getSEcs() != null) {
+                    Glide.with(shopImage).load(cpm.getCpmShop().getImageShop().getSEcs()).into(shopImage);
+                }
+
             }
             if(shopName!=null){
                 shopName.setText(cpm.getCpmShop().getName());

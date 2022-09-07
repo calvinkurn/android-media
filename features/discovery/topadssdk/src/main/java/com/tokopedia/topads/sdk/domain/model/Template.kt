@@ -1,77 +1,58 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-/**
- * Author errysuprayogi on 08,March,2019
- */
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
-import com.google.gson.annotations.SerializedName;
+private const val KEY_NAME = "name"
+private const val KEY_IS_AD = "is_ad"
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-public class Template implements Parcelable {
-
-
-    private static final String KEY_NAME = "name";
-    private static final String KEY_IS_AD = "is_ad";
-
+data class Template(
     @SerializedName(KEY_NAME)
-    private String name = "";
+    var name: String? = "",
+
     @SerializedName(KEY_IS_AD)
-    private boolean isAd;
+    var isIsAd: Boolean = false
+) : Parcelable {
 
-    public Template(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_NAME)) {
-            setName(object.getString(KEY_NAME));
+
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readByte() != 0.toByte()
+    ) {
+    }
+
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull(KEY_NAME)) {
+            name = jSONObject.getString(KEY_NAME)
         }
-        if(!object.isNull(KEY_IS_AD)) {
-            setIsAd(object.getBoolean(KEY_IS_AD));
+        if (!jSONObject.isNull(KEY_IS_AD)) {
+            isIsAd = (jSONObject.getBoolean(KEY_IS_AD))
         }
     }
 
-    protected Template(Parcel in) {
-        name = in.readString();
-        isAd = in.readByte() != 0;
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(name)
+        dest.writeByte((if (isIsAd) 1 else 0).toByte())
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeByte((byte) (isAd ? 1 : 0));
+    override fun describeContents(): Int {
+        return 0
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+    companion object {
 
-    public static final Creator<Template> CREATOR = new Creator<Template>() {
-        @Override
-        public Template createFromParcel(Parcel in) {
-            return new Template(in);
+        @JvmField
+        val CREATOR: Parcelable.Creator<Template> = object : Parcelable.Creator<Template> {
+            override fun createFromParcel(parcel: Parcel): Template {
+                return Template(parcel)
+            }
+
+            override fun newArray(size: Int): Array<Template?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public Template[] newArray(int size) {
-            return new Template[size];
-        }
-    };
-
-    public String getName() {
-        return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isIsAd() {
-        return isAd;
-    }
-
-    public void setIsAd(boolean isAd) {
-        this.isAd = isAd;
-    }
 }

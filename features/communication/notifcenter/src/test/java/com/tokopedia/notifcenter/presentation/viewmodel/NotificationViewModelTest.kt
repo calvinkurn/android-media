@@ -1080,7 +1080,7 @@ class NotificationViewModelTest {
         val testCallback: ((Boolean, Throwable?) -> Unit) = mockk(relaxed = true)
         val expectedResponse = WishlistModel().apply {
             val successData = WishlistModel.Data()
-            successData.setSuccess(true)
+            successData.isSuccess = true
             data = successData
         }
         every {

@@ -4,7 +4,6 @@ import android.view.View;
 
 import androidx.annotation.LayoutRes;
 
-import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
@@ -17,7 +16,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMore
 public class BannerShowMoreViewHolder extends AbstractViewHolder<BannerShopViewMoreModel> {
 
     @LayoutRes
-    public static int LAYOUT = R.layout.layout_ads_banner_shop_a_more;
+    public static int LAYOUT = com.tokopedia.topads.sdk.R.layout.layout_ads_banner_shop_a_more;
     private static final String className = BannerShowMoreViewHolder.class.getSimpleName();
     private final TopAdsBannerClickListener topAdsBannerClickListener;
 

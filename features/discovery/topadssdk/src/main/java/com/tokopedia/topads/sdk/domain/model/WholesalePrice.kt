@@ -1,98 +1,70 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import org.json.JSONObject
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+private const val KEY_QUANTITY_MIN = "quantity_min_format"
+private const val KEY_QUANTITY_MAX = "quantity_max_format"
+private const val KEY_PRICE = "price_format"
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-/**
- * Created by errysuprayogi on 3/27/17.
- */
-public class WholesalePrice implements Parcelable {
-
-    private static final String KEY_QUANTITY_MIN = "quantity_min_format";
-    private static final String KEY_QUANTITY_MAX = "quantity_max_format";
-    private static final String KEY_PRICE = "price_format";
-
+data class WholesalePrice(
     @SerializedName(KEY_QUANTITY_MIN)
     @Expose
-    private String quantityMinFormat = "";
+    var quantityMinFormat: String? = "",
 
     @SerializedName(KEY_QUANTITY_MAX)
     @Expose
-    private String quantityMaxFormat = "";
+    var quantityMaxFormat: String? = "",
 
     @SerializedName(KEY_PRICE)
     @Expose
-    private String priceFormat = "";
+    var priceFormat: String? = ""
+) : Parcelable {
 
-    public WholesalePrice(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_QUANTITY_MIN)){
-            setQuantityMinFormat(object.getString(KEY_QUANTITY_MIN));
+
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull(KEY_QUANTITY_MIN)) {
+            quantityMinFormat = jSONObject.getString(KEY_QUANTITY_MIN)
         }
-        if(!object.isNull(KEY_QUANTITY_MAX)){
-            setQuantityMaxFormat(object.getString(KEY_QUANTITY_MAX));
+        if (!jSONObject.isNull(KEY_QUANTITY_MAX)) {
+            quantityMaxFormat = jSONObject.getString(KEY_QUANTITY_MAX)
         }
-        if(!object.isNull(KEY_PRICE)){
-            setPriceFormat(object.getString(KEY_PRICE));
+        if (!jSONObject.isNull(KEY_PRICE)) {
+            priceFormat = jSONObject.getString(KEY_PRICE)
         }
     }
 
-    protected WholesalePrice(Parcel in) {
-        quantityMinFormat = in.readString();
-        quantityMaxFormat = in.readString();
-        priceFormat = in.readString();
+    constructor(parcel: Parcel) : this() {
+        quantityMinFormat = parcel.readString()
+        quantityMaxFormat = parcel.readString()
+        priceFormat = parcel.readString()
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(quantityMinFormat);
-        dest.writeString(quantityMaxFormat);
-        dest.writeString(priceFormat);
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(quantityMinFormat)
+        parcel.writeString(quantityMaxFormat)
+        parcel.writeString(priceFormat)
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public static final Creator<WholesalePrice> CREATOR = new Creator<WholesalePrice>() {
-        @Override
-        public WholesalePrice createFromParcel(Parcel in) {
-            return new WholesalePrice(in);
-        }
+    companion object {
 
-        @Override
-        public WholesalePrice[] newArray(int size) {
-            return new WholesalePrice[size];
-        }
-    };
+        @JvmField
+        val CREATOR: Parcelable.Creator<WholesalePrice> =
+            object : Parcelable.Creator<WholesalePrice> {
+                override fun createFromParcel(parcel: Parcel): WholesalePrice {
+                    return WholesalePrice(parcel)
+                }
 
-    public String getQuantityMinFormat() {
-        return quantityMinFormat;
-    }
-
-    public void setQuantityMinFormat(String quantityMinFormat) {
-        this.quantityMinFormat = quantityMinFormat;
-    }
-
-    public String getQuantityMaxFormat() {
-        return quantityMaxFormat;
-    }
-
-    public void setQuantityMaxFormat(String quantityMaxFormat) {
-        this.quantityMaxFormat = quantityMaxFormat;
-    }
-
-    public String getPriceFormat() {
-        return priceFormat;
-    }
-
-    public void setPriceFormat(String priceFormat) {
-        this.priceFormat = priceFormat;
+                override fun newArray(size: Int): Array<WholesalePrice?> {
+                    return arrayOfNulls(size)
+                }
+            }
     }
 }

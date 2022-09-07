@@ -1,8 +1,6 @@
 package com.tokopedia.search.result.product.cpm
 
-import android.app.Activity
 import android.content.Context
-import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.utils.contextprovider.ContextProvider

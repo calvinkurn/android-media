@@ -1,144 +1,93 @@
-package com.tokopedia.topads.sdk.domain.model;
+package com.tokopedia.topads.sdk.domain.model
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcel
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
+import org.json.JSONObject
 
-import com.google.gson.annotations.SerializedName;
-import com.tokopedia.kotlin.model.ImpressHolder;
+private const val KEY_COVER = "cover"
+private const val KEY_S_URL = "s_url"
+private const val KEY_XS_URL = "xs_url"
+private const val KEY_COVER_ECS = "cover_ecs"
+private const val KEY_S_ECS = "s_ecs"
+private const val KEY_XS_ECS = "xs_ecs"
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-/**
- * Created by errysuprayogi on 3/27/17.
- */
-public class ImageShop extends ImpressHolder implements Parcelable {
-
-    private static final String KEY_COVER = "cover";
-    private static final String KEY_S_URL = "s_url";
-    private static final String KEY_XS_URL = "xs_url";
-    private static final String KEY_COVER_ECS = "cover_ecs";
-    private static final String KEY_S_ECS = "s_ecs";
-    private static final String KEY_XS_ECS = "xs_ecs";
-
+data class ImageShop(
     @SerializedName(KEY_COVER)
-    private String cover = "";
+    var cover: String? = "",
+
     @SerializedName(KEY_S_URL)
-    private String sUrl = "";
+    var sUrl: String? = "",
+
     @SerializedName(KEY_XS_URL)
-    private String xsUrl = "";
+    var xsUrl: String? = "",
+
     @SerializedName(KEY_COVER_ECS)
-    private String coverEcs = "";
+    var coverEcs: String? = "",
+
     @SerializedName(KEY_S_ECS)
-    private String sEcs = "";
+    var sEcs: String? = "",
+
     @SerializedName(KEY_XS_ECS)
-    private String xsEcs = "";
+    var xsEcs: String? = ""
+) : ImpressHolder(), Parcelable {
 
-    public ImageShop() {
-    }
 
-    public ImageShop(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_COVER)) {
-            setCover(object.getString(KEY_COVER));
+    constructor(jSONObject: JSONObject) : this() {
+        if (!jSONObject.isNull(KEY_COVER)) {
+            cover = jSONObject.getString(KEY_COVER)
         }
-        if(!object.isNull(KEY_S_URL)) {
-            setsUrl(object.getString(KEY_S_URL));
+        if (!jSONObject.isNull(KEY_S_URL)) {
+            sUrl = (jSONObject.getString(KEY_S_URL))
         }
-        if(!object.isNull(KEY_XS_URL)) {
-            setXsUrl(object.getString(KEY_XS_URL));
+        if (!jSONObject.isNull(KEY_XS_URL)) {
+            xsUrl = jSONObject.getString(KEY_XS_URL)
         }
-        if(!object.isNull(KEY_COVER_ECS)) {
-            setCoverEcs(object.getString(KEY_COVER_ECS));
+        if (!jSONObject.isNull(KEY_COVER_ECS)) {
+            coverEcs = jSONObject.getString(KEY_COVER_ECS)
         }
-        if(!object.isNull(KEY_S_ECS)) {
-            setsEcs(object.getString(KEY_S_ECS));
+        if (!jSONObject.isNull(KEY_S_ECS)) {
+            sEcs = (jSONObject.getString(KEY_S_ECS))
         }
-        if(!object.isNull(KEY_XS_ECS)) {
-            setXsEcs(object.getString(KEY_XS_ECS));
+        if (!jSONObject.isNull(KEY_XS_ECS)) {
+            xsEcs = jSONObject.getString(KEY_XS_ECS)
         }
     }
 
-    protected ImageShop(Parcel in) {
-        cover = in.readString();
-        sUrl = in.readString();
-        xsUrl = in.readString();
-        coverEcs = in.readString();
-        sEcs = in.readString();
-        xsEcs = in.readString();
+    constructor(parcel: Parcel) : this() {
+        cover = parcel.readString()
+        sUrl = parcel.readString()
+        xsUrl = parcel.readString()
+        coverEcs = parcel.readString()
+        sEcs = parcel.readString()
+        xsEcs = parcel.readString()
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(cover);
-        dest.writeString(sUrl);
-        dest.writeString(xsUrl);
-        dest.writeString(coverEcs);
-        dest.writeString(sEcs);
-        dest.writeString(xsEcs);
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(cover)
+        dest.writeString(sUrl)
+        dest.writeString(xsUrl)
+        dest.writeString(coverEcs)
+        dest.writeString(sEcs)
+        dest.writeString(xsEcs)
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    override fun describeContents(): Int {
+        return 0
     }
 
-    public static final Creator<ImageShop> CREATOR = new Creator<ImageShop>() {
-        @Override
-        public ImageShop createFromParcel(Parcel in) {
-            return new ImageShop(in);
+    companion object {
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<ImageShop> = object : Parcelable.Creator<ImageShop> {
+            override fun createFromParcel(parcel: Parcel): ImageShop {
+                return ImageShop(parcel)
+            }
+
+            override fun newArray(size: Int): Array<ImageShop?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        @Override
-        public ImageShop[] newArray(int size) {
-            return new ImageShop[size];
-        }
-    };
-
-    public String getCover() {
-        return cover;
-    }
-
-    public void setCover(String cover) {
-        this.cover = cover;
-    }
-
-    public String getsUrl() {
-        return sUrl;
-    }
-
-    public void setsUrl(String sUrl) {
-        this.sUrl = sUrl;
-    }
-
-    public String getXsUrl() {
-        return xsUrl;
-    }
-
-    public void setXsUrl(String xsUrl) {
-        this.xsUrl = xsUrl;
-    }
-
-    public String getCoverEcs() {
-        return coverEcs;
-    }
-
-    public void setCoverEcs(String coverEcs) {
-        this.coverEcs = coverEcs;
-    }
-
-    public String getsEcs() {
-        return sEcs;
-    }
-
-    public void setsEcs(String sEcs) {
-        this.sEcs = sEcs;
-    }
-
-    public String getXsEcs() {
-        return xsEcs;
-    }
-
-    public void setXsEcs(String xsEcs) {
-        this.xsEcs = xsEcs;
     }
 }
