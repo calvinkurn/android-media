@@ -8,10 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewTreeLifecycleOwner
@@ -23,6 +22,7 @@ import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.di.MerchantReportComponent
 import com.tokopedia.report.view.activity.ProductReportFormActivity
 import com.tokopedia.report.view.adapter.ReportReasonAdapter
+import com.tokopedia.report.view.fragment.components.ProductReportComposeContent
 import com.tokopedia.report.view.util.extensions.argsString
 import com.tokopedia.report.view.viewmodel.ProductReportViewModel
 import javax.inject.Inject
@@ -85,15 +85,15 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
         initViewTreeOwners()
 
         return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(
-                ViewCompositionStrategy.DisposeOnLifecycleDestroyed(viewLifecycleOwner)
-            )
-
             setContent {
+                val uiState = viewModel.uiState.collectAsState()
+
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    Text(text = "Hello Tokopedia")
+                    ProductReportComposeContent(
+                        uiState = uiState.value
+                    )
                 }
             }
         }
