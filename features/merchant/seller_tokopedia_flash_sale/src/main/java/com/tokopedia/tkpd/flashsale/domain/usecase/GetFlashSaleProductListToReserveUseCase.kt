@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.flashsale.domain.usecase
 
-import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -12,12 +11,13 @@ import com.tokopedia.tkpd.flashsale.data.mapper.GetFlashSaleProductListToReserve
 import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleProductListToReserveRequest
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleProductListToReserveResponse
+import com.tokopedia.tkpd.flashsale.domain.entity.ProductToReserve
 import javax.inject.Inject
 
 class GetFlashSaleProductListToReserveUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: GetFlashSaleProductListToReserveMapper
-) : GraphqlUseCase<List<ChooseProductItem>>(repository) {
+) : GraphqlUseCase<ProductToReserve>(repository) {
 
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -70,7 +70,7 @@ class GetFlashSaleProductListToReserveUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(param: Param): List<ChooseProductItem> {
+    suspend fun execute(param: Param): ProductToReserve {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetFlashSaleProductListToReserveResponse>()

@@ -22,8 +22,16 @@ object ChooseProductUiMapper {
     fun getProductList(list: List<DelegateAdapterItem>) = list.filterIsInstance<ChooseProductItem>()
 
     fun getSelectedProduct(list: List<DelegateAdapterItem>): List<DelegateAdapterItem> {
-        return getProductList(list).filter { it.isSelected }
+        return getProductList(list).filter { it.isSelected && it.isEnabled }
     }
 
     fun getSelectedProductCount(list: List<DelegateAdapterItem>) = getSelectedProduct(list).size
+
+    fun getMaxSelectedProduct(categories: List<CategorySelection>): Int {
+        var max = 0
+        categories.forEach {
+            max += it.selectionCountMax
+        }
+        return max
+    }
 }

@@ -26,6 +26,9 @@ class ChooseProductViewModel @Inject constructor(
     private val _productList = MutableLiveData<List<ChooseProductItem>>()
     val productList: LiveData<List<ChooseProductItem>> get() = _productList
 
+    private val _preselectedProductCount = MutableLiveData<Int>()
+    val preselectedProductCount: LiveData<Int> get() = _preselectedProductCount
+
     private val _criteriaList = MutableLiveData<List<CategorySelection>>()
     val criteriaList: LiveData<List<CategorySelection>> get() = _criteriaList
 
@@ -36,6 +39,10 @@ class ChooseProductViewModel @Inject constructor(
 
     val categoryAllList = Transformations.map(criteriaList) {
         ChooseProductUiMapper.collectAllCategory(it)
+    }
+
+    val maxSelectedProduct = Transformations.map(criteriaList) {
+        ChooseProductUiMapper.getMaxSelectedProduct(it)
     }
 
     val selectedProductCount = Transformations.map(_selectedProductList) {
@@ -60,7 +67,8 @@ class ChooseProductViewModel @Inject constructor(
                     filterCategoryIds = filterCategory
                 )
                 val result = getFlashSaleProductListToReserveUseCase.execute(param)
-                _productList.postValue(result)
+                _productList.postValue(result.productList)
+                _preselectedProductCount.postValue(result.selectedProductCount)
             },
             onError = { error ->
                 _error.postValue(error)

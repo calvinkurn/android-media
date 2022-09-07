@@ -4,12 +4,20 @@ import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleProductListToReserveResponse
+import com.tokopedia.tkpd.flashsale.domain.entity.ProductToReserve
 import javax.inject.Inject
 
 class GetFlashSaleProductListToReserveMapper @Inject constructor() {
 
-    fun map(response: GetFlashSaleProductListToReserveResponse) = response.getFlashSaleProductListToReserve.productList.map {
+    fun map(response: GetFlashSaleProductListToReserveResponse) = ProductToReserve(
+        selectedProductIds = response.getFlashSaleProductListToReserve.submittedProductIds,
+        selectedProductCount = response.getFlashSaleProductListToReserve.submittedProductIds.size,
+        productList = mapProduct(response),
+    )
+
+    fun mapProduct(response: GetFlashSaleProductListToReserveResponse) = response.getFlashSaleProductListToReserve.productList.map {
         val submittedProductIds = response.getFlashSaleProductListToReserve.submittedProductIds
+        val isSubmitted = submittedProductIds.any { productId -> productId == it.productId }
         ChooseProductItem(
             productId = it.productId.toString(),
             productName = it.name,
@@ -21,9 +29,9 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor() {
             errorMessage = it.disableDetail.disableTitle,
             hasVariant = it.variantMeta.countVariants.isMoreThanZero(),
             isError = it.disableDetail.isDisabled,
-            isEnabled = !it.disableDetail.isDisabled,
+            isEnabled = !it.disableDetail.isDisabled && !isSubmitted, // only enable not submitted data
             showCheckDetailCta = it.disableDetail.showCriteriaCheckingCta,
-            isSelected = submittedProductIds.any { productId -> productId == it.productId },
+            isSelected = isSubmitted
         )
     }
 
