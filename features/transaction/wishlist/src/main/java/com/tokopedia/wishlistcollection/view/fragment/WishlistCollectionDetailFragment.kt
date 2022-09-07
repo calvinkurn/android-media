@@ -185,6 +185,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var _isDeleteOnly = false
     private var collectionIdDestination = ""
     private var collectionNameDestination = ""
+    private var isAturMode = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -260,6 +261,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val OPTION_CLEANER_MANUAL = "sendiri"
         private const val OPTION_CLEANER_AUTOMATIC = "otomatis"
         private const val TOTAL_LOADER = 5
+        private const val COLLECTION_ITEMS_EMPTY = "COLLECTION_ITEMS_EMPTY"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -500,12 +502,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     hideLoader()
                     finishRefresh()
                     result.data.getWishlistCollectionItems.let { collectionDetail ->
-                        toolbarTitle = collectionDetail.headerTitle
-                        if (isBulkAddShow) {
-                            updateCustomToolbarSubTitle(collectionNameDestination)
-                        } else {
-                            updateToolbarTitle(toolbarTitle)
-                        }
                         rvScrollListener.setHasNextPage(collectionDetail.hasNextPage)
 
                         if (collectionDetail.showDeleteProgress) {
@@ -520,6 +516,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         }
 
                         if (collectionDetail.totalData <= 0) {
+                            if (isAturMode && collectionDetail.emptyState.type == COLLECTION_ITEMS_EMPTY) {
+                                isAturMode = false
+                                clearTextSearchBar()
+                                hideSearchBar()
+                                clearFilters()
+                                hideFilter()
+                            }
                             binding?.wishlistCollectionDetailStickyCountManageLabel?.rlWishlistCollectionDetailManage?.gone()
                             hideBottomButtonLayout()
                             if (paramGetCollectionItems.query.isEmpty() && paramGetCollectionItems.sortFilters.isEmpty()) {
@@ -549,6 +552,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             if (!collectionDetail.showDeleteProgress) updateTotalLabel(
                                 collectionDetail.totalData
                             )
+                        }
+
+                        toolbarTitle = collectionDetail.headerTitle
+                        if (isBulkAddShow) {
+                            updateCustomToolbarSubTitle(collectionNameDestination)
+                        } else {
+                            updateToolbarTitle(toolbarTitle)
                         }
 
                         if (currPage == 1 && collectionDetail.sortFilters.isNotEmpty()) {
@@ -951,9 +961,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun updateToolbarTitle(title: String) {
         collectionName = title
+        var toolbarTitle = title
+        if (isAturMode) toolbarTitle = "${getString(Rv2.string.wishlist_manage_label)} $title"
         binding?.run {
             wishlistCollectionDetailNavtoolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE)
-            wishlistCollectionDetailNavtoolbar.setToolbarTitle(title)
+            wishlistCollectionDetailNavtoolbar.setToolbarTitle(toolbarTitle)
         }
     }
 
@@ -1262,6 +1274,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun hideSearchBar() {
         binding?.run {
             wishlistCollectionDetailSearchbar.gone()
+        }
+    }
+
+    private fun clearTextSearchBar() {
+        binding?.run {
+            wishlistCollectionDetailSearchbar.searchBarTextField.text.clear()
         }
     }
 
@@ -2317,6 +2335,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun doResetFilter() {
+        clearFilters()
+        doRefresh()
+    }
+
+    private fun clearFilters() {
         binding?.run {
             wishlistCollectionDetailSortFilter.run {
                 resetAllFilters()
@@ -2331,7 +2354,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
         }
-        doRefresh()
     }
 
     private fun removeFilter(filterItem: WishlistV2Response.Data.WishlistV2.SortFiltersItem) {
@@ -2449,6 +2471,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.gone()
                 bottomButtonLayout.visible()
                 if (!isDeleteOnly) {
+                    isAturMode = true
                     if (collectionId == "0") {
                         containerAddBulk.gone()
                         containerDeleteCollectionDetail.gone()
@@ -2496,6 +2519,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
         } else {
+            isAturMode = false
             collectionItemsAdapter.hideCheckbox()
             setSwipeRefreshLayout()
             binding?.run {
