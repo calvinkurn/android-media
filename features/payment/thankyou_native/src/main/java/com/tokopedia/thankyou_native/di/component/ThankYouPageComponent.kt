@@ -15,11 +15,13 @@ import com.tokopedia.thankyou_native.presentation.fragment.ToolTipInfoBottomShee
 import dagger.Component
 
 @ThankYouPageScope
-@Component(modules =
-[ThankYouPageModule::class,
-    ViewModelModule::class,
-    GqlQueryModule::class],
-        dependencies = [BaseAppComponent::class])
+@Component(
+    modules =
+    [ThankYouPageModule::class,
+        ViewModelModule::class,
+        GqlQueryModule::class],
+    dependencies = [BaseAppComponent::class]
+)
 interface ThankYouPageComponent {
     @ApplicationContext
     fun context(): Context

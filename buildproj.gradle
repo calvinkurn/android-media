@@ -63,6 +63,7 @@ subprojects {
     project.configurations.all {
         resolutionStrategy {
             dependencySubstitution {
+                force ("org.xerial:sqlite-jdbc:3.34.0")
                 force "androidx.appcompat:appcompat:${supportLibraryVersion}"
                 force("org.objenesis:objenesis:2.6")
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib') with module(rootProject.ext.supportLibDependencies.kotlinSupport)

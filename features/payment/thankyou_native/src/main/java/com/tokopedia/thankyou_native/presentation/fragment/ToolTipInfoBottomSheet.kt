@@ -34,12 +34,12 @@ class ToolTipInfoBottomSheet : BottomSheetUnify() {
         initUI()
     }
 
-    private fun getData(){
+    private fun getData() {
         arguments?.let {
             if (it.containsKey(TOOLTIP_INFO_TITLE)) {
                 infoTitle = it.getString(TOOLTIP_INFO_TITLE) ?: ""
             }
-            if(it.containsKey(TOOLTIP_INFO_DESCRIPTION)){
+            if (it.containsKey(TOOLTIP_INFO_DESCRIPTION)) {
                 infoDescription = it.getString(TOOLTIP_INFO_DESCRIPTION) ?: ""
             }
         }
@@ -48,20 +48,31 @@ class ToolTipInfoBottomSheet : BottomSheetUnify() {
     private fun initUI() {
         val childView = LayoutInflater.from(context).inflate(
             R.layout.thank_bottomsheet_tooltip_info,
-            null, false)
+            null, false
+        )
         setChild(childView)
         setTitle(infoTitle)
         childView?.apply {
-            findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tvDescription).text=infoDescription
+            findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tvDescription).text =
+                infoDescription
         }
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bottomSheetWrapper.setPadding(MARGIN_0, bottomSheetWrapper.paddingTop, MARGIN_0, bottomSheetWrapper.paddingBottom)
+        bottomSheetWrapper.setPadding(
+            MARGIN_0,
+            bottomSheetWrapper.paddingTop,
+            MARGIN_0,
+            bottomSheetWrapper.paddingBottom
+        )
         bottomSheetAction.setMargin(marginRight = MARGIN_16.toPx())
-        bottomSheetClose.setMargin(marginLeft = MARGIN_16.toPx(), marginTop = MARGIN_4.toPx(), marginRight = MARGIN_12.toPx())
+        bottomSheetClose.setMargin(
+            marginLeft = MARGIN_16.toPx(),
+            marginTop = MARGIN_4.toPx(),
+            marginRight = MARGIN_12.toPx()
+        )
         isDragable = true
         isHideable = true
         customPeekHeight = getScreenHeight().toDp()
@@ -77,14 +88,18 @@ class ToolTipInfoBottomSheet : BottomSheetUnify() {
         private const val MARGIN_12 = 16
         private const val MARGIN_0 = 0
 
-        fun openTooltipInfoBottomSheet(activity:FragmentActivity?, infoTitle:String?,infoDescription:String?) {
+        fun openTooltipInfoBottomSheet(
+            activity: FragmentActivity?,
+            infoTitle: String?,
+            infoDescription: String?
+        ) {
             activity?.apply {
-                val invoiceBottomSheet = getToolTipInfoFragment(infoTitle,infoDescription)
+                val invoiceBottomSheet = getToolTipInfoFragment(infoTitle, infoDescription)
                 invoiceBottomSheet.show(supportFragmentManager, TAG_TOOLTIP_INFO_BOTTOM_SHEET)
             }
         }
 
-        private fun getToolTipInfoFragment(infoTitle:String?,infoDescription:String?)
+        private fun getToolTipInfoFragment(infoTitle: String?, infoDescription: String?)
                 : ToolTipInfoBottomSheet = ToolTipInfoBottomSheet().apply {
             val bundle = Bundle()
             bundle.putString(TOOLTIP_INFO_TITLE, infoTitle)
