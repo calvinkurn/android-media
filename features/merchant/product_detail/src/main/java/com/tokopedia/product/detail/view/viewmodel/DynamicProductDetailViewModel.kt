@@ -22,6 +22,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
@@ -610,11 +611,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     productId = it.basic.productID,
                     pdpSession = it.pdpSession,
                     shopId = it.basic.shopID,
-                    isTokoNow = it.basic.isTokoNow)
+                    isTokoNow = it.basic.isTokoNow
+            )
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
-            p2DataDeffered.await().let {
-                _p2Data.postValue(it)
+            p2DataDeffered.await().let { p2 ->
+                val p2Data = p2.copy(isToolbarTransparent = _toolbarTransparentState.value.orFalse())
+                _p2Data.postValue(p2Data)
             }
 
             p2LoginDeferred?.let {
