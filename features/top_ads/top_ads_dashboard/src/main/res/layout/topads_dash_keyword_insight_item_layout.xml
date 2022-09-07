@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/topads_dash_insight_key_item_tampil_potensi"
-        android:textColor="@color/topads_light_shadow"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/keywordName"
         app:typographyType="heading_6" />
