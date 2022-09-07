@@ -41,7 +41,7 @@ class EditorViewPagerAdapter(
         currentPlayer[index]?.playWhenReady = false
     }
 
-    fun isVideo(index: Int): Boolean{
+    fun isVideo(index: Int): Boolean {
         return editorList[index].isVideo
     }
 
@@ -61,7 +61,8 @@ class EditorViewPagerAdapter(
         val layout = container.inflateLayout(R.layout.viewpager_main_editor)
         layout.tag = "editor_viewpager_$position"
 
-        val filePath = editorList[position].getImageUrl()
+        val uiModel = editorList[position]
+        val filePath = uiModel.getImageUrl()
         if (isVideoFormat(filePath)) {
             val vidPreviewRef = layout.findViewById<PlayerView>(R.id.vid_main_preview)
             vidPreviewRef.visible()
@@ -78,7 +79,13 @@ class EditorViewPagerAdapter(
             val imgPreviewRef = layout.findViewById<ImageView>(R.id.img_main_preview)
             imgPreviewRef.visible()
 
-            imgPreviewRef.loadImage(filePath)
+            imgPreviewRef.loadImage(filePath) {
+                listener(onSuccess = { bitmap, _ ->
+                    bitmap?.let {
+                        uiModel.originalImageRatio = it.width.toFloat() / it.height
+                    }
+                })
+            }
         }
 
         container.addView(layout)

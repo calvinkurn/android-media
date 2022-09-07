@@ -94,7 +94,7 @@ class DetailEditorFragment @Inject constructor(
                     it
                 )?.path
 
-                if(data.isToolRemoveBackground()) {
+                if (data.isToolRemoveBackground()) {
                     data.removeBackgroundUrl = data.resultUrl
                 }
 
@@ -274,13 +274,19 @@ class DetailEditorFragment @Inject constructor(
                             }?.let {
                                 val color = ContextCompat.getColor(requireContext(), it)
 
-                                val backgroundBitmap = Bitmap.createBitmap(resultBitmap.width, resultBitmap.height, resultBitmap.config)
+                                val backgroundBitmap = Bitmap.createBitmap(
+                                    resultBitmap.width,
+                                    resultBitmap.height,
+                                    resultBitmap.config
+                                )
                                 backgroundBitmap.eraseColor(color)
 
                                 val canvas = Canvas(backgroundBitmap)
                                 canvas.drawBitmap(resultBitmap, 0f, 0f, null)
 
-                                viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(backgroundBitmap)
+                                viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(
+                                    backgroundBitmap
+                                )
                             }
 
                             isEdited = true
@@ -326,34 +332,35 @@ class DetailEditorFragment @Inject constructor(
             when (type) {
                 EditorToolType.BRIGHTNESS -> {
                     val brightnessValue = data.brightnessValue ?: DEFAULT_VALUE_BRIGHTNESS
-                    initializeBrightness(uri, this@DetailEditorFragment)
+                    initializeBrightness(uri, this@DetailEditorFragment, data.originalImageRatio)
                     brightnessComponent.setupView(brightnessValue)
                 }
                 // ==========
                 EditorToolType.REMOVE_BACKGROUND -> {
                     initializeRemoveBackground(data.resultUrl?.let {
-                            Uri.fromFile(File(it))
-                        } ?: uri,
-                        this@DetailEditorFragment
+                        Uri.fromFile(File(it))
+                    } ?: uri,
+                        this@DetailEditorFragment,
+                        data.originalImageRatio
                     )
                     removeBgComponent.setupView()
                 }
                 // ==========
                 EditorToolType.CONTRAST -> {
                     val contrastValue = data.contrastValue ?: DEFAULT_VALUE_CONTRAST
-                    initializeContrast(uri, this@DetailEditorFragment)
+                    initializeContrast(uri, this@DetailEditorFragment, data.originalImageRatio)
                     contrastComponent.setupView(contrastValue)
                 }
                 // ==========
                 EditorToolType.WATERMARK -> {
                     initializeWatermark(data.resultUrl?.let {
                         Uri.fromFile(File(it))
-                    } ?: uri, this@DetailEditorFragment)
+                    } ?: uri, this@DetailEditorFragment, data.originalImageRatio)
                     watermarkComponent.setupView()
                 }
                 // ==========
                 EditorToolType.ROTATE -> {
-                    initializeRotate(uri, this@DetailEditorFragment)
+                    initializeRotate(uri, this@DetailEditorFragment, data.originalImageRatio)
                     rotateComponent.setupView(data)
                 }
                 // ==========

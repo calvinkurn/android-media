@@ -25,9 +25,10 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
 
     val scaleNormalizeValue get() = cropImageView.scaleX * cropImageView.scaleY
 
-    fun initializeRotate(uriSource: Uri, listener: Listener) {
+    fun initializeRotate(uriSource: Uri, listener: Listener, ratio: Float) {
         val resultDestination = getUCropTempResultPath()
-        cropImageView.setImageUri(uriSource, resultDestination)
+
+        initCropView(uriSource, resultDestination, ratio)
 
         overlayView.apply {
             setDimmedColor(
@@ -44,33 +45,33 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         initListener(listener)
     }
 
-    fun initializeBrightness(uriSource: Uri, listener: Listener) {
+    fun initializeBrightness(uriSource: Uri, listener: Listener, ratio: Float) {
         val resultDestination = getUCropTempResultPath()
-        cropImageView.setImageUri(uriSource, resultDestination)
+        initCropView(uriSource, resultDestination, ratio)
         hideOverlay()
         disabledTouchEvent()
         initListener(listener)
     }
 
-    fun initializeContrast(uriSource: Uri, listener: Listener) {
+    fun initializeContrast(uriSource: Uri, listener: Listener, ratio: Float) {
         val resultDestination = getUCropTempResultPath()
-        cropImageView.setImageUri(uriSource, resultDestination)
+        initCropView(uriSource, resultDestination, ratio)
         hideOverlay()
         disabledTouchEvent()
         initListener(listener)
     }
 
-    fun initializeWatermark(uriSource: Uri, listener: Listener) {
+    fun initializeWatermark(uriSource: Uri, listener: Listener, ratio: Float) {
         val resultDestination = getUCropTempResultPath()
-        cropImageView.setImageUri(uriSource, resultDestination)
+        initCropView(uriSource, resultDestination, ratio)
         hideOverlay()
         disabledTouchEvent()
         initListener(listener)
     }
 
-    fun initializeRemoveBackground(uriSource: Uri, listener: Listener) {
+    fun initializeRemoveBackground(uriSource: Uri, listener: Listener, ratio: Float) {
         val resultDestination = getUCropTempResultPath()
-        cropImageView.setImageUri(uriSource, resultDestination)
+        initCropView(uriSource, resultDestination, ratio)
         hideOverlay()
         disabledTouchEvent()
         initListener(listener)
@@ -284,6 +285,14 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         overlayView.setCropFrameColor(Color.TRANSPARENT)
         overlayView.setCropGridColor(Color.TRANSPARENT)
         overlayView.setDimmedColor(Color.TRANSPARENT)
+    }
+
+    private fun initCropView(uriSource: Uri, resultDestination: Uri, ratio: Float) {
+        overlayView.setPadding(0, 0, 0, 0)
+        post {
+            overlayView.setTargetAspectRatio(ratio)
+            cropImageView.setImageUri(uriSource, resultDestination)
+        }
     }
 
     private fun initListener(listener: Listener) {

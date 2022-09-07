@@ -128,7 +128,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             cropAll(listData, currentProcess + 1)
         }
     }
-    
+
     override fun initObserver() {
         observeEditorParam()
         observeUpdateIndex()
@@ -161,6 +161,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 }
 
                 paramData.resultUrl = editorUiModel.getImageUrl()
+                paramData.originalImageRatio = editorUiModel.originalImageRatio
 
                 val intent = Intent(it, DetailEditorActivity::class.java).apply {
                     putExtra(DetailEditorActivity.PARAM_EDITOR_DETAIL, paramData)
@@ -224,7 +225,10 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             renderToolsIconActiveState(this)
             updateDrawerSelectionItemIcon()
 
-            renderStateChangeToast(TOAST_REDO, this.editList[this.getRedoStartIndex()].editorToolType)
+            renderStateChangeToast(
+                TOAST_REDO,
+                this.editList[this.getRedoStartIndex()].editorToolType
+            )
         }
     }
 
@@ -275,7 +279,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             editorToolComponent.setupView(it.editorToolsList)
             thumbnailDrawerComponent.setupRecyclerView(viewModel.editStateList.values.toList())
 
-            if(it.autoCropRatio != null) {
+            if (it.autoCropRatio != null) {
                 startAutoCrop()
             } else {
                 viewBinding?.viewPager?.setAdapter(viewModel.editStateList.values.toList())
