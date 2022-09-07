@@ -1232,7 +1232,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventImpressionTopAdsShop(componentDataItem: ComponentsItem, cpmData: CpmData) {
         val list = ArrayList<Map<String, Any>>()
         val listMap = HashMap<String, Any>()
-        listMap[KEY_ID] = "${cpmData.id}_${cpmData.cpm.cpmShop.id}"
+        listMap[KEY_ID] = "${cpmData.id}_${cpmData.cpm?.cpmShop?.id}"
         listMap[KEY_NAME] = "/$pagePath - $pageType - 1 - - $CPM_SHOP_PAGE_COMPONENT"
         listMap[KEY_CREATIVE] = componentDataItem.creativeName ?: EMPTY_STRING
         listMap[KEY_POSITION] = 1
@@ -1248,13 +1248,18 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
     override fun trackClickTopAdsShop(componentDataItem: ComponentsItem, cpmData: CpmData) {
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CPM_SHOP_CLICK, eventLabel = "${cpmData.id}-${cpmData.cpm.cpmShop.id}",isPageSourceRequired = false)
+        val map = createGeneralEvent(
+            eventName = EVENT_PROMO_CLICK,
+            eventAction = CPM_SHOP_CLICK,
+            eventLabel = "${cpmData.id}-${cpmData.cpm?.cpmShop?.id}",
+            isPageSourceRequired = false
+        )
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-                KEY_ID to "${cpmData.id}_${cpmData.cpm.cpmShop.id}",
-                KEY_NAME to "/$pagePath - $pageType - 1 - - $CPM_SHOP_PAGE_COMPONENT",
-                KEY_CREATIVE to (componentDataItem.creativeName ?: EMPTY_STRING),
-                KEY_POSITION to 1
+            KEY_ID to "${cpmData.id}_${cpmData.cpm?.cpmShop?.id}",
+            KEY_NAME to "/$pagePath - $pageType - 1 - - $CPM_SHOP_PAGE_COMPONENT",
+            KEY_CREATIVE to (componentDataItem.creativeName ?: EMPTY_STRING),
+            KEY_POSITION to 1
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_CLICK to mapOf(
@@ -1269,20 +1274,23 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val login = if (userLoggedIn) LOGIN else NON_LOGIN
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
-        val cpmProductList = cpmData.cpm.cpmShop.products
+        val cpmProductList = cpmData.cpm?.cpmShop?.products
 
-        if (cpmProductList.isNotEmpty() && cpmProductList.size > productPosition) {
-            val productData = cpmData.cpm.cpmShop.products[productPosition]
-            productMap[KEY_NAME] = productData.name
-            productMap[KEY_ID] = productData.id
-            productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(productData.priceFormat
-                    ?: "")
+        if (cpmProductList?.isNotEmpty() == true && cpmProductList.size > productPosition) {
+            val productData = cpmData.cpm?.cpmShop?.products?.getOrNull(productPosition)
+            productMap[KEY_NAME] = productData?.name ?: ""
+            productMap[KEY_ID] = productData?.id ?: ""
+            productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(
+                productData?.priceFormat
+                    ?: ""
+            )
             productMap[KEY_BRAND] = NONE_OTHER
             productMap[KEY_ITEM_CATEGORY] = NONE_OTHER
             productMap[KEY_VARIANT] = NONE_OTHER
             productMap[KEY_POSITION] = productPosition + 1
             productMap[dimension140] = sourceIdentifier
-            productMap[LIST] = "/$pagePath - $pageType - ${componentPosition + 1} - $login - ${componentDataItem.name} - ${cpmData.id}"
+            productMap[LIST] =
+                "/$pagePath - $pageType - ${componentPosition + 1} - $login - ${componentDataItem.name} - ${cpmData.id}"
             list.add(productMap)
         }
 
@@ -1303,34 +1311,43 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
         var productID = ""
-        val cpmProductList = cpmData.cpm.cpmShop.products
-        productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${componentPosition + 1} - $login - ${componentDataItem.name} - ${cpmData.id}"
+        val cpmProductList = cpmData.cpm?.cpmShop?.products
+        productCardItemList =
+            "/${removeDashPageIdentifier(pagePath)} - $pageType - ${componentPosition + 1} - $login - ${componentDataItem.name} - ${cpmData.id}"
 
-        if (cpmProductList.isNotEmpty() && cpmProductList.size > productPosition) {
-            val productData = cpmData.cpm.cpmShop.products[productPosition]
-            productID = productData.id
-            productMap[KEY_NAME] = productData.name
-            productMap[KEY_ID] = productData.id
-            productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(productData.priceFormat
-                    ?: "")
+        if (cpmProductList?.isNotEmpty() == true && cpmProductList?.size ?: 0 > productPosition) {
+            val productData = cpmData.cpm?.cpmShop?.products?.getOrNull(productPosition)
+            productID = productData?.id ?: ""
+            productMap[KEY_NAME] = productData?.name ?: ""
+            productMap[KEY_ID] = productData?.id ?: ""
+            productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(
+                productData?.priceFormat
+                    ?: ""
+            )
             productMap[KEY_BRAND] = NONE_OTHER
             productMap[KEY_ITEM_CATEGORY] = NONE_OTHER
             productMap[KEY_VARIANT] = NONE_OTHER
             productMap[KEY_POSITION] = productPosition + 1
             productMap[dimension140] = sourceIdentifier
-            productMap[LIST] = "/$pagePath - $pageType - ${componentPosition + 1} - $login - ${componentDataItem.name} - ${cpmData.id}"
+            productMap[LIST] =
+                "/$pagePath - $pageType - ${componentPosition + 1} - $login - ${componentDataItem.name} - ${cpmData.id}"
             list.add(productMap)
         }
 
         val eCommerce = mapOf(
-                CLICK to mapOf(
-                        ACTION_FIELD to mapOf(
-                                LIST to productCardItemList
-                        ),
-                        PRODUCTS to list
-                )
+            CLICK to mapOf(
+                ACTION_FIELD to mapOf(
+                    LIST to productCardItemList
+                ),
+                PRODUCTS to list
+            )
         )
-        val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = CLICK_PRODUCT_LIST, eventLabel = "${cpmData.id}-${cpmData.cpm.cpmShop.id}-$productID",isPageSourceRequired = false)
+        val map = createGeneralEvent(
+            eventName = EVENT_PRODUCT_CLICK,
+            eventAction = CLICK_PRODUCT_LIST,
+            eventLabel = "${cpmData.id}-${cpmData.cpm?.cpmShop?.id}-$productID",
+            isPageSourceRequired = false
+        )
         map[KEY_CAMPAIGN_CODE] = campaignCode
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
