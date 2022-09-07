@@ -235,6 +235,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
         const val REQUEST_CODE_LOGIN = 288
         const val REQUEST_CODE_GO_TO_PDP = 788
+        const val REQUEST_CODE_GO_TO_COLLECTION_DETAIL = 388
         const val REQUEST_CODE_GO_TO_SEMUA_WISHLIST = 1288
         private const val PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2"
         const val PARAM_HOME = "home"
@@ -1866,7 +1867,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$collectionId"
         val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
         intentCollectionDetail.putExtra(EXTRA_IS_BULK_ADD, false)
-        startActivity(intentCollectionDetail)
+        startActivityForResult(intentCollectionDetail, REQUEST_CODE_GO_TO_COLLECTION_DETAIL)
     }
 
     override fun onCariBarangClicked() {
@@ -2624,6 +2625,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             } else {
                 messageToaster?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
             }
+        } else if (requestCode == REQUEST_CODE_GO_TO_COLLECTION_DETAIL) {
+            doRefresh()
         }
     }
 
