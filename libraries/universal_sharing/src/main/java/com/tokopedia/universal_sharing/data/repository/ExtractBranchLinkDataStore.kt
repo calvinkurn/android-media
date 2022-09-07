@@ -4,8 +4,9 @@ import com.tokopedia.network.authentication.AuthKey.Companion.KEY_BRANCHIO
 import com.tokopedia.universal_sharing.data.api.ExtractBranchLinkApi
 import com.tokopedia.universal_sharing.data.model.BranchLinkResponse
 import retrofit2.Response
+import javax.inject.Inject
 
-class ExtractBranchLinkDataStore(private val api: ExtractBranchLinkApi): ExtractBranchLinkRepository {
+class ExtractBranchLinkDataStore @Inject constructor(private val api: ExtractBranchLinkApi): ExtractBranchLinkRepository {
     override suspend fun getDeeplink(branchUrl: String): Response<BranchLinkResponse> {
         return api.getDeeplink(BRANCH_URL, branchUrl, KEY_BRANCHIO)
     }
