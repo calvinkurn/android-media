@@ -14,13 +14,24 @@
         app:sort_filter_relationship="AND"
         app:sort_filter_type="advanced"/>
 
+    <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+        android:id="@+id/address_tokofood_search_result"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/filter_tokofood_search_result"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_tokofood_search_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintVertical_bias="0"
-        app:layout_constraintTop_toBottomOf="@id/filter_tokofood_search_result"
+        app:layout_constraintTop_toBottomOf="@id/address_tokofood_search_result"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

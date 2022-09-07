@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +26,8 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
@@ -58,7 +61,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     MerchantSearchEmptyWithoutFilterViewHolder.Listener,
     SortFilterBottomSheet.Callback,
     FilterGeneralDetailBottomSheet.Callback,
-    TokofoodQuickSortBottomSheet.Listener {
+    TokofoodQuickSortBottomSheet.Listener,
+    ChooseAddressWidget.ChooseAddressWidgetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -83,6 +87,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private var tokofoodSearchFilterTab: TokofoodSearchFilterTab? = null
     private var searchParameter: SearchParameter? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
+    private var localCacheModel: LocalCacheModel? = null
 
     private var keyword: String = ""
 
@@ -100,6 +105,14 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         setupLayout()
         collectFlows()
         setLocalCacheModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isChooseAddressWidgetDataUpdated()) {
+            setLocalCacheModel()
+            viewModel.getInitialMerchantSearchResult(searchParameter)
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -180,6 +193,22 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         viewModel.applySortSelected(uiModel)
     }
 
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        viewModel.getInitialMerchantSearchResult(searchParameter)
+    }
+
+    override fun onLocalizingAddressUpdatedFromBackground() {}
+
+    override fun onLocalizingAddressServerDown() {}
+
+    override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {}
+
+    override fun getLocalizingAddressHostFragment(): Fragment = this
+
+    override fun getLocalizingAddressHostSourceData(): String = SOURCE
+
+    override fun onLocalizingAddressLoginSuccess() {}
+
     override fun onDestroyView() {
         super.onDestroyView()
         tokofoodSearchFilterTab = null
@@ -199,6 +228,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun setupLayout() {
         setupAdapter()
+        setupAddressWidget()
     }
 
     private fun setupAdapter() {
@@ -208,6 +238,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                 layoutManager = LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
             }
         }
+    }
+
+    private fun setupAddressWidget() {
+        binding?.addressTokofoodSearchResult?.bindChooseAddress(this)
     }
 
     private fun collectFlows() {
@@ -294,8 +328,21 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun setLocalCacheModel() {
         context?.let {
             val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
+            this.localCacheModel = localCacheModel
             viewModel.setLocalCacheModel(localCacheModel)
         }
+    }
+
+    private fun isChooseAddressWidgetDataUpdated(): Boolean {
+        localCacheModel?.let {
+            context?.apply {
+                return ChooseAddressUtils.isLocalizingAddressHasUpdated(
+                    this,
+                    it
+                )
+            }
+        }
+        return false
     }
 
     private fun applySearchFilterTab(uiModels: List<TokofoodSortFilterItemUiModel>) {
@@ -425,6 +472,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                 )
             RouteManager.route(it, discoveryApplink)
         }
+    }
+
+    companion object {
+        private const val SOURCE = "tokofood"
     }
 
 }
