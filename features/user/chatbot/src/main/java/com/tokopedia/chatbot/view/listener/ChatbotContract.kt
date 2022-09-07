@@ -152,14 +152,6 @@ interface ChatbotContract {
 
         fun getValuesForArticleEntry(uri: Uri): Map<String, String>
 
-//        suspend fun uploadVideo(
-//            videoModel: VideoUploadUiModel,
-//            sourceId: String,
-//            startTime: String,
-//            messageId: String,
-//            onErrorVideoUpload: (String,VideoUploadUiModel) -> Unit
-//        )
-
         fun sendVideoAttachment(filePath: String, startTime: String, messageId: String)
 
         fun cancelVideoUpload(file: String, sourceId: String, onError: (Throwable) -> Unit)
