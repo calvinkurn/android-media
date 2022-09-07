@@ -27,7 +27,7 @@ class EngagementWidgetViewHolder(
             item.info.voucherStock <= 20 -> {
                 getString(playR.string.play_voucher_widget_low_quantity, item.info.voucherStock - 1)
             }
-            item.size == 1 -> {
+            item.size == 0 -> {
                 getString(playR.string.play_voucher_widget_single)
             }
             else -> {
