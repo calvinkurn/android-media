@@ -715,6 +715,11 @@ class DealsPDPFragment: BaseDaggerFragment() {
                             productDetail.displayName, productDetail.brand.title)
                         RouteManager.route(context, pdpUrl)
                     }
+
+                    override fun onImpressProduct(productDetail: EventProductDetail, index: Int) {
+                        analytics.pdpRecommendationImpression(productDetail.id, (index + Int.ONE), productDetail.salesPrice.toLong(),
+                            productDetail.displayName, productDetail.brand.title, productDetail.category.firstOrNull()?.title)
+                    }
                 })
 
                 rvRecommendation?.adapter = adapter

@@ -1052,9 +1052,9 @@ class DealsAnalytics @Inject constructor(
 
     fun pdpRecommendationClick(id:String, index: Int, salesPrice: Long,  displayName:String, brandTitle: String){
         val eventDataLayer = Bundle()
-        val label = java.lang.String.format(
+        val label = String.format(
             "%s - %s", displayName, index.toString())
-        val list = java.lang.String.format(
+        val list = String.format(
             "%s - %s - %s - %s",
             "/" + DEALS,
             brandTitle,
@@ -1082,6 +1082,40 @@ class DealsAnalytics @Inject constructor(
         eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.SELECT_CONTENT, eventDataLayer)
+    }
+
+    fun pdpRecommendationImpression(id:String, index: Int, salesPrice: Long,  displayName:String, brandTitle: String, categoryName: String?){
+        val eventDataLayer = Bundle()
+        val label = String.format(
+            "%s - %s", categoryName, index.toString())
+        val list = String.format(
+            "%s - %s - %s - %s",
+            "/" + DEALS,
+            brandTitle,
+            index,
+            displayName
+        )
+        eventDataLayer.generalTracker(
+            DealsAnalyticsConstants.Event.VIEW_ITEM_LIST,
+            DealsAnalyticsConstants.Action.IMPRESS_RECOMMENDATION,
+            label.lowercase()
+        )
+
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(Bundle().apply {
+            putString(ITEM_ID, id)
+            putLong(PRICE, salesPrice)
+            putString(DIMENSION_40, list)
+            putInt(INDEX, index)
+            putString(ITEM_NAME, displayName)
+            putString(ITEM_BRAND, brandTitle)
+            putString(ITEM_VARIANT, "none")
+            putString(ITEM_CATEGORY, DEALS)
+        })
+        eventDataLayer.putString(ITEM_LIST, list)
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.VIEW_ITEM_LIST, eventDataLayer)
     }
 
     private fun Bundle.generalTracker(event: String, action: String, label: String): Bundle {

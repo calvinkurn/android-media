@@ -12,6 +12,7 @@ object DealsAnalyticsConstants {
         const val VIEW_DEALS_IRIS = "viewDealsIris"
         const val OPEN_SCREEN = "openScreen"
         const val VIEW_ITEM = "view_item"
+        const val VIEW_ITEM_LIST = "view_item_list"
         const val ADD_TO_CART = "add_to_cart"
         const val SELECT_CONTENT = "select_content"
         const val EVENT_DEALS_CLICK = "digitalDealsClick"
@@ -71,6 +72,7 @@ object DealsAnalyticsConstants {
         const val PDP_VIEW_PRODUCT = "view product detail"
         const val CLICK_BELI = "click beli"
         const val CLICK_RECOMMENDATION = "click on deals recommendation"
+        const val IMPRESS_RECOMMENDATION = "impression on deals recommendation"
     }
 
     object Label {

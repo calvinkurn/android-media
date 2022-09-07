@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.deals.databinding.ItemDealsCardShortBinding
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.utils.DealsUtils
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -82,6 +83,10 @@ class DealsRecommendationAdapter (private val recommendationListener: Recommenda
                 itemView.setOnClickListener {
                     recommendationListener?.onClickDealsProduct(product.appUrl, product, adapterPosition)
                 }
+
+                itemView.addOnImpressionListener(product) {
+                    recommendationListener?.onImpressProduct(product, adapterPosition)
+                }
             }
         }
     }
@@ -93,5 +98,6 @@ class DealsRecommendationAdapter (private val recommendationListener: Recommenda
     interface RecommendationListener {
         fun onClickDealsBrand(brandUrl: String)
         fun onClickDealsProduct(pdpUrl: String, product: EventProductDetail, index: Int)
+        fun onImpressProduct(product: EventProductDetail, index: Int)
     }
 }
