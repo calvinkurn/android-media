@@ -59,24 +59,6 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
         getComponent(MerchantReportComponent::class.java).inject(this)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        /*viewModel.reasonResponse.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> onSuccessGetReason(it.data)
-                is Fail -> activity?.run {
-                    Toaster.make(
-                        findViewById(android.R.id.content), ErrorHandler.getErrorMessage(
-                            this,
-                            it.throwable
-                        ), Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                        getString(com.tokopedia.abstraction.R.string.close)
-                    )
-                }
-            }
-        }*/
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
