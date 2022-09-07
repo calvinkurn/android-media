@@ -19,7 +19,7 @@ import com.tokopedia.buyerorder.ORDER_DETAIL_APPLINK
 import com.tokopedia.buyerorder.ORDER_ID_KEY
 import com.tokopedia.buyerorder.ORDER_ID_VALUE
 import com.tokopedia.buyerorder.common.idling.OmsIdlingResource
-import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListDetailActivity
+import com.tokopedia.buyerorder.detail.view.activity.environment.InstrumentTestOrderListDetailActivity
 import com.tokopedia.buyerorder.disableCoachMark
 import com.tokopedia.buyerorder.setupRemoteConfig
 import com.tokopedia.buyerorder.test.R
@@ -48,7 +48,7 @@ class RevampOrderListDetailActivitySingleTickerTest {
     val idlingResourceRule = IdlingResourceTestRule()
 
     @get:Rule
-    val activityRule = object : IntentsTestRule<RevampOrderListDetailActivity>(RevampOrderListDetailActivity::class.java) {
+    val activityRule = object : IntentsTestRule<InstrumentTestOrderListDetailActivity>(InstrumentTestOrderListDetailActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse {
@@ -80,7 +80,7 @@ class RevampOrderListDetailActivitySingleTickerTest {
         override fun getActivityIntent(): Intent {
             return Intent(
                 context,
-                RevampOrderListDetailActivity::class.java
+                InstrumentTestOrderListDetailActivity::class.java
             ).apply {
                 putExtra(ORDER_ID_KEY, ORDER_ID_VALUE)
                 data = Uri.parse(ORDER_DETAIL_APPLINK)
