@@ -19,7 +19,7 @@ data class CpmData(
     var adClickUrl: String = "",
 
     @SerializedName("headline")
-    var cpm: Cpm? = null,
+    var cpm: Cpm = Cpm(),
 
     @SerializedName("applinks")
     var applinks: String = ""
@@ -51,7 +51,7 @@ data class CpmData(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readParcelable(Cpm::class.java.classLoader),
+        parcel.readParcelable(Cpm::class.java.classLoader) ?: Cpm(),
         parcel.readString() ?: ""
     )
 

@@ -387,7 +387,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         val stringBuilder = StringBuilder()
                         val data = it.data
                         if (data.isSuccess) {
-                            stringBuilder.append(MethodChecker.fromHtml(data.promotedShopViewModel.shop.name))
+                            stringBuilder.append(MethodChecker.fromHtml(data.promotedShopViewModel.shop?.name))
                                 .append(" ")
                             if (data.promotedShopViewModel.isFavorit) {
                                 stringBuilder.append(getString(R.string.shop_success_unfollow))
@@ -973,7 +973,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedViewModel.doFavoriteShop(dataShop, position)
         analytics.eventFeedClickShop(
             screenName,
-            dataShop.shop.id,
+            dataShop.shop?.id,
             FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE
         )
 
@@ -1558,7 +1558,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     dataList[adapterPosition].shopClickUrl,
                     shop.id,
                     shop.name,
-                    dataList[adapterPosition].shop.imageShop.xsEcs,
+                    dataList[adapterPosition].shop?.imageShop?.xsEcs?:"",
                     true
                 )
             }
@@ -1570,17 +1570,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
-        feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
+        feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop?.id?:"")
 
         if (adapter.getlist()[positionInFeed] is TopadsShopUiModel) {
             val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopUiModel
 
             for (tracking in trackingList) {
-                if (TextUtils.equals(tracking.authorName, data.shop.name)) {
+                if (TextUtils.equals(tracking.authorName, data.shop?.name)) {
                     if (data.isFavorit) {
                         trackRecommendationFollowClick(tracking, FeedAnalytics.Element.UNFOLLOW)
                     } else {
-                        trackShopClickImpression(positionInFeed, adapterPosition, data.shop)
+                        data.shop?.let {
+                            trackShopClickImpression(positionInFeed, adapterPosition,
+                                it
+                            )
+                        }
                         trackRecommendationFollowClick(tracking, FeedAnalytics.Element.FOLLOW)
                     }
 
@@ -2726,7 +2730,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (hasFeed())
             updateFavorite()
         else
-            updateFavoriteFromEmpty(model.promotedShopViewModel.shop.id)
+            model.promotedShopViewModel.shop?.id?.let { updateFavoriteFromEmpty(it) }
     }
 
     private fun onErrorFavoriteUnfavoriteShop(e: Throwable) {
