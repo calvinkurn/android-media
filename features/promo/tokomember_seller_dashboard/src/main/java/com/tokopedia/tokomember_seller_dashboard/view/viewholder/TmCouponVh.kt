@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponActions
@@ -356,7 +357,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
         }
 
         itemView.setOnClickListener {
-            callback?.openCouponDetailFragment()
+            callback?.openCouponDetailFragment(item.voucherId.toIntOrZero())
         }
     }
 }

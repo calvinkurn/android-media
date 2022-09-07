@@ -22,6 +22,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         >
+
         <include layout="@layout/tm_coupon_detail_shimmer"/>
+        <include layout="@layout/tm_dash_coupon_detail_main" />
     </ViewFlipper>
 </androidx.constraintlayout.widget.ConstraintLayout>

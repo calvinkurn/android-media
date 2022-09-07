@@ -88,7 +88,7 @@
             app:layout_constraintStart_toEndOf="@+id/coupon_detail_image_container"
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
-            tools:text="Kupon Aktif"
+            android:text="Kupon Aktif"
             android:textColor="@color/Unify_GN500"
             app:typographyType="display_2"
             app:typographyWeight="bold"
@@ -111,6 +111,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
+                android:text="17 Jan 2020\n08:30 WIB"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -133,6 +134,7 @@
                 app:layout_constraintStart_toEndOf="@+id/date_delimiter"
                 app:typographyWeight="bold"
                 android:layout_marginStart="11dp"
+                android:text="17 Jan 2020\n08:30 WIB"
                 />
 
 
@@ -145,7 +147,7 @@
             app:typographyType="small"
             android:padding="4dp"
             android:background="@drawable/tm_bg_coupon_membership"
-            tools:text="Premium"
+            android:text="Premium"
             android:textColor="@color/Unify_YN500"
             app:typographyWeight="bold"
             app:layout_constraintTop_toBottomOf="@+id/coupon_detail_period_container"

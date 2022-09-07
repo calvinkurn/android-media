@@ -97,8 +97,8 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
         addFragment(TokomemberDashProgramDetailFragment.newInstance(bundle), TAG_HOME)
     }
 
-    override fun openCouponDetailFragment() {
-        addFragment(TmDashCouponDetailFragment.newInstance(), TAG_HOME)
+    override fun openCouponDetailFragment(voucherId:Int) {
+        addFragment(TmDashCouponDetailFragment.newInstance(voucherId), TAG_HOME)
     }
 
     companion object{
