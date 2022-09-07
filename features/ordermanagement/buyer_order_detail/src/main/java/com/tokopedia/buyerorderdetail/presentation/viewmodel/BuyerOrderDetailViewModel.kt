@@ -14,7 +14,7 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
-import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailUseCase
+import com.tokopedia.buyerorderdetail.domain.usecases.GetDetailWithResolutionUseCase
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
@@ -34,7 +34,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
         @Named(BuyerOrderDetailMiscConstant.DAGGER_ATC_QUERY_NAME)
         private val atcMultiQuery: dagger.Lazy<String>,
         private val userSession: dagger.Lazy<UserSessionInterface>,
-        private val getBuyerOrderDetailUseCase: dagger.Lazy<GetBuyerOrderDetailUseCase>,
+        private val getBuyerOrderDetailUseCase: dagger.Lazy<GetDetailWithResolutionUseCase>,
         private val finishOrderUseCase: dagger.Lazy<FinishOrderUseCase>,
         private val atcUseCase: dagger.Lazy<AddToCartMultiUseCase>,
         private val resourceProvider: dagger.Lazy<ResourceProvider>
@@ -57,7 +57,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     private fun getFinishOrderActionStatus(): String {
         val statusId = getOrderStatusId()
-        return if (statusId.matches(Regex("\\d+")) && statusId.toInt() < BuyerOrderDetailOrderStatusCode.ORDER_DELIVERED) BuyerOrderDetailMiscConstant.ACTION_FINISH_ORDER else ""
+        return if (statusId.matches(Regex("\\d+")) && statusId.toIntOrZero() < BuyerOrderDetailOrderStatusCode.ORDER_DELIVERED) BuyerOrderDetailMiscConstant.ACTION_FINISH_ORDER else ""
     }
 
     private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
@@ -67,15 +67,16 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 productPrice = price.toLong(),
                 qty = quantity,
                 notes = productNote,
-                shopId = getShopId().toInt(),
-                custId = userSession.get().userId.toInt()
+                shopId = getShopId().toIntOrZero(),
+                custId = userSession.get().userId.toIntOrZero()
         )
     }
 
     fun getBuyerOrderDetail(orderId: String, paymentId: String, cart: String) {
         launchCatchError(block = {
             val param = GetBuyerOrderDetailParams(cart, orderId, paymentId)
-            _buyerOrderDetailResult.value = (Success(getBuyerOrderDetailUseCase.get().execute(param)))
+            _buyerOrderDetailResult.value =
+                (Success(getBuyerOrderDetailUseCase.get().execute(param)))
         }, onError = {
             _buyerOrderDetailResult.value = (Fail(it))
         })

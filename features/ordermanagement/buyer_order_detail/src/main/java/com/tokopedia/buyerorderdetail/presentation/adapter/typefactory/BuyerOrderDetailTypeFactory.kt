@@ -17,6 +17,7 @@ open class BuyerOrderDetailTypeFactory(
     private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
+    protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val  buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
 ) : BaseAdapterTypeFactory() {
@@ -99,6 +100,10 @@ open class BuyerOrderDetailTypeFactory(
         return AddonsViewHolder.LAYOUT
     }
 
+    fun type(orderResolutionUIModel: OrderResolutionUIModel): Int {
+        return OrderResolutionViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
@@ -121,6 +126,7 @@ open class BuyerOrderDetailTypeFactory(
             PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolder(parent, buyerOrderDetailBindRecomWidgetListener)
             DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
             AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent)
+            OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, orderResolutionListener)
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -33,12 +33,7 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.*
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
@@ -82,6 +77,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     TickerViewHolder.TickerViewHolderListener,
     DigitalRecommendationViewHolder.ActionListener,
     CourierInfoViewHolder.CourierInfoViewHolderListener,
+    OrderResolutionViewHolder.OrderResolutionListener,
     PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener {
 
     companion object {
@@ -133,6 +129,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             this,
             this,
             digitalRecommendationData,
+            this,
             this,
             this,
             this,
@@ -732,5 +729,11 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
     override fun hidePgRecommendation() {
         rvBuyerOrderDetail?.post { adapter.removePgRecommendation() }
+    }
+
+    override fun onResolutionWidgetClicked(redirectPath: String?) {
+        redirectPath?.let {
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, it))
+        }
     }
 }

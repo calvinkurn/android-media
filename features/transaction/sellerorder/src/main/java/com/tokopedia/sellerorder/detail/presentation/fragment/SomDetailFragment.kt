@@ -556,6 +556,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 somDetail, somDynamicPriceResponse
             )
         )
+        somDetail?.hasResoStatus?.let { hasResoStatus ->
+            if (hasResoStatus) {
+                observeOrderResolution()
+                somDetailViewModel.loadReso(somDetail?.orderId)
+            } else {
+                showSuccessState()
+            }
+        }
     }
 
     private fun renderButtons() {

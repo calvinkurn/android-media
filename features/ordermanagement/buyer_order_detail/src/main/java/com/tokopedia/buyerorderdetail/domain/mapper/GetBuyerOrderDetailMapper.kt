@@ -6,17 +6,8 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerTyp
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
+import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
+import com.tokopedia.buyerorderdetail.presentation.model.*
 import com.tokopedia.kotlin.extensions.orFalse
 import javax.inject.Inject
 
@@ -64,7 +55,9 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             pgRecommendationWidgetUiModel = mapToRecommendationWidgetUiModel(
                 buyerOrderDetail.adsPageName,
                 buyerOrderDetail.details?.nonBundles.orEmpty()
-            )
+            ),
+            hasResoStatus = buyerOrderDetail.hasResoStatus ?: false,
+            orderResolutionUIModel = OrderResolutionUIModel()
         )
     }
 
@@ -548,6 +541,21 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             copyLabel = mapStringRes(resourceProvider.getCopyLabelReceiverAddress()),
             copyMessage = mapStringRes(resourceProvider.getCopyMessageReceiverAddress()),
             label = mapStringRes(resourceProvider.getReceiverAddressLabel())
+        )
+    }
+
+    fun mapResolutionResponseToUIModel(
+        resolutionData: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
+    ): OrderResolutionUIModel{
+        return OrderResolutionUIModel(
+            title = resolutionData?.cardTitle,
+            status = resolutionData?.resolutionStatus?.text,
+            description = resolutionData?.description,
+            picture = resolutionData?.profilePicture,
+            showDeadline = resolutionData?.deadline?.showDeadline,
+            deadlineDateTime = resolutionData?.deadline?.datetime,
+            backgroundColor = resolutionData?.deadline?.backgroundColor,
+            redirectPath = resolutionData?.redirectPath?.android
         )
     }
 

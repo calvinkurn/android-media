@@ -6,5 +6,7 @@ data class BuyerOrderDetailUiModel(
         val paymentInfoUiModel: PaymentInfoUiModel,
         val productListUiModel: ProductListUiModel,
         val shipmentInfoUiModel: ShipmentInfoUiModel,
-        val pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel
+        val pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel,
+        val hasResoStatus: Boolean,
+        var orderResolutionUIModel: OrderResolutionUIModel
 )
