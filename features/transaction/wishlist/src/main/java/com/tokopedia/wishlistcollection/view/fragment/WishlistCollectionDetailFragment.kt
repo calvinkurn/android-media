@@ -520,6 +520,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         }
 
                         if (collectionDetail.totalData <= 0) {
+                            binding?.wishlistCollectionDetailStickyCountManageLabel?.rlWishlistCollectionDetailManage?.gone()
                             hideBottomButtonLayout()
                             if (paramGetCollectionItems.query.isEmpty() && paramGetCollectionItems.sortFilters.isEmpty()) {
                                 hideSearchBar()
@@ -2427,6 +2428,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun turnOffBulkDeleteMode() {
         isBulkDeleteShow = false
         turnOffBulkMode()
+        updateToolbarTitle(toolbarTitle)
     }
 
     override fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean, isBulkAdd: Boolean) {
