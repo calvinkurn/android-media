@@ -72,6 +72,8 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
             projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orZero()
         }
 
+        analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -81,8 +83,6 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
 
         setupView()
         showCameraView()
