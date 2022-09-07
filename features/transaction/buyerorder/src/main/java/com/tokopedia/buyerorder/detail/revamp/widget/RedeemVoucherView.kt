@@ -10,6 +10,8 @@ import com.tokopedia.buyerorder.databinding.RedeemVoucherDealsNewLayoutBinding
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.revamp.util.VisitableMapper
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 /**
@@ -82,7 +84,7 @@ class RedeemVoucherView : LinearLayout {
             onTapActionDeals?.invoke(binding.redeemBtnDeals, item, retryCount)
         }
 
-        binding.dividerVoucher.showWithCondition(item.actionButtons.size - 1 != voucherCount)
+        binding.dividerVoucher.showWithCondition(item.actionButtons.size - Int.ONE != voucherCount)
 
     }
 
@@ -99,11 +101,11 @@ class RedeemVoucherView : LinearLayout {
                 }
             }
         }  else {
-            if (voucherCount > 0) {
+            if (voucherCount > Int.ZERO) {
                 binding.voucherCodeTitleDeals.text = String.format(
                     E_VOUCHER_FORMAT,
                     context.getString(R.string.event_ticket_voucher_number_multiple),
-                    (voucherCount + 1)
+                    (voucherCount + Int.ONE)
                 )
             } else {
                 binding.voucherCodeTitleDeals.text = context.getString(R.string.event_ticket_voucher_number)
@@ -113,7 +115,7 @@ class RedeemVoucherView : LinearLayout {
 
     private fun renderRetryButton(actionButton: ActionButton){
         binding.voucherCodeTitleDeals.text = actionButton.label
-        if (retryCount == 0) {
+        if (retryCount == Int.ZERO) {
             if (actionButton.header.isNotEmpty() && actionButton.headerObject.itemLabel.isNotEmpty()) {
                 binding.voucherCodeTitleDeals.text = actionButton.headerObject.itemLabel
             }
@@ -123,7 +125,7 @@ class RedeemVoucherView : LinearLayout {
                     voucherCodeTitleDeals.text = context.getString(R.string.tkpdtransaction_oms_retry_text)
                     redeemBtnDeals.isEnabled = false
                     redeemBtnDeals.postDelayed({
-                        retryCount = 0
+                        retryCount = Int.ZERO
                         redeemBtnDeals.isEnabled = true
                         renderRetryButton(actionButton)
                     }, DELAY_TIME)
