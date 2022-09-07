@@ -1581,7 +1581,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val homeRecomUiModel = HomeProductRecomUiModel(id = "1001", recomWidget = recomWidget)
 
         val expectedResult = HomeAddToCartTracker(
-            position = 1,
+            position = 2,
             quantity = quantity,
             cartId = cartId,
             homeRecomUiModel
@@ -1647,7 +1647,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val homeRecomUiModel = HomeProductRecomUiModel(id = "1001", recomWidget = recomWidget)
 
         val expected = HomeAddToCartTracker(
-            position = 0,
+            position = 1,
             quantity = 4,
             cartId = cartId,
             data = homeRecomUiModel
@@ -1766,7 +1766,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val homeRecomUiModel = HomeProductRecomUiModel(id = "1001", recomWidget = recomWidget)
 
         val expected = HomeRemoveFromCartTracker(
-            position = 0,
+            position = 1,
             quantity = 0,
             cartId = cartId,
             data = homeRecomUiModel
@@ -2043,7 +2043,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         val expected = HomeAddToCartTracker(
-            position = 1,
+            position = 2,
             quantity = 2,
             cartId = "1999",
             productCardUiModel
