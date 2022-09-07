@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutSearchbarEducationBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -26,6 +27,7 @@ class SearchBarEducationViewHolder(
         bindClick(data)
         bindTitle(data)
         bindLabelAction(data)
+        bindIcon(data)
     }
 
     private fun configCard() {
@@ -44,5 +46,9 @@ class SearchBarEducationViewHolder(
 
     private fun bindLabelAction(data: SearchBarEducationDataView) {
         binding?.autocompleteSearchBarEducationAction?.text = data.labelAction
+    }
+
+    private fun bindIcon(data: SearchBarEducationDataView) {
+        binding?.autocompleteSearchBarEducationIcon?.loadImage(data.item.imageUrl)
     }
 }

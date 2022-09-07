@@ -93,6 +93,8 @@ interface InitialStateContract {
             type: String,
             pageSource: String
         )
+
+        fun trackEventClickSearchBarEducation(item: BaseItemInitialStateSearch)
     }
 
     interface Presenter : CustomerPresenter<View> {

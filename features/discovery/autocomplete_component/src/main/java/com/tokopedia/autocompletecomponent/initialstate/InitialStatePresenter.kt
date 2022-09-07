@@ -296,7 +296,6 @@ class InitialStatePresenter @Inject constructor(
                 }
             }
         }
-        data.add(SearchBarEducationDataView("Tips and trick", "Pelajari"))
         return data
     }
 
@@ -768,6 +767,8 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun onSearchBarEducationClick(item: BaseItemInitialStateSearch) {
+        view?.trackEventClickSearchBarEducation(item)
+
         view?.route(item.applink, searchParameter)
         view?.finish()
     }

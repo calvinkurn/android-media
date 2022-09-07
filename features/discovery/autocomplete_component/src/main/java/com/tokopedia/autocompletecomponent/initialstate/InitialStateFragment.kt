@@ -397,4 +397,8 @@ class InitialStateFragment:
     override fun onSearchBarEducationClick(item: BaseItemInitialStateSearch) {
         presenter?.onSearchBarEducationClick(item)
     }
+
+    override fun trackEventClickSearchBarEducation(item: BaseItemInitialStateSearch) {
+        initialStateTracking?.eventClickSearchBarEducation(item)
+    }
 }
