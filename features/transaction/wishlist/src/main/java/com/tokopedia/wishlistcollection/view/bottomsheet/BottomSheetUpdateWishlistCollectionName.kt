@@ -121,6 +121,8 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
                     newCollectionName = p0.toString()
                     if (newCollectionName.isNotEmpty()) {
                         handler.postDelayed(checkNameRunnable, DELAY_CHECK_NAME)
+                    } else {
+                        disableSaveButton()
                     }
                 }
 
