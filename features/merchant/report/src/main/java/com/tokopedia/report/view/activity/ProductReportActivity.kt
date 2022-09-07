@@ -2,23 +2,22 @@ package com.tokopedia.report.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.report.di.DaggerMerchantReportComponent
 import com.tokopedia.report.di.MerchantReportComponent
-import com.tokopedia.report.view.fragment.ProductReportFragment
+import com.tokopedia.report.view.fragment.ProductReportComposeFragment
 
 class ProductReportActivity: BaseSimpleActivity(), HasComponent<MerchantReportComponent> {
-    private lateinit var fragment : ProductReportFragment
+    private lateinit var fragment : ProductReportComposeFragment
 
     override fun getNewFragment(): Fragment {
         val productId = intent.data?.lastPathSegment?.let {
             it
         } ?: (intent.extras?.getString(ARG_PRODUCT_ID) ?: "-1")
-        fragment = ProductReportFragment.createInstance(productId)
+        fragment = ProductReportComposeFragment.createInstance(productId)
         return fragment
     }
 
