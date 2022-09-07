@@ -259,6 +259,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val SRC_WISHLIST_PAGE = "wishlist page"
         private const val OPTION_CLEANER_MANUAL = "sendiri"
         private const val OPTION_CLEANER_AUTOMATIC = "otomatis"
+        private const val TOTAL_LOADER = 5
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1042,7 +1043,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         rvScrollListener = object : EndlessRecyclerViewScrollListener(staggeredGlm) {
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (totalItemsCount > 5) {
+                if (totalItemsCount > TOTAL_LOADER) {
                     currentPage += 1
                     onLoadMore = true
                     if (isFetchRecommendation) {

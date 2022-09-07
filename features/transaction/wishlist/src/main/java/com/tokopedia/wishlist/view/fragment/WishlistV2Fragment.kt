@@ -192,6 +192,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         private const val SOURCE_AUTOMATIC_DELETION = "wishlist_automatic_delete"
         private const val OK = "OK"
         private const val DELAY_REFETCH_PROGRESS_DELETION = 5000L
+        private const val TOTAL_LOADER = 5
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -533,7 +534,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         rvScrollListener = object : EndlessRecyclerViewScrollListener(staggeredGlm) {
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (totalItemsCount > 5) {
+                if (totalItemsCount > TOTAL_LOADER) {
                     currentPage += 1
                     onLoadMore = true
                     if (isFetchRecommendation) {
