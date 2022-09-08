@@ -254,7 +254,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             activity: Activity?,
             screenType: Int,
             voucherId: Int?,
-            tmCouponListRefreshCallback: TmCouponListRefreshCallback,
+            tmCouponListRefreshCallback: TmCouponListRefreshCallback?,
             edit: Boolean = false,
             duplicate: Boolean = false
         ){

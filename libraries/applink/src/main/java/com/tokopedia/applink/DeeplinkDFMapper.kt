@@ -784,7 +784,11 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Tokomember dashboard
             add(DFP({ it.startsWith(TOKOMEMBER) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
-
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_LIST) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_LIST) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_CREATION) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_CREATION) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
+            add(DFP({ it.startsWith(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_EXTENSION) }, DF_BASE_SELLER_APP, R.string.title_tokomember))
         }
     }
 

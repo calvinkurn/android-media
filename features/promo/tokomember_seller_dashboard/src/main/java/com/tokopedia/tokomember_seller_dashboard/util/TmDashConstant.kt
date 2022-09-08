@@ -212,3 +212,5 @@ const val COUPON_STATE_EMPTY_LABEL = "Kuota Habis"
 const val COUPON_STATE_ACTIVE_LABEL = "Kupon Aktif"
 const val COUPON_STATE_NOT_STARTED_LABEL = "Belum Aktif"
 const val COUPON_STATE_ENDED_LABEL = "Berakhir"
+
+const val TOKOMEMBER_SCREEN = "tokomember screen"

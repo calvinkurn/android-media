@@ -3,25 +3,23 @@ package com.tokopedia.tokomember_seller_dashboard.view.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallback
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ACTION
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
-import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
-import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmDashCouponDetailFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
@@ -109,6 +107,8 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
                 intent.putExtra(BUNDLE_CARD_ID, cardID)
                 intent.putExtra(BUNDLE_IS_SHOW_BS, isShowBs)
                 intent.putExtra(BUNDLE_PROGRAM_ACTION, programAction)
+                if(context is TokomemberMainActivity)
+                   intent.putExtra(TOKOMEMBER_SCREEN,context.intent?.data)
                 it.startActivity(intent)
             }
         }
@@ -131,6 +131,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
         super.onStop()
         TmPrefManager(this).clearPref()
     }
+
 
 
 }
