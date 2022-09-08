@@ -93,6 +93,9 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
                         R.string.stfs_placeholder_original_quota,
                         item.remainingQuota.splitByThousand()
                     )
+                    binding.btnRegister.buttonType = UnifyButton.Type.MAIN
+                    binding.btnRegister.buttonVariant = UnifyButton.Variant.FILLED
+                    binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_register)
                 }
                 item.quotaUsagePercentage in QUOTA_USAGE_HALF_FULL..QUOTA_USAGE_SEVENTY_FIVE_PERCENT_USED -> {
                     binding.imgFlashSale.resetDimmedBackground()
@@ -101,6 +104,9 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
                         R.string.stfs_placeholder_remaining_quota,
                         item.remainingQuota
                     )
+                    binding.btnRegister.buttonType = UnifyButton.Type.MAIN
+                    binding.btnRegister.buttonVariant = UnifyButton.Variant.FILLED
+                    binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_register)
                 }
                 item.quotaUsagePercentage in QUOTA_USAGE_SEVENTY_SIX_PERCENT_FULL..QUOTA_USAGE_ALMOST_FULL -> {
                     binding.imgFlashSale.resetDimmedBackground()
@@ -109,6 +115,9 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
                         R.string.stfs_placeholder_remaining_quota,
                         item.remainingQuota
                     )
+                    binding.btnRegister.buttonType = UnifyButton.Type.MAIN
+                    binding.btnRegister.buttonVariant = UnifyButton.Variant.FILLED
+                    binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_register)
                     binding.progressBar.setProgressIcon(
                         icon = ContextCompat.getDrawable(
                             binding.progressBar.context,
