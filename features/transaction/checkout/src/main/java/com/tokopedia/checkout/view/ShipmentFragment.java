@@ -1095,6 +1095,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             ordersItem.getCodes().add(courierItemData.getLogPromoCode());
                             ordersItem.setShippingId(courierItemData.getShipperId());
                             ordersItem.setSpId(courierItemData.getShipperProductId());
+                            ordersItem.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
                             break;
                         }
                     }
