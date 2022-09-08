@@ -420,7 +420,7 @@ class TestRecommendationPageViewModel {
         val queryParam = "?ref=googleshopping"
         val productId = ""
         val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
-            data = listOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
+            data = mutableListOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
         })
 
         every { getPrimaryProductUseCase.setParameter(any(), any()) } just runs
@@ -451,7 +451,7 @@ class TestRecommendationPageViewModel {
         val queryParam = "?ref=googleshopping"
         val productId = ""
         val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
-            data = listOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
+            data = mutableListOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
         })
 
         every { getPrimaryProductUseCase.setParameter(any(), any()) } just runs
@@ -482,7 +482,7 @@ class TestRecommendationPageViewModel {
         val queryParam = ""
         val productId = ""
         val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
-            data = listOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
+            data = mutableListOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
         })
 
         every { getPrimaryProductUseCase.setParameter(any(), any()) } just runs
@@ -713,7 +713,7 @@ class TestRecommendationPageViewModel {
         val queryParam = "?ref=googleshopping"
         val productId = ""
         val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
-            data = listOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
+            data = mutableListOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
         })
 
         every { getPrimaryProductUseCase.setParameter(any(), any()) } just runs
