@@ -66,6 +66,7 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
             )
             binding.tpgCampaignStatus.setCampaignStatus(item)
             binding.progressBar.setValue(item.quotaUsagePercentage, isSmooth = false)
+            binding.btnRegister.setAppearance(item)
             renderQuotaUsage(item)
             startTimer(item.distanceHoursToSubmissionEndDate, item.submissionEndDate)
         }
@@ -84,6 +85,18 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
             }
         }
 
+        private fun UnifyButton.setAppearance(item: UpcomingFlashSaleItem) {
+            if (item.quotaUsagePercentage < QUOTA_USAGE_FULL && item.distanceHoursToSubmissionEndDate > 0) {
+                buttonType = UnifyButton.Type.MAIN
+                buttonVariant = UnifyButton.Variant.FILLED
+                text = binding.btnRegister.context.getString(R.string.stfs_register)
+            } else {
+                buttonType = UnifyButton.Type.ALTERNATE
+                buttonVariant = UnifyButton.Variant.GHOST
+                text = binding.btnRegister.context.getString(R.string.stfs_view_detail)
+            }
+        }
+
         private fun renderQuotaUsage(item: UpcomingFlashSaleItem) {
             when {
                 item.quotaUsagePercentage < QUOTA_USAGE_HALF_FULL -> {
@@ -93,9 +106,6 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
                         R.string.stfs_placeholder_original_quota,
                         item.remainingQuota.splitByThousand()
                     )
-                    binding.btnRegister.buttonType = UnifyButton.Type.MAIN
-                    binding.btnRegister.buttonVariant = UnifyButton.Variant.FILLED
-                    binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_register)
                 }
                 item.quotaUsagePercentage in QUOTA_USAGE_HALF_FULL..QUOTA_USAGE_SEVENTY_FIVE_PERCENT_USED -> {
                     binding.imgFlashSale.resetDimmedBackground()
@@ -104,9 +114,6 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
                         R.string.stfs_placeholder_remaining_quota,
                         item.remainingQuota
                     )
-                    binding.btnRegister.buttonType = UnifyButton.Type.MAIN
-                    binding.btnRegister.buttonVariant = UnifyButton.Variant.FILLED
-                    binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_register)
                 }
                 item.quotaUsagePercentage in QUOTA_USAGE_SEVENTY_SIX_PERCENT_FULL..QUOTA_USAGE_ALMOST_FULL -> {
                     binding.imgFlashSale.resetDimmedBackground()
@@ -115,9 +122,6 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
                         R.string.stfs_placeholder_remaining_quota,
                         item.remainingQuota
                     )
-                    binding.btnRegister.buttonType = UnifyButton.Type.MAIN
-                    binding.btnRegister.buttonVariant = UnifyButton.Variant.FILLED
-                    binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_register)
                     binding.progressBar.setProgressIcon(
                         icon = ContextCompat.getDrawable(
                             binding.progressBar.context,
@@ -129,9 +133,6 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
                 }
                 item.quotaUsagePercentage == QUOTA_USAGE_FULL -> {
                     binding.imgFlashSale.dimmed()
-                    binding.btnRegister.buttonType = UnifyButton.Type.ALTERNATE
-                    binding.btnRegister.buttonVariant = UnifyButton.Variant.GHOST
-                    binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_view_detail)
                     binding.progressBar.progressDrawable.colors = intArrayOf(
                         ContextCompat.getColor(binding.progressBar.context, com.tokopedia.unifyprinciples.R.color.Unify_RN200),
                         ContextCompat.getColor(binding.progressBar.context, com.tokopedia.unifyprinciples.R.color.Unify_RN200)
