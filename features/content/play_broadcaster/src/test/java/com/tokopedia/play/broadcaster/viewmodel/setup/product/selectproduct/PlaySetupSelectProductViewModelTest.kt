@@ -196,7 +196,8 @@ class PlaySetupSelectProductViewModelTest {
                 robot.submitAction(ProductSetupAction.SetProducts(mockProducts))
             }
 
-            Assertions.assertEquals(state.selectedProductList, mockProducts)
+            state.selectedProductList
+                .assertEqualTo(mockProducts)
         }
     }
 
@@ -241,7 +242,42 @@ class PlaySetupSelectProductViewModelTest {
                 robot.submitAction(ProductSetupAction.SetProducts(mockProducts))
             }
 
-            Assertions.assertEquals(state.selectedProductList, mockProducts)
+            state.selectedProductList
+                .assertEqualTo(mockProducts)
+        }
+    }
+
+    @Test
+    fun `when user set several products at once more than the maximum, products count should be at most the maximum products allowed`() {
+        val mockProducts = List(40) {
+            ProductUiModel(
+                it.toString(),
+                "",
+                "",
+                1,
+                OriginalPrice("Rp 12.000", 12_000.0)
+            )
+        }
+        val mockInitialProductTagSectionList = emptyList<ProductTagSectionUiModel>()
+
+        val maxProduct = 30
+
+        coEvery { mockHydraConfigStore.getMaxProduct() } returns maxProduct
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockInitialProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SetProducts(mockProducts))
+            }
+
+            state.selectedProductList
+                .assertEqualTo(mockProducts.subList(0, maxProduct))
         }
     }
 }
