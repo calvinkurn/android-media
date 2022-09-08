@@ -73,20 +73,6 @@
         app:typographyWeight="reguler"
         tools:text="Rp 15.000.000" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpg_subsidy"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:textColor="@color/gr_700"
-        app:layout_constraintStart_toStartOf="@+id/tpg_product_name"
-        app:layout_constraintTop_toBottomOf="@+id/tpg_original_price"
-        app:typographyType="paragraph_3"
-        app:typographyWeight="reguler"
-        tools:text="@string/stfs_subsidy_value_placeholder" />
-
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -96,7 +82,7 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tpg_subsidy" />
+        app:layout_constraintTop_toBottomOf="@+id/tpg_original_price" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_variant_stock_location"
@@ -124,11 +110,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:text="@string/stfs_product_sold_rejected_value_placeholder"
         android:textColor="@color/gr_700"
         app:layout_constraintStart_toStartOf="@+id/tpg_variant_stock_location"
         app:layout_constraintTop_toBottomOf="@+id/tpg_variant_stock_location"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_rejection_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/gr_700"
+        app:layout_constraintStart_toStartOf="@+id/tpg_product_sold"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_product_sold"
         app:typographyType="display_3"
-        tools:text="@string/stfs_product_sold_value_placeholder" />
+        tools:text="@string/stfs_rejection_reason_placeholder" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_2"
@@ -137,7 +134,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tpg_product_sold" />
+        app:layout_constraintTop_toBottomOf="@+id/tpg_rejection_reason" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineStarter"

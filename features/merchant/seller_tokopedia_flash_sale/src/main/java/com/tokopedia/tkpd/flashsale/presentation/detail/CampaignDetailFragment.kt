@@ -32,6 +32,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingRejectedDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.FinishedProcessSelectionDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.OnSelectionProcessDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.WaitingForSelectionDelegateAdapter
@@ -120,6 +121,9 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                 onProductItemClicked = { onProductClicked(it) }
             ))
             .add(OngoingDelegateAdapter(
+                onProductItemClicked = { onProductClicked(it) }
+            ))
+            .add(OngoingRejectedDelegateAdapter(
                 onProductItemClicked = { onProductClicked(it) }
             ))
             .add(LoadingDelegateAdapter())

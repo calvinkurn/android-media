@@ -157,6 +157,8 @@
     <string name="stft_flash_sale_performace_card_title_label_rejected">Yah, semua produkmu tidak lolos seleksi</string>
     <string name="stft_flash_sale_performace_card_desc_label_rejected">Tenang, coba daftarkan produkmu lagi di campaign selanjutnya, ya!</string>
     <string name="stfs_product_sold_value_placeholder">Terjual: <![CDATA[<b>%d</b>]]></string>
+    <string name="stfs_product_sold_rejected_value_placeholder">Terjual: <![CDATA[<font color=#F94D63>-</font>]]></string>
     <string name="stfs_sold_label">Terjual</string>
     <string name="stfs_selling_label">Penjualan</string>
+    <string name="stfs_rejection_reason_placeholder"><![CDATA[<font color=#F94D63>Ditolak</font>]]> karena [%s].</string>
 </resources>
