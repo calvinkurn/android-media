@@ -30,6 +30,7 @@ import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSubmissionViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -324,11 +325,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
          */
         playViewModel.onKeyboardHidden()
         view.rootView.hideKeyboard()
-    }
-
-    private fun View.hideKeyboard() {
-        val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
     override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
