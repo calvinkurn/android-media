@@ -593,7 +593,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
@@ -623,7 +624,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
@@ -658,7 +660,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
 
@@ -691,7 +694,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } throws Exception()

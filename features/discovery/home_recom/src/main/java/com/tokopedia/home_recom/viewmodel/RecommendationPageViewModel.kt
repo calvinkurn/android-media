@@ -89,6 +89,9 @@ open class RecommendationPageViewModel @Inject constructor(
         const val POS_CPM = 1
         const val HEADLINE_PARAM_RECOM = "device=android&ep=cpm&headline_product_count=3&item=3&src=recom_google&st=product&template_id=2%2C3%2C4&page=1&q=&user_id="
         const val QUERY_PARAMS_GOOGLE_SHOPPING = "ref=googleshopping"
+        const val PARAM_RECOMPUSH = "recompush"
+        const val PARAM_RECOMPUSH_ANCHOR = "recom_1_recompush_anchor"
+        const val PARAM_RECOM_WIDGET = "recom_widget"
     }
     /**
      * public variable
@@ -200,6 +203,8 @@ open class RecommendationPageViewModel @Inject constructor(
                 GetTopadsIsAdsUseCase.TIMEOUT_REMOTE_CONFIG_KEY,
                 PARAM_JOB_TIMEOUT_DEFAULT
             )
+            var pageNameParam = ""
+            var srcParam = GetTopadsIsAdsUseCase.DEFAULT_SRC
 
             RecomServerLogger.logServer(
                 tag = TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING,
@@ -207,13 +212,19 @@ open class RecommendationPageViewModel @Inject constructor(
                 queryParam = queryParam
             )
 
+            if (queryParam.contains(PARAM_RECOMPUSH)) {
+                pageNameParam = PARAM_RECOMPUSH_ANCHOR
+                srcParam = PARAM_RECOM_WIDGET
+            }
+
             val job = withTimeoutOrNull(timeout) {
                 getTopadsIsAdsUseCase.setParams(
                         productId = productId,
                         productKey = "",
                         shopDomain = "",
                         urlParam = queryParam,
-                        pageName = ""
+                        pageName = pageNameParam,
+                        src = srcParam
                 )
                 adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
                 val dataList = recommendationListLiveData.value?.toMutableList()
