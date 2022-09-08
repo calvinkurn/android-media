@@ -1,6 +1,6 @@
 package com.tokopedia.campaign.components.bottomsheet.selection.single
 
-import com.tokopedia.campaign.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 
 internal class SingleSelectionHelper {
 

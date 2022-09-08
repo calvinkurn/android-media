@@ -23,7 +23,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-abstract class BaseCampaignManageProductListFragment<F : AdapterTypeFactory> :
+abstract class BaseCampaignManageProductListFragment<RA : RecyclerView.Adapter<*>> :
     BaseDaggerFragment() {
 
     private var viewBinding by autoClearedNullable<FragmentBaseCampaignManageProductListBinding>()
@@ -44,7 +44,7 @@ abstract class BaseCampaignManageProductListFragment<F : AdapterTypeFactory> :
         private set
     var textTotalProduct: Typography? = null
         private set
-    var adapter: BaseListAdapter<Visitable<*>, F>? = null
+    var adapter: RA? = null
         private set
 
     override fun onCreateView(
@@ -78,7 +78,7 @@ abstract class BaseCampaignManageProductListFragment<F : AdapterTypeFactory> :
         adapter = createAdapterInstance()
     }
 
-    abstract fun createAdapterInstance(): BaseListAdapter<Visitable<*>, F>
+    abstract fun createAdapterInstance(): RA
 
     private fun setupSubmitButtonClickListener() {
         buttonSubmit?.setOnClickListener { onSubmitButtonClicked() }

@@ -5,8 +5,8 @@ import androidx.annotation.ArrayRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.campaign.components.bottomsheet.selection.multiple.MultipleSelectionBottomSheet
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
-import com.tokopedia.campaign.entity.MultipleSelectionItem
-import com.tokopedia.campaign.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.Category
 import java.lang.Exception
