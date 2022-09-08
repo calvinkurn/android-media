@@ -28,6 +28,7 @@ import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.S
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.viewmodel.InitialStateSearchViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -38,6 +39,9 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateListener {
 
     @Inject
     lateinit var analytics: TokoFoodInitSearchStateAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val initialSearchAdapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
         InitialStateTypeFactoryImpl(this)
@@ -99,9 +103,26 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateListener {
         analytics.clickTopKeyword(keyword)
     }
 
+    override fun onImpressionPopularSearch(item: ChipsPopularSearch, position: Int) {
+        analytics.impressViewTopKeyword(
+            keyword,
+            localCacheModel?.district_id.orEmpty(),
+            position,
+        )
+    }
+
     override fun setCuisineItemClicked(item: CuisineItemUiModel) {
         redirectToCategoryPage(item.appLink)
         analytics.clickCuisineList(keyword)
+    }
+
+    override fun onImpressCuisineItem(item: CuisineItemUiModel, position: Int) {
+        analytics.impressViewCuisineItem(
+            keyword,
+            localCacheModel?.district_id.orEmpty(),
+            position,
+            item.title
+        )
     }
 
     override fun onHeaderAllRemovedClicked(labelAction: String) {
@@ -117,6 +138,14 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateListener {
     override fun onRecentSearchItemClicked(title: String) {
         initialStateViewUpdateListener?.setKeywordSearchBarView(title)
         analytics.clickSearchHistory(keyword)
+    }
+
+    override fun onImpressionRecentSearch(item: RecentSearchItemUiModel, position: Int) {
+        analytics.impressViewSearchHistory(
+            keyword,
+            localCacheModel?.district_id.orEmpty(),
+            position
+        )
     }
 
     override fun onSeeMoreCuisineBtnClicked(element: SeeMoreCuisineUiModel) {
@@ -174,19 +203,19 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateListener {
     }
 
     private fun sendAllImpressView(initialStateList: List<BaseInitialStateVisitable>) {
-        val recentSearchList = initialStateList.filterIsInstance<RecentSearchItemUiModel>()
-        val chipsPopularList = initialStateList.filterIsInstance<ChipsPopularSearch>()
-        val cuisineList = initialStateList.filterIsInstance<CuisineItemUiModel>()
-
-        if (recentSearchList.isNotEmpty()) {
-            analytics.impressViewSearchHistory(keyword)
-        }
-        if (chipsPopularList.isNotEmpty()) {
-            analytics.impressViewTopKeyword(keyword)
-        }
-        if (cuisineList.isNotEmpty()) {
-            analytics.impressViewCuisineList(keyword)
-        }
+//        val recentSearchList = initialStateList.filterIsInstance<RecentSearchItemUiModel>()
+//        val chipsPopularList = initialStateList.filterIsInstance<ChipsPopularSearch>()
+//        val cuisineList = initialStateList.filterIsInstance<CuisineItemUiModel>()
+//
+//        if (recentSearchList.isNotEmpty()) {
+//            analytics.impressViewSearchHistory(keyword)
+//        }
+//        if (chipsPopularList.isNotEmpty()) {
+//            analytics.impressViewTopKeyword(keyword)
+//        }
+//        if (cuisineList.isNotEmpty()) {
+//            analytics.impressViewCuisineList(keyword)
+//        }
     }
 
     fun setInitialStateViewUpdateListener(initialStateViewUpdateListener: InitialStateViewUpdateListener) {

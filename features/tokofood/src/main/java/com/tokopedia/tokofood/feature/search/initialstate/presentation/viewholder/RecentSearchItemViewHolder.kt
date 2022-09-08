@@ -2,9 +2,12 @@ package com.tokopedia.tokofood.feature.search.initialstate.presentation.viewhold
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.databinding.RecentSearchItemInitialStateBinding
+import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.CuisineItemUiModel
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.RecentSearchItemUiModel
 
 class RecentSearchItemViewHolder(view: View,
@@ -19,6 +22,7 @@ class RecentSearchItemViewHolder(view: View,
     private val binding = RecentSearchItemInitialStateBinding.bind(itemView)
 
     override fun bind(element: RecentSearchItemUiModel) {
+        bindImpressionRecentSearchListener(element, adapterPosition)
         setRecentSearchItem(element.title)
         setRecentSearchLabel(element.title)
         setRecentSearchAction(element)
@@ -60,8 +64,30 @@ class RecentSearchItemViewHolder(view: View,
         }
     }
 
+    private fun bindImpressionRecentSearchListener(
+        item: RecentSearchItemUiModel,
+        position: Int
+    ) {
+        binding.root.addOnImpressionListener(
+            item,
+            createViewHintListener(item, position)
+        )
+    }
+
+    private fun createViewHintListener(
+        item: RecentSearchItemUiModel,
+        position: Int
+    ): ViewHintListener {
+        return object : ViewHintListener {
+            override fun onViewHint() {
+                actionListener.onImpressionRecentSearch(item, position)
+            }
+        }
+    }
+
     interface ActionListener {
         fun onDeleteRecentSearchClicked(itemId: String, position: Int)
         fun onRecentSearchItemClicked(title: String)
+        fun onImpressionRecentSearch(item: RecentSearchItemUiModel, position: Int)
     }
 }
