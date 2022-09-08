@@ -14,12 +14,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL
-import com.tokopedia.affiliate.AFFILIATE_TRX_ENABLED
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.FIRST_TAB
 import com.tokopedia.affiliate.FOURTH_TAB
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
+import com.tokopedia.affiliate.PAGE_SEGMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.SECOND_TAB
 import com.tokopedia.affiliate.THIRD_TAB
 import com.tokopedia.affiliate.di.AffiliateComponent
@@ -43,7 +43,6 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -70,7 +69,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private var fragmentStack = Stack<String>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
 
-    private var isAffiliateWalletEnabled = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,6 +86,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             if (it.contains(PAGE_SEGMENT_HELP)) {
                 selectItem(HELP_MENU, R.id.menu_help_affiliate, true)
+            }else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
+                selectItem(INCOME_MENU, R.id.menu_withdrawal_affiliate, true)
             }
         }
     }
@@ -122,24 +122,12 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         else showLoginPortal()
     }
 
-    private fun initRollence() {
-        isAffiliateWalletEnabled =
-            when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AFFILIATE_TRX_ENABLED,
-                AFFILIATE_TRX_ENABLED
-            )) {
-                AFFILIATE_TRX_ENABLED -> true
-                else -> false
-            }
-    }
-
     private fun showLoginPortal() {
         AffiliateRegistrationActivity.newInstance(this)
         finish()
     }
 
     private fun showAffiliatePortal() {
-        initRollence()
         initBottomNavigationView()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         pushOpenScreenEvent()
@@ -250,17 +238,20 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun initBottomNavigationView() {
+        var selectedTab =  HOME_MENU
+        Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
+            if (it.contains(PAGE_SEGMENT_HELP)) {
+                selectedTab = HELP_MENU
+            } else if(it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY)){
+                selectedTab = INCOME_MENU
+            }
+        }
         affiliateBottomNavigation = AffiliateBottomNavbar(
             findViewById(R.id.bottom_navbar),
-            this, this, isAffiliateWalletEnabled
+            this,
+            this,
+            selectedTab
         )
-        if (isAffiliateWalletEnabled) {
-            INCOME_MENU = THIRD_TAB
-            HELP_MENU = FOURTH_TAB
-        } else {
-            INCOME_MENU = FOURTH_TAB
-            HELP_MENU = THIRD_TAB
-        }
         affiliateBottomNavigation?.showBottomNav()
         affiliateBottomNavigation?.populateBottomNavigationView()
     }
