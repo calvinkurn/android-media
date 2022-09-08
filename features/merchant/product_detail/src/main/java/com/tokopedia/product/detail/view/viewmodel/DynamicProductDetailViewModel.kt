@@ -1217,7 +1217,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             val requestParams = GetRecommendationRequestParam(
                 pageNumber = nonNullPage,
                 pageName = pageName,
-                productIds = arrayListOf(nonNullProductId),
+                productIds = arrayListOf(nonNullProductId)
             )
             val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
             val dataResponse = recommendationResponse.firstOrNull()

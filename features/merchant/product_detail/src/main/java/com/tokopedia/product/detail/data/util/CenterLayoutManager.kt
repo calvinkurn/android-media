@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 class CenterLayoutManager(context: Context) : StaggeredGridLayoutManager(SPAN_COUNT, VERTICAL) {
 
-    companion object{
+    companion object {
         const val SPAN_COUNT = 2
     }
 

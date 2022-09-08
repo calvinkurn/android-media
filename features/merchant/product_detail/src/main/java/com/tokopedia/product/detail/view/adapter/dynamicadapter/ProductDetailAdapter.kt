@@ -73,20 +73,20 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
         val dataModel = currentList[holder.adapterPosition]
 
         if (holder is ProductRecommendationViewHolder &&
-                holder.adapterPosition < currentList.size &&
-                (dataModel as? ProductRecommendationDataModel)?.recomWidgetData == null) {
-            listener?.loadTopads((dataModel as ProductRecommendationDataModel).name)
-        }
+            holder.adapterPosition < currentList.size &&
+            (dataModel as? ProductRecommendationDataModel)?.recomWidgetData == null
+        ) listener?.loadTopads((dataModel as ProductRecommendationDataModel).name)
+
         if (holder is ProductRecomWidgetViewHolder &&
-                holder.adapterPosition < currentList.size &&
-                (dataModel as? ProductRecomWidgetDataModel)?.recomWidgetData == null) {
-            listener?.loadTopads((dataModel as ProductRecomWidgetDataModel).name)
-        }
+            holder.adapterPosition < currentList.size &&
+            (dataModel as? ProductRecomWidgetDataModel)?.recomWidgetData == null
+        ) listener?.loadTopads((dataModel as ProductRecomWidgetDataModel).name)
+
         if (holder is ContentWidgetViewHolder &&
             holder.adapterPosition < currentList.size &&
-            (dataModel as? ContentWidgetDataModel)?.playWidgetState?.isLoading == true) {
-            listener?.loadPlayWidget()
-        }
+            (dataModel as? ContentWidgetDataModel)?.playWidgetState?.isLoading == true
+        ) listener?.loadPlayWidget()
+
         if (holder is ProductRecommendationVerticalPlaceholderViewHolder) {
             if (holder.adapterPosition < currentList.size &&
                 (dataModel as? ProductRecommendationVerticalPlaceholderDataModel)?.recomWidgetData == null

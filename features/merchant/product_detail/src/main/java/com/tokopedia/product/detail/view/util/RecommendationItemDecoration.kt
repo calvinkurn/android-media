@@ -12,7 +12,10 @@ class RecommendationItemDecoration : RecyclerView.ItemDecoration() {
     private val marginHorizontal = 16f.toPx().toInt()
 
     override fun getItemOffsets(
-        outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
     ) {
         val viewHolder = parent.getChildViewHolder(view)
         val spanIndex = (view.layoutParams as? StaggeredGridLayoutManager.LayoutParams)?.spanIndex

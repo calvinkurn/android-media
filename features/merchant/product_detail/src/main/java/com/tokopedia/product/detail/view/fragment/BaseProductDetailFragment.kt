@@ -162,7 +162,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     private fun setupRecyclerView(view: View) {
         val rv = view.findViewById<RecyclerView>(R.id.rv_pdp) ?: return
 
-        rv.apply{
+        rv.apply {
             isNestedScrollingEnabled = false
             itemAnimator = null
             layoutManager = CenterLayoutManager(view.context).apply {
@@ -189,7 +189,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     protected fun addEndlessScrollListener(loadMore: (page: Int) -> Unit) {
-        if(endlessScrollListener != null) return
+        if (endlessScrollListener != null) return
 
         val rv = rvPdp ?: return
         endlessScrollListener = object : EndlessRecyclerViewScrollListener(rv.layoutManager) {

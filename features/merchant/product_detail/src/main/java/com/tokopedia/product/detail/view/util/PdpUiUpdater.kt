@@ -613,10 +613,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateVerticalRecommendationData(data: RecommendationWidget){
+    fun updateVerticalRecommendationData(data: RecommendationWidget) {
         updateData(data.pageName) {
             (mapOfData[data.pageName] as? ProductRecommendationVerticalPlaceholderDataModel)?.apply {
-                if(recomWidgetData?.currentPage != data.currentPage){
+                if (recomWidgetData?.currentPage != data.currentPage) {
                     verticalRecommendationItems.addAll(getItemDataModels())
                 }
                 recomWidgetData = data

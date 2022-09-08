@@ -30,7 +30,8 @@ class ProductRecommendationVerticalViewHolder(
             )
 
             setOnClickListener {
-                val trackData = listener.getRecommendationVerticalTrackData() ?: return@setOnClickListener
+                val trackData =
+                    listener.getRecommendationVerticalTrackData() ?: return@setOnClickListener
                 listener.eventRecommendationClick(
                     item,
                     "",
@@ -41,14 +42,11 @@ class ProductRecommendationVerticalViewHolder(
                 )
 
                 goToProduct(item.productId.toString())
-//                listener.onClickRecommendationVerticalItem(
-//                    item,
-//                    element.position
-//                )
             }
 
             setThreeDotsOnClickListener {
-                val recommVerticalData = listener.getRecommendationVerticalTrackData() ?: return@setThreeDotsOnClickListener
+                val recommVerticalData = listener.getRecommendationVerticalTrackData()
+                    ?: return@setThreeDotsOnClickListener
 
                 listener.onThreeDotsClick(
                     item,
@@ -59,7 +57,8 @@ class ProductRecommendationVerticalViewHolder(
         }
 
         itemView.addOnImpressionListener(element.impressHolder) {
-            val trackData = listener.getRecommendationVerticalTrackData() ?: return@addOnImpressionListener
+            val trackData =
+                listener.getRecommendationVerticalTrackData() ?: return@addOnImpressionListener
             listener.eventRecommendationImpression(
                 item,
                 "",
@@ -68,12 +67,12 @@ class ProductRecommendationVerticalViewHolder(
                 item.header,
                 trackData
             )
-//            listener.onImpressRecommendationVerticalItem(item, element.position)
         }
     }
 
-    private fun goToProduct(productId: String){
-        RouteManager.route(itemView.context,
+    private fun goToProduct(productId: String) {
+        RouteManager.route(
+            itemView.context,
             ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
             productId
         )

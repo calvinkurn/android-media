@@ -22,7 +22,7 @@ class ProductRecommendationVerticalPlaceholderViewHolder(
     override fun bind(element: ProductRecommendationVerticalPlaceholderDataModel) {
         setTitle(element)
 
-        itemView.addOnImpressionListener(element.impressHolder){
+        itemView.addOnImpressionListener(element.impressHolder) {
             listener.onImpressComponent(getComponentTrackData(element))
             listener.onImpressRecommendationVertical(getComponentTrackData(element))
         }
@@ -43,5 +43,4 @@ class ProductRecommendationVerticalPlaceholderViewHolder(
             text = title
         }
     }
-
 }

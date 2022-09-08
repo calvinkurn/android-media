@@ -2383,7 +2383,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `verify vertical recommendation when return empty list, will be fail`(){
+    fun `verify vertical recommendation when return empty list, will be fail`() {
         val pageName = "pdp_8_vertical"
         val productId = "1234"
 
@@ -2400,7 +2400,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `verify vertical recommendation throw error, will be fail`(){
+    fun `verify vertical recommendation throw error, will be fail`() {
         val pageNumber = 1
         val pageName = "pdp_8_vertical"
         val productId = "1234"
@@ -2415,7 +2415,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `verify success get vertical recommendation data`(){
+    fun `verify success get vertical recommendation data`() {
         val mockResponse = RecommendationWidget(
             tid = "1",
             recommendationItemList = listOf(RecommendationItem())
@@ -2445,7 +2445,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `verify success get vertical recommendation data with null productId and pageNumber`(){
+    fun `verify success get vertical recommendation data with null productId and pageNumber`() {
         val mockResponse = RecommendationWidget(
             tid = "1",
             recommendationItemList = listOf(RecommendationItem())
