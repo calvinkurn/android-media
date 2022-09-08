@@ -2840,7 +2840,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (newList.size > rowNumber && newList[rowNumber] is DynamicPostUiModel) {
             val item = (newList[rowNumber] as DynamicPostUiModel)
             val campaign = item.feedXCard.campaign
-            if (campaign.id.toLongOrZero() == data.campaignId)
+            if (campaign.campaignId == data.campaignId)
             campaign.reminder = data.reminderStatus
             if (shouldShowToaster)
             showToastOnSuccessReminderSetForFSTorRS(item.feedXCard)

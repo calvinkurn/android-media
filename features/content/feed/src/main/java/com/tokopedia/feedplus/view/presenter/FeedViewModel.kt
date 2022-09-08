@@ -178,9 +178,9 @@ class FeedViewModel @Inject constructor(
 
      fun checkUpcomingCampaignInitialReminderStatus(campaign: FeedXCampaign, rowNumber: Int) {
         viewModelScope.launchCatchError(block = {
-            val data = checkUpcomingCampaign(campaignId = campaign.id.toLongOrZero())
-            val reminderStatusRes = if (data) FeedASGCUpcomingReminderStatus.On(campaign.id.toLongOrZero()) else FeedASGCUpcomingReminderStatus.Off(campaign.id.toLongOrZero())
-                _asgcReminderButtonInitialStatus.value = Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.id.toLongOrZero(), reminderStatus = reminderStatusRes))
+            val data = checkUpcomingCampaign(campaignId = campaign.campaignId)
+            val reminderStatusRes = if (data) FeedASGCUpcomingReminderStatus.On(campaign.campaignId) else FeedASGCUpcomingReminderStatus.Off(campaign.campaignId)
+                _asgcReminderButtonInitialStatus.value = Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.campaignId, reminderStatus = reminderStatusRes))
         }) {
             _asgcReminderButtonInitialStatus.value = Fail(it)
         }
@@ -196,11 +196,11 @@ class FeedViewModel @Inject constructor(
      fun setUnsetReminder(campaign: FeedXCampaign, rowNumber: Int) {
         viewModelScope.launchCatchError(block = {
             val data = subscribeUpcomingCampaign(
-                campaignId = campaign.id.toLongOrZero(),
+                campaignId = campaign.campaignId,
                 reminderType = campaign.reminder
             )
-            val reminderStatusRes = if (data.first) FeedASGCUpcomingReminderStatus.On(campaign.id.toLongOrZero()) else FeedASGCUpcomingReminderStatus.Off(campaign.id.toLongOrZero())
-            _asgcReminderButtonStatus.value = Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.id.toLongOrZero(), reminderStatus = reminderStatusRes))
+            val reminderStatusRes = if (data.first) FeedASGCUpcomingReminderStatus.On(campaign.campaignId) else FeedASGCUpcomingReminderStatus.Off(campaign.campaignId)
+            _asgcReminderButtonStatus.value = Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.campaignId, reminderStatus = reminderStatusRes))
         }) {
             _asgcReminderButtonStatus.value = Fail(it)
         }

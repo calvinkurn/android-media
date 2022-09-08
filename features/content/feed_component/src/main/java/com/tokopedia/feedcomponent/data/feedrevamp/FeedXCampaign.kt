@@ -3,7 +3,6 @@ package com.tokopedia.feedcomponent.data.feedrevamp
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
-
 data class FeedXCampaign(
     @SerializedName("id")
     var id: String = "",
@@ -18,7 +17,11 @@ data class FeedXCampaign(
     @SerializedName("endTime")
     var endTime: String = "",
     var reminder: FeedASGCUpcomingReminderStatus = FeedASGCUpcomingReminderStatus.Off(id.toLongOrZero())
-)
+) {
+    val campaignId: Long
+        get() = id.toLongOrZero()
+}
+
 sealed class FeedASGCUpcomingReminderStatus {
     data class On(val campaignId: Long) : FeedASGCUpcomingReminderStatus()
     data class Off(val campaignId: Long) : FeedASGCUpcomingReminderStatus()

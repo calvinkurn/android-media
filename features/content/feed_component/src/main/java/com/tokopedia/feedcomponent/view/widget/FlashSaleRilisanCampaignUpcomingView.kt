@@ -65,10 +65,13 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
         this.mListener = listener
     }
 
-    fun setReminderBtnState(reminderStatus: FeedASGCUpcomingReminderStatus, positionInFeed: Int){
+    fun setReminderBtnState(reminderStatus: FeedASGCUpcomingReminderStatus, positionInFeed: Int) {
         mListener?.setInitialStateOfReminderBtn(isReminderSet, positionInFeed)
         fstReminderBtn.apply {
-            if (reminderStatus == FeedASGCUpcomingReminderStatus.On(mFeedXCard?.campaign?.id.toLongOrZero())) {
+            if (reminderStatus == FeedASGCUpcomingReminderStatus.On(
+                    mFeedXCard?.campaign?.campaignId ?: 0
+                )
+            ) {
                 text = context.getString(R.string.btn_asgc_flash_remind_btn_text_disabled)
                 buttonType = UnifyButton.Type.ALTERNATE
             } else {
