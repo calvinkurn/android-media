@@ -5,8 +5,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_SRC
-import com.tokopedia.topads.sdk.domain.TopAdsParams.KEY_SRC
+import com.tokopedia.topads.sdk.domain.TopAdsParams.Companion.DEFAULT_KEY_SRC
+import com.tokopedia.topads.sdk.domain.TopAdsParams.Companion.KEY_SRC
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.utils.*
 

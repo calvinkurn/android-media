@@ -350,7 +350,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             override fun onItemImpressed(position: Int) {
                 val cpmData = cpmModel.data?.getOrNull(position)
                 impressionCount = position + 1
-                impressionListener?.onImpressionHeadlineAdsItem(position, cpmData)
+                cpmData?.let { impressionListener?.onImpressionHeadlineAdsItem(position, it) }
                 topAdsUrlHitter.hitImpressionUrl(
                         className,
                         cpmData?.cpm?.cpmImage?.fullUrl,
@@ -408,7 +408,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 override fun onItemImpressed(position: Int) {
                     val cpmData = cpmModel?.data?.getOrNull(position)
                     impressionCount = position + 1
-                    impressionListener?.onImpressionHeadlineAdsItem(position, cpmData)
+                    cpmData?.let { impressionListener?.onImpressionHeadlineAdsItem(position, it) }
                     topAdsUrlHitter.hitImpressionUrl(
                         className,
                         cpmData?.cpm?.cpmImage?.fullUrl,
