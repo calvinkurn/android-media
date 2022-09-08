@@ -5,6 +5,16 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/unify_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="true" />
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_unify"
         android:layout_width="40dp"
@@ -12,7 +22,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unify_toolbar"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.tokopedia.globalerror.GlobalError
@@ -22,13 +32,18 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unify_toolbar"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ScrollView
         android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/unify_toolbar"
+        app:layout_constrainedHeight="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -38,10 +53,10 @@
                 android:id="@+id/iv_input_phone"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/img_redefine_register_input_phone"
-                app:layout_constraintDimensionRatio="280:210"
                 android:layout_marginHorizontal="40dp"
                 android:layout_marginTop="16dp"
+                android:src="@drawable/img_redefine_register_input_phone"
+                app:layout_constraintDimensionRatio="280:210"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -50,9 +65,9 @@
                 android:id="@+id/tv_input_phone_header"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
+                android:gravity="center"
                 android:text="@string/register_email_input_phone_header"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -65,13 +80,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/register_email_input_phone_description"
                 android:gravity="center"
-                app:typographyType="paragraph_2"
+                android:text="@string/register_email_input_phone_description"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_input_phone_header" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_input_phone_header"
+                app:typographyType="paragraph_2" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/field_input_phone"
@@ -79,12 +94,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
-                app:unify_text_field_message=" "
-                app:unify_text_field_label="@string/text_field_label_phone_number"
-                app:unify_text_field_input_type="phone"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_input_phone_desc"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_input_phone_desc"
+                app:unify_text_field_input_type="phone"
+                app:unify_text_field_label="@string/text_field_label_phone_number"
+                app:unify_text_field_message=" " />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_submit"

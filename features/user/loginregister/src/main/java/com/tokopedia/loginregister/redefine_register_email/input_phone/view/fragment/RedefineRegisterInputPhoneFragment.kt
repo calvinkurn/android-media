@@ -101,12 +101,35 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding?.unifyToolbar?.title = getString(R.string.register_email_title)
+        showNavigateBackToolbar(true)
+
         if (!paramIsRequiresInputPhone) onEntireScreenLoading()
         initListener()
         initObserver()
         editorChangesListener()
         setUpKeyboardListener(view)
         initRegisterRequest()
+    }
+
+    private fun showNavigateBackToolbar(isShow: Boolean) {
+        binding?.unifyToolbar?.apply {
+            isShowShadow = false
+            if (isShow) {
+                setNavigationOnClickListener {
+                    requireActivity().onBackPressed()
+                }
+                isShowBackButton = true
+            } else {
+                isShowBackButton = false
+                actionText = getString(R.string.register_email_input_phone_skip)
+
+                actionTextView?.setOnClickListener {
+                    goToHome()
+                }
+            }
+        }
     }
 
     private fun initRegisterRequest() {
@@ -235,6 +258,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     if (paramIsRequiresInputPhone) {
                         goToHome()
                     } else {
+                        showNavigateBackToolbar(false)
                         onSuccessRegistered()
                     }
                 }
