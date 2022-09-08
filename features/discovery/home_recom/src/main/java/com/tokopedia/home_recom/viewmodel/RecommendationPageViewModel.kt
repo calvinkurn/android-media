@@ -223,15 +223,17 @@ open class RecommendationPageViewModel @Inject constructor(
                     (productRecom as? ProductInfoDataModel)?.let {
                         it.isGetTopAds = true
                         it.productDetailData?.let { productDetailData ->
-                            val topadsProduct = adsStatus.data.productList[0]
-                            productDetailData.isTopads = topadsProduct.isCharge
-                            productDetailData.clickUrl = topadsProduct.clickUrl
-                            productDetailData.trackerImageUrl = topadsProduct.product.image.m_url
+                            if (adsStatus.data.productList.isNotEmpty()) {
+                                val topadsProduct = adsStatus.data.productList[0]
+                                productDetailData.isTopads = topadsProduct.isCharge
+                                productDetailData.clickUrl = topadsProduct.clickUrl
+                                productDetailData.trackerImageUrl =
+                                    topadsProduct.product.image.m_url
 
-                            val itemIndex = dataList.indexOf(productRecom)
-                            dataList[itemIndex] = productRecom
-
-                            _recommendationListLiveData.postValue(dataList)
+                                val itemIndex = dataList.indexOf(productRecom)
+                                dataList[itemIndex] = productRecom
+                                _recommendationListLiveData.postValue(dataList)
+                            }
                         }
                     }
                 } else {
