@@ -928,7 +928,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                     tpgSellingValue.text = getString(R.string.stfs_dash_label)
                 }
             }
-            setupFinishedMidCardTickerAppereance()
+            setupFinishedMidCardTickerAppearance()
         }
     }
 
@@ -967,7 +967,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         }
     }
 
-    private fun setupFinishedMidCardTickerAppereance() {
+    private fun setupFinishedMidCardTickerAppearance() {
         finishedCdpMidBinding?.run {
             cardFlashSalePerformance.setCardUnifyBackgroundColor(
                 MethodChecker.getColor(
@@ -1017,16 +1017,16 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         cdpBodyBinding?.run {
             val isShowButtonToggle =
                 viewModel.getCampaignRegisteredStatus() == FlashSaleStatus.WAITING_FOR_SELECTION
-            val isTitleNotShown = when (viewModel.getCampaignRegisteredStatus()) {
-                FlashSaleStatus.NO_REGISTERED_PRODUCT -> true
-                FlashSaleStatus.CANCELLED -> true
-                FlashSaleStatus.MISSED -> true
-                else -> false
+            val isShowProductListHeader = when (viewModel.getCampaignRegisteredStatus()) {
+                FlashSaleStatus.NO_REGISTERED_PRODUCT -> false
+                FlashSaleStatus.CANCELLED -> false
+                FlashSaleStatus.MISSED -> false
+                else -> true
             }
 
             btnSelectAllProduct.isVisible = isShowButtonToggle
-            tpgProductCount.isVisible = !isTitleNotShown
-            tpgRegisterBodyTitle.isVisible = !isTitleNotShown
+            tpgProductCount.isVisible = isShowProductListHeader
+            tpgRegisterBodyTitle.isVisible = isShowProductListHeader
             tpgProductCount.text = getString(
                 R.string.stfs_product_count_place_holder,
                 productAdapter.itemCount

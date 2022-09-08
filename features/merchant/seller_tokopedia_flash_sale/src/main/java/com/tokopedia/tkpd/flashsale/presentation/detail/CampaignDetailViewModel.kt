@@ -78,7 +78,7 @@ class CampaignDetailViewModel @Inject constructor(
                 val result = getFlashSaleSubmittedProductListUseCase.execute(
                     campaignId = campaignId,
                     pagination = GetFlashSaleSubmittedProductListRequest.Pagination(
-                        10,
+                        PAGE_SIZE,
                         offset
                     )
                 )
@@ -101,9 +101,9 @@ class CampaignDetailViewModel @Inject constructor(
                 FlashSaleStatus.WAITING_FOR_SELECTION -> submittedProduct.toWaitingForSelectionItem()
                 FlashSaleStatus.ON_SELECTION_PROCESS -> submittedProduct.toOnSelectionProcessItem()
                 FlashSaleStatus.SELECTION_FINISHED -> submittedProduct.toFinishedProcessSelectionItem()
-                FlashSaleStatus.ONGOING -> submittedProduct.toOngoingItem()
+                FlashSaleStatus.ONGOING -> submittedProduct.toOngoingAndFinishedItem()
                 FlashSaleStatus.REJECTED -> submittedProduct.toOngoingRejectedItem()
-                FlashSaleStatus.FINISHED -> submittedProduct.toOngoingItem()
+                FlashSaleStatus.FINISHED -> submittedProduct.toOngoingAndFinishedItem()
                 else -> submittedProduct.toWaitingForSelectionItem()
             }
         }
@@ -169,7 +169,7 @@ class CampaignDetailViewModel @Inject constructor(
         )
     }
 
-    private fun SubmittedProduct.toOngoingItem(): DelegateAdapterItem {
+    private fun SubmittedProduct.toOngoingAndFinishedItem(): DelegateAdapterItem {
         return OngoingItem(
             campaignStock,
             isMultiwarehouse,
