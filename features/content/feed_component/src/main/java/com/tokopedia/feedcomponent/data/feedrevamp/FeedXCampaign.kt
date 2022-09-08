@@ -18,7 +18,16 @@ data class FeedXCampaign(
     @SerializedName("endTime")
     var endTime: String = "",
     var reminder: FeedASGCUpcomingReminderStatus = FeedASGCUpcomingReminderStatus.Off(id.toLongOrZero())
-)
+){
+    val isUpcoming: Boolean
+        get() = status == Upcoming
+
+
+    companion object {
+        private const val Upcoming = "upcoming"
+
+    }
+}
 sealed class FeedASGCUpcomingReminderStatus {
     data class On(val campaignId: Long) : FeedASGCUpcomingReminderStatus()
     data class Off(val campaignId: Long) : FeedASGCUpcomingReminderStatus()
@@ -28,3 +37,5 @@ fun FeedASGCUpcomingReminderStatus.reversed(campaignId: Long): FeedASGCUpcomingR
     if (this is FeedASGCUpcomingReminderStatus.Off) FeedASGCUpcomingReminderStatus.On(campaignId) else FeedASGCUpcomingReminderStatus.Off(
         campaignId
     )
+
+

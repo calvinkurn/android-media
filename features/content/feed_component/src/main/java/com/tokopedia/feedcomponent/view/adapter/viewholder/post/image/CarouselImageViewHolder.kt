@@ -180,6 +180,7 @@ class CarouselImageViewHolder(
                     height = it.height,
                     positionInFeed = dataSource.getPositionInFeed(),
                     bitmap = postImage?.drawable?.toBitmap(),
+                    campaign = dataSource.getFeedXCard().campaign
                 )
                 postImageLayout.addView(tagView)
             }
