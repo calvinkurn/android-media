@@ -132,7 +132,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
+        viewModel.setMiniCartData(miniCartSimplifiedData)
     }
 
     override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
@@ -383,7 +383,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         if(showMiniCartWidget) {
             val shopId = viewModel.getShopId()
             val pageName = MiniCartAnalytics.Page.HOME_PAGE
-            val shopIds = listOf(shopId)
+            val shopIds = listOf(shopId.toString())
             val source = MiniCartSource.TokonowHome
             miniCartWidget?.initialize(
                 shopIds = shopIds,
@@ -449,7 +449,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     private fun onSuccessUpdateCartItem() {
-        val shopId = viewModel.getShopId()
+        val shopId = viewModel.getShopId().toString()
         binding?.miniCart?.updateData(listOf(shopId))
     }
 
