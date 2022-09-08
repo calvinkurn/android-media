@@ -58,18 +58,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/withdraw
     const val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    // LandingShopCreationActivity
-    // tokopedia-android-internal://global/landing-shop-creation
-    const val LANDING_SHOP_CREATION = "$INTERNAL_GLOBAL/landing-shop-creation"
-
-    // PhoneShopCreationActivity
-    // tokopedia-android-internal://global/phone-shop-creation
-    const val PHONE_SHOP_CREATION = "$INTERNAL_GLOBAL/phone-shop-creation"
-
-    // NameShopCreationActivity
-    // tokopedia-android-internal://global/name-shop-creation
-    const val NAME_SHOP_CREATION = "$INTERNAL_GLOBAL/name-shop-creation"
-
     const val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection?projectId={projectId}"
 
     const val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
@@ -190,13 +178,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/saldo-intro
     const val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
 
-    // RegisterInitialActivity
-    // tokopedia-android-internal://global/init-register
-    const val INIT_REGISTER = "$INTERNAL_GLOBAL/init-register"
-
-    // RegisterEmailActivity
-    // tokopedia-android-internal://global/email-register
-    const val EMAIL_REGISTER = "$INTERNAL_GLOBAL/email-register"
     // ChatbotActivity
     // tokopedia-android-internal://global/chatbot
     const val CHAT_BOT = "$INTERNAL_GLOBAL/chatbot"
@@ -234,11 +215,6 @@ object ApplinkConstInternalGlobal {
         "dfapplink={encodedApplink}&" +
         DFFALLBACKURL_KEY +"={fallbackUrl}"
 
-    /**
-     * TermPrivacyActivity
-     * @applink : tokopedia-android-internal://global/term-privacy/{page}/
-     **/
-    const val TERM_PRIVACY = "$INTERNAL_GLOBAL/term-privacy/{page}/"
     /** for param term privacy */
     const val PAGE_TERM_AND_CONDITION = "term-condition"
     const val PAGE_PRIVACY_POLICY = "privacy-policy"
