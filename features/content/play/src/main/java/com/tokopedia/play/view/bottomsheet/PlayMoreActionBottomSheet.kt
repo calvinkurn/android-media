@@ -1,10 +1,8 @@
 package com.tokopedia.play.view.bottomsheet
 
-import android.app.Activity
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
