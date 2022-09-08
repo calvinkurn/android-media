@@ -484,14 +484,18 @@ class DetailEditorFragment @Inject constructor(
             val currentBitmap = getBitmap()
             val cropRotateData = data.cropRotateValue
             currentBitmap?.let {
+                // need normalize between crop data and loaded image data, ucrop bound the loaded image size according to the view size
+                // but glide will load the image full size
+                val scalingSize = it.width.toFloat() / data.cropRotateValue.croppedSourceWidth
+
                 val finalRotationDegree =
                     (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + (cropRotateData.rotateDegree)
 
-                val offsetX = cropRotateData.offsetX
-                val imageWidth = cropRotateData.imageWidth
+                val offsetX = (cropRotateData.offsetX * scalingSize).toInt()
+                val imageWidth = (cropRotateData.imageWidth * scalingSize).toInt()
 
-                val offsetY = cropRotateData.offsetY
-                val imageHeight = cropRotateData.imageHeight
+                val offsetY = (cropRotateData.offsetY * scalingSize).toInt()
+                val imageHeight = (cropRotateData.imageHeight * scalingSize).toInt()
 
                 // get processed, since data param is set to be null then other data value is not necessary
                 val bitmapResult = viewBinding?.imgUcropPreview?.getProcessedBitmap(

@@ -19,8 +19,7 @@ data class EditorDetailUiModel(
     var watermarkMode: Int? = null,
     var removeBackgroundUrl: String? = null,
     var isContrastExecuteFirst: Boolean? = null,
-    var cropRotateValue: EditorCropRotateModel = getEmptyEditorCropRotateModel(),
-    var originalImageRatio: Float = 1f
+    var cropRotateValue: EditorCropRotateModel = getEmptyEditorCropRotateModel()
 ) : Parcelable {
     // used only for remove background
     fun clearValue() {

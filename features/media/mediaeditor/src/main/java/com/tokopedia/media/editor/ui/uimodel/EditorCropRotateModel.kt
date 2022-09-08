@@ -18,7 +18,8 @@ data class EditorCropRotateModel(
     var orientationChangeNumber: Int,
     var isRotate: Boolean,
     var isCrop: Boolean,
-    var isAutoCrop: Boolean = false
+    var isAutoCrop: Boolean = false,
+    var croppedSourceWidth: Int
 ): Parcelable {
 
     fun compareValue(data: EditorCropRotateModel): Boolean {
@@ -36,6 +37,7 @@ data class EditorCropRotateModel(
                 && data.isRotate == isRotate
                 && data.isCrop == isCrop
                 && data.isAutoCrop == isAutoCrop
+                && data.croppedSourceWidth == croppedSourceWidth
     }
 
     fun getRatio(): Float?{
@@ -58,7 +60,8 @@ data class EditorCropRotateModel(
                 0,
                 isRotate = false,
                 isCrop = false,
-                isAutoCrop = false
+                isAutoCrop = false,
+                0
             )
         }
     }

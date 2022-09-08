@@ -79,13 +79,7 @@ class EditorViewPagerAdapter(
             val imgPreviewRef = layout.findViewById<ImageView>(R.id.img_main_preview)
             imgPreviewRef.visible()
 
-            imgPreviewRef.loadImage(filePath) {
-                listener(onSuccess = { bitmap, _ ->
-                    bitmap?.let {
-                        uiModel.originalImageRatio = it.width.toFloat() / it.height
-                    }
-                })
-            }
+            imgPreviewRef.loadImage(filePath)
         }
 
         container.addView(layout)
