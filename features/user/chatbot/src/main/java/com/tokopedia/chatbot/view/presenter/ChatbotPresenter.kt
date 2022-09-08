@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -355,19 +356,19 @@ class ChatbotPresenter @Inject constructor(
                 view.isBackAllowed(true)
             }
             val model = ConnectionDividerViewModel(dividerMessage = agentQueue?.label, isShowButton = true,
-                    type = agentQueue?.type ?: SHOW_TEXT, leaveQueue = leaveQueue(dividerTime))
+                    type = agentQueue?.type ?: SHOW_TEXT, leaveQueue = leaveQueue())
             view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
         }
 
     }
 
-    fun leaveQueue(dividerTime: String): () -> Unit {
+    fun leaveQueue(): () -> Unit {
         return {
             leaveQueueUseCase.cancelJobs()
             leaveQueueUseCase.execute(
                 ::onSuccessLeaveQueue,
                 ::onFailureLeaveQueue,
-                chatResponse.msgId.toString(),
+                chatResponse.msgId,
                 Calendar.getInstance().timeInMillis.toString()
             )
         }
@@ -379,7 +380,8 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    private fun onSuccess(dividerTime: String = ""): (String) -> Unit {
+    @VisibleForTesting
+    fun onSuccess(dividerTime: String = ""): (String) -> Unit {
         return { str ->
             if (view != null) {
                 view.isBackAllowed(true)
@@ -732,7 +734,7 @@ class ChatbotPresenter @Inject constructor(
         leaveQueueUseCase.execute(
             ::onSuccessLeaveQueue,
             ::onFailureLeaveQueue,
-            chatResponse.msgId.toString(),
+            chatResponse.msgId,
             timestamp
         )
     }
@@ -758,8 +760,12 @@ class ChatbotPresenter @Inject constructor(
         onSubmitError(throwable)
     }
 
-    private val onSubmitError: (Throwable) -> Unit = {
-        it.printStackTrace()
+//    @VisibleForTesting
+//    val onSubmitError: (Throwable) -> Unit = {
+//        it.printStackTrace()
+//    }
+    fun onSubmitError(throwable : Throwable) {
+        throwable.printStackTrace()
     }
 
     private fun genrateInput(selectedValue: Int, model: HelpFullQuestionsViewModel?): SubmitOptionInput {

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
@@ -19,10 +20,14 @@ import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
+import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueHeader
+import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueResponse
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
+import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
+import com.tokopedia.chatbot.domain.resolink.ResoLinkResponse
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
@@ -58,6 +63,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -89,6 +95,7 @@ class ChatbotPresenterTest {
     private lateinit var checkUploadSecureUseCase: CheckUploadSecureUseCase
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
+    private lateinit var chatResponse : ChatSocketPojo
 
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
@@ -118,6 +125,7 @@ class ChatbotPresenterTest {
         checkUploadSecureUseCase = mockk(relaxed = true)
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
         getExistingChatMapper = mockk(relaxed = true)
+        chatResponse = mockk(relaxed = true)
 
         presenter = spyk(
             ChatbotPresenter(
@@ -185,30 +193,149 @@ class ChatbotPresenterTest {
         }
     }
 
-    //WHAT WILL I TEST HERE
     @Test
-    fun `hitGqlforOptionList success`() {
+    fun `leaveQueue success`() {
+        val response = mockk<LeaveQueueResponse>(relaxed = true)
+        val leaveQueueHeader = mockk<LeaveQueueHeader>(relaxed = true)
 
+        every {
+            response.postLeaveQueue?.leaveQueueHeader
+        } returns leaveQueueHeader
+
+        coEvery {
+            leaveQueueUseCase.execute(captureLambda(), any(), any(),any())
+        } coAnswers {
+            firstArg<(LeaveQueueResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.leaveQueue()
+
+        assertNotNull(leaveQueueHeader)
+    }
+
+    @Test
+    fun `leaveQueue failure`() {
+        var response : Throwable?= null
+
+        coEvery {
+            leaveQueueUseCase.execute(any(), {
+                response = it
+            }, any(), any())
+        } just runs
+
+        presenter.leaveQueue()
+
+        assertEquals(mockThrowable, response)
+    }
+
+    @Test
+    fun `OnClickLeaveQueue success`() {
+        val response = mockk<LeaveQueueResponse>(relaxed = true)
+        val leaveQueueHeader = mockk<LeaveQueueHeader>(relaxed = true)
+
+        every {
+            response.postLeaveQueue?.leaveQueueHeader
+        } returns leaveQueueHeader
+
+        coEvery {
+            leaveQueueUseCase.execute(captureLambda(), any(), chatResponse.msgId, any())
+        } coAnswers {
+            firstArg<(LeaveQueueResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.OnClickLeaveQueue("123456")
+
+        assertNotNull(leaveQueueHeader)
+    }
+
+    @Test
+    fun `OnClickLeaveQueue failure`() {
+
+        var exception = mockk<Throwable>(relaxed = true)
+
+        coEvery {
+            leaveQueueUseCase.execute(any(), {
+                exception = it
+            }, chatResponse.msgId, any())
+        } just runs
+
+        presenter.OnClickLeaveQueue("123456")
+
+        assertEquals(mockThrowable, exception)
     }
 
     @Test
     fun `hitGqlforOptionList failure`() {
+        var response : Throwable? = null
+        var input = mockk<SubmitOptionInput>(relaxed = true)
 
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(captureLambda(), input)
+        } coAnswers {
+            response = mockThrowable
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        presenter.hitGqlforOptionList(1,null)
+
+        assertNotNull(response)
     }
 
     @Test
     fun `checkLinkForRedirection success resoList not empty`() {
+        val response = mockk<ResoLinkResponse>(relaxed = true)
+        val stickyButtonStatus = true
+        val expectedButtonStatus = true
+
+        coEvery {
+            getResolutionLinkUseCase.getResoLinkResponse(any())
+        } returns response
+
+        every {
+            response?.getResolutionLink?.resolutionLinkData?.orderList?.firstOrNull()?.resoList?.isNotEmpty()
+        } returns stickyButtonStatus
+
+        presenter.checkLinkForRedirection("123", {}, {}, {})
+
+        assertEquals(stickyButtonStatus, expectedButtonStatus)
 
     }
 
     @Test
     fun `checkLinkForRedirection success resoList empty`() {
+        val response = mockk<ResoLinkResponse>(relaxed = true)
+        val stickyButtonStatus = false
+        val expectedButtonStatus = false
 
+        coEvery {
+            getResolutionLinkUseCase.getResoLinkResponse(any())
+        } returns response
+
+        every {
+            response?.getResolutionLink?.resolutionLinkData?.orderList?.firstOrNull()?.resoList?.isNotEmpty()
+        } returns stickyButtonStatus
+
+        presenter.checkLinkForRedirection("123", {}, {}, {})
+
+        assertEquals(stickyButtonStatus, expectedButtonStatus)
     }
 
     @Test
     fun `checkLinkForRedirection failure`() {
+        val throwable = mockk<Throwable>(relaxed = true)
+        var result: Throwable? = null
 
+        coEvery {
+            getResolutionLinkUseCase.getResoLinkResponse(any())
+        } throws throwable
+
+        presenter.checkLinkForRedirection("123", {}, {}, { throwable ->
+            result = throwable
+        })
+
+        assertEquals(
+            throwable, (result as Throwable)
+        )
     }
 
     @Test
@@ -773,11 +900,13 @@ class ChatbotPresenterTest {
     @Test
     fun `sendRating success `() {
         val response = mockk<SendRatingPojo>(relaxed = true)
+        val rating = 1
+        val uiModel = mockk<ChatRatingViewModel>(relaxed = true)
 
         coEvery {
-            sendChatRatingUseCase.sendChatRating(captureLambda(), any(), any(),any(), any())
+            sendChatRatingUseCase.sendChatRating( captureLambda(), any(), any(),any(), any())
         } coAnswers {
-            firstArg<(SendRatingPojo) -> Unit>().invoke(response)
+            firstArg<(SendRatingPojo, Int, ChatRatingViewModel ) -> Unit>().invoke(response, rating, uiModel)
         }
 
         presenter.sendRating("123456", 5, ChatRatingViewModel())
@@ -804,10 +933,6 @@ class ChatbotPresenterTest {
         }
 
     }
-
-    //hitGqlforOptionList
-    //leaveQueue
-    //OnClickLeaveQueue
 
     /******************************* Socket Related Unit Tests************************************/
 
