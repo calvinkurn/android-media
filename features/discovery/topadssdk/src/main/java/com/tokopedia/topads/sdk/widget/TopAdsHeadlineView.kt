@@ -10,12 +10,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.R
+import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
 
@@ -34,9 +36,11 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
         val view = View.inflate(context, R.layout.layout_widget_topads_headline, this)
         topadsBannerView = view.findViewById(R.id.top_ads_banner)
         shimmerView= view.findViewById(R.id.shimmer_view)
-        topadsBannerView.setTopAdsBannerClickListener { position, applink, data ->
-            RouteManager.route(context, applink)
-        }
+        topadsBannerView.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
+            override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
+                RouteManager.route(context, applink)
+            }
+        })
         topadsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener(){
         })
     }
