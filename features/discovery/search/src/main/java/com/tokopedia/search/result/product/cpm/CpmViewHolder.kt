@@ -10,6 +10,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 
 class CpmViewHolder(
     itemView: View,
@@ -26,14 +27,15 @@ class CpmViewHolder(
 
     init {
         binding?.adsBanner?.let {
-            it.setTopAdsBannerClickListener { position, applink: String?, data: CpmData? ->
-                bannerAdsListener?.onBannerAdsClicked(position, applink, data)
-            }
-
+            it.setTopAdsBannerClickListener(object :TopAdsBannerClickListener{
+                override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
+                    bannerAdsListener?.onBannerAdsClicked(position, applink, data)
+                }
+            })
             it.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
-                override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData?) {
+                override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
                     bannerAdsListener?.onBannerAdsImpressionListener(position, data)
-                    if (data?.cpm?.layout == LAYOUT_6 || data?.cpm?.layout == LAYOUT_5) {
+                    if (data.cpm.layout == LAYOUT_6 || data.cpm.layout == LAYOUT_5) {
                         bannerAdsListener?.onTopAdsCarouselItemImpressionListener(binding?.adsBanner?.impressionCount ?: 0)
                     }
                 }
