@@ -6,14 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="56dp">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.play_common.view.RemoteImageView
         android:id="@+id/iv_header"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_margin="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:imageUrl="@string/img_play_tokped_left"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_header"

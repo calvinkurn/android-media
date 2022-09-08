@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayVoucherHeaderBinding
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
@@ -41,7 +40,6 @@ class VoucherInfoHeaderViewHolder(private val view: ItemPlayVoucherHeaderBinding
     BaseViewHolder(view.root) {
 
        fun bind(item: PlayVoucherUiModel.InfoHeader){
-           view.ivHeader.loadImage(getString(R.string.img_play_tokped_left))
             view.tvHeader.text = buildSpannedString {
                 append(getString(R.string.play_voucher_header))
                 append(" ")
