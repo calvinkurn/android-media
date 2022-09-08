@@ -28,7 +28,7 @@ import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPers
 import com.tokopedia.common.topupbills.favoritepage.view.fragment.TopupBillsPersoFavoriteNumberFragment.Companion.CACHE_PREFERENCES_NAME
 import com.tokopedia.common.topupbills.favoritepage.view.fragment.TopupBillsPersoFavoriteNumberFragment.Companion.CACHE_SHOW_COACH_MARK_KEY
 import com.tokopedia.common.topupbills.favoritepage.view.viewholder.PersoFavoriteNumberViewHolder
-import com.tokopedia.common.topupbills.util.TopupBillsFavoriteNumberMockResponseConfig2
+import com.tokopedia.common.topupbills.util.TopupBillsFavoriteNumberMockResponseConfig
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -100,7 +100,7 @@ class TopupBillsFavoriteNumberActivityTest {
     fun validate_favorite_number_page_happy_flow() {
         graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse(
-            TopupBillsFavoriteNumberMockResponseConfig2(
+            TopupBillsFavoriteNumberMockResponseConfig(
                 isMockFilledFavoriteNumber = true,
                 isMockUpdateFavoriteDetail = true
             )
@@ -126,7 +126,7 @@ class TopupBillsFavoriteNumberActivityTest {
     fun validate_favorite_number_empty_unhappy_flow() {
         graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse(
-            TopupBillsFavoriteNumberMockResponseConfig2(
+            TopupBillsFavoriteNumberMockResponseConfig(
                 isMockFilledFavoriteNumber = false,
                 isMockUpdateFavoriteDetail = false
             )
@@ -146,7 +146,7 @@ class TopupBillsFavoriteNumberActivityTest {
     fun validate_favorite_number_page_favorite_detail_error_flow() {
         graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse(
-            TopupBillsFavoriteNumberMockResponseConfig2(
+            TopupBillsFavoriteNumberMockResponseConfig(
                 isMockFilledFavoriteNumber = true,
                 isMockUpdateFavoriteDetail = false
             )

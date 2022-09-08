@@ -32,7 +32,7 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSele
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.fragment.TopupBillsPersoFavoriteNumberFragment
-import com.tokopedia.common.topupbills.util.TopupBillsFavoriteNumberMockResponseConfig2
+import com.tokopedia.common.topupbills.util.TopupBillsFavoriteNumberMockResponseConfig
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivityStub
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -90,7 +90,7 @@ class TopupBillsSavedNumberActivityTest {
     fun validate_saved_number_page() {
         isFavnumCoachmarkDisabled(targetContext, true)
         setupGraphqlMockResponse(
-            TopupBillsFavoriteNumberMockResponseConfig2(
+            TopupBillsFavoriteNumberMockResponseConfig(
                 isMockFilledFavoriteNumber = true,
                 isMockUpdateFavoriteDetail = true
             )
