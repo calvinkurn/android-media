@@ -83,7 +83,6 @@ class UserTnCOnboardingBottomSheet @Inject constructor(
     private fun setupView() {
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
         binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
-
         if (entryPoint == UGCOnboardingParentFragment.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST) {
             setTitle(getString(R.string.ugc_tnc_onboarding_title))
             binding.tvTitle.hide()
