@@ -10,8 +10,7 @@ import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressChec
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.favoritepage.util.FavoriteNumberDataMapper
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.*
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -184,9 +183,9 @@ class TopupBillsViewModel @Inject constructor(
             _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber to shouldRefreshInputNumber))
         }) {
             val errMsg = when (prevActionType) {
-                UPDATE -> ERROR_FETCH_AFTER_UPDATE
-                DELETE -> ERROR_FETCH_AFTER_DELETE
-                UNDO_DELETE -> ERROR_FETCH_AFTER_UNDO_DELETE
+                FavoriteNumberActionType.UPDATE -> ERROR_FETCH_AFTER_UPDATE
+                FavoriteNumberActionType.DELETE -> ERROR_FETCH_AFTER_DELETE
+                FavoriteNumberActionType.UNDO_DELETE -> ERROR_FETCH_AFTER_UNDO_DELETE
                 else -> it.message
             }
             _seamlessFavNumberData.postValue(Fail(Throwable(errMsg)))
@@ -210,18 +209,18 @@ class TopupBillsViewModel @Inject constructor(
             }.getSuccessData<TopupBillsSeamlessFavNumberModData>()
 
             when (actionType) {
-                UPDATE -> _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
-                DELETE -> _seamlessFavNumberDeleteData.postValue(Success(data.updateFavoriteDetail))
-                UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Success(data.updateFavoriteDetail))
+                FavoriteNumberActionType.UPDATE -> _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
+                FavoriteNumberActionType.DELETE -> _seamlessFavNumberDeleteData.postValue(Success(data.updateFavoriteDetail))
+                FavoriteNumberActionType.UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Success(data.updateFavoriteDetail))
             }
         }) {
             when (actionType) {
-                UPDATE -> _seamlessFavNumberUpdateData.postValue(Fail(it))
-                DELETE -> {
+                FavoriteNumberActionType.UPDATE -> _seamlessFavNumberUpdateData.postValue(Fail(it))
+                FavoriteNumberActionType.DELETE -> {
                     _seamlessFavNumberDeleteData.postValue(Fail(it))
                     onModifyCallback?.invoke()
                 }
-                UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
+                FavoriteNumberActionType.UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
             }
         }
     }

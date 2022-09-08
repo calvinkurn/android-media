@@ -27,8 +27,8 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.fragment.TopupBillsPersoFavoriteNumberFragment.Companion.CACHE_PREFERENCES_NAME
 import com.tokopedia.common.topupbills.favoritepage.view.fragment.TopupBillsPersoFavoriteNumberFragment.Companion.CACHE_SHOW_COACH_MARK_KEY
+import com.tokopedia.common.topupbills.favoritepage.view.viewholder.PersoFavoriteNumberViewHolder
 import com.tokopedia.common.topupbills.util.TopupBillsFavoriteNumberMockResponseConfig2
-import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberViewHolder
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -295,7 +295,7 @@ class TopupBillsFavoriteNumberActivityTest {
         val viewInteraction =
             onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
+            RecyclerViewActions.actionOnItemAtPosition<PersoFavoriteNumberViewHolder>(
                 position,
                 click()
             )
@@ -306,7 +306,7 @@ class TopupBillsFavoriteNumberActivityTest {
         val viewInteraction =
             onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
+            RecyclerViewActions.actionOnItemAtPosition<PersoFavoriteNumberViewHolder>(
                 position,
                 CommonActions.clickChildViewWithId(R.id.common_topupbills_favorite_number_menu)
             )
