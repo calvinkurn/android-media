@@ -199,14 +199,14 @@ internal class SortFilterBottomSheetViewModel {
 
     private fun createPriceRangeCbFilter(priceFilter: Filter): PriceRangeFilterUiModel {
         return PriceRangeFilterUiModel(
+            filter = priceFilter,
             priceRangeList = priceFilter.options.map {
                 PriceRangeFilterItemUiModel(
-                    priceText = it.name,
-                    priceRangeDesc = it.description,
-                    priceRangeLevel = it.value.toIntSafely(),
-                    isNew = it.isNew
-                )
-            },
+                    option = it
+                ).apply {
+                    isSelected = it.inputState.toBoolean()
+                }
+            }.toMutableList(),
             priceRangeLabel = priceFilter.title
         )
     }
@@ -338,6 +338,52 @@ internal class SortFilterBottomSheetViewModel {
         sortedOptionViewModelList.addAll(optionViewModelList.filter { !it.isSelected })
 
         optionViewModelList = sortedOptionViewModelList
+    }
+
+    fun onPriceRangeFoodClick(priceRangeFilterItemUiModel: PriceRangeFilterItemUiModel, isSelected: Boolean) {
+        filterController.setFilter(priceRangeFilterItemUiModel.option, isSelected)
+        val sortFilterIndexSet : MutableSet<Int> = mutableSetOf()
+        updatePriceRangeCheckbox(sortFilterIndexSet)
+        refreshMapParameter()
+        notifyViewOnApplyFilter(sortFilterIndexSet.toList())
+    }
+
+    private fun updatePriceRangeCheckbox(
+        sortFilterIndexSet: MutableSet<Int>
+    ) {
+        sortFilterList.forEachIndexed { index, visitable ->
+            if(visitable is PriceRangeFilterUiModel) {
+                visitable.refreshOptionList()
+                sortFilterIndexSet.add(index)
+            }
+        }
+    }
+
+    private fun PriceRangeFilterUiModel.refreshOptionList() {
+        val newPriceRangeFilterItemList = mutableListOf<PriceRangeFilterItemUiModel>()
+        processOptionCheckboxList(this.filter.options, newPriceRangeFilterItemList)
+
+        this.priceRangeList.clear()
+        this.priceRangeList.addAll(newPriceRangeFilterItemList)
+    }
+
+    private fun processOptionCheckboxList(optionList: List<Option>, newPriceRangeList: MutableList<PriceRangeFilterItemUiModel>) {
+        val selectedOrPopularOptionList = mutableListOf<Option>()
+
+        optionList.forEach { option ->
+            option.updateInputState()
+            selectedOrPopularOptionList.addIfSelectedOrPopular(option)
+        }
+
+        selectedOrPopularOptionList.forEach {
+            newPriceRangeList.add(createPriceRangeFilterItemUiModel(it))
+        }
+    }
+
+    private fun createPriceRangeFilterItemUiModel(option: Option): PriceRangeFilterItemUiModel {
+        return PriceRangeFilterItemUiModel(option).also {
+            it.isSelected = option.inputState.toBoolean()
+        }
     }
 
     fun onOptionClick(filterViewModel: FilterViewModel, optionViewModel: OptionViewModel) {

@@ -15,6 +15,7 @@ import com.tokopedia.filter.databinding.FilterPriceRangeLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import java.lang.StringBuilder
 
 internal class PriceRangeFilterViewHolder(
@@ -86,7 +87,7 @@ internal class PriceRangeFilterViewHolder(
             with(binding) {
                 tvPriceRangeDollar.text =
                     MethodChecker.fromHtml(getPriceLevelString(item, priceRangeSize))
-                tvPriceRangeDesc.text = item.priceRangeDesc
+                tvPriceRangeDesc.text = item.option.description
                 bindCheckboxPriceRange(item)
             }
         }
@@ -95,7 +96,10 @@ internal class PriceRangeFilterViewHolder(
             with(binding.cbPriceRange) {
                 setOnCheckedChangeListener(null)
                 isChecked = item.isSelected
-                skipAnimation()
+
+                binding.root.setOnClickListener {
+                    isChecked = !isChecked
+                }
 
                 setOnCheckedChangeListener { _, isChecked ->
                     priceRangeFilterListener.onPriceRangeItemClicked(item, isChecked)
@@ -108,6 +112,8 @@ internal class PriceRangeFilterViewHolder(
             priceRangeSize: Int
         ): String {
             val priceBuilder = StringBuilder()
+            val option = item.option
+            val priceRangeValue = option.value.toIntSafely()
             val color = "#${
                 Integer.toHexString(
                     ContextCompat.getColor(
@@ -119,18 +125,18 @@ internal class PriceRangeFilterViewHolder(
 
             priceBuilder.append("<font color=$color>")
 
-            for (i in Int.ZERO..item.priceRangeLevel) {
-                priceBuilder.append(item.priceText)
-                if (i == (item.priceRangeLevel - Int.ONE)) {
+            for (i in Int.ZERO..priceRangeValue) {
+                priceBuilder.append(option.name)
+                if (i == (priceRangeValue - Int.ONE)) {
                     priceBuilder.append("</font>")
                     break
                 }
             }
 
-            val priceRangeLevelRegular = priceRangeSize - item.priceRangeLevel
+            val priceRangeLevelRegular = priceRangeSize - priceRangeValue
             var i = 0
             while (i < priceRangeLevelRegular) {
-                priceBuilder.append(item.priceText)
+                priceBuilder.append(option.name)
                 if (i == (priceRangeLevelRegular - Int.ONE)) {
                     break
                 }

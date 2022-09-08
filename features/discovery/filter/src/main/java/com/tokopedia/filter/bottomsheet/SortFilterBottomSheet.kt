@@ -131,7 +131,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             priceRangeFilterItemUiModel: PriceRangeFilterItemUiModel,
             isChecked: Boolean
         ) {
-
+            sortFilterBottomSheetViewModel?.onPriceRangeFoodClick(priceRangeFilterItemUiModel, isChecked)
         }
     }
 
