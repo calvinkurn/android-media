@@ -101,7 +101,8 @@
     <string name="pm_rate_4_star">Puas</string>
     <string name="pm_rate_5_star">Sangat Puas</string>
     <string name="pm_all_questionnaire_must_be_answered">Anda belum menjawab semua pertanyaan</string>
-    <string name="pm_number_of_order"><![CDATA[Produk Terjual: <font color=\"%1$s\">%2$s</font>]]></string>
+    <string name="pm_pro_number_of_order"><![CDATA[Produk Terjual: <font color=\"%1$s\">%2$s</font>]]></string>
+    <string name="pm_number_of_order"><![CDATA[Pesanan Selesai: <font color=\"%1$s\">%2$s</font>]]></string>
     <string name="pm_number_of_minimum_order">Min. %1$s pesanan dalam 30 hari terakhir</string>
     <string name="pm_niv_term"><![CDATA[Pendapatan Bersih: <font color=\"%1$s\">%2$s</font>]]></string>
     <string name="pm_niv_threshold_term">Min. %1$s dalam 30 hari terakhir</string>
