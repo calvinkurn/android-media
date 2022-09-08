@@ -5,11 +5,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.common.data.model.ShopInfoData
+import com.tokopedia.shop.common.domain.GetMessageIdChatUseCase
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_INFO_SOURCE
+import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,16 +27,18 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
                                             private val getShopNoteUseCase: GetShopNoteUseCase,
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
+                                            private val getMessageIdChatUseCase : GetMessageIdChatUseCase,
                                             private val coroutineDispatcherProvider: CoroutineDispatchers
 ): BaseViewModel(coroutineDispatcherProvider.main){
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
     fun userId() : String = userSessionInterface.userId
-
+    private fun isUserLogin() : Boolean = userSessionInterface.isLoggedIn
 
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopInfo = MutableLiveData<ShopInfoData>()
     val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
+    val messageIdOnChatExist = MutableLiveData<Result<String>>()
 
     fun getShopInfo(shopId: String) {
         launchCatchError(block = {
@@ -88,6 +93,24 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     private suspend fun getShopReputation(shopId: String): ShopBadge {
         getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
         return getShopReputationUseCase.executeOnBackground()
+    }
+
+    fun getMessageIdOnChatExist(shopId: String) {
+        if (!isUserLogin()) {
+            messageIdOnChatExist.value = Fail(UserNotLoginException())
+            return
+        }
+
+        launchCatchError(coroutineDispatcherProvider.io, block = {
+            messageIdOnChatExist.postValue(Success(getMessageId(shopId).chatExistingChat.messageId))
+        }) {
+            messageIdOnChatExist.postValue(Fail(it))
+        }
+    }
+
+    private suspend fun getMessageId(shopId: String): ChatExistingChat {
+        getMessageIdChatUseCase.params = GetMessageIdChatUseCase.createParams(shopId)
+        return getMessageIdChatUseCase.executeOnBackground()
     }
 
 }
