@@ -2962,10 +2962,10 @@ class NewShopPageFragment :
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
         if (foldableInfo.isFoldableDevice() && foldableInfo.isHalfOpen() && foldableInfo.foldingFeature?.orientation == FoldingFeature.ORIENTATION_HORIZONTAL) {
-//            val bt = foldableInfo.foldingFeature?.bounds?.bottom.orZero()/2
-//            viewBindingShopContentLayout?.appBarLayout?.layoutParams?.apply {
-//                height = bt + viewBinding?.toolbarContainer?.height.orZero()  + 40
-//            }
+            val bt = foldableInfo.foldingFeature?.bounds?.bottom.orZero()/2
+            viewBindingShopContentLayout?.appBarLayout?.layoutParams?.apply {
+                height = bt + viewBinding?.toolbarContainer?.height.orZero()  + 40
+            }
 //            val set = ConstraintSet().apply { clone(viewBinding!!.mainLayout) }
 
 //            val newSet = foldableInfo.alignSeparatorViewToFoldingFeatureBounds(
