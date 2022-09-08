@@ -23,7 +23,6 @@ import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
 import com.tokopedia.home_component.viewholders.layoutmanager.PeekingLinearLayoutManager
 import com.tokopedia.home_component.visitable.BannerDataModel
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
