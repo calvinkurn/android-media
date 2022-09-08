@@ -25,6 +25,8 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     private val onboardingType: Int
         get() = arguments?.getInt(KEY_ONBOARDING_TYPE, 0) ?: 0
+    private val entryPoint: Int
+        get() = arguments?.getInt(KEY_ENTRY_POINT, 0) ?: 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -101,6 +103,7 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     private fun createArgument() = Bundle().apply {
         putInt(KEY_ONBOARDING_TYPE, onboardingType)
+        putInt(KEY_ENTRY_POINT, entryPoint)
     }
 
     fun setListener(listener: Listener?) {
@@ -120,5 +123,8 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
         const val KEY_ONBOARDING_TYPE = "onboarding_type"
         const val KEY_ONBOARDING_TYPE_COMPLETION = 1
         const val KEY_ONBOARDING_TYPE_TNC = 2
+        const val KEY_ENTRY_POINT = "entry_point"
+        const val VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST = 1
+        const val VALUE_ENTRY_POINT_FROM_USER_PROFILE = 2
     }
 }

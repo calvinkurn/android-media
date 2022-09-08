@@ -29,6 +29,8 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
 
     protected val onboardingType: Int
         get() = arguments?.getInt(UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE, 0) ?: 0
+    protected val entryPoint: Int
+        get() = arguments?.getInt(UGCOnboardingParentFragment.KEY_ENTRY_POINT, 0) ?: 0
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {
@@ -73,6 +75,14 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        if (entryPoint == UGCOnboardingParentFragment.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST) {
+            showCloseIcon = true
+            showHeader = true
+        } else {
+            showCloseIcon = false
+            showHeader = false
+        }
 
         showKnob = true
         isDragable = true

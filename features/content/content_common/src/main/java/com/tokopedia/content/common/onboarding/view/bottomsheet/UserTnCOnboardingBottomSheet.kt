@@ -18,6 +18,9 @@ import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewM
 import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.databinding.BottomsheetUserTncOnboardingBinding
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import kotlinx.coroutines.flow.collect
@@ -80,6 +83,11 @@ class UserTnCOnboardingBottomSheet @Inject constructor(
     private fun setupView() {
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
         binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
+
+        if (entryPoint == UGCOnboardingParentFragment.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST) {
+            setTitle(getString(R.string.ugc_tnc_onboarding_title))
+            binding.tvTitle.hide()
+        } else binding.tvTitle.show()
     }
 
     private fun setupListener() {

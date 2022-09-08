@@ -867,6 +867,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         try {
             val bundle = Bundle().apply {
                 putInt(UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE, onboardingType)
+                putInt(UGCOnboardingParentFragment.KEY_ENTRY_POINT, UGCOnboardingParentFragment.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST)
             }
             childFragmentManager.beginTransaction()
                 .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)

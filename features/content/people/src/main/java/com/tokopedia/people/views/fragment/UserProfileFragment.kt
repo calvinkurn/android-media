@@ -296,6 +296,10 @@ class UserProfileFragment @Inject constructor(
                             if (viewModel.profileUsername.isEmpty()) KEY_ONBOARDING_TYPE_COMPLETION
                             else KEY_ONBOARDING_TYPE_TNC
                         )
+                        putInt(
+                            UGCOnboardingParentFragment.KEY_ENTRY_POINT,
+                            UGCOnboardingParentFragment.VALUE_ENTRY_POINT_FROM_USER_PROFILE
+                        )
                     }
                     childFragmentManager.beginTransaction()
                         .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)

@@ -14,6 +14,7 @@ import com.tokopedia.content.common.databinding.BottomsheetUserCompleteOnboardin
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.onboarding.view.bottomsheet.base.BaseUserOnboardingBottomSheet
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.onboarding.view.strategy.factory.UGCOnboardingStrategyFactory
 import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
 import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
@@ -21,6 +22,8 @@ import com.tokopedia.content.common.onboarding.view.uimodel.state.FeedUGCOnboard
 import com.tokopedia.content.common.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
 import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -83,6 +86,10 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         binding.textFieldUsername.isClearable = false
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
         binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
+        if (entryPoint == UGCOnboardingParentFragment.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST) {
+            setTitle(getString(R.string.ugc_complete_onboarding_title))
+            binding.tvTitle.hide()
+        } else binding.tvTitle.show()
     }
 
     private fun setupListener() {
