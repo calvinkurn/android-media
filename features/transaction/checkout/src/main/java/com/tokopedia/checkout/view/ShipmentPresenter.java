@@ -2609,9 +2609,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode) {
-        for (OrdersItem order : lastValidateUsePromoRequest.getOrders()) {
-            if (order.getUniqueId().equals(uniqueId)) {
-                order.getCodes().remove(promoCode);
+        if (lastValidateUsePromoRequest != null) {
+            for (OrdersItem order : lastValidateUsePromoRequest.getOrders()) {
+                if (order.getUniqueId().equals(uniqueId)) {
+                    order.getCodes().remove(promoCode);
+                }
             }
         }
     }
