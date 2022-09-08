@@ -11,8 +11,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.KEY_ONBOARDING_TYPE_COMPLETION
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.KEY_ONBOARDING_TYPE_TNC
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETION
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
@@ -603,9 +603,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             AccountStateInfoType.Live, AccountStateInfoType.Banned -> showWaringInfoBottomSheet()
             AccountStateInfoType.NotAcceptTNC -> {
                 if (state.selectedAccount.isShop) showTermsAndConditionBottomSheet(state.tnc)
-                else openUGCOnboardingBottomSheet(KEY_ONBOARDING_TYPE_TNC)
+                else openUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_TNC)
             }
-            AccountStateInfoType.NoUsername -> openUGCOnboardingBottomSheet(KEY_ONBOARDING_TYPE_COMPLETION)
+            AccountStateInfoType.NoUsername -> openUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_COMPLETION)
             AccountStateInfoType.Unknown -> return
         }
     }

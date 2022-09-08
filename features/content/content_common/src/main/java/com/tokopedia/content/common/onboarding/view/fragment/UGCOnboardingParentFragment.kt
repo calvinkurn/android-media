@@ -81,7 +81,7 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     }
 
     private fun showBottomSheet() {
-        if(onboardingType == KEY_ONBOARDING_TYPE_COMPLETION) {
+        if(onboardingType == VALUE_ONBOARDING_TYPE_COMPLETION) {
             mListener?.impressCompleteOnboarding()
             UserCompleteOnboardingBottomSheet.getFragment(
                 childFragmentManager,
@@ -121,8 +121,8 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     companion object {
         const val TAG = "FeedUGCOnboardingParentFragment"
         const val KEY_ONBOARDING_TYPE = "onboarding_type"
-        const val KEY_ONBOARDING_TYPE_COMPLETION = 1
-        const val KEY_ONBOARDING_TYPE_TNC = 2
+        const val VALUE_ONBOARDING_TYPE_COMPLETION = 1
+        const val VALUE_ONBOARDING_TYPE_TNC = 2
         const val KEY_ENTRY_POINT = "entry_point"
         const val VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST = 1
         const val VALUE_ENTRY_POINT_FROM_USER_PROFILE = 2
