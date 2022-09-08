@@ -172,6 +172,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_X_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_VERTICAL_LOADING
@@ -2662,21 +2663,29 @@ open class DynamicProductDetailFragment :
     private fun observeVerticalRecommendation() {
         viewLifecycleOwner.observe(viewModel.verticalRecommendation) { data ->
             data.doSuccessOrFail({
-                val recommendationWidget = it.data
-                pdpUiUpdater?.updateVerticalRecommendationData(recommendationWidget)
-                endlessScrollListener?.updateStateAfterGetData()
-                addEndlessScrollListener {
-                    val page =
-                        pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
-                    viewModel.getVerticalRecommendationData(page, productId)
-                }
-                updateUi()
+                successFetchRecommendationVertical(it.data)
             }, {
                 pdpUiUpdater?.removeComponent(PDP_VERTICAL_LOADING)
                 removeEndlessScrollListener()
                 updateUi()
             })
         }
+    }
+
+    private fun successFetchRecommendationVertical(recommendationWidget: RecommendationWidget) {
+        if (recommendationWidget.currentPage == DEFAULT_PAGE_NUMBER && recommendationWidget.recommendationItemList.isEmpty()) {
+            pdpUiUpdater?.removeEmptyRecommendation(recommendationWidget)
+            return
+        }
+
+        pdpUiUpdater?.updateVerticalRecommendationData(recommendationWidget)
+        endlessScrollListener?.updateStateAfterGetData()
+        addEndlessScrollListener {
+            val page =
+                pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
+            viewModel.getVerticalRecommendationData(recommendationWidget.pageName, page, productId)
+        }
+        updateUi()
     }
 
     private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
@@ -5390,47 +5399,12 @@ open class DynamicProductDetailFragment :
         productKey.orEmpty()
     )
 
-    override fun startVerticalRecommendation() {
-        viewModel.getVerticalRecommendationData(productId = productId)
-    }
-
-    override fun onClickRecommendationVerticalItem(
-        item: RecommendationItem,
-        position: Int
-    ) {
-        val trackDataModel = verticalRecommendationTrackDataModel ?: return
-        DynamicProductDetailTracking.Click.eventRecommendationClick(
-            item,
-            "",
-            false,
-            position,
-            viewModel.isUserSessionActive,
-            item.pageName,
-            item.header,
-            viewModel.getDynamicProductInfoP1,
-            trackDataModel
-        )
-        val intent = ProductDetailActivity.createIntent(requireContext(), item.productId)
-        startActivity(intent)
+    override fun startVerticalRecommendation(pageName: String) {
+        viewModel.getVerticalRecommendationData(pageName = pageName, productId = productId)
     }
 
     override fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel) {
         verticalRecommendationTrackDataModel = componentTrackDataModel
-    }
-
-    override fun onImpressRecommendationVerticalItem(
-        recommendationItem: RecommendationItem,
-        position: Int
-    ) {
-        val trackDataModel = verticalRecommendationTrackDataModel ?: return
-        eventRecommendationImpression(
-            recommendationItem,
-            "",
-            position,
-            recommendationItem.pageName,
-            recommendationItem.header,
-            trackDataModel
-        )
     }
 
     override fun getRecommendationVerticalTrackData(): ComponentTrackDataModel? = verticalRecommendationTrackDataModel

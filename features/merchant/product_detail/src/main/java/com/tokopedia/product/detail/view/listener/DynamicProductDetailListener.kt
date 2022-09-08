@@ -412,11 +412,6 @@ interface DynamicProductDetailListener {
     fun onClickProductDetailnavigation(position: Int, label: String)
 
     fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel)
-    fun onImpressRecommendationVerticalItem(recommendationItem: RecommendationItem, position: Int)
-    fun startVerticalRecommendation()
-    fun onClickRecommendationVerticalItem(
-        item: RecommendationItem,
-        position: Int
-    )
+    fun startVerticalRecommendation(pageName: String)
     fun getRecommendationVerticalTrackData(): ComponentTrackDataModel?
 }

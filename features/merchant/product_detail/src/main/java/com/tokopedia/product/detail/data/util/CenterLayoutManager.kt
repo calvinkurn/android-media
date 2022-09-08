@@ -11,6 +11,10 @@ class CenterLayoutManager(context: Context) : StaggeredGridLayoutManager(SPAN_CO
         const val SPAN_COUNT = 2
     }
 
+    init {
+        gapStrategy = GAP_HANDLING_NONE
+    }
+
     private var centerSmoothScroller = CenterSmoothScroller(context)
 
     override fun smoothScrollToPosition(recyclerView: RecyclerView, state: RecyclerView.State, position: Int) {

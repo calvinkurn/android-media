@@ -255,6 +255,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     this.productId = dataP1.basic.productID
                 }
             }
+
+            verticalRecommendationItems.clear()
         }
     }
 
@@ -926,13 +928,15 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun getCurrentDataModels(): List<DynamicPdpDataModel> {
         val mutableItems = mapOfData.values.toMutableList()
 
-        val indexVertical = mutableItems.indexOfLast {
+        val indexVerticalRecommendation = mutableItems.indexOfLast {
             it is ProductRecommendationVerticalPlaceholderDataModel
         }
+
+        if (indexVerticalRecommendation == -1) return mutableItems
         verticalRecommendationItems.forEachIndexed { index, item ->
             item.position = index + 1
         }
-        mutableItems.addAll(indexVertical + 1, verticalRecommendationItems)
+        mutableItems.addAll(indexVerticalRecommendation + 1, verticalRecommendationItems)
         return mutableItems
     }
 }

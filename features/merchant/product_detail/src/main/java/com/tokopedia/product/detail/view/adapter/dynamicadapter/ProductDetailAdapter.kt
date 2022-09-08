@@ -69,25 +69,28 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
+
+        val dataModel = currentList[holder.adapterPosition]
+
         if (holder is ProductRecommendationViewHolder &&
                 holder.adapterPosition < currentList.size &&
-                (currentList[holder.adapterPosition] as? ProductRecommendationDataModel)?.recomWidgetData == null) {
-            listener?.loadTopads((currentList[holder.adapterPosition] as ProductRecommendationDataModel).name)
+                (dataModel as? ProductRecommendationDataModel)?.recomWidgetData == null) {
+            listener?.loadTopads((dataModel as ProductRecommendationDataModel).name)
         }
         if (holder is ProductRecomWidgetViewHolder &&
                 holder.adapterPosition < currentList.size &&
-                (currentList[holder.adapterPosition] as? ProductRecomWidgetDataModel)?.recomWidgetData == null) {
-            listener?.loadTopads((currentList[holder.adapterPosition] as ProductRecomWidgetDataModel).name)
+                (dataModel as? ProductRecomWidgetDataModel)?.recomWidgetData == null) {
+            listener?.loadTopads((dataModel as ProductRecomWidgetDataModel).name)
         }
         if (holder is ContentWidgetViewHolder &&
             holder.adapterPosition < currentList.size &&
-            (currentList[holder.adapterPosition] as? ContentWidgetDataModel)?.playWidgetState?.isLoading == true) {
+            (dataModel as? ContentWidgetDataModel)?.playWidgetState?.isLoading == true) {
             listener?.loadPlayWidget()
         }
         if (holder is ProductRecommendationVerticalPlaceholderViewHolder) {
             if (holder.adapterPosition < currentList.size &&
-                (currentList[holder.adapterPosition] as? ProductRecommendationVerticalPlaceholderDataModel)?.recomWidgetData == null
-            ) listener?.startVerticalRecommendation()
+                (dataModel as? ProductRecommendationVerticalPlaceholderDataModel)?.recomWidgetData == null
+            ) listener?.startVerticalRecommendation(dataModel.name())
             shouldRedrawLayout = true
         }
     }
