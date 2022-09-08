@@ -360,7 +360,7 @@ class DetailEditorFragment @Inject constructor(
                 }
                 // ==========
                 EditorToolType.ROTATE -> {
-                    initializeRotate(uri, this@DetailEditorFragment, data.originalImageRatio)
+                    initializeRotate(uri, this@DetailEditorFragment)
                     rotateComponent.setupView(data)
                 }
                 // ==========

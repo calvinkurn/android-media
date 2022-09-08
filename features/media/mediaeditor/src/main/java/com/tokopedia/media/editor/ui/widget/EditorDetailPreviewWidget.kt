@@ -26,10 +26,10 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
 
     val scaleNormalizeValue get() = cropImageView.scaleX * cropImageView.scaleY
 
-    fun initializeRotate(uriSource: Uri, listener: Listener, ratio: Float) {
+    fun initializeRotate(uriSource: Uri, listener: Listener) {
         val resultDestination = getUCropTempResultPath()
 
-        initCropView(uriSource, resultDestination, ratio)
+        cropImageView.setImageUri(uriSource, resultDestination)
 
         overlayView.apply {
             setDimmedColor(
@@ -48,7 +48,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
 
     fun initializeCrop(uriSource: Uri, listener: Listener) {
         val resultDestination = getUCropTempResultPath()
-        initCropView(uriSource, resultDestination, 1f)
+        cropImageView.setImageUri(uriSource, resultDestination)
         disableRotate()
         initListener(listener)
     }
@@ -248,16 +248,6 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
 
     private fun getScale(): Pair<Float, Float> {
         return Pair(cropImageView.scaleX, cropImageView.scaleY)
-    }
-
-    private fun initCropView(uriSource: Uri, resultDestination: Uri, ratio: Float) {
-        overlayView.setPadding(0, 0, 0, 0)
-        overlayView.setTargetAspectRatio(ratio)
-        overlayView.setupCropBounds()
-
-        overlayView.post {
-            cropImageView.setImageUri(uriSource, resultDestination)
-        }
     }
 
     private fun initListener(listener: Listener) {
