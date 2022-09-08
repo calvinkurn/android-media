@@ -234,7 +234,7 @@ class FlashSaleListViewModelTest {
                 "",
                 flashSaleEndDate,
                 0,
-                7,
+                420,
                 flashSaleSubmission
             )
 
@@ -593,7 +593,7 @@ class FlashSaleListViewModelTest {
                 "",
                 flashSaleEndDate,
                 0,
-                7,
+                420,
                 flashSaleSubmission
             )
 
