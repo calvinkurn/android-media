@@ -233,7 +233,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
             if (listCollections.isNotEmpty()) {
                 run check@{
                     listCollections.forEach { item ->
-                        if (checkName == item.name) {
+                        if (checkName.lowercase() == item.name.lowercase()) {
                             binding?.run {
                                 collectionCreateNameInputTextField.isInputError = _productIds.isEmpty()
 
