@@ -5,36 +5,26 @@ import android.app.Instrumentation
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.ActivityResultMatchers
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.BoundedMatcher
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.espresso.util.HumanReadables
-import androidx.test.espresso.util.TreeIterables
-import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoItemViewHolder
 import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.unifycomponents.TextFieldUnify2
-import kotlinx.android.synthetic.main.item_empty_field_setting_profile.view.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.contains
 import org.hamcrest.TypeSafeMatcher
 import java.lang.reflect.Type
-import java.util.concurrent.TimeoutException
 
 fun clickViewHolder(title: String, action: ViewAction? = null) {
     val matcher = object : BoundedMatcher<RecyclerView.ViewHolder, ProfileInfoItemViewHolder>(ProfileInfoItemViewHolder::class.java) {
