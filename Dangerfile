@@ -11,20 +11,20 @@ warn("@#{github.pr_author} please provide a JIRA ticket link or type /create jir
 # Give a warning when a PR is over expected size
 warn("This PR is quite a big one! Try splitting this into separate tasks next time 🙂") if git.lines_of_code > 2000
 
-# AndroidLint
-android_lint.report_file = "report-result.xml"
-android_lint.skip_gradle_task = true
-android_lint.severity = "Warning"
-android_lint.filtering = true
-android_lint.filtering_lines = true
-android_lint.lint(inline_mode: true)
-
-# Kotlin Detekt
-kotlin_detekt.filtering = true
-kotlin_detekt.filtering_lines = true
-kotlin_detekt.gradle_task = "detektCheck"
-kotlin_detekt.report_file = "detekt_result.xml"
-kotlin_detekt.detekt(inline_mode: true)
+# # AndroidLint
+# android_lint.report_file = "report-result.xml"
+# android_lint.skip_gradle_task = true
+# android_lint.severity = "Warning"
+# android_lint.filtering = true
+# android_lint.filtering_lines = true
+# android_lint.lint(inline_mode: true)
+#
+# # Kotlin Detekt
+# kotlin_detekt.filtering = true
+# kotlin_detekt.filtering_lines = true
+# kotlin_detekt.gradle_task = "detektCheck"
+# kotlin_detekt.report_file = "detekt_result.xml"
+# kotlin_detekt.detekt(inline_mode: true)
 
 # Ktlin
 ktlint.skip_lint = true
