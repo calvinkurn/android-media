@@ -14,4 +14,5 @@
 
     <string name="promo_checkout_failed_label">Promo gagal ditampilkan</string>
     <string name="promo_checkout_failed_info">Coba refresh beberapa saat lagi</string>
+    <string name="ticker_promo_stacking_title_coupon_label">Pakai Promo Tokopedia</string>
 </resources>

@@ -32,7 +32,7 @@
         app:layout_goneMarginRight="@dimen/spacing_lvl4"
         app:layout_goneMarginStart="@dimen/spacing_lvl4"
         app:layout_goneMarginTop="@dimen/unify_space_12"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:layout_goneMarginBottom="@dimen/unify_space_12"
         tools:text="Otomatis Bayar Otomatis Otomatis
         Bayar Otomatis Otomatis Bayar Otomatis" />
@@ -75,7 +75,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvCheckoutMyBillsHeaderTitle"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="Pembayaran akan dilakukan secara Pembayaran akan dilakukan secara Pembayaran akan dilakukan secara " />
 
     <com.tokopedia.unifycomponents.ImageUnify

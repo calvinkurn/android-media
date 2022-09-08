@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker_insta.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
@@ -33,14 +34,20 @@ class CameraActivity : PermissionActivity() {
     lateinit var toolbarIcon: AppCompatImageView
     var applinkToNavigateAfterMediaCapture: String? = null
     var videoMaxDuration:Long = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
+    var selectedFeedAccountId: String = ""
     val uriOfClickedMedias = arrayListOf<Uri>()
+    var isOpenFrom: Int = 0
 
     companion object {
+        private const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
+        private const val CREATE_POST_REQUEST_CODE = 101
 
-        fun getIntent(context: Context, applinkToNavigateAfterMediaCapture: String?, videoMaxDuration:Long): Intent {
+        fun getIntent(context: Context, applinkToNavigateAfterMediaCapture: String?, videoMaxDuration:Long, selectedFeedAccountId: String, isOpenFrom: Int): Intent {
             val intent = Intent(context, CameraActivity::class.java)
             intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, applinkToNavigateAfterMediaCapture)
             intent.putExtra(BundleData.VIDEO_MAX_SECONDS, videoMaxDuration)
+            intent.putExtra(BundleData.SELECTED_FEED_ACCOUNT_ID, selectedFeedAccountId)
+            intent.putExtra(BundleData.KEY_IS_OPEN_FROM, isOpenFrom)
             return intent
         }
     }
@@ -106,6 +113,8 @@ class CameraActivity : PermissionActivity() {
         if(videoMaxDuration ==null || videoMaxDuration == 0L){
             videoMaxDuration = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
         }
+        selectedFeedAccountId = intent.getStringExtra(BundleData.SELECTED_FEED_ACCOUNT_ID) ?: ""
+        isOpenFrom = intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0) ?: 0
     }
 
     private fun setToolbar() {
@@ -117,10 +126,21 @@ class CameraActivity : PermissionActivity() {
         }
     }
 
+    private fun setActivityResult() {
+        val intent = Intent()
+        intent.putExtra(BundleData.KEY_IS_OPEN_FROM, isOpenFrom)
+        intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedFeedAccountId)
+        setResult(RESULT_OK, intent)
+    }
+
     private fun afterMediaIsCaptured(uriList: List<Uri>) {
         if (!applinkToNavigateAfterMediaCapture.isNullOrEmpty()) {
             val finalApplink = CameraUtil.createApplinkToSendFileUris(applinkToNavigateAfterMediaCapture!!, uriList)
-            RouteManager.route(this, finalApplink)
+            val intent = RouteManager.getIntent(this, finalApplink).apply {
+                putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedFeedAccountId)
+                putExtra(BundleData.KEY_IS_OPEN_FROM, isOpenFrom)
+            }
+            startActivityForResult(intent, CREATE_POST_REQUEST_CODE)
         } else {
             finish()
         }
@@ -132,6 +152,7 @@ class CameraActivity : PermissionActivity() {
 
 
     fun exitActivityOnError() {
+        setActivityResult()
         finish()
     }
 
@@ -140,6 +161,7 @@ class CameraActivity : PermissionActivity() {
             MediaRepository.mediaAdded(uri)
         }
         uriOfClickedMedias.add(0,uri)
+        setActivityResult()
         afterMediaIsCaptured(arrayListOf(uri))
     }
 
@@ -149,6 +171,14 @@ class CameraActivity : PermissionActivity() {
             PermissionUtil.MIC_PERMISSION_REQUEST_CODE, PermissionUtil.CAMERA_AND_WRITE_PERMISSION_REQUEST_CODE -> {
                 showFragment()
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == CREATE_POST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            selectedFeedAccountId = data?.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
+            isOpenFrom = data?.getIntExtra(BundleData.KEY_IS_OPEN_FROM, 0) ?: 0
         }
     }
 
@@ -165,8 +195,9 @@ class CameraActivity : PermissionActivity() {
     }
 
     override fun onBackPressed() {
-        if (!isProcessingMedia())
+        if (!isProcessingMedia()) {
+            setActivityResult()
             super.onBackPressed()
-
+        }
     }
 }

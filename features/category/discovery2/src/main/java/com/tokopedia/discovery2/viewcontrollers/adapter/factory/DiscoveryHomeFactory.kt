@@ -97,6 +97,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.yout
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.*
@@ -123,6 +125,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewHolder
@@ -250,6 +254,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.MyCouponItem, ::MyCouponItemViewHolder, ::MyCouponItemViewModel)
             initializeComponent(ComponentsList.BannerInfinite, ::ShopBannerInfiniteViewHolder, ::ShopBannerInfiniteViewModel)
             initializeComponent(ComponentsList.BannerInfiniteItem, ::ShopBannerInfiniteItemViewHolder, ::ShopBannerInfiniteItemViewModel)
+            initializeComponent(ComponentsList.ShopCardInfinite, ::ShopCardInfiniteViewHolder, ::ShopCardInfiniteViewModel)
+            initializeComponent(ComponentsList.ExplicitWidget, ::ExplicitWidgetViewHolder, ::ExplicitWidgetViewModel)
 
         }
 

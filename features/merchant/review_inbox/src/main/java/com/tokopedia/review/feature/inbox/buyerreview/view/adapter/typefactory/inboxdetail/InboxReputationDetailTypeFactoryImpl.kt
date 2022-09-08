@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.inboxdetail
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -17,7 +18,8 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.I
  */
 class InboxReputationDetailTypeFactoryImpl constructor(
     private val viewListener: InboxReputationDetail.View,
-    private val reputationListener: ReputationListener
+    private val reputationListener: ReputationListener,
+    private val reviewMediaThumbnailRecycledViewPool: RecyclerView.RecycledViewPool
 ) : BaseAdapterTypeFactory(), InboxReputationDetailTypeFactory {
 
     override fun type(model: InboxReputationDetailHeaderUiModel): Int {
@@ -40,6 +42,7 @@ class InboxReputationDetailTypeFactoryImpl constructor(
             )
             InboxReputationDetailItemViewHolder.LAYOUT -> InboxReputationDetailItemViewHolder(
                 view,
+                reviewMediaThumbnailRecycledViewPool,
                 viewListener
             )
             LoadingInboxReputationDetailViewholder.LAYOUT -> LoadingInboxReputationDetailViewholder(

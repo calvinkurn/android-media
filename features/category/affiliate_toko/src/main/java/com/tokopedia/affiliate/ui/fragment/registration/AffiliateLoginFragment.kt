@@ -13,7 +13,6 @@ import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
@@ -26,6 +25,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -36,7 +36,6 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -55,6 +54,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
 
     companion object {
         const val TAG = "AffiliateLoginFrament"
+        private const val TICKER_BOTTOM_SHEET = "bottomSheet"
         fun getFragmentInstance(): Fragment {
             return AffiliateLoginFragment()
         }
@@ -121,6 +121,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
     }
 
     private fun afterViewCreated() {
+        hideAllView()
         setupViewPager()
         setUpNavBar()
         initObserver()
@@ -160,6 +161,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
         val signUpButton = view?.findViewById<UnifyButton>(R.id.affiliate_sign_up_btn)
         view?.findViewById<Ticker>(R.id.affiliate_login_ticker)?.hide()
         if (!affiliateLoginSharedViewModel.isUserLoggedIn()) {
+            showAllView()
             loginText?.apply {
                 isVisible = true
                 text = getString(com.tokopedia.affiliate_toko.R.string.affiliate_daftar_sekarang_dengan_akun_tokopedia_kamu)
@@ -186,28 +188,6 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
 
         } else {
             affiliateLoginSharedViewModel.getAffiliateValidateUser()
-
-            loginText?.apply {
-                isVisible = true
-                text = getString(R.string.affiliate_daftarkan_akun_ini)
-            }
-            daftarText?.text = getString(R.string.affiliate_daftar_affiliate_dengan_akun_lain)
-            keluarButton?.apply {
-                text = getString(R.string.affiliate_keluar)
-                setOnClickListener {
-                    sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_KELUAR)
-                    showDialogLogout()
-                }
-
-            }
-            signUpButton?.apply {
-                text = getString(R.string.affiliate_daftar_sekarang)
-                setOnClickListener {
-                    sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR_SEKARANG)
-                    affiliateLoginSharedViewModel.navigateToPortFolio()
-                }
-            }
-            setUserInformation()
         }
     }
 
@@ -228,6 +208,21 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
                 AffiliateRegistrationSharedViewModel.UserAction.FraudAction -> {
                     showFraudTicker()
                 }
+                AffiliateRegistrationSharedViewModel.UserAction.SignUpAction -> {
+                    setSignupData()
+                }
+                AffiliateRegistrationSharedViewModel.UserAction.SystemDown -> {
+                    hideAllView()
+                    view?.findViewById<TouchViewPager>(R.id.affiliate_login_view_pager)?.hide()
+                    view?.findViewById<PageControl>(R.id.affiliate_login_page_control)?.hide()
+                    view?.findViewById<GlobalError>(R.id.login_error)?.run {
+                        show()
+                        setButtonFull(true)
+                        errorAction.show()
+                        errorAction.text = "Ke Home"
+                    }
+
+                }
                 else -> {}
             }
         })
@@ -236,6 +231,37 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
                 view?.findViewById<LoaderUnify>(R.id.login_progress)?.isVisible = it
             }
         })
+        affiliateLoginSharedViewModel.getAffiliateAnnouncement().observe(viewLifecycleOwner) { announcementData ->
+            if (announcementData.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+                view?.findViewById<Ticker>(R.id.affiliate_login_ticker)
+                    ?.setAnnouncementData(announcementData, activity)
+            }
+        }
+    }
+
+    private fun setSignupData() {
+        showAllView()
+        view?.findViewById<Typography>(R.id.affiliate_login_text)?.apply {
+            isVisible = true
+            text = getString(R.string.affiliate_daftarkan_akun_ini)
+        }
+        view?.findViewById<Typography>(R.id.affiliate_daftar_text)?.text = getString(R.string.affiliate_daftar_affiliate_dengan_akun_lain)
+        view?.findViewById<Typography>(R.id.affiliate_keluar_btn)?.apply {
+            text = getString(R.string.affiliate_keluar)
+            setOnClickListener {
+                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_KELUAR)
+                showDialogLogout()
+            }
+
+        }
+        view?.findViewById<UnifyButton>(R.id.affiliate_sign_up_btn)?.apply {
+            text = getString(R.string.affiliate_daftar_sekarang)
+            setOnClickListener {
+                sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR_SEKARANG)
+                affiliateLoginSharedViewModel.navigateToPortFolio()
+            }
+        }
+        setUserInformation()
     }
 
     private fun onUserRegistered() {
@@ -301,19 +327,25 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
 
 
     private fun showFraudTicker() {
-        view?.findViewById<UnifyButton>(R.id.affiliate_sign_up_btn)?.hide()
-        view?.findViewById<Typography>(R.id.affiliate_login_text)?.hide()
-        view?.findViewById<Ticker>(R.id.affiliate_login_ticker)?.run {
-            show()
-            view?.findViewById<CardView>(R.id.affiliate_login_ticker_cv)?.show()
-            setHtmlDescription(getString(R.string.affiliate_login_ticker_text))
-            tickerType = Ticker.TYPE_ERROR
-            setDescriptionClickEvent(object: TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    AffiliateWebViewBottomSheet.newInstance("", AFFILIATE_FRAUD_URL).show(childFragmentManager,"")
-                }
-                override fun onDismiss() {}
-            })
+        hideAllView()
+        affiliateLoginSharedViewModel.getAnnouncementInformation()
+    }
+    private fun hideAllView() {
+        view?.apply {
+            findViewById<CardUnify>(R.id.affiliate_login_card)?.hide()
+            findViewById<Typography>(R.id.affiliate_daftar_text)?.hide()
+            findViewById<Typography>(R.id.affiliate_keluar_btn)?.hide()
+            findViewById<UnifyButton>(R.id.affiliate_sign_up_btn)?.hide()
+            findViewById<Typography>(R.id.affiliate_login_text)?.hide()
+        }
+    }
+    private fun showAllView() {
+        view?.apply {
+            findViewById<CardUnify>(R.id.affiliate_login_card)?.show()
+            findViewById<Typography>(R.id.affiliate_daftar_text)?.show()
+            findViewById<Typography>(R.id.affiliate_keluar_btn)?.show()
+            findViewById<UnifyButton>(R.id.affiliate_sign_up_btn)?.show()
+            findViewById<Typography>(R.id.affiliate_login_text)?.show()
         }
     }
 }

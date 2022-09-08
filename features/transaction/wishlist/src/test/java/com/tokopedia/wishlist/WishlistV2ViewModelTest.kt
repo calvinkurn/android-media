@@ -1,6 +1,7 @@
 package com.tokopedia.wishlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.WishlistMockTimber
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -16,14 +17,15 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.data.model.WishlistV2Params
+import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
-import com.tokopedia.wishlist.data.model.response.DeleteWishlistV2Response
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
-import com.tokopedia.wishlist.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
@@ -32,19 +34,19 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE_WITH_MARGIN
-import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TICKER
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.every
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.spyk
-import org.junit.Assert
+import org.assertj.core.api.SoftAssertions
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import timber.log.Timber
 
 @RunWith(JUnit4::class)
 class WishlistV2ViewModelTest {
@@ -65,6 +67,8 @@ class WishlistV2ViewModelTest {
     private var listProductCardModel = listOf<ProductCardModel>()
     private var listRecommendationItem = listOf<RecommendationItem>()
     private var topAdsImageViewModel = TopAdsImageViewModel()
+    private var tickerState = WishlistV2Response.Data.WishlistV2.TickerState()
+    private var timber = WishlistMockTimber()
 
     @RelaxedMockK
     lateinit var wishlistV2UseCase: WishlistV2UseCase
@@ -76,6 +80,9 @@ class WishlistV2ViewModelTest {
     lateinit var bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase
 
     @RelaxedMockK
+    lateinit var deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase
+
+    @RelaxedMockK
     lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
 
     @RelaxedMockK
@@ -84,11 +91,26 @@ class WishlistV2ViewModelTest {
     @RelaxedMockK
     lateinit var atcUseCase: AddToCartUseCase
 
+    private val deleteWishlistProgressStatusOkErrorEmpty = DeleteWishlistProgressResponse(
+        deleteWishlistProgress = DeleteWishlistProgressResponse.DeleteWishlistProgress(status = "OK", errorMessage = emptyList())
+    )
+    private val deleteWishlistProgressStatusOkErrorNotEmpty = DeleteWishlistProgressResponse(
+        deleteWishlistProgress = DeleteWishlistProgressResponse.DeleteWishlistProgress(status = "OK", errorMessage = arrayListOf("error"))
+    )
+    private val deleteWishlistProgressStatusNotOkErrorEmpty = DeleteWishlistProgressResponse(
+        deleteWishlistProgress = DeleteWishlistProgressResponse.DeleteWishlistProgress(status = "ERROR", errorMessage = emptyList())
+    )
+    private val deleteWishlistProgressStatusNotOkErrorNotEmpty = DeleteWishlistProgressResponse(
+        deleteWishlistProgress = DeleteWishlistProgressResponse.DeleteWishlistProgress(status = "ERROR", errorMessage = arrayListOf("error"))
+    )
+    private val throwable = Fail(Throwable(message = "Error"))
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        Timber.plant(timber)
         wishlistV2ViewModel = spyk(WishlistV2ViewModel(dispatcher, wishlistV2UseCase, deleteWishlistV2UseCase,
-                bulkDeleteWishlistV2UseCase, topAdsImageViewUseCase, getSingleRecommendationUseCase, atcUseCase))
+                bulkDeleteWishlistV2UseCase, deleteWishlistProgressUseCase, topAdsImageViewUseCase, getSingleRecommendationUseCase, atcUseCase))
 
         val primaryButton1 = WishlistV2Response.Data.WishlistV2.Item.Buttons.PrimaryButton(action = "ADD_TO_CART")
         val primaryButton2 = WishlistV2Response.Data.WishlistV2.Item.Buttons.PrimaryButton(action = "SEE_SIMILAR_PRODUCT")
@@ -101,6 +123,8 @@ class WishlistV2ViewModelTest {
 
         val listBadge = arrayListOf<WishlistV2Response.Data.WishlistV2.Item.BadgesItem>()
         listBadge.add(WishlistV2Response.Data.WishlistV2.Item.BadgesItem(imageUrl = "badgeUrl", title = "testBadge"))
+
+        tickerState = WishlistV2Response.Data.WishlistV2.TickerState(message = "ticker", type = "announcement")
 
         val wishlistItem1 = WishlistV2Response.Data.WishlistV2.Item(name = "Test1",
                 buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton1), labelGroup = listLabelGroup, badges = listBadge)
@@ -157,7 +181,7 @@ class WishlistV2ViewModelTest {
         val recommItem3 = RecommendationItem(name = "recomm3", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
         listRecommendationItem = listOf(recommItem1, recommItem2, recommItem3)
 
-        wishlistV2Response = WishlistV2Response(WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(items = wishlistThreeItemList)))
+        wishlistV2Response = WishlistV2Response(WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(items = wishlistThreeItemList, ticker = tickerState)))
         recommendationWidget = RecommendationWidget(tid = "123", recommendationItemList = listRecommendationItem,
                 recommendationFilterChips = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip()), title = "TestRecomm")
 
@@ -180,22 +204,6 @@ class WishlistV2ViewModelTest {
         } returns topAdsImageViewModel
 
         coEvery {
-            wishlistV2ViewModel.organizeWishlistV2Data(wishlistV2Response.data.wishlistV2, "")
-        } returns listOf()
-
-        coEvery {
-            wishlistV2ViewModel.mapToEmptyState(wishlistV2Response.data.wishlistV2, any(), any())
-        } returns arrayListOf()
-
-        coEvery {
-            wishlistV2ViewModel.mapToRecommendation(any(), any())
-        } returns arrayListOf()
-
-        coEvery {
-            wishlistV2ViewModel.mapToTopads(any(), any())
-        } returns arrayListOf()
-
-        coEvery {
             wishlistV2UseCase.executeSuspend(any())
         } returns wishlistV2Response.data
 
@@ -205,7 +213,10 @@ class WishlistV2ViewModelTest {
 
 
         //when
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         //then
         assert(wishlistV2ViewModel.wishlistV2.value is Success)
@@ -226,7 +237,10 @@ class WishlistV2ViewModelTest {
 
 
         //when
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         //then
         assert(wishlistV2ViewModel.wishlistV2.value is Fail)
@@ -250,7 +264,9 @@ class WishlistV2ViewModelTest {
 
     // recommendation_failed
     @Test
-    fun loadRecommendation_shouldReturnFail() {
+    fun `loadRecommendation_shouldReturnFail`() {
+        val throwable = spyk(Throwable())
+
         //given
         coEvery {
             getSingleRecommendationUseCase.getData(any())
@@ -260,20 +276,19 @@ class WishlistV2ViewModelTest {
         wishlistV2ViewModel.loadRecommendation(0)
 
         //then
-        assert(wishlistV2ViewModel.wishlistV2Data.value is Fail)
+        SoftAssertions.assertSoftly {
+            timber.lastLogMessage() contentEquals throwable.localizedMessage
+        }
     }
 
     // delete_success
     @Test
     fun deleteWishlist_shouldReturnSuccess() {
         //given
-        val deleteResult = DeleteWishlistV2Response.Data.WishlistRemoveV2(
-                button = DeleteWishlistV2Response.Data.WishlistRemoveV2.Button("", "", ""),
-                success = true, id = "", message = "")
+        val deleteResult = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
         coEvery {
-            deleteWishlistV2UseCase.executeSuspend(any(), any())
+            deleteWishlistV2UseCase.executeOnBackground()
         } returns Success(deleteResult)
-
 
         //when
         wishlistV2ViewModel.deleteWishlistV2("", "")
@@ -283,13 +298,13 @@ class WishlistV2ViewModelTest {
         assert((wishlistV2ViewModel.deleteWishlistV2Result.value as Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>).data.success)
     }
 
-    // delete_success
+    // delete_fail
     @Test
     fun deleteWishlist_shouldReturnFail() {
         //given
         coEvery {
-            deleteWishlistV2UseCase.executeSuspend(any(), any())
-        } returns Fail(Exception())
+            deleteWishlistV2UseCase.executeOnBackground()
+        } returns Fail(Throwable())
 
         //when
         wishlistV2ViewModel.deleteWishlistV2("", "")
@@ -305,12 +320,12 @@ class WishlistV2ViewModelTest {
         val bulkDeleteResult = BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2(id = "",
                 success = true, message = "", button = BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2.Button("", "", ""))
         coEvery {
-            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any())
+            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any(), any())
         } returns Success(bulkDeleteResult)
 
 
         //when
-        wishlistV2ViewModel.bulkDeleteWishlistV2(listOf(), "")
+        wishlistV2ViewModel.bulkDeleteWishlistV2(listOf(), "", 0, WishlistV2BulkRemoveAdditionalParams())
 
         //then
         assert(wishlistV2ViewModel.bulkDeleteWishlistV2Result.value is Success)
@@ -322,11 +337,11 @@ class WishlistV2ViewModelTest {
     fun bulkDeleteWishlist_shouldReturnFail() {
         //given
         coEvery {
-            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any())
+            bulkDeleteWishlistV2UseCase.executeSuspend(any(), any(), any(), any(), any())
         } returns Fail(Exception())
 
         //when
-        wishlistV2ViewModel.bulkDeleteWishlistV2(listOf(), "")
+        wishlistV2ViewModel.bulkDeleteWishlistV2(listOf(), "", 0, WishlistV2BulkRemoveAdditionalParams())
 
         //then
         assert(wishlistV2ViewModel.bulkDeleteWishlistV2Result.value is Fail)
@@ -366,6 +381,27 @@ class WishlistV2ViewModelTest {
         assert(wishlistV2ViewModel.atcResult.value is Fail)
     }
 
+    // mapTicker
+    @Test
+    fun mapTicker_isNotEmpty() {
+        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(totalData = 5,
+            items = wishlistFiveItemList, page = 1, hasNextPage = false, ticker = tickerState))
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
+            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+        }
+        coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
+        coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
+
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
+
+        assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
+        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[0].typeLayout.equals(TYPE_TICKER))
+    }
+
     // mapToTopads
     @Test
     fun mapToTopads_onExpectedIndex() {
@@ -377,10 +413,31 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
-        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_TOPADS))
+    }
+
+    // mapToTopads
+    @Test
+    fun mapToTopads_onOddPage() {
+        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(totalData = 5, items = wishlistFiveItemList, page = 3, hasNextPage = false))
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
+            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+        }
+        coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
+        coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
+
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
+
+        assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
     }
 
     @Test
@@ -393,40 +450,46 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
-        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_TOPADS))
     }
 
     @Test
     fun mapToTopads_onPageOneAndHasNextPage() {
-        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(totalData = 4, items = wishlistFourItemList, page = 1, hasNextPage = true))
+        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(totalData = 5, items = wishlistFiveItemList, page = 1, hasNextPage = true))
         coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
             arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
         }
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
-        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_TOPADS))
     }
 
     @Test
     fun mapToTopads_onOddPageAndHasNextPage() {
-        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(totalData = 4, items = wishlistFourItemList, page = 3, hasNextPage = true))
+        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(totalData = 5, items = wishlistFiveItemList, page = 3, hasNextPage = true))
         coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
             arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
         }
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
-        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_TOPADS))
     }
 
     @Test
@@ -436,7 +499,10 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[3].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
@@ -450,11 +516,31 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[5].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
+    }
+
+    @Test
+    fun mapToRecommendation_onExpectedIndex_whenItemsSize_smallerThenRecomPosition() {
+        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(totalData = 2, items = wishlistTwoItemList, page = 2, hasNextPage = true))
+
+        coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
+        coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
+
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
+
+        assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
+        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[2].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
+        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[3].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
     }
 
     @Test
@@ -464,7 +550,10 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(query = "test"), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(query = "test"), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[0].typeLayout.equals(TYPE_EMPTY_NOT_FOUND))
@@ -482,7 +571,10 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(query = "", sortFilters = paramListSortFilter), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(query = "", sortFilters = paramListSortFilter), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[0].typeLayout.equals(TYPE_EMPTY_STATE))
@@ -495,7 +587,10 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[0].typeLayout.equals(TYPE_EMPTY_STATE_CAROUSEL))
@@ -509,7 +604,10 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget(recommendationItemList = listOf(recomItem)) }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[0].typeLayout.equals(TYPE_EMPTY_NOT_FOUND))
@@ -525,10 +623,84 @@ class WishlistV2ViewModelTest {
         coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget(recommendationItemList = listOf(recomItem)) }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns wishlistV2ResponseData
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "",
+            isAutomaticDelete = false,
+            isUsingCollection = false
+        )
 
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[5].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
+    }
+
+    @Test
+    fun `Execute DeleteWishlistProgress Result Status Ok Error Empty`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } returns deleteWishlistProgressStatusOkErrorEmpty
+
+        //when
+        wishlistV2ViewModel.getDeleteWishlistProgress()
+
+        //then
+        assert(wishlistV2ViewModel.deleteWishlistProgressResult.value is Success)
+        assert((wishlistV2ViewModel.deleteWishlistProgressResult.value as Success).data.errorMessage.isEmpty())
+    }
+
+    @Test
+    fun `Execute DeleteWishlistProgress Result Status Ok Error Not Empty`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } returns deleteWishlistProgressStatusOkErrorNotEmpty
+
+        //when
+        wishlistV2ViewModel.getDeleteWishlistProgress()
+
+        //then
+        assert(wishlistV2ViewModel.deleteWishlistProgressResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute DeleteWishlistProgress Result Status Not Ok Error Empty`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } returns deleteWishlistProgressStatusNotOkErrorEmpty
+
+        //when
+        wishlistV2ViewModel.getDeleteWishlistProgress()
+
+        //then
+        assert(wishlistV2ViewModel.deleteWishlistProgressResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute DeleteWishlistProgress Result Status Not Ok Error Not Empty`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } returns deleteWishlistProgressStatusNotOkErrorNotEmpty
+
+        //when
+        wishlistV2ViewModel.getDeleteWishlistProgress()
+
+        //then
+        assert(wishlistV2ViewModel.deleteWishlistProgressResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute DeleteWishlistCollections Failed`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } throws throwable.throwable
+
+        //when
+        wishlistV2ViewModel.getDeleteWishlistProgress()
+
+        //then
+        assert(wishlistV2ViewModel.deleteWishlistProgressResult.value is Fail)
     }
 }

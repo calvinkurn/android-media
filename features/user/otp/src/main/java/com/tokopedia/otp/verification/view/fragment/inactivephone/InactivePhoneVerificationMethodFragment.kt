@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.otp.R
-import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.view.fragment.VerificationMethodFragment
 
 
@@ -55,7 +55,7 @@ open class InactivePhoneVerificationMethodFragment : VerificationMethodFragment(
             }
         }
 
-        viewBound.phoneInactive?.setTextColor(ContextCompat.getColor(requireContext(), R.color.Unify_N200))
+        viewBound.phoneInactive?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N200))
         viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
         viewBound.phoneInactive?.show()
     }
@@ -106,7 +106,7 @@ open class InactivePhoneVerificationMethodFragment : VerificationMethodFragment(
 
             override fun updateDrawState(ds: TextPaint) {
                 ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                ds.color = MethodChecker.getColor(requireContext(), R.color.Unify_G500)
+                ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)
             }
         }
     }

@@ -589,6 +589,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 callback: (Boolean, Throwable?) -> Unit
             ) {
             }
+
+            override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
         }
     }
 

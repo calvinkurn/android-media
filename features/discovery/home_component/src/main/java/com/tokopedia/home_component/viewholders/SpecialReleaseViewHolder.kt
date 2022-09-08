@@ -33,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +43,8 @@ import kotlinx.coroutines.launch
 class SpecialReleaseViewHolder(
         itemView: View,
         val homeComponentListener: HomeComponentListener?,
-        val specialReleaseComponentListener: SpecialReleaseComponentListener?
+        val specialReleaseComponentListener: SpecialReleaseComponentListener?,
+        private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<SpecialReleaseDataModel>(itemView), CommonProductCardCarouselListener,
     CoroutineScope {
     private var binding: HomeComponentSpecialReleaseBinding? by viewBinding()
@@ -171,7 +173,7 @@ class SpecialReleaseViewHolder(
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
         startSnapHelper.attachToRecyclerView(binding?.homeComponentSpecialReleaseRv)
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
         adapter = SpecialReleaseAdapter(visitables, typeFactoryImpl)
         binding?.homeComponentSpecialReleaseRv?.adapter = adapter
     }

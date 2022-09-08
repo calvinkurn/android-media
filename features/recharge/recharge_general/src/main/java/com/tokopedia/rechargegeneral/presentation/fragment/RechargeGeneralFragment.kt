@@ -25,14 +25,11 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
@@ -53,6 +50,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -78,7 +77,11 @@ import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_recharge_general.*
@@ -168,8 +171,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             val savedEnquiryData: TopupBillsEnquiry? = saveInstanceManager!!.get(EXTRA_PARAM_ENQUIRY_DATA, TopupBillsEnquiry::class.java)
             if (savedEnquiryData != null) {
                 enquiryData = savedEnquiryData
-                productId = enquiryData?.attributes?.productId?.toIntOrNull() ?: 0
-                price = enquiryData?.attributes?.price?.toIntOrNull() ?: 0
+                productId = enquiryData?.attributes?.productId?.toIntSafely().toZeroIfNull()
+                price = enquiryData?.attributes?.price?.toIntSafely().toZeroIfNull()
             }
 
             arguments?.let {
@@ -257,8 +260,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             val operatorClusters = viewModel.operatorCluster.value
             if (operatorClusters is Success) {
                 rechargeGeneralAnalytics.eventClickRecentIcon(it, categoryName, it.position)
-                operatorId = it.operatorId
-                productId = it.productId
+                operatorId = it.operatorId.toIntOrZero()
+                productId = it.productId.toIntOrZero()
                 inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
                 renderInitialData()
                 // Enquire & navigate to checkout
@@ -481,10 +484,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             operator_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
                 override fun onFinishInput(input: String) {
                     operatorGroup.operators.find { it.attributes.name == input }?.let {
-                        if (operatorId != it.id.toInt()) {
+                        if (operatorId != it.id.toIntSafely()) {
                             // Save operator id for enquiry
                             resetInputData()
-                            operatorId = it.id.toInt()
+                            operatorId = it.id.toIntSafely()
                             if (!isAddSBM) {
                                 rechargeGeneralAnalytics.eventChooseOperator(categoryName, operatorName)
                             }
@@ -514,7 +517,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             if (operatorGroup.operators.size == 1) {
                 if (isHidden) operator_select.hide()
                 // Get product data based on operator id
-                operatorId = operatorGroup.operators.firstOrNull()?.id.toIntOrZero()
+                operatorId = operatorGroup.operators.firstOrNull()?.id.toIntSafely()
                 adapter.showLoading()
                 getProductList(menuId, operatorId.toString())
             }
@@ -553,7 +556,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             if (productId == 0){
                                 productId = rechargeGeneralProductItemData.dataCollections.firstOrNull()?.products?.firstOrNull()?.id.toIntOrZero()
                             }
-                            productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toInt()
+                            productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toIntSafely()
                             rechargeGeneralProductItemData.selectedProductId = productId.toString()
                             dataList.add(rechargeGeneralProductItemData)
                         }
@@ -562,7 +565,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                         product?.let { catalogProduct ->
                             with(catalogProduct.attributes) {
                                 val slashedPrice = if (promo != null) price else ""
-                                productId = catalogProduct.id.toIntOrZero()
+                                productId = catalogProduct.id.toIntSafely()
                             }
                         }
                     }
@@ -637,7 +640,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         context?.let { context ->
             val dropdownBottomSheet = BottomSheetUnify()
             dropdownBottomSheet.setTitle(title)
-            dropdownBottomSheet.setFullPage(true)
+            dropdownBottomSheet.isFullpage = false
+            dropdownBottomSheet.clearContentPadding = true
             dropdownBottomSheet.clearAction()
             dropdownBottomSheet.setCloseClickListener {
                 dropdownBottomSheet.dismiss()
@@ -653,7 +657,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
                             // Show label & store id for enquiry
                             field.setInputText(item.title, false)
-                            productId = item.id.toIntOrZero()
+                            productId = item.id.toIntSafely()
                             if (!isAddSBM) {
                                 rechargeGeneralAnalytics.eventClickProductCard(categoryName, operatorName, item.title.toLowerCase())
                             }
@@ -715,8 +719,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
     private fun setupAutoFillData(data: TopupBillsRecommendation) {
         with(data) {
-            this@RechargeGeneralFragment.operatorId = operatorId
-            this@RechargeGeneralFragment.productId = productId
+            this@RechargeGeneralFragment.operatorId = operatorId.toIntSafely()
+            this@RechargeGeneralFragment.productId = productId.toIntSafely()
             if (clientNumber.isNotEmpty()) {
                 inputData[PARAM_CLIENT_NUMBER] = clientNumber
             }
@@ -1266,7 +1270,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     private fun getFirstOperatorId(cluster: RechargeGeneralOperatorCluster): Int {
-        return cluster.operatorGroups?.firstOrNull()?.operators?.firstOrNull()?.id.toIntOrZero()
+        return cluster.operatorGroups?.firstOrNull()?.operators?.firstOrNull()?.id.toIntSafely()
     }
 
     private fun getOperatorData(operatorId: Int): CatalogOperator? {
@@ -1305,7 +1309,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 val product = products.firstOrNull { it.id == productId.toString() }
                 product?.run {
                     productName = attributes.desc
-                    this@RechargeGeneralFragment.price = attributes.pricePlain.toIntOrZero()
+                    this@RechargeGeneralFragment.price = attributes.pricePlain.toIntSafely()
                     isPromo = attributes.promo != null
 
                     // Show product info ticker

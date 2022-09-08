@@ -8,7 +8,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberModData
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
-import com.tokopedia.common.topupbills.favorite.domain.usecase.RechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel

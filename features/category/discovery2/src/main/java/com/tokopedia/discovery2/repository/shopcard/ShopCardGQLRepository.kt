@@ -20,14 +20,15 @@ class ShopCardGQLRepository @Inject constructor() : BaseRepository(), ShopCardRe
         val componentProperties = response.data.component?.properties
         val creativeName = response.data.component?.creativeName ?: ""
         val nextPage = response.data.component?.compAdditionalInfo?.nextPage
-        val componentsItem = getComponent(componentId,pageEndPoint)
+        val parentComponentName = response.data.component?.name
+        val componentsItem = getComponent(componentId, pageEndPoint)
         val componentsListSize = componentsItem?.getComponentsItem()?.size ?: 0
         val list = when (shopCardComponentName) {
             ComponentNames.ShopCardView.componentName -> {
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ShopCardItemView.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ShopCardItemView.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentComponentName = parentComponentName)
             }
             else ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ShopCardItemView.componentName, null, creativeName, parentListSize = componentsListSize)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ShopCardItemView.componentName, null, creativeName, parentListSize = componentsListSize, parentComponentName = parentComponentName)
 
         }
         return Pair(list, nextPage)

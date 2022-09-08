@@ -10,37 +10,45 @@ import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
-import com.tokopedia.encryption.security.AeadEncryptor;
+import com.google.crypto.tink.Aead;
+import com.google.crypto.tink.shaded.protobuf.InvalidProtocolBufferException;
 import com.tokopedia.encryption.security.AeadEncryptorImpl;
+import com.tokopedia.encryption.utils.EncryptionExt;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform;
+import com.tokopedia.user.session.datastore.DataStorePreference;
 import com.tokopedia.user.session.datastore.UserSessionDataStore;
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient;
 import com.tokopedia.user.session.datastore.UserSessionKeyMapper;
 import com.tokopedia.user.session.util.EncoderDecoder;
 
+import java.security.GeneralSecurityException;
+import java.security.KeyStoreException;
 import java.util.HashMap;
 
 public class MigratedUserSession {
     public static final String suffix = "_v2";
     protected Context context;
 
-    private AeadEncryptor aead;
+    private Aead aead;
 
+    final private DataStorePreference abTestPlatform;
     public MigratedUserSession(Context context) {
+        this(context, new DataStorePreference(context), null);
+    }
+
+    public MigratedUserSession(Context context, DataStorePreference abTestPlatform, Aead encryptor) {
         this.context = context.getApplicationContext();
-        aead = new AeadEncryptorImpl(context);
+        this.abTestPlatform = abTestPlatform;
+        this.aead = encryptor;
     }
 
     private Boolean isEnableDataStore() {
-        if (context != null) {
-            return UserSessionAbTestPlatform.INSTANCE.isDataStoreEnable(context);
-        }
-        return false;
+        return this.abTestPlatform.isDataStoreEnabled();
     }
 
     // can't use DI because it will change UserSession constructor
+
     @Nullable
     private UserSessionDataStore getDataStore() {
         if (isEnableDataStore()) {
@@ -48,7 +56,6 @@ public class MigratedUserSession {
         }
         return null;
     }
-
     protected long getLong(String prefName, String keyName, long defValue) {
         String newPrefName = String.format("%s%s", prefName, suffix);
         String newKeyName = String.format("%s%s", keyName, suffix);
@@ -107,10 +114,7 @@ public class MigratedUserSession {
                         String.valueOf(value)
                 );
             } catch (Exception e) {
-                HashMap<String, String> data = new HashMap<>();
-                data.put("type", "set_long_exception");
-                data.put("error", Log.getStackTraceString(e));
-                ServerLogger.log(Priority.P2, USER_SESSION_LOGGER_TAG, data);
+                logUserSessionEvent("set_long_exception", e);
             }
         }
         Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
@@ -142,6 +146,13 @@ public class MigratedUserSession {
         internalSetString(prefName, keyName, null);
     }
 
+    private Aead getAead() {
+        if (aead == null) {
+            aead = new AeadEncryptorImpl(context).getAead();
+        }
+        return aead;
+    }
+
     private String internalGetString(String prefName, String keyName, String defValue) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         return sharedPrefs.getString(keyName, defValue);
@@ -158,10 +169,7 @@ public class MigratedUserSession {
                     );
                 }
             } catch (Exception e) {
-                HashMap<String, String> data = new HashMap<>();
-                data.put("type", "set_string_exception");
-                data.put("error", Log.getStackTraceString(e));
-                ServerLogger.log(Priority.P2, USER_SESSION_LOGGER_TAG, data);
+                logUserSessionEvent("set_string_exception", e);
             }
         }
 
@@ -173,35 +181,60 @@ public class MigratedUserSession {
         internalSetString(prefName, keyName, value);
     }
 
+    /*
+        Latest encryption logic for string.
+        Check PII data from SET, if keyName is PII data encrypt with aead (tink)
+        else use existing encryption
+    */
     private String encryptString(String message, String keyName) {
         try {
-	    /*
-		 Check PII data from SET, if keyName is PII data encrypt with aead (tink)
-		 else use existing encryption
-	    */
             if (Constants.PII_DATA_SET.contains(keyName)) {
-                return aead.encrypt(message, null);
+                // Create backup for PII Data using old encryption
+                String backupData = EncoderDecoder.Encrypt(message, UserSession.KEY_IV);
+                setPiiDataBackup(backupData, keyName);
+
+                // Encryption using google tink
+                String result = EncryptionExt.simplyEncrypt(getAead(), message);
+                if(!result.isEmpty()) {
+                    setPiiMigrationStatus(true, keyName);
+                }
+                return result;
             } else {
                 return EncoderDecoder.Encrypt(message, UserSession.KEY_IV);
             }
         } catch (Exception e) {
-            return null;
+            logUserSessionEvent("encrypt_string_exception", e);
+            return "";
         }
     }
 
     private String decryptString(String message, String keyName) {
         try {
 	    /*
-		 Check PII data from SET, if keyName is PII data decrypt with aead (tink)
-		 else use existing decryption
+            Check PII data from SET, if keyName is PII data decrypt with aead (tink)
+            else use existing decryption
 	    */
             if (Constants.PII_DATA_SET.contains(keyName)) {
-                return aead.decrypt(message, null);
+                return EncryptionExt.simplyDecrypt(getAead(), message);
             } else {
                 return EncoderDecoder.Decrypt(message, UserSession.KEY_IV);
             }
         } catch (Exception e) {
-            return null;
+            if(e instanceof InvalidProtocolBufferException ||
+                    e instanceof GeneralSecurityException ||
+                    e instanceof KeyStoreException ||
+                    e instanceof IllegalArgumentException) {
+                setEncryptionState(true);
+            }
+
+            // Check for backup value
+            String backupValue = EncoderDecoder.Decrypt(getBackupPiiData(keyName), UserSession.KEY_IV);
+            if(!backupValue.isEmpty()) {
+                logUserSessionEvent("decrypt_string_exception_with_backup", e);
+                return backupValue;
+            } else {
+                return "";
+            }
         }
     }
 
@@ -220,7 +253,30 @@ public class MigratedUserSession {
         editor.apply();
     }
 
-    private Boolean isMigratedToAead(String keyName) {
+    private void setEncryptionState(Boolean isError) {
+        String prefName = "ENCRYPTION_STATE_PREF";
+        String keyName = "KEY_ENCRYPTION_ERROR";
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(keyName, isError);
+        editor.apply();
+    }
+
+    private void setPiiDataBackup(String data, String keyName) {
+        String newPrefName = String.format("%s%s", LOGIN_SESSION, suffix);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(keyName + Constants.PII_BACKUP, data);
+        editor.apply();
+    }
+
+    private String getBackupPiiData(String keyName) {
+        String newPrefName = String.format("%s%s", LOGIN_SESSION, suffix);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(keyName + Constants.PII_BACKUP, "");
+    }
+
+    private Boolean isMigratedToGoogleTink(String keyName) {
         if (Constants.PII_DATA_SET.contains(keyName)) {
             String newPrefName = String.format("%s%s", LOGIN_SESSION, suffix);
             SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
@@ -229,25 +285,26 @@ public class MigratedUserSession {
         return true;
     }
 
+    private void logUserSessionEvent(String method, @Nullable Exception e) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("method", method);
+        if(e != null) {
+            data.put("error", Log.getStackTraceString(e));
+        }
+        ServerLogger.log(Priority.P2, USER_SESSION_LOGGER_TAG, data);
+    }
+
     protected String getAndTrimOldString(String prefName, String keyName, String defValue) {
         String newPrefName = String.format("%s%s", prefName, suffix);
         String newKeyName = String.format("%s%s", keyName, suffix);
-        String debug = "";
-        boolean isGettingFromMap = false;
 
         Pair<String, String> key = new Pair<>(newPrefName, newKeyName);
         if (UserSessionMap.map.containsKey(key)) {
             try {
                 Object value = UserSessionMap.map.get(key);
-                if (value == null) {
-                    isGettingFromMap = true;
-                    return defValue;
-                } else {
-                    isGettingFromMap = true;
-                    return (String) value;
-                }
-            } catch (Exception ignored) {
-            }
+                if (value == null) return defValue;
+                else return (String) value;
+            } catch (Exception ignored) {}
         }
 
         try {
@@ -264,19 +321,24 @@ public class MigratedUserSession {
             String value = sharedPrefs.getString(newKeyName, defValue);
 
             if (value != null) {
-                if (!isMigratedToAead(newKeyName)) {
+                if (!isMigratedToGoogleTink(newKeyName)) {
                     String decryptedCurValue = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);
                     String encryptedNewValue = encryptString(decryptedCurValue, newKeyName);
-                    internalSetString(newPrefName, newKeyName, encryptedNewValue);
-                    UserSessionMap.map.put(key, decryptedCurValue);
-                    setPiiMigrationStatus(true, newKeyName);
-                    return encryptedNewValue;
+                    if (encryptedNewValue != null && !encryptedNewValue.isEmpty()) {
+                        internalSetString(newPrefName, newKeyName, encryptedNewValue);
+                        UserSessionMap.map.put(key, decryptedCurValue);
+                        return decryptedCurValue;
+                    }
                 }
 
                 if (value.equals(defValue)) {// if value same with def value\
                     return value;
                 } else {
-                    value = decryptString(value, newKeyName);
+                    if(isMigratedToGoogleTink(keyName)) {
+                        value = decryptString(value, newKeyName);
+                    } else {
+                        value = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);
+                    }
                     if (value.isEmpty()) {
                         return defValue;
                     } else {
@@ -315,10 +377,7 @@ public class MigratedUserSession {
                     );
                 }
             } catch (Exception e) {
-                HashMap<String, String> data = new HashMap<>();
-                data.put("type", "set_boolean_exception");
-                data.put("error", Log.getStackTraceString(e));
-                ServerLogger.log(Priority.P2, USER_SESSION_LOGGER_TAG, data);
+                logUserSessionEvent("set_boolean_exception", e);
             }
         }
 

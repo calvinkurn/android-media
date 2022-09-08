@@ -53,7 +53,7 @@ data class CatalogListItem(
 	val isGift: Int? = null,
 
 	@SerializedName("id")
-	val id: Int? = null,
+	val id: String? = null,
 
 	@SerializedName("imageV2URL")
 	val imageV2URL: String? = null,
@@ -89,7 +89,7 @@ data class CatalogListItem(
 	val subtitle: String? = null,
 
 	@SerializedName("promoID")
-	val promoID: Int? = null,
+	val promoID: String? = null,
 
 	@SerializedName("thumbnailV2URLMobile")
 	val thumbnailV2URLMobile: String? = null,

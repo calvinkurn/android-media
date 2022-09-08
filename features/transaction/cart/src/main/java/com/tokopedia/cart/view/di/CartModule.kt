@@ -16,6 +16,9 @@ import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.GetWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 import rx.subscriptions.CompositeSubscription
@@ -52,6 +55,24 @@ class CartModule {
     @CartScope
     fun providesRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @Provides
+    @CartScope
+    fun provideGetWishlistV2UseCase(graphqlRepository: GraphqlRepository): GetWishlistV2UseCase {
+        return GetWishlistV2UseCase(graphqlRepository)
+    }
+
+    @Provides
+    @CartScope
+    fun providesAddWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
+    }
+
+    @Provides
+    @CartScope
+    fun providesRemoveWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
     @Provides

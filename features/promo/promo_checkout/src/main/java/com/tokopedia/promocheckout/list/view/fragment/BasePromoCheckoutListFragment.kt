@@ -115,7 +115,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     fun initView(view: View) {
         val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, com.tokopedia.design.R.drawable.divider_horizontal_custom_quick_filter)!!)
+        ContextCompat.getDrawable(
+            requireContext(),
+            com.tokopedia.design.R.drawable.divider_horizontal_custom_quick_filter)?.let { dividerItemDecoration.setDrawable(it) }
         with(view.recyclerViewLastSeenPromo) {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
             adapter = promoLastSeenAdapter
@@ -125,7 +127,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
 
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
+        ContextCompat.getDrawable(
+            requireContext(),
+            R.drawable.divider_vertical_list_promo)?.let { linearDividerItemDecoration.setDrawable(it) }
         getRecyclerView(view)?.run {
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(linearDividerItemDecoration)
@@ -165,16 +169,14 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
 
         if (e is CheckPromoCodeException || e is MessageErrorException) {
-            textInputCoupon.setError(true)
-            e.message?.let { textInputCoupon.setMessage(it) }
+            e.message?.let { showErrorTextField(it) }
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
         }
     }
 
     override fun onErrorEmptyPromo() {
-        textInputCoupon.setError(true)
-        textInputCoupon.setMessage(getString(R.string.promostacking_checkout_label_error_empty_voucher_code))
+        showErrorTextField(getString(R.string.promostacking_checkout_label_error_empty_voucher_code))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -195,6 +197,14 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
             promoLastSeenAdapter.isDeals = isDeals
             promoLastSeenAdapter.notifyDataSetChanged()
             populateLastSeen()
+        }
+    }
+
+    private fun showErrorTextField(msg: String){
+        with(textInputCoupon){
+            setError(false) // need to reset textInput state
+            setMessage(msg)
+            setError(true) // set message show as error
         }
     }
 

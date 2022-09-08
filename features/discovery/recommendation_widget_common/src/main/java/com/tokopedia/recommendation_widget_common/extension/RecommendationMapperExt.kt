@@ -1,11 +1,16 @@
 package com.tokopedia.recommendation_widget_common.extension
 
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.presentation.model.*
-import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsMapper
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationBanner
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -100,7 +105,8 @@ fun List<RecommendationItem>.toProductCardModels(hasThreeDots: Boolean = false):
 fun RecommendationItem.toProductCardModel(
         hasAddToCartButton: Boolean = false,
         addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
-        hasThreeDots: Boolean = false
+        hasThreeDots: Boolean = false,
+        cardInteraction: Boolean = false
 ) : ProductCardModel{
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
@@ -137,7 +143,8 @@ fun RecommendationItem.toProductCardModel(
             hasAddToCartButton = hasAddToCartButton,
             addToCartButtonType = addToCartButtonType,
             variant = if (isProductHasParentID()) variant else null,
-            nonVariant = if (isProductHasParentID()) null else nonVariant
+            nonVariant = if (isProductHasParentID()) null else nonVariant,
+            cardInteraction = cardInteraction,
     )
 }
 
@@ -171,22 +178,17 @@ fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): Recommendatio
     return null
 }
 
-fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget, miniCartMap: MutableMap<String, MiniCartItem>?) {
+fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget, miniCartMap: MutableMap<MiniCartItemKey, MiniCartItem>?) {
     val recomItemList = mutableListOf<RecommendationItem>()
     recomWidget.recommendationItemList.forEach { item ->
-        val minicartcopy = miniCartMap?.toMutableMap()
-        minicartcopy?.let {
+        miniCartMap?.let {
             if (item.isProductHasParentID()) {
                 var variantTotalItems = 0
-                it.values.forEach { miniCartItem ->
-                    if (miniCartItem.productParentId == item.parentID.toString()) {
-                        variantTotalItems += miniCartItem.quantity
-                    }
-                }
+                variantTotalItems += it.getMiniCartItemParentProduct(item.parentID.toString())?.totalQuantity ?: 0
                 item.updateItemCurrentStock(variantTotalItems)
             } else {
                 item.updateItemCurrentStock(
-                    it[item.productId.toString()]?.quantity
+                    it.getMiniCartItemProduct(item.productId.toString())?.quantity
                         ?: 0
                 )
             }
@@ -194,8 +196,4 @@ fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget, miniC
         recomItemList.add(item)
     }
     recomWidget.recommendationItemList = recomItemList
-}
-
-fun List<MiniCartItem>.convertMiniCartToProductIdMap() : MutableMap<String, MiniCartItem> {
-    return this.associateBy({it.productId}) {it}.toMutableMap()
 }

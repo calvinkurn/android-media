@@ -19,9 +19,13 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.product.addedit.common.util.StringValidationUtil.filterDigit
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
+import java.lang.Exception
 import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
@@ -30,15 +34,19 @@ private const val DIALOG_MAX_WIDTH = 900
 private const val DIALOG_MARGIN_TOP = 8
 private const val MAX_LENGTH_NUMBER_INPUT = 11 // including delimiter
 
+const val MAX_LENGTH_STOCK_INPUT = 7 // including delimiter
+
 fun TextAreaUnify?.setText(text: String) = this?.textAreaInput?.setText(text)
 
 fun TextFieldUnify?.setText(text: String) = this?.textFieldInput?.setText(text)
 
 fun TextFieldUnify?.getText(): String = this?.textFieldInput?.text.toString()
 
-fun TextFieldUnify?.getTextIntOrZero(): Int = this?.textFieldInput?.text.toString().replace(".", "").toIntOrZero()
+fun TextFieldUnify?.getTextIntOrZero(): Int = this?.textFieldInput?.text.toString().filterDigit().toIntOrZero()
 
-fun TextFieldUnify?.getTextBigIntegerOrZero(): BigInteger = this?.textFieldInput?.text.toString().replace(".", "").toBigIntegerOrNull() ?: 0.toBigInteger()
+fun TextFieldUnify?.getTextBigIntegerOrZero(): BigInteger = this?.textFieldInput?.text.toString().filterDigit().toBigIntegerOrNull() ?: 0.toBigInteger()
+
+fun TextFieldUnify2?.getTextBigIntegerOrZero(): BigInteger = this?.editText?.text.toString().replace(".", "").toBigIntegerOrNull() ?: 0.toBigInteger()
 
 fun TextFieldUnify?.setModeToNumberInput(maxLength: Int = MAX_LENGTH_NUMBER_INPUT) {
     val textFieldInput = this?.textFieldInput
@@ -50,22 +58,26 @@ fun TextFieldUnify?.setModeToNumberInput(maxLength: Int = MAX_LENGTH_NUMBER_INPU
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-            // clean any kind of number formatting here
-            val productPriceInput = charSequence?.toString()?.replace(".", "")
-            productPriceInput?.let {
-                // format the number
-                it.toLongOrNull()?.let { parsedLong ->
-                    textFieldInput.removeTextChangedListener(this)
-                    val formattedText: String = NumberFormat.getNumberInstance(Locale.US)
+            try {
+                val productPriceInput = charSequence?.toString()?.filterDigit()
+                productPriceInput?.let {
+                    // format the number
+                    it.toLongOrNull()?.let { parsedLong ->
+                        textFieldInput.removeTextChangedListener(this)
+                        val formattedText: String = NumberFormat.getNumberInstance(Locale.US)
                             .format(parsedLong)
                             .toString()
                             .replace(",", ".")
-                    val lengthDiff = formattedText.length - charSequence.length
-                    val cursorPosition = start + count + lengthDiff
-                    textFieldInput.setText(formattedText)
-                    textFieldInput.setSelection(cursorPosition.coerceIn(Int.ZERO, formattedText.length))
-                    textFieldInput.addTextChangedListener(this)
+                        val lengthDiff = formattedText.length - charSequence.length
+                        val cursorPosition = start + count + lengthDiff
+                        textFieldInput.setText(formattedText)
+                        textFieldInput.setSelection(cursorPosition.coerceIn(Int.ZERO, formattedText.length))
+                        textFieldInput.addTextChangedListener(this)
+                    }
                 }
+            } catch (e: Exception) {
+                AddEditProductErrorHandler.logMessage("setModeToNumberInput: $charSequence")
+                AddEditProductErrorHandler.logExceptionToCrashlytics(e)
             }
         }
     })
@@ -94,7 +106,7 @@ fun Typography?.displayRequiredAsterisk(visible: Boolean) {
     }
 }
 
-fun TextFieldUnify?.setHtmlMessage(text: String) {
+fun TextFieldUnify2?.setHtmlMessage(text: String) {
     val htmlText = MethodChecker.fromHtml(text)
     this?.setMessage(htmlText)
 }
@@ -242,4 +254,16 @@ fun Fragment.setFragmentToUnifyBgColor() {
         activity!!.window.decorView.setBackgroundColor(ContextCompat.getColor(
                 context!!, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
+}
+
+fun Ticker.setDescriptionClick(onClick: () -> Unit) {
+    setDescriptionClickEvent(object : TickerCallback {
+        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+            onClick.invoke()
+        }
+
+        override fun onDismiss() {
+            // no-op
+        }
+    })
 }

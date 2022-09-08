@@ -15,13 +15,16 @@ class ResetPinV2UseCase @Inject constructor(
 ) : CoroutineUseCase<ResetPinV2Param, ResetPinV2Response>(dispatcher.io) {
 
     override suspend fun execute(params: ResetPinV2Param): ResetPinV2Response {
-	return repository.request(graphqlQuery(), params)
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String {
-	return """
-	    mutation resetPinV2(${'$'}inputResetPin: ResetPinV2param) {
-	      reset_pin_v2(input: ${'$'}inputResetPin) {
+        return """
+	    mutation resetPinV2(${'$'}pin_token: String!, ${'$'}validate_token: String!) {
+	        reset_pin_v2(input: {
+                pin_token: ${'$'}pin_token,
+                validate_token: ${'$'}validate_token
+            }) {
 	        success
 	        errors {
 	          name

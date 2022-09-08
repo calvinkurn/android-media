@@ -2,15 +2,18 @@ package com.tokopedia.play.broadcaster.di
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.play.broadcaster.di.key.FragmentKey
+import com.tokopedia.abstraction.base.view.fragment.FragmentKey
+import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
-import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
+import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastPostVideoFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastReportFragment
@@ -25,7 +28,7 @@ import dagger.multibindings.IntoMap
 abstract class PlayBroadcastFragmentModule {
 
     @Binds
-    abstract fun bindFragmentFactory(fragmentFactory: PlayBroadcastFragmentFactory): FragmentFactory
+    abstract fun bindFragmentFactory(fragmentFactory: TkpdFragmentFactory): FragmentFactory
 
     @Binds
     @IntoMap
@@ -89,4 +92,22 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayBroadcastPostVideoFragment::class)
     abstract fun getPlayBroadcastPostVideoFragment(fragment: PlayBroadcastPostVideoFragment): Fragment
+
+    /**
+     * Interactive
+     */
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroSelectGameBottomSheet::class)
+    abstract fun getPlayBroSelectInteractiveBottomSheet(fragment: PlayBroSelectGameBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroInteractiveBottomSheet::class)
+    abstract fun getPlayBroInteractiveBottomSheet(fragment: PlayBroInteractiveBottomSheet) : Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(InteractiveSetupDialogFragment::class)
+    abstract fun getInteractiveSetupDialogFragment(fragment: InteractiveSetupDialogFragment) : Fragment
 }

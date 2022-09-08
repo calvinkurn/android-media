@@ -900,16 +900,20 @@ open class WishlistViewModel @Inject constructor(
     fun setWishlistOnMarkDelete(productPosition: Int, isChecked: Boolean){
         val wishlistDataTemp: MutableList<WishlistDataModel> = wishlistData.value.toMutableList()
         (wishlistDataTemp.getOrNull(productPosition) as? WishlistItemDataModel)?.let {
-            val wishlistItemCheckUpdate = it.copy(isOnChecked = isChecked)
-            wishlistDataTemp[productPosition] = wishlistItemCheckUpdate
-            if(isChecked) {
-                listVisitableMarked[productPosition] = wishlistItemCheckUpdate
+            try {
+                val wishlistItemCheckUpdate = it.copy(isOnChecked = isChecked)
+                wishlistDataTemp[productPosition] = wishlistItemCheckUpdate
+                if(isChecked) {
+                    listVisitableMarked[productPosition] = wishlistItemCheckUpdate
+                }
+                else {
+                    listVisitableMarked.remove(productPosition)
+                }
+                bulkSelectCountActionData.value = Event(listVisitableMarked.size)
+                wishlistData.value = wishlistDataTemp.copy()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            else {
-                listVisitableMarked.remove(productPosition)
-            }
-            bulkSelectCountActionData.value = Event(listVisitableMarked.size)
-            wishlistData.value = wishlistDataTemp.copy()
         }
     }
 

@@ -20,9 +20,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.feedcomponent.util.ColorUtil
 import com.tokopedia.feedcomponent.util.MentionTextHelper
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.custom.MentionEditText
 import com.tokopedia.feedcomponent.view.span.MentionSpan
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
@@ -156,16 +158,16 @@ class KolCommentNewCardView : LinearLayout {
         }
         comment.text = tagConverter.convertToLinkifyHashtag(
             SpannableString(MethodChecker.fromHtml(commentText)), colorLinkHashtag
-        ) { hashtag -> onHashtagClicked(hashtag, element.id ?: "0") }
+        ) { hashtag -> onHashtagClicked(hashtag) }
 
         comment.movementMethod = LinkMovementMethod.getInstance()
     }
 
 
-    private fun onHashtagClicked(hashtag: String, id: String) {
+    private fun onHashtagClicked(hashtag: String) {
         val encodeHashtag = URLEncoder.encode(hashtag)
         RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
-        listener?.onHashtagClicked(hashtag, id)
+        listener?.onHashtagClicked(hashtag)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -197,10 +199,20 @@ class KolCommentNewCardView : LinearLayout {
     }
 
     private fun getCommentText(element: KolCommentNewModel): String {
-        return ("<b>" + element.name + "</b>" + " "
-                + element.review.toString().replace("(\r\n|\n)".toRegex(), "<br />"))
+        return ("<b>" + element.name + "</b>" + " ")
+            .plus(
+                "<font color='${
+                    ColorUtil.getColorFromResToString(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    )
+                }'>"
+            )
+            .plus(
+                element.review.toString()
+                    .replace("(\r\n|\n)".toRegex(), "<br />")
+            )
     }
-
     private val colorLinkHashtag: Int
         get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
@@ -213,7 +225,7 @@ class KolCommentNewCardView : LinearLayout {
     }
 
     interface Listener {
-        fun onHashtagClicked(hashtag: String, id: String)
+        fun onHashtagClicked(hashtag: String)
         fun onAvatarClicked(profileUrl: String, userId: String?)
         fun onMentionedProfileClicked(authorId: String)
         fun onTokopediaUrlClicked(url: String)

@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.model
 
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
@@ -18,10 +19,12 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsU
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -61,6 +64,8 @@ class GroupDetailViewModelTest {
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
     private val headlineInfoUseCase: GetHeadlineInfoUseCase = mockk(relaxed = true)
     private val res: Resources = mockk(relaxed = true)
+    private val throwable: Throwable = mockk(relaxed = true)
+    private val params: RequestParams = mockk(relaxed = true)
 
     private val viewModel by lazy {
         GroupDetailViewModel(rule.dispatchers,
@@ -438,6 +443,83 @@ class GroupDetailViewModelTest {
         viewModel.setKeywordAction("", listOf(), res, { onSuccessInvoked = true })
         Assert.assertTrue(onSuccessInvoked)
     }
+
+    @Test
+    fun `setProductActionMoveGroup success test`() {
+        var successCalled = false
+        val fakeParam: RequestParams = mockk(relaxed = true)
+
+        every {
+            topAdsCreateUseCase.createRequestParamMoveGroup(any(),
+                TopAdsDashboardConstant.SOURCE_DASH, any(), ParamObject.ACTION_ADD)
+        } returns fakeParam
+
+        viewModel.setProductActionMoveGroup("", listOf()) { successCalled = true }
+
+        coVerify {
+            topAdsCreateUseCase.execute(fakeParam)
+        }
+        Assert.assertTrue(successCalled)
+    }
+
+    @Test
+    fun `setProductActionMoveGroup error test`() {
+        var successCalled = false
+
+        every {
+            topAdsCreateUseCase.createRequestParamMoveGroup(any(),
+                TopAdsDashboardConstant.SOURCE_DASH, any(), ParamObject.ACTION_ADD)
+        } throws throwable
+
+        viewModel.setProductActionMoveGroup("", listOf()) { successCalled = true }
+
+        verify { throwable.printStackTrace() }
+        Assert.assertEquals(successCalled, false)
+    }
+
+    @Test
+    fun `setKeywordActionForGroup if action is not delete`() {
+
+        viewModel.setKeywordActionForGroup("", "", listOf(), res) {}
+
+        coVerify(exactly = 0) {
+            topAdsCreateUseCase.execute(params)
+        }
+        verify {
+            topAdsKeywordsActionUseCase.setParams(any(), any())
+        }
+    }
+
+    @Test
+    fun `setKeywordActionForGroup for action == delete success`() {
+        var successCalled = false
+        every {
+            topAdsCreateUseCase.createRequestParamActionDelete(any(), any(), any())
+        } returns params
+        viewModel.setKeywordActionForGroup("",
+            TopAdsDashboardConstant.ACTION_DELETE,
+            listOf(),
+            res) { successCalled = true }
+        coVerify { topAdsCreateUseCase.execute(params) }
+
+        Assert.assertTrue(successCalled)
+    }
+
+    @Test
+    fun `setKeywordActionForGroup for action == delete failure`() {
+        var successCalled = false
+        every {
+            topAdsCreateUseCase.createRequestParamActionDelete(any(), any(), any())
+        } throws throwable
+
+        viewModel.setKeywordActionForGroup("",
+            TopAdsDashboardConstant.ACTION_DELETE,
+            listOf(),
+            res) { successCalled = true }
+
+        Assert.assertTrue(!successCalled)
+    }
+
 
     @Test
     fun `check detach view`() {

@@ -33,8 +33,14 @@ import com.tokopedia.gamification.pdp.presentation.GamiPdpRecommendationListener
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapter
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.PdpDialogViewModel
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import javax.inject.Inject
 
 class PdpGamificationView : LinearLayout {
@@ -56,7 +62,7 @@ class PdpGamificationView : LinearLayout {
     var shopId = ""
     var userId: String? = null
     var errorListener: PdpErrorListener? = null
-
+    private val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -265,6 +271,7 @@ class PdpGamificationView : LinearLayout {
 
             override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
                 if (viewModel.userSession.isLoggedIn) {
+
                     if (isAddWishlist) {
                         viewModel.addToWishlist(item, callback)
                     } else {
@@ -275,9 +282,59 @@ class PdpGamificationView : LinearLayout {
                 }
 
             }
-        }
 
+            override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
+                if (viewModel.userSession.isLoggedIn) {
+
+                    if (isAddWishlist) {
+                        viewModel.addToWishlistV2(item, object: WishlistV2ActionListener{
+                            override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                                val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, this@PdpGamificationView)
+                            }
+
+                            override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {
+                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, this@PdpGamificationView)
+                                if (item.isTopAds) hitWishlistClickUrl(item)
+                            }
+
+                            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                            override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
+
+                        })
+                    } else {
+                        viewModel.removeFromWishlistV2(item, object: WishlistV2ActionListener{
+                            override fun onErrorAddWishList(throwable: Throwable, productId: String) { }
+                            override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) { }
+
+                            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                                val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, this@PdpGamificationView)
+                            }
+
+                            override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {
+                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, this@PdpGamificationView)
+                            }
+                        })
+                    }
+                } else {
+                    RouteManager.route(context, ApplinkConst.LOGIN)
+                }
+            }
+        }
         return listener
+    }
+
+    private fun hitWishlistClickUrl(item: RecommendationItem) {
+        context?.let {
+            TopAdsUrlHitter(it).hitClickUrl(
+                this::class.java.simpleName,
+                item.clickUrl+CLICK_TYPE_WISHLIST,
+                item.productId.toString(),
+                item.name,
+                item.imageUrl
+            )
+        }
     }
 
     private fun prepareShimmer() {

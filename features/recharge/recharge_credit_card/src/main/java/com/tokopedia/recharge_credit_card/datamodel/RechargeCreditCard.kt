@@ -1,6 +1,6 @@
 package com.tokopedia.recharge_credit_card.datamodel
 
-class RechargeCreditCard(
+data class RechargeCreditCard(
         var operatorId: String = "",
         var defaultProductId: String = "",
         var imageUrl: String = "",

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -25,15 +26,11 @@ import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.data.ProductrevLikeReview
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.common.util.getErrorMessage
-import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
-import com.tokopedia.review.feature.gallery.data.Detail
-import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
-import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
+import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryImageThumbnailUiModel
 import com.tokopedia.review.feature.gallery.presentation.fragment.ReviewGalleryFragment
 import com.tokopedia.review.feature.gallery.presentation.uimodel.ReviewGalleryRoutingUiModel
 import com.tokopedia.review.feature.imagepreview.analytics.ReviewImagePreviewTracking
@@ -54,8 +51,11 @@ import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImage
 import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewExpandedReviewBottomSheet
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReview
-import com.tokopedia.review.feature.reading.data.UserReviewStats
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -71,9 +71,6 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
         private const val POSITION_INDEX_COUNTER = 1
         const val GALLERY_SOURCE_CREDIBILITY_SOURCE = "gallery"
-        const val READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE = "reading image preview"
-        const val KEY_CACHE_ID = "cacheId"
-        const val KEY_FINAL_LIKE_COUNT = "final like count"
         fun newInstance(
             cacheManagerId: String,
             isFromGallery: Boolean
@@ -219,7 +216,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                     galleryRoutingData.totalImageCount,
                     galleryRoutingData.productId,
                     it.attachmentId,
-                    it.imageNumber - POSITION_INDEX_COUNTER,
+                    it.mediaNumber - POSITION_INDEX_COUNTER,
                     viewModel.getUserId(),
                     trackingQueue
                 )
@@ -245,15 +242,23 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
-        ReviewImagePreviewTracking.trackClickReviewerName(
-            isFromGallery, feedbackId, userId, statistics,
-            if (isFromGallery) viewModel.getProductId() else productId, viewModel.getUserId()
-        )
-    }
-
-    override fun onUserNameClicked(userId: String) {
-        goToReviewCredibility(userId)
+    override fun onUserNameClicked(
+        feedbackId: String,
+        userId: String,
+        statistics: String,
+        label: String
+    ) {
+        if (goToReviewCredibility(userId)) {
+            ReviewImagePreviewTracking.trackClickReviewerName(
+                isFromGallery,
+                feedbackId,
+                userId,
+                statistics,
+                if (isFromGallery) viewModel.getProductId() else productId,
+                viewModel.getUserId(),
+                label
+            )
+        }
     }
 
     private fun getDataFromArguments() {
@@ -341,12 +346,12 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun setAdapterDataFromReading() {
-        adapter.addData(productReview.imageAttachments.map { ReviewImagePreviewUiModel(it.imageUrl) })
+        adapter.addData(productReview.imageAttachments.map { ReviewImagePreviewUiModel(it.uri) })
         setRecyclerViewCurrentItem()
     }
 
     private fun setAdapterDataFromGallery() {
-        adapter.addData(galleryRoutingData.loadedReviews.map { ReviewImagePreviewUiModel(it.fullImageUrl) })
+        adapter.addData(galleryRoutingData.loadedReviews.map { ReviewImagePreviewUiModel(it.thumbnailUrl) })
         setRecyclerViewCurrentItem(galleryRoutingData.currentPosition)
     }
 
@@ -427,7 +432,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun observeReviewImagesResult() {
         viewModel.reviewImages.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> onSuccessGetReviewImages(it.data)
+                is Success -> onSuccessGetReviewMedia(it.data)
                 is Fail -> onFailGetReviewImages(it.throwable)
             }
         })
@@ -446,17 +451,18 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         logToCrashlytics(throwable)
     }
 
-    private fun onSuccessGetReviewImages(productrevGetReviewImage: ProductrevGetReviewImage) {
+    private fun onSuccessGetReviewMedia(productrevGetReviewMedia: ProductrevGetReviewMedia) {
         adapter.addData(
-            productrevGetReviewImage.reviewImages.map { reviewImage ->
+            productrevGetReviewMedia.reviewMedia.map { reviewImage ->
                 ReviewImagePreviewUiModel(
-                    productrevGetReviewImage.detail.reviewGalleryImages.firstOrNull { it.attachmentId == reviewImage.imageId }?.fullsizeURL
-                        ?: ""
+                    productrevGetReviewMedia.detail.reviewGalleryImages.firstOrNull {
+                        it.attachmentId == reviewImage.imageId
+                    }?.fullsizeURL.orEmpty()
                 )
             }
         )
-        galleryRoutingData.loadedReviews.addAll(mapToUiModel(productrevGetReviewImage))
-        updateHasNextPage(productrevGetReviewImage.hasNext)
+        galleryRoutingData.loadedReviews.addAll(mapToUiModel(productrevGetReviewMedia))
+        updateHasNextPage(productrevGetReviewMedia.hasNext)
     }
 
     private fun onFailGetReviewImages(throwable: Throwable) {
@@ -647,7 +653,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         with(galleryRoutingData) {
             if (isFirstTimeUpdate) currentRecyclerViewPosition = currentPosition
             this.loadedReviews.firstOrNull {
-                it.imageNumber == currentRecyclerViewPosition
+                it.mediaNumber == currentRecyclerViewPosition
             }?.let { selectedReview ->
                 with(selectedReview) {
                     reviewImagePreviewDetail?.apply {
@@ -722,15 +728,15 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         return if (isLiked) LikeDislike.LIKED else 0
     }
 
-    private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryUiModel> {
-        val reviewImages = mutableListOf<ReviewGalleryUiModel>()
-        productrevGetReviewImage.reviewImages.forEachIndexed { index, reviewImage ->
+    private fun mapToUiModel(productrevGetReviewMedia: ProductrevGetReviewMedia): List<ReviewGalleryImageThumbnailUiModel> {
+        val reviewImages = mutableListOf<ReviewGalleryImageThumbnailUiModel>()
+        productrevGetReviewMedia.reviewMedia.forEachIndexed { index, reviewImage ->
             reviewImages.add(
                 getReviewGalleryUiModelBasedOnDetail(
-                    productrevGetReviewImage.detail,
+                    productrevGetReviewMedia.detail,
                     reviewImage.feedbackId,
                     reviewImage.imageId,
-                    reviewImage.imageNumber
+                    reviewImage.mediaNumber
                 )
             )
         }
@@ -742,10 +748,10 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         feedbackId: String,
         attachmentId: String,
         imageNumber: Int
-    ): ReviewGalleryUiModel {
-        var reviewGalleryUiModel = ReviewGalleryUiModel()
+    ): ReviewGalleryImageThumbnailUiModel {
+        var reviewGalleryImageThumbnailUiModel = ReviewGalleryImageThumbnailUiModel()
         detail.reviewDetail.firstOrNull { it.feedbackId == feedbackId }?.apply {
-            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+            reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
                 rating = this.rating,
                 variantName = this.variantName,
                 reviewerName = this.user.fullName,
@@ -761,21 +767,21 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             )
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
-            reviewGalleryUiModel = reviewGalleryUiModel.copy(
-                imageUrl = this.thumbnailURL,
-                fullImageUrl = this.fullsizeURL,
+            reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
+                mediaUrl = this.thumbnailURL,
+                thumbnailUrl = this.fullsizeURL,
                 attachmentId = this.attachmentId
             )
         }
-        reviewGalleryUiModel = reviewGalleryUiModel.copy(
+        reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
             feedbackId = feedbackId,
-            imageNumber = imageNumber
+            mediaNumber = imageNumber
         )
-        return reviewGalleryUiModel
+        return reviewGalleryImageThumbnailUiModel
     }
 
-    private fun goToReviewCredibility(userId: String) {
-        RouteManager.route(
+    private fun goToReviewCredibility(userId: String): Boolean {
+        return RouteManager.route(
             context,
             Uri.parse(
                 UriUtil.buildUri(
@@ -785,7 +791,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 )
             ).buildUpon()
                 .appendQueryParameter(
-                    ReviewCredibilityActivity.PARAM_PRODUCT_ID,
+                    ReviewApplinkConst.PARAM_PRODUCT_ID,
                     if (isFromGallery) viewModel.getProductId() else productId
                 ).build()
                 .toString()
@@ -821,6 +827,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun getCredibilitySource(): String {
-        return if (isFromGallery) GALLERY_SOURCE_CREDIBILITY_SOURCE else READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
+        return if (isFromGallery) ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_GALLERY
+        else ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING_IMAGE_PREVIEW
     }
 }

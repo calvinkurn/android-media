@@ -89,10 +89,14 @@ data class Product(
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
         val freeShippingExtra: FreeShipping = FreeShipping(),
+        @SerializedName("free_shipping_general")
+        val freeShippingGeneral: FreeShippingGeneral = FreeShippingGeneral(),
         @SerializedName("product_ticker")
         val productTicker: ProductTicker = ProductTicker(),
         @SerializedName("variant_description_detail")
         val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
         @SerializedName("add_ons")
-        val addOns: AddOnsResponse = AddOnsResponse()
+        val addOns: AddOnsResponse = AddOnsResponse(),
+        @SerializedName("ethical_drug")
+        val ethicalDrugResponse: EthicalDrugResponse = EthicalDrugResponse()
 )

@@ -9,11 +9,18 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.widget.analytic.ImpressionableModel
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowMediumWidget
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowSmallWidget
+import com.tokopedia.play.widget.ui.PlayWidgetState
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.NonVariant
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -35,6 +42,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.data.createCategoryGridDataModel
 import com.tokopedia.tokopedianow.data.createCategoryGridListFirstFetch
 import com.tokopedia.tokopedianow.data.createCategoryGridListSecondFetch
+import com.tokopedia.tokopedianow.data.createCategoryGridWithAdultDataFetch
 import com.tokopedia.tokopedianow.data.createCategoryList
 import com.tokopedia.tokopedianow.data.createChooseAddress
 import com.tokopedia.tokopedianow.data.createDynamicChannelLayoutList
@@ -52,12 +60,15 @@ import com.tokopedia.tokopedianow.data.createLeftCarouselDataModel
 import com.tokopedia.tokopedianow.data.createLoadingState
 import com.tokopedia.tokopedianow.data.createLocalCacheModel
 import com.tokopedia.tokopedianow.data.createMiniCartSimplifier
+import com.tokopedia.tokopedianow.data.createPlayWidgetChannel
+import com.tokopedia.tokopedianow.data.createPlayWidgetUiModel
 import com.tokopedia.tokopedianow.data.createQuestWidgetList
 import com.tokopedia.tokopedianow.data.createQuestWidgetListEmpty
 import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
 import com.tokopedia.tokopedianow.data.createTicker
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
@@ -73,6 +84,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInfor
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
@@ -80,6 +92,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiMod
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -409,10 +422,77 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             categoryListUiModel = TokoNowCategoryListUiModel(
                 categoryList = listOf(
                     TokoNowCategoryItemUiModel(
+                        id = "",
+                        title = "",
+                        imageUrl = null,
+                        appLink = "tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
+                        warehouseId = "1"
+                    ),
+                    TokoNowCategoryItemUiModel(
                         id = "1",
                         title = "Category 1",
                         imageUrl = "tokopedia://",
                         appLink = "tokoepdia://"
+                    )
+                )
+            ),
+            state = TokoNowLayoutState.SHOW
+        )
+
+        // verify use case called and response
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCategoryListUseCaseCalled(count = 2)
+        verifyGetCategoryListResponseSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when get category grid should not add adult category to category list`() {
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = "1"
+        )
+
+        //set mock data
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), localCacheModel)
+        onGetCategoryList_thenReturn(createCategoryGridWithAdultDataFetch())
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
+
+        //prepare model that need to be changed
+        val model = TokoNowCategoryGridUiModel(
+            id="11111",
+            title="Category Tokonow",
+            categoryListUiModel = null,
+            state= TokoNowLayoutState.SHOW
+        )
+
+        viewModel.getCategoryGrid(model, "1")
+
+        //prepare model for expectedResult
+        val expectedResponse = TokoNowCategoryGridUiModel(
+            id = "11111",
+            title = "Category Tokonow",
+            categoryListUiModel = TokoNowCategoryListUiModel(
+                categoryList = listOf(
+                    TokoNowCategoryItemUiModel(
+                        id = "",
+                        title = "",
+                        imageUrl = null,
+                        appLink = "tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
+                        warehouseId = "1"
+                    ),
+                    TokoNowCategoryItemUiModel(
+                        id = "1",
+                        title = "Category 1",
+                        imageUrl = "tokopedia://",
+                        appLink = "tokoepdia://"
+                    ),
+                    TokoNowCategoryItemUiModel(
+                        id="3",
+                        title="Category 3",
+                        imageUrl="tokopedia://",
+                        appLink="tokoepdia://"
                     )
                 )
             ),
@@ -751,6 +831,80 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `when removeLeftCarouselAtc should remove left carousel atc widget from layout list`() {
+        val warehouseId = "1"
+        val localCacheModel = LocalCacheModel(warehouse_id = warehouseId)
+        val dynamicChannelResponse = createDynamicChannelLayoutList(
+            listOf(
+                HomeLayoutResponse(
+                    id = "2122",
+                    layout = "left_carousel_atc",
+                    header = Header(
+                        name = "Mix Left Atc Carousel",
+                        serverTimeUnix = 0
+                    )
+                )
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = dynamicChannelResponse,
+            localCacheModel = localCacheModel
+        )
+
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = emptyList()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        val expectedResultWithLeftCarouselAtcWidget = Success(
+            HomeLayoutListUiModel(
+                items = listOf(
+                    TokoNowChooseAddressWidgetUiModel(id = "0"),
+                    createLeftCarouselAtcDataModel(
+                        id = "2122",
+                        headerName = "Mix Left Atc Carousel",
+                    )
+                ),
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList.verifySuccessEquals(expectedResultWithLeftCarouselAtcWidget)
+
+        viewModel.removeLeftCarouselAtc("2122")
+
+        val expectedResultWithoutLeftCarouselAtcWidget = Success(
+            HomeLayoutListUiModel(
+                items = listOf(
+                    TokoNowChooseAddressWidgetUiModel(id = "0"),
+                ),
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList.verifySuccessEquals(expectedResultWithoutLeftCarouselAtcWidget)
+    }
+
+    @Test
+    fun `when removeLeftCarouselAtc throw exception should not set homeLayoutList value`() {
+        onGetHomeLayoutItemList_returnNull()
+
+        viewModel.removeLeftCarouselAtc("1")
+
+        viewModel.homeLayoutList
+            .verifyValueEquals(null)
+    }
+
+
+    @Test
     fun `given index is NOT between visible item index when getLayoutData should not call use case`() {
         val index = 1
 
@@ -973,7 +1127,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             title = "Kamu pernah beli",
             products = listOf(RepurchaseProduct(id = productId, stock = 5, maxOrder = 4, minOrder = 3))
         )
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -1048,7 +1202,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             title = "Kamu pernah beli",
             products = listOf(RepurchaseProduct(id = productId, maxOrder = 5, minOrder = 3))
         )
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -1169,15 +1323,15 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getMiniCartItem should return mini cart item by ID`() {
         val productId = "1"
 
-        val miniCartItem = MiniCartItem(productId = productId)
-        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = listOf(miniCartItem))
+        val miniCartItem = MiniCartItem.MiniCartItemProduct(productId = productId)
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = mapOf(MiniCartItemKey(productId) to miniCartItem))
 
         onGetMiniCart_thenReturn(miniCartResponse)
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
         viewModel.getMiniCart(listOf("1"), "2")
 
-        val expectedResult = MiniCartItem(productId = productId)
+        val expectedResult = MiniCartItem.MiniCartItemProduct(productId = productId)
         val actualResult = viewModel.getMiniCartItem(productId)
 
         verifyGetMiniCartUseCaseCalled()
@@ -1188,8 +1342,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `given productId not match when getMiniCartItem should return NULL`() {
         val productId = "3"
 
-        val miniCartItem = MiniCartItem(productId = "1")
-        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = listOf(miniCartItem))
+        val miniCartItem = MiniCartItem.MiniCartItemProduct(productId = "1")
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = mapOf(MiniCartItemKey("1") to miniCartItem))
 
         onGetMiniCart_thenReturn(miniCartResponse)
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
@@ -1461,7 +1615,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         val updateCartResponse = UpdateCartV2Data()
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -1528,7 +1682,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             homeRecomResponse
         )
 
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -1580,7 +1734,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             homeRecomResponse
         )
 
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -1601,7 +1755,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
         val homeRecomUiModel = HomeProductRecomUiModel(id = "1001", recomWidget = recomWidget)
 
-        val expected = HomeAddToCartTracker(
+        val expected = HomeRemoveFromCartTracker(
             position = 0,
             quantity = 0,
             cartId = cartId,
@@ -1612,8 +1766,31 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         verifyGetMiniCartUseCaseCalled()
         verifyDeleteCartUseCaseCalled()
 
-        viewModel.homeAddToCartTracker
+        viewModel.homeRemoveFromCartTracker
             .verifyValueEquals(expected)
+    }
+
+
+    @Test
+    fun `homeLayoutItemList does NOT contain product recom when remove from cart should NOT track the product`() {
+        val warehouseId = "1"
+        val productId = "1"
+        val shopId = "5"
+        val cartId = "1999"
+        val type = TokoNowLayoutType.PRODUCT_RECOM
+
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
+
+        onGetMiniCart_thenReturn(miniCartResponse)
+        onRemoveItemCart_thenReturn(RemoveFromCartData())
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
+
+        viewModel.getMiniCart(listOf(shopId), warehouseId)
+        viewModel.addProductToCart(productId, 0, shopId, type)
+
+        viewModel.homeRemoveFromCartTracker
+            .verifyValueEquals(null)
     }
 
     @Test
@@ -1647,7 +1824,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             homeRecomResponse
         )
 
-        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
         val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
 
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
@@ -2000,6 +2177,36 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                         shop = Shop(shopId = "100")
                     )
                 )
+            )
+        )
+
+        val addToCartResponse = AddToCartDataModel(data = DataModel(cartId = "1999"))
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onAddToCart_thenReturn(addToCartResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
+        viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC)
+
+        verifyAddToCartUseCaseCalled()
+
+        viewModel.homeAddToCartTracker
+            .verifyValueEquals(expected = null)
+    }
+
+    @Test
+    fun `given no product in response grid when add mix left product to cart should NOT track add to cart`() {
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "2122",
+                layout = "left_carousel_atc",
+                header = Header(
+                    name = "Mix Left Carousel",
+                    serverTimeUnix = 0
+                ),
+                grids = listOf()
             )
         )
 
@@ -2533,6 +2740,259 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.homeLayoutList
             .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given current serviceType and intended serviceType when switchService success should switch the service`() {
+        val currentServiceType = "15m"
+        val intendedServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchService(localCacheModel, intendedServiceType)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "2h"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when switchService with intended service error should set live data value fail`() {
+        val localCacheModel = LocalCacheModel(
+            service_type = "2h"
+        )
+        val intendedServiceType = "15m"
+        val error = NullPointerException()
+
+        onSetUserPreference_thenReturn(error)
+
+        viewModel.switchService(localCacheModel, intendedServiceType)
+
+        val expectedResult = Fail(NullPointerException())
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "15m"
+        )
+
+        viewModel.setUserPreference
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `check whether need to show on board toaster or not`() {
+        // 2 hour state and 20m coachmark has been shown
+        var result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_2H,
+            has20mCoachMarkBeenShown = true,
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = false
+        )
+        assertEquals(true, result)
+
+        // 20m state and 2 hour coachmark has been shown
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_15M,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = true,
+            isWarehouseIdZero = false
+        )
+        assertEquals(true, result)
+
+        // 2 hour state and 20m coachmark has not been shown
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_2H,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = false
+        )
+        assertEquals(false, result)
+
+        // 20m state and 2 hour coachmark has not been shown
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_15M,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = false
+        )
+        assertEquals(false, result)
+
+        // ooc state
+        result = viewModel.needToShowOnBoardToaster(
+            serviceType = ServiceType.NOW_OOC,
+            has20mCoachMarkBeenShown = false,
+            has2hCoachMarkBeenShown = false,
+            isWarehouseIdZero = true
+        )
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun `given current serviceType 2h and external serviceType 20m when switchService success should switch service to 15m`() {
+        val currentServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "3",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchServiceOrLoadLayout("20m", localCacheModel)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "3",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "20m"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given current serviceType 15m and external serviceType 2h when switchService success should switch service to 2h`() {
+        val currentServiceType = "15m"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "15m",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchServiceOrLoadLayout("2h", localCacheModel)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "15m",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                ),
+                WarehouseData(
+                    warehouseId = "3",
+                    serviceType = "2h"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "2h"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when external serviceType empty should not switch service`() {
+        val currentServiceType = "15m"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        viewModel.switchServiceOrLoadLayout("", localCacheModel)
+
+        val expectedResponse = createLoadingState()
+
+        verifyGetHomeLayoutResponseSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when external serviceType equals to current serviceType should not switch service`() {
+        val currentServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        viewModel.switchServiceOrLoadLayout("2h", localCacheModel)
+
+        val expectedResponse = createLoadingState()
+
+        verifyGetHomeLayoutResponseSuccess(expectedResponse)
     }
 
     @Test
@@ -3225,5 +3685,353 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         ))
     }
 
+    @Test
+    fun `when get medium play widget success should add medium play widget to home layout list`() {
+        val id = "1001"
+        val title = "Medium Play Widget"
+        val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "play_carousel",
+                header = Header(
+                    name = title,
+                    applink = appLink,
+                    serverTimeUnix = 0
+                ),
+                widgetParam = channelTag
+            )
+        )
+        val playWidgetState = PlayWidgetState()
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetPlayWidget_thenReturn(playWidgetState)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+
+        val widgetModel = playWidgetState.model.copy(title = title, actionAppLink = appLink)
+        val widgetState = playWidgetState.copy(model = widgetModel)
+
+        val playWidgetUiModel = HomePlayWidgetUiModel(
+            id = id,
+            widgetType = TokoNowMediumWidget(channelTag),
+            playWidgetState = widgetState,
+            isAutoRefresh = false
+        )
+
+        val homeLayoutItems = listOf(
+            TokoNowChooseAddressWidgetUiModel(id = "0"),
+            playWidgetUiModel
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = homeLayoutItems,
+            state = TokoNowLayoutState.UPDATE
+        ))
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+
+        viewModel.invalidatePlayImpression
+            .verifyValueEquals(true)
+    }
+
+    @Test
+    fun `when get small play widget success should add small play widget to home layout list`() {
+        val id = "1001"
+        val title = "Small Play Widget"
+        val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "play_carousel_small",
+                header = Header(
+                    name = title,
+                    applink = appLink,
+                    serverTimeUnix = 0
+                ),
+                widgetParam = channelTag
+            )
+        )
+        val playWidgetState = PlayWidgetState()
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetPlayWidget_thenReturn(playWidgetState)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+
+        val widgetModel = playWidgetState.model.copy(title = title, actionAppLink = appLink)
+        val widgetState = playWidgetState.copy(model = widgetModel)
+
+        val playWidgetUiModel = HomePlayWidgetUiModel(
+            id = id,
+            widgetType = TokoNowSmallWidget(channelTag),
+            playWidgetState = widgetState,
+            isAutoRefresh = false
+        )
+
+        val homeLayoutItems = listOf(
+            TokoNowChooseAddressWidgetUiModel(id = "0"),
+            playWidgetUiModel
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = homeLayoutItems,
+            state = TokoNowLayoutState.UPDATE
+        ))
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+
+        viewModel.invalidatePlayImpression
+            .verifyValueEquals(true)
+    }
+
+    @Test
+    fun `when get play widget error should remove play widget from home layout list`() {
+        val id = "1001"
+        val title = "Play Widget"
+        val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "play_carousel",
+                header = Header(
+                    name = title,
+                    applink = appLink,
+                    serverTimeUnix = 0
+                ),
+                widgetParam = channelTag
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetPlayWidget_thenReturn(Exception())
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+
+        val homeLayoutItems = listOf(TokoNowChooseAddressWidgetUiModel(id = "0"))
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = homeLayoutItems,
+            state = TokoNowLayoutState.UPDATE
+        ))
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when auto refresh play widget should map play widget isAutoRefresh true`() {
+        val id = "1200"
+        val title = "Auto Refresh Widget"
+        val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
+
+        val impressHolder = object : ImpressionableModel {
+            override val impressHolder: ImpressHolder = ImpressHolder()
+        }
+
+        val playWidgetState = PlayWidgetState(
+            model = createPlayWidgetUiModel(
+                title = title,
+                appLink = appLink
+            ),
+            impressHolder = impressHolder
+        )
+
+        val playWidgetUiModel = HomePlayWidgetUiModel(
+            id = "1200",
+            widgetType = TokoNowMediumWidget(channelTag),
+            playWidgetState = playWidgetState,
+            isAutoRefresh = false
+        )
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "play_carousel",
+                header = Header(
+                    name = title,
+                    applink = appLink,
+                    serverTimeUnix = 0
+                ),
+                widgetParam = channelTag
+            )
+        )
+
+        val widgetState = PlayWidgetState(
+            model = createPlayWidgetUiModel(),
+            impressHolder = impressHolder
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetPlayWidget_thenReturn(widgetState)
+
+        viewModel.getHomeLayout(LocalCacheModel(), emptyList())
+        viewModel.autoRefreshPlayWidget(playWidgetUiModel)
+
+        val homePlayWidgetUiModel = HomePlayWidgetUiModel(
+            id = "1200",
+            widgetType = TokoNowMediumWidget(channelTag),
+            playWidgetState = playWidgetState,
+            isAutoRefresh = true
+        )
+
+        val homeLayoutItems = listOf(
+            TokoNowChooseAddressWidgetUiModel(id = "0"),
+            HomeTickerUiModel(id = "1", tickers = emptyList()),
+            homePlayWidgetUiModel
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = homeLayoutItems,
+            state = TokoNowLayoutState.UPDATE
+        ))
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when update play widget should map total view to play widget`() {
+        val id = "1200"
+        val channelId = "1"
+        val totalView = "30rb"
+        val title = "Update Play Widget"
+        val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
+        val playWidgetState = PlayWidgetState(
+            model = createPlayWidgetUiModel(
+                title = title,
+                appLink = appLink,
+                items = listOf(
+                    PlayWidgetBannerUiModel(appLink = "", imageUrl = ""),
+                    createPlayWidgetChannel(channelId = channelId, totalView = "10rb"),
+                    createPlayWidgetChannel(channelId = "2", totalView = "20rb")
+                )
+            )
+        )
+
+        val widget = HomePlayWidgetUiModel(
+            id = "1200",
+            widgetType = TokoNowMediumWidget(channelTag),
+            playWidgetState = playWidgetState,
+            isAutoRefresh = false
+        )
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "play_carousel",
+                header = Header(
+                    name = title,
+                    applink = appLink,
+                    serverTimeUnix = 0
+                ),
+                widgetParam = channelTag
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetPlayWidget_thenReturn(playWidgetState)
+
+        viewModel.getHomeLayout(LocalCacheModel(), emptyList())
+        viewModel.getLayoutComponentData(LocalCacheModel())
+        viewModel.updatePlayWidget(channelId, totalView)
+
+        val widgetModel = playWidgetState.model.copy(
+            items = listOf(
+                PlayWidgetBannerUiModel(appLink = "", imageUrl = ""),
+                createPlayWidgetChannel(channelId = channelId, totalView = totalView),
+                createPlayWidgetChannel(channelId = "2", totalView = "20rb")
+            )
+        )
+        val widgetState = playWidgetState.copy(model = widgetModel)
+
+        val playWidgetUiModel = widget.copy(
+            playWidgetState = widgetState,
+            isAutoRefresh = false
+        )
+
+        val homeLayoutItems = listOf(
+            TokoNowChooseAddressWidgetUiModel(id = "0"),
+            playWidgetUiModel
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = homeLayoutItems,
+            state = TokoNowLayoutState.UPDATE
+        ))
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when update play widget error should do nothing`() {
+        onGetHomeLayoutItemList_returnNull()
+
+        viewModel.updatePlayWidget("1", "20rb")
+
+        viewModel.homeLayoutList.verifyValueEquals(null)
+    }
+
+    @Test
+    fun `when auto refresh play widget error should remove widget from home layout list`() {
+        val id = "1200"
+        val title = "Auto Refresh Widget"
+        val channelTag = "channel_tag"
+        val appLink = "tokopedia://now"
+        val playWidgetState = PlayWidgetState()
+
+        val widget = HomePlayWidgetUiModel(
+            id = "1200",
+            widgetType = TokoNowSmallWidget(channelTag),
+            playWidgetState = playWidgetState,
+            isAutoRefresh = false
+        )
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = id,
+                layout = "play_carousel",
+                header = Header(
+                    name = title,
+                    applink = appLink,
+                    serverTimeUnix = 0
+                ),
+                widgetParam = channelTag
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetPlayWidget_thenReturn(Exception())
+
+        viewModel.getHomeLayout(LocalCacheModel(), emptyList())
+        viewModel.autoRefreshPlayWidget(widget)
+
+        val homeLayoutItems = listOf(
+            TokoNowChooseAddressWidgetUiModel(id = "0"),
+            HomeTickerUiModel(id = "1", tickers = emptyList())
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = homeLayoutItems,
+            state = TokoNowLayoutState.UPDATE
+        ))
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
 }
 

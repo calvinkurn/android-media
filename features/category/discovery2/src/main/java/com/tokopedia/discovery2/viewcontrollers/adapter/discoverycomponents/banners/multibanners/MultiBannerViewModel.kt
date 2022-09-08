@@ -18,7 +18,7 @@ import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
@@ -84,7 +84,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         if (components.properties?.dynamic == true) {
             launchCatchError(block = {
 
-                if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, application.applicationContext)) {
+                if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
                     if (components.data.isNullOrEmpty()) {
                         _hideShimmer.value = true
                     }
@@ -129,11 +129,16 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     }
 
     private fun copyCodeToClipboard(position: Int) {
-        bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
-            val item = listItem[position]
-            (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
+        try {
+            bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
+                val item = listItem[position]
+                (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
                     ?.setPrimaryClip(ClipData.newPlainText(PROMO_CODE, item.code))
-            if (!item.applinks.isNullOrEmpty()) applinkCheck.value = item.applinks else applinkCheck.value = ""
+                if (!item.applinks.isNullOrEmpty()) applinkCheck.value =
+                    item.applinks else applinkCheck.value = ""
+            }
+        } catch (e: Exception) {
+            Utils.logException(e)
         }
     }
 
@@ -188,11 +193,11 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         }
     }
 
-    private fun getCampaignId(position: Int): Int {
+    private fun getCampaignId(position: Int): Long {
         bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
             val parameterList: List<String>? = listItem[position].paramsMobile?.split("=")
             if (parameterList != null && parameterList.size >= 2) {
-                return parameterList[1].toIntOrZero()
+                return parameterList[1].toLongOrZero()
             }
         }
         return 0

@@ -4,12 +4,8 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
 
 data class ResetPinV2Param(
-    @SerializedName("pin")
-    val pin: String = "",
-    @SerializedName("pin_confirm")
-    val confirmPin: String = "",
+    @SerializedName("pin_token")
+    val pinToken: String = "",
     @SerializedName("validate_token")
-    val validateToken: String = "",
-    @SerializedName("h")
-    val hash: Boolean = false
+    val validateToken: String = ""
 ): GqlParam

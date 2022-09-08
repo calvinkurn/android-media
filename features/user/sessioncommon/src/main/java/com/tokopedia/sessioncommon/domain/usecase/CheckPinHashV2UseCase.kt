@@ -15,14 +15,14 @@ class CheckPinHashV2UseCase @Inject constructor(
 ) : CoroutineUseCase<PinStatusParam, PinStatusResponse>(dispatcher.io) {
 
     override suspend fun execute(params: PinStatusParam): PinStatusResponse {
-	return repository.request(graphqlQuery(), params)
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String = """
-	query checkPinV2(${'$'}id: String!, ${'$'}type: String!) {
-	  pinV2Check(id: ${'$'}id, type:${'$'}type) {
-	    uh
-	    error_message
-	  }
-	}""".trimIndent()
+        query checkPinV2(${'$'}id: String!, ${'$'}type: String!) {
+          pinV2Check(id: ${'$'}id, type:${'$'}type) {
+            uh
+            error_message
+          }
+        }""".trimIndent()
 }

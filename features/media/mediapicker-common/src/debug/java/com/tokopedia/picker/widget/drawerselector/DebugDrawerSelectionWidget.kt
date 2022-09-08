@@ -9,10 +9,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.picker.common.R
+import com.tokopedia.picker.common.databinding.WidgetSelectionBottomNavDebugBinding
+import com.tokopedia.picker.common.mapper.Unify_N0
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.picker.widget.drawerselector.adapter.DrawerSelectionAdapter
-import com.tokopedia.picker.common.utils.Unify_N0
 
 class DebugDrawerSelectionWidget : FrameLayout {
 
@@ -22,8 +22,8 @@ class DebugDrawerSelectionWidget : FrameLayout {
     private var canReorder: Boolean = false
     private var maxVideo: Int = 1
 
-    private var binding: WidgetSelectionBottomNavBinding? =
-        WidgetSelectionBottomNavBinding.inflate(
+    private var binding: WidgetSelectionBottomNavDebugBinding? =
+        WidgetSelectionBottomNavDebugBinding.inflate(
             LayoutInflater.from(context)
         )
 
@@ -111,7 +111,7 @@ class DebugDrawerSelectionWidget : FrameLayout {
 
         placeholderPreview = typedArray.getResourceId(
             R.styleable.MediaPickerPreviewWidget_placeholder,
-            R.drawable.picker_ic_placeholder_media_preview
+            R.drawable.picker_ic_placeholder_media_preview_debug
         )
     }
 

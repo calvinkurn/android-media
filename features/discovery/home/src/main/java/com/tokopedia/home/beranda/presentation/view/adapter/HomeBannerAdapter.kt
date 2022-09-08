@@ -9,18 +9,20 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewHolder
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPagerAdapter
 import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
+import com.tokopedia.unifycomponents.CardUnify2
 
-class HomeBannerAdapter(itemList: List<CircularModel>, listener: CircularListener) : CircularViewPagerAdapter(itemList, listener) {
+class HomeBannerAdapter(itemList: List<CircularModel>, listener: CircularListener, private val cardInteraction: Boolean = false) : CircularViewPagerAdapter(itemList, listener) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CircularViewHolder {
-        return HomeBannerImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_home_banner, parent, false))
+        return HomeBannerImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_home_banner, parent, false), cardInteraction)
     }
 }
 
-class HomeBannerImageViewHolder(itemView: View): CircularViewHolder(itemView) {
+class HomeBannerImageViewHolder(itemView: View, private val cardInteraction: Boolean = false): CircularViewHolder(itemView) {
     companion object{
         private const val FPM_HOMEPAGE_BANNER = "homepage_banner"
     }
     override fun bind(item: CircularModel, listener: CircularListener) {
+        itemView.findViewById<CardUnify2>(R.id.banner_card).animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).tag = item.url
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(item.url, FPM_HOMEPAGE_BANNER)
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).setOnClickListener { listener.onClick(adapterPosition) }

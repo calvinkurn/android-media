@@ -9,99 +9,98 @@
         "promo": {
           "global_success": true,
           "message": {
-            "state": "green",
-            "color": "#ade3af",
-            "text": "Kamu berpotensi dapat cashback sebesar Rp200.000 setelah pesanan selesai"
+            "state": "",
+            "color": "",
+            "text": ""
           },
           "success": true,
-          "codes": [
-            "CVGC598GS30H02JEEWF"
-          ],
+          "codes": [],
           "promo_code_id": 0,
-          "title_description": "Cashback Tokopedia hingga Rp200.000",
+          "title_description": "Promo ",
           "discount_amount": 0,
-          "cashback_wallet_amount": 200000,
+          "cashback_wallet_amount": 0,
           "cashback_advocate_referral_amount": 0,
           "cashback_voucher_description": "",
           "invoice_description": "",
           "gateway_id": "",
-          "is_coupon": 1,
+          "is_coupon": 0,
           "coupon_description": "",
           "is_tokopedia_gerai": false,
-          "voucher_orders": [],
-          "benefit_details": [
+          "voucher_orders": [
             {
-              "code": "",
-              "type": "",
+              "code": "WCEPAT",
+              "success": true,
+              "unique_id": "2538088-0-2051993-125529137",
+              "cart_id": 0,
               "order_id": 0,
-              "unique_id": "",
-              "discount_amount": 0,
-              "discount_details": [],
-              "cashback_amount": 0,
-              "cashback_details": [],
-              "promo_type": {
-                "is_bebas_ongkir": false,
-                "is_exclusive_shipping": false
+              "shop_id": 2661965,
+              "is_po": 0,
+              "duration": "0",
+              "warehouse_id": 2150769,
+              "address_id": 101235710,
+              "type": "logistic",
+              "cashback_wallet_amount": 0,
+              "discount_amount": 20000,
+              "invoice_description": "",
+              "title_description": "Potongan Ongkir Hingga Rp20.000",
+              "message": {
+                "state": "green",
+                "color": "#ade3af",
+                "text": "Kamu dapat potongan ongkir dari Tokopedia"
               },
-              "benefit_product_details": []
-            },
-            {
-              "code": "CVGC598GS30H02JEEWF",
-              "type": "",
-              "order_id": 1,
-              "unique_id": "1060299-0-1240295",
-              "discount_amount": 0,
-              "discount_details": [],
-              "cashback_amount": 200000,
-              "cashback_details": [
+              "benefit_details": [
                 {
-                  "amount_idr": 200000,
-                  "amount_points": 200000,
-                  "benefit_type": "cashback"
-                }
-              ],
-              "promo_type": {
-                "is_bebas_ongkir": false,
-                "is_exclusive_shipping": false
-              },
-              "benefit_product_details": [
-                {
-                  "product_id": 0,
+                  "code": "WCEPAT",
+                  "type": "",
+                  "order_id": 1,
+                  "unique_id": "2538088-0-2051993-125529137",
+                  "discount_amount": 20000,
+                  "discount_details": [
+                    {
+                      "amount": 20000,
+                      "data_type": "total_shipping_price"
+                    }
+                  ],
                   "cashback_amount": 0,
-                  "cashback_amount_idr": 0,
-                  "discount_amount": 0,
-                  "is_bebas_ongkir": false
-                },
-                {
-                  "product_id": 1443779879,
-                  "cashback_amount": 0,
-                  "cashback_amount_idr": 0,
-                  "discount_amount": 0,
-                  "is_bebas_ongkir": false
+                  "cashback_details": [],
+                  "promo_type": {
+                    "is_bebas_ongkir": true,
+                    "is_exclusive_shipping": true
+                  },
+                  "benefit_product_details": [
+                    {
+                      "product_id": 1000611087,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    }
+                  ]
                 }
               ]
             }
           ],
+          "benefit_details": [],
           "benefit_summary_info": {
             "final_benefit_text": "Total benefit anda: ",
-            "final_benefit_amount": 200000,
-            "final_benefit_amount_str": "Rp200.000",
+            "final_benefit_amount": 20000,
+            "final_benefit_amount_str": "Rp20.000",
             "summaries": [
               {
-                "description": "Total cashback: ",
-                "type": "cashback",
-                "amount_str": "Rp200.000",
-                "amount": 200000,
-                "section_name": "Cashback",
+                "description": "Total diskon: ",
+                "type": "discount",
+                "amount_str": "Rp20.000",
+                "amount": 20000,
+                "section_name": "Discount",
                 "section_description": "",
                 "details": [
                   {
                     "section_name": "",
-                    "description": "Total Cashback OVO Points ",
-                    "type": "ovo_points",
-                    "amount": 200000,
-                    "amount_str": "Rp200.000",
-                    "points": 200000,
+                    "description": "Total Potongan Ongkos Kirim ",
+                    "type": "shipping_discount",
+                    "amount": 20000,
+                    "amount_str": "Rp20.000",
+                    "points": 0,
                     "points_str": ""
                   }
                 ]
@@ -116,9 +115,9 @@
           },
           "tracking_details": [
             {
-              "product_id": 1443779879,
-              "promo_codes_tracking": "CVGC",
-              "promo_details_tracking": "G:1:200000:green"
+              "product_id": 1000611087,
+              "promo_codes_tracking": "WCEPAT",
+              "promo_details_tracking": "L:3:20000:green"
             }
           ],
           "tokopoints_detail": {
@@ -129,14 +128,14 @@
             }
           },
           "ticker_info": {
-            "unique_id": "",
-            "status_code": 0,
-            "message": ""
+            "unique_id": "2538088-0-2051993-125529137",
+            "status_code": 700002,
+            "message": "Yay, sebagian ongkir untuk pesanan dalam transaksi ini ditanggung Tokopedia!"
           },
           "additional_info": {
             "message_info": {
-              "message": "Kamu bisa hemat Rp200.000",
-              "detail": "1 promo dipakai"
+              "message": "Makin hemat pakai promo",
+              "detail": ""
             },
             "error_detail": {
               "message": ""
@@ -146,14 +145,7 @@
               "message": "",
               "detail": ""
             },
-            "usage_summaries": [
-              {
-                "description": "Cashback OVO Points",
-                "type": "cashback",
-                "amount_str": "200.000",
-                "amount": 200000
-              }
-            ],
+            "usage_summaries": [],
             "sp_ids": [],
             "promo_sp_ids": []
           }

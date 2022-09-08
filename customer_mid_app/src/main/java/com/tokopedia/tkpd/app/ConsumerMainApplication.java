@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.app;
 
+import static android.os.Process.killProcess;
+import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
+
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -24,6 +27,13 @@ import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
+import com.newrelic.agent.android.NewRelic;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
@@ -31,9 +41,6 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
-import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLifecycleCallbacks;
-import com.tokopedia.graphql.util.GqlActivityCallback;
-import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
@@ -49,8 +56,11 @@ import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallback
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLifecycleCallbacks;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
+import com.tokopedia.graphql.util.GqlActivityCallback;
+import com.tokopedia.inappupdate.InAppUpdateLifecycleCallback;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
@@ -58,6 +68,7 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -74,6 +85,7 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -90,11 +102,10 @@ import javax.crypto.SecretKey;
 import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
 import timber.log.Timber;
-
-import static android.os.Process.killProcess;
-import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -119,6 +130,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
     private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_customerapp_log_config_embrace";
+    private static final String REMOTE_CONFIG_TELEMETRY_ENABLED = "android_telemetry_enabled";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
@@ -152,10 +164,27 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         checkAppPackageNameAsync();
 
         Loader.init(this);
+        initializationNewRelic();
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
         }
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
+
+        Typography.Companion.setFontTypeOpenSauceOne(true);
+    }
+
+    private void initializationNewRelic() {
+        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY)) {
+            WeaveInterface initNrWeave = new WeaveInterface() {
+                @NotNull
+                @Override
+                public Object execute() {
+                    NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(ConsumerMainApplication.this);
+                    return true;
+                }
+            };
+            Weaver.Companion.executeWeaveCoRoutineNow(initNrWeave);
+        }
     }
 
     private void checkAppPackageNameAsync() {
@@ -216,12 +245,74 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
-        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall(getUserSession()));
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
         registerActivityLifecycleCallbacks(new DataVisorLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new TelemetryActLifecycleCallback());
+        registerActivityLifecycleCallbacks(new TelemetryActLifecycleCallback(new Function0<Boolean>() {
+            @Override
+            public Boolean invoke() {
+                return remoteConfig.getBoolean(REMOTE_CONFIG_TELEMETRY_ENABLED, true);
+            }
+        }));
+        registerActivityLifecycleCallbacks(new InAppUpdateLifecycleCallback(new Function2<Activity, Function1<? super Boolean, Unit>, Unit>() {
+            @Override
+            public Unit invoke(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
+                onCheckAppUpdateRemoteConfig(activity, onSuccessCheckAppListener);
+                return null;
+            }
+        }));
     }
 
+    private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
+        ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(activity);
+        InAppCallback inAppCallback = null;
+        if (activity instanceof InAppCallback) {
+            inAppCallback = (InAppCallback) activity;
+        }
+        InAppCallback finalInAppCallback = inAppCallback;
+        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+            @Override
+            public void onNeedUpdate(DetailUpdate detail) {
+                AppUpdateDialogBuilder appUpdateDialogBuilder = new AppUpdateDialogBuilder(
+                        activity,
+                        detail, new AppUpdateDialogBuilder.Listener() {
+                    @Override
+                    public void onPositiveButtonClicked(DetailUpdate detail) {
+                        if (finalInAppCallback != null) {
+                            finalInAppCallback.onPositiveButtonInAppClicked(detail);
+                        }
+                    }
+
+                    @Override
+                    public void onNegativeButtonClicked(DetailUpdate detail) {
+                        if (finalInAppCallback != null) {
+                            finalInAppCallback.onNegativeButtonInAppClicked(detail);
+                        }
+                    }
+                });
+                if (!activity.isFinishing() && !activity.isDestroyed()) {
+                    appUpdateDialogBuilder.getAlertDialog().show();
+                    if (finalInAppCallback != null) {
+                        finalInAppCallback.onNeedUpdateInApp(detail);
+                    }
+                    onSuccessCheckAppListener.invoke(true);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+
+            @Override
+            public void onNotNeedUpdate() {
+                if (finalInAppCallback != null) {
+                    finalInAppCallback.onNotNeedUpdateInApp();
+                }
+                onSuccessCheckAppListener.invoke(false);
+            }
+        });
+    }
 
     private void createAndCallPreSeq() {
         //don't convert to lambda does not work in kit kat

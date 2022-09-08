@@ -10,7 +10,11 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.R
+import com.tokopedia.play_common.R as commonR
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -24,10 +28,12 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     private var mTitle = ""
     private var mSubtitle = ""
     private var mImageUrl = ""
+    private var mInteractiveUiModel: InteractiveUiModel? = null
 
     private lateinit var tvTitle: Typography
     private lateinit var tvDetail: Typography
     private lateinit var imgUser: ImageUnify
+    private lateinit var vRoot: RoundedConstraintLayout
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -49,23 +55,41 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     override fun onResume() {
         super.onResume()
         val params = dialog?.window?.attributes ?: return
-        params.width = resources.getDimensionPixelSize(R.dimen.play_interactive_winning_dialog_width)
+        params.width = context?.resources?.getDimensionPixelSize(R.dimen.play_interactive_winning_dialog_width) ?: 0
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
         dialog?.window?.attributes = params
 
         setupView()
     }
 
-    fun show(manager: FragmentManager) {
-        show(manager, TAG)
+    fun showNow(manager: FragmentManager) {
+        if (!isAdded) {
+            showNow(manager, TAG)
+            view?.postDelayed({
+                view?.let { dismiss() }
+            }, DISMISS_DELAY)
+        }
     }
 
-    fun setData(imageUrl: String, title: String, subtitle: String) {
+    fun setData(imageUrl: String, title: String, subtitle: String, interactive: InteractiveUiModel) {
         mImageUrl = imageUrl
         mTitle = title
         mSubtitle = subtitle
+        mInteractiveUiModel = interactive
 
         setupView()
+    }
+
+    private fun getInteractive(interactive: InteractiveUiModel): Int {
+        return when (interactive){
+            is InteractiveUiModel.Giveaway -> {
+                commonR.drawable.bg_play_interactive
+            }
+            is InteractiveUiModel.Quiz -> {
+                commonR.drawable.bg_quiz_winner
+            }
+            else -> commonR.drawable.bg_play_interactive
+        }
     }
 
     private fun initView(view: View) {
@@ -73,6 +97,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
             tvTitle = findViewById(R.id.tv_title)
             tvDetail = findViewById(R.id.tv_detail)
             imgUser = findViewById(R.id.img_user)
+            vRoot = findViewById(R.id.rc_winning_dialog)
         }
     }
 
@@ -80,11 +105,13 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
         if (::tvTitle.isInitialized) tvTitle.text = mTitle
         if (::tvDetail.isInitialized) tvDetail.text = mSubtitle
         if (::imgUser.isInitialized) imgUser.loadImage(mImageUrl)
+        if(::vRoot.isInitialized) vRoot.background = MethodChecker.getDrawable(context, getInteractive(mInteractiveUiModel ?: InteractiveUiModel.Unknown))
     }
 
     companion object {
 
         private const val TAG = "Interactive Winning Dialog"
+        private const val DISMISS_DELAY = 3000L
 
         fun get(manager: FragmentManager): InteractiveWinningDialogFragment? {
             return manager.findFragmentByTag(TAG) as? InteractiveWinningDialogFragment

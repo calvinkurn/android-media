@@ -28,7 +28,7 @@
         android:paddingBottom="10dp"
         android:textAlignment="center"
         android:textColor="@color/Unify_N700_68"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="S" />
 
     <com.tokopedia.unifycomponents.NotificationUnify

@@ -48,6 +48,6 @@
         android:layout_alignParentBottom="true"
         app:canReorder="true"
         app:backgroundColorPlaceHolder="@color/Unify_N0"
-        app:placeholder="@drawable/picker_ic_placeholder_media_preview" />
+        app:placeholder="@drawable/picker_ic_placeholder_media_preview_debug" />
 
 </RelativeLayout>

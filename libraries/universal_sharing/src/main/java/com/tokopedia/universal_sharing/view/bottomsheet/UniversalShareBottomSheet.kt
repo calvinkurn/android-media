@@ -29,16 +29,22 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
@@ -51,16 +57,19 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.Exception
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 /**
  * Created by Rafli Syam 20/07/2020
@@ -83,11 +92,23 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private const val PACKAGE_NAME_TWITTER = "com.twitter.android"
         private const val PACKAGE_NAME_TELEGRAM = "org.telegram.messenger"
         private const val PACKAGE_NAME_GMAIL = "com.google.android.gm"
+        //remote config Social media ordering keys
+        private const val KEY_IG_FEED = "IG_Feed"
+        private const val KEY_IG_STORY = "IG_Story"
+        private const val KEY_IG_DM = "IG_DM"
+        private const val KEY_FB_FEED = "FB_Feed"
+        private const val KEY_FB_STORY = "FB_Story"
+        private const val KEY_WHATSAPP = "WhatsApp"
+        private const val KEY_LINE = "Line"
+        private const val KEY_TWITTER = "Twitter"
+        private const val KEY_TELEGRAM = "Telegram"
         //add remote config handling
         private const val GLOBAL_CUSTOM_SHARING_FEATURE_FLAG = "android_enable_custom_sharing"
         private const val GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG = "android_enable_screenshot_sharing"
         private const val GLOBAL_AFFILIATE_FEATURE_FLAG = "android_enable_affiliate_universal_sharing"
+        private const val GLOBAL_ENABLE_OG_IMAGE_TRANSFORM = "android_enable_og_image_transformation"
         private var featureFlagRemoteConfigKey: String = ""
+        private const val SOCIAL_MEDIA_ORDERING = "android_universal_sharing_order"
         //Optons Flag
         private var isImageOnlySharing: Boolean = false
         private var screenShotImagePath: String = ""
@@ -101,6 +122,15 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         const val PREVIEW_IMG_SCREENSHOT_WIDTH = 1080
         const val THUMBNAIL_IMG_SCREENSHOT_HEIGHT = 200
         const val THUMBNAIL_IMG_SCREENSHOT_WIDTH = 360
+
+        //for affiliate and general user distinction
+        private const val KEY_GENERAL_USER = "general"
+        private const val KEY_AFFILIATE_USER = "affiliate"
+        private var isAffiliateUser: String = KEY_GENERAL_USER
+        //Image Type
+        const val KEY_NO_IMAGE = "no image"
+        const val KEY_IMAGE_DEFAULT = "default"
+        const val KEY_CONTEXTUAL_IMAGE = "contextual image"
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -196,6 +226,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 }
             }
         }
+
+        fun getUserType(): String{
+            return isAffiliateUser
+        }
     }
 
     enum class MimeType(val type: String) {
@@ -212,6 +246,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var revImageOptionsContainer: RecyclerView? = null
     private var imageListViewGroup : Group? = null
     private var bottomBackgroundImage : ImageUnify? = null
+    private var affiliateRegisterMsg: Typography? = null
+    private var affiliateRegisterTitle: Typography? = null
+    private var affiliateRegisterIcon: ImageView? = null
+    private var affiliateRegisterContainer: CardUnify? = null
 
     //Fixed sharing options
     private var copyLinkImage: ImageView? = null
@@ -260,7 +298,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     //Flag to control Image generator option
     private var getImageFromMedia = false
     private lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
+    //Dynamic Social Media ordering from Remote Config
+    private var socialMediaOrderHashMap: HashMap<String, Int>? = null
 
+    private lateinit var tracker: UniversalSharebottomSheetTracker
+
+    private lateinit var userSession: UserSession
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -269,6 +312,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initTracker()
         initRecyclerView()
         initImageOptionsRecyclerView()
     }
@@ -346,7 +390,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     params = AffiliateEligibilityCheckUseCase.createParam(affiliateQueryData!!)
                 }.executeOnBackground()
                 withContext(Dispatchers.Main) {
-                    showAffiliateCommission(generateAffiliateLinkEligibility)
+                    showAffiliateTicker(generateAffiliateLinkEligibility)
                 }
             }
         }, onError = {
@@ -366,25 +410,67 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
     }
 
-    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility){
+    private fun showAffiliateTicker(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
         clearLoader()
         removeHandlerTimeout()
-        if(generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true
-            && generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true
-            && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == true) {
-            val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
-            if (!TextUtils.isEmpty(commissionMessage)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage,
+        if (isShowAffiliateComission(generateAffiliateLinkEligibility)) {
+            showAffiliateCommission(generateAffiliateLinkEligibility)
+        } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
+            showAffiliateRegister(generateAffiliateLinkEligibility)
+        }
+    }
+
+    private fun isShowAffiliateComission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
+        return generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true
+                && generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true
+                && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == true
+    }
+
+    private fun isShowAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
+        return (generateAffiliateLinkEligibility.banner != null
+                && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == false) && userSession.isLoggedIn
+                && userSession.shopId != affiliateQueryData?.shop?.shopID
+    }
+
+    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+        val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
+        if (!TextUtils.isEmpty(commissionMessage)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage,
                         Html.FROM_HTML_MODE_LEGACY)
-                } else {
-                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
-                }
-                affiliateCommissionTextView?.visibility = View.VISIBLE
-                return
+            } else {
+                affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
+            affiliateCommissionTextView?.visibility = View.VISIBLE
+            tracker.viewOnAffiliateRegisterTicker(true, affiliateQueryData?.product?.productID
+                    ?: "")
+            isAffiliateUser = KEY_AFFILIATE_USER
+            return
         }
         affiliateQueryData = null
+    }
+
+    private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+        generateAffiliateLinkEligibility.banner?.let { banner ->
+            if (banner.title.isBlank() && banner.message.isBlank()) return
+            affiliateRegisterContainer?.visible()
+            tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
+            affiliateRegisterContainer?.setOnClickListener { _ ->
+                tracker.onClickRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
+                dismiss()
+                RouteManager.route(context, ApplinkConst.AFFILIATE)
+            }
+            affiliateRegisterIcon?.loadImage(banner.icon)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                affiliateRegisterTitle?.text = Html.fromHtml(banner.title, Html.FROM_HTML_MODE_LEGACY)
+                affiliateRegisterMsg?.text = Html.fromHtml(banner.message, Html.FROM_HTML_MODE_LEGACY)
+
+            } else {
+                affiliateRegisterTitle?.text = Html.fromHtml(banner.title)
+                affiliateRegisterMsg?.text = Html.fromHtml(banner.message)
+            }
+        }
     }
 
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
@@ -430,6 +516,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             emailImage?.setBackgroundResource(R.drawable.universal_sharing_ic_ellipse_49)
             loaderUnify = findViewById(R.id.loader)
             affiliateCommissionTextView = findViewById(R.id.affilate_commision)
+            affiliateRegisterMsg = findViewById(R.id.tv_description_affiliate)
+            affiliateRegisterTitle = findViewById(R.id.tv_title_affiliate)
+            affiliateRegisterIcon = findViewById(R.id.iv_affiliate)
+            affiliateRegisterContainer = findViewById(R.id.card_register_affiliate)
             setFixedOptionsClickListeners()
 
             setUserVisualData()
@@ -442,10 +532,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun initTracker() {
+        userSession = UserSession(context)
+        tracker = UniversalSharebottomSheetTracker(userSession)
+    }
+
     private fun initRecyclerView() {
         rvSocialMediaList?.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            generateRemoteConfigSocialMediaOrdering()
             adapter = ShareBottomSheetAdapter(context, ::executeShareOptionClick, generateSocialMediaList(context))
         }
     }
@@ -500,6 +596,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             socialMediaName = context?.resources?.getString(R.string.label_whatsapp)
             feature = channelStr
             campaign = campaignStr
+            socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_WHATSAPP)
             channel =  SharingUtil.labelWhatsapp
             platform = ImageGeneratorConstants.ImageGeneratorPlatforms.WHATSAPP
             shareOnlyLink = isImageOnlySharing
@@ -513,6 +610,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             campaign = campaignStr
             channel = SharingUtil.labelFbfeed
             platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_FEED
+            socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_FB_FEED)
             shareOnlyLink = isImageOnlySharing
             if(isImageOnlySharing){
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
@@ -534,6 +632,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelFbstory
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_FB_STORY)
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_STORY
                 shareOnlyLink = true
                 appIntent = getAppIntent(MimeType.IMAGE, packageName, actionType = FACEBOOK_STORY_INTENT_ACTION)
@@ -546,6 +645,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 campaign = campaignStr
                 channel = SharingUtil.labelIgfeed
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_FEED
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_FEED)
                 shareOnlyLink = true
                 appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_FEED")
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram) }
@@ -556,6 +656,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelIgstory
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_STORY)
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_STORY
                 shareOnlyLink = true
                 appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_STORY")
@@ -569,6 +670,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 campaign = campaignStr
                 channel = SharingUtil.labelIgMessage
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_FEED
+                socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_DM)
                 shareOnlyLink = false
                 appIntent = getAppIntent(MimeType.TEXT, packageName)
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram_dm) }
@@ -581,6 +683,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             campaign = campaignStr
             channel = SharingUtil.labelLine
             platform = ImageGeneratorConstants.ImageGeneratorPlatforms.LINE
+            socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_LINE)
             shareOnlyLink = isImageOnlySharing
             if(isImageOnlySharing){
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
@@ -597,6 +700,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             campaign = campaignStr
             channel = SharingUtil.labelTwitter
             platform = ImageGeneratorConstants.ImageGeneratorPlatforms.TWITTER
+            socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_TWITTER)
             shareOnlyLink = isImageOnlySharing
             appIntent = getAppIntent(MimeType.IMAGE, packageName)
             socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_twitter) }
@@ -608,10 +712,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             campaign = campaignStr
             channel = SharingUtil.labelTelegram
             platform = ImageGeneratorConstants.ImageGeneratorPlatforms.TELEGRAM
+            socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_TELEGRAM)
             shareOnlyLink = isImageOnlySharing
             appIntent = getAppIntent(MimeType.IMAGE, packageName)
             socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_telegram) }
         })
+        socialMediaList.sortBy { it.socialMediaOrderingScore }
         return socialMediaList.filterNot {
             (it.packageName!!.isNotEmpty() && it.appIntent != null && getResolvedActivity(context, it.appIntent) == null)
         }
@@ -789,12 +895,23 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         if(TextUtils.isEmpty(tempUsr)){
             tempUsr = "0"
         }
-        campaignStr = "$pageName-$tempUsr-$pageId-$sharingDate"
+        val imageType = getImageTypeForUTM()
+        campaignStr = "$pageName-$tempUsr-$pageId-$sharingDate-$imageType"
         if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)){
             channelStr = "screenshot-share"
         }
         else {
             channelStr = feature
+        }
+    }
+
+    private fun getImageTypeForUTM() : String{
+        return if(getImageFromMedia){
+            KEY_CONTEXTUAL_IMAGE
+        }else if(!TextUtils.isEmpty(savedImagePath) && TextUtils.isEmpty(screenShotImagePath)){
+            KEY_IMAGE_DEFAULT
+        }else{
+            KEY_NO_IMAGE
         }
     }
 
@@ -841,13 +958,28 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private fun executeSharingFlow(shareModel:ShareModel){
         loaderUnify?.visibility = View.GONE
         preserveImage = true
-        shareModel.ogImgUrl = ogImageUrl
+        shareModel.ogImgUrl = transformOgImageURL(ogImageUrl)
         shareModel.savedImageFilePath = savedImagePath
         if(affiliateQueryData != null &&
             affiliateCommissionTextView?.visibility == View.VISIBLE){
             shareModel.isAffiliate = true
         }
         bottomSheetListener?.onShareOptionClicked(shareModel)
+    }
+
+    private fun transformOgImageURL(imageURL: String) : String{
+        if(context != null) {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            val ogImageTransformationEnabled = remoteConfig.getBoolean(GLOBAL_ENABLE_OG_IMAGE_TRANSFORM)
+            if (ogImageTransformationEnabled && !TextUtils.isEmpty(imageURL) && imageURL.endsWith(".webp")) {
+                if (imageURL.endsWith(".png.webp") || imageURL.endsWith(".jpg.webp")
+                    || imageURL.endsWith(".jpeg.webp")
+                ) {
+                    return imageURL.replace(".webp", "")
+                }
+            }
+        }
+        return imageURL
     }
 
     fun setFeatureFlagRemoteConfigKey(key: String){
@@ -966,5 +1098,27 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.clear()
+    }
+
+    private fun generateRemoteConfigSocialMediaOrdering(){
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val socialMediaOrderingArray:String? = remoteConfig.getString(SOCIAL_MEDIA_ORDERING)
+        if(!TextUtils.isEmpty(socialMediaOrderingArray)){
+            val socialMediaJsonArray:JSONArray? = JSONArray(socialMediaOrderingArray)
+            if(socialMediaJsonArray != null){
+                socialMediaOrderHashMap = HashMap()
+                for(i in 0 until socialMediaJsonArray.length()){
+                    socialMediaOrderHashMap?.put(socialMediaJsonArray.getString(i), i)
+                }
+            }
+        }
+    }
+
+    private fun getSocialMediaOrderingScore(originalScore:Int, socialMediaKey:String): Int{
+        return if(socialMediaOrderHashMap != null && socialMediaOrderHashMap?.containsKey(socialMediaKey) == true){
+            socialMediaOrderHashMap?.get(socialMediaKey)!!
+        }else{
+            originalScore
+        }
     }
 }

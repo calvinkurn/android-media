@@ -69,6 +69,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.encryption)
 
     //test
     // Test Dependencies

@@ -4,10 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
@@ -28,6 +30,7 @@ import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumAdapte
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import com.tokopedia.play.widget.ui.widget.medium.model.PlayWidgetOverlayUiModel
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
+import com.tokopedia.play_common.util.extension.changeConstraint
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
@@ -37,22 +40,25 @@ import kotlin.math.abs
 /**
  * Created by mzennis on 06/10/20.
  */
-class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
+class PlayWidgetMediumView : FrameLayout, IPlayWidgetView {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private val title: Typography
-    private val actionTitle: TextView
+    init {
+        LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
+    }
 
-    private val itemContainer: FrameLayout
-    private val overlayBackground: AppCompatImageView
-    private val overlayImage: AppCompatImageView
-    private val topContainer: ConstraintLayout
+    private val root: ConstraintLayout = findViewById(R.id.cl_root)
 
-    private val recyclerViewItem: RecyclerView
+    private val itemContainer: FrameLayout = findViewById(R.id.play_widget_container)
+    private val overlayBackground: AppCompatImageView = findViewById(R.id.play_widget_overlay_bg)
+    private val overlayImage: AppCompatImageView = findViewById(R.id.play_widget_overlay_image)
+    private var topContainer: View = findViewById(R.id.view_play_widget_header)
+
+    private val recyclerViewItem: RecyclerView = findViewById(R.id.play_widget_recycler_view)
 
     private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
 
@@ -92,8 +98,16 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onImpressChannelCard(
                 view = this@PlayWidgetMediumView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
+            )
+
+            if(item.isUpcoming)
+                mAnalyticListener?.onImpressReminderIcon(
+                view = this@PlayWidgetMediumView,
+                item = item,
+                channelPositionInList = position,
+                isReminded = item.reminderType == PlayWidgetReminderType.Reminded,
             )
         }
 
@@ -101,8 +115,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onClickChannelCard(
                 view = this@PlayWidgetMediumView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
             )
 
             if (mWidgetListener != null
@@ -125,17 +139,13 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onClickMenuActionChannel(this@PlayWidgetMediumView, item, position)
             mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item, position)
         }
-
-        override fun onLabelPromoChannelClicked(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoClicked(this@PlayWidgetMediumView, item, position, mIsAutoPlay)
-        }
-
-        override fun onLabelPromoChannelImpressed(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoImpressed(this@PlayWidgetMediumView, item, position, mIsAutoPlay)
-        }
     }
 
     private val cardBannerListener = object : PlayWidgetMediumViewHolder.Banner.Listener {
+
+        override fun onBannerImpressed(view: View, item: PlayWidgetBannerUiModel, position: Int) {
+            mAnalyticListener?.onImpressBannerCard(this@PlayWidgetMediumView, item, position)
+        }
 
         override fun onBannerClicked(view: View, item: PlayWidgetBannerUiModel, position: Int) {
             mAnalyticListener?.onClickBannerCard(this@PlayWidgetMediumView, item, position)
@@ -158,29 +168,14 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         cardTranscodeListener = cardTranscodeListener,
     )
 
-    private var mIsAutoPlay: Boolean = false
     private var mLastOverlayImageUrl: String? = null
 
     private val spacing16 by lazy { resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt() }
-    private val spacing12 by lazy { resources.getDimensionPixelOffset(R.dimen.play_widget_dp_12) }
-    private val spacing10 by lazy { resources.getDimensionPixelOffset(R.dimen.play_widget_medium_margin_without_background) }
 
     private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
 
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
-
-        topContainer = view.findViewById(R.id.cl_top)
-        title = view.findViewById(R.id.play_widget_medium_title)
-        actionTitle = view.findViewById(R.id.play_widget_medium_action)
-
-        itemContainer = view.findViewById(R.id.play_widget_container)
-        overlayBackground = view.findViewById(R.id.play_widget_overlay_bg)
-        overlayImage = view.findViewById(R.id.play_widget_overlay_image)
-
-        recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
-
-        setupView(view)
+        setupView()
     }
 
     override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
@@ -195,10 +190,31 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         mAnalyticListener = listener
     }
 
+    fun setCustomHeader(header: View) {
+        require(header is ViewGroup)
+        requireNotNull(header.findViewById(R.id.tv_play_widget_title))
+        requireNotNull(header.findViewById(R.id.tv_play_widget_action))
+
+        val currentHeader = getHeader()
+        header.id = currentHeader.id
+
+        root.removeView(currentHeader)
+        root.addView(header)
+
+        this.topContainer = header
+
+        setupHeader(data = mModel)
+    }
+
+    fun getHeader(): View {
+        return topContainer
+    }
+
     /**
      * Setup view
      */
-    private fun setupView(view: View) {
+    @Suppress("MagicNumber")
+    private fun setupView() {
         recyclerViewItem.addItemDecoration(PlayWidgetCardMediumItemDecoration(context))
         recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
@@ -235,21 +251,37 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         })
     }
 
-    fun setData(data: PlayWidgetUiModel) {
-        val prevModel = mModel
-        mModel = data
+    private fun setupHeader(
+        prevData: PlayWidgetUiModel = PlayWidgetUiModel.Empty,
+        data: PlayWidgetUiModel,
+    ) {
+        val tvAction = getWidgetAction()
+        val tvTitle = getWidgetTitle()
 
-        topContainer.shouldShowWithAction(data.title.isNotEmpty() || (data.isActionVisible && data.actionAppLink.isNotEmpty())) {
-            title.text = data.title
+        if (prevData.hasAction != mModel.hasAction && mModel.hasAction) {
+            tvAction.addOneTimeGlobalLayoutListener {
+                mAnalyticListener?.onImpressViewAll(this)
+            }
         }
 
-        actionTitle.shouldShowWithAction(data.isActionVisible && data.actionAppLink.isNotEmpty()){
-            actionTitle.text = data.actionTitle
-            actionTitle.setOnClickListener {
+        topContainer.shouldShowWithAction(data.title.isNotEmpty() || data.hasAction) {
+            tvTitle.text = data.title
+        }
+
+        tvAction.shouldShowWithAction(data.hasAction){
+            tvAction.text = data.actionTitle
+            tvAction.setOnClickListener {
                 mAnalyticListener?.onClickViewAll(this)
                 RouteManager.route(context, data.actionAppLink)
             }
         }
+    }
+
+    fun setData(data: PlayWidgetUiModel) {
+        val prevModel = mModel
+        mModel = data
+
+        setupHeader(prevModel, data)
 
         configureOverlay(data.background)
 
@@ -259,8 +291,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
         val modifiedItems = getModifiedItems(prevModel, data)
         adapter.setItemsAndAnimateChanges(modifiedItems)
-
-        mIsAutoPlay = data.config.autoPlay
     }
 
     /**
@@ -281,13 +311,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 bottom = spacing16,
         )
         mLastOverlayImageUrl = data.overlayImageUrl
-
-        itemContainer.setMargin(
-            left = 0,
-            top = if(isBackgroundAvailable(data)) spacing12 else spacing10,
-            right = 0,
-            bottom = 0,
-        )
     }
 
     private fun shouldLoadOverlayImage(imageUrl: String) = imageUrl.isNotBlank()
@@ -329,6 +352,14 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             }
             listOf(PlayWidgetOverlayUiModel(overlayImpressHolder)) + model.items
         } else model.items
+    }
+
+    private fun getWidgetTitle(): TextView {
+        return topContainer.findViewById(R.id.tv_play_widget_title)
+    }
+
+    private fun getWidgetAction(): TextView {
+        return topContainer.findViewById(R.id.tv_play_widget_action)
     }
 
     companion object {

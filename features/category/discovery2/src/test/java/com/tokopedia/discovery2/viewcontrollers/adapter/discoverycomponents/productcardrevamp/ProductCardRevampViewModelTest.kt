@@ -4,8 +4,12 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.LihatSemua
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import io.mockk.*
+import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -32,13 +36,31 @@ class ProductCardRevampViewModelTest{
     fun setUp() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
-        coEvery { componentsItem.lihatSemua } returns null
+
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
     }
 
     @Test
     fun `position test`() {
         assert(viewModel.position == 99)
     }
+
+    /**************************** init *******************************************/
+    @Test
+    fun `Test for init viewModel`(){
+        val tempLihatSemua : LihatSemua = mockk(relaxed = true)
+        every { componentsItem.lihatSemua } returns tempLihatSemua
+        val tempDataItem = DataItem(title = tempLihatSemua.header, subtitle = tempLihatSemua.subheader, btnApplink = tempLihatSemua.applink)
+        val tempComponentsItem : ComponentsItem = mockk(relaxed = true)
+        every { tempComponentsItem.name } returns ComponentsList.ProductCardCarousel.componentName
+        every { tempComponentsItem.creativeName } returns componentsItem.creativeName
+        every { tempComponentsItem.data } returns listOf(tempDataItem)
+
+        assert(viewModel.getProductCarouselHeaderData().value != null )
+
+    }
+    /**************************** end of init *******************************************/
 
     /**************************** onAttachToViewHolder() *******************************************/
 
@@ -92,6 +114,7 @@ class ProductCardRevampViewModelTest{
     @After
     fun shutDown() {
         Dispatchers.resetMain()
+        unmockkConstructor(URLParser::class)
         unmockkStatic(::getComponent)
     }
 }

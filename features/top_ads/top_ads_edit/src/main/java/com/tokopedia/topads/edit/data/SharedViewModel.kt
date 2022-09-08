@@ -2,8 +2,10 @@ package com.tokopedia.topads.edit.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.RECOMMENDATION_BUDGET_MULTIPLIER
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
+import com.tokopedia.topads.common.data.util.TopAdsEditUtils
 
 /**
  * Created by Pika on 14/4/20.
@@ -19,7 +21,6 @@ class SharedViewModel : ViewModel() {
     private var rekomendedBudget: MutableLiveData<Int> = MutableLiveData()
     private var maxBudget: MutableLiveData<Int> = MutableLiveData()
     private var autoBidStatus: MutableLiveData<String> = MutableLiveData()
-    private var isWhiteListedUser: Boolean = false
     private var bidSettings: MutableLiveData<List<TopAdsBidSettingsModel>> = MutableLiveData()
 
     fun setProductIds(text: MutableList<String>) {
@@ -39,23 +40,17 @@ class SharedViewModel : ViewModel() {
     }
 
     fun setDailyBudget(budget:Int){
-        dailyBudget.value = budget*40
+        dailyBudget.value = budget
         setMaxBudgetValue()
 
     }
 
     private fun setMaxBudgetValue() {
-        val dailyBudget = dailyBudget.value
-        val rekomendedBudget = rekomendedBudget.value
-        if (dailyBudget != null && rekomendedBudget != null) {
-            if (dailyBudget > rekomendedBudget) {
-                maxBudget.value = dailyBudget
-            } else maxBudget.value = rekomendedBudget
-        }
+        maxBudget.value = TopAdsEditUtils.calculateDailyBudget(dailyBudget.value, rekomendedBudget.value)
     }
 
     fun setRekomendedBudget(budget:Int){
-        rekomendedBudget.value = budget*40
+        rekomendedBudget.value = budget
         setMaxBudgetValue()
     }
 
@@ -94,14 +89,6 @@ class SharedViewModel : ViewModel() {
 
     fun setAutoBidStatus(status: String) {
         autoBidStatus.value = status
-    }
-
-    fun setIsWhiteListedUser(isWhiteListedUser: Boolean) {
-        this.isWhiteListedUser = isWhiteListedUser
-    }
-
-    fun getIsWhiteListedUser() : Boolean {
-        return isWhiteListedUser
     }
 
     fun setBidSettings(bidSettingsModel: List<TopAdsBidSettingsModel>) {

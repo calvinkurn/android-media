@@ -100,7 +100,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="reviewEditableBadSmiley, reviewEditableMediocreSmiley, reviewEditableExcellentSmiley"/>
+        app:constraint_referenced_ids="reviewEditableBadSmiley, reviewEditableMediocreSmiley, reviewEditableExcellentSmiley"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reviewScoreDeadlineLabel"
@@ -133,7 +134,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/dp_56"
+        android:layout_marginEnd="56dp"
         android:visibility="gone"
         app:loader_corner_radius="4dp"
         app:loader_type="rect"

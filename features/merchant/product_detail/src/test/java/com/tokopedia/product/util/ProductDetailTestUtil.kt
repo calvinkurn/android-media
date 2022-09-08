@@ -84,10 +84,11 @@ object ProductDetailTestUtil {
             p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
             p2UiData.merchantVoucherSummary = merchantVoucherSummary
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
-            p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
+            p2UiData.imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
             p2UiData.rating = rating
             p2UiData.ticker = ticker
+            p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
         }
         return p2UiData
     }
@@ -99,8 +100,8 @@ object ProductDetailTestUtil {
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
     }
 
-    fun generateMiniCartMock(productId: String): Map<String, MiniCartItem> {
-        return mapOf(productId to MiniCartItem(cartId = "111", productId = productId, quantity = 4, notes = "notes gan"))
+    fun generateMiniCartMock(productId: String): Map<String, MiniCartItem.MiniCartItemProduct> {
+        return mapOf(productId to MiniCartItem.MiniCartItemProduct(cartId = "111", productId = productId, quantity = 4, notes = "notes gan"))
     }
 
     fun generateNotifyMeMock(): Map<String, ProductUpcomingData> {

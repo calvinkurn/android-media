@@ -50,6 +50,7 @@
     <string name="menu_account_title_security">Keamanan Akun</string>
     <string name="menu_account_title_notification">Notifikasi</string>
     <string name="menu_account_title_account_link">Akun yang Tersambung</string>
+    <string name="menu_account_title_privacy_account">Privasi Akun</string>
     <string name="menu_account_title_explicit_profile">Preferensi Belanja</string>
     <string name="menu_account_title_shake">Shake Shake</string>
     <string name="menu_account_title_geolocation">Geolokasi</string>
@@ -77,6 +78,7 @@
     <string name="menu_account_desc_security">Kata sandi, PIN, &amp; verifikasi data diri</string>
     <string name="menu_account_desc_notification">Atur segala jenis pesan notifikasi</string>
     <string name="menu_account_desc_account_link">Atur akun yang tersambung ke Tokopedia</string>
+    <string name="menu_account_desc_privacy_account">Atur penggunaan data &amp; akun yang tersambung</string>
     <string name="menu_account_desc_explicit_profile">Atur rekomendasi produk sesuai pilihanmu</string>
     <string name="menu_account_desc_shake">Goyang HP untuk dapat promo menarik</string>
     <string name="menu_account_desc_geolocation">Atur rekomendasi berdasarkan lokasi</string>
@@ -87,16 +89,15 @@
     <string name="menu_account_desc_screen_recorder">Lampiran video untuk laporan kendala</string>
     <string name="menu_account_desc_play_widget_autoplay">Putar video Tokopedia Play secara otomatis</string>
 
-    <string name="new_home_account_go_to_wishlist">Lihat Wishlist</string>
     <string name="new_home_account_error_no_internet_connection">Tidak ada koneksi internet</string>
     <string name="home_account_item_error_msg">Refresh untuk tampilkan data</string>
     <string name="account_title_saldo_section"><![CDATA[Dana & Investasi]]></string>
     <string name="account_title_saldo_item">Saldo</string>
     <string name="account_title_points_item">Points </string>
-    
+
     <string name="new_home_account_finance_failed_to_load">Gagal Memuat</string>
     <string name="new_home_account_finance_try_again">Coba Lagi</string>
-  
+
     <string name="text_description_add_name_bottom_sheet">Nama asli akan mempermudah proses verifikasi jika akunmu bermasalah. Akunmu jadi makin aman, deh!</string>
     <string name="text_title_add_name_bottom_sheet">Ubah nama akun jadi nama asli</string>
     <string name="text_button_add_name_bottom_sheet">Ubah Nama Akun</string>
@@ -238,4 +239,28 @@
     <string name="explicit_profile_back_dialog_title">Kamu belum menyimpan perubahan</string>
     <string name="explicit_profile_back_dialog_desc">Perubahan pengaturan preferensi belum kamu simpan. ingin menyimpan dulu?</string>
     <string name="explicit_profile_back_dialog_exit">Tetap keluar</string>
+
+    <!--opt in/out for network-->
+    <string name="title_privacy_account">Privasi Akun</string>
+    <string name="opt_header">Aktifkan Penggunaan Data Akun</string>
+    <string name="opt_desc">Datamu akan dipakai untuk rekomendasi teman yang bisa di-follow di Feed. Cek Data yang Dipakai</string>
+    <string name="opt_link_account_header">Akun tersambung</string>
+    <string name="opt_link_account_desc">Atur akun yang tersambung ke Tokopedia.</string>
+    <string name="opt_bottom_sheet_verification_enabled_title">Aktifkan penggunaan data akun?</string>
+    <string name="opt_bottom_sheet_verification_enabled_sub_title">Kami akan kasih rekomendasi teman yang bisa di-follow di Feed kamu, berdasarkan datamu di fitur Referral dan Berbagi Alamat.</string>
+    <string name="opt_bottom_sheet_verification_enabled_checkbox_desc">Saya telah membaca dan menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi yang berlaku.</string>
+    <string name="opt_bottom_sheet_verification_enabled_button_title">Aktifkan Sekarang</string>
+    <string name="opt_bottom_sheet_header_info_lengkap">Info lengkap</string>
+    <string name="opt_bottom_sheet_header_clarification_data_usage">Data yang dipakai</string>
+    <string name="opt_dialog_disabled_title">Matikan penggunaan data akun?</string>
+    <string name="opt_dialog_disabled_sub_title">Kamu nggak akan dapat rekomendasi teman yang mungkin kamu kenal di Feed.</string>
+    <string name="opt_batal">Batal</string>
+    <string name="opt_ya_matikan">Ya, Matikan</string>
+    <string name="opt_desc_clarification_data_usage">Sudah punya Profil di Feed? 👆\nKami akan kasih rekomendasi teman yang bisa kamu follow di situ, berdasarkan datamu di beberapa fitur yang tertera dalam halaman ini.</string>
+    <string name="opt_text_header_failed">Konten gagal ditampilkan</string>
+    <string name="opt_text_desc_failed">Klik ikon di samping buat coba lagi.</string>
+    <string name="opt_link_account">Sambungin Akun</string>
+    <string name="opt_failed_enabled_consent">Gagal mengaktifkan penggunaan data</string>
+    <string name="opt_failed_disabled_consent">Gagal menonaktifkan penggunaan data</string>
+
 </resources>

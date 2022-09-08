@@ -48,9 +48,9 @@ class RemoteImageView : AppCompatImageView {
 
     private fun loadImage(url: String, cacheStrategy: CacheStrategy) {
         Glide.with(context)
-                .load(url)
-                .diskCacheStrategy(cacheStrategy.diskCacheStrategy)
-                .into(this)
+            .load(url)
+            .diskCacheStrategy(cacheStrategy.diskCacheStrategy)
+            .into(this)
     }
 
     enum class CacheStrategy(val value: Int, val diskCacheStrategy: DiskCacheStrategy) {

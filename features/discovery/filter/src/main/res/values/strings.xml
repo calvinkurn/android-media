@@ -47,4 +47,6 @@
     <string name="content_desc_filterSeeAll">button lihat semua filter</string>
     <string name="content_desc_iconNew">icon new</string>
     <string name="content_desc_ratingView">rating view</string>
+    <string name="content_desc_filter_colorSample">color sample</string>
+    <string name="content_desc_filter_optionIcon">option icon</string>
 </resources>

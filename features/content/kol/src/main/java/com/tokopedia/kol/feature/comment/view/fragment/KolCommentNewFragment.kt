@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.comment.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -34,30 +39,32 @@ import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent
 import com.tokopedia.kol.feature.comment.di.KolCommentModule
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_AUTHOR_TYPE
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_ID
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_VIDEO
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.IS_POST_FOLLOWED
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.POST_TYPE
 import com.tokopedia.kol.feature.comment.view.adapter.KolCommentAdapter
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory
 import com.tokopedia.kol.feature.comment.view.listener.KolComment
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments
+import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_AUTHOR_TYPE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_ID
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_IS_POST_FOLLOWED
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_POST_TYPE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_VIDEO
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
 private const val REQUEST_LOGIN = 345
+private const val TOASTER_DURATION_DELETE_COMMENT = 3000
 
 class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.View.ViewHolder,
     MentionAdapterListener {
@@ -77,9 +84,14 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     private var isVideoPost: Boolean = false
     private var isFollowed: Boolean = true
     private var postType: String = ""
+    private var contentDetailSource: String = ""
+    private var isFromContentDetailPage: Boolean = false
 
     @Inject
     internal lateinit var feedAnalytics: FeedAnalyticTracker
+
+    @Inject
+    lateinit var analyticsTracker: ContentDetailNewPageAnalytics
 
     @Inject
     lateinit var presenter: KolComment.Presenter
@@ -118,14 +130,18 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         userSession = UserSession(activity)
         totalNewComment = 0
         postId = (arguments?.getInt(ARGS_ID) ?: 0).toString()
         authorId = arguments?.getString(ARGS_AUTHOR_TYPE) ?: "0"
         isVideoPost = arguments?.getBoolean(ARGS_VIDEO) ?: false
-        isFollowed = arguments?.getBoolean(IS_POST_FOLLOWED) ?: false
-        postType = arguments?.getString(POST_TYPE) ?: "0"
+        isFollowed = arguments?.getBoolean(ARGS_IS_POST_FOLLOWED) ?: false
+        postType = arguments?.getString(ARGS_POST_TYPE) ?: "0"
+        contentDetailSource = arguments?.getString(CONTENT_DETAIL_PAGE_SOURCE) ?: ""
+        isFromContentDetailPage = arguments?.getBoolean(ARG_IS_FROM_CONTENT_DETAIL_PAGE) ?: false
+
 
     }
 
@@ -160,32 +176,59 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     ): Boolean {
         if (canDeleteComment || isInfluencer()) {
             if (userSession != null && userSession?.isLoggedIn != false) {
-                deleteComment(adapterPosition)
-                var toBeDeleted = true
-                view?.let {
-                    val coroutineScope = CoroutineScope(Dispatchers.Main)
-                    coroutineScope.launch {
-                        if (activity != null && isAdded) {
-                            if (toBeDeleted)
-                                presenter.deleteComment(id, adapterPosition)
-                        }
-                    }
-                    Toaster.toasterCustomCtaWidth =
-                            com.tokopedia.unifyprinciples.R.dimen.unify_space_96
-                    Toaster.build(
-                            it,
-                            getString(R.string.kol_delete_1_comment),
-                            3000,
-                            Toaster.TYPE_NORMAL,
-                            getString(R.string.kol_delete_comment_ok)
-                    ) {
-                        feedAnalytics.clickKembalikanCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
-                        adapter?.clearList()
-                        presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
-                        toBeDeleted = false
-                    }.show()
+                val view = this.view ?: return false
 
+                var toBeDeleted = true
+                deleteComment(adapterPosition)
+
+                Toaster.toasterCustomCtaWidth = com.tokopedia.unifyprinciples.R.dimen.unify_space_96
+                val toaster = Toaster.build(
+                    view,
+                    getString(R.string.kol_delete_1_comment),
+                    TOASTER_DURATION_DELETE_COMMENT,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.kol_delete_comment_ok)
+                ) {
+                    if (isFromContentDetailPage)
+                        analyticsTracker.sendClickKembalikanToUndoDeleteSgcImageEvent(
+                            getContentDetailAnalyticsData()
+                        )
+                    else
+                        feedAnalytics.clickKembalikanCommentPage(
+                            postId,
+                            authorId,
+                            isVideoPost,
+                            isFollowed,
+                            postType
+                        )
+                    adapter?.clearList()
+                    presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
+                    toBeDeleted = false
                 }
+
+                val deleteFn = {
+                    if (activity != null && isAdded) {
+                        if (toBeDeleted) presenter.deleteComment(id, adapterPosition)
+                        toBeDeleted = false
+                    }
+                }
+
+                val lifecycleObserver = object : LifecycleEventObserver {
+                    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                        if (event != Lifecycle.Event.ON_DESTROY) return
+                        deleteFn()
+                    }
+                }
+                viewLifecycleOwner.lifecycle.addObserver(lifecycleObserver)
+
+                viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+                    delay(TOASTER_DURATION_DELETE_COMMENT.toLong())
+                    deleteFn()
+                    viewLifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
+                }
+
+                toaster.show()
+
             } else {
                 goToLogin()
             }
@@ -200,6 +243,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 && userSession?.userId == header?.userId)
     }
 
+    @SuppressLint("Method Call Prohibited")
     fun reportAction(
         id: String,
         reasonType: String,
@@ -209,9 +253,13 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             reportBottomSheet.setFinalView()
 
         presenter.sendReport(id.toInt(), reasonType, reasonDesc, "comment")
+        if (isFromContentDetailPage)
+            analyticsTracker.sendClickReportOnComment(getContentDetailAnalyticsData())
+        else
         feedAnalytics.clickReportCommentPage(id, authorId, isVideoPost, isFollowed, postType)
     }
 
+    @SuppressLint("Method Call Prohibited")
     override fun onMenuClicked(
         id: String,
         canDeleteComment: Boolean,
@@ -223,6 +271,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             isDeletable = canDeleteComment
         )
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.setIsCommentPage(true)
         sheet.onReport = {
             if (userSession?.isLoggedIn == true) {
                 reportBottomSheet = ReportBottomSheet.newInstance(
@@ -267,11 +316,10 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             kolComment?.append(userToMention)
         } else {
             val mentionFormatBuilder = StringBuilder()
-            if (kolComment?.text?.isNotEmpty() == true && kolComment?.text?.get(
-                    kolComment?.length()
-                        ?: 1 - 1
-                ) != ' '
-            ) mentionFormatBuilder.append(" ")
+            val isCommentNotEmpty = kolComment?.text?.isNotEmpty() == true
+            val isLastCharNotBlank = if (isCommentNotEmpty) kolComment?.text?.last() != ' ' else false
+            if (isLastCharNotBlank) mentionFormatBuilder.append(" ")
+
             mentionFormatBuilder
                 .append("@")
                 .append(MethodChecker.fromHtml(user?.fullName))
@@ -283,19 +331,40 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         KeyboardHandler.showSoftKeyboard(activity)
     }
 
-    override fun onHashTagClicked(hashTag: String?, id: String?) {
-        feedAnalytics.clickHashTag(
-            hashTag ?: "",
-            authorId,
-            postId,
-            postType,
-            isVideoPost,
-            isFollowed,
-            true
-        )
+    override fun onHashTagClicked(hashTag: String?) {
+        if (isFromContentDetailPage)
+            analyticsTracker.sendClickHashtagEventCommentPage(
+                getContentDetailAnalyticsData(
+                    hashTag ?: ""
+                )
+            )
+        else
+            feedAnalytics.clickHashTag(
+                hashTag ?: "",
+                authorId,
+                postId,
+                postType,
+                isVideoPost,
+                isFollowed,
+                true
+            )
     }
+    private fun getContentDetailAnalyticsData(
+        hashTag: String = "",
+    ) = ContentDetailPageAnalyticsDataModel(
+
+        activityId = postId,
+        shopId = authorId,
+        isFollowed = isFollowed,
+        type = postType,
+        hashtag = hashTag,
+        source = contentDetailSource
+    )
 
     override fun onGoToProfile(url: String, userId: String) {
+        if (isFromContentDetailPage)
+            analyticsTracker.sendClickCommentCreator(getContentDetailAnalyticsData())
+        else
         feedAnalytics.clickCreatorPageCommentPage(
             postId,
             authorId,
@@ -318,6 +387,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         val list = ArrayList<Visitable<*>?>()
         kolComments?.let { list.addAll(it.listNewComments) }
         list.reverse()
+        totalNewComment = list.size
         adapter?.addList(list)
 
         header?.isCanLoadMore = kolComments?.isHasNextPage ?: false
@@ -327,6 +397,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun openRedirectUrl(url: String) {
+        if (isFromContentDetailPage)
+            analyticsTracker.sendClickShopOnConmmentPage(getContentDetailAnalyticsData())
+        else
         feedAnalytics.clickShopCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
         routeUrl(url)
     }
@@ -360,7 +433,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         kolComment?.setText("")
         enableSendComment()
         KeyboardHandler.DropKeyboard(context, kolComment)
-        totalNewComment += 1
+        val numberOfComments = adapter?.itemCount ?: -1
+        /**totalNewComment is number of comment item in adapter excluding first caption item*/
+        totalNewComment = if (numberOfComments != -1) numberOfComments - 1 else totalNewComment
 
         listComment?.scrollToPosition(adapter?.itemCount ?: 1 - 1)
         activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
@@ -378,16 +453,29 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         presenter.updateCursor(lastcursor)
     }
 
+    /***
+      totalNewComment is number of comment item in adapter excluding first caption item
+     ***/
     override fun onSuccessDeleteComment(adapterPosition: Int) {
         if (adapterPosition <= adapter?.itemCount ?: 0) {
-            totalNewComment -= 1
+            val numberOfComments = adapter?.itemCount ?: -1
+            totalNewComment = if (numberOfComments != -1) numberOfComments - 1 else totalNewComment
             activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
         }
         adapter?.removeLoading()
     }
 
     private fun deleteComment(adapterPosition: Int) {
-        feedAnalytics.clickDeleteCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
+        if (isFromContentDetailPage)
+            analyticsTracker.sendClickDeleteComment(getContentDetailAnalyticsData())
+        else
+            feedAnalytics.clickDeleteCommentPage(
+                postId,
+                authorId,
+                isVideoPost,
+                isFollowed,
+                postType
+            )
         adapter?.deleteItem(adapterPosition)
     }
 
@@ -488,6 +576,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         val list = ArrayList<Visitable<*>?>()
         kolComments?.let { list.addAll(it.listNewComments) }
         list.reverse()
+        totalNewComment = list.size
         adapter?.setList(list)
         adapter?.notifyDataSetChanged()
     }
@@ -520,13 +609,27 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     private fun prepareView() {
-        userSession?.isLoggedIn?.let { feedAnalytics.openCommentDetailPage(it) }
+        userSession?.isLoggedIn?.let {
+            if (isFromContentDetailPage)
+                analyticsTracker.openCommentPageAnalytics()
+            else
+                feedAnalytics.openCommentDetailPage(it)
+        }
         adapter = KolCommentAdapter(typeFactory)
         listComment?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         listComment?.adapter = adapter
         sendButton?.setOnClickListener { v: View? ->
-            feedAnalytics.clickSendCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
+            if (isFromContentDetailPage)
+                analyticsTracker.sendClickSendComment(getContentDetailAnalyticsData())
+            else
+                feedAnalytics.clickSendCommentPage(
+                    postId,
+                    authorId,
+                    isVideoPost,
+                    isFollowed,
+                    postType
+                )
             if (userSession != null && userSession?.isLoggedIn != false) {
                 presenter.sendComment(
                     arguments?.getInt(ARGS_ID) ?: 0,
@@ -560,4 +663,11 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         presenter.detachView()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        try {
+            Toaster.onCTAClick = View.OnClickListener {  }
+        } catch (ignored: UninitializedPropertyAccessException) {}
+    }
 }

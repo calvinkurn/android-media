@@ -42,6 +42,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.filter)
+    implementation projectOrAar(rootProject.ext.features.usercomponents)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
@@ -104,6 +105,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
+    testImplementation project(rootProject.ext.libraries.unitTest)
     androidTestImplementation rootProject.ext.testDependencies.assertJCore
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting

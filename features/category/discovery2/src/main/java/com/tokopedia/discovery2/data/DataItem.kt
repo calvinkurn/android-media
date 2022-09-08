@@ -388,6 +388,9 @@ data class DataItem(
         @SerializedName("labels")
         var labelsGroupList: List<LabelsGroup>? = null,
 
+        @SerializedName("active_product_card")
+        var isActiveProductCard: Boolean? = null,
+
         @SerializedName("carousel_component_id")
         var flashTimerTargetComponent: String = "",
 
@@ -407,7 +410,7 @@ data class DataItem(
         var titleLogoUrl: String? = null,
 
         @SerializedName("notify_campaign_id")
-        var notifyCampaignId: Int = 0,
+        var notifyCampaignId: String = "",
 
         @SerializedName("hasAddToCartButton")
         var hasATC: Boolean = false,
@@ -445,8 +448,17 @@ data class DataItem(
         @SerializedName("show_timer")
         var showTimer: Boolean? = null,
 
+        @SerializedName("show_three_dots_button")
+        var show3Dots: Boolean? = null,
+
+        @SerializedName("atc_button_cta")
+        var atcButtonCTA: String? = null,
+
         @SerializedName("time_description")
         val timeDescription: String? = null,
+
+        @SerializedName("template_name")
+        var templateName: String? = "",
 
         var quantity: Int = 0,
 
@@ -493,6 +505,8 @@ data class DataItem(
         var hasThreeDotsWishlist: Boolean = false,
 
         var hasATCWishlist: Boolean = false,
+
+        var hasSimilarProductWishlist: Boolean? = null,
 
         var isWishList: Boolean = false,
 

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl2">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_crown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_play_interactive_crown_yellow"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/img_participant"
+        app:layout_constraintEnd_toEndOf="@id/img_participant"
+        app:layout_constraintStart_toStartOf="@id/img_participant"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_participant"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_crown"
+        app:unify_image_type="circle"
+        tools:src="@tools:sample/avatars" />
+
+    <FrameLayout
+        android:id="@+id/fl_border_img_winner"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:background="@drawable/bg_play_circle_winner"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/img_participant"
+        app:layout_constraintTop_toTopOf="@id/img_participant"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_participant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:inputType="textNoSuggestions"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="@id/img_participant"
+        app:layout_constraintStart_toEndOf="@id/img_participant"
+        app:layout_constraintTop_toTopOf="@id/img_participant"
+        app:typographyType="heading_6"
+        tools:text="@tools:sample/full_names" />
+</androidx.constraintlayout.widget.ConstraintLayout>

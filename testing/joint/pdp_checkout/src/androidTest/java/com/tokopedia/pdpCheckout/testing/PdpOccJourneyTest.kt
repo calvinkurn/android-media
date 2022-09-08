@@ -17,7 +17,11 @@ import com.tokopedia.pdpCheckout.testing.oneclickcheckout.interceptor.OccCheckou
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.interceptor.OccLogisticTestInterceptor
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.interceptor.OccPromoTestInterceptor
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.robot.orderSummaryPage
-import com.tokopedia.pdpCheckout.testing.product.detail.*
+import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailIntentRule
+import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailInterceptor
+import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailRobot
+import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P1_PATH
+import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P2_DATA_PATH
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert.assertThat

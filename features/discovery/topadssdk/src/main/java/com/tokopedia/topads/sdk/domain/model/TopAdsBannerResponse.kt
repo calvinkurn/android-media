@@ -34,6 +34,8 @@ data class TopAdsBannerResponse(
                 val name: String? = "",
                 @SerializedName("Position")
                 val position: Int = 0,
+                @SerializedName("LayoutType")
+                val layoutType: String = "",
                 @SerializedName("Shop")
                 val shop: Shop?
             ) {
@@ -65,29 +67,14 @@ data class TopAdsBannerResponse(
                     @SerializedName("ShopID")
                     val shopID: Int = 0,
                     @SerializedName("ShopImage")
-                    val shopImage: ShopImage?,
+                    val shopImage: ImageShop?,
                     @SerializedName("ShopIsOfficial")
                     val shopIsOfficial: Boolean = false,
                     @SerializedName("ShopName")
                     val shopName: String? = "",
                     @SerializedName("ShopTagline")
                     val shopTagline: String? = ""
-                ) {
-                    data class ShopImage(
-                        @SerializedName("cover")
-                        val cover: String? = "",
-                        @SerializedName("cover_ecs")
-                        val coverEcs: String? = "",
-                        @SerializedName("s_ecs")
-                        val sEcs: String? = "",
-                        @SerializedName("s_url")
-                        val sUrl: String? = "",
-                        @SerializedName("xs_ecs")
-                        val xsEcs: String? = "",
-                        @SerializedName("xs_url")
-                        val xsUrl: String? = ""
-                    )
-                }
+                )
             }
         }
 

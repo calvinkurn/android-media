@@ -16,7 +16,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -31,9 +30,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
-import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
-import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
-import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.shop.detail.view.fragment.VoucherDetailFragment
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
@@ -177,13 +173,14 @@ private fun shareVoucherByType(context: Context,
                                voucher: VoucherUiModel,
                                shopName: String,
                                shareUrl: String) {
+    val formattedShopName = MethodChecker.fromHtml(shopName).toString()
     val shareMessage =
             if (voucher.isPublic) {
                 StringBuilder().apply {
                     append(String.format(
                             context.getString(R.string.mvc_share_message_public).toBlankOrString(),
                             voucher.typeFormatted,
-                            shopName))
+                            formattedShopName))
                     append("\n")
                     append(shareUrl)
                 }.toString()
@@ -193,7 +190,7 @@ private fun shareVoucherByType(context: Context,
                             context.getString(R.string.mvc_share_message_private).toBlankOrString(),
                             voucher.typeFormatted,
                             voucher.code,
-                            shopName))
+                            formattedShopName))
                     append("\n")
                     append(shareUrl)
                 }.toString()

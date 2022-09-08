@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.home.domain.mapper
 
-import com.tokopedia.stickylogin.common.StickyLoginConstant
+import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 

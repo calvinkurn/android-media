@@ -29,8 +29,6 @@ interface HomeTypeFactory {
 
     fun type(dynamicIconSectionDataModel: DynamicIconSectionDataModel): Int
 
-    fun type(headerDataModel: HeaderDataModel): Int
-
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
     fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int

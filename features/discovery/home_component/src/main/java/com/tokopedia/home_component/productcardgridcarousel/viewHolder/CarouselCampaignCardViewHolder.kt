@@ -8,15 +8,17 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselCampaignCardDataModel
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by yfsx on 11/10/21.
  */
 class CarouselCampaignCardViewHolder(
     private val view: View,
-    private val channels: ChannelModel
+    private val channels: ChannelModel,
+    private val cardInteraction: Boolean = false,
 ) : AbstractViewHolder<CarouselCampaignCardDataModel>(view) {
-    private lateinit var cardContainer: CardView
+    private lateinit var cardContainer: CardUnify2
     private lateinit var cardImage: ImageView
 
     override fun bind(element: CarouselCampaignCardDataModel?) {
@@ -25,7 +27,10 @@ class CarouselCampaignCardViewHolder(
     }
 
     private fun initView() {
-        cardContainer = itemView.findViewById(R.id.card_campaign)
+        cardContainer = itemView.findViewById<CardUnify2?>(R.id.card_campaign).apply {
+            cardType = CardUnify2.TYPE_CLEAR
+            animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
+        }
         cardImage = itemView.findViewById(R.id.card_campaign_image)
     }
 

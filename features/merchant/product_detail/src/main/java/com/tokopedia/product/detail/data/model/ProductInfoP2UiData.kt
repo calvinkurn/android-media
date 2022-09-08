@@ -14,9 +14,9 @@ import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommend
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
-import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -28,36 +28,38 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
  * Created by Yehezkiel on 28/07/20
  */
 data class ProductInfoP2UiData(
-        var shopInfo: ShopInfo = ShopInfo(),
-        var shopSpeed: Long = 0L,
-        var shopChatSpeed: String = "",
-        var shopRating: Float = 0F,
-        var productView: String = "",
-        var wishlistCount: String = "",
-        var isGoApotik: Boolean = false,
-        var shopBadge: String = "",
-        var shopCommitment: ShopCommitment = ShopCommitment(),
-        var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
-        var validateTradeIn: ValidateTradeIn = ValidateTradeIn(),
-        var cartRedirection: Map<String, CartTypeData> = mapOf(),
-        var nearestWarehouseInfo: Map<String, WarehouseInfo> = mapOf(),
-        var upcomingCampaigns: Map<String, ProductUpcomingData> = mapOf(),
-        var vouchers: List<MerchantVoucherViewModel> = listOf(),
-        var productFinancingRecommendationData: PDPInstallmentRecommendationData = PDPInstallmentRecommendationData(),
-        var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse(),
-        var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
-        var ratesEstimate: List<P2RatesEstimate> = listOf(),
-        var bebasOngkir: BebasOngkir = BebasOngkir(),
-        var uspImageUrl: String = "",
-        var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
-        var imageReviews: ImageReview? = null,
-        var helpfulReviews: List<Review>? = null,
-        var miniCart: MutableMap<String, MiniCartItem>? = null,
-        var alternateCopy: List<AlternateCopy> = listOf(),
-        var bundleInfoMap: Map<String, BundleInfo> = emptyMap(),
-        var rating: ProductRatingCount = ProductRatingCount(),
-        var ticker: ProductTicker = ProductTicker(),
-        var navBar: NavBar = NavBar()
+    var shopInfo: ShopInfo = ShopInfo(),
+    var shopSpeed: Long = 0L,
+    var shopChatSpeed: String = "",
+    var shopRating: Float = 0F,
+    var productView: String = "",
+    var wishlistCount: String = "",
+    var isGoApotik: Boolean = false,
+    var shopBadge: String = "",
+    var shopCommitment: ShopCommitment = ShopCommitment(),
+    var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
+    var validateTradeIn: ValidateTradeIn = ValidateTradeIn(),
+    var cartRedirection: Map<String, CartTypeData> = mapOf(),
+    var nearestWarehouseInfo: Map<String, WarehouseInfo> = mapOf(),
+    var upcomingCampaigns: Map<String, ProductUpcomingData> = mapOf(),
+    var vouchers: List<MerchantVoucherViewModel> = listOf(),
+    var productFinancingRecommendationData: PDPInstallmentRecommendationData = PDPInstallmentRecommendationData(),
+    var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse(),
+    var restrictionInfo: RestrictionInfoResponse = RestrictionInfoResponse(),
+    var ratesEstimate: List<P2RatesEstimate> = listOf(),
+    var bebasOngkir: BebasOngkir = BebasOngkir(),
+    var uspImageUrl: String = "",
+    var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
+    var imageReview: ReviewImage = ReviewImage(),
+    var helpfulReviews: List<Review>? = null,
+    var miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null,
+    var alternateCopy: List<AlternateCopy> = listOf(),
+    var bundleInfoMap: Map<String, BundleInfo> = emptyMap(),
+    var rating: ProductRatingCount = ProductRatingCount(),
+    var ticker: ProductTicker = ProductTicker(),
+    var navBar: NavBar = NavBar(),
+    var shopFinishRate: String = "",
+    var isToolbarTransparent: Boolean = false
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {
@@ -72,5 +74,9 @@ data class ProductInfoP2UiData(
         }?.sumBy {
             it.quantity
         } ?: 0
+    }
+
+    fun getRatesEstimateBoMetadata(productId: String): String {
+        return ratesEstimate.firstOrNull { productId in it.listfProductId }?.boMetadata ?: ""
     }
 }

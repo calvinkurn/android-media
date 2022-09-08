@@ -9,6 +9,8 @@ import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.VariantOption
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_PDP
 import com.tokopedia.product_bundle.common.data.model.request.Bundle
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
@@ -161,11 +163,16 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         val activeStatus = "ACTIVE"
         val inactiveStatus = "INACTIVE"
         val preorderDay = 1
-        val preorderMonth = 2
+        val preorderWeek = 2
+        val preorderMonth = 3
         val preorderInvalid = -1
+
         coEvery {
             resourceProvider.getPreOrderTimeUnitDay()
         } returns "hari"
+        coEvery {
+            resourceProvider.getPreOrderTimeUnitWeek()
+        } returns "minggu"
         coEvery {
             resourceProvider.getPreOrderTimeUnitMonth()
         } returns "bulan"
@@ -173,16 +180,19 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         // when
         val preOrderActive = viewModel.isPreOrderActive(activeStatus)
         val preOrderInactive = viewModel.isPreOrderActive(inactiveStatus)
-        val preOrderWordingDay = viewModel.getPreOrderTimeUnitWording(preorderDay)
-        val preOrderWordingMonth = viewModel.getPreOrderTimeUnitWording(preorderMonth)
         val preOrderWordingInvalid = viewModel.getPreOrderTimeUnitWording(preorderInvalid)
+
+        val preOrderWordingDay = viewModel.getPreOrderTimeUnitWording(preorderDay)
+        val preOrderWordingWeek = viewModel.getPreOrderTimeUnitWording(preorderWeek)
+        val preOrderWordingMonth = viewModel.getPreOrderTimeUnitWording(preorderMonth)
 
         // then
         assert(preOrderActive)
         assert(!preOrderInactive)
-        assertEquals("hari", preOrderWordingDay)
-        assertEquals("bulan", preOrderWordingMonth)
         assertEquals("", preOrderWordingInvalid)
+        assertEquals("hari", preOrderWordingDay)
+        assertEquals("minggu", preOrderWordingWeek)
+        assertEquals("bulan", preOrderWordingMonth)
     }
 
     @Test
@@ -256,11 +266,11 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     @Test
     fun `when mapBundleDetailsToProductDetails data provided then should return correct value`() = coroutineTestRule.runBlockingTest {
         viewModel.parentProductID = 123
-        val productDetailList1 = viewModel.mapBundleDetailsToProductDetails("2323", 2323, listOf(
+        val productDetailList1 = viewModel.mapBundleDetailsToProductDetails("2323", "2323", listOf(
             ProductBundleDetail(productId = 222)
         ))
 
-        val productDetailList2 = viewModel.mapBundleDetailsToProductDetails("2323", 2323, listOf(
+        val productDetailList2 = viewModel.mapBundleDetailsToProductDetails("2323", "2323", listOf(
             ProductBundleDetail(selectedVariantId = "1234", productId = 123)
         ))
 
@@ -368,12 +378,34 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         assertEquals(false, result5)
         assert(viewModel.selectedBundleId == 1000L)
         assert(viewModel.pageSource == PAGE_SOURCE_CART)
+
+        // if pageSource is minicart should return false
+        viewModel.pageSource = PAGE_SOURCE_MINI_CART
+        val result6 = viewModel.validateAddToCartInput(ProductBundleMaster(bundleId = 1000), listOf())
+
+        assertEquals(false, result6)
+        assert(viewModel.pageSource == PAGE_SOURCE_MINI_CART)
+
+        // if pageSource is psp should return true
+        viewModel.pageSource = PAGE_SOURCE_PDP
+        val result7 = viewModel.validateAddToCartInput(ProductBundleMaster(bundleId = 1000), listOf())
+
+        assertEquals(true, result7)
+        assert(viewModel.pageSource == PAGE_SOURCE_PDP)
+
+        // if pageSource is minicart and selectedBundleId is 2000 but selectedBundleMasterId is 1000 then should return true
+        viewModel.pageSource = PAGE_SOURCE_MINI_CART
+        viewModel.selectedBundleId = 2000
+        val result8 = viewModel.validateAddToCartInput(ProductBundleMaster(bundleId = 1000), listOf())
+
+        assertEquals(true, result8)
+        assert(viewModel.selectedBundleId == 2000L)
     }
 
     @Test
     fun `when getBundleInfo expect return correct value`() = coroutineTestRule.runBlockingTest {
         // negative case
-        viewModel.getBundleInfo(123)
+        viewModel.getBundleInfo(123, "1")
         val pageStateError = viewModel.pageState.getOrAwaitValue()
         val getBundleInfoResultFail = viewModel.getBundleInfoResult.getOrAwaitValue()
 
@@ -382,7 +414,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
             getBundleInfoUseCase.executeOnBackground()
         } returns GetBundleInfoResponse()
 
-        viewModel.getBundleInfo(123)
+        viewModel.getBundleInfo(123, "1")
         coVerify { getBundleInfoUseCase.executeOnBackground() }
         val pageStateSuccess = viewModel.pageState.getOrAwaitValue()
         val getBundleInfoResultSuccess = viewModel.getBundleInfoResult.getOrAwaitValue()
@@ -417,7 +449,23 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
 
         viewModel.addProductBundleToCart(123, 123, 123, emptyList())
         coVerify { addToCartBundleUseCase.executeOnBackground() }
-        val atcDialogMessagesError = viewModel.atcDialogMessages.getOrAwaitValue()
+        val atcDialogMessagesError1 = viewModel.atcDialogMessages.getOrAwaitValue()
+
+        // error server case
+        coEvery {
+            addToCartBundleUseCase.executeOnBackground()
+        } returns AddToCartBundleModel(
+            status = "OK",
+            errorMessage = "Something Error",
+            addToCartBundleDataModel = AddToCartBundleDataModel(
+                success = 0,
+                message = listOf()
+            )
+        )
+
+        viewModel.addProductBundleToCart(123, 123, 123, emptyList())
+        coVerify { addToCartBundleUseCase.executeOnBackground() }
+        val atcDialogMessagesError2 = viewModel.atcDialogMessages.getOrAwaitValue()
 
         // error server case
         coEvery {
@@ -449,8 +497,10 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
 
         assertEquals(1, addToCartResultSuccess.responseResult.success)
         assertEquals("error", errorMessage)
-        assertEquals("1", atcDialogMessagesError.first)
-        assertEquals("2", atcDialogMessagesError.second)
+        assertEquals("1", atcDialogMessagesError1.first)
+        assertEquals("2", atcDialogMessagesError1.second)
+        assertEquals("", atcDialogMessagesError2.first)
+        assertEquals("", atcDialogMessagesError2.second)
         assertEquals(AtcConstant.ATC_ERROR_GLOBAL, errorMessageServer)
     }
 
@@ -468,8 +518,8 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
 
     @Test
     fun `when getBundleInfo using 0 product id expect setParams with list of Bundle`() = coroutineTestRule.runBlockingTest {
-        viewModel.getBundleInfo(0)
-        coVerify { getBundleInfoUseCase.setParams(any(), any(), any(), any(), listOf(Bundle(ID = "0"))) }
+        viewModel.getBundleInfo(0, "1")
+        coVerify { getBundleInfoUseCase.setParams(any(), any(), any(), any(), listOf(Bundle(ID = "0", WarehouseID = "1"))) }
     }
 
     @Test
@@ -484,6 +534,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
 
         // when
         val bundleMasterStartState = nonSpykViewModel2.getSelectedProductBundleMaster()
+        val selectedBundleEmptyList = nonSpykViewModel2.getSelectedProductBundleDetails()
         nonSpykViewModel2.setSelectedProductBundleMaster(bundleMaster)
         nonSpykViewModel2.updateProductBundleMap(bundleMaster, listOf(ProductBundleDetail(productId=123)))
         val bundleMasterNew = nonSpykViewModel2.getSelectedProductBundleMaster()
@@ -491,6 +542,7 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
 
         // then
         assertEquals(ProductBundleMaster(), bundleMasterStartState)
+        assertEquals(listOf<ProductBundleDetail>(), selectedBundleEmptyList)
         assertEquals(123L, bundleMasterNew.bundleId)
         assertEquals(123, selectedBundleList.first().productId)
     }

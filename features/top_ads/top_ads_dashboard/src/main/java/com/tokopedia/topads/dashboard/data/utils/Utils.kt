@@ -38,6 +38,14 @@ object Utils {
     val outputFormat: DateFormat = SimpleDateFormat("dd MMM yyyy", locale)
     val format = SimpleDateFormat("yyyy-MM-dd", locale)
 
+    fun Date?.orDefaultStart(): Date {
+        return this ?: getStartDate()
+    }
+
+    fun Date?.orDefaultEnd(): Date {
+        return this ?: getEndDate()
+    }
+
     internal suspend fun <T : Any> executeQuery(
         query: String, responseClass: Class<T>, params: Map<String, Any?>
     ): T? {
@@ -165,15 +173,13 @@ object Utils {
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
-    fun getStartDate(): Date? {
+    fun getStartDate(): Date {
         val startCalendar = Calendar.getInstance()
         startCalendar.add(Calendar.DAY_OF_YEAR, -DatePickerConstant.DIFF_ONE_WEEK)
         return startCalendar.time
-
-
     }
 
-    fun getEndDate(): Date? {
+    fun getEndDate(): Date {
         val endCalendar = Calendar.getInstance()
         return endCalendar.time
     }

@@ -53,7 +53,6 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
     private var filterCount = 0
     private var selectedStatus = SELECTED_STATUS_0
     private var selectedAdPlacement = SELECTED_placement_type_0
-    private var showPlacementFilter: Boolean = false
 
     private lateinit var userSession: UserSessionInterface
 
@@ -86,15 +85,8 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
         userSession = UserSession(context)
         status?.visibility = View.VISIBLE
         statusTitle?.visibility = View.VISIBLE
-
-
-        if (showPlacementFilter) {
-            adPlacementTitle?.show()
-            adPlacement?.show()
-        } else {
-            adPlacementTitle?.hide()
-            adPlacement?.hide()
-        }
+        adPlacementTitle?.show()
+        adPlacement?.show()
 
         selectedAdPlacement = SELECTED_placement_type_0
         // for ad placement filter
@@ -175,11 +167,6 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
             dismiss()
         }
 
-    }
-
-
-    fun showAdplacementFilter(show: Boolean) {
-        this.showPlacementFilter = show
     }
 
     fun getFilterCount(): Int {

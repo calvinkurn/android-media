@@ -11,6 +11,8 @@ import com.tokopedia.play.robot.Robot
 import com.tokopedia.play.robot.RobotWithValue
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.chat.ChatStreams
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
@@ -31,7 +33,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
-import com.tokopedia.play_common.sse.PlayChannelSSE
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.websocket.PlayWebSocket
@@ -70,6 +72,9 @@ class PlayViewModelRobot(
     timerFactory: TimerFactory,
     castPlayerHelper: CastPlayerHelper,
     playShareExperience: PlayShareExperience,
+    chatStreamsFactory: ChatStreams.Factory,
+    playLog: PlayLog,
+    liveRoomMetricsCommon: PlayLiveRoomMetricsCommon,
 ) : Robot {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -93,7 +98,10 @@ class PlayViewModelRobot(
         playAnalytic,
         timerFactory,
         castPlayerHelper,
-        playShareExperience
+        playShareExperience,
+        playLog,
+        chatStreamsFactory,
+        liveRoomMetricsCommon,
     )
 
     fun createPage(channelData: PlayChannelData) {
@@ -264,7 +272,10 @@ fun givenPlayViewModelRobot(
     timerFactory: TimerFactory = mockk(relaxed = true),
     castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
     playShareExperience: PlayShareExperience = mockk(relaxed = true),
-    fn: PlayViewModelRobot.() -> Unit = {}
+    chatStreamsFactory: ChatStreams.Factory = mockk(relaxed = true),
+    playLog: PlayLog = mockk(relaxed = true),
+    liveRoomMetricsCommon: PlayLiveRoomMetricsCommon = mockk(relaxed = true),
+    fn: PlayViewModelRobot.() -> Unit = {},
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
         channelId = channelId,
@@ -288,6 +299,9 @@ fun givenPlayViewModelRobot(
         timerFactory = timerFactory,
         castPlayerHelper = castPlayerHelper,
         playShareExperience = playShareExperience,
+        chatStreamsFactory = chatStreamsFactory,
+        playLog = playLog,
+        liveRoomMetricsCommon = liveRoomMetricsCommon,
     ).apply(fn)
 }
 

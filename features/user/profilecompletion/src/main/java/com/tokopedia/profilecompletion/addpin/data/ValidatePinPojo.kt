@@ -1,6 +1,6 @@
 package com.tokopedia.profilecompletion.addpin.data
 
-import com.google.gson.annotations.Expose
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -10,21 +10,17 @@ import com.google.gson.annotations.SerializedName
 
 data class ValidatePinPojo(
     @SerializedName("validate_pin")
-    @Expose
     var data: ValidatePinData = ValidatePinData()
 )
 
 data class ValidatePinData(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("valid")
-    @Expose
     var valid: Boolean = false,
     @SerializedName("error_message")
-    @Expose
     var errorMessage: String = "",
     @SerializedName("pin_attempted")
-    @Expose
     var pinAttempted: Int = 0,
     @SerializedName("max_pin_attempt")
-    @Expose
     var maxPinAttempt: Int = 0
 )

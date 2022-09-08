@@ -240,7 +240,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun sendOccImpressionEvent() {
         try {
-            payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
+            payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
                 if (!isDisabledPartner) {
                     sendAnalyticEvent(
                         PdpSimulationEvent.OccImpressionEvent(
@@ -267,7 +267,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun setTenureDetailData() {
-        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let {
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let {
             checkDisablePartnerLogic(it.disable)
             sendOccImpressionEvent()
             listOfGateway = paylaterGetOptimizedModel
@@ -356,7 +356,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
 
     private fun setSelectedTenure() {
-        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
             if (checkoutData.tenureDetail.isNotEmpty()) {
                 checkoutData.tenureDetail.map {
                     it.isSelectedTenure = false
@@ -415,7 +415,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun setTenureOptionsData(data: PaylaterGetOptimizedModel) {
-        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { it ->
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { it ->
             setGatewayProductImage(it)
 
             gatewayDetailLayout.getwayBrandName.setTextToDisplay(it.gateway_name)
@@ -556,7 +556,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun sendCTAClickEvent() {
-        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
             sendAnalyticEvent(
                 PdpSimulationEvent.ClickCTACheckoutPage(
                     payLaterActivationViewModel.selectedProductId,
@@ -575,7 +575,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun changePartnerLogic() {
         if (this::listOfGateway.isInitialized) {
             sendChangePartnerClickEvent()
-            payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.tenureDetail?.let {
+            payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.tenureDetail?.let {
                 openBottomSheet(it)
             }
 
@@ -589,7 +589,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     installmentDetail = it,
                     gatwayToChipMap = payLaterActivationViewModel.gatewayToChipMap,
                     selectedProductPrice = payLaterActivationViewModel.price.toString(),
-                    gatewayIdSelected = payLaterActivationViewModel.selectedGatewayId.toInt(),
+                    gatewayIdSelected = payLaterActivationViewModel.selectedGatewayId,
                     selectedTenure = selectedTenurePosition
                 )
             )
@@ -634,7 +634,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun sendChangePartnerClickEvent() {
         try {
-            payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
+            payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
                 sendAnalyticEvent(
                     PdpSimulationEvent.OccChangePartnerClicked(
                         payLaterActivationViewModel.selectedProductId,
@@ -655,7 +655,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun sendVarintClickEvent() {
         try {
-            payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
+            payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
 
                 sendAnalyticEvent(
                     PdpSimulationEvent.OccChangeVariantClicked(
@@ -767,7 +767,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun sendTenureSelectedAnalytics(newPositionToSelect: Int) {
-        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
             sendAnalyticEvent(
                 PdpSimulationEvent.ClickTenureEvent(
                     payLaterActivationViewModel.selectedProductId,

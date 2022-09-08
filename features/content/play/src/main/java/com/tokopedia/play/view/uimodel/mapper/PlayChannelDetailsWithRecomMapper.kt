@@ -11,6 +11,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -18,7 +19,6 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import javax.inject.Inject
 
@@ -52,8 +52,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                 pinnedInfo = mapPinnedInfo(it.pinnedMessage),
                 quickReplyInfo = mapQuickReply(it.quickReplies),
                 videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
-                leaderboardInfo = mapLeaderboardInfo(),
-                upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime),
+                leaderboard = mapLeaderboardInfo(),
+                upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime, it.description),
                 tagItems = mapTagItems(it.config),
                 status = mapStatus(it.config, it.title),
             )
@@ -230,16 +230,17 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         else PlayStatusType.Active
     }
 
-    private fun mapLeaderboardInfo() = PlayLeaderboardWrapperUiModel.Unknown
+    private fun mapLeaderboardInfo() = LeaderboardUiModel.Empty
 
-    private fun mapUpcoming(title: String, airTime: String, isReminderSet: Boolean, coverUrl: String, startTime: String) =
+    private fun mapUpcoming(title: String, airTime: String, isReminderSet: Boolean, coverUrl: String, startTime: String, description: String) =
         PlayUpcomingUiModel(
             title = title,
             isUpcoming = airTime == PlayUpcomingUiModel.COMING_SOON,
             isReminderSet = isReminderSet,
             coverUrl = coverUrl,
             startTime = startTime,
-            isAlreadyLive = false
+            isAlreadyLive = false,
+            description = description,
         )
 
     private fun emptyVideoMetaInfo() = PlayVideoMetaInfoUiModel(

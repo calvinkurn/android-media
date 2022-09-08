@@ -20,7 +20,7 @@ open class BaseChatUiModel constructor(
     var source: String,
     val replyId: String = "",
     val localId: String = "",
-    val blastId: Long = 0,
+    val blastId: String = "0",
     val fraudStatus: Int = 0,
     val label: String = "",
     val parentReply: ParentReply? = null,
@@ -106,7 +106,7 @@ open class BaseChatUiModel constructor(
         internal var source: String = ""
         internal var replyId: String = ""
         internal var localId: String = ""
-        internal var blastId: Long = 0
+        internal var blastId: String = "0"
         internal var fraudStatus: Int = 0
         internal var label: String = ""
         internal var parentReply: ParentReply? = null
@@ -272,7 +272,7 @@ open class BaseChatUiModel constructor(
             return self()
         }
 
-        fun withBlastId(blastId: Long): B {
+        fun withBlastId(blastId: String): B {
             this.blastId = blastId
             return self()
         }
@@ -319,13 +319,14 @@ open class BaseChatUiModel constructor(
             const val DEFAULT_ATTACHMENT_ID = ""
             const val DEFAULT_ATTACHMENT_TYPE = ""
             const val DEFAULT_DELETED_MSG = "Pesan ini telah dihapus."
+            private const val TIME_MULTIPLIER = 1_000_000
 
             /**
              * replyTime needs to be on nano second format
              */
             fun generateCurrentReplyTime(): String {
                 val currentTime = Calendar.getInstance()
-                return (currentTime.timeInMillis * 1_000_000).toString()
+                return (currentTime.timeInMillis * TIME_MULTIPLIER).toString()
             }
         }
     }

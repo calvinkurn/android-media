@@ -123,6 +123,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     MyCoupon(R.layout.component_my_coupon_layout,ComponentNames.MyCoupon.componentName),
     MyCouponItem(R.layout.item_disco_my_coupon,ComponentNames.MyCouponItem.componentName),
     BannerInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.BannerInfinite.componentName),
-    BannerInfiniteItem(R.layout.disco_infinite_shop_banner_item,ComponentNames.BannerInfiniteItem.componentName)
+    BannerInfiniteItem(R.layout.disco_infinite_shop_banner_item,ComponentNames.BannerInfiniteItem.componentName),
+    ShopCardInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.ShopCardInfinite.componentName),
+    ExplicitWidget(R.layout.explicit_widget_layout,ComponentNames.ExplicitWidget.componentName)
 
 }

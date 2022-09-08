@@ -11,6 +11,7 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.video_widget.VideoPlayer
 import com.tokopedia.video_widget.VideoPlayerProvider
 
@@ -26,6 +27,7 @@ abstract class ProductItemViewHolder(
     protected fun ProductItemDataView.toProductCardModel(
         productImage: String,
         isWideContent: Boolean,
+        productListType: ProductCardModel.ProductListType
     ): ProductCardModel {
         return ProductCardModel(
             productImageUrl = productImage,
@@ -43,7 +45,9 @@ abstract class ProductItemViewHolder(
             labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
             labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
             isWideContent = isWideContent,
-            customVideoURL = customVideoURL
+            customVideoURL = customVideoURL,
+            cardInteraction = true,
+            productListType = productListType,
         )
     }
 

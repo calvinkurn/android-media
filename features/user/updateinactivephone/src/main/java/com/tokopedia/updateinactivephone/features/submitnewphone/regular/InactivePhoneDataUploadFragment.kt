@@ -189,13 +189,11 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
     }
 
     private fun setImage(imageView: ThumbnailFileView, type: Int) {
-        context?.let {
-            val path = filePath(it, type)
-            if (path.isNotEmpty())
-                imageView.apply {
-                    setImage(path)
-                }
-        }
+        val path = context?.let { filePath(it, type) }
+        if (path?.isNotEmpty() == true)
+            imageView.apply {
+                setImage(path)
+            }
     }
 
     override fun dialogOnBackPressed() {
@@ -227,6 +225,11 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
 
             it.finish()
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        removeFiles()
     }
 
     override fun onDestroy() {

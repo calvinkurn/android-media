@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.RadioGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -256,6 +257,8 @@ class AddEditProductShipmentFragment:
                         shipmentConventionalAdapter.setProductActiveState(it)
                         shipmentOnDemandAdapter.setProductActiveState(it)
                     }
+                    isCPLActivated = false
+                    updateLayoutShipment()
                 }
             }
         }
@@ -340,10 +343,18 @@ class AddEditProductShipmentFragment:
 
     private fun initShipmentData() {
         if (shipmentViewModel.isAddMode) {
-            shipmentViewModel.getCPLList(shopId.toLong(), "")
+            getCplList("")
         } else {
-            shipmentViewModel.getCPLList(shopId.toLong(), shipmentViewModel.productInputModel?.productId.toString())
+            getCplList(shipmentViewModel.productInputModel?.productId.toString())
         }
+    }
+
+    private fun getCplList(productId: String) {
+        shipmentViewModel.getCPLList(
+            shopId = shopId.toLong(),
+            productId = productId,
+            shipmentServicesIds = shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.shipmentServicesIds
+        )
     }
 
     private fun initObservers() {
@@ -382,6 +393,7 @@ class AddEditProductShipmentFragment:
 
     private fun setupWeightInput() {
         tfWeightAmount.setModeToNumberInput()
+        tfWeightAmount?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
         tfWeightAmount?.textFieldInput?.afterTextChanged {
             validateInputWeight(it)
         }
@@ -452,8 +464,13 @@ class AddEditProductShipmentFragment:
                     putExtra(EXTRA_PRODUCT_ID, shipmentViewModel.productInputModel?.productId)
                 }
                 putExtra(EXTRA_CPL_ACTIVATED, isCPLActivated)
+                putIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES, shipperServicesIds.convertToIntArray())
             }, REQUEST_CODE_CPL
         )
+    }
+
+    private fun List<Long>?.convertToIntArray(): ArrayList<Int> {
+        return this?.let { ArrayList(this.map { it.toInt() }) } ?: arrayListOf()
     }
 
     private fun setupShipmentRadios() {
@@ -488,6 +505,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun showDialogStandardShipment() {
+        var isStandardShipment = false
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.title_standard_shipment))
             setDefaultMaxWidth()
@@ -495,13 +513,20 @@ class AddEditProductShipmentFragment:
             setPrimaryCTAText(getString(R.string.primary_button_standard_shipment))
             setSecondaryCTAText(getString(R.string.secondary_button_standard_shipment))
             setPrimaryCTAClickListener {
-                shipmentRadioValue(true)
+                isStandardShipment = true
                 dismiss()
             }
             setSecondaryCTAClickListener {
-                radioStandarShipment?.isChecked = false
-                radioCustomShipment?.isChecked = true
+                isStandardShipment = false
                 dismiss()
+            }
+            setOnDismissListener {
+                if (isStandardShipment) {
+                    shipmentRadioValue(true)
+                } else {
+                    radioStandarShipment?.isChecked = false
+                    radioCustomShipment?.isChecked = true
+                }
             }
         }.show()
     }
@@ -531,7 +556,7 @@ class AddEditProductShipmentFragment:
 
     private fun setupInsuranceTicker() {
         tickerInsurance?.setHtmlDescription(getString(R.string.label_shipment_ticker))
-        tickerInsurance?.setOnClickListener {
+        tickerInsurance?.setDescriptionClick {
             ShipmentInsuranceBottomSheet().show(childFragmentManager)
         }
     }
@@ -575,7 +600,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun applyShipmentInputModel(inputModel: ShipmentInputModel) {
-        tfWeightAmount.setText(if (inputModel.weight.isZero()) "" else inputModel.weight.toString())
+        tfWeightAmount.setText(if (inputModel.weight.isZero()) "" else inputModel.weight.getNumberFormatted())
 
         applyInsuranceValue(inputModel.isMustInsurance)
 

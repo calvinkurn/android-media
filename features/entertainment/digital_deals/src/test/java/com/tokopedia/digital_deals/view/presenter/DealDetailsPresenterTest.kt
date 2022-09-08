@@ -256,6 +256,7 @@ class DealDetailsPresenterTest {
 
     @Test
     fun `getLikes (private) onNext non-empty response`() {
+        mockkStatic(Utils::class)
         val tokenDealDetails = object : TypeToken<DataResponse<DealsDetailsResponse?>?>() {}.type
         val restResponseDealDetails = RestResponse(
             DataResponse<DealsDetailsResponse>().apply {
@@ -290,6 +291,8 @@ class DealDetailsPresenterTest {
             )
         }
         every { view.isEnableLikeFromArguments } answers { true }
+        every { Utils.getSingletonInstance().sortOutletsWithLocation(any(), any()) } returns Unit
+        every { Utils.getSingletonInstance().getLocation(any()) } returns Location()
 
         presenter.getDealDetails()
 
@@ -340,6 +343,7 @@ class DealDetailsPresenterTest {
 
     @Test
     fun `getRecommendation (private) onNext with salam_indicator`() {
+        mockkStatic(Utils::class)
         val tokenDealDetails = object : TypeToken<DataResponse<DealsDetailsResponse?>?>() {}.type
         val restResponseDealDetails = RestResponse(
             DataResponse<DealsDetailsResponse>().apply {
@@ -382,6 +386,9 @@ class DealDetailsPresenterTest {
 
         every { view.isRecommendationEnableFromArguments } answers { true }
         every { presenter["checkIfToLoad"](any() as LinearLayoutManager) } returns Unit
+
+        every { Utils.getSingletonInstance().sortOutletsWithLocation(any(), any()) } returns Unit
+        every { Utils.getSingletonInstance().getLocation(any()) } returns Location()
 
         presenter.getDealDetails()
 
@@ -621,7 +628,7 @@ class DealDetailsPresenterTest {
 
     @Test
     fun `getEventContent should call use case`() {
-
+        mockkStatic(Utils::class)
         val tokenDealDetails = object : TypeToken<DataResponse<DealsDetailsResponse?>?>() {}.type
         val restResponseDealDetails = RestResponse(
             DataResponse<DealsDetailsResponse>().apply {
@@ -638,10 +645,13 @@ class DealDetailsPresenterTest {
                 mapOf(tokenDealDetails to restResponseDealDetails)
             )
         }
+        every { Utils.getSingletonInstance().sortOutletsWithLocation(any(), any()) } returns Unit
+        every { Utils.getSingletonInstance().getLocation(any()) } returns Location()
 
         presenter.getDealDetails()
         presenter.getEventContent({}, {})
 
         verify { getEventContentUseCase.getEventContent(any(), any(), any(), any()) }
     }
+
 }

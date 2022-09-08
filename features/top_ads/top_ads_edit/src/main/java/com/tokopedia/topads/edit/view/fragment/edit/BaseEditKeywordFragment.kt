@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.common.CustomViewPager
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -26,7 +28,7 @@ import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.BID_TYPE
-import com.tokopedia.topads.edit.utils.Constants.GROUP_STRATEGY
+import com.tokopedia.topads.edit.utils.Constants.IS_BID_AUTOMATIC
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORD_ALL
@@ -37,6 +39,7 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
+import com.tokopedia.topads.edit.utils.Utils
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -44,7 +47,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 private const val CLICK_KATA_KUNCI_POSITIF = "click - kata kunci positif"
 private const val CLICK_KATA_KUNCI_NEGATIF = "click - kata kunci negatif"
-private const val AUTO_BID_STATE = "auto"
 private const val CLICK_BID_TYPE_SELECT = "click - mode pengaturan"
 private const val MANUAL_LAYOUT_EVENT_LABEL = "mode pengaturan atur manual"
 private const val OTOMATIS_LAYOUT_EVENT_LABEL = "mode pengaturan atur otomatis"
@@ -52,6 +54,7 @@ private const val OTOMATIS_LEARN_MORE_LINK = "https://seller.tokopedia.com/edu/t
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
+    val isBidAutomatic : Boolean get() = autoBidSwitch?.isBidAutomatic ?: false
     private var autoBidSwitch: TopadsAutoBidSwitchPartialLayout? = null
     private var keywordGroup: LinearLayout? = null
     private var autoBidTicker: Ticker? = null
@@ -61,7 +64,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
     private var btnState = true
-    private var bidStrategy: String = ""
+    private var isAutoBid: Boolean = false
     private var positivekeywordsAll: ArrayList<KeySharedModel>? = arrayListOf()
     private var negativekeywordsAll: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private val sharedViewModel by lazy {
@@ -82,7 +85,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(
-            resources.getLayout(R.layout.topads_edit_keyword_base_layout),
+            context?.resources?.getLayout(R.layout.topads_edit_keyword_base_layout),
             container,
             false
         )
@@ -102,16 +105,13 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        autoBidTicker?.setHtmlDescription(resources.getString(R.string.topads_edit_auto_bid_ticker_title))
+        context?.resources?.getString(R.string.topads_edit_auto_bid_ticker_title)?.let { autoBidTicker?.setHtmlDescription(it) }
 
         initListeners()
         renderViewPager()
         chipKeyword?.chipType = ChipsUnify.TYPE_SELECTED
 
-        sharedViewModel.setIsWhiteListedUser(
-            arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER) ?: false
-        )
-        arguments?.getString(GROUP_STRATEGY, "")?.let { handleInitialAutoBidState(it) }
+        arguments?.getBoolean(IS_BID_AUTOMATIC)?.let { handleInitialAutoBidState(it) }
     }
 
     private fun initListeners() {
@@ -146,8 +146,8 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         }
 
         autoBidSwitch?.let {
-            it.onCheckBoxStateChanged = { isAutomatic ->
-                handleAutoBidState(if (isAutomatic) AUTO_BID_STATE else "")
+            it.onCheckBoxStateChanged = { isAutoBid ->
+                handleAutoBidState(isAutoBid)
             }
 
             it.onInfoClicked = {
@@ -157,15 +157,15 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     }
 
-    private fun handleInitialAutoBidState(it: String) {
-        handleAutoBidState(it)
-        if(it.isNotEmpty()) autoBidSwitch?.switchToAutomatic() else autoBidSwitch?.switchToManual()
+    private fun handleInitialAutoBidState(isAutoBid: Boolean) {
+        handleAutoBidState(isAutoBid)
+        if(isAutoBid) autoBidSwitch?.switchToAutomatic() else autoBidSwitch?.switchToManual()
     }
 
-    private fun handleAutoBidState(autoBidState: String) {
-        sharedViewModel.setAutoBidStatus(autoBidState)
-        bidStrategy = autoBidState
-        if (autoBidState.isNotEmpty()) {
+    private fun handleAutoBidState(isAutoBid: Boolean) {
+        sharedViewModel.setAutoBidStatus(Utils.getGroupStrategy(isAutoBid))
+        this.isAutoBid = isAutoBid
+        if (isAutoBid) {
             keywordGroup?.visibility = View.GONE
             autoBidTicker?.visibility = View.VISIBLE
             viewPager?.visibility = View.GONE
@@ -238,7 +238,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         var bidInfoDataItem: List<GroupEditInput.Group.TopadsSuggestionBidSetting>? = null
         var bidGroup = 0
 
-        if (bidStrategy.isEmpty()) {
+        if (!isAutoBid) {
             if (fragments?.get(0) is EditKeywordsFragment) {
                 val bundle: Bundle = (fragments[0] as EditKeywordsFragment).sendData()
                 addedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_CREATE)
@@ -278,15 +278,15 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             ?: return mutableListOf()
 
         val items: MutableList<Map<String, Any>> = mutableListOf()
-        if (fragments.size > 0 && fragments.get(0) is EditKeywordsFragment) {
-            positivekeywordsAll?.forEachIndexed { index, it ->
+        if (fragments.size > Int.ZERO && fragments[Int.ZERO] is EditKeywordsFragment) {
+            positivekeywordsAll?.forEachIndexed { _, it ->
                 val map = mapOf(
                     "name" to it.name, "id" to it.id, "type" to "positif"
                 )
                 items.add(map)
             }
         }
-        if (fragments.size > 1 && fragments.get(1) is EditNegativeKeywordsFragment) {
+        if (fragments.size > 1 && fragments[Int.ONE] is EditNegativeKeywordsFragment) {
             negativekeywordsAll?.forEach {
                 val map = mapOf(
                     "name" to it.tag, "id" to it.keywordId, "type" to "negatif"

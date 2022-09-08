@@ -1,11 +1,21 @@
 package com.tokopedia.tokopedianow.home.domain.query
 
-import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase.Companion.CHANNEL_SLUG
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-internal object GetQuestList {
-    val QUERY = """
-        query quest_list(${'$'}${CHANNEL_SLUG}: String){
-          questList(input: {limit: 0, nextQuestID: 0, channel: 0, channelSlug: ${'$'}${CHANNEL_SLUG}}) {
+internal object GetQuestList: GqlQueryInterface {
+
+    const val CHANNEL_SLUG = "channelSlug"
+
+    private const val OPERATION_NAME = "questList"
+
+    override fun getOperationNameList(): List<String> {
+        return listOf(OPERATION_NAME)
+    }
+
+    override fun getQuery(): String {
+        return """
+        query $OPERATION_NAME(${'$'}${CHANNEL_SLUG}: String){
+          $OPERATION_NAME(input: {limit: 0, nextQuestID: 0, channel: 0, channelSlug: ${'$'}${CHANNEL_SLUG}}) {
             questList {
               id
               title
@@ -30,5 +40,10 @@ internal object GetQuestList {
             }
           }
         }
-    """.trimIndent()
+        """.trimIndent()
+    }
+
+    override fun getTopOperationName(): String {
+        return OPERATION_NAME
+    }
 }

@@ -54,6 +54,13 @@ object BuyerOrderDetailTracker {
         return this
     }
 
+    private fun MutableMap<String, Any>.appendTrackerId(trackerId: String): MutableMap<String, Any> {
+        if (trackerId.isNotBlank()) {
+            put(BuyerOrderDetailTrackerConstant.EVENT_KEY_TRACKER_ID, trackerId)
+        }
+        return this
+    }
+
     private fun Bundle.appendCurrentSite(currentSite: String): Bundle {
         putString(BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE, currentSite)
         return this
@@ -116,64 +123,114 @@ object BuyerOrderDetailTracker {
     }
 
     private fun eventGeneralBuyerOrderDetail(
+        eventName: String = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PURCHASE_LIST,
         eventAction: String,
         orderStatusCode: String,
-        orderId: String
+        orderId: String,
+        businessUnit: String = BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_MARKETPLACE,
+        trackerId: String = ""
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PURCHASE_LIST,
+            eventName = eventName,
             eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
             eventAction = eventAction,
             eventLabel = "$orderStatusCode${BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP}$orderId"
-        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_MARKETPLACE)
+        ).appendBusinessUnit(businessUnit)
             .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(trackerId)
             .sendGeneralEvent()
     }
 
     fun eventClickSeeOrderHistoryDetail(orderStatusCode: String, orderId: String) {
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_ORDER_HISTORY_DETAIL, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_ORDER_HISTORY_DETAIL,
+            orderStatusCode = orderStatusCode,
+            orderId = orderId
+        )
     }
 
     fun eventClickSeeOrderInvoice(orderStatusCode: String, orderId: String) {
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_ORDER_INVOICE, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_ORDER_INVOICE,
+            orderStatusCode = orderStatusCode,
+            orderId = orderId
+        )
     }
 
     fun eventClickCopyOrderInvoice(orderStatusCode: String, orderId: String) {
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_COPY_ORDER_INVOICE, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_COPY_ORDER_INVOICE,
+            orderStatusCode = orderStatusCode,
+            orderId = orderId
+        )
     }
 
     fun eventClickShopName(orderStatusCode: String, orderId: String) {
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SHOP_NAME, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SHOP_NAME,
+            orderStatusCode = orderStatusCode,
+            orderId = orderId
+        )
     }
 
     fun eventClickProduct(orderStatusCode: String, orderId: String) {
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_PRODUCT, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_PRODUCT,
+            orderStatusCode = orderStatusCode,
+            orderId = orderId
+        )
     }
 
     fun eventClickSeeShipmentInfoTNC(orderStatusCode: String, orderId: String) {
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_SHIPMENT_TNC, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_SHIPMENT_TNC,
+            orderStatusCode = orderStatusCode,
+            orderId = orderId
+        )
     }
 
     fun eventClickCopyOrderAwb(orderStatusCode: String, orderId: String) {
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_COPY_ORDER_AWB, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_COPY_ORDER_AWB,
+            orderStatusCode = orderStatusCode,
+            orderId = orderId
+        )
     }
 
     fun eventClickChatIcon(orderStatusCode: String, orderId: String) {
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_CHAT_ICON, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_CHAT_ICON,
+            orderStatusCode = orderStatusCode,
+            orderId = orderId
+        )
     }
 
     fun eventClickSeeComplaint(orderStatusCode: String, orderId: String) {
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_COMPLAINT, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_COMPLAINT,
+            orderStatusCode = orderStatusCode,
+            orderId = orderId
+        )
     }
 
-    fun eventClickActionButton(isPrimaryButton: Boolean, buttonName: String, orderStatusCode: String, orderId: String) {
+    fun eventClickActionButtonSOM(isPrimaryButton: Boolean, buttonName: String, orderStatusCode: String, orderId: String) {
         val eventAction = StringBuilder().apply {
             if (isPrimaryButton) append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_PRIMARY_BUTTON)
             else append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_SECONDARY_BUTTON)
             append(BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP)
             append(buttonName)
         }.toString()
-        eventGeneralBuyerOrderDetail(eventAction, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(eventAction = eventAction, orderStatusCode = orderStatusCode, orderId = orderId)
+    }
+
+    fun eventClickActionButtonPG(isPrimaryButton: Boolean, buttonName: String, trackerId: String, orderStatusCode: String, orderId: String) {
+        val eventAction = StringBuilder().apply {
+            if (isPrimaryButton) append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_PRIMARY_BUTTON)
+            else append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_SECONDARY_BUTTON)
+            append(BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP)
+            append(buttonName)
+        }.toString()
+        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG, eventAction, orderStatusCode, orderId, BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS, trackerId)
     }
 
     fun eventClickActionButtonFromReceiveConfirmation(buttonName: String, orderStatusCode: String, orderId: String) {
@@ -184,11 +241,15 @@ object BuyerOrderDetailTracker {
             append(BuyerOrderDetailTrackerConstant.SEPARATOR_SPACE)
             append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_FINISH_ORDER_CONFIRMATION_DIALOG)
         }.toString()
-        eventGeneralBuyerOrderDetail(eventAction, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(eventAction = eventAction, orderStatusCode = orderStatusCode, orderId = orderId)
     }
 
     fun eventClickSimilarProduct(orderStatusCode: String, orderId: String) {
-        eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SIMILAR_PRODUCT, orderStatusCode, orderId)
+        eventGeneralBuyerOrderDetail(
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SIMILAR_PRODUCT,
+            orderStatusCode = orderStatusCode,
+            orderId = orderId
+        )
     }
 
     fun eventClickBuyAgain(

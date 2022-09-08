@@ -10,6 +10,8 @@ import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
 import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransformer
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import dagger.Module
 import dagger.Provides
 
@@ -29,4 +31,9 @@ class PlayBroadcastSetupModule {
     @PlayBroadcastSetupScope
     fun provideCoverImageTransformer(): ImageTransformer = PlayMinimumCoverImageTransformer()
 
+    @Provides
+    @PlayBroadcastSetupScope
+    fun provideHtmlTextTransformer(): HtmlTextTransformer {
+        return DefaultHtmlTextTransformer()
+    }
 }

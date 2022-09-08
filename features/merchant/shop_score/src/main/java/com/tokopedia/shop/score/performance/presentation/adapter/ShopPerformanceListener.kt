@@ -52,6 +52,7 @@ interface ItemStatusPowerMerchantListener {
     fun onItemClickedGotoPMPro()
     fun onItemClickedGoToPMActivation()
     fun onImpressHeaderPowerMerchantSection()
+    fun onItemClickedSeeAllBenefits()
 }
 
 interface ItemStatusPowerMerchantProListener {

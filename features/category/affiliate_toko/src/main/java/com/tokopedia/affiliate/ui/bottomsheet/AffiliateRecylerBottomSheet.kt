@@ -89,7 +89,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     }
 
     private fun initDivider() {
-        if((listItem as? List<*>)?.isNotEmpty() == true && type == TYPE_HOME && viewModel?.isFeatureWhiteListed() == true) {
+        if((listItem as? List<*>)?.isNotEmpty() == true && type == TYPE_HOME ) {
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.show()
             setTicker()
         }else{
@@ -107,7 +107,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     }
 
     private fun initList(listItem: Any?) {
-        if(type == TYPE_HOME && viewModel?.isFeatureWhiteListed() == true){
+        if(type == TYPE_HOME){
             var metricList = (listItem as? List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>)
             metricList =  metricList?.sortedBy { subMetrics -> subMetrics?.order  }
             metricList?.forEachIndexed { index, subMetrics ->

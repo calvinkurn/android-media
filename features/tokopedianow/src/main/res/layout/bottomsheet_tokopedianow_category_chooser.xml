@@ -22,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_64"
         android:visibility="gone"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

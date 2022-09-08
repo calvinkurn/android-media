@@ -1,11 +1,13 @@
 package com.tokopedia.sellerhome.view.navigator
 
 import android.content.Context
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
@@ -24,7 +26,8 @@ class SellerHomeNavigator(
     private val context: Context,
     private val fm: FragmentManager,
     private val sellerHomeRouter: SellerHomeRouter?,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private var navigationHomeMenu: View?
 ) {
 
     private var homeFragment: Fragment? = null
@@ -57,7 +60,7 @@ class SellerHomeNavigator(
     }
 
     fun showPage(@FragmentType page: Int) {
-        if(isActivityResumed()) {
+        if (isActivityResumed()) {
             val transaction = fm.beginTransaction()
             val fragment = getPageFragment(page)
 
@@ -83,9 +86,9 @@ class SellerHomeNavigator(
 
                 if (currentFragment != null && currentFragment != selectedPage) {
                     transaction
-                            .remove(currentFragment)
-                            .add(R.id.sahContainer, selectedPage, currentTag)
-                            .commitNowAllowingStateLoss()
+                        .remove(currentFragment)
+                        .add(R.id.sahContainer, selectedPage, currentTag)
+                        .commitNowAllowingStateLoss()
                 } else {
                     showFragment(selectedPage, transaction)
                 }
@@ -97,7 +100,7 @@ class SellerHomeNavigator(
     }
 
     fun getPageTitle(@FragmentType pageType: Int): String? {
-        return when(pageType) {
+        return when (pageType) {
             FragmentType.HOME -> getHomeTitle()
             FragmentType.PRODUCT -> pages[productManageFragment]
             FragmentType.CHAT -> pages[chatFragment]
@@ -155,7 +158,8 @@ class SellerHomeNavigator(
     private fun initFragments() {
         clearFragments()
         homeFragment = SellerHomeFragment.newInstance()
-        productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
+        productManageFragment =
+            sellerHomeRouter?.getProductManageFragment(arrayListOf(), String.EMPTY, String.EMPTY, navigationHomeMenu)
         chatFragment = sellerHomeRouter?.getChatListFragment()
         somListFragment = sellerHomeRouter?.getSomListFragment(
             context,
@@ -221,18 +225,18 @@ class SellerHomeNavigator(
     }
 
     private fun setupProductManagePage(page: PageFragment): Fragment? {
-        val searchKeyword = page.keywordSearch
-        val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
-
-        when {
-            page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock -> {
-                val filterOptions = arrayListOf(filterOptionEmptyStock)
-                productManageFragment = sellerHomeRouter?.getProductManageFragment(filterOptions, searchKeyword)
-            }
-            page.tabPage.isBlank() && searchKeyword.isNotBlank() -> {
-                productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword)
-            }
+        val filterOptions: ArrayList<String> = if (page.tabPage.isNotBlank()) {
+            arrayListOf(page.tabPage)
+        } else {
+            arrayListOf()
         }
+
+        productManageFragment = sellerHomeRouter?.getProductManageFragment(
+            filterOptions,
+            page.keywordSearch,
+            page.productManageTab,
+            navigationHomeMenu
+        )
 
         return productManageFragment
     }
@@ -252,7 +256,10 @@ class SellerHomeNavigator(
         fragment?.let { pages[it] = title }
     }
 
-    private fun showOnlySelectedFragment(transaction: FragmentTransaction, fragment: Fragment? = null) {
+    private fun showOnlySelectedFragment(
+        transaction: FragmentTransaction,
+        fragment: Fragment? = null
+    ) {
         hideAllPages(transaction)
         fragment?.let {
             scrollFragmentToTop(it)
@@ -293,7 +300,7 @@ class SellerHomeNavigator(
 
     private fun getHomeTitle(): String? {
         val shopName = userSession.shopName
-        return if(shopName.isNullOrEmpty()) {
+        return if (shopName.isNullOrEmpty()) {
             pages[homeFragment]
         } else {
             shopName

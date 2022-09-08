@@ -6,9 +6,8 @@
         <activity
             android:name="com.tokopedia.product_bundle.activity.ProductBundleActivity"
             android:label="@string/title_bundling_selection_page"
-            android:screenOrientation="portrait"
             android:configChanges="orientation"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.AppCompat.Translucent"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -38,5 +37,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
     </application>
 </manifest>

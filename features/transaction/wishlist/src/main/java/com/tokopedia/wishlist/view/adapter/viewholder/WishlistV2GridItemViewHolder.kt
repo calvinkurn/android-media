@@ -15,7 +15,12 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 
 class WishlistV2GridItemViewHolder(private val binding: WishlistV2GridItemBinding,
                                    private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: WishlistV2TypeLayoutData, position: Int, isShowCheckbox: Boolean) {
+    fun bind(
+        item: WishlistV2TypeLayoutData,
+        position: Int,
+        isShowCheckbox: Boolean,
+        isAutoSelected: Boolean
+    ) {
         if (item.dataObject is ProductCardModel) {
             binding.pcGridItem.setProductModel(item.dataObject)
 
@@ -26,7 +31,7 @@ class WishlistV2GridItemViewHolder(private val binding: WishlistV2GridItemBindin
             val buttonSeeSimilarProduct = footerLayout.findViewById<UnifyButton>(R.id.buttonSeeSimilarProductWishlist)
 
             if (isShowCheckbox) {
-                renderBulkDelete(item, buttonSecondary, rlPrimaryButton)
+                renderBulkDelete(item, buttonSecondary, rlPrimaryButton, isAutoSelected)
 
             } else {
                 renderRegularWishlist(item, buttonSecondary, rlPrimaryButton)
@@ -43,23 +48,31 @@ class WishlistV2GridItemViewHolder(private val binding: WishlistV2GridItemBindin
         }
     }
 
-    private fun renderBulkDelete(item: WishlistV2TypeLayoutData, buttonSecondary: FrameLayout, rlPrimaryButton: RelativeLayout) {
+    private fun renderBulkDelete(
+        item: WishlistV2TypeLayoutData,
+        buttonSecondary: FrameLayout,
+        rlPrimaryButton: RelativeLayout,
+        isAutoSelected: Boolean
+    ) {
         binding.wishlistCheckbox.setOnCheckedChangeListener(null)
         binding.wishlistCheckbox.visible()
         binding.wishlistCheckbox.isChecked = item.isChecked
         binding.wishlistCheckbox.skipAnimation()
         binding.wishlistCheckbox.setOnClickListener {
-            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
         buttonSecondary.gone()
         rlPrimaryButton.gone()
         binding.pcGridItem.setOnClickListener {
             binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
-            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
         binding.root.setOnClickListener {
             binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
-            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
     }
 

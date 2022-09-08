@@ -19,24 +19,28 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
     private var isReportable: Boolean = false
     private var canBeDeleted: Boolean = false
     private var canBeUnFollow: Boolean = false
+    private var isEditable: Boolean = true
     var onReport: (() -> Unit)? = null
     var onFollow: (() -> Unit)? = null
     var onDelete: (() -> Unit)? = null
     var onEdit: (() -> Unit)? = null
     var onDismiss: (() -> Unit)? = null
     var onClosedClicked: (() -> Unit)? = null
+    var isCommentPage: Boolean = false
     private var dismissedByClosing = false
 
     companion object {
         fun newInstance(
             isReportable: Boolean = true,
             canUnfollow: Boolean = false,
-            isDeletable: Boolean = true
+            isDeletable: Boolean = true,
+            isEditable: Boolean = true
         ): MenuOptionsBottomSheet {
             return MenuOptionsBottomSheet().apply {
                 this.canBeUnFollow = canUnfollow
                 this.isReportable = isReportable
                 this.canBeDeleted = isDeletable
+                this.isEditable = isEditable
             }
         }
     }
@@ -58,7 +62,8 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
         report.showWithCondition(!canBeDeleted && isReportable)
         follow.showWithCondition(!canBeDeleted && canBeUnFollow)
         delete.showWithCondition(canBeDeleted)
-        edit.showWithCondition(canBeDeleted && shouldShowNewContentCreationFlow)
+        edit.showWithCondition(canBeDeleted && shouldShowNewContentCreationFlow && !isCommentPage  && isEditable)
+
 
         if (canBeDeleted && report.isVisible && follow.isVisible) {
             div0.show()
@@ -114,6 +119,10 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
                 onDismiss?.invoke()
         }
     }
+    fun setIsCommentPage(isCommentPage: Boolean){
+        this.isCommentPage = isCommentPage
+    }
+
     private fun enableContentCreationNewFlow(): Boolean {
         val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
         return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)

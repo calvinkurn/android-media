@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.data.feedrevamp
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -55,12 +56,20 @@ data class FeedXCard(
     var share: FeedXShare = FeedXShare(),
     @SerializedName("followers", alternate = ["fol"])
     var followers: FeedXFollowers = FeedXFollowers(),
+    @SerializedName("maximumDiscountPercentage")
+    var maxDiscPercent:Int = 0,
+    @SerializedName("maximumDiscountPercentageFmt")
+    var maximumDisPercentFmt: String = "",
 
     //FeedXCardPost Data Type
     @SerializedName("appLink")
     var appLink: String = "",
     @SerializedName("webLink")
     var webLink: String = "",
+    @SerializedName("appLinkProductList")
+    var appLinkProductList: String = "",
+    @SerializedName("webLinkProductList")
+    var webLinkProductList: String = "",
     @SerializedName("actionButtonLabel")
     var actionButtonLabel: String = "",
     @SerializedName("actionButtonOperationWeb")
@@ -78,7 +87,7 @@ data class FeedXCard(
     val impressHolder: ImpressHolder = ImpressHolder(),
     //Active carousel index
     var lastCarouselIndex : Int = 0,
-    var isAsgcColorChangedToGreen: Boolean = false,
+    var isAsgcColorChangedAsPerWidgetColor: Boolean = false,
     //Topads
     val isTopAds: Boolean = false,
     val shopId: String = "",
@@ -98,7 +107,27 @@ data class FeedXCard(
 
 
 
-) : ImpressHolder() {
+    ) : ImpressHolder() {
+
+    val isTypeProductHighlight: Boolean
+        get() = typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
+
+    val isTypeVOD: Boolean
+        get() = typename == TYPE_FEED_X_CARD_VOD
+    val isTypeLongVideo: Boolean
+        get() =  media.isNotEmpty() && media.first().type == TYPE_LONG_VIDEO
+    val isTypeSgcVideo: Boolean
+        get() =  media.isNotEmpty() && media.first().type == TYPE_VIDEO
+    val isTypeSGC: Boolean
+        get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty() && media.first().type != TYPE_LONG_VIDEO
+
+
+    val useASGCNewDesign: Boolean
+        get() = mods.contains(USE_ASGC_NEW_DESIGN)
+
+    val isASGCDiscountToko: Boolean
+         get() = type == ASGC_DISCOUNT_TOKO
+
     fun copyPostData(): FeedXCard {
         return FeedXCard(
             typename = typename,
@@ -115,6 +144,8 @@ data class FeedXCard(
             deletable = deletable,
             appLink = appLink,
             webLink = webLink,
+            webLinkProductList = webLinkProductList,
+            appLinkProductList = appLinkProductList,
             actionButtonLabel = actionButtonLabel,
             actionButtonOperationApp = actionButtonOperationApp,
             actionButtonOperationWeb = actionButtonOperationWeb,
@@ -127,6 +158,8 @@ data class FeedXCard(
             comments = comments,
             share = share,
             followers = followers,
+            maximumDisPercentFmt = maximumDisPercentFmt,
+            maxDiscPercent = maxDiscPercent,
             publishedAt = publishedAt,
             mods = mods,
             impressHolder = impressHolder,
@@ -136,5 +169,17 @@ data class FeedXCard(
             cpmData = cpmData,
             listProduct = listProduct
         )
+    }
+
+    companion object {
+        private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT = "FeedXCardProductsHighlight"
+        private const val TYPE_FEED_X_CARD_VOD = "FeedXCardPlay"
+        private const val TYPE_LONG_VIDEO: String = "long-video"
+        private const val TYPE_VIDEO: String = "video"
+
+
+        private const val USE_ASGC_NEW_DESIGN: String = "use_new_design"
+        private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
+
     }
 }

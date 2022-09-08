@@ -9,7 +9,8 @@ import com.tokopedia.play.data.*
 import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
+import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
+import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import java.lang.reflect.Type
 
@@ -71,6 +72,9 @@ class PlaySocketMapper(
             PlaySocketType.UserWinnerStatus.value -> {
                 return mapToUserWinnerStatus()
             }
+            PlaySocketType.ChannelInteractiveQuiz.value-> {
+                return mapToChannelQuiz()
+            }
         }
         return null
     }
@@ -115,8 +119,8 @@ class PlaySocketMapper(
         return convertToModel(webSocketResponse.jsonObject, ChannelInteractiveStatus::class.java)
     }
 
-    private fun mapToChannelInteractive(): ChannelInteractive? {
-        return convertToModel(webSocketResponse.jsonObject, ChannelInteractive::class.java)
+    private fun mapToChannelInteractive(): GiveawayResponse? {
+        return convertToModel(webSocketResponse.jsonObject, GiveawayResponse::class.java)
     }
 
     private fun mapToRealTimeNotification(): RealTimeNotification? {
@@ -130,6 +134,8 @@ class PlaySocketMapper(
     private fun mapToUserWinnerStatus(): UserWinnerStatus? {
         return convertToModel(webSocketResponse.jsonObject, UserWinnerStatus::class.java)
     }
+
+    private fun mapToChannelQuiz(): QuizResponse? = convertToModel(webSocketResponse.jsonObject, QuizResponse::class.java)
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {
         try {

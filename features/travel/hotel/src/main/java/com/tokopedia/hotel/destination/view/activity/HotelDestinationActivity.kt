@@ -34,6 +34,8 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
     override fun getParentViewResourceID(): Int = R.id.parent_view
 
+    override fun getToolbarResourceID(): Int = R.id.toolbar_hotel_destination
+
     override fun isShowCloseButton(): Boolean = true
 
     override fun getComponent(): HotelDestinationComponent = DaggerHotelDestinationComponent.builder()

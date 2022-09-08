@@ -13,13 +13,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
@@ -28,32 +29,36 @@ import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.feature.gallery.analytics.ReviewGalleryTracking
-import com.tokopedia.review.feature.gallery.data.Detail
-import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
 import com.tokopedia.review.feature.gallery.di.DaggerReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.di.ReviewGalleryComponent
+import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapter
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
-import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
+import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryImageThumbnailUiModel
+import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryMediaThumbnailUiModel
+import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryVideoThumbnailUiModel
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
-import com.tokopedia.review.feature.gallery.presentation.uimodel.ReviewGalleryRoutingUiModel
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryMediaThumbnailListener
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
 import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryLoadingView
-import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
+import com.tokopedia.reviewcommon.extension.isMoreThanZero
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReviewGalleryFragment :
-    BaseListFragment<ReviewGalleryUiModel, ReviewGalleryAdapterTypeFactory>(),
+    BaseListFragment<ReviewGalleryMediaThumbnailUiModel, ReviewGalleryAdapterTypeFactory>(),
     HasComponent<ReviewGalleryComponent>, ReviewPerformanceMonitoringContract,
-    ReadReviewHeaderListener, ReviewGalleryHeaderListener {
+    ReadReviewHeaderListener, ReviewGalleryHeaderListener, ReviewGalleryMediaThumbnailListener {
 
     companion object {
         const val REVIEW_GALLERY_SPAN_COUNT = 2
@@ -71,6 +76,9 @@ class ReviewGalleryFragment :
     @Inject
     lateinit var viewModel: ReviewGalleryViewModel
 
+    @Inject
+    lateinit var reviewGalleryTracker: ReviewGalleryTracking
+
     private var reviewGalleryCoordinatorLayout: CoordinatorLayout? = null
     private var reviewHeader: ReadReviewHeader? = null
     private var loadingView: ReviewGalleryLoadingView? = null
@@ -83,7 +91,12 @@ class ReviewGalleryFragment :
             activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
         getProductIdFromArguments()
-        ReviewGalleryTracking.trackOpenScreen(viewModel.getProductId())
+        reviewGalleryTracker.trackOpenScreen(viewModel.getProductId())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        reviewGalleryTracker.sendQueuedTrackers()
     }
 
     override fun stopPreparePerfomancePageMonitoring() {
@@ -151,13 +164,8 @@ class ReviewGalleryFragment :
         component?.inject(this)
     }
 
-    override fun onItemClicked(t: ReviewGalleryUiModel) {
-        ReviewGalleryTracking.trackClickImage(
-            t.attachmentId,
-            t.feedbackId,
-            viewModel.getProductId()
-        )
-        goToImagePreview(t)
+    override fun onItemClicked(t: ReviewGalleryMediaThumbnailUiModel) {
+        // noop
     }
 
     override fun loadData(page: Int) {
@@ -165,7 +173,11 @@ class ReviewGalleryFragment :
     }
 
     override fun getAdapterTypeFactory(): ReviewGalleryAdapterTypeFactory {
-        return ReviewGalleryAdapterTypeFactory()
+        return ReviewGalleryAdapterTypeFactory(this)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<ReviewGalleryMediaThumbnailUiModel, ReviewGalleryAdapterTypeFactory> {
+        return ReviewGalleryAdapter(adapterTypeFactory)
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -181,7 +193,7 @@ class ReviewGalleryFragment :
     }
 
     override fun openStatisticsBottomSheet() {
-        ReviewGalleryTracking.trackClickSatisfactionScore(
+        reviewGalleryTracker.trackClickSatisfactionScore(
             getSatisfactionRate(),
             getRating(),
             getTotalReview(),
@@ -205,7 +217,7 @@ class ReviewGalleryFragment :
     }
 
     override fun onSeeAllClicked() {
-        ReviewGalleryTracking.trackClickSeeAll(viewModel.getProductId())
+        reviewGalleryTracker.trackClickSeeAll(viewModel.getProductId())
         goToReadingPage()
     }
 
@@ -228,6 +240,35 @@ class ReviewGalleryFragment :
         super.loadInitialData()
     }
 
+    override fun onThumbnailClicked(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
+        reviewGalleryTracker.trackMediaClick(
+            reviewGalleryMediaThumbnailUiModel.feedbackId,
+            viewModel.getProductId(),
+            reviewGalleryMediaThumbnailUiModel.attachmentId
+        )
+        goToMediaPreview(reviewGalleryMediaThumbnailUiModel)
+    }
+
+    override fun onImageImpressed(element: ReviewGalleryImageThumbnailUiModel) {
+        reviewGalleryTracker.trackImageImpression(
+            viewModel.getMediaCount(),
+            viewModel.getProductId(),
+            element.attachmentId,
+            element.mediaNumber,
+            element.getMediaName()
+        )
+    }
+
+    override fun onVideoImpressed(element: ReviewGalleryVideoThumbnailUiModel) {
+        reviewGalleryTracker.trackVideoImpression(
+            viewModel.getMediaCount(),
+            viewModel.getProductId(),
+            element.attachmentId,
+            element.mediaNumber,
+            element.getVideoId()
+        )
+    }
+
     private fun getProductIdFromArguments() {
         viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
     }
@@ -248,7 +289,7 @@ class ReviewGalleryFragment :
     }
 
     private fun observeReviewImages() {
-        viewModel.reviewImages.observe(viewLifecycleOwner, {
+        viewModel.reviewMedia.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessGetReviewImages(it.data)
                 is Fail -> onFailGetReviewImages(it.throwable)
@@ -260,7 +301,7 @@ class ReviewGalleryFragment :
         reviewHeader?.apply {
             setRatingData(rating)
             setListener(this@ReviewGalleryFragment)
-            setSeeAll(this@ReviewGalleryFragment)
+            setSeeAll(true, this@ReviewGalleryFragment)
             show()
         }
     }
@@ -269,10 +310,10 @@ class ReviewGalleryFragment :
         logToCrashlytics(throwable)
     }
 
-    private fun onSuccessGetReviewImages(productrevGetReviewImage: ProductrevGetReviewImage) {
+    private fun onSuccessGetReviewImages(productrevGetReviewMedia: ProductrevGetReviewMedia) {
         hideFullPageLoading()
         swipeToRefresh.isRefreshing = false
-        renderList(mapToUiModel(productrevGetReviewImage), productrevGetReviewImage.hasNext)
+        renderList(mapToUiModel(productrevGetReviewMedia), productrevGetReviewMedia.hasNext)
     }
 
     private fun onFailGetReviewImages(throwable: Throwable) {
@@ -297,26 +338,35 @@ class ReviewGalleryFragment :
         }
     }
 
-    private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryUiModel> {
-        return productrevGetReviewImage.reviewImages.map {
-                getReviewGalleryUiModelBasedOnDetail(
+    private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewMedia): List<ReviewGalleryMediaThumbnailUiModel> {
+        return productrevGetReviewImage.reviewMedia.mapNotNull {
+            if ((it.imageId.isNotBlank() && it.imageId.toLongOrNull() == null) || it.imageId.toLongOrZero().isMoreThanZero()) {
+                getReviewGalleryImageThumbnailUiModelBasedOnDetail(
                     productrevGetReviewImage.detail,
                     it.feedbackId,
                     it.imageId,
-                    it.imageNumber
+                    it.mediaNumber
                 )
+            } else if ((it.videoId.isNotBlank() && it.videoId.toLongOrNull() == null) || it.videoId.toLongOrZero().isMoreThanZero()) {
+                getReviewGalleryVideoThumbnailUiModelBasedOnDetail(
+                    productrevGetReviewImage.detail,
+                    it.feedbackId,
+                    it.videoId,
+                    it.mediaNumber
+                )
+            } else null
         }
     }
 
-    private fun getReviewGalleryUiModelBasedOnDetail(
+    private fun getReviewGalleryImageThumbnailUiModelBasedOnDetail(
         detail: Detail,
         feedbackId: String,
         attachmentId: String,
-        imageNumber: Int
-    ): ReviewGalleryUiModel {
-        var reviewGalleryUiModel = ReviewGalleryUiModel()
+        mediaNumber: Int
+    ): ReviewGalleryImageThumbnailUiModel {
+        var reviewGalleryImageThumbnailUiModel = ReviewGalleryImageThumbnailUiModel()
         detail.reviewDetail.firstOrNull { it.feedbackId == feedbackId }?.apply {
-            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+            reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
                 rating = this.rating,
                 variantName = this.variantName,
                 reviewerName = this.user.fullName,
@@ -333,17 +383,55 @@ class ReviewGalleryFragment :
             )
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
-            reviewGalleryUiModel = reviewGalleryUiModel.copy(
-                imageUrl = this.fullsizeURL,
-                fullImageUrl = this.fullsizeURL,
+            reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
+                mediaUrl = this.fullsizeURL,
+                thumbnailUrl = this.fullsizeURL,
                 attachmentId = this.attachmentId
             )
         }
-        reviewGalleryUiModel = reviewGalleryUiModel.copy(
+        reviewGalleryImageThumbnailUiModel = reviewGalleryImageThumbnailUiModel.copy(
             feedbackId = feedbackId,
-            imageNumber = imageNumber
+            mediaNumber = mediaNumber
         )
-        return reviewGalleryUiModel
+        return reviewGalleryImageThumbnailUiModel
+    }
+
+    private fun getReviewGalleryVideoThumbnailUiModelBasedOnDetail(
+        detail: Detail,
+        feedbackId: String,
+        attachmentId: String,
+        mediaNumber: Int
+    ): ReviewGalleryVideoThumbnailUiModel {
+        var reviewGalleryVideoThumbnailUiModel = ReviewGalleryVideoThumbnailUiModel()
+        detail.reviewDetail.firstOrNull { it.feedbackId == feedbackId }?.apply {
+            reviewGalleryVideoThumbnailUiModel = reviewGalleryVideoThumbnailUiModel.copy(
+                rating = this.rating,
+                variantName = this.variantName,
+                reviewerName = this.user.fullName,
+                isLiked = this.isLiked,
+                totalLiked = this.totalLike,
+                review = this.review,
+                reviewTime = this.createTimestamp,
+                isReportable = this.isReportable,
+                userStats = this.userStats,
+                isAnonymous = this.isAnonymous,
+                userId = this.user.userId,
+                userImage = this.user.image,
+                badRatingReason = this.badRatingReasonFmt
+            )
+        }
+        detail.reviewGalleryVideos.firstOrNull { it.attachmentId == attachmentId }?.apply {
+            reviewGalleryVideoThumbnailUiModel = reviewGalleryVideoThumbnailUiModel.copy(
+                thumbnailUrl = this.url,
+                mediaUrl = this.url,
+                attachmentId = this.attachmentId
+            )
+        }
+        reviewGalleryVideoThumbnailUiModel = reviewGalleryVideoThumbnailUiModel.copy(
+            feedbackId = feedbackId,
+            mediaNumber = mediaNumber
+        )
+        return reviewGalleryVideoThumbnailUiModel
     }
 
     private fun getReviewStatistics(): List<ProductReviewDetail> {
@@ -396,28 +484,18 @@ class ReviewGalleryFragment :
         }
     }
 
-    private fun goToImagePreview(reviewGalleryUiModel: ReviewGalleryUiModel) {
-        context?.let {
-            val cacheManager = SaveInstanceCacheManager(it, true)
-            cacheManager.put(
-                KEY_REVIEW_GALLERY_ROUTING_DATA, ReviewGalleryRoutingUiModel(
-                    viewModel.getProductId(),
-                    currentPage,
-                    getImageCount(),
-                    adapter.data,
-                    reviewGalleryUiModel.imageNumber,
-                    viewModel.getShopId()
-                )
-            )
-            startActivityForResult(
-                ReviewImagePreviewActivity.getIntent(it, cacheManager.id ?: "", true),
-                IMAGE_PREVIEW_ACTIVITY_CODE
-            )
-        }
-    }
-
-    private fun getImageCount(): Long {
-        return (viewModel.reviewImages.value as? Success)?.data?.detail?.imageCount ?: 0L
+    private fun goToMediaPreview(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
+        ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+            context = requireContext(),
+            pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
+            productID = viewModel.getProductId(),
+            shopID = viewModel.getShopId(),
+            isProductReview = true,
+            isFromGallery = true,
+            mediaPosition = reviewGalleryMediaThumbnailUiModel.mediaNumber,
+            showSeeMore = false,
+            preloadedDetailedReviewMediaResult = viewModel.concatenatedReviewImages.value
+        ).also { startActivityForResult(it, IMAGE_PREVIEW_ACTIVITY_CODE) }
     }
 
     private fun isFirstPage(): Boolean {

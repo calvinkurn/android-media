@@ -15,11 +15,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -34,6 +36,7 @@ import com.tokopedia.review.databinding.FragmentSellerReviewReplyBinding
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewreply.analytics.SellerReviewReplyTracking
 import com.tokopedia.review.feature.reviewreply.di.component.ReviewReplyComponent
+import com.tokopedia.review.feature.reviewreply.di.qualifier.ReviewReplyGson
 import com.tokopedia.review.feature.reviewreply.insert.presentation.model.ReviewReplyInsertUiModel
 import com.tokopedia.review.feature.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
 import com.tokopedia.review.feature.reviewreply.util.mapper.SellerReviewReplyMapper
@@ -51,6 +54,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.reviewcommon.extension.get
 
 class SellerReviewReplyFragment : BaseDaggerFragment(),
     ReviewTemplateListViewHolder.ReviewTemplateListener,
@@ -68,6 +72,10 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     }
 
     @Inject
+    @ReviewReplyGson
+    lateinit var gson: Gson
+
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
@@ -82,8 +90,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
     private var feedbackUiModel: FeedbackUiModel? = null
     private var productReplyUiModel: ProductReplyUiModel? = null
-
-    private var cacheManager: SaveInstanceCacheManager? = null
 
     private var bottomSheetAddTemplate: AddTemplateBottomSheet? = null
 
@@ -107,13 +113,12 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initData(savedInstanceState)
         super.onCreate(savedInstanceState)
-        activity?.let {
-            cacheManager = SaveInstanceCacheManager(it, savedInstanceState)
-        }
-        viewModelReviewReply =
-            ViewModelProvider(this, viewModelFactory).get(SellerReviewReplyViewModel::class.java)
+        initData()
+        viewModelReviewReply = ViewModelProvider(
+            this,
+            viewModelFactory
+        ).get(SellerReviewReplyViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -404,20 +409,33 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun initData(savedInstanceState: Bundle?) {
+    private fun initData() {
         context?.let {
             activity?.intent?.run {
-                shopId = getStringExtra(EXTRA_SHOP_ID) ?: ""
-                isEmptyReply = getBooleanExtra(IS_EMPTY_REPLY_REVIEW, false)
-                val objectId = getStringExtra(CACHE_OBJECT_ID)
-                val manager = if (savedInstanceState == null) {
-                    SaveInstanceCacheManager(it, objectId)
-                } else {
-                    cacheManager
-                }
-                feedbackUiModel = manager?.get(EXTRA_FEEDBACK_DATA, FeedbackUiModel::class.java)
-                productReplyUiModel =
-                    manager?.get(EXTRA_PRODUCT_DATA, ProductReplyUiModel::class.java)
+                val cacheManagerId = getStringExtra(CACHE_OBJECT_ID).orEmpty()
+                val cacheManager = SaveInstanceCacheManager(it, cacheManagerId)
+                shopId = cacheManager.get(
+                    customId = EXTRA_SHOP_ID,
+                    type = String::class.java,
+                    defaultValue = "",
+                    gson = gson
+                ).orEmpty()
+                isEmptyReply = cacheManager.get(
+                    customId = IS_EMPTY_REPLY_REVIEW,
+                    type = Boolean::class.java,
+                    defaultValue = false,
+                    gson = gson
+                ).orFalse()
+                feedbackUiModel = cacheManager.get<FeedbackUiModel>(
+                    customId = EXTRA_FEEDBACK_DATA,
+                    type = FeedbackUiModel::class.java,
+                    gson = gson
+                )
+                productReplyUiModel = cacheManager.get<ProductReplyUiModel>(
+                    customId = EXTRA_PRODUCT_DATA,
+                    type = ProductReplyUiModel::class.java,
+                    gson = gson
+                )
             }
         }
     }

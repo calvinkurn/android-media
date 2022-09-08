@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:lineSpacingExtra="6dp"
+        android:text="@string/tokopedianow_on_boarding_content_overview_bottomsheet"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_time"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="22dp"
+        app:layout_constraintStart_toStartOf="@+id/typography"
+        app:layout_constraintTop_toBottomOf="@+id/typography" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_time"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="13dp"
+        android:lineSpacingExtra="6dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/iu_time"
+        app:layout_constraintEnd_toEndOf="@+id/typography"
+        app:layout_constraintStart_toEndOf="@+id/iu_time"
+        app:layout_constraintTop_toTopOf="@+id/iu_time"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_choice_product"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tp_time" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_choice_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:lineSpacingExtra="6dp"
+        android:layout_marginStart="13dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/iu_choice_product"
+        app:layout_constraintEnd_toEndOf="@+id/tp_time"
+        app:layout_constraintStart_toEndOf="@+id/iu_choice_product"
+        app:layout_constraintTop_toTopOf="@+id/iu_choice_product"
+        app:typographyType="display_3" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_try_now"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/tokopedianow_on_boarding_cta_try_now_button_bottomsheet"
+        app:layout_constraintEnd_toEndOf="@+id/tp_choice_product"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/iu_choice_product"
+        app:layout_constraintTop_toBottomOf="@+id/tp_choice_product" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_back_to_2h"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:layout_marginBottom="43dp"
+        android:text="@string/tokopedianow_on_boarding_cta_back_to_2h_bottomsheet"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btn_try_now"
+        app:layout_constraintStart_toStartOf="@+id/btn_try_now"
+        app:layout_constraintTop_toBottomOf="@+id/btn_try_now"
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

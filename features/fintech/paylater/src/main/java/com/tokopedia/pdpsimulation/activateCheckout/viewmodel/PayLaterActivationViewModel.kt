@@ -16,7 +16,6 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActiv
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
-import com.tokopedia.pdpsimulation.common.domain.model.Variant
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -32,7 +31,7 @@ class PayLaterActivationViewModel @Inject constructor(
 ) :
     BaseViewModel(dispatcher) {
 
-    var gatewayToChipMap: MutableMap<Int, CheckoutData> = HashMap()
+    var gatewayToChipMap: MutableMap<String, CheckoutData> = HashMap()
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
@@ -152,7 +151,7 @@ class PayLaterActivationViewModel @Inject constructor(
         paylaterGetOptimizedModel.let {
             if (it.checkoutData.isNotEmpty()) {
                 it.checkoutData.map { checkoutData ->
-                    gatewayToChipMap[checkoutData.gateway_id.toInt()] = checkoutData
+                    gatewayToChipMap[checkoutData.gateway_id] = checkoutData
                 }
                 _payLaterActivationDetailLiveData.postValue(Success(it))
 
@@ -207,12 +206,10 @@ class PayLaterActivationViewModel @Inject constructor(
             )
         else {
             occRedirectionUrl =
-                UriUtil.buildUri(
-                    ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
-                    gatewayToChipMap[selectedGatewayId.toInt()]?.paymentGatewayCode ?: "",
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
+                    gatewayToChipMap[selectedGatewayId]?.paymentGatewayCode ?: "",
                     selectedTenureSelected,
-                    "fintech"
-                )
+                    "fintech")
             _addToCartLiveData.value = Success(addToCartOcc)
 
         }

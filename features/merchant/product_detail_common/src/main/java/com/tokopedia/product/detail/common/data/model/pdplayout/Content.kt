@@ -12,6 +12,8 @@ data class Content(
         var subtitle: String = "",
         @SerializedName("applink")
         val applink: String = "",
+        @SerializedName("infoLink")
+        val infoLink: String = "",
 
         // For new product info only
         @SerializedName("showAtFront")

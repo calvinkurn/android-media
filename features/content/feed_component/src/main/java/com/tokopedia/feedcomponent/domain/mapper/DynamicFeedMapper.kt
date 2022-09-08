@@ -12,12 +12,10 @@ import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
@@ -29,7 +27,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionVie
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
@@ -82,7 +79,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         feedQuery?.let {
             for (feed in it.feedv2.data) {
                 val templateData: TemplateData = it.feedv2.included.template.firstOrNull { templateData ->
-                    templateData.id == feed.template
+                    templateData.id == feed.template.toString()
                 } ?: break
 
                 when (feed.type) {
@@ -103,11 +100,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     TYPE_CARDPOST -> {
                         if (feed.activity != ACTIVITY_TOPADS) {
                             mapCardPost(posts, feed, templateData.template)
-                        }
-                    }
-                    TYPE_CARDHIGHLIGHT -> {
-                        if (feed.activity != ACTIVITY_TOPADS) {
-                            mapCardHighlight(posts, feed, templateData.template)
                         }
                     }
                     TYPE_CARDPLAYCAROUSEL -> {
@@ -177,16 +169,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     mapTrackingData(media.tracking)
             ))
         }
-
-        if (bannerList.size > 0) {
-            posts.add(
-                    BannerViewModel(
-                            bannerList,
-                            feed.content.cardbanner.title,
-                            template
-                    )
-            )
-        }
     }
 
     private fun mapTopAdsShop(posts: MutableList<Visitable<*>>, feed: Feed,
@@ -207,9 +189,9 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         card.media.firstOrNull()?.type ?: "",
                         card.header.avatarTitle,
                         AUTHOR_TOPADS_SHOP,
-                        card.header.followCta.authorID.toIntOrNull() ?: 0,
+                        card.header.followCta.authorID ,
                         index,
-                        feed.tracking.topads.getOrNull(index)?.id.toIntOrZero()
+                        feed.tracking.topads.getOrNull(index)?.id?:""
                 ))
                 card.tracking.firstOrNull()?.let { tracking ->
                     trackingList.add(TrackingViewModel(
@@ -252,7 +234,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     card.media.firstOrNull()?.type ?: "",
                     card.header.avatarTitle,
                     card.header.followCta.authorType,
-                    card.header.followCta.authorID.toIntOrNull() ?: 0,
+                    card.header.followCta.authorID,
                     index
             )
 
@@ -272,16 +254,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         mapTrackingData(card.tracking)
                 ))
             }
-        }
-
-        if (cards.size > 0) {
-            posts.add(
-                    FeedRecommendationViewModel(
-                            feed.content.cardRecommendation.title,
-                            cards,
-                            template
-                    )
-            )
         }
     }
 
@@ -497,18 +469,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             ))
         }
         return trackingList
-    }
-
-    private fun mapCardHighlight(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
-        val contentList: MutableList<HighlightCardViewModel> = mapHighlightContent(feed.content.cardHighlight, template)
-        if (shouldAddHighlightSection(contentList)) {
-            posts.add(HighlightViewModel(
-                    feed.id.toString(),
-                    feed.content.cardHighlight.title,
-                    contentList,
-                    template
-            ))
-        }
     }
 
     private fun shouldAddHighlightSection(contentList: MutableList<HighlightCardViewModel>): Boolean {

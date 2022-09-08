@@ -25,7 +25,7 @@
             android:id="@+id/textDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginTop="8dp"
             android:text="@string/pm_label_bottom_sheet_cancel_desc"
             android:textColor="@color/Unify_N700"
             app:layout_constraintTop_toBottomOf="@id/textTitle"
@@ -34,8 +34,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/imageTopAds"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginTop="@dimen/gmc_dimen_20dp"
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_name="SHOP_FAVORITE"
@@ -46,19 +46,19 @@
             android:id="@+id/textTopAds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginStart="10dp"
             android:gravity="center_vertical"
             android:text="@string/pm_be_selected_shop_by_buyer"
             android:textColor="@color/Unify_N700"
             app:layout_constraintBottom_toBottomOf="@id/imageTopAds"
             app:layout_constraintLeft_toRightOf="@id/imageTopAds"
             app:layout_constraintTop_toTopOf="@id/imageTopAds"
-            app:typographyType="body_2" />
+            app:typographyType="body_3" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/imageCost"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginTop="@dimen/gmc_dimen_20dp"
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_name="PROMO_ADS"
@@ -69,19 +69,19 @@
             android:id="@+id/textCost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginStart="10dp"
             android:gravity="center_vertical"
             android:text="@string/pm_get_extra_topads_credit"
             android:textColor="@color/Unify_N700"
             app:layout_constraintBottom_toBottomOf="@id/imageCost"
             app:layout_constraintLeft_toRightOf="@id/imageCost"
             app:layout_constraintTop_toTopOf="@id/imageCost"
-            app:typographyType="body_2" />
+            app:typographyType="body_3" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/imageBroadcastChat"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginTop="@dimen/gmc_dimen_20dp"
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_name="COURIER_FAST"
@@ -92,19 +92,19 @@
             android:id="@+id/textBroadcastChat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginStart="10dp"
             android:gravity="center_vertical"
             android:text="@string/pm_get_free_shipping_benefit"
             android:textColor="@color/Unify_N700"
             app:layout_constraintBottom_toBottomOf="@id/imageBroadcastChat"
             app:layout_constraintLeft_toRightOf="@id/imageBroadcastChat"
             app:layout_constraintTop_toTopOf="@id/imageBroadcastChat"
-            app:typographyType="body_2" />
+            app:typographyType="body_3" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/imageExcellentFeature"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginTop="@dimen/gmc_dimen_20dp"
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_name="PROMO"
@@ -115,14 +115,14 @@
             android:id="@+id/textExcellentFeature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginStart="10dp"
             android:gravity="center_vertical"
             android:text="@string/pm_get_excellent_feature"
             android:textColor="@color/Unify_N700"
             app:layout_constraintBottom_toBottomOf="@id/imageExcellentFeature"
             app:layout_constraintLeft_toRightOf="@id/imageExcellentFeature"
             app:layout_constraintTop_toTopOf="@id/imageExcellentFeature"
-            app:typographyType="body_2" />
+            app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/tickerWarning"
@@ -136,8 +136,9 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmDeactivationMessage"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
             android:layout_marginTop="@dimen/gmc_dimen_14dp"
             android:text="@string/pm_deactivation_bottom_sheet_message"
             app:layout_constraintEnd_toEndOf="parent"
@@ -147,12 +148,10 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmDeactivationTnC"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl3"
-            android:gravity="center"
-            android:paddingStart="@dimen/layout_lvl2"
-            android:paddingEnd="@dimen/layout_lvl2"
+            android:layout_marginTop="24dp"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPmDeactivationMessage"
@@ -163,7 +162,7 @@
             android:id="@+id/btnCancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginTop="8dp"
             android:text="@string/pm_label_bottom_sheet_cancel_button"
             app:layout_constraintTop_toBottomOf="@id/tvPmDeactivationTnC"
             app:unifyButtonSize="medium"
@@ -174,7 +173,7 @@
             android:id="@+id/btnBack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/power_merchant_back_btn_margin"
+            android:layout_marginTop="8dp"
             android:text="@string/label_back"
             app:layout_constraintTop_toBottomOf="@id/btnCancel"
             app:unifyButtonSize="medium" />

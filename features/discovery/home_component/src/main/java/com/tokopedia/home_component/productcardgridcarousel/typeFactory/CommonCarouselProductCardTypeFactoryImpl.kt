@@ -11,8 +11,10 @@ import com.tokopedia.home_component.productcardgridcarousel.viewHolder.*
  * @author by yoasfs on 09/06/20
  */
 
-class CommonCarouselProductCardTypeFactoryImpl(private val channels: ChannelModel) :
-        BaseAdapterTypeFactory(), CommonCarouselProductCardTypeFactory {
+class CommonCarouselProductCardTypeFactoryImpl(
+    private val channels: ChannelModel,
+    private val cardInteraction: Boolean = false
+) : BaseAdapterTypeFactory(), CommonCarouselProductCardTypeFactory {
 
     override fun type(cardDataModelCarousel: CarouselEmptyCardDataModel): Int {
         return CarouselEmptyCardViewHolder.LAYOUT
@@ -46,31 +48,38 @@ class CommonCarouselProductCardTypeFactoryImpl(private val channels: ChannelMode
         return SpecialReleaseItemViewHolder.LAYOUT
     }
 
+    override fun type(dataModel: CarouselMissionWidgetDataModel): Int {
+        return MissionWidgetItemViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             CarouselProductCardViewHolder.LAYOUT -> {
                 CarouselProductCardViewHolder(parent, channels)
             }
             CarouselSeeMorePdpViewHolder.LAYOUT -> {
-                CarouselSeeMorePdpViewHolder(parent, channels)
+                CarouselSeeMorePdpViewHolder(parent, channels, cardInteraction)
             }
             CarouselEmptyCardViewHolder.LAYOUT -> {
                 CarouselEmptyCardViewHolder(parent)
             }
             CarouselFeaturedShopViewHolder.LAYOUT -> {
-                CarouselFeaturedShopViewHolder(parent, channels)
+                CarouselFeaturedShopViewHolder(parent, channels, cardInteraction)
             }
             CarouselViewAllCardViewHolder.LAYOUT -> {
-                CarouselViewAllCardViewHolder(parent, channels)
+                CarouselViewAllCardViewHolder(parent, channels, cardInteraction)
             }
             CarouselCampaignCardViewHolder.LAYOUT -> {
-                CarouselCampaignCardViewHolder(parent, channels)
+                CarouselCampaignCardViewHolder(parent, channels, cardInteraction)
             }
             CarouselMerchantVoucherViewHolder.LAYOUT -> {
-                CarouselMerchantVoucherViewHolder(parent)
+                CarouselMerchantVoucherViewHolder(parent, cardInteraction)
             }
             SpecialReleaseItemViewHolder.LAYOUT -> {
-                SpecialReleaseItemViewHolder(parent, channels)
+                SpecialReleaseItemViewHolder(parent, channels, cardInteraction)
+            }
+            MissionWidgetItemViewHolder.LAYOUT -> {
+                MissionWidgetItemViewHolder(parent, cardInteraction)
             }
             else -> {
                 super.createViewHolder(parent, type)

@@ -1,0 +1,103 @@
+[
+  {
+    "data": {
+      "userShopFollow": {
+        "result": {
+          "userShopFollowDetail": [
+            {
+              "shopID": "6932612",
+              "shopName": "DDS Infinity",
+              "location": "Jakarta Utara",
+              "logo": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/3/29/d78cfbe1-ea16-4f69-b765-db7e58c78c92.jpg",
+              "badge": {
+                "title": "Power Merchant",
+                "imageURL": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/ic-powermerchant-130px.png"
+              },
+              "reputation": {
+                "score": "31597",
+                "tooltip": "31.597 points",
+                "reputationScore": "31.597",
+                "minBadgeScore": "5",
+                "badge": "https://ecs7.tokopedia.net/img/repsys/gold-4.gif",
+                "badgeLevel": "4"
+              }
+            },
+            {
+              "shopID": "832606",
+              "shopName": "Goto Living",
+              "location": "Jakarta Barat",
+              "logo": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/1/e0527589-8a62-4e95-84b9-3f9e8a37e786.png",
+              "badge": {
+                "title": "Official Store",
+                "imageURL": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              },
+              "reputation": {
+                "score": "991388",
+                "tooltip": "991.388 points",
+                "reputationScore": "991.388",
+                "minBadgeScore": "5",
+                "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-5.gif",
+                "badgeLevel": "5"
+              }
+            },
+            {
+              "shopID": "10320719",
+              "shopName": "HOP Market",
+              "location": "Jakarta Barat",
+              "logo": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/5/27/f81bd6ed-9cba-4de8-bb06-91962edba3b3.jpg",
+              "badge": {
+                "title": "Official Store",
+                "imageURL": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              },
+              "reputation": {
+                "score": "96913",
+                "tooltip": "96.913 points",
+                "reputationScore": "96.913",
+                "minBadgeScore": "5",
+                "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-1.gif",
+                "badgeLevel": "1"
+              }
+            },
+            {
+              "shopID": "7294350",
+              "shopName": "kenkenjkt",
+              "location": "Jakarta Timur",
+              "logo": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/3/3/bf2b0e0b-a1e5-43b8-92fb-b39ea98cd9ec.jpg",
+              "badge": {
+                "title": "Power Merchant PRO",
+                "imageURL": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
+              },
+              "reputation": {
+                "score": "554",
+                "tooltip": "554 points",
+                "reputationScore": "554",
+                "minBadgeScore": "5",
+                "badge": "https://ecs7.tokopedia.net/img/repsys/silver-2.gif",
+                "badgeLevel": "2"
+              }
+            },
+            {
+              "shopID": "5343403",
+              "shopName": "M231 Official Store",
+              "location": "Kab. Tangerang",
+              "logo": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/10/9/42f719a3-c712-4a27-bbc9-cf4b293a0214.jpg",
+              "badge": {
+                "title": "Official Store",
+                "imageURL": "https://images.tokopedia.net/img/official_store/badge_os.png"
+              },
+              "reputation": {
+                "score": "68925",
+                "tooltip": "68.925 points",
+                "reputationScore": "68.925",
+                "minBadgeScore": "5",
+                "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-1.gif",
+                "badgeLevel": "1"
+              }
+            }
+          ],
+          "haveNext": true
+        }
+      }
+    }
+  }
+]

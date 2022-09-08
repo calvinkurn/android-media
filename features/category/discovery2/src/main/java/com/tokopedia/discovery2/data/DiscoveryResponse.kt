@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 
 data class DiscoveryResponse(
 
@@ -25,6 +26,7 @@ data class DiscoveryResponse(
 
 ) {
         lateinit var componentMap: MutableMap<String, ComponentsItem>
-        var cartMap: MutableMap<String, MiniCartItem>? = null
+        var cartMap: Map<MiniCartItemKey, MiniCartItem>? = null
         var sectionMap: MutableMap<String, Int>? = null
+        var queryParamMap: MutableMap<String, String?>? = null
 }

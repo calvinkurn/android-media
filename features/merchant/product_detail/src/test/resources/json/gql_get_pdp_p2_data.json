@@ -287,8 +287,9 @@
         },
         "reviewImage": {
           "detail": {
-            "imageCount": "64",
-            "imageCountFmt": "Lainnya 60+",
+            "mediaCount": "64",
+            "mediaCountFmt": "Lainnya 60+",
+            "mediaCountTitle": "Foto & Video Pembeli",
             "images": [
               {
                 "description": "",
@@ -317,13 +318,13 @@
                 "reviewID": 323405951,
                 "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/2/5/409fd1ca-27be-4545-8489-65a00be91420.jpg",
                 "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/5/409fd1ca-27be-4545-8489-65a00be91420.jpg"
-              },
+              }
+            ],
+            "videos": [
               {
-                "description": "",
-                "imageAttachmentID": 30359105,
-                "reviewID": 323405951,
-                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/2/5/469ef842-5149-4fe9-9aa8-fa10cda1fb25.jpg",
-                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/5/469ef842-5149-4fe9-9aa8-fa10cda1fb25.jpg"
+                "attachmentID": 30359105,
+                "url": "https://vod.tokopedia.com/view/adaptive.m3u8?id=93e7ecae8bfe49a8b1be143b00f274a9",
+                "feedbackID": 323405951
               }
             ],
             "reviews": [
@@ -390,7 +391,17 @@
           "hasPrev": false,
           "list": [
             {
+              "imageID": 0,
+              "videoID": 30359105,
+              "imageSibling": [
+                30359105,
+                30359106
+              ],
+              "reviewID": 323405951
+            },
+            {
               "imageID": 45016337,
+              "videoID": 0,
               "imageSibling": [
                 45016337
               ],
@@ -398,6 +409,7 @@
             },
             {
               "imageID": 31471686,
+              "videoID": 0,
               "imageSibling": [
                 31471686,
                 31471687
@@ -406,19 +418,12 @@
             },
             {
               "imageID": 31471687,
+              "videoID": 0,
               "imageSibling": [
                 31471686,
                 31471687
               ],
               "reviewID": 333237415
-            },
-            {
-              "imageID": 30359105,
-              "imageSibling": [
-                30359105,
-                30359106
-              ],
-              "reviewID": 323405951
             }
           ]
         },
@@ -761,6 +766,9 @@
           "bebasOngkirExtra": {
             "icon": "https://images.tokopedia.net/img/pdp/icon/usp/boextoped.png"
           }
+        },
+        "shopFinishRate": {
+          "finishRate": "100%"
         },
         "ticker": {
           "tickerInfo": [

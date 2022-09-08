@@ -14,6 +14,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
+import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 
 interface ICartListView : CustomerView {
 
@@ -70,6 +72,8 @@ interface ICartListView : CustomerView {
 
     fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean)
 
+    fun onAddCartToWishlistV2Success(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean)
+
     fun stopCartPerformanceTrace(isSuccessLoadCart: Boolean)
 
     fun stopAllCartPerformanceTrace()
@@ -77,6 +81,8 @@ interface ICartListView : CustomerView {
     fun renderRecentView(recommendationWidget: RecommendationWidget?)
 
     fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean)
+
+    fun renderWishlistV2(wishlists: List<GetWishlistV2Response.Data.WishlistV2.Item>?, forceReload: Boolean)
 
     fun renderRecommendation(recommendationWidget: RecommendationWidget?)
 

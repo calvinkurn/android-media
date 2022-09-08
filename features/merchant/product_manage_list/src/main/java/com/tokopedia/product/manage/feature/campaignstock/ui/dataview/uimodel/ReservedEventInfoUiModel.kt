@@ -7,17 +7,21 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ReservedEventInfoUiModel(
-        val eventType: String,
-        val eventName: String,
-        val eventDesc: String,
-        val stock: String,
-        val actionWording: String,
-        val actionUrl: String,
-        val products: ArrayList<ReservedStockProductModel>,
-        var isAccordionOpened: Boolean = false,
-        var isVariant: Boolean = false,
-        var isLastEvent: Boolean = false): Parcelable, Visitable<CampaignStockTypeFactory> {
+    val eventType: String,
+    val campaignName: String,
+    val campaignIconUrl: String,
+    val startTime: String,
+    val endTime: String,
+    val periodStatus: String,
+    val stock: String
+) : Parcelable, Visitable<CampaignStockTypeFactory> {
 
     override fun type(typeFactory: CampaignStockTypeFactory): Int =
-            typeFactory.type(this)
+        typeFactory.type(this)
+
+    object PeriodStatus {
+        const val ONGOING = "ongoing"
+        const val UPCOMING = "upcoming"
+    }
+
 }

@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/container_options_menu"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tm_dash_dp_16"
+            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+            android:textColor="@color/Unify_NN950"
+            android:text="Filter"
+            app:typographyType="heading_3"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tm_dash_dp_16"
+            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+            android:layout_marginTop="@dimen/tm_dash_dp_20"
+            android:textColor="@color/Unify_NN950"
+            app:typographyWeight="bold"
+            android:text="Status Kupon"
+            app:typographyType="display_2"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tm_dash_dp_16"
+            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+            android:layout_marginTop="@dimen/tm_dash_dp_20"
+            android:orientation="vertical"
+            android:id="@+id/filterStatusSemua">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="clip_vertical"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:text="Semua Status"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="display_2" />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioSemuaStatus"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tm_dash_dp_1"
+                android:background="@color/Unify_NN200"
+                android:layout_marginTop="@dimen/tm_dash_dp_16"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tm_dash_dp_16"
+            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+            android:layout_marginTop="@dimen/tm_dash_dp_20"
+            android:orientation="vertical"
+            android:id="@+id/filterStatusAktif">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="clip_vertical"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:text="Aktif"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="display_2" />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioStatusAktif"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tm_dash_dp_1"
+                android:background="@color/Unify_NN200"
+                android:layout_marginTop="@dimen/tm_dash_dp_16"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tm_dash_dp_16"
+            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+            android:layout_marginTop="@dimen/tm_dash_dp_20"
+            android:orientation="vertical"
+            android:id="@+id/filterStatusBelumAktif">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="clip_vertical"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:text="Belum Aktif"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="display_2" />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioBelumAktif"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tm_dash_dp_1"
+                android:background="@color/Unify_NN200"
+                android:layout_marginTop="@dimen/tm_dash_dp_16"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tm_dash_dp_16"
+            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+            android:layout_marginTop="@dimen/tm_dash_dp_20"
+            android:orientation="vertical"
+            android:id="@+id/filterStatusSudahBerakhir">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="clip_vertical"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:text="Sudah Berakhir"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="display_2" />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioSudahBeharkhir"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tm_dash_dp_8"
+            android:layout_marginTop="@dimen/tm_dash_dp_24"
+            android:background="@color/Unify_NN50"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tm_dash_dp_16"
+            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+            android:layout_marginTop="@dimen/tm_dash_dp_20"
+            android:textColor="@color/Unify_NN950"
+            app:typographyWeight="bold"
+            android:text="Tipe Kupon"
+            app:typographyType="display_2"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tm_dash_dp_16"
+            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+            android:layout_marginTop="@dimen/tm_dash_dp_20"
+            android:orientation="vertical"
+            android:id="@+id/filterTipeSemua">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="clip_vertical"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:text="Semua Tipe"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="display_2" />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioTypeSemua"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tm_dash_dp_1"
+                android:background="@color/Unify_NN200"
+                android:layout_marginTop="@dimen/tm_dash_dp_16"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tm_dash_dp_16"
+            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+            android:layout_marginTop="@dimen/tm_dash_dp_20"
+            android:orientation="vertical"
+            android:id="@+id/filterTipeCashback">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="clip_vertical"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:text="Cashback"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="display_2" />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioTypeCashback"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tm_dash_dp_1"
+                android:background="@color/Unify_NN200"
+                android:layout_marginTop="@dimen/tm_dash_dp_16"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/tm_dash_dp_16"
+            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+            android:layout_marginTop="@dimen/tm_dash_dp_20"
+            android:orientation="vertical"
+            android:id="@+id/filterTipeGratisOngkir">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="clip_vertical"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:text="Gratis Ongkir"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="display_2" />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:id="@+id/radioTypeGratisOngkir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnFilter"
+            android:text="Simpan"
+            app:unifyButtonSize="medium"
+            android:layout_marginTop="@dimen/tm_dash_dp_30"
+            android:layout_marginBottom="@dimen/tm_dash_dp_8"
+            android:layout_marginStart="@dimen/tm_dash_dp_16"
+            android:layout_marginEnd="@dimen/tm_dash_dp_16"
+            android:layout_gravity="bottom"/>
+
+    </LinearLayout>
+
+    </ScrollView>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,31 @@
+{
+  "GetShopChatTicker": {
+    "Date": "18 - 24 Juli 2022",
+    "Data": {
+      "ChatReplied": 90,
+      "ChatSpeed": 5,
+      "DiscussionReplied": 100,
+      "DiscussionSpeed": 6.4
+    },
+    "ColorLight": {
+      "ChatRepliedIndicatorLight": "#03AC0E",
+      "ChatSpeedIndicatorLight": "#D6001C",
+      "DiscussionRepliedIndicatorLight": "#03AC0E",
+      "DiscussionSpeedIndicatorLight": "#03AC0E"
+    },
+    "ColorDark": {
+      "ChatRepliedIndicatorDark": "#50BA47",
+      "ChatSpeedIndicatorDark": "#FC4F66",
+      "DiscussionRepliedIndicatorDark": "#50BA47",
+      "DiscussionSpeedIndicatorDark": "#50BA47"
+    },
+    "Target": {
+      "ChatRepliedTarget": 100,
+      "ChatSpeedTarget": 9
+    },
+    "ShopAppLink": "tokopedia://shop-score-detail?param=test123",
+    "OperationalAppLink": "tokopedia://gold-merchant-statistic-dashboard?page\u003doperational-insight",
+    "IsMaintain": false,
+    "ShowTicker": true
+  }
+}

@@ -19,19 +19,19 @@ data class DynamicHomeChannel(
             @SerializedName("id")
             val id: String = "",
             @Expose
-            @SerializedName("group_id")
+            @SerializedName("group_id", alternate = ["groupId"])
             val groupId: String = "",
             @Expose
-            @SerializedName("galaxy_attribution")
+            @SerializedName("galaxy_attribution", alternate = ["galaxyAttribution"])
             val galaxyAttribution: String = "",
             @Expose
             @SerializedName("persona")
             val persona: String = "",
             @Expose
-            @SerializedName("brand_id")
+            @SerializedName("brand_id", alternate = ["brandId"])
             val brandId: String = "",
             @Expose
-            @SerializedName("category_persona")
+            @SerializedName("category_persona", alternate = ["categoryPersona"])
             val categoryPersona: String = "",
             @Expose
             @SerializedName("layout")
@@ -60,7 +60,7 @@ data class DynamicHomeChannel(
             @SerializedName("categoryID")
             val categoryID: String = "",
             @Expose
-            @SerializedName("perso_type")
+            @SerializedName("perso_type", alternate = ["persoType"])
             val persoType: String = "",
             @Expose
             @SerializedName("campaignCode")
@@ -80,7 +80,7 @@ data class DynamicHomeChannel(
             @SerializedName("homeAttribution")
             @Expose
             val homeAttribution: String = "",
-            @SerializedName("has_close_button")
+            @SerializedName("has_close_button", alternate = ["hasCloseButton"])
             @Expose
             val hasCloseButton: Boolean = false,
             @SerializedName("isAutoRefreshAfterExpired")
@@ -326,6 +326,8 @@ data class DynamicHomeChannel(
             const val LAYOUT_MERCHANT_VOUCHER: String = "merchant_voucher"
             const val LAYOUT_PAYLATER_CICIL: String = "gpl_cicil"
             const val LAYOUT_CUE_WIDGET: String = "cue_widget"
+            const val LAYOUT_MISSION_WIDGET: String = "mission_widget"
+            const val LAYOUT_VPS_WIDGET: String = "4_banners_auto_vps_v2"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0
@@ -362,7 +364,7 @@ data class DynamicHomeChannel(
             @SerializedName("id")
             val id: String = "",
             @Expose
-            @SerializedName("back_color")
+            @SerializedName("back_color", alternate = ["backColor"])
             val backColor: String = "",
             @Expose
             @SerializedName("warehouseID")
@@ -428,13 +430,13 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("labelGroup")
             val labelGroup: Array<LabelGroup> = arrayOf(),
-            @SerializedName("has_buy_button")
+            @SerializedName("has_buy_button", alternate = ["hasBuyButton"])
             val hasBuyButton: Boolean = false,
             @SerializedName("rating")
             var rating: Int = 0,
             @SerializedName("ratingAverage")
             var ratingFloat: String = "",
-            @SerializedName("count_review")
+            @SerializedName("count_review", alternate = ["countReview"])
             val countReview: Int = 0,
             @Expose
             @SerializedName("benefit")
@@ -461,7 +463,7 @@ data class DynamicHomeChannel(
             @SerializedName("title")
             val title: String = "",
             @Expose
-            @SerializedName("image_url")
+            @SerializedName("image_url", alternate = ["imageUrl"])
             val imageUrl: String = ""
     )
 
@@ -539,7 +541,7 @@ data class DynamicHomeChannel(
             @SerializedName("description")
             val description: String = "",
             @Expose
-            @SerializedName("back_color")
+            @SerializedName("back_color", alternate = ["backColor"])
             val backColor: String = "",
             @Expose
             @SerializedName("cta")
@@ -551,15 +553,15 @@ data class DynamicHomeChannel(
             @SerializedName("applink")
             val applink: String = "",
             @Expose
-            @SerializedName("text_color")
+            @SerializedName("text_color", alternate = ["textColor"])
             val textColor: String = "",
             @Expose
-            @SerializedName("image_url")
+            @SerializedName("image_url", alternate = ["imageUrl"])
             val imageUrl: String = "",
             @Expose
             @SerializedName("attribution")
             val attribution: String = "",
-            @SerializedName("gradient_color")
+            @SerializedName("gradient_color", alternate = ["gradientColor"])
             val gradientColor: ArrayList<String> = arrayListOf()
     ) : ImpressHolder()
 
@@ -574,7 +576,7 @@ data class DynamicHomeChannel(
             @SerializedName("text")
             val text: String = "",
             @Expose
-            @SerializedName("coupon_code")
+            @SerializedName("coupon_code", alternate = ["couponCode"])
             val couponCode: String = ""
     )
 
