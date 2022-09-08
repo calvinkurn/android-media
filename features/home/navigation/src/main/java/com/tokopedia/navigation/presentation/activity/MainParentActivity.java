@@ -781,19 +781,13 @@ public class MainParentActivity extends BaseActivity implements
             bundleWishlistCollection.putString("WishlistCollectionFragment", MainParentActivity.class.getSimpleName());
             fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_COLLECTION_FRAGMENT, bundleWishlistCollection));
         } else {
-            if (useWishlistV2Rollence() && useRemoteConfigWishlistV2Revamp()) {
-                Bundle bundleWishlist = getIntent().getExtras();
-                if (bundleWishlist == null) {
-                    bundleWishlist = new Bundle();
-                }
-                bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
-                bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
-                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
-            } else {
-                Bundle bundleWishlist = new Bundle();
-                bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
-                fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
+            Bundle bundleWishlist = getIntent().getExtras();
+            if (bundleWishlist == null) {
+                bundleWishlist = new Bundle();
             }
+            bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
+            bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
+            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
         }
 
         Bundle bundleUoh = getIntent().getExtras();
@@ -806,20 +800,6 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.UOH_LIST_FRAGMENT, bundleUoh));
 
         return fragmentList;
-    }
-
-    private boolean useWishlistV2Rollence() {
-        boolean isWishlistV2;
-        try {
-            isWishlistV2 = getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_V2_REVAMP).equals(RollenceKey.WISHLIST_EXPERIMENT_VARIANT);
-        } catch (Exception e) {
-            isWishlistV2 = true;
-        }
-        return isWishlistV2;
-    }
-
-    private boolean useRemoteConfigWishlistV2Revamp() {
-        return remoteConfig.get().getBoolean(ENABLE_REVAMP_WISHLIST_V2);
     }
 
     private boolean useWishlistCollectionRollence() {
