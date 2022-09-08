@@ -45,19 +45,19 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
     private var mFeedXCard: FeedXCard? = null
     private var mFeedXProduct: FeedXProduct? = null
 
-
     init {
         (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
         val view =
-            LayoutInflater.from(context).inflate(R.layout.item_flash_sale_rs_ongoing_card, this, true)
+            LayoutInflater.from(context)
+                .inflate(R.layout.item_flash_sale_rs_ongoing_card, this, true)
 
         fstTimer = findViewById(R.id.fst_ongoing_timer)
         postImageLayout = findViewById(R.id.ribbon_image_parent)
         fstSaleProductTitle = findViewById(R.id.flash_sale_ongoing_title)
         stockText = findViewById(R.id.stock_text)
         stockProgressBar = findViewById(R.id.ongoing_progress_bar)
-
     }
+
     fun setData(
         feedXCard: FeedXCard,
         positionInFeed: Int,
@@ -81,7 +81,6 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
         stockText.text = mFeedXProduct?.stockWording
         setGradientColorForProgressBar()
     }
-
 
     fun setupTimer(startTime: String, onFinished: () -> Unit) {
         val targetCalendar = TimeConverter.convertToCalendar(startTime)
