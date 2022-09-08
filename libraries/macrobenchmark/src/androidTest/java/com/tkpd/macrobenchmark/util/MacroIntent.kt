@@ -79,6 +79,25 @@ object MacroIntent {
         }
     }
 
+    object ShopPage {
+        /**
+         * Target recyclerview
+         * Capture view by resource id
+         */
+        const val RV_HOME_TAB_RESOURCE_ID = "recycler_view"
+
+        private const val DF_MODULE_NAME = "df_base"
+        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+
+        private const val SAMPLE_SHOP_ID = "3418893"
+
+        fun getShopPageHomeTabIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://marketplace/shop-page/$SAMPLE_SHOP_ID/home")
+            return intent
+        }
+    }
+
     object TokopediaNow {
         /**
          * Target recyclerview
