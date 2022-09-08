@@ -27,7 +27,6 @@ import com.tokopedia.deals.pdp.domain.DealsPDPRecentSearchTrackingUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPRecommendTrackingUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPRecommendationUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPUpdateRatingUseCase
-import com.tokopedia.digital_deals.view.utils.Utils
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.usecase.coroutines.Fail
