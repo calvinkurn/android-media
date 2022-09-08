@@ -75,8 +75,8 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private var paramPassword: String = RedefineRegisterEmailConstants.Common.EMPTY_STRING
     private var paramName: String = RedefineRegisterEmailConstants.Common.EMPTY_STRING
     private var paramIsRequiresInputPhone: Boolean = false
-    private var paramToken = ""
-    private var paramHash = ""
+    private var paramToken = RedefineRegisterEmailConstants.Common.EMPTY_STRING
+    private var paramHash = RedefineRegisterEmailConstants.Common.EMPTY_STRING
     private var sharedPrefs: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -469,9 +469,9 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private fun goToVerification(phone: String, context: Context) {
 
         val otpType = if (paramIsRequiresInputPhone) {
-            RegisterConstants.OtpType.OTP_REDEFINE_REGISTER_EMAIL
+            RedefineRegisterEmailConstants.OtpType.OTP_REDEFINE_REGISTER_EMAIL
         } else {
-            RegisterConstants.OtpType.OTP_VERIFICATION_PHONE
+            RedefineRegisterEmailConstants.OtpType.OTP_VERIFICATION_PHONE
         }
 
         val intent = intentGoToVerification(
