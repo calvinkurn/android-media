@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
 import android.net.Uri
+import android.os.Handler
 import android.util.AttributeSet
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -45,41 +46,9 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         initListener(listener)
     }
 
-    fun initializeBrightness(uriSource: Uri, listener: Listener, ratio: Float) {
-        val resultDestination = getUCropTempResultPath()
-        initCropView(uriSource, resultDestination, ratio)
-        hideOverlay()
-        disabledTouchEvent()
-        initListener(listener)
-    }
-
-    fun initializeContrast(uriSource: Uri, listener: Listener, ratio: Float) {
-        val resultDestination = getUCropTempResultPath()
-        initCropView(uriSource, resultDestination, ratio)
-        hideOverlay()
-        disabledTouchEvent()
-        initListener(listener)
-    }
-
-    fun initializeWatermark(uriSource: Uri, listener: Listener, ratio: Float) {
-        val resultDestination = getUCropTempResultPath()
-        initCropView(uriSource, resultDestination, ratio)
-        hideOverlay()
-        disabledTouchEvent()
-        initListener(listener)
-    }
-
-    fun initializeRemoveBackground(uriSource: Uri, listener: Listener, ratio: Float) {
-        val resultDestination = getUCropTempResultPath()
-        initCropView(uriSource, resultDestination, ratio)
-        hideOverlay()
-        disabledTouchEvent()
-        initListener(listener)
-    }
-
     fun initializeCrop(uriSource: Uri, listener: Listener) {
         val resultDestination = getUCropTempResultPath()
-        cropImageView.setImageUri(uriSource, resultDestination)
+        initCropView(uriSource, resultDestination, 1f)
         disableRotate()
         initListener(listener)
     }
@@ -281,16 +250,12 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         return Pair(cropImageView.scaleX, cropImageView.scaleY)
     }
 
-    private fun hideOverlay() {
-        overlayView.setCropFrameColor(Color.TRANSPARENT)
-        overlayView.setCropGridColor(Color.TRANSPARENT)
-        overlayView.setDimmedColor(Color.TRANSPARENT)
-    }
-
     private fun initCropView(uriSource: Uri, resultDestination: Uri, ratio: Float) {
         overlayView.setPadding(0, 0, 0, 0)
-        post {
-            overlayView.setTargetAspectRatio(ratio)
+        overlayView.setTargetAspectRatio(ratio)
+        overlayView.setupCropBounds()
+
+        overlayView.post {
             cropImageView.setImageUri(uriSource, resultDestination)
         }
     }

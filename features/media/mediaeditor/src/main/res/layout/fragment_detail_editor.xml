@@ -17,12 +17,23 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_view_preview"
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/uc_tool_container"
+        android:background="@color/Unify_NN400"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ldr_preview"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/img_ucrop_preview"
+        app:layout_constraintBottom_toTopOf="@id/uc_tool_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

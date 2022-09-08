@@ -9,13 +9,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
@@ -37,6 +42,7 @@ import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
+import com.yalantis.ucrop.util.FastBitmapDrawable
 import java.io.File
 import javax.inject.Inject
 
@@ -88,7 +94,7 @@ class DetailEditorFragment @Inject constructor(
                 finishPage()
             }
         } else {
-            viewBinding?.imgUcropPreview?.getBitmap()?.let {
+            getBitmap(withFilter = true)?.let {
                 data.resultUrl = viewModel.saveImageCache(
                     requireContext(),
                     it
@@ -134,7 +140,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onRemoveBackgroundClicked(removeBgType: Int) {
-        viewBinding?.imgUcropPreview?.let { _ ->
+        getImageView()?.let { imageView ->
             data.resultUrl?.let { it ->
                 removeBackgroundType = removeBgType
 
@@ -144,7 +150,7 @@ class DetailEditorFragment @Inject constructor(
                         {},
                         mediaTarget = MediaBitmapEmptyTarget(
                             onReady = { resultBitmap ->
-                                viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(
+                                imageView.setImageBitmap(
                                     resultBitmap
                                 )
                             }
@@ -229,10 +235,8 @@ class DetailEditorFragment @Inject constructor(
         if (!data.isToolRemoveBackground() && !data.isToolWatermark()) {
             readPreviousState(data)
         } else {
-            implementedBaseBitmap = viewBinding?.imgUcropPreview?.getBitmap()
+            implementedBaseBitmap = getBitmap()
         }
-
-        if (data.isToolWatermark()) setWatermarkDrawerItem()
     }
 
     override fun initObserver() {
@@ -247,14 +251,14 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeBrightness() {
         viewModel.brightnessFilter.observe(viewLifecycleOwner) {
-            viewBinding?.imgUcropPreview?.cropImageView?.colorFilter = it
+            getImageView()?.colorFilter = it
             isEdited = true
         }
     }
 
     private fun observeContrast() {
         viewModel.contrastFilter.observe(viewLifecycleOwner) {
-            viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(it)
+            getImageView()?.setImageBitmap(it)
             isEdited = true
         }
     }
@@ -284,7 +288,7 @@ class DetailEditorFragment @Inject constructor(
                                 val canvas = Canvas(backgroundBitmap)
                                 canvas.drawBitmap(resultBitmap, 0f, 0f, null)
 
-                                viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(
+                                getImageView()?.setImageBitmap(
                                     backgroundBitmap
                                 )
                             }
@@ -320,42 +324,38 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkBitmap ->
-            viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(watermarkBitmap)
+            getImageView()?.setImageBitmap(watermarkBitmap)
             isEdited = true
         }
     }
 
     private fun renderUiComponent(@EditorToolType type: Int) {
-        val uri = Uri.fromFile(File(data.removeBackgroundUrl ?: data.originalUrl))
+        val url = data.removeBackgroundUrl ?: data.originalUrl
+        val uri = Uri.fromFile(File(url))
 
         viewBinding?.imgUcropPreview?.apply {
             when (type) {
                 EditorToolType.BRIGHTNESS -> {
                     val brightnessValue = data.brightnessValue ?: DEFAULT_VALUE_BRIGHTNESS
-                    initializeBrightness(uri, this@DetailEditorFragment, data.originalImageRatio)
+                    setImageView(url, true)
                     brightnessComponent.setupView(brightnessValue)
-                }
-                // ==========
-                EditorToolType.REMOVE_BACKGROUND -> {
-                    initializeRemoveBackground(data.resultUrl?.let {
-                        Uri.fromFile(File(it))
-                    } ?: uri,
-                        this@DetailEditorFragment,
-                        data.originalImageRatio
-                    )
-                    removeBgComponent.setupView()
                 }
                 // ==========
                 EditorToolType.CONTRAST -> {
                     val contrastValue = data.contrastValue ?: DEFAULT_VALUE_CONTRAST
-                    initializeContrast(uri, this@DetailEditorFragment, data.originalImageRatio)
+                    setImageView(url, true)
                     contrastComponent.setupView(contrastValue)
                 }
                 // ==========
+                EditorToolType.REMOVE_BACKGROUND -> {
+                    val removeBgUrl = data.resultUrl ?: url
+                    setImageView(removeBgUrl, false)
+                    removeBgComponent.setupView()
+                }
+                // ==========
                 EditorToolType.WATERMARK -> {
-                    initializeWatermark(data.resultUrl?.let {
-                        Uri.fromFile(File(it))
-                    } ?: uri, this@DetailEditorFragment, data.originalImageRatio)
+                    val watermarkUrl = data.resultUrl ?: url
+                    setImageView(watermarkUrl, false)
                     watermarkComponent.setupView()
                 }
                 // ==========
@@ -376,22 +376,18 @@ class DetailEditorFragment @Inject constructor(
         previousValue: Float?,
         isRemoveFilter: Boolean = true
     ) {
-        val cropView = viewBinding?.imgUcropPreview?.cropImageView
+        val cropView = getImageView()
         viewModel.setBrightness(previousValue ?: 0f)
 
         // need to remove the filter to prevent any filter trigger re-apply the brightness color filter
-        if (isRemoveFilter) viewBinding?.imgUcropPreview?.getBitmap()?.let {
+        if (isRemoveFilter) implementedBaseBitmap?.let {
             cropView?.clearColorFilter()
             cropView?.setImageBitmap(it)
         }
     }
 
     private fun implementPreviousStateContrast(previousValue: Float?) {
-
-        viewBinding?.imgUcropPreview?.let {
-            val bitmap = it.getBitmap()
-            viewModel.setContrast(previousValue ?: 0f, bitmap)
-        }
+        viewModel.setContrast(previousValue ?: 0f, getBitmap())
     }
 
     private fun implementPreviousStateCrop(cropRotateData: EditorCropRotateModel) {
@@ -485,7 +481,7 @@ class DetailEditorFragment @Inject constructor(
                 }
             }
         } else if (data.cropRotateValue.isCrop || data.cropRotateValue.isRotate) {
-            val currentBitmap = viewBinding?.imgUcropPreview?.getBitmap()
+            val currentBitmap = getBitmap()
             val cropRotateData = data.cropRotateValue
             currentBitmap?.let {
                 val finalRotationDegree =
@@ -517,12 +513,13 @@ class DetailEditorFragment @Inject constructor(
                     cropRotateData.scaleY
                 )
 
-                viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(bitmapResult)
+
+                viewBinding?.imgViewPreview?.setImageBitmap(bitmapResult)
             }
         }
 
         // image that already implemented previous filter
-        implementedBaseBitmap = viewBinding?.imgUcropPreview?.getBitmap()
+        implementedBaseBitmap = getBitmap()
 
         if (previousState.brightnessValue != null && previousState.isToolBrightness()) {
             // if current editor is brightness keep the filter color so we can adjust it later
@@ -532,18 +529,16 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun setWatermarkDrawerItem() {
-        implementedBaseBitmap?.let {
-            val shopName = if (userSession.shopName.isEmpty())
-                DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
+    private fun setWatermarkDrawerItem(bitmap: Bitmap) {
+        val shopName = if (userSession.shopName.isEmpty())
+            DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
 
-            viewModel.setWatermarkFilterThumbnail(
-                requireContext(),
-                it,
-                shopName,
-                watermarkComponent.getButtonRef()
-            )
-        }
+        viewModel.setWatermarkFilterThumbnail(
+            requireContext(),
+            bitmap,
+            shopName,
+            watermarkComponent.getButtonRef()
+        )
     }
 
     private fun initButtonListener() {
@@ -609,6 +604,51 @@ class DetailEditorFragment @Inject constructor(
         intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
         activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)
         activity?.finish()
+    }
+
+    private fun getImageView(): ImageView?{
+        viewBinding?.let {
+            return if(it.imgUcropPreview.isVisible) it.imgUcropPreview.cropImageView else it.imgViewPreview
+        }
+        return null
+    }
+
+    private fun getBitmap(withFilter:Boolean = false): Bitmap? {
+        return if(withFilter) {
+            getImageView()?.let {
+                val fastBitmapDrawable = FastBitmapDrawable(it.drawable.toBitmap())
+                fastBitmapDrawable.colorFilter = it.colorFilter
+
+                it.setImageDrawable(fastBitmapDrawable)
+
+                val tempCanvas = Canvas(fastBitmapDrawable.bitmap)
+                fastBitmapDrawable.draw(tempCanvas)
+
+                fastBitmapDrawable.bitmap
+            }
+        } else {
+            getImageView()?.drawable?.toBitmap()
+        }
+    }
+
+    private fun setImageView(url: String, readPreviousValue: Boolean){
+        viewBinding?.imgUcropPreview?.hide()
+        viewBinding?.imgViewPreview?.visible()
+
+        loadImageWithEmptyTarget(requireContext(),
+            url,
+            properties = {},
+            mediaTarget = MediaBitmapEmptyTarget(
+                onReady = { bitmap ->
+                    viewBinding?.imgViewPreview?.setImageBitmap(bitmap)
+
+                    if (readPreviousValue) readPreviousState(data)
+                    else implementedBaseBitmap = bitmap
+
+                    if (data.isToolWatermark()) setWatermarkDrawerItem(bitmap)
+                },
+                onCleared = {}
+            ))
     }
 
     override fun getScreenName() = SCREEN_NAME
