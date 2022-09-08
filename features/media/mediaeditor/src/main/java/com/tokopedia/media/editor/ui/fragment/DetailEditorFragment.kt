@@ -403,9 +403,9 @@ class DetailEditorFragment @Inject constructor(
             if (!cropRotateData.isAutoCrop) {
                 cropView.postDelayed({
                     val cropImageMatrix = cropView.imageMatrix.values()
-                    val ax = (cropImageMatrix[2] * -1) + cropRotateData.translateX
-                    val ay = (cropImageMatrix[5] * -1) + cropRotateData.translateY
-                    cropView.postTranslate(ax, ay)
+                    val deltaX = (cropImageMatrix[2] * -1) + cropRotateData.translateX
+                    val deltaY = (cropImageMatrix[5] * -1) + cropRotateData.translateY
+                    cropView.postTranslate(deltaX, deltaY)
                 }, DELAY_IMPLEMENT_CROP)
             }
         }
