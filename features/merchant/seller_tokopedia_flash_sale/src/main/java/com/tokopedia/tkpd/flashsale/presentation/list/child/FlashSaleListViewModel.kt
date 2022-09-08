@@ -18,6 +18,7 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleLis
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiState
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.tkpd.flashsale.util.extension.hoursDifference
+import com.tokopedia.tkpd.flashsale.util.extension.minutesDifference
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -225,7 +226,7 @@ class FlashSaleListViewModel @Inject constructor(
             formattedDate.endDate,
             endDateUnix,
             findQuotaUsagePercentage(),
-            hoursDifference(currentDate, submissionEndDateUnix),
+            minutesDifference(currentDate, submissionEndDateUnix),
             submissionEndDateUnix
         )
     }
