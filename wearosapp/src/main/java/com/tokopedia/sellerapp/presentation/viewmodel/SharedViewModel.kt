@@ -6,6 +6,8 @@ import com.google.android.gms.wearable.NodeClient
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.sellerapp.data.uimodel.OrderListItemUiModel
+import com.tokopedia.sellerapp.domain.GetNewOrderListUseCase
 import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.MessageConstant.ACCEPT_BULK_ORDER_PATH
 import com.tokopedia.sellerapp.util.MessageConstant.GET_ORDER_LIST_PATH
@@ -13,6 +15,8 @@ import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
@@ -20,7 +24,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val getNewOrderListUseCase: GetNewOrderListUseCase
 ) : BaseViewModel(dispatchers.io),
     MessageClient.OnMessageReceivedListener
 {
@@ -31,6 +36,10 @@ class SharedViewModel @Inject constructor(
     private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
     val action: StateFlow<UiState<Boolean>>
         get() = _action
+
+    private val _newOrderListData: MutableStateFlow<UiState<List<OrderListItemUiModel>>> = MutableStateFlow(UiState.Idle())
+    val newOrderListData: StateFlow<UiState<List<OrderListItemUiModel>>>
+        get() = _newOrderListData
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
         when(messageEvent.path) {
@@ -75,5 +84,15 @@ class SharedViewModel @Inject constructor(
                 throwable = throwable
             )
         })
+    }
+
+    fun getNewOrderListData() {
+        launchCatchError(dispatchers.io, block = {
+            _newOrderListData.value = UiState.Loading()
+            val newOrderList = getNewOrderListUseCase.execute()
+            _newOrderListData.value = UiState.Success(newOrderList)
+        }) {
+            _newOrderListData.value = UiState.Fail(throwable = it)
+        }
     }
 }
