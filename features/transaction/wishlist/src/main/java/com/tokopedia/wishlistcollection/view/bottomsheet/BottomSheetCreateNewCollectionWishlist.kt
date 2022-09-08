@@ -227,7 +227,6 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
     }
 
     private fun checkIsCollectionNameExists(checkName: String) {
-        println("++ checkName = $checkName")
         if (checkName.isEmpty()) {
             disableSaveButton()
         } else {

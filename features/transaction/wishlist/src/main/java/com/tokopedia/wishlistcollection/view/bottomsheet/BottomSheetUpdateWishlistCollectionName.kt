@@ -118,7 +118,7 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun afterTextChanged(p0: Editable?) {
-                    newCollectionName = p0.toString()
+                    newCollectionName = p0.toString().trimStart().trimEnd()
                     if (newCollectionName.isNotEmpty()) {
                         handler.postDelayed(checkNameRunnable, DELAY_CHECK_NAME)
                     } else {
