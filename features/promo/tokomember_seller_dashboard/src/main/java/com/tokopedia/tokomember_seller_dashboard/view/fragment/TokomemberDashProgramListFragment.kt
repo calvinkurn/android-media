@@ -35,7 +35,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.EXTEND
 import com.tokopedia.tokomember_seller_dashboard.util.LOADED
 import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
-import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH_PROGRAM_LIST
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
@@ -114,7 +114,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
         setToastOnProgramAction(arguments?.getInt(BUNDLE_PROGRAM_ACTION)?:0)
         btnCreateProgram.setOnClickListener {
-            TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, REQUEST_CODE_REFRESH, null, cardId)
+            TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, REQUEST_CODE_REFRESH_PROGRAM_LIST, null, cardId)
             tmTracker?.clickProgramListButton(shopId.toString())
         }
         setEmptyProgramListData()
@@ -254,7 +254,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                     activity,
                     CreateScreenType.PROGRAM,
                     ProgramActionType.EDIT,
-                    REQUEST_CODE_REFRESH,
+                    REQUEST_CODE_REFRESH_PROGRAM_LIST,
                     programId
                 )
             }

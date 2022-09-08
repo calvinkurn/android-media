@@ -258,7 +258,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                 optionMenu.setOnClickListener {
                     val actions = Actions()
                     val tripleDots = arrayListOf<TripleDotsItem?>()
-                    tripleDots.add(TripleDotsItem("Duplicate", DUPLICATE))
+                    tripleDots.add(TripleDotsItem("Duplikat Kupon", DUPLICATE))
                     actions.tripleDots = tripleDots
                     TokomemberOptionsMenuBottomsheet.show(
                         Gson().toJson(actions), fragmentManager, tmCouponActions, item.voucherId,
@@ -289,7 +289,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                 optionMenu.setOnClickListener {
                     val actions = Actions()
                     val tripleDots = arrayListOf<TripleDotsItem?>()
-                    tripleDots.add(TripleDotsItem("Duplicate", DUPLICATE))
+                    tripleDots.add(TripleDotsItem("Duplikat Kupon", DUPLICATE))
                     actions.tripleDots = tripleDots
                     TokomemberOptionsMenuBottomsheet.show(
                         Gson().toJson(actions), fragmentManager, tmCouponActions, item.voucherId,

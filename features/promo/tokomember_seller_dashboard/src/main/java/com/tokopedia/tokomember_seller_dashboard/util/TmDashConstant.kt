@@ -25,7 +25,8 @@ const val BUNDLE_COUPON_PREVIEW_DATA = "bundleCouponPreviewData"
 const val BUNDLE_COUPON_CREATE_DATA = "bundleCouponCreateData"
 const val BUNDLE_CREATE_SCREEN_TYPE = "bundle_create_screen_type"
 const val BUNDLE_REFRESH = "bundle_refresh"
-const val REQUEST_CODE_REFRESH = 1
+const val REQUEST_CODE_REFRESH_PROGRAM_LIST = 1
+const val REQUEST_CODE_REFRESH_HOME = 2
 const val BUNDLE_IS_SHOW_BS = "bundle_is_show_bs"
 const val BUNDLE_PROGRAM_ACTION = "bundle_program_action"
 

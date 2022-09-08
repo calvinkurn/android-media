@@ -137,7 +137,7 @@ class TokomemberMainFragment : BaseDaggerFragment(),TmCouponListRefreshCallback 
             when(it.lastPathSegment){
                 "program-creation" -> {
                     TmDashCreateActivity.openActivity(
-                        shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, REQUEST_CODE_REFRESH, null, cardId
+                        shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, REQUEST_CODE_REFRESH_PROGRAM_LIST, null, cardId
                     )
                     return true
                 }

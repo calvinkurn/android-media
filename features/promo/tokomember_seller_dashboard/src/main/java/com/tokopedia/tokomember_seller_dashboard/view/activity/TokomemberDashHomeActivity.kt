@@ -3,20 +3,15 @@ package com.tokopedia.tokomember_seller_dashboard.view.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.tokomember_common_widget.util.CreateScreenType
-import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallback
-import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.util.*
@@ -25,6 +20,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHom
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.tm_activity_tokomember_dash_home.*
@@ -42,6 +38,10 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
     private val tmProgramListViewModel: TmProgramListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
         viewModelProvider.get(TmProgramListViewModel::class.java)
+    }
+    private val tokomemberDashHomeViewmodel: TokomemberDashHomeViewmodel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
+        viewModelProvider.get(TokomemberDashHomeViewmodel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,12 +116,21 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQUEST_CODE_REFRESH){
+        if(requestCode == REQUEST_CODE_REFRESH_PROGRAM_LIST){
             if(resultCode == Activity.RESULT_OK){
                 val state = data?.getIntExtra("REFRESH_STATE", REFRESH)
                 if (state != null) {
                     Toaster.build(container_home, "Program TokoMember kamu berhasil diubah.", Toaster.TYPE_NORMAL).show()
                     tmProgramListViewModel.refreshList(state)
+                }
+            }
+        }
+        if(requestCode == REQUEST_CODE_REFRESH_HOME){
+            if(resultCode == Activity.RESULT_OK){
+                val state = data?.getIntExtra("REFRESH_STATE", REFRESH)
+                if (state != null) {
+                    Toaster.build(container_home, "Yay! Perubahan Kartu TokoMembe disimpan.").show()
+                    tokomemberDashHomeViewmodel.refreshHomeData(state)
                 }
             }
         }
@@ -131,7 +140,6 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
         super.onStop()
         TmPrefManager(this).clearPref()
     }
-
 
 
 }
