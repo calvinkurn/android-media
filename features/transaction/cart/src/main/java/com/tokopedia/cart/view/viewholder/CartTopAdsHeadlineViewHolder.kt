@@ -17,7 +17,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.*
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -47,8 +47,8 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
         topAdsHeadlineView.setHasAddToCartButton(true)
         topAdsHeadlineView.setShowCta(false)
         topAdsHeadlineView.setAddToCartClickListener(object : TopAdsAddToCartClickListener {
-            override fun onAdToCartClicked(bannerShopProductViewModel: BannerShopProductViewModel) {
-                listener?.onButtonAddToCartClicked(bannerShopProductViewModel)
+            override fun onAdToCartClicked(bannerShopProductUiModel: BannerShopProductUiModel) {
+                listener?.onButtonAddToCartClicked(bannerShopProductUiModel)
             }
         })
         topAdsHeadlineView.getHeadlineAds(getHeadlineAdsParam(userSession), this::onSuccessResponse, this::hideHeadlineViewOnError)

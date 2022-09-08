@@ -12,7 +12,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -126,7 +126,7 @@ interface ICartListView : CustomerView {
 
     fun sendATCTrackingURL(recommendationItem: RecommendationItem)
 
-    fun sendATCTrackingURL(bannerShopProductViewModel: BannerShopProductViewModel)
+    fun sendATCTrackingURL(bannerShopProductUiModel: BannerShopProductUiModel)
 
     fun reCollapseExpandedDeletedUnavailableItems()
 

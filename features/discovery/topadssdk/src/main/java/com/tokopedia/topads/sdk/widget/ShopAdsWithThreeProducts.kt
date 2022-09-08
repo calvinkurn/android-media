@@ -245,7 +245,7 @@ class ShopAdsWithThreeProducts : BaseCustomView {
                 items.add(ShowMoreItemModel(cpmData, shopApplink, adsClickUrl))
             }
         } else {
-            repeat(PRODUCT_CARD_COUNT_THREE) { items.add(ShopWidgetShimmerViewModel()) }
+            repeat(PRODUCT_CARD_COUNT_THREE) { items.add(ShopWidgetShimmerUiModel()) }
         }
         return items
     }

@@ -77,7 +77,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1458,7 +1458,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
             val clickUrl = recommendationItem.clickUrl
             if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(recommendationItem)
-        } else if (productModel is BannerShopProductViewModel) {
+        } else if (productModel is BannerShopProductUiModel) {
             productId = productModel.productId.toLongOrZero()
             shopId = productModel.shopId.toIntOrZero()
             productName = productModel.productName

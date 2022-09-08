@@ -45,10 +45,10 @@ import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsAdapterTypeFactory
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerProductShimmerViewModel
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerProductShimmerUiModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopUiModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
@@ -214,16 +214,26 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     renderLabelMerchantVouchers(cpmData)
 
                     val items = ArrayList<Item<*>>()
-                    items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl, isShowCta))
+                    items.add(
+                        BannerShopUiModel(
+                            cpmData,
+                            appLink,
+                            adsClickUrl,
+                            isShowCta
+                        )
+                    )
                     if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
                         val productCardModelList: ArrayList<ProductCardModel>? =  cpmData.cpm?.cpmShop?.products?.let { getProductCardModels(it) }
                         if (productCardModelList != null) {
                             for (i in 0 until productCardModelList.size) {
                                 if (i < ITEM_3) {
-                                    val model = BannerShopProductViewModel(cpmData, productCardModelList[i],
-                                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.applinks,
-                                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.image?.m_url,
-                                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.imageProduct?.imageClickUrl)
+                                    val model =
+                                        BannerShopProductUiModel(
+                                            cpmData, productCardModelList[i],
+                                            cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.applinks,
+                                            cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.image?.m_url,
+                                            cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.imageProduct?.imageClickUrl
+                                        )
                                     val product = cpmData.cpm?.cpmShop?.products?.getOrNull(i)
                                     model.apply {
                                         productId = product?.id
@@ -237,12 +247,18 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                                 }
                             }
                             if (productCardModelList.size < ITEM_3) {
-                                items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
+                                items.add(
+                                    BannerShopViewMoreUiModel(
+                                        cpmData,
+                                        appLink,
+                                        adsClickUrl
+                                    )
+                                )
                             }
                         }
 
                     } else {
-                        repeat(ITEM_3) { items.add(BannerProductShimmerViewModel()) }
+                        repeat(ITEM_3) { items.add(BannerProductShimmerUiModel()) }
                     }
                     bannerAdsAdapter?.setList(items)
                 }
@@ -308,18 +324,26 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun getItems(cpmData: CpmData, appLink: String, adsClickUrl: String): MutableList<Item<*>> {
         val items = ArrayList<Item<*>>()
-        items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl, isShowCta))
+        items.add(
+            BannerShopUiModel(
+                cpmData,
+                appLink,
+                adsClickUrl,
+                isShowCta
+            )
+        )
         if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
             val productCardModelList: ArrayList<ProductCardModel> =
                 getProductCardModels(cpmData.cpm?.cpmShop?.products)
             for (i in 0 until productCardModelList.size) {
                 if (i < ITEM_3) {
-                    val model = BannerShopProductViewModel(
-                        cpmData, productCardModelList[i],
-                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.applinks,
-                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.image?.m_url,
-                        cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.imageProduct?.imageClickUrl,
-                    )
+                    val model =
+                        BannerShopProductUiModel(
+                            cpmData, productCardModelList[i],
+                            cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.applinks,
+                            cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.image?.m_url,
+                            cpmData.cpm?.cpmShop?.products?.getOrNull(i)?.imageProduct?.imageClickUrl,
+                        )
                     val product = cpmData.cpm?.cpmShop?.products?.getOrNull(i)
                     model.apply {
                         productId = product?.id
@@ -333,10 +357,16 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 }
             }
             if (productCardModelList.size < ITEM_3) {
-                items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
+                items.add(
+                    BannerShopViewMoreUiModel(
+                        cpmData,
+                        appLink,
+                        adsClickUrl
+                    )
+                )
             }
         } else {
-            repeat(ITEM_3) { items.add(BannerProductShimmerViewModel()) }
+            repeat(ITEM_3) { items.add(BannerProductShimmerUiModel()) }
         }
         return items
     }

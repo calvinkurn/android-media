@@ -9,7 +9,7 @@ import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import io.mockk.*
 import org.junit.Test
 import rx.Observable
@@ -206,7 +206,14 @@ class AddToCartTest : BaseCartTest() {
     @Test
     fun `WHEN add to cart shop ads item success THEN should render success`() {
         // GIVEN
-        val productModel = BannerShopProductViewModel(CpmData(), ProductCardModel(), "", "", "")
+        val productModel =
+            BannerShopProductUiModel(
+                CpmData(),
+                ProductCardModel(),
+                "",
+                "",
+                ""
+            )
         productModel.apply {
             productId = "1"
             shopId = "1"
@@ -247,7 +254,14 @@ class AddToCartTest : BaseCartTest() {
     fun `WHEN add to cart shop ads item failed THEN should render error`() {
         // GIVEN
         val errorMessage = "Add to cart error"
-        val productModel = BannerShopProductViewModel(CpmData(), ProductCardModel(), "", "", "")
+        val productModel =
+            BannerShopProductUiModel(
+                CpmData(),
+                ProductCardModel(),
+                "",
+                "",
+                ""
+            )
         productModel.apply {
             productId = "1"
             shopId = "1"

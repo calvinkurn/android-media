@@ -17,7 +17,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
 

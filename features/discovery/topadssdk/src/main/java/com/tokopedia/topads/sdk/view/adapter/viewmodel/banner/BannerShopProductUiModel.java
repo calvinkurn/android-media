@@ -10,7 +10,7 @@ import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsTypeFactory;
  * Created by errysuprayogi on 4/16/18.
  */
 
-public class BannerShopProductViewModel extends ImpressHolder implements Item<BannerAdsTypeFactory> {
+public class BannerShopProductUiModel extends ImpressHolder implements Item<BannerAdsTypeFactory> {
 
     private ProductCardModel product;
     private CpmData cpmData;
@@ -24,7 +24,7 @@ public class BannerShopProductViewModel extends ImpressHolder implements Item<Ba
     private String productPrice;
     private String shopId;
 
-    public BannerShopProductViewModel(CpmData cpmData, ProductCardModel product, String appLink, String imageUrl, String adsClickUrl) {
+    public BannerShopProductUiModel(CpmData cpmData, ProductCardModel product, String appLink, String imageUrl, String adsClickUrl) {
         this.cpmData = cpmData;
         this.product = product;
         this.appLink = appLink;
