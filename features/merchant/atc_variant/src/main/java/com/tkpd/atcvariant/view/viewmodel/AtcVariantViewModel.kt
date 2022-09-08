@@ -368,29 +368,6 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    fun addWishlist(productId: String, userId: String) {
-        addWishListUseCase.createObservable(productId,
-            userId, object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    _addWishlistResult.postValue(Throwable(errorMessage ?: "").asFail())
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    updateActivityResult(shouldRefreshPreviousPage = true)
-                    updateButtonAndWishlistLocally(productId ?: "")
-                    _addWishlistResult.postValue(true.asSuccess())
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                    // no op
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {
-                    // no op
-                }
-            })
-    }
-
     fun addWishlistV2(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
         viewModelScope.launch(dispatcher.main) {
             addToWishlistV2UseCase.setParams(productId, userId)
