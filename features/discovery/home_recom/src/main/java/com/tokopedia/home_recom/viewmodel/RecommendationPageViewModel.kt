@@ -220,16 +220,19 @@ open class RecommendationPageViewModel @Inject constructor(
                 val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
                 val errorCode = adsStatus.data.status.error_code
                 if (errorCode in PARAM_SUCCESS_200..PARAM_SUCCESS_300) {
-                    (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
-                        val topadsProduct = adsStatus.data.productList[0]
-                        it.isTopads = topadsProduct.isCharge
-                        it.clickUrl = topadsProduct.clickUrl
-                        it.trackerImageUrl = topadsProduct.product.image.m_url
+                    (productRecom as? ProductInfoDataModel)?.let {
+                        it.isGetTopAds = true
+                        it.productDetailData?.let { productDetailData ->
+                            val topadsProduct = adsStatus.data.productList[0]
+                            productDetailData.isTopads = topadsProduct.isCharge
+                            productDetailData.clickUrl = topadsProduct.clickUrl
+                            productDetailData.trackerImageUrl = topadsProduct.product.image.m_url
 
-                        val itemIndex = dataList.indexOf(productRecom)
-                        dataList[itemIndex] = productRecom
+                            val itemIndex = dataList.indexOf(productRecom)
+                            dataList[itemIndex] = productRecom
 
-                        _recommendationListLiveData.postValue(dataList)
+                            _recommendationListLiveData.postValue(dataList)
+                        }
                     }
                 } else {
                     RecomServerLogger.logServer(
