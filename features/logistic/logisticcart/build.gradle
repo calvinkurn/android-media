@@ -9,6 +9,12 @@ kapt {
     useBuildCache = true
 }
 
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 buildscript {
     repositories {
         google()

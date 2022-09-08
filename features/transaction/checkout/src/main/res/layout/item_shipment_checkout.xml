@@ -123,9 +123,13 @@
             </LinearLayout>
 
             <!--Shipping: Shipping Experience-->
-        <include
-            layout="@layout/item_shipment_shipping_experience"
-            tools:visibility="visible" />
+<!--        <include-->
+<!--            layout="@layout/item_shipment_shipping_experience"-->
+<!--            tools:visibility="visible" />-->
+        <com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget
+            android:id="@+id/shipping_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <!--Shipping: Option (Insurance, dropshipper, etc)-->
         <include
