@@ -22,13 +22,16 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.EditCardCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.TickerItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.LOADED
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH_HOME
 import com.tokopedia.tokomember_seller_dashboard.util.TM_PREVIEW_BS_CTA_PRIMARY
 import com.tokopedia.tokomember_seller_dashboard.util.TM_PREVIEW_BS_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.TM_PREVIEW_BS_TITLE
@@ -113,12 +116,17 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
             btn_edit_card.setOnClickListener {
                 if (shopId != null) {
                     prefManager?.cardId?.let { it1 ->
+                        TmDashCreateActivity.setCardEditCallback(object : EditCardCallback{
+                            override fun cardEdit() {
+                                tokomemberDashHomeViewmodel.getHomePageData(shopId)
+                            }
+                        })
                         TmDashCreateActivity.openActivity(
                             shopId,
                             activity,
                             CreateScreenType.CARD,
                             ProgramActionType.EDIT,
-                            REQUEST_CODE_REFRESH,
+                            REQUEST_CODE_REFRESH_HOME,
                             0,
                             cardId = it1,
                             shopAvatar
@@ -137,6 +145,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
                 }
                 TokoLiveDataResult.STATUS.SUCCESS->{
+                    tokomemberDashHomeViewmodel.refreshHomeData(LOADED)
                     Glide.with(flShop)
                         .asDrawable()
                         .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl)
@@ -160,7 +169,15 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
                     prefManager?.cardId = it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCard?.id
                 }
                 TokoLiveDataResult.STATUS.ERROR->{
+                    tokomemberDashHomeViewmodel.refreshHomeData(LOADED)
+                }
+            }
+        })
 
+        tokomemberDashHomeViewmodel.tokomemberHomeRefreshLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                REFRESH ->{
+                    tokomemberDashHomeViewmodel.getHomePageData(shopId)
                 }
             }
         })

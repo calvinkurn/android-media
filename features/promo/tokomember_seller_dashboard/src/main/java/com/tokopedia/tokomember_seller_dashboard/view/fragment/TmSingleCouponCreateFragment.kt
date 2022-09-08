@@ -378,7 +378,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         voucherImagePortrait = it.data?.getInitiateVoucherPage?.data?.imgBannerIgPost
                         voucherImageSquare = it.data?.getInitiateVoucherPage?.data?.imgBannerIgStory
                     }
-                    if(fromEdit){
+                    if(fromEdit || fromDuplicate){
                         getCouponDetails()
                     }
                 }

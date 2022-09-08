@@ -5,17 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
@@ -80,7 +80,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
             feedbackIcon.setOnClickListener {
-                Toast.makeText(context, "Google form", Toast.LENGTH_SHORT).show()
+                RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://docs.google.com/forms/d/e/1FAIpQLSf5deaECcXAlznho4PuP6lnMvCDMeVbuieAWpDrJ83f-bX3vA/viewform?usp=sf_link"))
             }
 
         }

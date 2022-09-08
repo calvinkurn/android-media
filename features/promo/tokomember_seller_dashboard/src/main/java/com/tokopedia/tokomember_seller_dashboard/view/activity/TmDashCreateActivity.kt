@@ -16,6 +16,7 @@ import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PR
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PROGRAM
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.EditCardCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
@@ -73,7 +74,12 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
 
         when(screenType){
             CARD ->{
-                intent.extras?.let { TmCreateCardFragment.newInstance(it) }?.let { addFragment(it, TmCreateCardFragment.TAG_CARD_CREATE) }
+                intent.extras?.let {
+                    TmCreateCardFragment.newInstance(it)
+                }?.let {
+                    TmDashCreateActivity.editCardCallback?.let { it1 -> it.setCardEditCallback(it1) }
+                    addFragment(it, TmCreateCardFragment.TAG_CARD_CREATE)
+                }
             }
             PROGRAM ->{
                 intent.extras?.let { TmProgramFragment.newInstance(it) }?.let  { addFragment(it, "") }
@@ -224,6 +230,7 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
 
     companion object{
 
+        private var editCardCallback: EditCardCallback? = null
         private var tmCouponListRefreshCallback: TmCouponListRefreshCallback? = null
 
         fun openActivity(
@@ -268,6 +275,10 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                 it.startActivity(intent)
             }
         }
+
+        fun setCardEditCallback(editCardCallback: EditCardCallback){
+            this.editCardCallback = editCardCallback
+        }
     }
 
     override fun openFragment(screenType: Int, bundle: Bundle) {
@@ -303,4 +314,5 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
         }
 
     }
+
 }
