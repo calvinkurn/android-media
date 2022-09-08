@@ -73,11 +73,12 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        intent?.data?.pathSegments?.firstOrNull()?.let {
-            if (it.contains(PAGE_SEGMENT_ONBOARDING)) {
-                intent.data?.queryParameterNames?.first()?.let { query->
-                    showLoginPortal(intent?.data?.getQueryParameter(query))
-                } ?: showLoginPortal()
+        intent?.data?.let { data->
+            if (data.pathSegments?.contains(PAGE_SEGMENT_ONBOARDING) == true) {
+                if (data.queryParameterNames.isNotEmpty())
+                    showLoginPortal(intent?.data?.getQueryParameter(data.queryParameterNames.first()))
+                else
+                    showLoginPortal()
             }
         }
         afterViewCreated()
