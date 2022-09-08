@@ -74,9 +74,7 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
 
-        showCloseIcon = false
         showKnob = true
-        showHeader = false
         isDragable = true
         isSkipCollapseState = true
         isHideable = true
