@@ -55,7 +55,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
             recentSearchLimit.map { item ->
                 RecentSearchItemUiModel(
                     sectionId = section.id,
-                    itemId = item.itemId,
+                    itemId = item.id,
                     imageUrl = item.imageUrl,
                     title = item.title,
                     template = item.template,
@@ -68,7 +68,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
             val recentSearchSeeMoreList = recentSearchSeeMore.map {
                 RecentSearchItemUiModel(
                     sectionId = section.id,
-                    itemId = it.itemId,
+                    itemId = it.id,
                     imageUrl = it.imageUrl,
                     title = it.title,
                     template = it.template,
@@ -101,7 +101,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
             cuisineListLimit.map { item ->
                 CuisineItemUiModel(
                     sectionId = section.id,
-                    itemId = item.itemId,
+                    itemId = item.id,
                     imageUrl = item.imageUrl,
                     title = item.title,
                     template = item.template,
@@ -114,7 +114,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
             val cuisineListSeeMoreList = cuisineListSeeMore.map {
                 CuisineItemUiModel(
                     sectionId = section.id,
-                    itemId = it.itemId,
+                    itemId = it.id,
                     imageUrl = it.imageUrl,
                     title = it.title,
                     template = it.template,

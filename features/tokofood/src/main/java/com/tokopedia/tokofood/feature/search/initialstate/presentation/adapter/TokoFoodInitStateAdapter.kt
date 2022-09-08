@@ -43,6 +43,15 @@ class TokoFoodInitStateAdapter(private val initialSearchAdapterFactoryImpl: Init
             visitables.removeAt(position)
             notifyItemRemoved(position)
         }
+
+        val recentSearchIndex = visitables.indexOfFirst { it is RecentSearchItemUiModel }
+        if (recentSearchIndex == RecyclerView.NO_POSITION) {
+            val headerRecentSearchIndex = visitables.indexOfFirst { it is HeaderRecentSearchUiModel }
+            if (headerRecentSearchIndex > RecyclerView.NO_POSITION) {
+                visitables.removeAt(headerRecentSearchIndex)
+                notifyItemRemoved(headerRecentSearchIndex)
+            }
+        }
     }
 
     fun removeAllInitialState() {

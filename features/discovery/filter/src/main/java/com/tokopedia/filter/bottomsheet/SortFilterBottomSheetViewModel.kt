@@ -191,13 +191,13 @@ internal class SortFilterBottomSheetViewModel {
             when {
                 filter.isPriceFilter -> sortFilterList.add(createPriceFilterViewModel(filter))
                 filter.isKeywordFilter -> sortFilterList.add(createKeywordFilterDataView(filter))
-                filter.isPriceRangeCbFilter -> sortFilterList.add(createPriceRangeCb(filter))
+                filter.isPriceRangeCbFilter -> sortFilterList.add(createPriceRangeCbFilter(filter))
                 else -> sortFilterList.add(createFilterViewModel(filter))
             }
         }
     }
 
-    private fun createPriceRangeCb(priceFilter: Filter): PriceRangeFilterUiModel {
+    private fun createPriceRangeCbFilter(priceFilter: Filter): PriceRangeFilterUiModel {
         return PriceRangeFilterUiModel(
             priceRangeList = priceFilter.options.map {
                 PriceRangeFilterItemUiModel(

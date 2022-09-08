@@ -26,11 +26,6 @@ internal class PriceRangeFilterViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.filter_price_range_layout
 
-        const val PRICE_RANGE_LEVEL_1 = 1
-        const val PRICE_RANGE_LEVEL_2 = 2
-        const val PRICE_RANGE_LEVEL_3 = 3
-        const val PRICE_RANGE_LEVEL_4 = 4
-
         const val STRING_COLOR_INDEX = 2
     }
 
@@ -76,7 +71,7 @@ internal class PriceRangeFilterViewHolder(
         }
 
         override fun onBindViewHolder(holder: PriceRangeCbItemViewHolder, position: Int) {
-            holder.bind(priceRangeFilterList[position])
+            holder.bind(priceRangeFilterList[position], priceRangeFilterList.size)
         }
 
         override fun getItemCount(): Int = priceRangeFilterList.size
@@ -87,9 +82,10 @@ internal class PriceRangeFilterViewHolder(
         private val priceRangeFilterListener: PriceRangeFilterListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PriceRangeFilterItemUiModel) {
+        fun bind(item: PriceRangeFilterItemUiModel, priceRangeSize: Int) {
             with(binding) {
-                tvPriceRangeDollar.text = MethodChecker.fromHtml(getPriceLevelString(item))
+                tvPriceRangeDollar.text =
+                    MethodChecker.fromHtml(getPriceLevelString(item, priceRangeSize))
                 tvPriceRangeDesc.text = item.priceRangeDesc
                 bindCheckboxPriceRange(item)
             }
@@ -107,14 +103,19 @@ internal class PriceRangeFilterViewHolder(
             }
         }
 
-        private fun getPriceLevelString(item: PriceRangeFilterItemUiModel): String {
+        private fun getPriceLevelString(
+            item: PriceRangeFilterItemUiModel,
+            priceRangeSize: Int
+        ): String {
             val priceBuilder = StringBuilder()
-            val color = "#${Integer.toHexString(
-                ContextCompat.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
-                )
-            ).substring(STRING_COLOR_INDEX)}"
+            val color = "#${
+                Integer.toHexString(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    )
+                ).substring(STRING_COLOR_INDEX)
+            }"
 
             priceBuilder.append("<font color=$color>")
 
@@ -122,7 +123,18 @@ internal class PriceRangeFilterViewHolder(
                 priceBuilder.append(item.priceText)
                 if (i == (item.priceRangeLevel - Int.ONE)) {
                     priceBuilder.append("</font>")
+                    break
                 }
+            }
+
+            val priceRangeLevelRegular = priceRangeSize - item.priceRangeLevel
+            var i = 0
+            while (i < priceRangeLevelRegular) {
+                priceBuilder.append(item.priceText)
+                if (i == (priceRangeLevelRegular - Int.ONE)) {
+                    break
+                }
+                i++
             }
 
             return priceBuilder.toString()
