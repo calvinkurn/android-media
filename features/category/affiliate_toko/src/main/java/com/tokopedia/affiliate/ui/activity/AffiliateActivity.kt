@@ -289,9 +289,11 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
         affiliateVM.progressBar().observe(this) {
             if (it)
+
                 findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.show()
             else
                 findViewById<LoaderUnify>(R.id.affiliate_home_progress_bar)?.hide()
+
         }
 
         affiliateVM.getErrorMessage().observe(this) { error ->
@@ -373,7 +375,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         affiliateBottomNavigation?.setSelected(position, isNotFromBottom)
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed(){
         val currentFragment =
             supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
         if (currentFragment != null && currentFragment.isVisible) {
@@ -427,5 +429,4 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             )
         }
     }
-
 }
