@@ -10,8 +10,8 @@ import com.tokopedia.sellerapp.data.datasource.local.dao.OrderDao
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.data.repository.OrderRepository
 import com.tokopedia.sellerapp.data.repository.WearCacheActionImpl
-import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCaseImpl
-import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCaseImpl
+import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
+import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,13 +37,13 @@ class WearModule {
     ): NodeClient = Wearable.getNodeClient(context)
 
     @Provides
-    fun provideWearCacheImpl(
+    fun provideWearCacheActionImpl(
         orderRoomDatasource: OrderRoomDatasource,
         dispatchers: CoroutineDispatchers
     ) = WearCacheActionImpl(dispatchers, orderRoomDatasource)
 
     @Provides
-    fun provideOrderRemoteDatasource(
+    fun provideClientMessageDatasource(
         wearCacheActionImpl: WearCacheActionImpl,
         nodeClient: NodeClient,
         messageClient: MessageClient
@@ -58,16 +58,16 @@ class WearModule {
     }
 
     @Provides
-    fun provideNewOrderUseCaseImpl(
+    fun provideNewOrderUseCase(
         orderRepository: OrderRepository
-    ): NewOrderUseCaseImpl {
-        return NewOrderUseCaseImpl(orderRepository)
+    ): NewOrderUseCase {
+        return NewOrderUseCase(orderRepository)
     }
 
     @Provides
-    fun provideReadyToDeliverOrderUseCaseImpl(
+    fun provideReadyToDeliverOrderUseCase(
         orderRepository: OrderRepository
-    ): ReadyToDeliverOrderUseCaseImpl {
-        return ReadyToDeliverOrderUseCaseImpl(orderRepository)
+    ): ReadyToDeliverOrderUseCase {
+        return ReadyToDeliverOrderUseCase(orderRepository)
     }
 }

@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerapp.domain.model.OrderModel
-import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCaseImpl
-import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCaseImpl
+import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
+import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCase
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.UiState
@@ -17,8 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
-    private val newOrderUseCaseImpl: NewOrderUseCaseImpl,
-    private val readyToDeliverOrderUseCaseImpl: ReadyToDeliverOrderUseCaseImpl
+    private val newOrderUseCase: NewOrderUseCase,
+    private val readyToDeliverOrderUseCase: ReadyToDeliverOrderUseCase
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -26,8 +26,8 @@ class SharedViewModel @Inject constructor(
     }
 
     val homeMenu: StateFlow<List<MenuItem>> = merge(
-        newOrderUseCaseImpl.getCount(),
-        readyToDeliverOrderUseCaseImpl.getCount()
+        newOrderUseCase.getCount(),
+        readyToDeliverOrderUseCase.getCount()
     ).map {
         getUpdatedMenuCounter(it.first, it.second)
     }.stateIn(
@@ -36,7 +36,7 @@ class SharedViewModel @Inject constructor(
         initialValue = generateInitialMenu()
     )
 
-    val newOrderList: StateFlow<UiState<List<OrderModel>>> = newOrderUseCaseImpl.getOrderList().map {
+    val newOrderList: StateFlow<UiState<List<OrderModel>>> = newOrderUseCase.getOrderList().map {
         UiState.Success(data = it)
     }.stateIn(
         scope = viewModelScope,
@@ -44,7 +44,7 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
-    val readyToDeliverOrderList: StateFlow<UiState<List<OrderModel>>> = readyToDeliverOrderUseCaseImpl.getOrderList().map {
+    val readyToDeliverOrderList: StateFlow<UiState<List<OrderModel>>> = readyToDeliverOrderUseCase.getOrderList().map {
         UiState.Success(data = it)
     }.stateIn(
         scope = viewModelScope,

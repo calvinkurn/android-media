@@ -3,14 +3,12 @@ package com.tokopedia.sellerapp.domain.interactor
 import com.tokopedia.sellerapp.data.repository.OrderRepository
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.mapper.OrderDomainMapper.mapToDomainModel
-import com.tokopedia.sellerapp.presentation.model.TITLE_NEW_ORDER
 import com.tokopedia.sellerapp.presentation.model.TITLE_READY_TO_DELIVER
-import com.tokopedia.sellerapp.util.Action
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class ReadyToDeliverOrderUseCaseImpl @Inject constructor(
+class ReadyToDeliverOrderUseCase @Inject constructor(
     private val orderRepository: OrderRepository
 ) : OrderUseCase {
 
