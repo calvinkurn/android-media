@@ -37,7 +37,6 @@ import com.tokopedia.deals.home.ui.dataview.CuratedCategoryDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
 import com.tokopedia.deals.search.model.visitor.VoucherModel
-import com.tokopedia.digital_deals.view.utils.DealsAnalytics
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
