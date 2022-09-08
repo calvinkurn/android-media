@@ -75,7 +75,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         super.onCreate(savedInstanceState)
         intent?.data?.pathSegments?.firstOrNull()?.let {
             if (it.contains(PAGE_SEGMENT_ONBOARDING)) {
-                showLoginPortal(intent?.data?.getQueryParameter(intent.data?.queryParameterNames?.first()))
+                intent.data?.queryParameterNames?.first()?.let { query->
+                    showLoginPortal(intent?.data?.getQueryParameter(query))
+                } ?: showLoginPortal()
             }
         }
         afterViewCreated()
