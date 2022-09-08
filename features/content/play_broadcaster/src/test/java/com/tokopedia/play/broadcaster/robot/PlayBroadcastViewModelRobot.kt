@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -47,6 +48,7 @@ internal class PlayBroadcastViewModelRobot(
     getChannelUseCase: GetChannelUseCase = mockk(relaxed = true),
     getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true),
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
+    getWhiteListNewUseCase: GetWhiteListNewUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastWebSocket: PlayWebSocket = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser()),
@@ -65,6 +67,7 @@ internal class PlayBroadcastViewModelRobot(
         getChannelUseCase,
         getAddedChannelTagsUseCase,
         getSocketCredentialUseCase,
+        getWhiteListNewUseCase,
         dispatchers,
         userSession,
         playBroadcastWebSocket,

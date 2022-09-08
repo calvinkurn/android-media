@@ -54,7 +54,7 @@ class PlayBroWebSocketViewModelTest {
 
     @Before
     fun setUp() {
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
     }
 
     @Test

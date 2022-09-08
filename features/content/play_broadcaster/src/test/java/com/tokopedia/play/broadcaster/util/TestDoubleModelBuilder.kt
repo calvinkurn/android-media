@@ -51,13 +51,11 @@ class TestDoubleModelBuilder {
     )
 
     fun buildTitleDataStore(
-            dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
-            updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true),
-            userSession: UserSessionInterface = mockk(relaxed = true)
+        dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
+        updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true),
     ) = TitleDataStoreImpl(
-            dispatcher,
-            updateChannelUseCase,
-            userSession
+        dispatcher,
+        updateChannelUseCase,
     )
 
     fun buildTagsDataStore(
@@ -105,12 +103,10 @@ class TestDoubleModelBuilder {
      * Data Store
      */
     fun buildRealTitleDataStore(
-            dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
-            updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true),
-            userSession: UserSessionInterface = mockk(relaxed = true)
+        dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
+        updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true),
     ) = TitleDataStoreImpl(
-            dispatcher,
-            updateChannelUseCase,
-            userSession
+        dispatcher,
+        updateChannelUseCase,
     )
 }

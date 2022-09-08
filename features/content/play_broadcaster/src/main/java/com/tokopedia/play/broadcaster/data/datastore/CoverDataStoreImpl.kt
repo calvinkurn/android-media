@@ -15,9 +15,9 @@ import javax.inject.Inject
  * Created by jegul on 23/06/20
  */
 class CoverDataStoreImpl @Inject constructor(
-        private val dispatcher: CoroutineDispatchers,
-        private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
-): CoverDataStore {
+    private val dispatcher: CoroutineDispatchers,
+    private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
+) : CoverDataStore {
 
     private val _selectedCoverLiveData = MutableLiveData<PlayCoverUiModel>()
 

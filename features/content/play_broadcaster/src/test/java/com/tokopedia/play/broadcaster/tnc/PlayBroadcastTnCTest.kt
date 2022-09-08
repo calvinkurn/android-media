@@ -35,7 +35,7 @@ class PlayBroadcastTnCTest {
             streamAllowed = false,
             tnc = mockTnCList
         )
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
@@ -64,7 +64,7 @@ class PlayBroadcastTnCTest {
         val mockConfig = uiModelBuilder.buildConfigurationUiModel(
             streamAllowed = true,
         )
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
