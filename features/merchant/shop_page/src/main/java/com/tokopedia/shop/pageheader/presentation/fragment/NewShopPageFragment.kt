@@ -19,10 +19,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
+import androidx.window.FoldingFeature
 import com.airbnb.lottie.LottieCompositionFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -41,6 +43,9 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
+import com.tokopedia.foldable.FoldableAndTabletSupportManager
+import com.tokopedia.foldable.FoldableInfo
+import com.tokopedia.foldable.FoldableSupportManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
@@ -68,6 +73,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -196,7 +202,8 @@ class NewShopPageFragment :
         ShareBottomsheetListener,
         ScreenShotListener,
         PermissionListener,
-        MiniCartWidgetListener
+        MiniCartWidgetListener,
+        FoldableSupportManager.FoldableInfoCallback
 {
 
     companion object {
@@ -369,6 +376,7 @@ class NewShopPageFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         setDataFromAppLinkQueryParam()
         super.onCreate(savedInstanceState)
+        FoldableAndTabletSupportManager(this, activity as AppCompatActivity)
     }
 
     override fun onCreateView(
@@ -2950,5 +2958,34 @@ class NewShopPageFragment :
 
     fun updateMiniCartWidget() {
         miniCart?.updateData()
+    }
+
+    override fun onChangeLayout(foldableInfo: FoldableInfo) {
+        if (foldableInfo.isFoldableDevice() && foldableInfo.isHalfOpen() && foldableInfo.foldingFeature?.orientation == FoldingFeature.ORIENTATION_HORIZONTAL) {
+//            val bt = foldableInfo.foldingFeature?.bounds?.bottom.orZero()/2
+//            viewBindingShopContentLayout?.appBarLayout?.layoutParams?.apply {
+//                height = bt + viewBinding?.toolbarContainer?.height.orZero()  + 40
+//            }
+//            val set = ConstraintSet().apply { clone(viewBinding!!.mainLayout) }
+
+//            val newSet = foldableInfo.alignSeparatorViewToFoldingFeatureBounds(
+//                set,
+//                findViewById<View>(android.R.id.content).rootView,
+//                R.id.separator
+//            )
+//            newSet.connect(R.id.appBarLayout, ConstraintSet.END, R.id.separator, ConstraintSet.START)
+//            newSet.connect(R.id.container_2, ConstraintSet.START, R.id.separator, ConstraintSet.END)
+//            newSet.applyTo(constraintLayout)
+//            foldableInfo.alignSeparatorViewToFoldingFeatureBounds()
+//            viewBindingShopContentLayout?.coordLayout?.hide()
+//            viewBindingShopContentLayout?.coordLayoutFold?.show()
+
+//            viewPager?.adapter = viewPagerAdapter
+//            viewPagerAdapter?.notifyDataSetChanged()
+        }else {
+//            viewPager?.adapter = viewPagerAdapter
+//            viewPagerAdapter?.notifyDataSetChanged()
+//            viewBindingShopContentLayout?.coordLayoutFold?.hide()
+        }
     }
 }
