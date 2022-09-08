@@ -16,6 +16,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentQuotaMonitoringBinding
+import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
 import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
@@ -69,6 +70,7 @@ class QuotaMonitoringFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeVpsPackages()
+        setFragmentToUnifyBgColor()
         viewModel.getVpsPackages()
     }
 
