@@ -17,5 +17,5 @@ object WishlistV2CommonConsts {
     const val TYPE_COLLECTION_ADDITIONAL_SECTION = "additional_section"
     const val TYPE_COLLECTION_ITEM = "collection_item"
     const val TYPE_CREATE_NEW_COLLECTION = "create_new_collection"
-    const val IMAGE_URL_SMALL_CREATE_NEW = "https://images.tokopedia.net/img/android/wishlistcollection/small_create_new.png"
+    const val IMAGE_URL_SMALL_CREATE_NEW = "https://images.tokopedia.net/img/android/wishlistcollection/placeholder_create_collection.png"
 }

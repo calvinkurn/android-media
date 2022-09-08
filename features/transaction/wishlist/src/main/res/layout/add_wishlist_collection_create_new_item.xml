@@ -16,12 +16,7 @@
             android:id="@+id/create_collection_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_centerInParent="true"/>
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true" />
 
     </RelativeLayout>
 
