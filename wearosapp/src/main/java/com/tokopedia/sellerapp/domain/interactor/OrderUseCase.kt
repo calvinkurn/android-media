@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface OrderUseCase {
-    operator fun invoke() : Flow<List<OrderModel>>
+    fun getOrderList() : Flow<List<OrderModel>>
+    fun getCount() : Flow<Pair<String, Int>>
     suspend fun sendRequest() { }
 }

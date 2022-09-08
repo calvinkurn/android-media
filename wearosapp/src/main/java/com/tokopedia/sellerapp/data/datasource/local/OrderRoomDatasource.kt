@@ -19,7 +19,15 @@ class OrderRoomDatasource(
         return orderDao.getNewOrderList()
     }
 
+    fun getNewOrderCount() : Flow<Int>{
+        return orderDao.getNewOrderCount()
+    }
+
     fun getReadyToDeliverOrderList() : Flow<List<OrderWithProduct>>{
         return orderDao.getReadyToDeliverOrderList()
+    }
+
+    fun getReadyToDeliverOrderCount() : Flow<Int>{
+        return orderDao.getReadyToDeliverOrderCount()
     }
 }

@@ -15,8 +15,16 @@ class OrderRepository @Inject constructor(
         return orderRoomDatasource.getNewOrderList()
     }
 
+    fun getCachedNewOrderCount() : Flow<Int>{
+        return orderRoomDatasource.getNewOrderCount()
+    }
+
     fun getCachedReadyToDeliverOrderList() : Flow<List<OrderWithProduct>>{
         return orderRoomDatasource.getReadyToDeliverOrderList()
+    }
+
+    fun getCachedReadyToDeliverOrderCount() : Flow<Int>{
+        return orderRoomDatasource.getReadyToDeliverOrderCount()
     }
 
     suspend fun sendMessagesToNodes(action: Action) {

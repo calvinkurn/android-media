@@ -6,7 +6,7 @@ import com.tokopedia.sellerapp.data.datasource.local.dao.OrderDao
 import com.tokopedia.sellerapp.data.datasource.local.entity.OrderEntity
 import com.tokopedia.sellerapp.data.datasource.local.entity.ProductEntity
 
-@Database(entities = [OrderEntity::class, ProductEntity::class], version = 25, exportSchema = false)
+@Database(entities = [OrderEntity::class, ProductEntity::class], version = 1, exportSchema = false)
 abstract class WearDatabase : RoomDatabase() {
     abstract fun orderDao(): OrderDao
 

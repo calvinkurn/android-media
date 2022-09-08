@@ -27,7 +27,13 @@ interface OrderDao{
     @Query("SELECT * FROM WearOrder wo WHERE wo.order_status_id = $STATUS_NEW_ORDER")
     fun getNewOrderList() : Flow<List<OrderWithProduct>>
 
+    @Query("SELECT count(*) FROM WearOrder wo WHERE wo.order_status_id = $STATUS_NEW_ORDER")
+    fun getNewOrderCount() : Flow<Int>
+
     @Transaction
     @Query("SELECT * FROM WearOrder wo WHERE wo.order_status_id = $STATUS_READY_TO_DELIVER")
     fun getReadyToDeliverOrderList() : Flow<List<OrderWithProduct>>
+
+    @Query("SELECT count(*) FROM WearOrder wo WHERE wo.order_status_id = $STATUS_READY_TO_DELIVER")
+    fun getReadyToDeliverOrderCount() : Flow<Int>
 }

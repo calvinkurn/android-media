@@ -8,8 +8,6 @@ import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCaseImpl
 import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCaseImpl
 import com.tokopedia.sellerapp.presentation.model.MenuItem
-import com.tokopedia.sellerapp.presentation.model.TITLE_NEW_ORDER
-import com.tokopedia.sellerapp.presentation.model.TITLE_READY_TO_DELIVER
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,25 +21,34 @@ class SharedViewModel @Inject constructor(
     private val readyToDeliverOrderUseCaseImpl: ReadyToDeliverOrderUseCaseImpl
 ) : BaseViewModel(dispatchers.io) {
 
-    private val _homeMenu: MutableStateFlow<List<MenuItem>> = MutableStateFlow(generateInitialMenu())
-    val homeMenu : StateFlow<List<MenuItem>>
-        get() = _homeMenu
+    companion object {
+        private const val FLOW_STOP_TIMEOUT = 3000L
+    }
 
-    val newOrderList: StateFlow<UiState<List<OrderModel>>> = newOrderUseCaseImpl().map {
-        updateMenuCounter(it.size, TITLE_NEW_ORDER)
+    val homeMenu: StateFlow<List<MenuItem>> = merge(
+        newOrderUseCaseImpl.getCount(),
+        readyToDeliverOrderUseCaseImpl.getCount()
+    ).map {
+        getUpdatedMenuCounter(it.first, it.second)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = generateInitialMenu()
+    )
+
+    val newOrderList: StateFlow<UiState<List<OrderModel>>> = newOrderUseCaseImpl.getOrderList().map {
         UiState.Success(data = it)
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
         initialValue = UiState.Idle()
     )
 
-    val readyToDeliverOrderList: StateFlow<UiState<List<OrderModel>>> = readyToDeliverOrderUseCaseImpl().map {
-        updateMenuCounter(it.size, TITLE_READY_TO_DELIVER)
+    val readyToDeliverOrderList: StateFlow<UiState<List<OrderModel>>> = readyToDeliverOrderUseCaseImpl.getOrderList().map {
         UiState.Success(data = it)
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Eagerly,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
         initialValue = UiState.Idle()
     )
 
@@ -63,11 +70,11 @@ class SharedViewModel @Inject constructor(
         })
     }
 
-    private fun updateMenuCounter(count: Int, title: String){
+    private fun getUpdatedMenuCounter(title: String, count: Int) : List<MenuItem> {
         homeMenu.value.toMutableList().also { listMenu ->
             val index = listMenu.indexOfFirst { it.title == title }
             listMenu[index] = listMenu[index].copy(unreadCount = count)
-            _homeMenu.value = listMenu
+            return listMenu
         }
     }
 }
