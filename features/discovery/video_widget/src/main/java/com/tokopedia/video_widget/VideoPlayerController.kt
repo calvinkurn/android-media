@@ -40,6 +40,11 @@ class VideoPlayerController(
             .registerActivityLifecycleCallbacks(this)
     }
 
+    private fun unregisterActivityLifecycleCallback() {
+        (videoView.context.applicationContext as Application)
+            .unregisterActivityLifecycleCallbacks(this)
+    }
+
     fun setVideoURL(videoURL: String) {
         this.videoURL = videoURL
     }
@@ -114,6 +119,7 @@ class VideoPlayerController(
     override fun onActivityDestroyed(activity: Activity) {
         if(videoView.context == activity) {
             helper.onActivityDestroy()
+            unregisterActivityLifecycleCallback()
         }
     }
 }
