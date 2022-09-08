@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.databinding.BottomsheetWarningInfoBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.content.common.R
@@ -20,8 +22,6 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
     private val binding: BottomsheetWarningInfoBinding
         get() = _binding!!
 
-    private var mListener: Listener? = null
-
     private lateinit var mWarningType: WarningType
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +37,6 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        mListener = null
     }
 
     private fun setupBottomSheet() {
@@ -55,7 +54,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
                 tvWarningSubtitle.text = getString(R.string.ugc_warning_both_account_banned_subtitle)
                 tvCta.apply {
                     show()
-                    setOnClickListener { mListener?.onCtaClick() }
+                    setOnClickListener { routeToWebViewGetToKnowMore() }
                 }
             }
             WarningType.BANNED -> {
@@ -64,7 +63,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
                 tvWarningSubtitle.text = getString(R.string.ugc_warning_account_banned_subtitle)
                 tvCta.apply {
                     show()
-                    setOnClickListener { mListener?.onCtaClick() }
+                    setOnClickListener { routeToWebViewGetToKnowMore() }
                 }
             }
             WarningType.BOTH_LIVE, WarningType.LIVE -> {
@@ -81,12 +80,15 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
         return this
     }
 
-    fun setOnCtaClickListener(listener: Listener?) {
-        mListener = listener
-    }
-
     fun showNow(fragmentManager: FragmentManager) {
         if(!isAdded) show(fragmentManager, TAG)
+    }
+
+    private fun routeToWebViewGetToKnowMore() {
+        RouteManager.route(
+            requireContext(),
+            getString(R.string.up_webview_template, ApplinkConst.WEBVIEW, getString(R.string.ugc_get_to_know_more_link))
+        )
     }
 
     companion object {
@@ -102,10 +104,6 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
                 WarningInfoBottomSheet::class.java.name
             ) as WarningInfoBottomSheet
         }
-    }
-
-    interface Listener {
-        fun onCtaClick()
     }
 
     enum class WarningType {

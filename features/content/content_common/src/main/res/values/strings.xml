@@ -119,6 +119,7 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="ugc_warning_both_account_banned_title">Semua akun kamu melanggar\nketentuan Tokopedia</string>
     <string name="ugc_warning_both_account_banned_subtitle">Untuk sementara, kamu tidak bisa Live dengan\nakun toko dan pembeli.</string>
     <string name="ugc_get_to_know_more">Pelajari Selengkapnya</string>
+    <string name="ugc_get_to_know_more_link">https://www.tokopedia.com/help/article/tokopedia-play-live-streaming</string>
     <string name="ugc_warning_both_account_live_title">Akunmu sedang siaran di\nperangkat lain</string>
     <string name="ugc_warning_both_account_live_subtitle">Akhiri Live di perangkat lain jika ingin\nmengambil alih siaran.</string>
     <string name="ugc_warning_account_banned_title">Akun ini melanggar ketentuan\nTokopedia</string>
