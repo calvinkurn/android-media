@@ -4,6 +4,7 @@ import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
+import java.util.Date
 
 data class FlashSaleListUiState(
     val isLoading: Boolean = true,
@@ -21,5 +22,6 @@ data class FlashSaleListUiState(
     val selectedStatusIds: List<String> = emptyList(),
     val isFilterActive: Boolean = false,
     val allItems: List<DelegateAdapterItem> = emptyList(),
-    val searchResultCount: Int = 0
+    val searchResultCount: Int = 0,
+    val currentDate: Date = Date()
 )

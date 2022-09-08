@@ -57,6 +57,7 @@ import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
+import java.util.Date
 import javax.inject.Inject
 
 class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
@@ -180,6 +181,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     private var binding by autoClearedNullable<StfsFragmentFlashSaleListBinding>()
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(FlashSaleListViewModel::class.java) }
+    private val currentDate = Date()
 
     override fun getScreenName(): String = FlashSaleListFragment::class.java.canonicalName.orEmpty()
 
@@ -200,13 +202,13 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.processEvent(FlashSaleListUiEvent.Init(tabName, tabId))
+        viewModel.processEvent(FlashSaleListUiEvent.GetFlashSaleCategory(tabName))
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         setupView()
         observeUiEffect()
         observeUiState()
-        viewModel.processEvent(FlashSaleListUiEvent.LoadPage(Int.ZERO))
+        viewModel.processEvent(FlashSaleListUiEvent.LoadPage(tabId, tabName, Int.ZERO, currentDate))
     }
 
 
@@ -240,7 +242,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
             adapter = flashSaleAdapter
 
             attachPaging(this, pagingConfig) { _, offset ->
-                viewModel.processEvent(FlashSaleListUiEvent.LoadPage(offset))
+                viewModel.processEvent(FlashSaleListUiEvent.LoadPage(tabId, tabName, offset, currentDate))
             }
         }
     }
