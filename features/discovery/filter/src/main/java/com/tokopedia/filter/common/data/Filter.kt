@@ -98,6 +98,10 @@ class Filter(@SerializedName("title")
     val isKeywordFilter: Boolean
         get() = TEMPLATE_NEGATIVE_KEYWORD == templateName
 
+    val isPriceRangeCbFilter: Boolean
+        get() = options.firstOrNull()?.inputType == Option.INPUT_TYPE_CHECKBOX &&
+                options.firstOrNull()?.key == Option.KEY_PRICING
+
     fun getFlattenedOptions() : List<Option> {
         return options.flatMap { option ->
             option.levelTwoCategoryList.flatMap { levelTwoCategory ->

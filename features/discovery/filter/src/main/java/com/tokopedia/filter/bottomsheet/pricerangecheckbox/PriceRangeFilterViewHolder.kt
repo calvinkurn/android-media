@@ -90,7 +90,7 @@ internal class PriceRangeFilterViewHolder(
         fun bind(item: PriceRangeFilterItemUiModel) {
             with(binding) {
                 tvPriceRangeDollar.text = MethodChecker.fromHtml(getPriceLevelString(item))
-                tvPriceRangeDesc.text = getRangePriceDesc(item.priceRangeLevel)
+                tvPriceRangeDesc.text = item.priceRangeDesc
                 bindCheckboxPriceRange(item)
             }
         }
@@ -104,17 +104,6 @@ internal class PriceRangeFilterViewHolder(
                 setOnCheckedChangeListener { _, isChecked ->
                     priceRangeFilterListener.onPriceRangeItemClicked(item, isChecked)
                 }
-            }
-        }
-
-        private fun getRangePriceDesc(level: Int): String {
-            val context = itemView.context
-            return when (level) {
-                PRICE_RANGE_LEVEL_1 -> context.getString(com.tokopedia.filter.R.string.desc_price_range_level_1)
-                PRICE_RANGE_LEVEL_2 -> context.getString(com.tokopedia.filter.R.string.desc_price_range_level_2)
-                PRICE_RANGE_LEVEL_3 -> context.getString(com.tokopedia.filter.R.string.desc_price_range_level_3)
-                PRICE_RANGE_LEVEL_4 -> context.getString(com.tokopedia.filter.R.string.desc_price_range_level_4)
-                else -> ""
             }
         }
 

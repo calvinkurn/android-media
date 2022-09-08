@@ -10,6 +10,8 @@ import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterItemUiModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterUiModel
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DataValue
@@ -20,6 +22,8 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.track.TrackAppUtils
 import kotlin.math.max
 
@@ -187,9 +191,24 @@ internal class SortFilterBottomSheetViewModel {
             when {
                 filter.isPriceFilter -> sortFilterList.add(createPriceFilterViewModel(filter))
                 filter.isKeywordFilter -> sortFilterList.add(createKeywordFilterDataView(filter))
+                filter.isPriceRangeCbFilter -> sortFilterList.add(createPriceRangeCb(filter))
                 else -> sortFilterList.add(createFilterViewModel(filter))
             }
         }
+    }
+
+    private fun createPriceRangeCb(priceFilter: Filter): PriceRangeFilterUiModel {
+        return PriceRangeFilterUiModel(
+            priceRangeList = priceFilter.options.map {
+                PriceRangeFilterItemUiModel(
+                    priceText = it.name,
+                    priceRangeDesc = it.description,
+                    priceRangeLevel = it.value.toIntSafely(),
+                    isNew = it.isNew
+                )
+            },
+            priceRangeLabel = priceFilter.title
+        )
     }
 
     private fun createPriceFilterViewModel(priceFilter: Filter): PriceFilterViewModel {
