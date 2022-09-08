@@ -227,14 +227,13 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
     }
 
     private fun checkIsCollectionNameExists(checkName: String) {
-        println("++ checkName = $checkName")
         if (checkName.isEmpty()) {
             disableSaveButton()
         } else {
             if (listCollections.isNotEmpty()) {
                 run check@{
                     listCollections.forEach { item ->
-                        if (checkName == item.name) {
+                        if (checkName.lowercase() == item.name.lowercase()) {
                             binding?.run {
                                 collectionCreateNameInputTextField.isInputError = _productIds.isEmpty()
 
