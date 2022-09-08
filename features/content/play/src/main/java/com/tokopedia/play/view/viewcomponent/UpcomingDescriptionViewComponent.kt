@@ -12,10 +12,10 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
-import androidx.core.text.buildSpannedString
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
