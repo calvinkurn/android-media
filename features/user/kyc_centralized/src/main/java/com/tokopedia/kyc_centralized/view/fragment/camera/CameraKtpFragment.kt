@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
@@ -243,6 +244,8 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
         try {
             bitmapProcessing?.doCropping(bitmap, frame, object : BitmapProcessingListener {
                 override fun onBitmapReady(bitmap: Bitmap) {
+                    val aspectRatio = "${bitmap.width}:${bitmap.height}"
+                    (viewBinding?.imagePreview?.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = aspectRatio
                     val file = saveToFile(bitmap)
                     onSuccessSaveFile(file)
                 }
@@ -263,6 +266,8 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
         try {
             bitmapProcessing?.doCompression(bitmap, object : BitmapProcessingListener {
                 override fun onBitmapReady(bitmap: Bitmap) {
+                    val aspectRatio = "${bitmap.width}:${bitmap.height}"
+                    (viewBinding?.imagePreview?.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = aspectRatio
                     val file = saveToFile(bitmap)
                     onSuccessSaveFile(file)
                 }
@@ -283,6 +288,8 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
         try {
             bitmapProcessing?.doCropAndCompress(bitmap, frame, object : BitmapProcessingListener {
                 override fun onBitmapReady(bitmap: Bitmap) {
+                    val aspectRatio = "${bitmap.width}:${bitmap.height}"
+                    (viewBinding?.imagePreview?.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = aspectRatio
                     val file = saveToFile(bitmap)
                     onSuccessSaveFile(file)
                 }
