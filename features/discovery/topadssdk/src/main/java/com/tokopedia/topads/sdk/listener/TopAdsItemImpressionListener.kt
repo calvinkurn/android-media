@@ -1,18 +1,9 @@
-package com.tokopedia.topads.sdk.listener;
+package com.tokopedia.topads.sdk.listener
 
-import com.tokopedia.topads.sdk.domain.model.CpmData;
-import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 
-/**
- * Created by errysuprayogi on 7/30/18.
- */
-
-public abstract class TopAdsItemImpressionListener {
-
-    public void onImpressionProductAdsItem(int position, Product product, CpmData data){
-    }
-
-    public void onImpressionHeadlineAdsItem(int position, CpmData data){
-    }
-
+abstract class TopAdsItemImpressionListener {
+    open fun onImpressionProductAdsItem(position: Int, product: Product?, data: CpmData) {}
+    open fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {}
 }

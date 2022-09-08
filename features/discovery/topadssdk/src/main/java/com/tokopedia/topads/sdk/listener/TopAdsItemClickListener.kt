@@ -1,19 +1,11 @@
-package com.tokopedia.topads.sdk.listener;
+package com.tokopedia.topads.sdk.listener
 
-import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.domain.model.Data
+import com.tokopedia.topads.sdk.domain.model.Product
+import com.tokopedia.topads.sdk.domain.model.Shop
 
-/**
- * @author by errysuprayogi on 3/29/17.
- */
-
-public interface TopAdsItemClickListener {
-
-    void onProductItemClicked(int position, Product product);
-
-    void onShopItemClicked(int position, Shop shop);
-
-    void onAddFavorite(int position, Data data);
-
+interface TopAdsItemClickListener {
+    fun onProductItemClicked(position: Int, product: Product)
+    fun onShopItemClicked(position: Int, shop: Shop)
+    fun onAddFavorite(position: Int, data: Data)
 }

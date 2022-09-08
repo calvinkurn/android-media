@@ -121,13 +121,24 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
                 displayAds(it)
             }
 
-            topadsBannerView.setTopAdsBannerClickListener(TopAdsBannerClickListener { position: Int, applink: String?, data: CpmData? ->
-                applink?.let {
-                    RouteManager.route(itemView.context, applink)
-                    if (it.contains("shop")) {
-                        TopAdsGtmTracker.eventTopAdsHeadlineShopClick(position, "", data, userSession.userId)
-                    } else {
-                        TopAdsGtmTracker.eventTopAdsHeadlineProductClick(position, "", data, userSession.userId)
+            topadsBannerView.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
+                override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
+                    applink?.let {
+                        RouteManager.route(itemView.context, applink)
+                        if (it.contains("shop")) {
+                            TopAdsGtmTracker.eventTopAdsHeadlineShopClick(
+                                position,
+                                "",
+                                data,
+                                userSession.userId
+                            )
+                        } else {
+                            TopAdsGtmTracker.eventTopAdsHeadlineProductClick(
+                                position,
+                                data,
+                                userSession.userId
+                            )
+                        }
                     }
                 }
             })

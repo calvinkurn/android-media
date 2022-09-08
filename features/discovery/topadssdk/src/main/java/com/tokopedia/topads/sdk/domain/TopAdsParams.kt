@@ -1,42 +1,30 @@
-package com.tokopedia.topads.sdk.domain;
+package com.tokopedia.topads.sdk.domain
 
-import com.tokopedia.topads.sdk.base.TKPDMapParam;
+import com.tokopedia.topads.sdk.base.TKPDMapParam
 
-/**
- * Created by errysuprayogi on 3/27/17.
- */
+class TopAdsParams {
+    val param: TKPDMapParam<String, String> = TKPDMapParam()
 
-public class TopAdsParams {
-
-    public static final String KEY_EP = "ep";
-    public static final String KEY_DEVICE = "device";
-    public static final String KEY_ITEM = "item";
-    public static final String KEY_HEADLINE_PRODUCT_COUNT = "headline_product_count";
-    public static final String KEY_WITH_TEMPLATE = "with_template";
-    public static final String KEY_SRC = "src";
-    public static final String KEY_TEMPLATE_ID = "template_id";
-    public static final String KEY_PAGE = "page";
-    public static final String KEY_DEPARTEMENT_ID = "dep_id";
-
-    public static final String DEFAULT_KEY_ITEM = "2";
-    public static final String DEFAULT_KEY_EP = "product";
-    public static final String DEFAULT_KEY_DEVICE = "android";
-    public static final String DEFAULT_KEY_PAGE = "1";
-    public static final String DEFAULT_KEY_SRC = "search";
-
-
-    private final TKPDMapParam<String, String> param;
-
-
-    public TopAdsParams() {
-        param = new TKPDMapParam<>();
-        param.put(KEY_ITEM, DEFAULT_KEY_ITEM);
-        param.put(KEY_DEVICE, DEFAULT_KEY_DEVICE);
-        param.put(KEY_PAGE, DEFAULT_KEY_PAGE);
+    companion object {
+        const val KEY_EP = "ep"
+        const val KEY_DEVICE = "device"
+        const val KEY_ITEM = "item"
+        const val KEY_HEADLINE_PRODUCT_COUNT = "headline_product_count"
+        const val KEY_WITH_TEMPLATE = "with_template"
+        const val KEY_SRC = "src"
+        const val KEY_TEMPLATE_ID = "template_id"
+        const val KEY_PAGE = "page"
+        const val KEY_DEPARTEMENT_ID = "dep_id"
+        const val DEFAULT_KEY_ITEM = "2"
+        const val DEFAULT_KEY_EP = "product"
+        const val DEFAULT_KEY_DEVICE = "android"
+        const val DEFAULT_KEY_PAGE = "1"
+        const val DEFAULT_KEY_SRC = "search"
     }
 
-    public TKPDMapParam<String, String> getParam() {
-        return param;
+    init {
+        param[KEY_ITEM] = DEFAULT_KEY_ITEM
+        param[KEY_DEVICE] = DEFAULT_KEY_DEVICE
+        param[KEY_PAGE] = DEFAULT_KEY_PAGE
     }
-
 }
