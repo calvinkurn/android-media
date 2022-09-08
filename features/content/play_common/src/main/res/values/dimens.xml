@@ -70,5 +70,5 @@
 
     <!-- Chat -->
     <dimen name="play_bro_chat_spacing">6dp</dimen>
-    <dimen name="engagement_tools_small_widget_height">98dp</dimen>
+    <dimen name="engagement_tools_small_widget_height">104dp</dimen>
 </resources>
