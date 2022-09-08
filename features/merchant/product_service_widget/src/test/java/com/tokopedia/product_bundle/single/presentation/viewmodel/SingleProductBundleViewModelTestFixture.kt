@@ -9,6 +9,7 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -33,6 +34,9 @@ abstract class SingleProductBundleViewModelTestFixture {
 
     @get:Rule
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var context: Context

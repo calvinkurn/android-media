@@ -19,10 +19,6 @@ interface DynamicFeedContract {
 
         fun onEmptyFeedButtonClicked()
 
-        fun onSuccessLike(rowNumber: Int, columnNumber: Int)
-
-        fun onSuccessUnlike(rowNumber: Int, columnNumber: Int)
-
         fun onErrorLikeUnlike(err: String)
     }
 

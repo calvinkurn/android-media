@@ -19,7 +19,9 @@ import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getWebHostWebViewLink
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
+import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals
 import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals.getRegisteredNavigationDeals
+import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment
 import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment.getRegisteredNavigationEvents
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.applink.feed.DeepLinkMapperFeed.getRegisteredFeed
@@ -234,6 +236,18 @@ object DeeplinkMapper {
             return applinkDigital
         }
 
+        val appLinkEvents =
+            DeeplinkMapperEntertainment.getRegisteredNavigationFromHttpEvents(deeplink)
+        if (appLinkEvents.isNotEmpty()) {
+            return appLinkEvents
+        }
+
+        val appLinkDeals =
+            DeeplinkMapperDeals.getRegisteredNavigationFromHttpDeals(deeplink)
+        if (appLinkDeals.isNotEmpty()) {
+            return appLinkDeals
+        }
+
         val applinkFind =
                 DeepLinkMapperFind.getRegisteredNavigationFindFromHttp(context, uri)
         if (applinkFind.isNotEmpty()) {
@@ -311,6 +325,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.EPHARMACY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
             DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
             DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_HELP) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
+            DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_TRANSACTION_HISTORY) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
             DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
             DLP.startWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) { _, uri, _, _ -> getRegisteredNavigationForFintech(uri) },
             DLP.startWith(ApplinkConst.LAYANAN_FINANSIAL) { _, _, deeplink, _ -> getRegisteredNavigationForLayanan(deeplink) },
