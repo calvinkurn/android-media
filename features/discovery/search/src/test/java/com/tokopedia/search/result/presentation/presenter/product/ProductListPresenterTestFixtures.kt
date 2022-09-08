@@ -155,14 +155,14 @@ internal open class ProductListPresenterTestFixtures {
 
         productItem.isTopAds shouldBe true
         productItem.topadsClickUrl shouldBe topAdsProduct.productClickUrl
-        productItem.topadsImpressionUrl shouldBe topAdsProduct.product.image.s_url
+        productItem.topadsImpressionUrl shouldBe topAdsProduct.product?.image?.s_url
         productItem.topadsWishlistUrl shouldBe topAdsProduct.productWishlistUrl
         productItem.topadsTag shouldBe topAdsProduct.tag
-        productItem.minOrder shouldBe topAdsProduct.product.productMinimumOrder
+        productItem.minOrder shouldBe topAdsProduct.product?.productMinimumOrder
         productItem.position shouldBe position
-        productItem.productName shouldBe topAdsProduct.product.name
+        productItem.productName shouldBe topAdsProduct.product?.name
         productItem.applink shouldBe topAdsProduct.applinks
-        productItem.customVideoURL shouldBe topAdsProduct.product.customVideoUrl
+        productItem.customVideoURL shouldBe topAdsProduct.product?.customVideoUrl
     }
 
     protected fun Visitable<*>.assertOrganicProduct(
