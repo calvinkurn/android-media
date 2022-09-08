@@ -30,5 +30,6 @@ warn("This PR is quite a big one! Try splitting this into separate tasks next ti
 ktlint.skip_lint = true
 ktlint.filtering = true
 ktlint.filtering_lines = true
+ktlint.correction = true
 ktlint.report_file = 'ktlint-report.json'
 ktlint.lint(inline_mode: true)
