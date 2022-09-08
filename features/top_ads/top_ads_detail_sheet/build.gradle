@@ -25,7 +25,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.supportLibDependencies.constraintLayout

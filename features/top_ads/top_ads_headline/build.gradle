@@ -36,7 +36,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation projectOrAar(rootProject.ext.features.topAdsHeadlineUseCase)
     implementation projectOrAar(rootProject.ext.libraries.track)
-    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
 
     //test
     testImplementation rootProject.ext.testDependencies.mockk
