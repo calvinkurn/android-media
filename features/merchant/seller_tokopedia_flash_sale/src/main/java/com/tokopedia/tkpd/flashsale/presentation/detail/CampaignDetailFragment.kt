@@ -22,6 +22,7 @@ import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleCompone
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
+import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
@@ -89,6 +90,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeCampaignDetail()
         loadData()
+
+        // TODO: Remove this after testing
+        ChooseProductActivity.start(context?:return, flashSaleId)
     }
 
     private fun observeCampaignDetail() {
