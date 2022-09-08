@@ -163,4 +163,8 @@
     <string name="stfs_rejection_reason_placeholder"><![CDATA[<font color=#F94D63>Ditolak</font>]]> karena [%s].</string>
     <string name="stfs_check_another_campaign_label">Cek Campaign Lain</string>
     <string name="stfs_empty_desc_label">Yuk, cek campaign menarik lainnya yang bisa kamu ikuti!</string>
+    <string name="stfs_canceled_card_title_label">Yah, campaign ini dibatalkan</string>
+    <string name="stfst_canceled_card_description_placeholder">Campaign dibatalkan karena [%s].</string>
+    <string name="stfs_missed_card_title_label">Yah, campaign ini sudah lewat!</string>
+    <string name="stfs_missed_card_desc_label">Kamu tidak mengajukan produk untuk campaign ini.</string>
 </resources>

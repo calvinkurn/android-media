@@ -71,6 +71,32 @@
                 app:unifyEmptyStateOrientation="horizontal"
                 app:unifyEmptyStateTitle="Belum ada produk, nih!" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_empty_body_desc_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="64dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:maxLines="2"
+                android:text="@string/stfs_empty_desc_label"
+                android:textColor="@color/gr_700"
+                android:visibility="gone"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_check_other_campaign"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/stfs_check_another_campaign_label"
+                android:visibility="gone"
+                app:unifyButtonVariant="filled" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
@@ -214,7 +240,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/global_error"
         android:layout_width="match_parent"
@@ -226,6 +251,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:globalerrors_type="SERVER_ERROR"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

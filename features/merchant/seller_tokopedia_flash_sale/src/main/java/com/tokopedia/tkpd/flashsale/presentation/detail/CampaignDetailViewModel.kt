@@ -103,6 +103,7 @@ class CampaignDetailViewModel @Inject constructor(
                 FlashSaleStatus.SELECTION_FINISHED -> submittedProduct.toFinishedProcessSelectionItem()
                 FlashSaleStatus.ONGOING -> submittedProduct.toOngoingItem()
                 FlashSaleStatus.REJECTED -> submittedProduct.toOngoingRejectedItem()
+                FlashSaleStatus.FINISHED -> submittedProduct.toOngoingItem()
                 else -> submittedProduct.toWaitingForSelectionItem()
             }
         }

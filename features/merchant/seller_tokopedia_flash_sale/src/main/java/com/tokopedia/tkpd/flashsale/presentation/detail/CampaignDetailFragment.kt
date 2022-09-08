@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,6 +59,8 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
         private const val EMPTY_SUBMITTED_PRODUCT_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/empty_cdp_product_list_Illustration.png"
+        private const val FINISHED_HEADER_IMAGE_BANNER_URL =
+            "https://images.tokopedia.net/img/android/campaign/fs-tkpd/finished_campaign_banner.png"
 
         @JvmStatic
         fun newInstance(flashSaleId: Long, tabName: String): CampaignDetailFragment {
@@ -94,6 +97,8 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
     private var ongoingCdpMidBinding by autoClearedNullable<StfsCdpOngoingMidBinding>()
 
     //finished
+    private var finishedCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
+    private var finishedCdpMidBinding by autoClearedNullable<StfsCdpOngoingMidBinding>()
 
     private val flashSaleId by lazy {
         arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
@@ -207,7 +212,9 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                 setupOngoing(flashSale)
                 setupPaging()
             }
-            FINISHED_TAB -> setupFinished()
+            FINISHED_TAB -> {
+                setupFinished(flashSale)
+            }
         }
     }
 
@@ -612,7 +619,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
 
     private fun setupRegisteredButton(isShown: Boolean = false) {
         binding?.run {
-           cardProductEligible.gone()
+            cardProductEligible.gone()
             cardBottomButtonGroup.isVisible = viewModel.getAddProductButtonVisibility()
             btnRegister.text = getString(R.string.stfs_add_product)
             btnDelete.text = getString(R.string.stfs_label_delete)
@@ -626,12 +633,6 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                 btnDelete.gone()
                 btnEdit.gone()
             }
-        }
-    }
-
-    private fun setupCardButtonGroud(isShown: Boolean = false) {
-        binding?.run {
-            cardBottomButtonGroup.isVisible = isShown
         }
     }
 
@@ -783,8 +784,199 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
     /**
      * Region Finished CDP
      */
-    private fun setupFinished() {
-        //TODO: implement finished CDP
+    private fun setupFinished(flashSale: FlashSale) {
+        binding?.run {
+            layoutHeader.setOnInflateListener { _, view ->
+                finishedCdpHeaderBinding = StfsCdpHeaderBinding.bind(view)
+            }
+            layoutMid.setOnInflateListener { _, view ->
+                finishedCdpMidBinding = StfsCdpOngoingMidBinding.bind(view)
+            }
+            layoutBody.setOnInflateListener { _, view ->
+                cdpBodyBinding = StfsCdpBodyBinding.bind(view)
+            }
+            cardBottomButtonGroup.gone()
+        }
+        setupFinishedHeader(flashSale)
+        setupFinishedMid(flashSale)
+        setupFinishedBody(flashSale)
+    }
+
+    private fun setupFinishedHeader(flashSale: FlashSale) {
+        val binding = binding ?: return
+        val inflatedView = binding.layoutHeader
+        inflatedView.layoutResource = R.layout.stfs_cdp_header
+        inflatedView.inflate()
+        setupFinishedHeaderData(flashSale)
+    }
+
+    private fun setupFinishedMid(flashSale: FlashSale) {
+        val binding = binding ?: return
+        val inflatedView = binding.layoutMid
+        inflatedView.layoutResource = R.layout.stfs_cdp_ongoing_mid
+        inflatedView.inflate()
+        setupFinishedMidData(flashSale)
+    }
+
+    private fun setupFinishedBody(flashSale: FlashSale) {
+        val binding = binding ?: return
+        val inflatedView = binding.layoutBody
+        inflatedView.layoutResource = R.layout.stfs_cdp_body
+        inflatedView.inflate()
+        setupFinishedBodyData(flashSale)
+    }
+
+    private fun setupFinishedHeaderData(flashSale: FlashSale) {
+        finishedCdpHeaderBinding?.run {
+            when (flashSale.status) {
+                FlashSaleStatus.FINISHED -> {
+                    imageFinishedCampaingBanner.run {
+                        loadImage(FINISHED_HEADER_IMAGE_BANNER_URL)
+                        visible()
+                    }
+                    groupCampaignStatus.gone()
+                }
+                FlashSaleStatus.CANCELLED -> {
+                    imageFinishedCampaingBanner.gone()
+                    groupCampaignStatus.visible()
+                }
+                FlashSaleStatus.MISSED -> {
+                    imageFinishedCampaingBanner.gone()
+                    groupCampaignStatus.visible()
+                }
+                else -> {
+                    imageFinishedCampaingBanner.gone()
+                    groupCampaignStatus.visible()
+                }
+            }
+            tgCampaignStatus.apply {
+                text = flashSale.statusText
+                setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        color.Unify_R500
+                    )
+                )
+            }
+            imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_RED)
+            tickerHeader.gone()
+            timer.gone()
+            imageCampaign.setImageUrl(flashSale.coverImage)
+            tgCampaignName.text = flashSale.name
+            setHeaderCampaignPeriod(this, flashSale)
+        }
+    }
+
+    private fun setupFinishedMidData(flashSale: FlashSale) {
+        finishedCdpMidBinding?.run {
+            tpgProposedProductValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_mid_section_product_count_placeholder,
+                    flashSale.productMeta.totalProduct
+                )
+            )
+            when (flashSale.status) {
+                FlashSaleStatus.FINISHED -> {
+                    cardFlashSalePerformance.gone()
+                    groupCampaignStatistics.visible()
+                    tpgAcceptedProductValue.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_mid_section_product_count_placeholder,
+                            flashSale.productMeta.acceptedProduct
+                        )
+                    )
+                    tpgRejectedProductValue.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_mid_section_product_count_placeholder,
+                            flashSale.productMeta.rejectedProduct
+                        )
+                    )
+                    tpgSoldValue.text = MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_mid_section_product_count_placeholder,
+                            flashSale.productMeta.totalStockSold
+                        )
+                    )
+                    tpgSellingValue.text =
+                        flashSale.productMeta.totalSoldValue.getCurrencyFormatted()
+                }
+                FlashSaleStatus.CANCELLED -> {
+                    cardFlashSalePerformance.visible()
+                    tpgCardMidTitle.text = getString(R.string.stfs_canceled_card_title_label)
+                    tpgCardMidDesctiption.text = getString(
+                        R.string.stfst_canceled_card_description_placeholder,
+                        flashSale.cancellationReason
+                    )
+                    groupCampaignStatistics.gone()
+                }
+                FlashSaleStatus.MISSED -> {
+                    cardFlashSalePerformance.visible()
+                    tpgCardMidTitle.text = getString(R.string.stfs_missed_card_title_label)
+                    tpgCardMidDesctiption.text = getString(R.string.stfs_missed_card_desc_label)
+                    groupCampaignStatistics.gone()
+                }
+                else -> {
+                    cardFlashSalePerformance.visible()
+                    groupCampaignStatistics.gone()
+                    tpgCardMidTitle.text =
+                        getString(R.string.stft_flash_sale_performace_card_title_label_rejected)
+                    tpgCardMidDesctiption.text =
+                        getString(R.string.stft_flash_sale_performace_card_desc_label_rejected)
+                    tpgAcceptedProductValue.text = getString(R.string.stfs_dash_label)
+                    tpgRejectedProductValue.text = getString(R.string.stfs_dash_label)
+                    tpgSoldValue.text = getString(R.string.stfs_dash_label)
+                    tpgSellingValue.text = getString(R.string.stfs_dash_label)
+                }
+            }
+            setupFinishedMidCardTickerAppereance()
+        }
+    }
+
+    private fun setupFinishedBodyData(flashSale: FlashSale) {
+        when (flashSale.status) {
+            FlashSaleStatus.FINISHED -> {
+                observeSubmittedProductData()
+                loadSubmittedProductListData(Int.ZERO)
+                setupPaging()
+            }
+            FlashSaleStatus.CANCELLED -> {
+                setupSubmittedProductListData()
+                setupFinishedEmptyProductState()
+            }
+            FlashSaleStatus.MISSED -> {
+                setupSubmittedProductListData()
+                setupFinishedEmptyProductState()
+            }
+            else -> {
+                observeSubmittedProductData()
+                loadSubmittedProductListData(Int.ZERO)
+                setupPaging()
+            }
+        }
+    }
+
+    private fun setupFinishedEmptyProductState() {
+        binding?.run {
+            tpgEmptyBodyDescLabel.visible()
+            btnCheckOtherCampaign.run {
+                visible()
+                setOnClickListener {
+                    activity?.finish()
+                }
+            }
+        }
+    }
+
+    private fun setupFinishedMidCardTickerAppereance() {
+        finishedCdpMidBinding?.run {
+            cardFlashSalePerformance.setCardUnifyBackgroundColor(
+                MethodChecker.getColor(
+                    context,
+                    color.Unify_RN50
+                )
+            )
+            imageCardFlashSalePerformance.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
+        }
     }
 
     /**
@@ -825,8 +1017,12 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         cdpBodyBinding?.run {
             val isShowButtonToggle =
                 viewModel.getCampaignRegisteredStatus() == FlashSaleStatus.WAITING_FOR_SELECTION
-            val isTitleNotShown =
-                viewModel.getCampaignRegisteredStatus() == FlashSaleStatus.NO_REGISTERED_PRODUCT
+            val isTitleNotShown = when (viewModel.getCampaignRegisteredStatus()) {
+                FlashSaleStatus.NO_REGISTERED_PRODUCT -> true
+                FlashSaleStatus.CANCELLED -> true
+                FlashSaleStatus.MISSED -> true
+                else -> false
+            }
 
             btnSelectAllProduct.isVisible = isShowButtonToggle
             tpgProductCount.isVisible = !isTitleNotShown
