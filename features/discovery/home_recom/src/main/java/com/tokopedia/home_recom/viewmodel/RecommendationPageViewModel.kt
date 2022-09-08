@@ -229,9 +229,6 @@ open class RecommendationPageViewModel @Inject constructor(
                                 productDetailData.clickUrl = topadsProduct.clickUrl
                                 productDetailData.trackerImageUrl =
                                     topadsProduct.product.image.m_url
-
-                                val itemIndex = dataList.indexOf(productRecom)
-                                dataList[itemIndex] = productRecom
                                 _recommendationListLiveData.postValue(dataList)
                             }
                         }
