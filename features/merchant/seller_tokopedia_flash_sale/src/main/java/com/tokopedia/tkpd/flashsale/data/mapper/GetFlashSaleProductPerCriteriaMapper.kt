@@ -2,13 +2,14 @@ package com.tokopedia.tkpd.flashsale.data.mapper
 
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleProductPerCriteriaResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.Category
-import com.tokopedia.tkpd.flashsale.domain.entity.CategorySelection
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaSelection
 import javax.inject.Inject
 
 class GetFlashSaleProductPerCriteriaMapper @Inject constructor() {
 
     fun map(response: GetFlashSaleProductPerCriteriaResponse) = response.getFlashSaleProductPerCriteria.productCriteria.map {
-        CategorySelection(
+        CriteriaSelection(
+            criteriaId = it.criteriaId,
             selectionCount = it.countSubmitted,
             categoryTitle = mapTitle(it.categoryList),
             categoryTitleComplete = mapTitleComplete(it.categoryList),

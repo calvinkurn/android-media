@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemCriteriaSelectionBinding
-import com.tokopedia.tkpd.flashsale.domain.entity.CategorySelection
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaSelection
 
 class CriteriaSelectionAdapter(
     private val listener: CriteriaSelectionAdapterListener
 ) : RecyclerView.Adapter<CriteriaSelectionAdapter.CriteriaViewHolder>() {
 
-    private var data: List<CategorySelection> = emptyList()
+    private var data: List<CriteriaSelection> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
         val binding = StfsItemCriteriaSelectionBinding.inflate(LayoutInflater.from(parent.context),
@@ -28,7 +28,7 @@ class CriteriaSelectionAdapter(
         }
     }
 
-    fun setDataList(newData: List<CategorySelection>) {
+    fun setDataList(newData: List<CriteriaSelection>) {
         data = newData
         notifyItemRangeChanged(Int.ZERO, newData.size)
     }
@@ -37,7 +37,7 @@ class CriteriaSelectionAdapter(
         private val binding: StfsItemCriteriaSelectionBinding,
         private val listener: CriteriaSelectionAdapterListener
     ): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: CategorySelection) {
+        fun bind(item: CriteriaSelection) {
             binding.tfTitle.text = item.categoryTitle
             binding.tfValue.text = "${item.selectionCount}/${item.selectionCountMax}"
             binding.iconMoreInfo.setOnClickListener {

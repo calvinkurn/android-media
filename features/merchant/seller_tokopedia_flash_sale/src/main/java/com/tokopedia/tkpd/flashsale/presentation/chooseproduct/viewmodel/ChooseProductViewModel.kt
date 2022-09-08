@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.tkpd.flashsale.domain.entity.CategorySelection
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaSelection
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductReserveResult
 import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseCase
@@ -38,8 +38,8 @@ class ChooseProductViewModel @Inject constructor(
     private val _preselectedProductCount = MutableLiveData<Int>()
     val preselectedProductCount: LiveData<Int> get() = _preselectedProductCount
 
-    private val _criteriaList = MutableLiveData<List<CategorySelection>>()
-    val criteriaList: LiveData<List<CategorySelection>> get() = _criteriaList
+    private val _criteriaList = MutableLiveData<List<CriteriaSelection>>()
+    val criteriaList: LiveData<List<CriteriaSelection>> get() = _criteriaList
 
     private val _productReserveResult = MutableLiveData<ProductReserveResult>()
     val productReserveResult: LiveData<ProductReserveResult> get() = _productReserveResult
@@ -104,6 +104,10 @@ class ChooseProductViewModel @Inject constructor(
         )
     }
 
+    fun updateCriteriaList(item: ChooseProductItem) {
+        _criteriaList.value = ChooseProductUiMapper.chooseCriteria(_criteriaList.value, item)
+    }
+
     fun setSelectedProduct(items: List<DelegateAdapterItem>) {
         _selectedProductList.value = items
     }
@@ -138,6 +142,5 @@ class ChooseProductViewModel @Inject constructor(
                 _error.postValue(error)
             }
         )
-
     }
 }

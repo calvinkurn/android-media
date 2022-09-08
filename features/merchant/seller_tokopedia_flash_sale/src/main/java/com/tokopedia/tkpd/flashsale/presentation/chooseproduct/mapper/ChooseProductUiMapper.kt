@@ -4,12 +4,12 @@ import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.Category
-import com.tokopedia.tkpd.flashsale.domain.entity.CategorySelection
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaSelection
 import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseCase
 
 object ChooseProductUiMapper {
 
-    fun collectAllCategory(categories: List<CategorySelection>): MutableList<Category> {
+    fun collectAllCategory(categories: List<CriteriaSelection>): MutableList<Category> {
         val result = mutableListOf<Category>()
         categories.forEach { category ->
             category.categoryList.forEach { categoryData ->
@@ -29,7 +29,7 @@ object ChooseProductUiMapper {
 
     fun getSelectedProductCount(list: List<DelegateAdapterItem>) = getSelectedProduct(list).size
 
-    fun getMaxSelectedProduct(categories: List<CategorySelection>): Int {
+    fun getMaxSelectedProduct(categories: List<CriteriaSelection>): Int {
         var max = 0
         categories.forEach {
             max += it.selectionCountMax
@@ -46,5 +46,15 @@ object ChooseProductUiMapper {
                 Pair(it.productId.toLongOrZero(), it.criteriaId)
             }
         )
+    }
+
+    fun chooseCriteria(
+        criteriaList: List<CriteriaSelection>?,
+        item: ChooseProductItem,
+    ): List<CriteriaSelection> {
+        criteriaList?.firstOrNull { it.criteriaId == item.criteriaId }?.apply {
+            if (item.isSelected) selectionCount++ else selectionCount--
+        }
+        return criteriaList.orEmpty()
     }
 }
