@@ -150,4 +150,13 @@
     <string name="stfs_register_body_title_label">Daftar Produk Flash Sale Tokopedia</string>
     <string name="stfs_selection_process_label">Proses Seleksi</string>
     <string name="stfs_subsidy_value_placeholder">Menerima subsidi sebesar <![CDATA[<font color=#00AA5B>>%s</font>]]> dari Tokopedia</string>
+
+    <!--    Ongoing-->
+    <string name="stft_flash_sale_performace_card_title_label">Pantau peforma Flash Sale-mu, yuk!</string>
+    <string name="stfs_flash_sale_performance_card_desc_label">Performa diperbarui 10 menit lalu.</string>
+    <string name="stft_flash_sale_performace_card_title_label_rejected">Yah, semua produkmu tidak lolos seleksi</string>
+    <string name="stft_flash_sale_performace_card_desc_label_rejected">Tenang, coba daftarkan produkmu lagi di campaign selanjutnya, ya!</string>
+    <string name="stfs_product_sold_value_placeholder">Terjual: <![CDATA[<b>%d</b>]]></string>
+    <string name="stfs_sold_label">Terjual</string>
+    <string name="stfs_selling_label">Penjualan</string>
 </resources>

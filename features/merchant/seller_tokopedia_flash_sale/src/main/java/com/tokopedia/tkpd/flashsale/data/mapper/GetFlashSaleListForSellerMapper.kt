@@ -82,7 +82,8 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
             productMeta.totalProduct,
             productMeta.totalProductStock,
             productMeta.totalStockSold,
-            productMeta.transferredProduct
+            productMeta.transferredProduct,
+            productMeta.totalSoldValue
         )
     }
 

@@ -13,6 +13,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleDetailForSellerUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSubmittedProductListUseCase
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.OnSelectionProcessItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
@@ -99,6 +100,7 @@ class CampaignDetailViewModel @Inject constructor(
                 FlashSaleStatus.WAITING_FOR_SELECTION -> submittedProduct.toWaitingForSelectionItem()
                 FlashSaleStatus.ON_SELECTION_PROCESS -> submittedProduct.toOnSelectionProcessItem()
                 FlashSaleStatus.SELECTION_FINISHED -> submittedProduct.toFinishedProcessSelectionItem()
+                FlashSaleStatus.ONGOING -> submittedProduct.toOngoingItem()
                 else -> submittedProduct.toWaitingForSelectionItem()
             }
         }
@@ -150,6 +152,27 @@ class CampaignDetailViewModel @Inject constructor(
             isMultiwarehouse,
             isParentProduct,
             totalChild,
+            mainStock,
+            name,
+            picture,
+            productCriteria,
+            productId,
+            url,
+            price,
+            discount,
+            discountedPrice,
+            submittedProductStockStatus,
+            warehouses
+        )
+    }
+
+    private fun SubmittedProduct.toOngoingItem(): DelegateAdapterItem {
+        return OngoingItem(
+            campaignStock,
+            isMultiwarehouse,
+            isParentProduct,
+            totalChild,
+            soldCount,
             mainStock,
             name,
             picture,

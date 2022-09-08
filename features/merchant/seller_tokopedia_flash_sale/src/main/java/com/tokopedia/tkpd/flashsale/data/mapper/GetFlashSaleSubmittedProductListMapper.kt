@@ -24,6 +24,7 @@ class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
                 submittedProduct.isMultiwarehouse,
                 submittedProduct.isParentProduct,
                 submittedProduct.totalChild,
+                submittedProduct.soldCount,
                 submittedProduct.mainStock,
                 submittedProduct.name,
                 submittedProduct.picture,

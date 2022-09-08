@@ -110,6 +110,8 @@ data class GetFlashSaleSubmittedProductListResponse(
         val isParentProduct: Boolean,
         @SerializedName("total_child")
         val totalChild: Int,
+        @SerializedName("sold_count")
+        val soldCount: Int,
         @SerializedName("main_stock")
         val mainStock: Int,
         @SerializedName("name")

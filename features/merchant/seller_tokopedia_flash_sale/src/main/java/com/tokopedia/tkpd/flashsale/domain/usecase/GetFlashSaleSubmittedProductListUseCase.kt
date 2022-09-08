@@ -43,6 +43,7 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
                             is_multiwarehouse
                             is_parent_product
                             total_child
+                            sold_count
                             price {
                               price
                               lower_price

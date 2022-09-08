@@ -7,6 +7,7 @@ data class SubmittedProduct(
     val isMultiwarehouse: Boolean,
     val isParentProduct: Boolean,
     val totalChild: Int,
+    val soldCount: Int,
     val mainStock: Int,
     val name: String,
     val picture: String,
