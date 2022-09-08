@@ -2665,10 +2665,9 @@ open class DynamicProductDetailFragment :
             data.doSuccessOrFail({
                 successFetchRecommendationVertical(it.data)
             }, {
-                pdpUiUpdater?.removeComponent(PDP_VERTICAL_LOADING)
-                removeEndlessScrollListener()
-                updateUi()
+                removeRecommendationVertical()
             })
+            updateUi()
         }
     }
 
@@ -2680,12 +2679,19 @@ open class DynamicProductDetailFragment :
 
         pdpUiUpdater?.updateVerticalRecommendationData(recommendationWidget)
         endlessScrollListener?.updateStateAfterGetData()
-        addEndlessScrollListener {
-            val page =
-                pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
-            viewModel.getVerticalRecommendationData(recommendationWidget.pageName, page, productId)
-        }
-        updateUi()
+
+        if(recommendationWidget.hasNext){
+            addEndlessScrollListener {
+                val page =
+                    pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
+                viewModel.getVerticalRecommendationData(recommendationWidget.pageName, page, productId)
+            }
+        } else removeRecommendationVertical()
+    }
+
+    private fun removeRecommendationVertical(){
+        pdpUiUpdater?.removeComponent(PDP_VERTICAL_LOADING)
+        removeEndlessScrollListener()
     }
 
     private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
