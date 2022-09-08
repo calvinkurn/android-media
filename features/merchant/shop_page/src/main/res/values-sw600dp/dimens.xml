@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="header_button_shop_note_width">40dp</dimen>
-    <dimen name="header_button_shop_note_height">40dp</dimen>
+    <dimen name="header_button_shop_note_height">24dp</dimen>
     <dimen name="header_button_margin_top">20dp</dimen>
     <dimen name="header_button_margin_left">8dp</dimen>
     <dimen name="shop_carousel_height">370dp</dimen>

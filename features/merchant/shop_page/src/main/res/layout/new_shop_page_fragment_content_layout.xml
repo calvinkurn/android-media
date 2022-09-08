@@ -52,7 +52,7 @@
                 android:id="@+id/tabLayout"
                 style="@style/TabBar.White"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/bg_tab_layout_shop_page"
                 app:layout_scrollFlags="enterAlways"
                 app:tabIndicator="@drawable/tab_indicator_shop_page"

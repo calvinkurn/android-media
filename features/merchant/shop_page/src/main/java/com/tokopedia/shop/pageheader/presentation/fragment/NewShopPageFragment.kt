@@ -32,6 +32,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.*
@@ -2962,10 +2963,13 @@ class NewShopPageFragment :
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
         if (foldableInfo.isFoldableDevice() && foldableInfo.isHalfOpen() && foldableInfo.foldingFeature?.orientation == FoldingFeature.ORIENTATION_HORIZONTAL) {
-            val bt = foldableInfo.foldingFeature?.bounds?.bottom.orZero()/2
-            viewBindingShopContentLayout?.appBarLayout?.layoutParams?.apply {
-                height = bt + viewBinding?.toolbarContainer?.height.orZero()  + 40
+            viewBindingShopContentLayout?.appBarLayout?.post {
+                val bt = foldableInfo.foldingFeature?.bounds?.bottom.orZero()
+                viewBindingShopContentLayout?.appBarLayout?.layoutParams?.apply {
+                    height = bt - DisplayMetricUtils.getStatusBarHeight(context!!) - viewBinding?.toolbarContainer?.height.orZero()
+                }
             }
+
 //            val set = ConstraintSet().apply { clone(viewBinding!!.mainLayout) }
 
 //            val newSet = foldableInfo.alignSeparatorViewToFoldingFeatureBounds(
@@ -2983,6 +2987,9 @@ class NewShopPageFragment :
 //            viewPager?.adapter = viewPagerAdapter
 //            viewPagerAdapter?.notifyDataSetChanged()
         }else {
+            viewBindingShopContentLayout?.appBarLayout?.layoutParams?.apply {
+                height = AppBarLayout.LayoutParams.WRAP_CONTENT
+            }
 //            viewPager?.adapter = viewPagerAdapter
 //            viewPagerAdapter?.notifyDataSetChanged()
 //            viewBindingShopContentLayout?.coordLayoutFold?.hide()
