@@ -77,7 +77,7 @@
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/image_warning"
                 android:layout_width="14dp"
-                android:layout_height="20dp"
+                android:layout_height="13dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_warning"
                 app:layout_constraintBottom_toBottomOf="parent"
