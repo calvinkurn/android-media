@@ -259,6 +259,10 @@ class CampaignDetailViewModel @Inject constructor(
         return this.campaignRegisteredStatus
     }
 
+    fun getAddProductButtonVisibility(): Boolean {
+        return getCampaignRegisteredStatus() == FlashSaleStatus.NO_REGISTERED_PRODUCT || getCampaignRegisteredStatus() == FlashSaleStatus.WAITING_FOR_SELECTION
+    }
+
     fun isOnCheckBoxState(): Boolean {
         return this.isOnCheckboxState
     }

@@ -161,4 +161,6 @@
     <string name="stfs_sold_label">Terjual</string>
     <string name="stfs_selling_label">Penjualan</string>
     <string name="stfs_rejection_reason_placeholder"><![CDATA[<font color=#F94D63>Ditolak</font>]]> karena [%s].</string>
+    <string name="stfs_check_another_campaign_label">Cek Campaign Lain</string>
+    <string name="stfs_empty_desc_label">Yuk, cek campaign menarik lainnya yang bisa kamu ikuti!</string>
 </resources>

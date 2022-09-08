@@ -75,24 +75,25 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignDetailViewModel::class.java) }
 
-    //View Binding
+    //main binding
     private var binding by autoClearedNullable<StfsFragmentCampaignDetailBinding>()
 
     //reusable binding
+    private var cdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var cdpBodyBinding by autoClearedNullable<StfsCdpBodyBinding>()
 
     //upcoming
-    private var upcomingCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var upcomingCdpMidBinding by autoClearedNullable<StfsCdpUpcomingMidBinding>()
     private var upcomingCdpBodyBinding by autoClearedNullable<StfsCdpUpcomingBodyBinding>()
 
     //registered
-    private var registeredCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var registeredCdpMidBinding by autoClearedNullable<StfsCdpRegisteredMidBinding>()
 
     //ongoing
     private var ongoingCdpHeaderBinding by autoClearedNullable<StfsCdpHeaderBinding>()
     private var ongoingCdpMidBinding by autoClearedNullable<StfsCdpOngoingMidBinding>()
+
+    //finished
 
     private val flashSaleId by lazy {
         arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
@@ -162,7 +163,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                     setupView(flashSale.data)
                 }
                 is Fail -> {
-                    //TODO: Add Error Handling, not available on figma yet
+                    showGlobalError()
                 }
             }
         }
@@ -170,13 +171,14 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
 
     private fun observeSubmittedProductData() {
         viewModel.submittedProduct.observe(viewLifecycleOwner) { submittedProduct ->
+            hideLoading()
             when (submittedProduct) {
                 is Success -> {
                     productAdapter.addItems(submittedProduct.data)
                     setupSubmittedProductListData()
                 }
                 is Fail -> {
-
+                    showGlobalError()
                 }
             }
         }
@@ -227,7 +229,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
 
         binding?.run {
             layoutHeader.setOnInflateListener { _, view ->
-                upcomingCdpHeaderBinding = StfsCdpHeaderBinding.bind(view)
+                cdpHeaderBinding = StfsCdpHeaderBinding.bind(view)
             }
             layoutMid.setOnInflateListener { _, view ->
                 upcomingCdpMidBinding = StfsCdpUpcomingMidBinding.bind(view)
@@ -288,7 +290,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         flashSale: FlashSale,
         campaignStatus: UpcomingCampaignStatus
     ) {
-        upcomingCdpHeaderBinding?.run {
+        cdpHeaderBinding?.run {
             when (campaignStatus) {
                 UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> {
                     tickerHeader.visible()
@@ -396,7 +398,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
     private fun setupRegistered(flashSale: FlashSale) {
         binding?.run {
             layoutHeader.setOnInflateListener { _, view ->
-                registeredCdpHeaderBinding = StfsCdpHeaderBinding.bind(view)
+                cdpHeaderBinding = StfsCdpHeaderBinding.bind(view)
             }
             layoutMid.setOnInflateListener { _, view ->
                 registeredCdpMidBinding = StfsCdpRegisteredMidBinding.bind(view)
@@ -436,7 +438,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
     }
 
     private fun setupRegisteredHeaderData(flashSale: FlashSale) {
-        registeredCdpHeaderBinding?.run {
+        cdpHeaderBinding?.run {
             when (flashSale.status) {
                 FlashSaleStatus.NO_REGISTERED_PRODUCT -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
@@ -610,8 +612,8 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
 
     private fun setupRegisteredButton(isShown: Boolean = false) {
         binding?.run {
-            cardProductEligible.gone()
-            cardBottomButtonGroup.visible()
+           cardProductEligible.gone()
+            cardBottomButtonGroup.isVisible = viewModel.getAddProductButtonVisibility()
             btnRegister.text = getString(R.string.stfs_add_product)
             btnDelete.text = getString(R.string.stfs_label_delete)
             btnEdit.text = getString(R.string.stfs_label_edit)
@@ -624,6 +626,12 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                 btnDelete.gone()
                 btnEdit.gone()
             }
+        }
+    }
+
+    private fun setupCardButtonGroud(isShown: Boolean = false) {
+        binding?.run {
+            cardBottomButtonGroup.isVisible = isShown
         }
     }
 
@@ -791,32 +799,6 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         viewModel.getSubmittedProduct(flashSaleId, offset)
     }
 
-    private fun setupPaging() {
-        binding?.rvSubmittedProductList?.apply {
-            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-            applyPaddingToLastItem()
-            adapter = productAdapter
-        }
-
-        val pagingConfig = HasPaginatedList.Config(
-            pageSize = PAGE_SIZE,
-            onLoadNextPage = {
-                productAdapter.addItem(LoadingItem)
-            }, onLoadNextPageFinished = {
-                productAdapter.removeItem(LoadingItem)
-            })
-
-        binding?.nsvContent?.apply {
-            attachPagingWithNestedScrollView(this, pagingConfig) {
-                val isInCheckBoxState = viewModel.isOnCheckBoxState()
-                val hasNextPage = productAdapter.itemCount >= PAGE_SIZE
-                if (hasNextPage && !isInCheckBoxState) {
-                    loadSubmittedProductListData(productAdapter.itemCount)
-                }
-            }
-        }
-    }
-
     private fun setHeaderCampaignPeriod(
         binding: StfsCdpHeaderBinding,
         flashSale: FlashSale
@@ -872,11 +854,38 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         setupRegisteredButton()
     }
 
+    private fun setupPaging() {
+        binding?.rvSubmittedProductList?.apply {
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            applyPaddingToLastItem()
+            adapter = productAdapter
+        }
+
+        val pagingConfig = HasPaginatedList.Config(
+            pageSize = PAGE_SIZE,
+            onLoadNextPage = {
+                productAdapter.addItem(LoadingItem)
+            }, onLoadNextPageFinished = {
+                productAdapter.removeItem(LoadingItem)
+            })
+
+        binding?.nsvContent?.apply {
+            attachPagingWithNestedScrollView(this, pagingConfig) {
+                val isInCheckBoxState = viewModel.isOnCheckBoxState()
+                val hasNextPage = productAdapter.itemCount >= PAGE_SIZE
+                if (hasNextPage && !isInCheckBoxState) {
+                    loadSubmittedProductListData(productAdapter.itemCount)
+                }
+            }
+        }
+    }
+
     private fun showLoading() {
         binding?.run {
             loader.show()
             llContent.gone()
             cardBottomButtonGroup.gone()
+            globalError.gone()
         }
     }
 
@@ -884,6 +893,21 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         binding?.run {
             loader.gone()
             llContent.show()
+            globalError.gone()
+        }
+    }
+
+    private fun showGlobalError() {
+        binding?.run {
+            loader.gone()
+            llContent.gone()
+            cardBottomButtonGroup.gone()
+            globalError.apply {
+                show()
+                setActionClickListener {
+                    loadCampaignDetailData()
+                }
+            }
         }
     }
 
