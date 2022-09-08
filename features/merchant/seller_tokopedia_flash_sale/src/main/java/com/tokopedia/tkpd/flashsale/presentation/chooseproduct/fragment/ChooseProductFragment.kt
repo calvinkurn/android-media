@@ -20,7 +20,9 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentChooseProductBinding
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductReserveResult
+import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.CampaignCriteriaCheckBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.CommonBottomSheetInitializer
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.DetailCategoryFlashSaleBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.adapter.CriteriaSelectionAdapter
@@ -62,6 +64,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     private val filterCriteria = SortFilterItem("Memenuhi Kriteria")
     private val filterCategory = SortFilterItem("Semua Kategori")
     private var binding by autoClearedNullable<StfsFragmentChooseProductBinding>()
+    private var criteriaCheckBottomSheet = CampaignCriteriaCheckBottomSheet()
     private var criteriaFilterBottomSheet: SingleSelectionBottomSheet? = null
     private var categoryFilterBottomSheet: MultipleSelectionBottomSheet? = null
     private var maxSelectedProductCount: Int = 0
@@ -98,14 +101,15 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         }
     }
 
-    override fun onChooseProductClicked(index: Int) {
+    override fun onChooseProductClicked(index: Int, item: ChooseProductItem) {
         adapter?.getItems()?.let {
             viewModel.setSelectedProduct(it)
         }
     }
 
-    override fun onDetailClicked(index: Int) {
-        println("click $index")
+    override fun onDetailClicked(index: Int, item: ChooseProductItem) {
+        criteriaCheckBottomSheet.setProductPreview(item.productName, item.imageUrl)
+        viewModel.checkCriteria(item)
     }
 
     override fun createAdapter(): CompositeAdapter {
@@ -255,6 +259,9 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         viewModel.productReserveResult.observe(viewLifecycleOwner) {
             handleReserveResult(it)
         }
+        viewModel.criteriaCheckingResult.observe(viewLifecycleOwner) {
+            showCriteriaCheckBottomSheet(it)
+        }
     }
 
     private fun handleReserveResult(reserveResult: ProductReserveResult) {
@@ -271,6 +278,10 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
 
     private fun getSearchBarText(): String {
         return binding?.searchBar?.searchBarTextField?.text?.toString().orEmpty()
+    }
+
+    private fun showCriteriaCheckBottomSheet(list: List<CriteriaCheckingResult>) {
+        criteriaCheckBottomSheet.show(list, childFragmentManager, "")
     }
 
     private fun SortFilterItem.refreshHighlight() {

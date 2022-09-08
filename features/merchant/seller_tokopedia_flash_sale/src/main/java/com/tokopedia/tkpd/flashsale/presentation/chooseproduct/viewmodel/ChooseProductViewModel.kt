@@ -7,9 +7,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.entity.ChooseProductItem
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.CategorySelection
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductReserveResult
 import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductCriteriaCheckingUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductListToReserveUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductPerCriteriaUseCase
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.FILTER_PRODUCT_CRITERIA_PASSED
@@ -25,6 +28,7 @@ class ChooseProductViewModel @Inject constructor(
     private val getFlashSaleProductListToReserveUseCase: GetFlashSaleProductListToReserveUseCase,
     private val getFlashSaleProductPerCriteriaUseCase: GetFlashSaleProductPerCriteriaUseCase,
     private val doFlashSaleProductReserveUseCase: DoFlashSaleProductReserveUseCase,
+    private val getFlashSaleProductCriteriaCheckingUseCase: GetFlashSaleProductCriteriaCheckingUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main){
 
@@ -39,6 +43,9 @@ class ChooseProductViewModel @Inject constructor(
 
     private val _productReserveResult = MutableLiveData<ProductReserveResult>()
     val productReserveResult: LiveData<ProductReserveResult> get() = _productReserveResult
+
+    private val _criteriaCheckingResult = MutableLiveData<List<CriteriaCheckingResult>>()
+    val criteriaCheckingResult: LiveData<List<CriteriaCheckingResult>> get() = _criteriaCheckingResult
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
@@ -114,5 +121,23 @@ class ChooseProductViewModel @Inject constructor(
                 _error.postValue(error)
             }
         )
+    }
+
+    fun checkCriteria(item: ChooseProductItem) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getFlashSaleProductCriteriaCheckingUseCase.execute(
+                    productId = item.productId.toLongOrZero(),
+                    campaignId = campaignId,
+                    productCriteriaId = item.criteriaId
+                )
+                _criteriaCheckingResult.postValue(result)
+            },
+            onError = { error ->
+                _error.postValue(error)
+            }
+        )
+
     }
 }

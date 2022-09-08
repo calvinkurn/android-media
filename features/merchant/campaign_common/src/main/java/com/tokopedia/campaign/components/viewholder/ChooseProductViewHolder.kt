@@ -20,9 +20,6 @@ class ChooseProductViewHolder(
     }
 
     init {
-        binding.tvCheckDetail.setOnClickListener {
-            listener?.onDetailClicked(adapterPosition)
-        }
         binding.root.setOnClickListener {
             binding.checkboxItem.apply {
                 callOnClick()
@@ -42,12 +39,17 @@ class ChooseProductViewHolder(
             tvStock.text = item.stockText
             tvCheckDetail.isVisible = item.showCheckDetailCta
             checkboxItem.isChecked = item.isSelected
-            checkboxItem.setOnClickListener {
-                item.isSelected = !checkboxItem.isChecked
-                listener?.onChooseProductClicked(adapterPosition)
-            }
             labelVariantCount.isVisible = item.hasVariant
             tvVariantTips.isVisible = item.hasVariant
+
+            tvCheckDetail.setOnClickListener {
+                listener?.onDetailClicked(adapterPosition, item)
+            }
+            checkboxItem.setOnClickListener {
+                item.isSelected = !checkboxItem.isChecked
+                listener?.onChooseProductClicked(adapterPosition, item)
+            }
+
             setEnable(item.isEnabled, binding)
         }
     }
