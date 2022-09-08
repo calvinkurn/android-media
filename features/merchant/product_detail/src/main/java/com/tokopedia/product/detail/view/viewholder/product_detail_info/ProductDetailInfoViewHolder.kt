@@ -56,12 +56,12 @@ class ProductDetailInfoViewHolder(
 
         groupCatalog.showWithCondition(shouldShow = isCatalog)
 
-        productDetailInfoSeemoreCatalog.apply {
+        productDetailInfoSeemoreSpecification.apply {
             text = element.catalogBottomSheet?.actionTitle
 
             shouldShowWithAction(shouldShow = isCatalog) {
                 setOnClickListener {
-                    listener.onSeeMoreDescriptionClicked(
+                    listener.onSeeMoreSpecificationClicked(
                         infoData = element,
                         componentTrackDataModel = getComponentTrackData(element)
                     )

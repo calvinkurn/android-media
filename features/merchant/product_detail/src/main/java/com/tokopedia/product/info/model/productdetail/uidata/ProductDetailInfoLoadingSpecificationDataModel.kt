@@ -5,7 +5,7 @@ import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 /**
  * Created by Yehezkiel on 12/10/20
  */
-data class ProductDetailInfoLoadingDataModel(
+data class ProductDetailInfoLoadingSpecificationDataModel(
         val isLoading: Boolean = false
 ) : ProductDetailInfoVisitable {
 

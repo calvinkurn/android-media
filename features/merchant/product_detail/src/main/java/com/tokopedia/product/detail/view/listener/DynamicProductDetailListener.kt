@@ -321,6 +321,10 @@ interface DynamicProductDetailListener {
         infoData: ProductDetailInfoDataModel,
         componentTrackDataModel: ComponentTrackDataModel
     )
+    fun onSeeMoreSpecificationClicked(
+        infoData: ProductDetailInfoDataModel,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
 
     /**
      * ProductReportViewHolder

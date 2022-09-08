@@ -1,5 +1,6 @@
 package com.tokopedia.product.info.util
 
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCardDataModel
@@ -9,6 +10,7 @@ import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoEx
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel.Companion.SPECIFICATION_SIZE_THRESHOLD
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.CATALOG
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.CUSTOM_INFO_KEY
@@ -26,40 +28,83 @@ object ProductDetailInfoMapper {
         responseData: PdpGetDetailBottomSheet,
         parcelData: ProductInfoParcelData
     ): List<ProductDetailInfoVisitable> {
+        val components = if (parcelData.isOpenSpecification) {
+            generateVisitableSpecification(
+                responseData = responseData,
+                parcelData = parcelData
+            )
+        } else {
+            generateVisitableDescription(
+                responseData = responseData,
+                parcelData = parcelData
+            )
+        }
+
+        if (!parcelData.isTokoNow) {
+            components.add(
+                ProductDetailInfoDiscussionDataModel(
+                    componentName = components.size + 1,
+                    title = responseData.discussion.title,
+                    discussionCount = parcelData.discussionCount,
+                    isShowable = false
+                )
+            )
+        }
+
+        return components
+    }
+
+    private fun generateVisitableDescription(
+        responseData: PdpGetDetailBottomSheet,
+        parcelData: ProductInfoParcelData,
+    ): MutableList<ProductDetailInfoVisitable> {
         val listOfComponent: MutableList<ProductDetailInfoVisitable> = mutableListOf()
         val dataContent = parcelData.productInfo.dataContent
+
         responseData.bottomsheetData.forEachIndexed { index, it ->
             when (it.componentName) {
                 HEADER_DETAIL_KEY -> {
-                    val productInfoData = dataContent.filter {
-                        it.title.lowercase() != DESCRIPTION_DETAIL_KEY
-                    }.take(ProductDetailInfoHeaderDataModel.SPECIFICATION_SIZE_THRESHOLD)
-                    val annotationData = dataContent.filter {
-                        it.title.lowercase() != DESCRIPTION_DETAIL_KEY && it.isAnnotation
+                    val isCatalog = parcelData.productInfo.catalogBottomSheet != null
+                    val productInfoItems = mutableListOf<ProductDetailInfoContent>()
+                    val annotationItems = mutableListOf<ProductDetailInfoContent>()
+
+                    dataContent.forEach { data ->
+                        if (data.title.lowercase() != DESCRIPTION_DETAIL_KEY) {
+                            val notShownMax = isInfoUnderMax(currentSize = productInfoItems.size)
+
+                            if (data.showAtBottomSheet && !isCatalog && notShownMax) {
+                                productInfoItems.add(data)
+                            }
+
+                            if (data.isAnnotation) {
+                                annotationItems.add(data)
+                            }
+                        }
                     }
 
                     listOfComponent.add(
                         ProductDetailInfoHeaderDataModel(
-                            index,
-                            parcelData.productImageUrl,
-                            parcelData.productTitle,
-                            productInfoData,
-                            annotationData
+                            componentId = index,
+                            img = parcelData.productImageUrl,
+                            productTitle = parcelData.productTitle,
+                            listOfInfo = productInfoItems,
+                            listOfAnnotation = annotationItems
                         )
                     )
                 }
                 DESCRIPTION_DETAIL_KEY -> {
-                    val descriptionValue =
-                        dataContent.firstOrNull { it.title.lowercase() == DESCRIPTION_DETAIL_KEY }?.subtitle
+                    val descriptionValue = dataContent.firstOrNull {
+                        it.title.lowercase() == DESCRIPTION_DETAIL_KEY
+                    }?.subtitle
 
                     if (descriptionValue?.isNotEmpty() == true) {
                         listOfComponent.add(
                             ProductDetailInfoExpandableDataModel(
-                                index,
-                                it.title,
-                                descriptionValue,
-                                parcelData.listOfYoutubeVideo,
-                                it.isShowable
+                                componentName = index,
+                                title = it.title,
+                                textValue = descriptionValue,
+                                youtubeVideo = parcelData.listOfYoutubeVideo,
+                                isShowable = it.isShowable
                             )
                         )
                     }
@@ -69,10 +114,10 @@ object ProductDetailInfoMapper {
                     if (variantGuideline.isNotEmpty()) {
                         listOfComponent.add(
                             ProductDetailInfoExpandableImageDataModel(
-                                index,
-                                it.title,
-                                variantGuideline,
-                                it.isShowable
+                                componentName = index,
+                                title = it.title,
+                                imageUrl = variantGuideline,
+                                isShowable = it.isShowable
                             )
                         )
                     }
@@ -82,10 +127,10 @@ object ProductDetailInfoMapper {
                     if (shopNotes.error.isEmpty() && shopNotes.shopNotesData.isNotEmpty()) {
                         listOfComponent.add(
                             ProductDetailInfoExpandableListDataModel(
-                                index,
-                                it.title,
-                                responseData.dataShopNotes.shopNotesData,
-                                it.isShowable
+                                componentName = index,
+                                title = it.title,
+                                shopNotes = responseData.dataShopNotes.shopNotesData,
+                                isShowable = it.isShowable
                             )
                         )
                     }
@@ -93,10 +138,71 @@ object ProductDetailInfoMapper {
                 CUSTOM_INFO_KEY -> {
                     listOfComponent.add(
                         ProductDetailInfoCardDataModel(
-                            index,
-                            it.title,
-                            it.icon,
-                            it.applink
+                            componentName = index,
+                            title = it.title,
+                            image = it.icon,
+                            applink = it.applink
+                        )
+                    )
+                }
+                CATALOG -> {
+                    /**
+                     * ignore this block, bcz render at [generateVisitableSpecification]
+                     */
+                }
+                else -> {
+                    if (it.value.isNotEmpty()) {
+                        listOfComponent.add(
+                            ProductDetailInfoExpandableDataModel(
+                                componentName = index,
+                                title = it.title,
+                                textValue = it.value,
+                                youtubeVideo = listOf(),
+                                isShowable = it.isShowable
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+        return listOfComponent
+    }
+
+    private fun generateVisitableSpecification(
+        responseData: PdpGetDetailBottomSheet,
+        parcelData: ProductInfoParcelData
+    ): MutableList<ProductDetailInfoVisitable> {
+        val listOfComponent: MutableList<ProductDetailInfoVisitable> = mutableListOf()
+        val dataContent = parcelData.productInfo.dataContent
+
+        responseData.bottomsheetData.forEachIndexed { index, it ->
+            when (it.componentName) {
+                HEADER_DETAIL_KEY -> {
+                    val productInfoItems = mutableListOf<ProductDetailInfoContent>()
+                    val annotationItems = mutableListOf<ProductDetailInfoContent>()
+
+                    dataContent.forEach { data ->
+                        if (data.title.lowercase() != DESCRIPTION_DETAIL_KEY) {
+                            val notShownMax = isInfoUnderMax(currentSize = productInfoItems.size)
+
+                            if (data.showAtBottomSheet && notShownMax) {
+                                productInfoItems.add(data)
+                            }
+
+                            if (data.isAnnotation) {
+                                annotationItems.add(data)
+                            }
+                        }
+                    }
+
+                    listOfComponent.add(
+                        ProductDetailInfoHeaderDataModel(
+                            componentId = index,
+                            img = parcelData.productImageUrl,
+                            productTitle = parcelData.productTitle,
+                            listOfInfo =  productInfoItems,
+                            listOfAnnotation = annotationItems
                         )
                     )
                 }
@@ -109,32 +215,11 @@ object ProductDetailInfoMapper {
                         )
                     )
                 }
-                else -> {
-                    if (it.value.isNotEmpty()) {
-                        listOfComponent.add(
-                            ProductDetailInfoExpandableDataModel(
-                                index,
-                                it.title,
-                                it.value,
-                                listOf(),
-                                it.isShowable
-                            )
-                        )
-                    }
-                }
             }
         }
 
-        if (!parcelData.isTokoNow) {
-            listOfComponent.add(
-                ProductDetailInfoDiscussionDataModel(
-                    componentName = listOfComponent.count() + 1,
-                    title = responseData.discussion.title,
-                    discussionCount = parcelData.discussionCount,
-                    isShowable = false
-                )
-            )
-        }
         return listOfComponent
     }
+
+    private fun isInfoUnderMax(currentSize: Int) = currentSize < SPECIFICATION_SIZE_THRESHOLD
 }

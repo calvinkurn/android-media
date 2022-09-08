@@ -21,14 +21,16 @@ object ProductDetailInfoHelper {
         p1Data: DynamicProductInfoP1?,
         sizeChartImageUrl: String?,
         infoData: ProductDetailInfoDataModel,
-        forceRefresh: Boolean
+        forceRefresh: Boolean,
+        isOpenSpecification: Boolean
     ) {
         val cacheManager = SaveInstanceCacheManager(fragmentActivity, true)
         val parcelData = generateProductInfoParcel(
-            p1Data,
-            sizeChartImageUrl.orEmpty(),
-            infoData,
-            forceRefresh
+            productInfoP1 = p1Data,
+            variantGuideLine = sizeChartImageUrl.orEmpty(),
+            productInfo = infoData,
+            forceRefresh = forceRefresh,
+            isOpenSpecification = isOpenSpecification
         )
         cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
 
@@ -52,7 +54,8 @@ object ProductDetailInfoHelper {
         productInfoP1: DynamicProductInfoP1?,
         variantGuideLine: String,
         productInfo: ProductDetailInfoDataModel,
-        forceRefresh: Boolean
+        forceRefresh: Boolean,
+        isOpenSpecification: Boolean
     ): ProductInfoParcelData {
 
         productInfoP1?.let {
@@ -72,7 +75,8 @@ object ProductDetailInfoHelper {
                 forceRefresh = forceRefresh,
                 isTokoNow = productInfoP1.basic.isTokoNow,
                 isGiftable = basic.isGiftable,
-                parentId = parentId
+                parentId = parentId,
+                isOpenSpecification = isOpenSpecification
             )
         } ?: return ProductInfoParcelData()
     }

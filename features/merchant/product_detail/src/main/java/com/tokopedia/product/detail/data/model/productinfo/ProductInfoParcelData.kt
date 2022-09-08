@@ -1,23 +1,23 @@
 package com.tokopedia.product.detail.data.model.productinfo
 
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
-import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 
 /**
  * Created by Yehezkiel on 20/10/20
  */
 data class ProductInfoParcelData(
-        val productId: String = "",
-        val shopId: String = "",
-        val productTitle: String = "",
-        val productImageUrl: String = "",
-        val variantGuideline: String = "",
-        val discussionCount: Int = 0,
-        val listOfYoutubeVideo: List<YoutubeVideo> = listOf(),
-        val productInfo: ProductDetailInfoDataModel = ProductDetailInfoDataModel(),
-        val forceRefresh: Boolean = false,
-        val isTokoNow: Boolean = false,
-        val isGiftable: Boolean = false,
-        val parentId: String = ""
+    val productId: String = "",
+    val shopId: String = "",
+    val productTitle: String = "",
+    val productImageUrl: String = "",
+    val variantGuideline: String = "",
+    val discussionCount: Int = 0,
+    val listOfYoutubeVideo: List<YoutubeVideo> = listOf(),
+    val productInfo: ProductDetailInfoDataModel = ProductDetailInfoDataModel(),
+    val forceRefresh: Boolean = false,
+    val isTokoNow: Boolean = false,
+    val isGiftable: Boolean = false,
+    val parentId: String = "",
+    val isOpenSpecification: Boolean = false
 )

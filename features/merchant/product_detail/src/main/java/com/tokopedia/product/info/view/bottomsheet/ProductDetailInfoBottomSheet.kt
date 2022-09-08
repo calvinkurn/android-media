@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,14 +65,16 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var viewModel: BsProductDetailInfoViewModel? = null
+    private val viewModel: BsProductDetailInfoViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
+    }
 
     private var productDetailComponent: ProductDetailComponent? = null
-    private var rvBsProductDetail: RecyclerView? = null
     private var currentList: List<ProductDetailInfoVisitable>? = null
     private var listener: ProductDetailBottomSheetListener? = null
 
-    private var binding by autoClearedNullable<BottomSheetProductDetailInfoBinding>()
+    private var _binding by autoClearedNullable<BottomSheetProductDetailInfoBinding>()
+    private val binding get() = _binding!!
 
     companion object {
         const val PRODUCT_DETAIL_INFO_PARCEL_KEY = "parcelId"
@@ -81,9 +82,11 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     private val productDetailInfoAdapter by lazy {
-        BsProductDetailInfoAdapter(AsyncDifferConfig.Builder(ProductDetailInfoDiffUtil())
+        BsProductDetailInfoAdapter(
+            AsyncDifferConfig.Builder(ProductDetailInfoDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
-                .build(), adapterTypeFactory)
+                .build(), adapterTypeFactory
+        )
     }
 
     private val adapterTypeFactory by lazy {
@@ -98,17 +101,25 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         this.listener = listener
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        productDetailComponent?.inject(this)
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeData()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        productDetailComponent?.inject(this)
-        super.onCreate(savedInstanceState)
-        if (::viewModelFactory.isInitialized) {
-            viewModel = ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = BottomSheetProductDetailInfoBinding.inflate(layoutInflater)
+        getDataParcel()
+        initView()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun getDataParcel() {
@@ -117,29 +128,66 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                 val cacheId = it.getString(PRODUCT_DETAIL_INFO_PARCEL_KEY)
                 val cacheManager = SaveInstanceCacheManager(ctx, cacheId)
                 val parcelData: ProductInfoParcelData = cacheManager.get(
-                        this::class.java.simpleName,
-                        ProductInfoParcelData::class.java
+                    this::class.java.simpleName,
+                    ProductInfoParcelData::class.java
                 ) ?: ProductInfoParcelData()
 
-                viewModel?.setParams(parcelData)
+                viewModel.setParams(parcelData)
             }
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initView()
-        getDataParcel()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        productDetailInfoAdapter.submitList(listOf(ProductDetailInfoLoadingDataModel()))
-        view.post {
-            if (!::viewModelFactory.isInitialized && isVisible) {
-                dismiss()
+    private fun observeData() = with(viewModel) {
+        viewLifecycleOwner.observe(bottomSheetDetailData) { data ->
+            data.doSuccessOrFail({
+                currentList = ArrayList(it.data)
+                binding.bsProductInfoRv.viewTreeObserver?.addOnGlobalLayoutListener(object :
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        binding.bsProductInfoRv.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                        setupFullScreen(it.data)
+                    }
+                })
+                productDetailInfoAdapter.submitList(it.data)
+            }) {
             }
         }
+
+        viewLifecycleOwner.observe(bottomSheetTitle) {
+            val title = it.ifBlank {
+                getString(R.string.merchant_product_detail_label_product_detail)
+            }
+            setTitle(newTitle = title)
+        }
+    }
+
+    private fun initView() {
+        setChild(binding.root)
+        setupRecyclerView()
+
+        clearContentPadding = true
+
+        setShowListener {
+            bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
+    private fun setupRecyclerView() = with(binding.bsProductInfoRv) {
+        layoutManager = object : LinearLayoutManager(context) {
+            override fun requestChildRectangleOnScreen(
+                parent: RecyclerView,
+                child: View,
+                rect: Rect,
+                immediate: Boolean,
+                focusedChildVisible: Boolean
+            ): Boolean {
+                return false
+            }
+        }
+
+        itemAnimator = null
+        adapter = productDetailInfoAdapter
+        isNestedScrollingEnabled = false
     }
 
     override fun goToDiscussion(discussionCount: Int) {
@@ -166,32 +214,40 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
             if (isFullScreen) {
                 binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 20.dpToPx(displayMetrics))
-                binding?.bsProductInfoContainer?.layoutParams?.height = height - bottomSheetHeader.height - (bottomSheetHeader.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin - bottomSheetWrapper.paddingTop
+                binding?.bsProductInfoContainer?.layoutParams?.height =
+                    height - bottomSheetHeader.height - (bottomSheetHeader.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin - bottomSheetWrapper.paddingTop
             } else {
                 binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
-                binding?.bsProductInfoContainer?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                binding?.bsProductInfoContainer?.layoutParams?.height =
+                    ViewGroup.LayoutParams.WRAP_CONTENT
             }
         } catch (_: Throwable) {
         }
     }
 
     override fun goToCatalog(url: String, catalogName: String) {
-        DynamicProductDetailTracking.ProductDetailSheet.onCatalogBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
-            ?: "", catalogName)
+        DynamicProductDetailTracking.ProductDetailSheet.onCatalogBottomSheetClicked(
+            listener?.getPdpDataSource(), userSession.userId
+                ?: "", catalogName
+        )
         goToApplink(url)
     }
 
     override fun goToCategory(url: String) {
         if (!GlobalConfig.isSellerApp()) {
-            DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
-                ?: "")
+            DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(
+                listener?.getPdpDataSource(), userSession.userId
+                    ?: ""
+            )
             goToApplink(url)
         }
     }
 
     override fun goToEtalase(url: String) {
-        DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
-            ?: "")
+        DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(
+            listener?.getPdpDataSource(), userSession.userId
+                ?: ""
+        )
         goToApplink(url)
     }
 
@@ -231,12 +287,17 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     override fun goToVideoPlayer(url: List<String>, index: Int) {
         context?.let {
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
-                    == YouTubeInitializationResult.SUCCESS) {
+                == YouTubeInitializationResult.SUCCESS
+            ) {
                 startActivity(ProductYoutubePlayerActivity.createIntent(it, url, index))
             } else {
                 try {
-                    startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse("https://www.youtube.com/watch?v=" + url[index])))
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://www.youtube.com/watch?v=" + url[index])
+                        )
+                    )
                 } catch (e: Throwable) {
                     Timber.d(e)
                 }
@@ -246,16 +307,21 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToShopNotes(title: String, date: String, desc: String) {
         context?.let {
-            DynamicProductDetailTracking.ProductDetailSheet.onShopNotesClicked(listener?.getPdpDataSource(), userSession.userId
-                    ?: "", title)
-            val bsShopNotes = ProductDetailBottomSheetBuilder.getShopNotesBottomSheet(it, date, desc, title)
+            DynamicProductDetailTracking.ProductDetailSheet.onShopNotesClicked(
+                listener?.getPdpDataSource(), userSession.userId
+                    ?: "", title
+            )
+            val bsShopNotes =
+                ProductDetailBottomSheetBuilder.getShopNotesBottomSheet(it, date, desc, title)
             bsShopNotes.show(childFragmentManager, "shopNotes")
         }
     }
 
     override fun goToSpecification(annotation: List<ProductDetailInfoContent>) {
-        DynamicProductDetailTracking.ProductDetailSheet.onSpecificationClick(listener?.getPdpDataSource(), userSession.userId
-                ?: "")
+        DynamicProductDetailTracking.ProductDetailSheet.onSpecificationClick(
+            listener?.getPdpDataSource(), userSession.userId
+                ?: ""
+        )
         val bs = ProductAnnotationBottomSheet()
         bs.getData(annotation)
         bs.show(childFragmentManager, "specBs")
@@ -274,56 +340,12 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         goToApplink(url)
     }
 
-    private fun observeData() {
-        if (viewModel != null) {
-            viewLifecycleOwner.observe(viewModel!!.bottomSheetDetailData) { data ->
-                data.doSuccessOrFail({
-                    currentList = ArrayList(it.data)
-                    rvBsProductDetail?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            rvBsProductDetail?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                            setupFullScreen(it.data)
-                        }
-                    })
-                    productDetailInfoAdapter.submitList(it.data)
-                }) {
-                }
-            }
-        }
-    }
-
-    private fun initView() {
-        setTitle(getString(R.string.merchant_product_detail_label_product_detail))
-        val childView = View.inflate(requireContext(), R.layout.bottom_sheet_product_detail_info, null)
-        binding = BottomSheetProductDetailInfoBinding.bind(childView)
-        setupRecyclerView(childView)
-        setChild(childView)
-        clearContentPadding = true
-
-        setShowListener {
-            bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-
-    }
-
-    private fun setupRecyclerView(childView: View) {
-        rvBsProductDetail = childView.findViewById(R.id.bs_product_info_rv)
-
-        rvBsProductDetail?.layoutManager = object : LinearLayoutManager(context) {
-            override fun requestChildRectangleOnScreen(parent: RecyclerView, child: View, rect: Rect, immediate: Boolean, focusedChildVisible: Boolean): Boolean {
-                return false
-            }
-        }
-
-        rvBsProductDetail?.itemAnimator = null
-        rvBsProductDetail?.adapter = productDetailInfoAdapter
-        rvBsProductDetail?.isNestedScrollingEnabled = false
-    }
-
     private fun onVariantGuideLineBottomSheetClicked(url: String) {
         activity?.let {
-            DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
-                    ?: "")
+            DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(
+                listener?.getPdpDataSource(), userSession.userId
+                    ?: ""
+            )
             startActivity(getIntentImagePreviewWithoutDownloadButton(it, arrayListOf(url)))
         }
     }

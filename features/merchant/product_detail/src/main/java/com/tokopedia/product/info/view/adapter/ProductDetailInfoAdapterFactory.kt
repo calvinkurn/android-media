@@ -10,6 +10,8 @@ import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoEx
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingDescriptionDataModel
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingSpecificationDataModel
 
 /**
  * Created by Yehezkiel on 12/10/20
@@ -23,5 +25,7 @@ interface ProductDetailInfoAdapterFactory {
     fun type(data: ProductDetailInfoDiscussionDataModel): Int
     fun type(data: ProductDetailInfoCardDataModel): Int
     fun type(data: ProductDetailInfoCatalogDataModel): Int
+    fun type(data: ProductDetailInfoLoadingSpecificationDataModel): Int
+    fun type(data: ProductDetailInfoLoadingDescriptionDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }
