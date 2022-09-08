@@ -212,7 +212,7 @@ open class RecommendationPageViewModel @Inject constructor(
                 queryParam = queryParam
             )
 
-            if(queryParam.contains(PARAM_RECOMPUSH)) {
+            if (queryParam.contains(PARAM_RECOMPUSH)) {
                 pageNameParam = PARAM_RECOMPUSH_ANCHOR
                 srcParam = PARAM_RECOM_WIDGET
             }
