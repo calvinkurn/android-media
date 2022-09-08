@@ -203,6 +203,8 @@ open class RecommendationPageViewModel @Inject constructor(
                 GetTopadsIsAdsUseCase.TIMEOUT_REMOTE_CONFIG_KEY,
                 PARAM_JOB_TIMEOUT_DEFAULT
             )
+            var pageNameParam = ""
+            var srcParam = GetTopadsIsAdsUseCase.DEFAULT_SRC
 
             RecomServerLogger.logServer(
                 tag = TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING,
@@ -210,25 +212,20 @@ open class RecommendationPageViewModel @Inject constructor(
                 queryParam = queryParam
             )
 
+            if(queryParam.contains(PARAM_RECOMPUSH)) {
+                pageNameParam = PARAM_RECOMPUSH_ANCHOR
+                srcParam = PARAM_RECOM_WIDGET
+            }
+
             val job = withTimeoutOrNull(timeout) {
-                if(queryParam.contains(PARAM_RECOMPUSH)) {
-                    getTopadsIsAdsUseCase.setParams(
+                getTopadsIsAdsUseCase.setParams(
                         productId = productId,
                         productKey = "",
                         shopDomain = "",
                         urlParam = queryParam,
-                        pageName = PARAM_RECOMPUSH_ANCHOR,
-                        src = PARAM_RECOM_WIDGET
-                    )
-                } else {
-                    getTopadsIsAdsUseCase.setParams(
-                        productId = productId,
-                        productKey = "",
-                        shopDomain = "",
-                        urlParam = queryParam,
-                        pageName =""
-                    )
-                }
+                        pageName = pageNameParam,
+                        src = srcParam
+                )
                 adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
                 val dataList = recommendationListLiveData.value?.toMutableList()
                 val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
