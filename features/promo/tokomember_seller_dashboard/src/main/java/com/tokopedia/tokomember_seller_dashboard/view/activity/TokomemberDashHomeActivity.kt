@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
@@ -22,6 +23,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH_HOME
 import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH_PROGRAM_LIST
 import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmDashCouponDetailFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
@@ -32,7 +34,7 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.tm_activity_tokomember_dash_home.*
 import javax.inject.Inject
 
-class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback {
+class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,TmCouponDetailCallback {
 
     private lateinit var homeHeader: HeaderUnify
     private lateinit var homeTabs: TabsUnify
@@ -101,6 +103,10 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
         addFragment(TokomemberDashProgramDetailFragment.newInstance(bundle), TAG_HOME)
     }
 
+    override fun openCouponDetailFragment() {
+        addFragment(TmDashCouponDetailFragment.newInstance(), TAG_HOME)
+    }
+
     companion object{
         fun openActivity(shopId: Int, cardID:Int, context: Context? , isShowBs:Boolean = false, programAction: Int = -1){
             context?.let {
@@ -140,4 +146,6 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
         super.onStop()
         TmPrefManager(this).clearPref()
     }
+
+
 }
