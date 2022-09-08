@@ -60,6 +60,7 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
+import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileType
