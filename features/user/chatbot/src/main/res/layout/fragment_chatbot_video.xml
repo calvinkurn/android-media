@@ -23,7 +23,6 @@
         android:layout_height="@dimen/unify_space_0"
         android:id="@+id/video_player"
         app:use_controller="false"
-        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

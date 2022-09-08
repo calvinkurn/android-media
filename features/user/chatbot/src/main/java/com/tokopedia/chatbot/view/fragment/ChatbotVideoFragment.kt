@@ -108,12 +108,35 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
         progressLoader.gone()
     }
 
-    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+    override fun onVideoPause() {
+        progressLoader.gone()
+    }
 
+    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+        //nope
     }
 
     override fun onVideoPlayerError(e: ExoPlaybackException) {
         onErrorVideoLoad()
+    }
+
+    override fun onVideoEnded() {
+        progressLoader.gone()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        chatbotExoPlayer.pause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        chatbotExoPlayer.destroy()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        chatbotExoPlayer.stop()
     }
 
 }
