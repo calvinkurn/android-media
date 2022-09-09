@@ -3,6 +3,7 @@ package com.tokopedia.promocheckoutmarketplace.presentation
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.*
 import javax.inject.Inject
 
@@ -41,8 +42,9 @@ class PromoCheckoutDecoration @Inject constructor() : RecyclerView.ItemDecoratio
                 outRect.bottom = space16
             }
             is PromoListItemViewHolder -> {
+                val isLastItem: Boolean = parent.getChildAdapterPosition(view) == parent.adapter?.itemCount.orZero() - 1
                 outRect.top = 0
-                outRect.bottom = space8
+                outRect.bottom = if (isLastItem) space16 else space8
             }
             is PromoEmptyStateViewHolder -> {
                 outRect.top = space8
