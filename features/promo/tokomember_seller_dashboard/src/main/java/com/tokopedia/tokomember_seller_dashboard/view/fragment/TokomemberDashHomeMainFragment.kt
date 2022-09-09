@@ -22,6 +22,8 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ACTION
+import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_COUPON_LIST
+import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_PROGRAM_LIST
 import com.tokopedia.tokomember_seller_dashboard.util.TOKOMEMBER_SCREEN
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
 import com.tokopedia.unifycomponents.TabsUnify
@@ -124,8 +126,8 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         val screen = arguments?.get(TOKOMEMBER_SCREEN) as Uri?
         screen?.let{
             when(it.lastPathSegment){
-                "program-list" -> setTabsProgramList()
-                "coupon-list" -> setTabsCouponList()
+                PATH_TOKOMEMBER_PROGRAM_LIST -> setTabsProgramList()
+                PATH_TOKOMEMBER_COUPON_LIST -> setTabsCouponList()
             }
         }
     }

@@ -135,13 +135,13 @@ class TokomemberMainFragment : BaseDaggerFragment(),TmCouponListRefreshCallback 
     private fun routeToCreationScreen(cardId:Int) : Boolean{
         activity?.intent?.data?.let{
             when(it.lastPathSegment){
-                "program-creation" -> {
+                PATH_TOKOMEMBER_PROGRAM_CREATION -> {
                     TmDashCreateActivity.openActivity(
                         shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, REQUEST_CODE_REFRESH_PROGRAM_LIST, null, cardId
                     )
                     return true
                 }
-                "coupon-creation" -> {
+                PATH_TOKOMEMBER_COUPON_CREATION -> {
                     TmDashCreateActivity.openActivity(
                         activity,
                         CreateScreenType.COUPON_SINGLE,
@@ -153,7 +153,7 @@ class TokomemberMainFragment : BaseDaggerFragment(),TmCouponListRefreshCallback 
                 }
                 else -> {
                     val paths = it.pathSegments
-                    if(paths.size>=2 && paths[1]=="program-extension"){
+                    if(paths.size>=2 && paths[1]== PATH_TOKOMEMBER_PROGRAM_EXTENSION){
                         TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.EXTEND, null, it.lastPathSegment.toIntOrZero())
                         return true
                     }
