@@ -159,6 +159,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.compose_message_area.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
+import java.util.*
 import java.io.File
 import javax.inject.Inject
 
@@ -718,7 +719,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         ticker.tickerType = getTickerType(tickerData.type ?: "")
         ticker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                RouteManager.route(view?.context, linkUrl.toString())
+                navigateToWebView(linkUrl.toString())
             }
 
             override fun onDismiss() {
@@ -740,9 +741,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         ticker.addPagerView(adapter, mockData)
         adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
             override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                RouteManager.route(view?.context, linkUrl.toString())
+                navigateToWebView(linkUrl.toString())
             }
         })
+    }
+
+    private fun navigateToWebView(linkUrl : String) {
+        RouteManager.route(
+            context,
+            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, linkUrl)
+        )
     }
 
     private fun getTickerType(tickerType: String): Int {

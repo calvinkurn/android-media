@@ -6,6 +6,21 @@ repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
+
+
+android {
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+
+    testOptions {
+        animationsDisabled = true
+    }
+
+}
+
+
 buildscript {
     repositories {
         google()
@@ -71,6 +86,15 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayer
 
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    debugImplementation rootProject.ext.testDependencies.fragmentTest
+
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 }
 
 project.ext {

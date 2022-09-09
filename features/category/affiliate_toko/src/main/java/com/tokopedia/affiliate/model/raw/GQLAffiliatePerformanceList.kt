@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.model.raw
 
-val GQL_Affiliate_Performance_List: String = """query getAffiliatePerformanceList(${"$"}dayRange: String!,${"$"}lastID: String!) {
-  getAffiliatePerformanceList(dayRange: ${"$"}dayRange,lastID: ${"$"}lastID) {
+val GQL_Affiliate_Performance_List: String = """query getAffiliatePerformanceList(${"$"}dayRange: String!,${"$"}lastID: String!, ${"$"}pageType: Int!) {
+  getAffiliatePerformanceList(dayRange: ${"$"}dayRange,lastID: ${"$"}lastID, pageType: ${"$"}pageType) {
     Data {
       Status
       Error {
