@@ -112,10 +112,6 @@ abstract class PlayBroadcastFragmentModule {
     @FragmentKey(InteractiveSetupDialogFragment::class)
     abstract fun getInteractiveSetupDialogFragment(fragment: InteractiveSetupDialogFragment) : Fragment
 
-
-    /**
-     * Temp
-     */
     @Binds
     @IntoMap
     @FragmentKey(ProductPickerUGCBottomSheet::class)
