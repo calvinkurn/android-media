@@ -1124,16 +1124,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             applyPaddingToLastItem()
             adapter = productAdapter
         }
-
-        val pagingConfig = HasPaginatedList.Config(
-            pageSize = PAGE_SIZE,
-            onLoadNextPage = {
-                productAdapter.addItem(LoadingItem)
-            }, onLoadNextPageFinished = {
-                productAdapter.removeItem(LoadingItem)
-            })
-
-        binding?.nsvContent?.enablePaging(pagingConfig) {
+        
+        binding?.nsvContent?.enablePaging() {
             val isInCheckBoxState = viewModel.isOnCheckBoxState()
             val hasNextPage = productAdapter.itemCount >= PAGE_SIZE
             if (hasNextPage && !isInCheckBoxState) {
