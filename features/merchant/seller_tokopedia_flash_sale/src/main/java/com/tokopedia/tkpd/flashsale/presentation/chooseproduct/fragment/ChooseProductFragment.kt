@@ -219,7 +219,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     private fun setupCategorySelection() {
         binding?.rvCategory?.apply {
             adapter = criteriaSelectionAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
         viewModel.getCriteriaList()
     }
