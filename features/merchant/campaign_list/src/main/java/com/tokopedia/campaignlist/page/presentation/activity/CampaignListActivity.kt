@@ -12,6 +12,7 @@ class CampaignListActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+
     }
 
     override fun getNewFragment(): Fragment {
