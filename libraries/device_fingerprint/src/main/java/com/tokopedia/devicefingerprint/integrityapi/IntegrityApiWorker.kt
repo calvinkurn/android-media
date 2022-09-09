@@ -1,4 +1,4 @@
-package com.tokopedia.devicefingerprint.integrity_api
+package com.tokopedia.devicefingerprint.integrityapi
 
 import android.content.Context
 import android.util.Base64
@@ -9,8 +9,8 @@ import com.google.android.play.core.integrity.IntegrityServiceException
 import com.google.android.play.core.integrity.IntegrityTokenRequest
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
-import com.tokopedia.devicefingerprint.integrity_api.model.IntegrityParam
-import com.tokopedia.devicefingerprint.integrity_api.usecase.SubmitIntegrityUseCase
+import com.tokopedia.devicefingerprint.integrityapi.model.IntegrityParam
+import com.tokopedia.devicefingerprint.integrityapi.usecase.SubmitIntegrityUseCase
 import com.tokopedia.encryption.security.AESEncryptorGCM
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.coroutines.Dispatchers

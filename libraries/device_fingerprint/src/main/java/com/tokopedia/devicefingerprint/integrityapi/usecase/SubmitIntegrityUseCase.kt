@@ -1,8 +1,8 @@
-package com.tokopedia.devicefingerprint.integrity_api.usecase
+package com.tokopedia.devicefingerprint.integrityapi.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.devicefingerprint.integrity_api.model.IntegrityApiResponse
-import com.tokopedia.devicefingerprint.integrity_api.model.IntegrityParam
+import com.tokopedia.devicefingerprint.integrityapi.model.IntegrityApiResponse
+import com.tokopedia.devicefingerprint.integrityapi.model.IntegrityParam
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase

@@ -3,7 +3,7 @@ package com.tokopedia.devicefingerprint.di
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.datavisor.repository.DataVisorRepositoryModule
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
-import com.tokopedia.devicefingerprint.integrity_api.IntegrityApiWorker
+import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Component

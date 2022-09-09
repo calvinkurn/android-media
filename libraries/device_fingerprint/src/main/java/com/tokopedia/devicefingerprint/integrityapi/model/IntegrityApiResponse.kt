@@ -1,4 +1,4 @@
-package com.tokopedia.devicefingerprint.integrity_api.model
+package com.tokopedia.devicefingerprint.integrityapi.model
 
 import com.google.gson.annotations.SerializedName
 

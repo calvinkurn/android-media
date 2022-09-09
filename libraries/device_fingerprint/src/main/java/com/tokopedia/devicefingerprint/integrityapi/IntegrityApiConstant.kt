@@ -1,4 +1,4 @@
-package com.tokopedia.devicefingerprint.integrity_api
+package com.tokopedia.devicefingerprint.integrityapi
 
 object IntegrityApiConstant {
     const val NONCE = "Y2qlTKN7gn7I"
