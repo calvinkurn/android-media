@@ -108,10 +108,6 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
         progressLoader.gone()
     }
 
-    override fun onVideoPause() {
-        progressLoader.gone()
-    }
-
     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
         //nope
     }
@@ -120,9 +116,6 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
         onErrorVideoLoad()
     }
 
-    override fun onVideoEnded() {
-        progressLoader.gone()
-    }
 
     override fun onPause() {
         super.onPause()

@@ -61,6 +61,7 @@
             android:layout_height="match_parent"
             android:id="@+id/video_player"
             app:use_controller="false"
+            app:surface_type="texture_view"
             app:resize_mode="fill"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
