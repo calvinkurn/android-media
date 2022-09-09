@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -57,10 +58,12 @@ class PinOnboardingActivity : BaseSimpleActivity(),
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
-        super.setupLayout(savedInstanceState)
+        setContentView(layoutRes)
+        toolbar = findViewById(toolbarResourceID)
+        setSupportActionBar(toolbar)
         supportActionBar?.apply {
-            title = ""
             setHomeAsUpIndicator(R.drawable.ic_close_toolbar_profile_completion)
+            setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f
             setBackgroundDrawable(
