@@ -55,9 +55,8 @@ class MediaUploaderModule {
     @Provides
     fun provideSourcePolicyManager(
         @ApplicationContext context: Context,
-        @ApplicationScope gson: Gson
     ): SourcePolicyManager {
-        return SourcePolicyManagerImpl(context, gson)
+        return SourcePolicyManagerImpl(context)
     }
 
     @Provides

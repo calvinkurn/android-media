@@ -14,9 +14,12 @@ interface SourcePolicyManager {
 }
 
 class SourcePolicyManagerImpl @Inject constructor(
-    @ApplicationContext val context: Context,
-    @ApplicationScope val gson: Gson,
+    @ApplicationContext val context: Context
 ) : SourcePolicyManager, LocalCacheHandler(context, NAME_PREFERENCE_SOURCE_POLICY) {
+
+    private val gson by lazy {
+        Gson()
+    }
 
     override fun set(policy: SourcePolicy) {
         val content = gson.toJson(policy)
