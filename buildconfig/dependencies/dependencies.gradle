@@ -5,6 +5,8 @@ ext {
     targetSdkVersion = 31
     buildToolsVersion = "30.0.2"
 
+    compose_version = '1.1.0-beta01'
+    
     jacocoVersion = "0.8.7"
     kotlinVersion = "1.5.31"
 
