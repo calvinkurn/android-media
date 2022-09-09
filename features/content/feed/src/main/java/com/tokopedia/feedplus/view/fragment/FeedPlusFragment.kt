@@ -605,7 +605,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             asgcReminderButtonStatus.observe(viewLifecycleOwner, Observer {
                 when (it) {
                     is Fail -> {
-                        showToast(it.throwable.message ?: "", Toaster.TYPE_ERROR)
+                        showToast(ErrorHandler.getErrorMessage(context, it.throwable), Toaster.TYPE_ERROR)
                     }
                     is Success -> {
                         onSuccessFetchStatusIngatkanSayaButton(it.data, true)
