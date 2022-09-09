@@ -1376,7 +1376,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
     private fun submitIntegrityApi() {
         context?.let {
-            IntegrityApiWorker.scheduleWorker(it, "register")
+            IntegrityApiWorker.scheduleWorker(it.applicationContext, "register")
         }
     }
 

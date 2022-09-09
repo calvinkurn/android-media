@@ -11,7 +11,7 @@ import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.devicefingerprint.integrity_api.model.IntegrityParam
 import com.tokopedia.devicefingerprint.integrity_api.usecase.SubmitIntegrityUseCase
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -89,19 +89,14 @@ class IntegrityApiWorker(val appContext: Context, val params: WorkerParameters) 
         private const val EVENT_PARAM = "event_param"
         private const val MAX_RETRY = 3
 
-        private const val CONFIG_INTEGIRTY = "android_user_integrity_enabled"
+        private const val CONFIG_INTEGIRTY = "and_play_integrity"
 
-        private fun isEnable(context: Context): Boolean {
-            return try {
-                FirebaseRemoteConfigImpl(context).getBoolean(CONFIG_INTEGIRTY, false)
-            } catch (e: Exception) {
-                false
-            }
-        }
+        fun isEnable(): Boolean =
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(CONFIG_INTEGIRTY, "").isNotEmpty()
 
         @JvmStatic
         fun scheduleWorker(context: Context, event: String) {
-            if (isEnable(context)) {
+            if (isEnable()) {
                 try {
                     val data = Data.Builder().apply { putString(EVENT_PARAM, event) }.build()
                     val periodicWorker = OneTimeWorkRequest
@@ -118,8 +113,7 @@ class IntegrityApiWorker(val appContext: Context, val params: WorkerParameters) 
                         ExistingWorkPolicy.REPLACE,
                         periodicWorker
                     )
-                } catch (ex: Exception) {
-                }
+                } catch (ex: Exception) { }
             }
         }
     }
