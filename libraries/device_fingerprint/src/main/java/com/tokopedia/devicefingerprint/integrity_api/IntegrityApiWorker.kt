@@ -11,11 +11,13 @@ import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.devicefingerprint.integrity_api.model.IntegrityParam
 import com.tokopedia.devicefingerprint.integrity_api.usecase.SubmitIntegrityUseCase
+import com.tokopedia.encryption.security.AESEncryptorGCM
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.toLongOrDefault
 import java.util.*
 import javax.inject.Inject
 
@@ -31,6 +33,16 @@ class IntegrityApiWorker(val appContext: Context, val params: WorkerParameters) 
             .inject(this)
     }
 
+    private fun getCloudProjectNumber(): Long {
+        return try {
+            val aesEncryptor = AESEncryptorGCM(IntegrityApiConstant.NONCE, true)
+            val secretKey = aesEncryptor.generateKey(IntegrityApiConstant.KEY)
+            aesEncryptor.decrypt(IntegrityApiConstant.CLOUD_PROJECT_NUMBER, secretKey).toLongOrDefault(0L)
+        } catch (e: Exception) {
+            0L
+        }
+    }
+
     private fun initiateIntegrityApi() {
         val integrityManager: IntegrityManager = IntegrityManagerFactory.create(appContext)
 
@@ -40,7 +52,7 @@ class IntegrityApiWorker(val appContext: Context, val params: WorkerParameters) 
         )
 
         val itr: IntegrityTokenRequest = IntegrityTokenRequest.builder()
-            .setCloudProjectNumber(692092518182L)
+            .setCloudProjectNumber(getCloudProjectNumber())
             .setNonce(nonce)
             .build()
 
@@ -89,10 +101,10 @@ class IntegrityApiWorker(val appContext: Context, val params: WorkerParameters) 
         private const val EVENT_PARAM = "event_param"
         private const val MAX_RETRY = 3
 
-        private const val CONFIG_INTEGIRTY = "and_play_integrity"
+        private const val CONFIG_INTEGRITY = "and_play_integrity"
 
         fun isEnable(): Boolean =
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(CONFIG_INTEGIRTY, "").isNotEmpty()
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(CONFIG_INTEGRITY, "").isNotEmpty()
 
         @JvmStatic
         fun scheduleWorker(context: Context, event: String) {
