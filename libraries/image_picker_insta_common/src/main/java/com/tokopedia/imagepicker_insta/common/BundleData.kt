@@ -2,8 +2,6 @@ package com.tokopedia.imagepicker_insta.common
 
 object BundleData {
     const val TITLE = "title"
-    const val SUB_TITLE = "subtitle"
-    const val TOOLBAR_ICON_RES = "icon_res"
     const val TOOLBAR_ICON_URL = "icon_url"
     const val MENU_TITLE = "menu_title"
     const val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"

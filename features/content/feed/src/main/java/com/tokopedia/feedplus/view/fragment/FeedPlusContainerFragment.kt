@@ -114,8 +114,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val FEED_FRAGMENT_INDEX = 0
 
         const val TITLE = "title"
-        const val SUB_TITLE = "subtitle"
-        const val TOOLBAR_ICON_URL = "icon_url"
         const val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
         const val APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
         const val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
@@ -632,21 +630,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             entryPointAnalytic.clickCreatePostEntryPoint()
                             val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
                             if (shouldShowNewContentCreationFlow) {
-                                val authors = viewModel.feedContentForm.authors
                                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                                intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
-                                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
-                                    MAX_MULTI_SELECT_ALLOWED_VALUE)
-                                intent.putExtra(TITLE,
-                                    getString(feedComponentR.string.feed_post_sebagai))
-                                val name: String = MethodChecker.fromHtml(authors.first().name).toString()
-                                intent.putExtra(SUB_TITLE, name)
-                                intent.putExtra(TOOLBAR_ICON_URL,
-                                    authors.first().thumbnail
-                                )
-                                intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
-                                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                intent.putExtra(MAX_MULTI_SELECT_ALLOWED, MAX_MULTI_SELECT_ALLOWED_VALUE)
+                                intent.putExtra(TITLE, getString(feedComponentR.string.feed_post_sebagai))
+                                intent.putExtra(APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
                                 startActivity(intent)
                                 TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
                             } else {

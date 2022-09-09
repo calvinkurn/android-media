@@ -13,9 +13,7 @@ import com.tokopedia.imagepicker_insta.util.VideoUtil
 class ImagePickerInstaActivity : PermissionActivity() {
 
     var toolbarTitle = ""
-    var toolbarSubTitle = ""
     var menuTitle = ""
-    var toolbarIconRes = 0
     var toolbarIconUrl = ""
     var maxMultiSelectAllowed = DEFAULT_MULTI_SELECT_LIMIT
     var applinkToNavigateAfterMediaCapture = ""
@@ -61,8 +59,6 @@ class ImagePickerInstaActivity : PermissionActivity() {
 
     private fun processIntentData() {
         toolbarTitle = intent.extras?.getString(BundleData.TITLE, "") ?: ""
-        toolbarSubTitle = intent.extras?.getString(BundleData.SUB_TITLE, "") ?: ""
-        toolbarIconRes = intent.extras?.getInt(BundleData.TOOLBAR_ICON_RES) ?: 0
         menuTitle = intent.extras?.getString(BundleData.MENU_TITLE) ?: getString(R.string.imagepicker_insta_lanjut)
         maxMultiSelectAllowed = intent.extras?.getInt(BundleData.MAX_MULTI_SELECT_ALLOWED) ?: DEFAULT_MULTI_SELECT_LIMIT
         isOpenFrom = intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0) ?: 0
