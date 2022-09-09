@@ -321,7 +321,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     private fun goToUserProfile() {
         val appLink = ApplinkConst.PROFILE_SUCCESS_POST.replace(USER_ID_PARAM, userSession.userId)
         val intent = RouteManager.getIntent(this, appLink)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         startActivity(intent)
         finish()
     }
