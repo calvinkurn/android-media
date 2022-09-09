@@ -94,6 +94,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     private val _isBookmarked = MutableLiveData<Boolean>()
 
     private var recipeId: String = ""
+    private var slug: String = ""
+
     private val layoutItemList = mutableListOf<Visitable<*>>()
     private var miniCartData: MiniCartSimplifiedData? = null
 
@@ -272,14 +274,15 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     fun getShopId(): String = addressData.getShopId().toString()
 
-    fun setRecipeId(recipeId: String) {
+    fun setRecipeData(recipeId: String, slug: String) {
         this.recipeId = recipeId
+        this.slug = slug
     }
 
     private fun getRecipe() {
         launchCatchError(block = {
             val warehouseId = addressData.getWarehouseId().toString()
-            val response = getRecipeUseCase.execute(recipeId, warehouseId)
+            val response = getRecipeUseCase.execute(recipeId, slug, warehouseId)
             val bookmarked = response.isBookmarked
             recipeId = response.id
 

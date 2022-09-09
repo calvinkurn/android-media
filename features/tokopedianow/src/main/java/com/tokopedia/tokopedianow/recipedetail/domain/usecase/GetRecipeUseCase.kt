@@ -2,7 +2,6 @@ package com.tokopedia.tokopedianow.recipedetail.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
 import com.tokopedia.tokopedianow.recipedetail.domain.model.TokoNowGetRecipe
 import com.tokopedia.tokopedianow.recipedetail.domain.query.GetRecipe
@@ -26,31 +25,27 @@ class GetRecipeUseCase @Inject constructor(gqlRepository: GraphqlRepository) {
     private val graphql by lazy { GraphqlUseCase<TokoNowGetRecipe>(gqlRepository) }
 
     /**
-     * @param recipeId can be assigned with id or slug
+     * @param recipeId id of the recipe
+     * @param slug slug obtained from recipe url as identifier
      * @param warehouseId warehouseId obtained from address data
      */
-    suspend fun execute(recipeId: String, warehouseId: String): RecipeResponse {
+    suspend fun execute(
+        recipeId: String = DEFAULT_RECIPE_ID,
+        slug: String = DEFAULT_SLUG,
+        warehouseId: String
+    ): RecipeResponse {
         graphql.apply {
             setGraphqlQuery(GetRecipe)
             setTypeClass(TokoNowGetRecipe::class.java)
 
             setRequestParams(RequestParams.create().apply {
-                if(isValidId(recipeId)) {
-                    putString(PARAM_RECIPE_ID, recipeId)
-                    putString(PARAM_SLUG, DEFAULT_SLUG)
-                } else {
-                    putString(PARAM_RECIPE_ID, DEFAULT_RECIPE_ID)
-                    putString(PARAM_SLUG, recipeId)
-                }
+                putString(PARAM_RECIPE_ID, recipeId)
+                putString(PARAM_SLUG, slug)
                 putString(PARAM_WAREHOUSE_ID, warehouseId)
             }.parameters)
 
             val getRecipe = executeOnBackground()
             return getRecipe.response.data
         }
-    }
-
-    private fun isValidId(recipeId: String): Boolean {
-        return recipeId.toIntOrZero() != DEFAULT_RECIPE_ID.toInt()
     }
 }
