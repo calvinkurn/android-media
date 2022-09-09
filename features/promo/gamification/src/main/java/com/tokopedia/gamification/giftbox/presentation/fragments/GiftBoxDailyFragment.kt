@@ -634,14 +634,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun renderReminderButton(isUserReminded: Boolean, showToast: Boolean) {
         context?.let {
             if (isUserReminded) {
-//                tokoButtonContainer.btnReminder.setText(reminder?.buttonUnset)
                 isReminderSet = true
                 if (showToast && !reminder?.textSet.isNullOrEmpty()) {
                     CustomToast.show(context, reminder?.textSet!!)
                     GtmEvents.clickReminderButton(userSession?.userId, reminder?.textSet!!)
                 }
             } else {
-//                tokoButtonContainer.btnReminder.setText(reminder?.buttonSet)
                 isReminderSet = false
                 if (showToast && !reminder?.textUnset.isNullOrEmpty()) {
                     CustomToast.show(context, reminder?.textUnset!!)
