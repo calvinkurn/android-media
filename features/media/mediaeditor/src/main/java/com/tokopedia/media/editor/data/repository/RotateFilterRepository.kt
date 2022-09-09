@@ -59,6 +59,8 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
 
             previousDegree = normalizeDegree
             sliderValue = degree
+
+            cropImageView.zoomOutImage(cropImageView.minScale + 0.01f)
         }
 
         cropImageView.setImageToWrapCropBounds(false)
