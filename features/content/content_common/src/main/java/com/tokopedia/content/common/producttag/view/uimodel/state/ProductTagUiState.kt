@@ -16,6 +16,7 @@ data class ProductTagUiState(
     val globalSearchShop: GlobalSearchShopUiState,
     val shopProduct: ShopProductUiState,
     val selectedProduct: List<SelectedProductUiModel>,
+    val isSubmitting: Boolean,
 )
 
 data class ProductTagSourceUiState(

@@ -65,7 +65,7 @@ class PlayBroadcasterViewModelTest {
 
     @Before
     fun setUp() {
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
     }
@@ -76,7 +76,7 @@ class PlayBroadcasterViewModelTest {
         val configMock = uiModelBuilder.buildConfigurationUiModel(countDown = countDown.toLong())
 
         val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
-        coEvery { mockRepo.getChannelConfiguration() } returns configMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,

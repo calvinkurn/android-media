@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.di
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.play.broadcaster.di.key.FragmentKey
+import com.tokopedia.content.common.producttag.di.key.FragmentKey
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSumm
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
@@ -110,4 +111,9 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(InteractiveSetupDialogFragment::class)
     abstract fun getInteractiveSetupDialogFragment(fragment: InteractiveSetupDialogFragment) : Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ProductPickerUGCBottomSheet::class)
+    abstract fun getPlayPlaceholderBottomSheet(bottomSheet: ProductPickerUGCBottomSheet) : Fragment
 }

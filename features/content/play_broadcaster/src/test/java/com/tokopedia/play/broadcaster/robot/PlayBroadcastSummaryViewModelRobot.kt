@@ -54,6 +54,7 @@ class PlayBroadcastSummaryViewModelRobot(
         setChannelTagsUseCase = setChannelTagsUseCase,
         getChannelUseCase = getChannelUseCase,
         getInteractiveSummaryLivestreamUseCase = getInteractiveSummaryLivestreamUseCase,
+        authorId = "123",
     )
 
     fun recordState(fn: suspend PlayBroadcastSummaryViewModelRobot.() -> Unit): PlayBroadcastSummaryUiState {

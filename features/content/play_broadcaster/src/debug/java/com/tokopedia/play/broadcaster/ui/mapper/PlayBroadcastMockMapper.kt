@@ -43,49 +43,6 @@ import kotlin.random.Random
 class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
     @Suppress("MagicNumber")
-    override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> {
-        return List(6) {
-            EtalaseContentUiModel(
-                    id = (it + 1L).toString(),
-                    name = "Etalase ${it + 1}",
-                    productMap = mutableMapOf(),
-                    totalProduct = (it + 1) * 100,
-                    stillHasProduct = false
-            )
-        }
-    }
-
-    @Suppress("MagicNumber")
-    override fun mapProductList(
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (String) -> Boolean,
-        isSelectableHandler: (Boolean) -> SelectableState
-    ): List<ProductContentUiModel> {
-        return List(6) {
-            ProductContentUiModel(
-                    id = (12345L + it).toString(),
-                    name = "Product ${it + 1}",
-                    imageUrl = when (it) {
-                        1 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/oyhemtbkghuegy9gpo0i/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        2 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/gueo3qthwrv8y5laemzs/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        3 -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/rofxpoxehp6wznvzb1jk/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                    },
-                    originalImageUrl = when (it) {
-                        1 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/oyhemtbkghuegy9gpo0i/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        2 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/gueo3qthwrv8y5laemzs/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        3 -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/rofxpoxehp6wznvzb1jk/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                        else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
-                    },
-                    isSelectedHandler = { false },
-                    stock = StockAvailable((it % 2) * 10),
-                    isSelectable = { Selectable },
-                    price = PriceUnknown
-            )
-        }
-    }
-
-    @Suppress("MagicNumber")
     override fun mapSearchSuggestionList(keyword: String, productsResponse: GetProductsByEtalaseResponse.GetProductListData): List<SearchSuggestionUiModel> {
         return List(keyword.length) {
             val suggestionText = " ${keyword.substring(0, it + 1)}"
