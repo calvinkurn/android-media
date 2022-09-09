@@ -974,7 +974,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     //------------------------------------//
 
     fun clearPromo(
-        promoRequest: PromoRequest,
         validateUsePromoRequest: ValidateUsePromoRequest,
         bboPromoCodes: ArrayList<String>,
         clearPromoParam: ClearPromoRequest = ClearPromoRequest()
