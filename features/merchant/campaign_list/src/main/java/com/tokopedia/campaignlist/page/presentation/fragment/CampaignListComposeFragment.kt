@@ -5,22 +5,17 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.LayoutInflater
-import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -62,7 +57,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CampaignListFragment : BaseDaggerFragment(),
+class CampaignListComposeFragment : BaseDaggerFragment(),
         CampaignStatusBottomSheet.OnApplyButtonClickListener,
         CampaignTypeBottomSheet.OnApplyButtonClickListener,
         ActiveCampaignViewHolder.OnShareButtonClickListener, ShareBottomsheetListener {
@@ -95,7 +90,7 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     companion object {
         @JvmStatic
-        fun createInstance() = CampaignListFragment()
+        fun createInstance() = CampaignListComposeFragment()
         private const val SHARE = "share"
         private const val EMPTY_SEARCH_KEYWORD = ""
         const val TICKER_STATE_PREFERENCE = "TICKER_STATE_PREFERENCE"
@@ -123,27 +118,23 @@ class CampaignListFragment : BaseDaggerFragment(),
                 .inject(this)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
+        ViewTreeLifecycleOwner.set(requireActivity().getWindow().getDecorView(), this);
+        ViewTreeViewModelStoreOwner.set(requireActivity().getWindow().getDecorView(), this);
+        //ViewTreeSavedStateRegistryOwner.set(requireActivity().getWindow().getDecorView(), this);
+        return ComposeView(requireActivity()).apply {
+            setContent {
+
+            }
+        }
+    }
+
     @Composable
     fun Greeting(name: String) {
         Text(text = "Hello $name!")
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        initViewTreeOwners()
-
-        return ComposeView(requireContext()).apply {
-            setContent {
-
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    Greeting(name = "Fajar")
-                }
-            }
-        }
-    }
     override fun onDestroyView() {
         binding = null
         super.onDestroyView()
@@ -152,10 +143,10 @@ class CampaignListFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedPreferences = activity?.getSharedPreferences(TICKER_STATE_PREFERENCE, Context.MODE_PRIVATE)
-        setupView(binding)
-        observeLiveData()
-        viewModel.getSellerMetaData()
-        viewModel.getCampaignList()
+    //    setupView(binding)
+  //      observeLiveData()
+     //   viewModel.getSellerMetaData()
+      //  viewModel.getCampaignList()
     }
 
     override fun onShareButtonClicked(activeCampaign: ActiveCampaign) {
@@ -204,7 +195,7 @@ class CampaignListFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun setupView(binding: FragmentCampaignListBinding?) {
+    /*private fun setupView(binding: FragmentCampaignListBinding?) {
         setupSearchBar(binding)
         setupActiveCampaignListView(binding)
         setupTicker(binding)
@@ -285,8 +276,8 @@ class CampaignListFragment : BaseDaggerFragment(),
             }
         }
         binding?.sfCampaignList?.parentListener = {
-            /* No op. We need to specify this block, otherwise the clear filter chip will do nothing
-               when clicked */
+            *//* No op. We need to specify this block, otherwise the clear filter chip will do nothing
+               when clicked *//*
         }
         binding?.sfCampaignList?.dismissListener = { viewModel.getCampaignList() }
     }
@@ -567,14 +558,55 @@ class CampaignListFragment : BaseDaggerFragment(),
             GetCampaignListUseCase.NPL_LIST_TYPE,
             viewModel.getCampaignStatusId()
         )
+    }*/
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        val merchantBannerData = viewModel.getMerchantBannerData()
+        merchantBannerData?.run {
+            val shopData = merchantBannerData.shopData
+            val campaignData = merchantBannerData.campaign
+            val campaignStatusId = viewModel.getSelectedActiveCampaign()?.campaignStatusId ?: return
+            val linkerShareData = viewModel.generateLinkerShareData(shopData, campaignData, shareModel, campaignStatusId)
+            LinkerManager.getInstance().executeShareRequest(
+                LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                        val shareWording = viewModel.getShareDescriptionWording(
+                            shopData = shopData,
+                            campaignData = campaignData,
+                            merchantBannerData = merchantBannerData,
+                            shareUri = linkerShareData?.shareUri,
+                            campaignStatusId = campaignStatusId
+                        )
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareWording)
+                        universalShareBottomSheet?.dismiss()
+                    }
+
+                    override fun onError(linkerError: LinkerError?) {}
+                })
+            )
+        }
+        val selectedActiveCampaign = viewModel.getSelectedActiveCampaign()
+        selectedActiveCampaign?.run {
+            tracker.sendSelectShareChannelClickEvent(
+                shareModel.channel.orEmpty(),
+                viewModel.getCampaignTypeId(),
+                this.campaignId,
+                userSession.userId,
+                userSession.shopId
+            )
+
+        }
     }
 
-    private fun initViewTreeOwners() {
-        // Set the view tree owners before setting the content view so that the inflation process
-        // and attach listeners will see them already present
-        val decoderView = requireActivity().window.decorView
-        ViewTreeLifecycleOwner.set(decoderView, this)
-        ViewTreeViewModelStoreOwner.set(decoderView, this)
-        ViewTreeSavedStateRegistryOwner.set(decoderView, this)
+    override fun onCloseOptionClicked() {
+        val selectedActiveCampaign = viewModel.getSelectedActiveCampaign()
+        selectedActiveCampaign?.run {
+            tracker.sendShareBottomSheetDismissClickEvent(
+                viewModel.getCampaignTypeId(),
+                this.campaignId,
+                userSession.userId,
+                userSession.shopId
+            )
+        }
     }
 }
