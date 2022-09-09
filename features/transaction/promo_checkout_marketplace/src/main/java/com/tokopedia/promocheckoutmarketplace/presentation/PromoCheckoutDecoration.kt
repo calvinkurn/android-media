@@ -12,14 +12,12 @@ class PromoCheckoutDecoration @Inject constructor() : RecyclerView.ItemDecoratio
     private var space16 = -1
     private var space12 = -1
     private var space8 = -1
-    private var heightBoClashingTicker = -1
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         if (space16 == -1) {
             space16 = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt() ?: 0
             space12 = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_12)?.toInt() ?: 0
             space8 = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_8)?.toInt() ?: 0
-            heightBoClashingTicker = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_39)?.toInt() ?: 0
         }
 
         when (parent.getChildViewHolder(view)) {
@@ -44,9 +42,8 @@ class PromoCheckoutDecoration @Inject constructor() : RecyclerView.ItemDecoratio
                 outRect.bottom = space12
             }
             is PromoListItemViewHolder -> {
-                val isLastItem: Boolean = parent.getChildAdapterPosition(view) == parent.adapter?.itemCount.orZero() - 1
                 outRect.top = 0
-                outRect.bottom = if (isLastItem) heightBoClashingTicker else space8
+                outRect.bottom = space8
             }
             is PromoEmptyStateViewHolder -> {
                 outRect.top = space8
