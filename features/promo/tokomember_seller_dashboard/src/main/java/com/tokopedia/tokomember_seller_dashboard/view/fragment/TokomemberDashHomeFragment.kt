@@ -59,7 +59,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private val tokomemberDashHomeViewmodel: TokomemberDashHomeViewmodel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
+        val viewModelProvider = ViewModelProvider(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(TokomemberDashHomeViewmodel::class.java)
     }
 
@@ -82,10 +82,14 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         iv_home.errorTitle.hide()
         iv_home.errorDescription.hide()
         observeViewModel()
-        var shopId = arguments?.getInt(BUNDLE_SHOP_ID)
+        arguments?.getInt(BUNDLE_SHOP_ID)?.let{
+            shopId = it
+        }
         prefManager = context?.let { TmPrefManager(it) }
         if(shopId == null || shopId.isZero()){
-            shopId = prefManager?.shopId
+            prefManager?.shopId?.let{
+                shopId = it
+            }
         }
         if (shopId != null) {
             tokomemberDashHomeViewmodel.getHomePageData(shopId)

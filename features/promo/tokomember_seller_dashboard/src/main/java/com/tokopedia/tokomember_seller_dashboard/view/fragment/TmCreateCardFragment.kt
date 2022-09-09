@@ -214,7 +214,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                          inToolsCardId = it.data.membershipCreateEditCard.intoolsCard?.id ?: 0
                          closeLoadingDialog()
                          if(actionType == ProgramActionType.EDIT) {
-                             editCardCallback?.cardEdit()
+//                             editCardCallback?.cardEdit()
                              val intent = Intent()
                              intent.putExtra("REFRESH_STATE", REFRESH)
                              activity?.setResult(Activity.RESULT_OK, intent)
