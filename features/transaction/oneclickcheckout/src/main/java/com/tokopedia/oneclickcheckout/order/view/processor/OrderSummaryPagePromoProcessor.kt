@@ -277,8 +277,13 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
 
         ordersItem.shippingId = shipping.getRealShipperId()
         ordersItem.spId = shipping.getRealShipperProductId()
+        ordersItem.etaText = shipping.shippingEta ?: ""
+        ordersItem.shippingPrice = shipping.getRealOriginalPrice().toDouble()
         if (shouldAddLogisticPromo && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
             ordersItem.freeShippingMetadata = shipping.logisticPromoViewModel.freeShippingMetadata
+            ordersItem.benefitClass = shipping.logisticPromoViewModel.benefitClass
+            ordersItem.shippingSubsidy = shipping.logisticPromoViewModel.shippingSubsidy
+            ordersItem.etaText = shipping.logisticPromoViewModel.etaData.textEta
         }
 
         ordersItem.codes = generateOrderPromoCodes(lastValidateUsePromoRequest, ordersItem.uniqueId, shipping, orderPromo, shouldAddLogisticPromo)

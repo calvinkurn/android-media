@@ -929,7 +929,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<ClearPromoOrder> clearOrders = new ArrayList<>();
         for (OrdersItem order : validateUsePromoRequest.getOrders()) {
             if (order != null) {
-                clearOrders.add(new ClearPromoOrder(order.getUniqueId(), order.getBoType(), order.getCodes()));
+                clearOrders.add(new ClearPromoOrder(order.getUniqueId(), order.getBoType(), order.getCodes(), 0, false, "", 0));
                 if (!order.getCodes().isEmpty()) {
                     hasPromo = true;
                 }
@@ -1894,7 +1894,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<String> promoCodeList = new ArrayList<>();
         promoCodeList.add(promoCode);
         ArrayList<ClearPromoOrder> clearOrders = new ArrayList<>();
-        clearOrders.add(new ClearPromoOrder(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(), promoCodeList));
+        clearOrders.add(new ClearPromoOrder(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(), promoCodeList, 0, false, "", 0));
 
         clearCacheAutoApplyStackUseCase.setParams(new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, false, new ClearPromoOrderData(new ArrayList<>(), clearOrders)));
         compositeSubscription.add(
@@ -1962,7 +1962,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             clearOrders.add(new ClearPromoOrder(
                                     notEligiblePromoHolderdata.getUniqueId(),
                                     shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
-                                    codes
+                                    codes, 0, false, "", 0
                             ));
                             hasPromo = true;
                             break;
@@ -2013,7 +2013,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 clearOrders.add(new ClearPromoOrder(
                                         promoClashVoucherOrdersUiModel.getUniqueId(),
                                         cartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
-                                        codes
+                                        codes, 0, false, "", 0
                                 ));
                             }
                         }
@@ -2042,7 +2042,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 clearOrders.add(new ClearPromoOrder(
                         shipmentCartItemModel.getCartString(),
                         shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
-                        boCodes
+                        boCodes, 0, false, "", 0
                 ));
                 hasBo = true;
             }
@@ -2598,7 +2598,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         final List<String> promoCodes = new ArrayList<>();
         promoCodes.add(promoCode);
         clearOrders.add(new ClearPromoOrder(shipmentCartItemModel.getCartString(),
-                shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(), promoCodes));
+                shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(), promoCodes, 0, false, "", 0));
         final ClearPromoRequest params = new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                 false, new ClearPromoOrderData(globalCodes, clearOrders));
         clearCacheAutoApplyStackUseCase.setParams(params);
