@@ -23,6 +23,7 @@ class SharedViewModel @Inject constructor(
 
     companion object {
         private const val FLOW_STOP_TIMEOUT = 3000L
+        private const val INDEX_NOT_FOUND = -1
     }
 
     val homeMenu: StateFlow<List<MenuItem>> = merge(
@@ -71,10 +72,11 @@ class SharedViewModel @Inject constructor(
     }
 
     private fun getUpdatedMenuCounter(title: String, count: Int) : List<MenuItem> {
-        homeMenu.value.toMutableList().also { listMenu ->
-            val index = listMenu.indexOfFirst { it.title == title }
-            listMenu[index] = listMenu[index].copy(unreadCount = count)
-            return listMenu
+        return homeMenu.value.toMutableList().apply {
+            val index = indexOfFirst { it.title == title }
+            if(index != INDEX_NOT_FOUND){
+                this[index] = this[index].copy(unreadCount = count)
+            }
         }
     }
 }
