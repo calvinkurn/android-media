@@ -23,16 +23,13 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
-import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
@@ -147,6 +144,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         observeIsRoleEligible()
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
+        sendNotificationPermissionData()
     }
 
     override fun getComponent(): HomeDashboardComponent {
@@ -270,6 +268,10 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
+    }
+
+    private fun sendNotificationPermissionData() {
+        CMPushNotificationManager.instance.checkNotificationPermission()
     }
 
     fun attachSellerHomeFragmentChangeCallback(callback: FragmentChangeCallback) {

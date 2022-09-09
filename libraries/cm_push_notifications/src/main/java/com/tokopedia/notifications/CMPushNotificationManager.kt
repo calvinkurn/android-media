@@ -2,9 +2,11 @@ package com.tokopedia.notifications
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql
@@ -14,8 +16,11 @@ import com.tokopedia.logger.ServerLogger.log
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.notification.common.PushNotificationApi
-import com.tokopedia.notifications.common.*
+import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
+import com.tokopedia.notifications.common.CMRemoteConfigUtils
+import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
+import com.tokopedia.notifications.common.NotificationSettingsGtmEvents
 import com.tokopedia.notifications.data.AmplificationDataSource
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.payloadProcessor.InAppPayloadPreprocessorUseCase
@@ -26,7 +31,6 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import timber.log.Timber
-import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -71,6 +75,8 @@ class CMPushNotificationManager : CoroutineScope {
     val sellerAppCmAddTokenEnabled: Boolean
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED,
                 false)
+
+    private val postNotificationPermission = "android.permission.POST_NOTIFICATIONS"
 
     /**
      * initialization of push notification library
@@ -290,6 +296,29 @@ class CMPushNotificationManager : CoroutineScope {
             })
     }
     /*Handle InAPP payload from FCM and GQL End*/
+
+     fun checkNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                postNotificationPermission) == PackageManager.PERMISSION_GRANTED) {
+            try {
+                val userSession = UserSession(applicationContext)
+                NotificationSettingsGtmEvents(userSession).sendActionAllowEvent(applicationContext)
+            } catch (e: Exception){
+            }
+
+        } else if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                postNotificationPermission) == PackageManager.PERMISSION_DENIED) {
+            try {
+                val userSession = UserSession(applicationContext)
+                NotificationSettingsGtmEvents(userSession).sendActionNotAllowEvent(
+                    applicationContext
+                )
+            } catch (e: Exception) {
+            }
+        }
+    }
 
     companion object {
 

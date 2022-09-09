@@ -95,6 +95,7 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -279,6 +280,7 @@ public class MainParentActivity extends BaseActivity implements
 
         super.onCreate(savedInstanceState);
         initInjector();
+        sendNotificationPermissionData();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -574,6 +576,10 @@ public class MainParentActivity extends BaseActivity implements
                     getString(com.tokopedia.home.R.string.general_label_ok), (v) -> {
                     });
         }
+    }
+
+     private void sendNotificationPermissionData() {
+        CMPushNotificationManager.getInstance().checkNotificationPermission();
     }
 
     private void setupStatusBar() {
