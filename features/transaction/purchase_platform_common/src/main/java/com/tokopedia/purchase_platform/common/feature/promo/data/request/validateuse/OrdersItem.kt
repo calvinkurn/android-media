@@ -26,4 +26,10 @@ data class OrdersItem(
         var freeShippingMetadata: String = "",
         @Transient
         var boType: Int = 0,
+        @Transient
+        var isPo: Boolean = false,
+        @Transient
+        var poDuration: Int = 0,
+        @Transient
+        var warehouseId: Long = 0,
 ) : Parcelable
