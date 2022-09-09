@@ -13,12 +13,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.delegates.HasPaginatedList
-import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_MONTH_ONLY
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
+import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
@@ -45,7 +45,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
+class CampaignDetailFragment : BaseDaggerFragment() {
 
     companion object {
         private const val UPCOMING_TAB = "upcoming"
@@ -1133,13 +1133,11 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                 productAdapter.removeItem(LoadingItem)
             })
 
-        binding?.nsvContent?.apply {
-            attachPagingWithNestedScrollView(this, pagingConfig) {
-                val isInCheckBoxState = viewModel.isOnCheckBoxState()
-                val hasNextPage = productAdapter.itemCount >= PAGE_SIZE
-                if (hasNextPage && !isInCheckBoxState) {
-                    loadSubmittedProductListData(productAdapter.itemCount)
-                }
+        binding?.nsvContent?.enablePaging(pagingConfig) {
+            val isInCheckBoxState = viewModel.isOnCheckBoxState()
+            val hasNextPage = productAdapter.itemCount >= PAGE_SIZE
+            if (hasNextPage && !isInCheckBoxState) {
+                loadSubmittedProductListData(productAdapter.itemCount)
             }
         }
     }

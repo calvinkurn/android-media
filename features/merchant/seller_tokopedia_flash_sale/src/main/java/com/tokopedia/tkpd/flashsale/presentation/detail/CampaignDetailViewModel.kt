@@ -50,8 +50,6 @@ class CampaignDetailViewModel @Inject constructor(
     private var isOnCheckboxState = false
 
     companion object {
-        private const val TWENTY_FOUR_HOURS = 24
-        private const val SIXTY_MINUTES = 60
         private const val PAGE_SIZE = 10
     }
 
