@@ -98,6 +98,7 @@ class Filter(@SerializedName("title")
     val isKeywordFilter: Boolean
         get() = TEMPLATE_NEGATIVE_KEYWORD == templateName
 
+    //TODO will update by template_name
     val isPriceRangeCbFilter: Boolean
         get() = options.firstOrNull()?.inputType == Option.INPUT_TYPE_CHECKBOX &&
                 options.firstOrNull()?.key == Option.KEY_PRICING
