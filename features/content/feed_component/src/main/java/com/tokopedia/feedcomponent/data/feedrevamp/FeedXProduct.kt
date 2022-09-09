@@ -58,11 +58,11 @@ data class FeedXProduct(
         @SerializedName("priceMaskedFmt")
         var priceMaskedFmt: String = "",
         @SerializedName("stockWording")
-        var stockWording: String = "",
+        val stockWording: String = "",
         @SerializedName("stockSoldPercentage")
-        var stockSoldPercentage: Float = 0f,
+        val stockSoldPercentage: Float = 0f,
         @SerializedName("cartable")
-        var cartable: Boolean = false,
+        val cartable: Boolean = false,
 
         //TopadsHeadline
         var variant: Int = 1,
