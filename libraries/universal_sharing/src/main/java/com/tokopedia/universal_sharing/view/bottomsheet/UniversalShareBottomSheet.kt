@@ -410,7 +410,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 }.executeOnBackground()
                 var deeplink = ""
                 if (isExecuteExtractBranchLink(generateAffiliateLinkEligibility)) {
-                    deeplink = extractBranchLinkUseCase(generateAffiliateLinkEligibility.banner?.ctaLink ?: "").android_deeplink
+                    deeplink = executeExtractBranchLink(generateAffiliateLinkEligibility)
                 }
                 withContext(Dispatchers.Main) {
                     showAffiliateTicker(generateAffiliateLinkEligibility, deeplink)
@@ -431,6 +431,14 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 affiliateQueryData = null
             }
         }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
+    }
+
+    suspend private fun executeExtractBranchLink(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): String {
+        return try {
+            extractBranchLinkUseCase(generateAffiliateLinkEligibility.banner?.ctaLink ?: "").android_deeplink
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     private fun isExecuteExtractBranchLink(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
@@ -485,7 +493,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             affiliateRegisterContainer?.setOnClickListener { _ ->
                 tracker.onClickRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
                 dismiss()
-                RouteManager.route(context, ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink)
+                if (deeplink.isNotEmpty()) {
+                    RouteManager.route(context, ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink)
+                } else {
+                    RouteManager.route(context, ApplinkConst.AFFILIATE)
+                }
             }
             affiliateRegisterIcon?.loadImage(banner.icon)
 
