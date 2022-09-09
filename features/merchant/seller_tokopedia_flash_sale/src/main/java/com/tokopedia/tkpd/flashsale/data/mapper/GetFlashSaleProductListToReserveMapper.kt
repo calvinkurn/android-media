@@ -24,7 +24,7 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor() {
             imageUrl = it.pictureUrl,
             variantText = it.variantMeta.countVariants.toString() + " Varian Produk",
             variantTips = it.variantMeta.countEligibleVariants.toString()  + " varian sesuai kriteria",
-            priceText = mapPrice(it.variantMeta.countVariants, it.price),
+            priceText = mapPrice(it.price),
             stockText = mapStock(it),
             errorMessage = it.disableDetail.disableTitle,
             hasVariant = it.variantMeta.countVariants.isMoreThanZero(),
@@ -42,15 +42,13 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor() {
         } else ""
     }
 
-    private fun mapPrice(
-        countVariants: Int,
-        price: GetFlashSaleProductListToReserveResponse.Price,
-    ) = if (countVariants.isMoreThanZero()) {
-        val min = price.lowerPrice.getCurrencyFormatted()
-        val max = price.upperPrice.getCurrencyFormatted()
-        "$min $max"
-    } else {
-        price.price.getCurrencyFormatted()
-    }
+    private fun mapPrice(price: GetFlashSaleProductListToReserveResponse.Price) =
+        if (price.lowerPrice != price.upperPrice) {
+            val min = price.lowerPrice.getCurrencyFormatted()
+            val max = price.upperPrice.getCurrencyFormatted()
+            "$min $max"
+        } else {
+            price.price.getCurrencyFormatted()
+        }
 
 }
