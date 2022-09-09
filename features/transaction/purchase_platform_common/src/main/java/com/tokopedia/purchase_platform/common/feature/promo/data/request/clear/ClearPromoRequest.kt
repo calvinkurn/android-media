@@ -24,5 +24,13 @@ data class ClearPromoOrder(
         @SerializedName("boType")
         val boType: Int = 0,
         @SerializedName("codes")
-        val codes: MutableList<String> = ArrayList()
+        val codes: MutableList<String> = ArrayList(),
+        @SerializedName("shopID")
+        val shopId: Long = 0,
+        @SerializedName("isPO")
+        val isPo: Boolean = false,
+        @SerializedName("duration")
+        val poDuration: String = "0",
+        @SerializedName("warehouseID")
+        val warehouseId: Long = 0
 )
