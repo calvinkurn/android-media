@@ -5,6 +5,7 @@ import com.tokopedia.deals.pdp.data.DealsProductDetail
 import com.tokopedia.deals.pdp.data.DealsProductEventContent
 import com.tokopedia.deals.pdp.data.DealsRatingResponse
 import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
+import com.tokopedia.deals.pdp.data.DealsTrackingResponse
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
@@ -267,4 +268,178 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
         Assert.assertEquals((actualResponse as Fail).throwable.message, errorMessageGeneral)
     }
 
+    @Test
+    fun `when getting tracking recommendation data should run and give the success result`() {
+        onGetTrackingRecommendation_thenReturn(createTracking())
+        val expectedResponse = createTracking()
+        var actualResponse: Result<DealsTrackingResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRecommendationTracking.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setTrackingRecommendation("1", "1234")
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting tracking recommendation data should run and give the null result`() {
+        onGetTrackingRecommendation_thenReturn()
+        var actualResponse: Result<DealsTrackingResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRecommendationTracking.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setTrackingRecommendation("1", "1234")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+    }
+
+    @Test
+    fun `when getting tracking recommendation data should run and give the error result`() {
+        onGetTrackingRecommendation_thenReturn(Throwable(errorMessageGeneral))
+
+        var actualResponse: Result<DealsTrackingResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRecommendationTracking.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setTrackingRecommendation("1", "1234")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+        Assert.assertEquals((actualResponse as Fail).throwable.message, errorMessageGeneral)
+    }
+
+    @Test
+    fun `when getting tracking recent search data should run and give the success result`() {
+        onGetTrackingRecentSearch_thenReturn(createTracking())
+        val expectedResponse = createTracking()
+        var actualResponse: Result<DealsTrackingResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRecentSearchTracking.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setTrackingRecentSearch(createPDPData().eventProductDetail.productDetailData, "1234")
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting tracking recent search data but media is empty should run and give the success result`() {
+        onGetTrackingRecentSearch_thenReturn(createTracking())
+        val expectedResponse = createTracking()
+        var actualResponse: Result<DealsTrackingResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRecentSearchTracking.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setTrackingRecentSearch(createPDPEmptyMediaData().eventProductDetail.productDetailData, "1234")
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting tracking recent search data should run and give the null result`() {
+        onGetTrackingRecentSearch_thenReturn()
+        var actualResponse: Result<DealsTrackingResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRecentSearchTracking.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setTrackingRecentSearch(createPDPData().eventProductDetail.productDetailData, "1234")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+    }
+
+    @Test
+    fun `when getting tracking recent search data should run and give the error result`() {
+        onGetTrackingRecentSearch_thenReturn(Throwable(errorMessageGeneral))
+
+        var actualResponse: Result<DealsTrackingResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRecentSearchTracking.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setTrackingRecentSearch(createPDPData().eventProductDetail.productDetailData, "1234")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+        Assert.assertEquals((actualResponse as Fail).throwable.message, errorMessageGeneral)
+    }
+
+    @Test
+    fun `when getting likes return likes counter`() {
+        val likeCounter = 10
+
+        viewModel.totalLikes = likeCounter
+
+        Assert.assertEquals(likeCounter, viewModel.totalLikes)
+    }
+
+    @Test
+    fun `when getting isLiked return isLiked status`() {
+        val isLiked = true
+
+        viewModel.isLiked = isLiked
+
+        Assert.assertEquals(isLiked, viewModel.isLiked)
+    }
+
+    @Test
+    fun `when getting images return images from list media`() {
+        val pdpData = createPDPData().eventProductDetail.productDetailData
+        val expectedImages = listOf(
+            "https://ecs7.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef-lala.jpg"
+        )
+
+        val images = viewModel.productImagesMapper(pdpData)
+
+        Assert.assertEquals(expectedImages, images)
+    }
+
+    @Test
+    fun `when getting images return images from image app`() {
+        val pdpData = createPDPEmptyMediaData().eventProductDetail.productDetailData
+        val expectedImages = listOf(
+            "https://ecs7.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef.jpg"
+        )
+
+        val images = viewModel.productImagesMapper(pdpData)
+
+        Assert.assertEquals(expectedImages, images)
+    }
 }

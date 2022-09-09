@@ -17,6 +17,13 @@ fun createPDPData(): DealsProductDetail {
     )
 }
 
+fun createPDPEmptyMediaData(): DealsProductDetail {
+    return Gson().fromJson(
+        DealsJsonMapper.getJson("pdp_media_empty.json"),
+        DealsProductDetail::class.java
+    )
+}
+
 fun createContentById(): DealsProductEventContent {
     return Gson().fromJson(
         DealsJsonMapper.getJson("content_by_id.json"),

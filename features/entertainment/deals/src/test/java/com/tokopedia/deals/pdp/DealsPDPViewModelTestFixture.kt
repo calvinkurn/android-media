@@ -7,6 +7,7 @@ import com.tokopedia.deals.pdp.data.DealsProductDetail
 import com.tokopedia.deals.pdp.data.DealsProductEventContent
 import com.tokopedia.deals.pdp.data.DealsRatingResponse
 import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
+import com.tokopedia.deals.pdp.data.DealsTrackingResponse
 import com.tokopedia.deals.pdp.domain.DealsPDPDetailUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPEventContentUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPGetRatingUseCase
@@ -144,6 +145,56 @@ abstract class DealsPDPViewModelTestFixture {
     protected fun onGetRatingUpdate_thenReturn(errorThrowable: Throwable) {
         coEvery {
             dealsPDPUpdateRatingUseCase.executeOnBackground()
+        } throws errorThrowable
+    }
+
+    protected fun onGetTrackingRecommendation_thenReturn(tracking : DealsTrackingResponse) {
+        val restResponse = RestResponse(tracking, 200, false)
+        val dataTrackingMap = mapOf<Type, RestResponse>(
+            DealsTrackingResponse::class.java to restResponse
+        )
+        coEvery {
+            dealsPDPRecommendTrackingUseCase.executeOnBackground()
+        } returns dataTrackingMap
+    }
+
+    protected fun onGetTrackingRecommendation_thenReturn() {
+        val dataTrackingMap = mapOf<Type, RestResponse?>(
+            DealsTrackingResponse::class.java to null
+        )
+        coEvery {
+            dealsPDPRecommendTrackingUseCase.executeOnBackground()
+        } returns dataTrackingMap
+    }
+
+    protected fun onGetTrackingRecommendation_thenReturn(errorThrowable: Throwable) {
+        coEvery {
+            dealsPDPRecommendTrackingUseCase.executeOnBackground()
+        } throws errorThrowable
+    }
+
+    protected fun onGetTrackingRecentSearch_thenReturn(tracking : DealsTrackingResponse) {
+        val restResponse = RestResponse(tracking, 200, false)
+        val dataTrackingMap = mapOf<Type, RestResponse>(
+            DealsTrackingResponse::class.java to restResponse
+        )
+        coEvery {
+            dealsPDPRecentSearchTrackingUseCase.executeOnBackground()
+        } returns dataTrackingMap
+    }
+
+    protected fun onGetTrackingRecentSearch_thenReturn() {
+        val dataTrackingMap = mapOf<Type, RestResponse?>(
+            DealsTrackingResponse::class.java to null
+        )
+        coEvery {
+            dealsPDPRecentSearchTrackingUseCase.executeOnBackground()
+        } returns dataTrackingMap
+    }
+
+    protected fun onGetTrackingRecentSearch_thenReturn(errorThrowable: Throwable) {
+        coEvery {
+            dealsPDPRecentSearchTrackingUseCase.executeOnBackground()
         } throws errorThrowable
     }
 }

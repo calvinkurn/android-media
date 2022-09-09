@@ -83,21 +83,7 @@
       "facilities": [],
       "city_name": "Bandung",
       "forms": [],
-      "media": [
-        {
-          "id": "395491",
-          "product_id": "16051",
-          "title": "KFC100k",
-          "is_thumbnail": 0,
-          "type": "image",
-          "description": "Image",
-          "url": "https://ecs7.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef-lala.jpg",
-          "client": "",
-          "status": 1,
-          "created_at": "",
-          "updated_at": ""
-        }
-      ],
+      "media": [],
       "outlets": [
         {
           "id": "20196",
