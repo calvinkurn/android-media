@@ -22,7 +22,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -61,12 +60,6 @@ import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_IS_DRAFTING
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_RESULT_STATUS
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_NAME
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_VALUE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SHOP_LOCATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT
@@ -75,14 +68,10 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DESCRIPTION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DETAIL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_SHIPMENT
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.SET_CASHBACK_REQUEST_CODE
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.SET_CASHBACK_RESULT
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
-import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
@@ -113,7 +102,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_LOCATION_VALIDATION
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_PRODUCT_NAME_VALIDATION
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.preview.presentation.model.SetCashbackResult
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
@@ -285,7 +273,6 @@ class AddEditProductPreviewFragment :
         setupDescriptionViews(view)
         setupVariantViews(view)
         setupShipmentViews(view)
-        setupPromotionViews(view)
         setupStatusViews(view)
         setupLoadingViews(view)
         setupAdminRevampViews(view)
@@ -362,10 +349,14 @@ class AddEditProductPreviewFragment :
                 REQUEST_CODE_IMAGE -> updateImageListFromIntentData(data)
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> updateVariantFromIntentData(data)
                 REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT -> updateVariantFromIntentData(data)
-                SET_CASHBACK_REQUEST_CODE -> updateCashbackFromIntentData(data)
                 REQUEST_CODE_SHOP_LOCATION -> updateShopLocationFromIntentData(data)
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        outOfStockCoachMark?.dismissCoachMark()
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
@@ -643,35 +634,18 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun setupPromotionViews(view: View) {
-        editProductPromotionLayout = view.findViewById(R.id.edit_product_promotion_step_layout)
-        editProductPromotionButton = view.findViewById(R.id.tv_edit_product_promotion)
-        editProductPromotionButton?.setOnClickListener {
-            if (isEditing()) {
-                ProductEditStepperTracking.trackChangePromotion(shopId)
-            }
-            setCashback()
-        }
-    }
-
     private fun setupSellerAppViews() {
         if (!GlobalConfig.isSellerApp()) {
             sellerFeatureCarousel?.apply {
                 setListener(object : SellerFeatureCarousel.SellerFeatureClickListener {
                     override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
-                        if (!isDrafting()) {
-                            when (item) {
-                                is SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel -> goToSellerAppEditProduct(viewModel.getProductId())
-                                is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback()
-                            }
+                        if (!isDrafting() && item is SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel) {
+                            goToSellerAppEditProduct(viewModel.getProductId())
                         }
                     }
                 })
                 addItemDecoration()
-                setItems(listOf(
-                    SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel(Any()),
-                    SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(Any())
-                ))
+                setItems(listOf(SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel(Any())))
             }
         }
     }
@@ -762,24 +736,6 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun onSuccessSetCashback() {
-        view?.let {
-            Toaster.build(
-                it, getString(R.string.product_edit_set_cashback_success),
-                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL
-            ).show()
-        }
-    }
-
-    private fun onFailedSetCashback() {
-        view?.let {
-            Toaster.build(
-                it, getString(R.string.product_edit_set_cashback_error),
-                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL
-            ).show()
-        }
-    }
-
     private fun checkEnableOrNot() {
         viewModel.productInputModel.value?.requestCode?.apply {
             val isDetailData = this[0] == DETAIL_DATA
@@ -808,10 +764,16 @@ class AddEditProductPreviewFragment :
     }
 
     private fun saveProductToDraft() {
+        // increment wholesale min order by one because of > symbol
+        viewModel.productInputModel.value?.run {
+            detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(detailInputModel.wholesaleList)
+        }
         viewModel.productInputModel.value?.let {
             viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
         }
-        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
+        activity?.let {
+            Toast.makeText(it, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun isEditing(): Boolean {
@@ -862,16 +824,18 @@ class AddEditProductPreviewFragment :
     }
 
     private fun displayEmptyStockCoachmark(anchor: View) {
-        val items = listOf(
-            CoachMark2Item(anchor, "",
-                getString(R.string.label_coachmark_out_of_stock),
-                CoachMarkContentPosition.BOTTOM.position
+        if(activity?.isDestroyed == false && activity?.isFinishing == false) {
+            val items = listOf(
+                CoachMark2Item(anchor, "",
+                    getString(R.string.label_coachmark_out_of_stock),
+                    CoachMarkContentPosition.BOTTOM.position
+                )
             )
-        )
-        outOfStockCoachMark = CoachMark2(context ?: return)
-        outOfStockCoachMark?.simpleCloseIcon?.isVisible = false
-        outOfStockCoachMark?.hideCoachmarkWhenTouchOutside(anchor)
-        outOfStockCoachMark?.showCoachMark(ArrayList(items))
+            outOfStockCoachMark = CoachMark2(context ?: return)
+            outOfStockCoachMark?.simpleCloseIcon?.isVisible = false
+            outOfStockCoachMark?.hideCoachmarkWhenTouchOutside(anchor)
+            outOfStockCoachMark?.showCoachMark(ArrayList(items))
+        }
     }
 
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
@@ -985,7 +949,6 @@ class AddEditProductPreviewFragment :
             when (result) {
                 is Success -> {
                     showProductStatus(result.data)
-                    handleSetCashBackResult()
 
                     // set temporary price when first loaded
                     SharedPreferencesUtil.setPriceWhenLoaded(requireActivity(), result.data.price)
@@ -1013,18 +976,6 @@ class AddEditProductPreviewFragment :
                 }
             }
         })
-    }
-
-    private fun handleSetCashBackResult() {
-        activity?.intent?.data?.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID)?.let {
-            if (it.isNotBlank()) {
-                val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, it) }
-                val resultStatus = cacheManager?.get(EXTRA_RESULT_STATUS, Int::class.java) ?: 0
-                if (resultStatus == RESULT_OK) {
-                    onSetCashbackResult(cacheManager)
-                }
-            }
-        }
     }
 
     private fun observeProductInputModel() {
@@ -1279,12 +1230,6 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun updateCashbackFromIntentData(data: Intent) {
-        val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY) ?: ""
-        val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
-        onSetCashbackResult(cacheManager)
-    }
-
     private fun updateShopLocationFromIntentData(data: Intent) {
         showLoading()
         data.let { intent ->
@@ -1310,23 +1255,6 @@ class AddEditProductPreviewFragment :
                 updateProductStatusSwitch(it)
             }
             viewModel.setIsDataChanged(true)
-        }
-    }
-
-    private fun setCashback() {
-        viewModel.productInputModel.value?.let { productInputModel ->
-            val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, viewModel.getProductId())
-            val uri = Uri.parse(newUri)
-                    .buildUpon()
-                    .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_NAME, productInputModel.detailInputModel.productName)
-                    .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, viewModel.productDomain.cashback.percentage.toString())
-                    .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, productInputModel.detailInputModel.price.toString())
-                    .build()
-                    .toString()
-            val intent = RouteManager.getIntent(context, uri)
-            intent.putExtra(EXTRA_CASHBACK_SHOP_ID, shopId)
-            intent.putExtra(EXTRA_CASHBACK_IS_DRAFTING, isDrafting())
-            startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
         }
     }
 
@@ -1591,29 +1519,6 @@ class AddEditProductPreviewFragment :
         })
     }
 
-    private fun goToSellerAppProductManageThenSetCashback() {
-        viewModel.productInputModel.value?.let { productInputModel ->
-            val cacheManagerId = UUID.randomUUID().toString()
-            val secondApplink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
-                    .buildUpon()
-                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, viewModel.getProductId())
-                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
-                    .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
-                    .build()
-                    .toString()
-            val thirdAppLink = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, viewModel.getProductId()))
-                    .buildUpon()
-                    .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_NAME, productInputModel.detailInputModel.productName)
-                    .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, viewModel.productDomain.cashback.percentage.toString())
-                    .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, productInputModel.detailInputModel.price.toString())
-                    .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
-                    .appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID, cacheManagerId)
-                    .build()
-                    .toString()
-            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondApplink, thirdAppLink))
-        }
-    }
-
     private fun goToSellerAppEditProduct(productId: String) {
         val secondAppLink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
                 .buildUpon()
@@ -1809,23 +1714,6 @@ class AddEditProductPreviewFragment :
                     long = longitude
             )
             viewModel.saveShippingLocation(params)
-        }
-    }
-
-    private fun onSetCashbackResult(cacheManager: SaveInstanceCacheManager?) {
-        val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
-        if (setCashbackResult == null) {
-            onFailedSetCashback()
-            return
-        }
-        setCashbackResult.let { cashbackResult ->
-            if (!cashbackResult.limitExceeded) {
-                val cashbackProduct = Cashback(cashbackResult.cashback)
-                viewModel.productDomain = viewModel.productDomain.copy(cashback = cashbackProduct)
-                onSuccessSetCashback()
-            } else {
-                onFailedSetCashback()
-            }
         }
     }
 

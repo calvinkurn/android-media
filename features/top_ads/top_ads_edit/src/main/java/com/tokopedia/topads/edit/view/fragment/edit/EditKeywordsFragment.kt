@@ -22,6 +22,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
@@ -171,7 +172,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            resources.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
+            context?.resources?.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
             container,
             false
         )
@@ -190,15 +191,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         minSuggestedBidPencerian = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_pencerian)
         minSuggestedBidRekomendasi = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_rekomendasi)
 
-        if(sharedViewModel.getIsWhiteListedUser()) {
-            biayaRekomendasi.visibility = View.VISIBLE
-            budgetInputRekomendasi.visibility = View.VISIBLE
-            biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
-        } else {
-            biayaRekomendasi.visibility = View.GONE
-            budgetInputRekomendasi.visibility = View.GONE
-            biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_create_bs_title2)
-        }
+        biayaRekomendasi.visibility = View.VISIBLE
+        budgetInputRekomendasi.visibility = View.VISIBLE
+        biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
 
         setAdapter()
         return view
@@ -422,7 +417,11 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun actionEnable(isEnable: Boolean) {
-        callBack.buttonDisable(!budgetInput.isTextFieldError && !budgetInputRekomendasi.isTextFieldError)
+        var isValid = !budgetInput.isTextFieldError
+        if (budgetInputRekomendasi.isVisible) {
+            isValid = isValid && (!budgetInputRekomendasi.isTextFieldError)
+        }
+        callBack.buttonDisable(isValid)
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean, forRekommendedBid: Boolean) {
@@ -637,7 +636,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun isExistsOriginal(position: Int): Boolean {
-        return (originalKeyList.find { (adapter.items[position] as EditKeywordItemViewModel).data.name == it } != null)
+        return (originalKeyList.find { (adapter.items.getOrNull(position) as? EditKeywordItemViewModel)?.data?.name == it } != null)
     }
 
     private fun isExistsOriginal(name: String): Boolean {
@@ -654,12 +653,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         info2.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
         info1.setOnClickListener {
             InfoBottomSheet(
-                InfoBottomSheet.TYPE_DASAR, sharedViewModel.getIsWhiteListedUser()
+                InfoBottomSheet.TYPE_DASAR
             ).show(childFragmentManager)
         }
         info2.setOnClickListener {
             InfoBottomSheet(
-                InfoBottomSheet.TYPE_KATA_KUNCI, sharedViewModel.getIsWhiteListedUser()
+                InfoBottomSheet.TYPE_KATA_KUNCI
             ).show(childFragmentManager)
         }
         addKeyword.setOnClickListener {
@@ -717,23 +716,39 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
     }
 
+
+    private fun updateBudgetInputTf(value: String, isBidManual: Boolean) {
+        if (isBidManual)
+            budgetInput.textFieldInput.setText(value)
+    }
+
+    private fun updateBudgetRekomendasiTf(value: String, isBidManual: Boolean) {
+        if (isBidManual)
+            budgetInputRekomendasi.textFieldInput.setText(value)
+    }
+
     private fun observeBidSettings() {
+        val isBidManual = !((parentFragment as? BaseEditKeywordFragment)?.isBidAutomatic ?: false)
         sharedViewModel.getBidSettings().observe(viewLifecycleOwner, { list ->
             list.forEach {
                 when {
                     it.bidType.equals(PRODUCT_SEARCH) -> {
-                        budgetInput.textFieldInput.setText(
-                            (it.priceBid?.toInt() ?: suggestBidPerClick).toString())
+                        updateBudgetInputTf(
+                            value = (it.priceBid?.toInt() ?: suggestBidPerClick).toString(),
+                            isBidManual = isBidManual
+                        )
                     }
                     it.bidType.equals(PRODUCT_BROWSE) -> {
-                        budgetInputRekomendasi.textFieldInput.setText(
-                            (it.priceBid?.toInt() ?: suggestBidPerClick).toString())
+                        updateBudgetRekomendasiTf(
+                            value = (it.priceBid?.toInt() ?: suggestBidPerClick).toString(),
+                            isBidManual = isBidManual
+                        )
                     }
                     it.bidType.equals(PRODUCT_AUTO_SEARCH) -> {
-                        budgetInput.textFieldInput.setText(suggestBidPerClick)
+                        updateBudgetInputTf(suggestBidPerClick, isBidManual)
                     }
                     it.bidType.equals(PRODUCT_AUTO_BROWSE) -> {
-                        budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
+                        updateBudgetRekomendasiTf(suggestBidPerClick, isBidManual)
                     }
                 }
             }
@@ -862,15 +877,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
         bidTypeData?.clear()
         bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, getCurrentBid().toFloat()))
-        if(sharedViewModel.getIsWhiteListedUser()) {
-            bidTypeData?.add(
-                TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentRekommendedBid().toFloat())
-            )
-        } else {
-            bidTypeData?.add(
-                TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentBid().toFloat())
-            )
-        }
+        bidTypeData?.add(
+            TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentRekommendedBid().toFloat())
+        )
         bundle.putParcelableArrayList(BID_TYPE, bidTypeData)
         bundle.putParcelableArrayList(POSITIVE_CREATE, addedKeywords)
         bundle.putParcelableArrayList(POSITIVE_DELETE, deletedKeywords)

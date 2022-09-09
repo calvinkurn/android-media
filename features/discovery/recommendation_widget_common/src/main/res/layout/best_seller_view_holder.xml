@@ -35,7 +35,8 @@
         app:layout_constraintEnd_toStartOf="@+id/best_seller_see_more"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_component_divider_header"
-        app:typographyType="heading_4" />
+        app:typographyType="display_1"
+        app:typographyWeight="bold"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/best_seller_subtitle"
@@ -65,9 +66,8 @@
         android:focusable="true"
         android:lineSpacingExtra="6sp"
         android:text="@string/best_seller_see_more"
-        android:textColor="@color/Unify_G500"
-        android:textSize="14sp"
-        android:textStyle="bold"
+        android:textColor="@color/Unify_GN500"
+        app:typographyWeight="bold"
         android:visibility="gone"
         tools:visibility="visible"
         app:layout_constraintTop_toTopOf="@id/best_seller_title"

@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -40,8 +41,8 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Screen.SCREEN_ACCO
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.VerificationPref
+import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
@@ -249,7 +250,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     mode = modeListData.modeText,
                     userIdEnc = otpData.userIdEnc,
                     validateToken = otpData.accessToken,
-                    userId = otpData.userId.toIntOrZero()
+                    userId = otpData.userId.toIntOrZero(),
+                    usePinV2 = isEnableValidateV2()
             )
         } else {
             viewModel.otpValidate(
@@ -396,7 +398,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     open fun redirectAfterValidationSuccessful(bundle: Bundle) {
         if ((activity as VerificationActivity).isResetPin2FA) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CHANGE_PIN).apply {
                 bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
                 bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
                 putExtras(bundle)

@@ -52,12 +52,14 @@ data class ProductInfoP2UiData(
     var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
     var imageReview: ReviewImage = ReviewImage(),
     var helpfulReviews: List<Review>? = null,
-    var miniCart: MutableMap<String, MiniCartItem>? = null,
+    var miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null,
     var alternateCopy: List<AlternateCopy> = listOf(),
     var bundleInfoMap: Map<String, BundleInfo> = emptyMap(),
     var rating: ProductRatingCount = ProductRatingCount(),
     var ticker: ProductTicker = ProductTicker(),
-    var navBar: NavBar = NavBar()
+    var navBar: NavBar = NavBar(),
+    var shopFinishRate: String = "",
+    var isToolbarTransparent: Boolean = false
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {
@@ -72,5 +74,9 @@ data class ProductInfoP2UiData(
         }?.sumBy {
             it.quantity
         } ?: 0
+    }
+
+    fun getRatesEstimateBoMetadata(productId: String): String {
+        return ratesEstimate.firstOrNull { productId in it.listfProductId }?.boMetadata ?: ""
     }
 }

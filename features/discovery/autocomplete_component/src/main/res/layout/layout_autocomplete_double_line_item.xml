@@ -83,7 +83,7 @@
         app:layout_goneMarginLeft="8dp"
         app:layout_goneMarginRight="8dp"
         app:layout_goneMarginStart="8dp"
-        app:typographyType="body_2"/>
+        app:typographyType="display_2"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/doubleLineSubtitle"
@@ -106,7 +106,7 @@
         app:layout_goneMarginLeft="8dp"
         app:layout_goneMarginRight="8dp"
         app:layout_goneMarginStart="8dp"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/doubleLineLabel"

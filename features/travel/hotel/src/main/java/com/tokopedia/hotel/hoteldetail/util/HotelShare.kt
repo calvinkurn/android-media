@@ -66,7 +66,7 @@ class HotelShare(val activity: WeakReference<Activity>) {
         val seoUrl = "${data.property.name.replace(" ", "-").trimEnd()}-${data.property.id}"
         return LinkerShareData().apply {
             linkerData = LinkerData().apply {
-                id = data.property.id.toString()
+                id = data.property.id
                 name = context.resources.getString(R.string.hotel_detail_share_link_title,
                         data.property.name, data.city.name)
                 description = context.resources.getString(R.string.hotel_detail_share_link_content,
@@ -75,7 +75,7 @@ class HotelShare(val activity: WeakReference<Activity>) {
                 ogUrl = null
                 imgUri = data.property.images.firstOrNull()?.urlMax300 ?: ""
                 custmMsg = if (isPromo) "promo" else ""
-                deepLink = context.resources.getString(R.string.hotel_detail_share_applink, data.property.id.toString())
+                deepLink = context.resources.getString(R.string.hotel_detail_share_applink, data.property.id)
                 uri = TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
                 desktopUrl = TkpdBaseURL.WEB_DOMAIN +context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
             }

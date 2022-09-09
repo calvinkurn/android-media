@@ -29,6 +29,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {}
     open fun trackPromoBannerClick(banner: DataItem, bannerPosition: Int) {}
     open fun trackCategoryNavigationImpression(componentsItems: ArrayList<ComponentsItem>) {}
+    open fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {}
     open fun trackPlayWidgetImpression(componentsItem : ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
     open fun trackPlayWidgetClick(componentsItem : ComponentsItem, userID: String?, channelId: String, destinationURL: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
     open fun trackPlayWidgetBannerClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int) {}
@@ -36,7 +37,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackPlayWidgetOverLayClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
     open fun trackPlayWidgetOverLayImpression(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
     open fun trackPlayWidgetReminderClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, isRemindMe: Boolean){}
-    open fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {}
     open fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {}
     open fun trackCategoryNavigationClick(categoryItem: DataItem?, position: Int) {}
     open fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {}
@@ -65,10 +65,11 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackQuickCouponApply(clickCouponData: ClickCouponData) {}
     open fun trackQuickCouponPhoneVerified() {}
     open fun trackQuickCouponPhoneVerifyCancel() {}
-    open fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean) {}
-    open fun trackTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int) {}
-    open fun trackCarouselBannerImpression(banners: List<DataItem>) {}
-    open fun trackCarouselBannerClick(banner: DataItem, bannerPosition: Int) {}
+    open fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean, campaignId: String = "", variantId: String = "", shopID: String = "") {}
+    open fun trackTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int,eventAction: String = "") {}
+    open fun trackUnifyTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int,eventAction: String = "") {}
+    open fun trackCarouselBannerImpression(banners: List<DataItem>,componentType: String) {}
+    open fun trackCarouselBannerClick(banner: DataItem, bannerPosition: Int,componentType: String) {}
     open fun trackBannerCarouselLihat() {}
     open fun trackEventImpressionTopAdsShop(componentDataItem: ComponentsItem, cpmData: CpmData) {}
     open fun trackClickTopAdsShop(componentDataItem: ComponentsItem, cpmData: CpmData) {}
@@ -147,8 +148,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun viewAnchorTabs(componentsItems: ComponentsItem) {}
     open fun trackShopCardImpression(componentsItems: ComponentsItem) {}
     open fun trackEventClickShopCard(componentsItems: ComponentsItem) {}
-    open fun trackPlayWidgetLabelClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, shopId: String, destinationURL: String, isAutoPlay: Boolean){}
-    open fun trackPlayWidgetLabelImpress(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, shopId: String, isAutoPlay: Boolean){}
     open fun trackMixLeftBannerImpression(componentsItems: ComponentsItem) {}
     open fun sendMixLeftBannerImpression(componentsItems: ComponentsItem){}
     open fun trackMixLeftBannerClick(componentsItems: ComponentsItem) {}

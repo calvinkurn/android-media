@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--  STICKY LOGIN  -->
     <declare-styleable name="StickyLoginView">
         <attr name="sticky_left_icon" format="reference" />
         <attr name="sticky_text" format="string|reference" />
         <attr name="sticky_text_highlight" format="string|reference" />
         <attr name="sticky_highlight_color" format="reference|color" />
     </declare-styleable>
-  
-  <declare-styleable name="EllipsizedTextView">
-    <attr name="highlight" format="string"/>
-    <attr name="highlight_color" format="reference|color"/>
-  </declare-styleable>
+    <declare-styleable name="EllipsizedTextView">
+        <attr name="highlight" format="string" />
+        <attr name="highlight_color" format="reference|color" />
+    </declare-styleable>
+
+    <!--  USER CONSENT  -->
+    <declare-styleable name="UserConsentWidget">
+        <attr name="actionText" format="string" />
+        <attr name="defaultTemplate" format="enum">
+            <enum name="NONE" value="-1"/>
+            <enum name="TNC_MANDATORY" value="0"/>
+            <enum name="TNC_PRIVACY_MANDATORY" value="1"/>
+            <enum name="TNC_OPTIONAL" value="2"/>
+            <enum name="TNC_PRIVACY_OPTIONAL" value="3"/>
+        </attr>
+    </declare-styleable>
 </resources>

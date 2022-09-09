@@ -14,6 +14,8 @@ import com.tokopedia.topads.common.data.internal.ParamObject.KEY_AD_TYPE
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.TopAdsDeletedAdsResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
+import com.tokopedia.topads.dashboard.data.utils.Utils.orDefaultEnd
+import com.tokopedia.topads.dashboard.data.utils.Utils.orDefaultStart
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.deletedgroup.DeletedGroupItemsListAdapter
 import com.tokopedia.topads.dashboard.view.adapter.deletedgroup.DeletedItemsAdapterTypeFactoryImpl
@@ -61,7 +63,7 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            resources.getLayout(R.layout.topads_dash_fragment_deleted_group_list),
+            context?.resources?.getLayout(R.layout.topads_dash_fragment_deleted_group_list),
             container,
             false
         )
@@ -99,8 +101,8 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
 
     private fun fetchNextPage(page: Int, adType: String) {
         val startDate =
-            Utils.format.format((parentFragment as TopAdsBaseTabFragment).startDate)
-        val endDate = Utils.format.format((parentFragment as TopAdsBaseTabFragment).endDate)
+            Utils.format.format((parentFragment as TopAdsBaseTabFragment).startDate.orDefaultStart())
+        val endDate = Utils.format.format((parentFragment as TopAdsBaseTabFragment).endDate.orDefaultEnd())
         topAdsDashboardPresenter.getDeletedAds(
             page, adType,
             startDate, endDate, ::onSuccessResult, ::onEmptyResult
@@ -125,8 +127,8 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
         adapter?.clearList()
         loader?.show()
         val startDate =
-            Utils.format.format((parentFragment as? TopAdsBaseTabFragment)?.startDate)
-        val endDate = Utils.format.format((parentFragment as? TopAdsBaseTabFragment)?.endDate)
+            Utils.format.format((parentFragment as? TopAdsBaseTabFragment)?.startDate.orDefaultStart())
+        val endDate = Utils.format.format((parentFragment as? TopAdsBaseTabFragment)?.endDate.orDefaultEnd())
         topAdsDashboardPresenter.getDeletedAds(
             currentPageNum, adType,
             startDate, endDate, ::onSuccessResult, ::onEmptyResult

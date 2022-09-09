@@ -20,10 +20,10 @@ data class CouponsItem(
         val description: String? = null,
 
         @SerializedName("id")
-        val id: Int? = null,
+        val id: String? = null,
 
         @SerializedName("promo_id")
-        val promoId: Int? = null,
+        val promoId: String? = null,
 
         @SerializedName("title")
         val title: String? = null

@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:contentDescription="@string/picker_cd_item_selection_placeholder_border"
-        android:src="@drawable/picker_rect_grey_thumbnail" />
+        android:src="@drawable/picker_rect_grey_thumbnail_debug" />
 
     <ImageView
         android:id="@+id/image_view_placeholder"
@@ -24,6 +24,6 @@
         android:layout_gravity="center"
         android:scaleType="centerInside"
         android:contentDescription="@string/picker_cd_item_selection_placeholder_image"
-        tools:src="@drawable/picker_ic_placeholder_media_preview" />
+        tools:src="@drawable/picker_ic_placeholder_media_preview_debug" />
 
 </FrameLayout>

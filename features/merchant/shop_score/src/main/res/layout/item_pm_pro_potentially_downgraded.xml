@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSsPmProPotentiallyDowngraded"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSsPmProPotentiallyDowngradedTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgSsPmProPotentiallyDowngraded"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Perbaiki parameter yang berwarna merah" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSsPmProPotentiallyDowngradedDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgSsPmProPotentiallyDowngraded"
+        app:layout_constraintTop_toBottomOf="@+id/tvSsPmProPotentiallyDowngradedTitle"
+        app:typographyType="display_3"
+        tools:text="Jika ada parameter performa berwarna merah, perbaiki hingga berwarna hitam atau hijau." />
+</androidx.constraintlayout.widget.ConstraintLayout>

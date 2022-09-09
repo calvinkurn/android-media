@@ -12,11 +12,11 @@ import com.tokopedia.usecase.coroutines.Success
  * @author by furqan on 16/10/2020
  */
 val DUMMY_FAILED_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
-        1,
+        "1",
         "0001-01-01T00:00:00Z",
         600,
         "Gagal",
-        1,
+        "1",
         "1234567890",
         "Muhammad Furqan",
         "email@email.com",
@@ -38,7 +38,7 @@ val DUMMY_FAILED_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         "dummy contact us URL",
         false,
         FlightOrderDetailPaymentModel(
-                1,
+                "1",
                 1,
                 "Paid",
                 "BCA Virtual Account",
@@ -66,7 +66,7 @@ val DUMMY_FAILED_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         ),
         arrayListOf(
                 FlightOrderDetailJourneyModel(
-                        1,
+                        "1",
                         1,
                         "123",
                         "0001-01-01T00:00:00Z",
@@ -137,7 +137,7 @@ val DUMMY_FAILED_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         arrayListOf(
                 FlightOrderDetailPassengerModel(
                         1,
-                        1,
+                        "1",
                         1,
                         "Dewasa",
                         1,
@@ -160,7 +160,7 @@ val DUMMY_FAILED_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
 )
 
 val DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE = FlightOrderDetailJourneyModel(
-        1,
+        "1",
         1,
         "123",
         "0001-01-01T00:00:00Z",
@@ -264,11 +264,11 @@ val DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE = FlightOrderDetailJourneyModel(
 )
 
 val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
-        1,
+        "1",
         "0001-01-01T00:00:00Z",
         700,
         "Berhasil",
-        1,
+        "1",
         "1234567890",
         "Muhammad Furqan",
         "email@email.com",
@@ -290,7 +290,7 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         "dummy contact us URL",
         false,
         FlightOrderDetailPaymentModel(
-                1,
+                "1",
                 1,
                 "Paid",
                 "BCA Virtual Account",
@@ -318,7 +318,7 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         ),
         arrayListOf(
                 FlightOrderDetailJourneyModel(
-                        1,
+                        "1",
                         1,
                         "CGK",
                         "0001-01-01T00:00:00Z",
@@ -389,7 +389,7 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         arrayListOf(
                 FlightOrderDetailPassengerModel(
                         1,
-                        1,
+                        "1",
                         0,
                         "Dewasa",
                         1,
@@ -431,7 +431,7 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
                 ),
                 FlightOrderDetailPassengerModel(
                         1,
-                        1,
+                        "1",
                         1,
                         "Anak",
                         1,
@@ -448,7 +448,7 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
                 ),
                 FlightOrderDetailPassengerModel(
                         1,
-                        1,
+                        "1",
                         2,
                         "Bayi",
                         1,
@@ -469,11 +469,11 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         arrayListOf(),
         arrayListOf(
                 FlightOrderDetailCancellationModel(
-                        cancelId = 1234567890,
+                        cancelId = "1234567890",
                         cancelDetails = arrayListOf(
                                 FlightOrderDetailCancellationModel.OrderDetailCancellationDetail(
-                                        journeyId = 1,
-                                        passengerId = 1,
+                                        journeyId = "1",
+                                        passengerId = "1",
                                         refundedGateway = "",
                                         refundedTime = ""
                                 )
@@ -499,11 +499,11 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
 )
 
 val DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE = FlightOrderDetailDataModel(
-        1,
+        "1",
         "0001-01-01T00:00:00Z",
         700,
         "Berhasil",
-        1,
+        "1",
         "1234567890",
         "Muhammad Furqan",
         "email@email.com",
@@ -525,7 +525,7 @@ val DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE = FlightOrderDetailDataModel(
         "dummy contact us URL",
         false,
         FlightOrderDetailPaymentModel(
-                1,
+                "1",
                 1,
                 "Paid",
                 "BCA Virtual Account",
@@ -555,7 +555,7 @@ val DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE = FlightOrderDetailDataModel(
         arrayListOf(
                 FlightOrderDetailPassengerModel(
                         1,
-                        1,
+                        "1",
                         1,
                         "Dewasa",
                         1,
@@ -578,7 +578,7 @@ val DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE = FlightOrderDetailDataModel(
 )
 
 val DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE = FlightOrderDetailJourneyModel(
-        1,
+        "1",
         1,
         "123",
         "2020-11-11T08:00:00Z",
@@ -707,13 +707,13 @@ val DUMMY_CANCELLATION_LIST_DATA = arrayListOf(
         FlightOrderCancellationListModel(
                 orderId = "1234567890",
                 cancellationDetail = FlightOrderCancellationDetailModel(
-                        refundId = 0,
+                        refundId = "0",
                         createTime = "",
                         realRefund = "",
                         status = 0,
                         passengers = arrayListOf(
                                 FlightOrderCancellationDetailPassengerModel(
-                                        id = 1,
+                                        id = "1",
                                         type = 1,
                                         typeString = "dewasa",
                                         title = 1,
@@ -722,13 +722,13 @@ val DUMMY_CANCELLATION_LIST_DATA = arrayListOf(
                                         lastName = "Furqan",
                                         departureAirportId = "BTJ",
                                         arrivalAirportId = "CGK",
-                                        journeyId = 1,
+                                        journeyId = "1",
                                         amenities = arrayListOf()
                                 )
                         ),
                         journeys = arrayListOf(
                                 FlightOrderDetailJourneyModel(
-                                        id = 1,
+                                        id = "1",
                                         status = 700,
                                         departureId = "BTJ",
                                         departureTime = "2020-11-11T10:10:10Z",

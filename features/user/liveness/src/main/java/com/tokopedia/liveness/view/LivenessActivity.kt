@@ -6,11 +6,13 @@ import ai.advance.enums.DeviceType
 import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.GuardianLivenessDetectionSDK as livenessSdk
 import android.Manifest
+import android.content.Context
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -35,13 +37,10 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        setContentView(R.layout.activity_revamp_liveness)
-        ScreenUtil.init(this)
-
         livenessSdk.initOffLine(application)
         livenessSdk.letSDKHandleCameraPermission()
         livenessSdk.setDeviceType(DeviceType.RealPhone)
-        livenessSdk.setActionSequence(false,
+        livenessSdk.setActionSequence(true,
             Detector.DetectionType.MOUTH,
             Detector.DetectionType.BLINK,
             Detector.DetectionType.POS_YAW
@@ -54,6 +53,9 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
                 putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId.toInt())
             }
         }
+
+        setContentView(com.tokopedia.liveness.R.layout.activity_revamp_liveness)
+        ScreenUtil.init(this)
 
         if (!allPermissionsGranted() && livenessSdk.isSDKHandleCameraPermission()) {
             requestPermissions()
@@ -71,6 +73,11 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
     override fun onResume() {
         super.onResume()
         loadFragment()
+    }
+    
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
     private fun loadFragment() {
@@ -100,7 +107,7 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
 
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.livenessParentView, fragment)
+            .replace(com.tokopedia.liveness.R.id.livenessParentView, fragment)
             .commitAllowingStateLoss()
     }
 

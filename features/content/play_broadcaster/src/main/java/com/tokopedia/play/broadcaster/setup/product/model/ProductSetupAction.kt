@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.product.model
 
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -22,4 +23,7 @@ sealed class ProductSetupAction {
     object RetryFetchProducts : ProductSetupAction()
 
     data class DeleteSelectedProduct(val product: ProductUiModel) : ProductSetupAction()
+
+    /** Pin Product*/
+    data class ClickPinProduct(val product: ProductUiModel) : ProductSetupAction()
 }

@@ -136,17 +136,8 @@ object CartUiModelMapper {
                 preOrderInfo = availableGroup.shipmentInformation.preorder.duration
                 incidentInfo = availableGroup.shop.shopAlertMessage
                 isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
-                freeShippingBadgeUrl = when {
-                    availableGroup.shipmentInformation.freeShippingExtra.eligible -> {
-                        availableGroup.shipmentInformation.freeShippingExtra.badgeUrl
-                    }
-                    availableGroup.shipmentInformation.freeShipping.eligible -> {
-                        availableGroup.shipmentInformation.freeShipping.badgeUrl
-                    }
-                    else -> {
-                        ""
-                    }
-                }
+                freeShippingBadgeUrl = availableGroup.shipmentInformation.freeShippingGeneral.badgeUrl
+                isFreeShippingPlus = availableGroup.shipmentInformation.freeShippingGeneral.isBoTypePlus()
                 maximumWeightWording = availableGroup.shop.maximumWeightWording
                 maximumShippingWeight = availableGroup.shop.maximumShippingWeight
                 if (availableGroup.checkboxState) {
@@ -279,17 +270,8 @@ object CartUiModelMapper {
                     preOrderInfo = unavailableGroup.shipmentInformation.preorder.duration
                     incidentInfo = unavailableGroup.shop.shopAlertMessage
                     isFreeShippingExtra = unavailableGroup.shipmentInformation.freeShippingExtra.eligible
-                    freeShippingBadgeUrl = when {
-                        unavailableGroup.shipmentInformation.freeShippingExtra.eligible -> {
-                            unavailableGroup.shipmentInformation.freeShippingExtra.badgeUrl
-                        }
-                        unavailableGroup.shipmentInformation.freeShipping.eligible -> {
-                            unavailableGroup.shipmentInformation.freeShipping.badgeUrl
-                        }
-                        else -> {
-                            ""
-                        }
-                    }
+                    freeShippingBadgeUrl = unavailableGroup.shipmentInformation.freeShippingGeneral.badgeUrl
+                    isFreeShippingPlus = unavailableGroup.shipmentInformation.freeShippingGeneral.isBoTypePlus()
                     maximumWeightWording = unavailableGroup.shop.maximumWeightWording
                     maximumShippingWeight = unavailableGroup.shop.maximumShippingWeight
                     shopTypeInfo = unavailableGroup.shop.shopTypeInfo
@@ -381,6 +363,9 @@ object CartUiModelMapper {
                 actionsData = cartData.availableSection.actions
                 isError = false
             }
+            needPrescription = product.ethicalDrug.needPrescription
+            butuhResepText = product.ethicalDrug.text
+            butuhResepIconUrl = product.ethicalDrug.iconUrl
             isSelected = product.isCheckboxState
             productName = product.productName
             productImage = product.productImage.imageSrc100Square
@@ -433,6 +418,7 @@ object CartUiModelMapper {
                 bundleOriginalPrice = cartDetail.bundleDetail.bundleOriginalPrice
                 editBundleApplink = cartDetail.bundleDetail.editBundleApplink
                 bundleIconUrl = cartDetail.bundleDetail.bundleIconUrl
+                bundleGrayscaleIconUrl = cartDetail.bundleDetail.bundleGrayscaleIconUrl
                 bundlingItemPosition = if (cartDetail.products.firstOrNull()?.productId == productId) {
                     CartItemHolderData.BUNDLING_ITEM_HEADER
                 } else if (cartDetail.products.lastOrNull()?.productId == productId) {
@@ -466,6 +452,7 @@ object CartUiModelMapper {
             promoDetails = promoAnalyticsData.second
             isFreeShippingExtra = product.freeShippingExtra.eligible
             isFreeShipping = product.freeShipping.eligible
+            freeShippingName = product.freeShippingGeneral.boName
             campaignId = product.campaignId
             warehouseId = product.warehouseId
         }

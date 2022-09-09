@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navi
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
@@ -23,7 +24,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.myco
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
@@ -34,9 +34,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quic
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModel
 import dagger.Subcomponent
 
 
@@ -51,7 +53,6 @@ interface UIWidgetComponent {
     fun inject(categoryNavigationViewModel: CategoryNavigationViewModel)
     fun inject(claimCouponViewModel: ClaimCouponViewModel)
     fun inject(claimCouponItemViewModel: ClaimCouponItemViewModel)
-    fun inject(productCardItemViewModel: ProductCardItemViewModel)
     fun inject(masterProductCardItemViewModel: MasterProductCardItemViewModel)
     fun inject(chipsFilterViewModel: ChipsFilterViewModel)
     fun inject(loadMoreViewModel: LoadMoreViewModel)
@@ -79,5 +80,8 @@ interface UIWidgetComponent {
     fun inject(myCouponItemViewModel: MyCouponItemViewModel)
     fun inject(viewModel: ProductCardSingleViewModel)
     fun inject(shopBannerInfiniteViewModel: ShopBannerInfiniteViewModel)
+    fun inject(viewModel: TopQuestViewModel)
+    fun inject(shopCardInfiniteViewModel: ShopCardInfiniteViewModel)
+    fun inject(explicitWidgetViewModel: ExplicitWidgetViewModel)
 
 }

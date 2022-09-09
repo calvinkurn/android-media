@@ -14,6 +14,7 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.coachmark.CoachMark2
@@ -150,14 +151,18 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderCollapsedCartItems(cartShopHolderData: CartShopHolderData) {
-        val maxIndex = min(COLLAPSED_PRODUCTS_LIMIT, cartShopHolderData.productUiModelList.size)
+        // remove item with the same bundleGroupId or productId value
+        val cartItemDataList = cartShopHolderData.productUiModelList.distinctBy {
+            if (it.isBundlingItem) it.bundleGroupId else it.productId
+        }
+        val maxIndex = min(COLLAPSED_PRODUCTS_LIMIT, cartItemDataList.size)
         val cartCartCollapsedProductAdapter = CartCollapsedProductAdapter(actionListener)
-        cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartShopHolderData.productUiModelList.subList(0, maxIndex)
+        cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartItemDataList.subList(0, maxIndex)
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         binding.rvCartItem.layoutManager = layoutManager
         binding.rvCartItem.adapter = cartCartCollapsedProductAdapter
 
-        setCollapsedRecyclerViewHeight(cartShopHolderData)
+        setCollapsedRecyclerViewHeight(cartItemDataList)
 
         val itemDecorationCount = binding.rvCartItem.itemDecorationCount
         if (itemDecorationCount > 0) {
@@ -168,9 +173,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         binding.rvCartItem.addItemDecoration(CartHorizontalItemDecoration(paddingLeft, paddingRight))
     }
 
-    private fun setCollapsedRecyclerViewHeight(cartShopHolderData: CartShopHolderData) {
+    private fun setCollapsedRecyclerViewHeight(cartItemDataList: List<CartItemHolderData>) {
         var hasProductWithVariant = false
-        val cartItemDataList = cartShopHolderData.productUiModelList
         if (cartItemDataList.isNotEmpty()) {
             val maxIndex = min(cartItemDataList.size, COLLAPSED_PRODUCTS_LIMIT)
             loop@ for (cartItemData in cartItemDataList.subList(0, maxIndex)) {
@@ -190,21 +194,13 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     private fun renderAccordion(cartShopHolderData: CartShopHolderData) {
         if (!cartShopHolderData.isError && cartShopHolderData.isCollapsible) {
-            val showMoreWording: String
+            val showMoreWording = itemView.context.getString(R.string.label_tokonow_show_more)
             val showLessWording = itemView.context.getString(R.string.label_tokonow_show_less)
-            val itemCount = cartShopHolderData.productUiModelList.size
-            showMoreWording = if (itemCount > COLLAPSED_PRODUCTS_LIMIT) {
-                val exceedItemCount = itemCount - COLLAPSED_PRODUCTS_LIMIT
-                itemView.context.getString(R.string.label_tokonow_show_other, exceedItemCount)
-            } else {
-                itemView.context.getString(R.string.label_tokonow_show_more)
-            }
-
             if (cartShopHolderData.isCollapsed) {
-                binding.imageChevron.rotation = 0f
+                binding.imageChevron.rotation = CHEVRON_ROTATION_0
                 binding.textAccordion.text = showMoreWording
             } else {
-                binding.imageChevron.rotation = ROTATION_180_DEGREE
+                binding.imageChevron.rotation = CHEVRON_ROTATION_180
                 binding.textAccordion.text = showLessWording
             }
 
@@ -349,14 +345,18 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 ImageHandler.loadImageWithoutPlaceholderAndError(
                         imgFreeShipping, cartShopHolderData.freeShippingBadgeUrl
                 )
-                val contentDescriptionStringResource = if (cartShopHolderData.isFreeShippingExtra) {
-                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+                val contentDescriptionStringResource = if (cartShopHolderData.isFreeShippingPlus) {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
                 } else {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
                 }
                 imgFreeShipping.contentDescription = itemView.context.getString(contentDescriptionStringResource)
                 imgFreeShipping.show()
                 separatorFreeShipping.show()
+                if (!cartShopHolderData.hasSeenFreeShippingBadge && cartShopHolderData.isFreeShippingPlus) {
+                    cartShopHolderData.hasSeenFreeShippingBadge = true
+                    actionListener.onViewFreeShippingPlusBadge()
+                }
             } else {
                 imgFreeShipping.gone()
                 separatorFreeShipping.gone()
@@ -520,7 +520,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         private const val SHOP_HEADER_PADDING_10 = 10
         private const val SCROLL_PADDING_OFFSET = 12
 
-        private const val ROTATION_180_DEGREE = 180f
+        private const val CHEVRON_ROTATION_0 = 0f
+        private const val CHEVRON_ROTATION_180 = 180f
     }
 
 }

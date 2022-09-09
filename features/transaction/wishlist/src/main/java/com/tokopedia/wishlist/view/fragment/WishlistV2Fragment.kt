@@ -40,6 +40,8 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -57,6 +59,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -70,8 +73,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
-import com.tokopedia.wishlist.data.model.WishlistV2Params
-import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
+import com.tokopedia.wishlist.data.model.WishlistV2UiModel
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
 import com.tokopedia.wishlist.di.DaggerWishlistV2Component
@@ -117,7 +121,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private lateinit var firebaseRemoteConfig : FirebaseRemoteConfigImpl
     private lateinit var trackingQueue: TrackingQueue
-    private var wishlistItemOnAtc = WishlistV2Response.Data.WishlistV2.Item()
+    private var wishlistItemOnAtc = WishlistV2UiModel.Item()
     private var indexOnAtc = 0
     private val listTitleCheckboxIdSelected = arrayListOf<String>()
     private var loaderDialog: LoaderDialog? = null
@@ -128,8 +132,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var countRemovableAutomaticDelete = 0
     private var hitCountDeletion = false
     private val handler = Handler(Looper.getMainLooper())
+    private var userAddressData: LocalCacheModel? = null
+    private var isOnProgressDeleteWishlist = false
     private val progressDeletionRunnable = Runnable {
-        getCountDeletionProgress()
+        getDeleteWishlistProgress()
     }
 
     private val wishlistViewModel by lazy {
@@ -260,7 +266,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         if (wishlistV2.showDeleteProgress) {
                             if (!hitCountDeletion) {
                                 hitCountDeletion = true
-                                getCountDeletionProgress()
+                                isOnProgressDeleteWishlist = true
+                                getDeleteWishlistProgress()
                             }
                             hideTotalLabel()
                             // showStickyDeletionProgress()
@@ -402,6 +409,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun getBaseAppComponent(): BaseAppComponent {
         return (activity?.application as BaseMainApplication).baseAppComponent
+    }
+
+    private fun fetchUserLatestAddressData() {
+        context?.let {
+            userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
     }
 
     private fun prepareLayout() {
@@ -588,10 +601,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun loadWishlistV2() {
+        fetchUserLatestAddressData()
+        userAddressData?.let { address ->
+            paramWishlistV2.wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
+                districtId = address.district_id,
+                cityId = address.city_id,
+                latitude = address.lat,
+                longitude = address.long,
+                postalCode = address.postal_code,
+                addressId = address.address_id)
+        }
         paramWishlistV2.page = currPage
         wishlistViewModel.loadWishlistV2(paramWishlistV2, wishlistPref?.getTypeLayout(),
-            paramWishlistV2.source == SOURCE_AUTOMATIC_DELETION
-        )
+            paramWishlistV2.source == SOURCE_AUTOMATIC_DELETION, false)
     }
 
     private fun triggerSearch() {
@@ -672,7 +694,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     }
                 }
                 is Fail -> {
-                    finishDeletionWidget(DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress())
+                    finishDeletionWidget(DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress())
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
 
@@ -690,8 +712,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
-    private fun getCountDeletionProgress() {
-        wishlistViewModel.getCountDeletionWishlistV2()
+    private fun getDeleteWishlistProgress() {
+        wishlistViewModel.getDeleteWishlistProgress()
     }
 
     override fun onPause() {
@@ -701,7 +723,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     override fun onResume() {
         super.onResume()
-        setRefreshing()
+        checkProgressDeletion()
+    }
+
+    private fun checkProgressDeletion() {
+        if (isOnProgressDeleteWishlist) {
+            getDeleteWishlistProgress()
+        }
     }
 
     private fun stopProgressDeletionHandler() {
@@ -710,13 +738,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun observingCountDeletion() {
         if (wishlistV2Adapter.getCountData() > 0) {
-            wishlistViewModel.countDeletionWishlistV2.observe(viewLifecycleOwner) { result ->
+            wishlistViewModel.deleteWishlistProgressResult.observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is Success -> {
                         if (result.data.status == OK) {
                             val data = result.data.data
                             if (data.success) {
-                                if (data.totalItems == data.successfullyRemovedItems || data.successfullyRemovedItems >= data.totalItems) {
+                                if (data.successfullyRemovedItems >= data.totalItems) {
                                     finishDeletionWidget(data)
                                 } else {
                                     updateDeletionWidget(data)
@@ -742,14 +770,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun stopDeletionAndShowToasterError(message: String) {
         showToaster(message, "", Toaster.TYPE_ERROR)
-        finishDeletionWidget(DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress())
+        finishDeletionWidget(DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress())
         doRefresh()
     }
 
-    private fun finishDeletionWidget(data: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
-        wishlistViewModel.countDeletionWishlistV2.removeObservers(this)
-        if (data.totalItems > 0) {
-            val finishData = DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress(
+    private fun finishDeletionWidget(data: DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+        isOnProgressDeleteWishlist = false
+        stopProgressDeletionHandler()
+        wishlistViewModel.deleteWishlistProgressResult.removeObservers(this)
+        if (data.totalItems > 0 && data.toasterMessage.isNotEmpty()) {
+            val finishData = DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress(
                 totalItems = data.totalItems,
                 successfullyRemovedItems = data.totalItems,
                 message = data.message,
@@ -760,12 +790,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             updateDeletionWidget(finishData)
             showToaster(data.toasterMessage, "", Toaster.TYPE_NORMAL)
         }
-        stopProgressDeletionHandler()
         hideStickyDeletionProgress()
         doRefresh()
     }
 
-    private fun updateDeletionWidget(progressData: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+    private fun updateDeletionWidget(progressData: DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress) {
         var message = getString(Rv2.string.wishlist_v2_default_message_deletion_progress)
         if (progressData.message.isNotEmpty()) message = progressData.message
 
@@ -773,6 +802,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         val indicatorProgressBar = percentage*100
 
         binding?.run {
+            wishlistV2StickyCountManageLabel.cardWishlistV2StickyDeletion.cardType = CardUnify2.TYPE_SHADOW
             wishlistV2StickyCountManageLabel.rlWishlistV2StickyProgressDeletionWidget.visible()
             wishlistV2StickyCountManageLabel.wishlistV2CountDeletionMessage.text = message
             wishlistV2StickyCountManageLabel.wishlistV2CountDeletionProgressbar.setValue(indicatorProgressBar.roundToInt(), true)
@@ -958,7 +988,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             override fun onRadioButtonSelected(name: String, optionId: String, label: String) {
                 filterBottomSheet.dismiss()
                 paramWishlistV2.sortFilters.removeAll { it.name == name }
-                paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                paramWishlistV2.sortFilters.add(
+                    WishlistV2Params.WishlistSortFilterParam(
                         name = filterItem.name, selected = arrayListOf(optionId)))
                 doRefresh()
                 hitAnalyticsFilterOptionSelected(name, label)
@@ -1002,7 +1033,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             override fun onSaveCheckboxSelection() {
                 if (listOptionIdSelected.isNotEmpty()) {
                     paramWishlistV2.sortFilters.removeAll { it.name == nameSelected }
-                    paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                    paramWishlistV2.sortFilters.add(
+                        WishlistV2Params.WishlistSortFilterParam(
                             name = nameSelected, selected = listOptionIdSelected as ArrayList<String>))
                 }
 
@@ -1047,7 +1079,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
-    private fun showBottomSheetThreeDotsMenu(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
+    private fun showBottomSheetThreeDotsMenu(itemWishlist: WishlistV2UiModel.Item) {
         val bottomSheetThreeDotsMenu = WishlistV2ThreeDotsMenuBottomSheet.newInstance()
         if (bottomSheetThreeDotsMenu.isAdded || childFragmentManager.isStateSaved) return
 
@@ -1056,8 +1088,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
         bottomSheetThreeDotsMenu.setAdapter(threeDotsMenuBottomSheetAdapter)
         bottomSheetThreeDotsMenu.setListener(object : WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener{
-            override fun onThreeDotsMenuItemSelected(wishlistItem: WishlistV2Response.Data.WishlistV2.Item,
-                                                     additionalItem: WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem) {
+            override fun onThreeDotsMenuItemSelected(wishlistItem: WishlistV2UiModel.Item,
+                                                     additionalItem: WishlistV2UiModel.Item.Buttons.AdditionalButtonsItem) {
                 bottomSheetThreeDotsMenu.dismiss()
                 if (additionalItem.url.isNotEmpty()) {
                     RouteManager.route(context, additionalItem.url)
@@ -1076,7 +1108,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         bottomSheetThreeDotsMenu.show(childFragmentManager)
     }
 
-    private fun showBottomSheetCleaner(cleanerBottomSheet: WishlistV2Response.Data.WishlistV2.StorageCleanerBottomSheet) {
+    private fun showBottomSheetCleaner(cleanerBottomSheet: WishlistV2UiModel.StorageCleanerBottomSheet) {
         val bottomSheetCleaner = WishlistV2CleanerBottomSheet.newInstance(cleanerBottomSheet.title, cleanerBottomSheet.description, cleanerBottomSheet.btnCleanBottomSheet.text)
         if (bottomSheetCleaner.isAdded || childFragmentManager.isStateSaved) return
 
@@ -1105,12 +1137,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 view?.let { Toaster.build(it, getString(Rv2.string.wishlist_v2_terlama_disimpan),
                     Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
             }
-
         })
         bottomSheetCleaner.show(childFragmentManager)
     }
 
-    private fun showShareBottomSheet(wishlistItem: WishlistV2Response.Data.WishlistV2.Item) {
+    private fun showShareBottomSheet(wishlistItem: WishlistV2UiModel.Item) {
         val shareListener = object : ShareBottomsheetListener {
 
             override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -1199,22 +1230,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         WishlistV2Analytics.clickCariDiTokopediaOnEmptyStateNoSearchResult()
     }
 
-    override fun onProductItemClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int) {
+    override fun onProductItemClicked(wishlistItem: WishlistV2UiModel.Item, position: Int) {
         WishlistV2Analytics.clickProductCard(wishlistItem, userSession.userId, position)
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
-            startActivity(intent)
+            if (wishlistItem.url.isNotEmpty()) {
+                RouteManager.route(it, wishlistItem.url)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
+                startActivity(intent)
+            }
         }
     }
 
-    override fun onProductRecommItemClicked(productId: String) {
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-            startActivity(intent)
-        }
-    }
-
-    override fun onViewProductCard(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int) {
+    override fun onViewProductCard(wishlistItem: WishlistV2UiModel.Item, position: Int) {
         userSession.userId?.let { userId ->
             WishlistV2Analytics.viewProductCard(trackingQueue, wishlistItem, userId, position.toString())
         }
@@ -1257,7 +1285,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int) {
-        WishlistV2Analytics.clickRecommendationItem(recommendationItem, position)
+        WishlistV2Analytics.clickRecommendationItem(recommendationItem, position, userSession.userId)
         if(recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitClickUrl(
                     this::class.java.simpleName,
@@ -1266,6 +1294,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     recommendationItem.name,
                     recommendationItem.imageUrl
             )
+        }
+        activity?.let {
+            if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.route(it, recommendationItem.appUrl)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    recommendationItem.productId.toString())
+                startActivity(intent)
+            }
         }
     }
 
@@ -1283,7 +1320,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onRecommendationCarouselItemClick(recommendationItem: RecommendationItem, position: Int) {
-        WishlistV2Analytics.clickCarouselRecommendationItem(recommendationItem, position)
+        WishlistV2Analytics.clickCarouselRecommendationItem(recommendationItem, position, userSession.userId)
         if(recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitClickUrl(
                     this::class.java.simpleName,
@@ -1294,12 +1331,17 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             )
         }
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommendationItem.productId.toString())
-            startActivity(intent)
+            if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.route(it, recommendationItem.appUrl)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    recommendationItem.productId.toString())
+                startActivity(intent)
+            }
         }
     }
 
-    override fun onTickerCTAShowBottomSheet(bottomSheetCleanerData: WishlistV2Response.Data.WishlistV2.StorageCleanerBottomSheet) {
+    override fun onTickerCTAShowBottomSheet(bottomSheetCleanerData: WishlistV2UiModel.StorageCleanerBottomSheet) {
         showBottomSheetCleaner(bottomSheetCleanerData)
     }
 
@@ -1307,7 +1349,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         val listOptionIdSelected = mutableListOf<String>()
         listOptionIdSelected.add(OPTION_ID_SORT_OLDEST)
             paramWishlistV2.sortFilters.clear()
-            paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+            paramWishlistV2.sortFilters.add(
+                WishlistV2Params.WishlistSortFilterParam(
                 name = FILTER_SORT, selected = listOptionIdSelected as ArrayList<String>))
 
         doRefresh()
@@ -1317,12 +1360,20 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         wishlistV2Adapter.hideTicker()
     }
 
-    override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
+    override fun goToWishlistAllToAddCollection() {
+        // wishlist collection only
+    }
+
+    override fun onChangeCollectionName() {
+        // wishlist collection only
+    }
+
+    override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item) {
         showBottomSheetThreeDotsMenu(itemWishlist)
         WishlistV2Analytics.clickThreeDotsOnProductCard()
     }
 
-    override fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean, position: Int) {
+    override fun onCheckBulkOption(productId: String, isChecked: Boolean, position: Int) {
         if (isChecked) {
             listBulkDelete.add(productId)
         } else {
@@ -1384,7 +1435,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
-    override fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int) {
+    override fun onAtc(wishlistItem: WishlistV2UiModel.Item, position: Int) {
         showLoadingDialog()
         val atcParam = AddToCartRequestParams(
                 productId = wishlistItem.id.toLong(),
@@ -1439,18 +1490,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun turnOnBulkDeleteMode() {
         isBulkDeleteShow = true
-        onManageClicked(showCheckbox = true)
+        onManageClicked(showCheckbox = true, false, false)
     }
 
     private fun turnOffBulkDeleteMode() {
         isBulkDeleteShow = false
-        onManageClicked(showCheckbox = false)
+        onManageClicked(showCheckbox = false, false, false)
         binding?.run {
             wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(Rv2.string.wishlist_manage_label)
         }
     }
 
-    override fun onManageClicked(showCheckbox: Boolean) {
+    override fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean, isBulkAdd: Boolean) {
         if (showCheckbox) {
             disableSwipeRefreshLayout()
             listBulkDelete.clear()

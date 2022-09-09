@@ -53,7 +53,16 @@ data class Product(
     val campaignTypeList: List<ProductCampaignType>?,
     @Expose
     @SerializedName("suspendLevel")
-    val suspendLevel: Int = 0
+    val suspendLevel: Int = 0,
+    @Expose
+    @SerializedName("hasStockAlert")
+    val hasStockAlert: Boolean = false,
+    @Expose
+    @SerializedName("stockAlertCount")
+    val stockAlertCount: Int = 0,
+    @Expose
+    @SerializedName("stockAlertActive")
+    val stockAlertActive: Boolean = false
 ) {
 
     fun isTopAds(): Boolean {

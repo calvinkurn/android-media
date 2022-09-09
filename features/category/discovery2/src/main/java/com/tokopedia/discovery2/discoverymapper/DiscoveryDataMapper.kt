@@ -28,7 +28,6 @@ import kotlin.math.roundToInt
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
-private const val TERJUAL_HABIS = "Terjual Habis"
 
 class DiscoveryDataMapper {
 
@@ -38,7 +37,7 @@ class DiscoveryDataMapper {
 
         fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "",
                                    parentComponentName: String?,
-                                   position: Int, design: String = "", compId : String = ""): ArrayList<ComponentsItem> {
+                                   position: Int, design: String = "", compId : String = "", properties: Properties? = null): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             itemList.forEachIndexed { index, it ->
                 val componentsItem = ComponentsItem()
@@ -48,6 +47,7 @@ class DiscoveryDataMapper {
                 componentsItem.id = id
                 componentsItem.design = design
                 componentsItem.parentComponentId = compId
+                componentsItem.properties = properties
                 it.parentComponentName = parentComponentName
                 it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
@@ -154,7 +154,8 @@ class DiscoveryDataMapper {
         creativeName: String? = "",
         parentComponentPosition: Int? = null,
         parentListSize:Int = 0,
-        parentSectionId:String? = ""
+        parentSectionId:String? = "",
+        parentComponentName: String? = null
     ): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
         itemList?.forEachIndexed { index, it ->
@@ -163,12 +164,48 @@ class DiscoveryDataMapper {
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             componentsItem.creativeName = creativeName
+            if(!parentComponentName.isNullOrEmpty()) {
+                componentsItem.parentComponentName = parentComponentName
+            }
             if(parentComponentPosition!=null){
                 componentsItem.parentComponentPosition = parentComponentPosition
             }
             val dataItem = mutableListOf<DataItem>()
             it.typeProductCard = subComponentName
             it.creativeName = creativeName
+            dataItem.add(it)
+            componentsItem.data = dataItem
+            if (parentSectionId?.isNotEmpty() == true)
+                componentsItem.parentSectionId = parentSectionId
+            list.add(componentsItem)
+        }
+        return list
+    }
+
+    fun mapListToBannerComponentList(
+            itemList: List<DataItem>?,
+            subComponentName: String = "",
+            properties: Properties?,
+            parentComponentPosition: Int? = null,
+            parentListSize:Int = 0,
+            parentSectionId:String? = "",
+            parentComponentName: String? = null
+    ): ArrayList<ComponentsItem> {
+        val list = ArrayList<ComponentsItem>()
+        itemList?.forEachIndexed { index, it ->
+            val componentsItem = ComponentsItem()
+            componentsItem.position = index + parentListSize
+            componentsItem.name = subComponentName
+            componentsItem.properties = properties
+            componentsItem.creativeName = it.creativeName
+            if(!parentComponentName.isNullOrEmpty()) {
+                componentsItem.parentComponentName = parentComponentName
+            }
+            if(parentComponentPosition!=null){
+                componentsItem.parentComponentPosition = parentComponentPosition
+            }
+            val dataItem = mutableListOf<DataItem>()
+            it.typeProductCard = subComponentName
             dataItem.add(it)
             componentsItem.data = dataItem
             if (parentSectionId?.isNotEmpty() == true)
@@ -237,7 +274,6 @@ class DiscoveryDataMapper {
         val productName: String
         val slashedPrice: String
         val formattedPrice: String
-        val isOutOfStock: Boolean
         val labelGroupList : ArrayList<ProductCardModel.LabelGroup> = ArrayList()
 
         if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName
@@ -247,14 +283,10 @@ class DiscoveryDataMapper {
             productName = dataItem.title ?: ""
             slashedPrice = setSlashPrice(dataItem.discountedPrice, dataItem.price)
             formattedPrice = setFormattedPrice(dataItem.discountedPrice, dataItem.price)
-            isOutOfStock = outOfStockLabelStatus(dataItem.stockSoldPercentage?.roundToIntOrZero().toString(), SALE_PRODUCT_STOCK)
-            if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         } else {
             productName = dataItem.name ?: ""
             slashedPrice = setSlashPrice(dataItem.price, dataItem.discountedPrice)
             formattedPrice = setFormattedPrice(dataItem.price, dataItem.discountedPrice)
-            isOutOfStock = outOfStockLabelStatus(dataItem.stock, PRODUCT_STOCK)
-            if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         }
         return ProductCardModel(
                 productImageUrl = dataItem.imageUrlMobile ?: "",
@@ -284,13 +316,15 @@ class DiscoveryDataMapper {
                 stockBarPercentage = setStockProgress(dataItem),
                 stockBarLabel = dataItem.stockWording?.title ?: "",
                 stockBarLabelColor = dataItem.stockWording?.color ?: "",
-                isOutOfStock = isOutOfStock,
+                isOutOfStock = (dataItem.isActiveProductCard == false),
                 hasNotifyMeButton = if(dataItem.stockWording?.title?.isNotEmpty() == true)false else dataItem.hasNotifyMe,
                 hasThreeDots = dataItem.hasThreeDots,
                 hasButtonThreeDotsWishlist = dataItem.hasThreeDotsWishlist,
                 hasAddToCartWishlist = dataItem.hasATCWishlist,
+                hasSimilarProductWishlist = dataItem.hasSimilarProductWishlist == true,
                 variant = variantProductCard(dataItem),
-                nonVariant = nonVariantProductCard(dataItem)
+                nonVariant = nonVariantProductCard(dataItem),
+                cardInteraction = true
         )
     }
 
@@ -355,17 +389,6 @@ class DiscoveryDataMapper {
             }
         }
         return stockSoldPercentage?.roundToIntOrZero() ?: 0
-    }
-
-    private fun outOfStockLabelStatus(productStock: String?, saleStockValidation: Int = 0): Boolean {
-        return when (saleStockValidation) {
-            productStock?.toIntOrNull() -> {
-                true
-            }
-            else -> {
-                false
-            }
-        }
     }
 
     private fun getShopBadgeList(showBadges: List<Badges?>?): List<ProductCardModel.ShopBadge> {

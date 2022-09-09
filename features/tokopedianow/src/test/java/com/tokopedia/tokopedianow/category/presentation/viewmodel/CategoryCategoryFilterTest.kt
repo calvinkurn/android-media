@@ -26,7 +26,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
         val selectedFilterOption =
                 OptionHelper.copyOptionAsExclude(categoryModel.categoryFilter.filter[0].options[1])
 
-        `Given category view model`(defaultCategoryL1, selectedFilterOption.value, mapOf())
+        `Given category view model`(defaultCategoryL1, selectedFilterOption.value, defaultExternalServiceType, mapOf())
         `Given get category first page use case will be successful`(categoryModel)
 
         `When view created`()
@@ -60,7 +60,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
         val queryParamWithFilter = defaultQueryParamMap + filterParam
 
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
-        `Given category view model`(defaultCategoryL1, defaultCategoryL2, queryParamWithFilter)
+        `Given category view model`(defaultCategoryL1, defaultCategoryL2, defaultExternalServiceType, queryParamWithFilter)
         `Given view already created`()
 
         val categoryFilterVisitable = tokoNowCategoryViewModel.visitableListLiveData.value.getCategoryFilterDataView()
@@ -135,7 +135,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
                 previouslySelectedFilterOption.key to previouslySelectedFilterOption.value,
         ) + filterParam
 
-        `Given category view model`(defaultCategoryL1, defaultCategoryL2, queryParamWithFilter)
+        `Given category view model`(defaultCategoryL1, defaultCategoryL2, defaultExternalServiceType, queryParamWithFilter)
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
         `Given view already created`()
 

@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 class PromoCheckoutLastSeenModel(
         @SerializedName("id")
         @Expose
-        val id: Int,
+        val id: String,
         @SerializedName("title")
         @Expose
         val title: String,

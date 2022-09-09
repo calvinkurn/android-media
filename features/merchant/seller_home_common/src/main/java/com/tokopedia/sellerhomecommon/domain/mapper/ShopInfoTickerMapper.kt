@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils
 import com.tokopedia.sellerhomecommon.domain.model.GetShopInfoTickerResponse
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -18,6 +19,7 @@ class ShopInfoTickerMapper @Inject constructor() :
     companion object {
         private const val TYPE_WARNING = "warning"
         private const val TYPE_DANGER = "danger"
+        private const val SHOP_STATUS_INCUBATED = 6
     }
 
     override fun mapRemoteDataToUiData(
@@ -26,11 +28,12 @@ class ShopInfoTickerMapper @Inject constructor() :
     ): List<TickerItemUiModel> {
         return response.shopInfo.result.filter {
             it.statusInfo.title.isNotBlank() && it.statusInfo.message.isNotBlank()
+                    && it.statusInfo.shopStatus == SHOP_STATUS_INCUBATED
         }.map {
             val ticker = it.statusInfo
             return@map TickerItemUiModel(
                 id = String.EMPTY,
-                title = ticker.title,
+                title = ticker.title.parseAsHtml().toString(),
                 message = ticker.message,
                 redirectUrl = SellerHomeCommonUtils.extractUrls(ticker.message)
                     .getOrNull(Int.ZERO)

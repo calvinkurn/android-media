@@ -15,6 +15,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -43,20 +44,35 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     val cardIsNotBrizzi = SingleLiveEvent<Boolean>()
     val errorCardMessage = SingleLiveEvent<Throwable>()
     val errorCommonBrizzi = SingleLiveEvent<Throwable>()
+    val mapLoggerDebugData = HashMap<String, String>()
 
     fun processBrizziTagIntent(intent: Intent, brizziInstance: Brizzi,
-                               rawTokenQuery: String, rawLogBrizzi: String, refreshToken: Boolean) {
+                               rawTokenQuery: String, rawLogBrizzi: String, refreshToken: Boolean,
+                               startTimeBeforeTokenCallGql: Long,
+                               timeCheckDuration: String) {
 
         //token on server will refresh automatically per 30 minutes
         launchCatchError(block = {
-            var mapParam = HashMap<String, Any>()
+            mapLoggerDebugData.put(EMONEY_TIME_CHECK_LOGIC_TAG, timeCheckDuration)
+
+            val mapParam = HashMap<String, Any>()
             mapParam[REFRESH_TOKEN] = refreshToken
 
+            val endTimeBeforeCallTokenGql = System.currentTimeMillis()
+            mapLoggerDebugData.put(EMONEY_BRI_BEFORE_CALL_TOKEN_TAG, getTimeDifferences(startTimeBeforeTokenCallGql, endTimeBeforeCallTokenGql))
+            logDebugEmoney(hashMapOf(EMONEY_BRI_BEFORE_CALL_TOKEN_TAG to getTimeDifferences(startTimeBeforeTokenCallGql, endTimeBeforeCallTokenGql)))
+
+            val startTimeTokenCall = System.currentTimeMillis()
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawTokenQuery, BrizziTokenResponse::class.java, mapParam)
                 graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<BrizziTokenResponse>()
 
+            val endTimeTokenCall = System.currentTimeMillis()
+            mapLoggerDebugData.put(EMONEY_BRI_TIME_TOKEN_TAG, getTimeDifferences(startTimeTokenCall, endTimeTokenCall))
+            logDebugEmoney(hashMapOf(EMONEY_BRI_TIME_TOKEN_TAG to getTimeDifferences(startTimeTokenCall, endTimeTokenCall)))
+
+            val startTimeBeforeCallGql = System.currentTimeMillis()
             if (data.tokenResponse.token != token) {
                 token = data.tokenResponse.token
             }
@@ -65,6 +81,11 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
                 brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
             }
+            val endTimeBeforeCallGql = System.currentTimeMillis()
+            mapLoggerDebugData.put(EMONEY_BRI_BEFORE_CALL_TAG, getTimeDifferences(startTimeBeforeCallGql, endTimeBeforeCallGql))
+            logDebugEmoney(hashMapOf(EMONEY_BRI_BEFORE_CALL_TAG to getTimeDifferences(startTimeBeforeCallGql, endTimeBeforeCallGql)))
+
+            val startTimeCallGql = System.currentTimeMillis()
             brizziInstance.getBalanceInquiry(intent, object : Callback {
                 override fun OnFailure(brizziException: BrizziException?) {
                     brizziException?.let {
@@ -78,8 +99,13 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                     balanceInquiry.attributesEmoneyInquiry?.let {
                         logBrizzi(0, it.cardNumber, rawLogBrizzi, "success", it.lastBalance.toDouble())
 
+                        val endTimeCallGql = System.currentTimeMillis()
+                        mapLoggerDebugData.put(EMONEY_BRI_TIME_CALL_TAG, getTimeDifferences(startTimeCallGql, endTimeCallGql))
+                        logDebugEmoney(hashMapOf(EMONEY_BRI_TIME_CALL_TAG to getTimeDifferences(startTimeCallGql, endTimeCallGql)))
+
                         balanceInquiry.attributesEmoneyInquiry?.let { attributes ->
                             if (attributes.pendingBalance == 0) {
+                                logDebugAllEmoney()
                                 emoneyInquiry.postValue(balanceInquiry)
                             } else {
                                 writeBalanceToCard(intent, rawLogBrizzi, brizziInstance)
@@ -112,7 +138,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<BrizziInquiryLogResponse>()
 
             data.brizziInquiryLog?.let {
-                inquiryIdBrizzi = it.inquiryId
+                inquiryIdBrizzi = it.inquiryId.toIntOrZero()
             }
         }) {
             inquiryIdBrizzi = -1
@@ -137,6 +163,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     private fun writeBalanceToCard(intent: Intent, logRawQuery: String, brizziInstance: Brizzi) {
+        val startWriteCard = System.currentTimeMillis()
         brizziInstance.doUpdateBalance(intent, System.currentTimeMillis().toString(), object : Callback {
             override fun OnFailure(brizziException: BrizziException?) {
                 brizziException?.let {
@@ -152,9 +179,30 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         logBrizzi(inquiryIdBrizzi, it.cardNumber, logRawQuery, "success", it.lastBalance.toDouble())
                     }
                 }
+                val endWriteCard = System.currentTimeMillis()
+                mapLoggerDebugData.put(EMONEY_BRI_TIME_WRITE_TAG, getTimeDifferences(startWriteCard, endWriteCard))
+                logDebugEmoney(hashMapOf(EMONEY_BRI_TIME_WRITE_TAG to getTimeDifferences(startWriteCard, endWriteCard)))
+                logDebugAllEmoney()
+
                 emoneyInquiry.postValue(balanceInquiry)
             }
         })
+    }
+
+    private fun logDebugEmoney(map: HashMap<String, String>) {
+        sendLogDebugEmoney(map)
+    }
+
+    private fun logDebugAllEmoney() {
+        sendLogDebugEmoney(mapLoggerDebugData)
+    }
+
+    private fun sendLogDebugEmoney(map: HashMap<String, String>) {
+        ServerLogger.log(Priority.P2, EMONEY_DEBUG_TAG, map)
+    }
+
+    private fun getTimeDifferences(startTime: Long, endTime: Long): String {
+        return "${endTime - startTime} ms"
     }
 
     companion object {
@@ -174,5 +222,14 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
         const val BRIZZI_SUCCESS_UPDATE_BALANCE = "Oke, saldo kamu berhasil di-update!"
         const val BRIZZI_SUCCESS_LAST_BALANCE = "Ini saldo kamu yang paling baru, ya."
+
+        private const val EMONEY_DEBUG_TAG = "EMONEY_DEBUG"
+        private const val EMONEY_TIME_CHECK_LOGIC_TAG = "EMONEY_TIME_CHECK_LOGIC"
+        private const val EMONEY_BRI_TIME_WRITE_TAG = "EMONEY_BRI_TIME_WRITE"
+        private const val EMONEY_BRI_TIME_TOKEN_TAG = "EMONEY_BRI_TIME_TOKEN_CALL"
+        private const val EMONEY_BRI_TIME_CALL_TAG = "EMONEY_BRI_TIME_CALL"
+        private const val EMONEY_BRI_BEFORE_CALL_TOKEN_TAG = "EMONEY_BRI_TIME_BEFORE_TOKEN_CALL"
+        private const val EMONEY_BRI_BEFORE_CALL_TAG = "EMONEY_BRI_TIME_BEFORE_CALL"
+
     }
 }

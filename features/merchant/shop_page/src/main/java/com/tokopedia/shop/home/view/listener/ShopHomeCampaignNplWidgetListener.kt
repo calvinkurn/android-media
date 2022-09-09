@@ -24,7 +24,7 @@ interface ShopHomeCampaignNplWidgetListener {
 
     fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel)
 
-    fun onClickCampaignBannerAreaNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel)
+    fun onClickCampaignBannerAreaNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel, widgetPosition: Int)
 
     fun onImpressionCampaignNplWidget(
             position: Int,

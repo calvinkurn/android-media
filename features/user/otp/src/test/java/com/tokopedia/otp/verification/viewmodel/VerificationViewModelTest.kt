@@ -233,7 +233,7 @@ class VerificationViewModelTest {
         viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
         coEvery { getVerificationMethodInactivePhoneUseCase(any()) } returns successGetVerificationMethodResponse
 
-        viewmodel.getVerificationMethodInactive("", "", "")
+        viewmodel.getVerificationMethodInactive("", "", "", "", "", "")
 
         verify { getVerificationMethodResultObserver.onChanged(any<Success<OtpModeListData>>()) }
         assert(viewmodel.getVerificationMethodResult.value is Success)
@@ -537,7 +537,46 @@ class VerificationViewModelTest {
     }
 
     @Test
-    fun `Success validate otp method 2fa with hashing`() {
+    fun `Success validate otp method 2fa with hashing - not empty hashing`() {
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidateUseCase2FA.getData(any()) } returns successOtpValidationResponse
+
+        mockkObject(RsaUtils)
+        val hash = "asd"
+        val encrypted = "abd123123"
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns encrypted
+        coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
+
+        val otpType = "123"
+        val validateToken = "abc123"
+        val userIdEnc = "advasd"
+        val mode = "PIN"
+        val code = "1"
+        val msisdn = "08123123"
+        val uid = 0
+
+        viewmodel.otpValidate2FA(otpType, validateToken, userIdEnc, mode, code, msisdn = msisdn, userId = uid, usePinV2 = true)
+
+        var params = otpValidateUseCase2FA.getParams(
+            otpType = otpType,
+            validateToken = validateToken,
+            userIdEnc = userIdEnc,
+            mode = mode,
+            code = code,
+            msisdn = msisdn
+        )
+
+        verify {
+            viewmodel.combineWithV2param(params, encrypted, true, hash)
+            otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>())
+        }
+        val result = viewmodel.otpValidateResult.value as Success<OtpValidateData>
+        assert(result.data == successOtpValidationResponse.data)
+    }
+
+    @Test
+    fun `Success validate otp method 2fa with hashing - empty hashing`() {
         viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
         coEvery { otpValidateUseCase2FA.getData(any()) } returns successOtpValidationResponse
 

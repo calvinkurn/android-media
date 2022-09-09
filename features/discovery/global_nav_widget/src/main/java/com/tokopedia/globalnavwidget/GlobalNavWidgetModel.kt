@@ -8,7 +8,11 @@ data class GlobalNavWidgetModel(
         val background: String = "",
         val clickSeeAllApplink: String = "",
         val clickSeeAllUrl: String = "",
-        val itemList: List<Item> = listOf()
+        val itemList: List<Item> = listOf(),
+        val info: String = "",
+        val componentId: String = "",
+        val trackingOption: String = "0",
+        val dimension90: String = "",
 ) {
 
     data class Item(
@@ -22,6 +26,10 @@ data class GlobalNavWidgetModel(
             val strikethrough: String = "",
             val backgroundUrl: String = "",
             val logoUrl: String = "",
-            val position: Int = 0
+            val position: Int = 0,
+            val componentId: String = "",
+            val trackingOption: String = "0",
+            val keyword: String = "",
+            val dimension90: String = "",
     )
 }

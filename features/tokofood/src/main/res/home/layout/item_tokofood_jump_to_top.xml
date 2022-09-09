@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:background="@drawable/ic_jump_to_top"
+    >
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        app:icon_name="CHEVRON_UP"
+        android:layout_gravity="center_vertical"
+        app:icon_color_light_enable="@color/food_home_dms_jump_to_top_icon_color"
+        />
+
+</LinearLayout>

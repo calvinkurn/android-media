@@ -20,8 +20,8 @@ class GetProductSuggestionUseCase @Inject constructor(
             ProductSuggestionItem.TYPE_AFFILIATE -> {
                 getAffiliateProductSuggestionUseCase.executeOnBackground().map {
                     ProductSuggestionItem(
-                            it.productId.toString(),
-                            it.adId.toString(),
+                            it.productId,
+                            it.adId,
                             it.title,
                             it.commissionValueDisplay,
                             it.image,

@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.addbod.data
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -10,6 +9,5 @@ import com.google.gson.annotations.SerializedName
 
 data class UserProfileCompletionUpdateBodData(
     @SerializedName("userProfileCompletionUpdate")
-    @Expose
     var addBodData: AddBodData = AddBodData()
 )

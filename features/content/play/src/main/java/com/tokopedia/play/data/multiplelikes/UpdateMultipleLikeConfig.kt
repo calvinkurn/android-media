@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class UpdateMultipleLikeConfig(
     @SerializedName("channel_id")
-    val channelId: Long = 0L,
+    val channelId: String = "",
 
     @SerializedName("configuration")
     val configuration: List<MultipleLikeConfig> = emptyList(),

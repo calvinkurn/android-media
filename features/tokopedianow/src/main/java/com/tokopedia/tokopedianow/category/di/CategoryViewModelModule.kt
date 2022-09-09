@@ -25,6 +25,7 @@ abstract class CategoryViewModelModule {
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
+    @CategoryScope
     @Binds
     @IntoMap
     @ViewModelKey(TokoNowCategoryViewModel::class)

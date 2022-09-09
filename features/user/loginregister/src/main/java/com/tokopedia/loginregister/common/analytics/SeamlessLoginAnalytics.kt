@@ -2,13 +2,14 @@ package com.tokopedia.loginregister.common.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import javax.inject.Inject
 
 /**
  * Created by Yoris Prayogo on 27/04/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class SeamlessLoginAnalytics {
+class SeamlessLoginAnalytics @Inject constructor() {
 
     fun trackScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)

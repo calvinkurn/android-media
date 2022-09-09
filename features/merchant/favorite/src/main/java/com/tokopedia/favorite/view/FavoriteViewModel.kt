@@ -9,18 +9,18 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler.PagingHandlerModel
-import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCaseWithCoroutine
-import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUseCaseWithCoroutine
-import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUsecase
-import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUseCaseWithCoroutine
+import com.tokopedia.favorite.domain.interactor.*
 import com.tokopedia.favorite.domain.model.DataFavorite
 import com.tokopedia.favorite.domain.model.FavoriteShop
 import com.tokopedia.favorite.domain.model.TopAdsShop
 import com.tokopedia.favorite.view.viewmodel.DataFavoriteMapper
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -32,7 +32,10 @@ class FavoriteViewModel
         private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private val getAllDataFavoriteUseCase: GetAllDataFavoriteUseCaseWithCoroutine,
         private val getFavoriteShopUseCaseWithCoroutine: GetFavoriteShopUseCaseWithCoroutine,
-        private val pagingHandler: PagingHandler
+        private val getTopAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine,
+        private val userSession: UserSessionInterface,
+        private val pagingHandler: PagingHandler,
+        private val topAdsAddressHelper: TopAdsAddressHelper
 ): BaseViewModel(dispatcherProvider.main) {
 
     /**
@@ -97,6 +100,13 @@ class FavoriteViewModel
     val isErrorAddFavoriteShop: LiveData<Boolean>
         get() = _isErrorAddFavoriteShop
 
+    val topAdsData: LiveData<TopAdsShopUiModel>
+        get() = _topAdsData
+
+    private val _topAdsData  by lazy {
+        MutableLiveData<TopAdsShopUiModel>()
+    }
+
     //==============================
 
     /**
@@ -151,28 +161,41 @@ class FavoriteViewModel
         })
     }
 
-    fun addFavoriteShop(view: View, shopItem: TopAdsShopItem) {
-        val params = ToggleFavouriteShopUseCase.createRequestParam(shopItem.shopId);
+    fun addFavoriteShop(view: View?, shopItem: TopAdsShopItem?) {
+        val params = ToggleFavouriteShopUseCase.createRequestParam(shopItem?.shopId)
         launchCatchError(block = {
             val isValid = withContext(dispatcherProvider.io) {
                 toggleFavouriteShopUseCase.createObservable(params).toBlocking().single()
             }
-            view.clearAnimation()
-            if (isValid != null && isValid) {
+
+            view?.clearAnimation()
+            if (isValid == true) {
                 val favoriteShopUiModel = FavoriteShopUiModel()
-                favoriteShopUiModel.shopId = shopItem.shopId
-                favoriteShopUiModel.shopName = shopItem.shopName
-                favoriteShopUiModel.shopAvatarImageUrl = shopItem.shopImageUrl
-                favoriteShopUiModel.shopLocation = shopItem.shopLocation
-                favoriteShopUiModel.isFavoriteShop = shopItem.isFav
+                favoriteShopUiModel.shopId = shopItem?.shopId
+                favoriteShopUiModel.shopName = shopItem?.shopName
+                favoriteShopUiModel.shopAvatarImageUrl = shopItem?.shopImageUrl
+                favoriteShopUiModel.shopLocation = shopItem?.shopLocation
+                favoriteShopUiModel.isFavoriteShop = shopItem?.isFav ?: false
                 _addedFavoriteShop.value = favoriteShopUiModel
-                _favoriteShopImpression.value = shopItem.shopClickUrl
+                view?.let { _favoriteShopImpression.value = shopItem?.shopClickUrl }
+                if (view == null) {
+                    replaceTopAds(getTopAdsShop())
+                }
             }
+
         }, onError = { e ->
             Timber.e("onError: %s", e.toString())
             _isErrorAddFavoriteShop.value = true
-            view.clearAnimation()
+            view?.clearAnimation()
         })
+    }
+
+    private suspend fun getTopAdsShop(): TopAdsShop {
+        val requestParams = GetTopAdsShopUseCase.defaultParams(topAdsAddressHelper.getAddressData())
+        requestParams.putString(GetTopAdsShopUseCase.KEY_USER_ID, userSession.userId)
+        getTopAdsShopUseCase.requestParams = requestParams
+
+        return getTopAdsShopUseCase.executeOnBackground()
     }
 
     fun loadMoreFavoriteShop() {
@@ -213,7 +236,7 @@ class FavoriteViewModel
             }
             val elements = ArrayList<Visitable<*>>(emptyList())
             addTopAdsShop(dataFavorite, elements)
-            addFavoriteShop(dataFavorite, elements)
+            addFavoriteShopToList(dataFavorite, elements)
 
             _refreshData.value = elements
             _refresh.value = false
@@ -228,7 +251,7 @@ class FavoriteViewModel
     private fun getDataFavoriteUiModel(dataFavorite: DataFavorite): List<Visitable<*>> {
         val visitables = ArrayList<Visitable<*>>()
         addTopAdsShop(dataFavorite, visitables)
-        addFavoriteShop(dataFavorite, visitables)
+        addFavoriteShopToList(dataFavorite, visitables)
         return visitables
     }
 
@@ -248,12 +271,22 @@ class FavoriteViewModel
         }
     }
 
+
+    private fun replaceTopAds(topAdsShop: TopAdsShop) {
+        validateNetworkTopAdsShop(topAdsShop)
+        val topAdsShopItemList = topAdsShop.topAdsShopItemList
+        if (!topAdsShopItemList.isNullOrEmpty()) {
+            _topAdsData.value =  DataFavoriteMapper.prepareDataTopAdsShop(topAdsShop)
+        }
+    }
+
+
     private fun combineLatestNetworkFailedData(): Boolean {
         return (_isTopAdsShopNetworkFailed.value ?: false) ||
                 (_isFavoriteShopNetworkFailed.value ?: false)
     }
 
-    private fun addFavoriteShop(
+    private fun addFavoriteShopToList(
             dataFavorite: DataFavorite?, dataFavoriteItemList: MutableList<Visitable<*>>
     ) {
         val favoriteShop: FavoriteShop? = dataFavorite?.favoriteShop

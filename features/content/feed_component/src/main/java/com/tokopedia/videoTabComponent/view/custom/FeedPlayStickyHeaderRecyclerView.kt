@@ -26,8 +26,8 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
 
     constructor(context: Context?, attrSet: AttributeSet, defStyleAttr: Int) : super(context, attrSet, defStyleAttr)
 
+    val recyclerView: RecyclerView
     private val headerRecyclerView: FrameLayout
-    private val recyclerView: RecyclerView
     private var headerItemDecoration: FeedHeaderItemDecoration? = null
     private val scope = CoroutineScope(Dispatchers.Main)
     private var shouldShowStickyHeader = false
@@ -124,6 +124,11 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     fun addOnScrollListener(listener: RecyclerView.OnScrollListener) {
         recyclerView.addOnScrollListener(listener)
     }
+
+    fun removeOnScrollListener(listener: RecyclerView.OnScrollListener) {
+        recyclerView.removeOnScrollListener(listener)
+    }
+
     fun removeHeaderRecyclerView() {
         isStickyHeaderEnabled = false
         shouldShowStickyHeader = false

@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.data.pojo.productsuggestion.shop
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -17,6 +18,7 @@ data class ShopProductItem(
         @Expose
         val name: String = "",
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: String = "",

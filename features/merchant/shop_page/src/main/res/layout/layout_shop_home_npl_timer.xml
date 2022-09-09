@@ -18,26 +18,16 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="4dp"
-        android:textColor="@color/Unify_Background"
+        android:textColor="@color/clr_dms_icon_white"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Dirilis dalam " />
 
-    <com.tokopedia.unifycomponents.TimerUnify
-        android:id="@+id/timer"
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/npl_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_rounded_rect_white_shop_home_npl_timer"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:visibility="gone"
-        app:unify_timer_background_color="@color/Unify_Background"
-        app:unify_timer_colon_color="@color/Unify_R500"
-        app:unify_timer_custom_box_height="16"
-        app:unify_timer_custom_box_width="14"
-        app:unify_timer_text_color="@color/Unify_R500"
-        tools:visibility="visible" />
+        app:timer_unify_single_variant="alternate" />
+
 </LinearLayout>
 

@@ -9,6 +9,7 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -20,7 +21,8 @@ import kotlinx.coroutines.test.resetMain
 import org.junit.Before
 import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
-import java.io.File
+import java.io.IOException
+import java.nio.charset.Charset
 
 @ExperimentalCoroutinesApi
 abstract class SingleProductBundleViewModelTestFixture {
@@ -33,6 +35,9 @@ abstract class SingleProductBundleViewModelTestFixture {
     @get:Rule
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     @RelaxedMockK
     lateinit var context: Context
 
@@ -42,27 +47,9 @@ abstract class SingleProductBundleViewModelTestFixture {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
-    val singleBundleVariant: GetBundleInfo by lazy {
-        val jsonString = getJsonFromFile(SINGLE_BUNDLE_VARIANT)
-        val jsonObject: JsonObject = CommonUtils.fromJson(
-            jsonString,
-            JsonObject::class.java
-        )
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = GetBundleInfoResponse::class.java
-        CommonUtils.fromJson(data, objectType).getBundleInfo
-    }
+    var singleBundleVariant: GetBundleInfo? = null
 
-    val singleBundleEmpty: GetBundleInfo by lazy {
-        val jsonString = getJsonFromFile(SINGLE_BUNDLE_EMPTY)
-        val jsonObject: JsonObject = CommonUtils.fromJson(
-            jsonString,
-            JsonObject::class.java
-        )
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = GetBundleInfoResponse::class.java
-        CommonUtils.fromJson(data, objectType).getBundleInfo
-    }
+    var singleBundleEmpty: GetBundleInfo? = null
 
     protected val viewModel: SingleProductBundleViewModel by lazy {
         spyk(SingleProductBundleViewModel(
@@ -70,6 +57,11 @@ abstract class SingleProductBundleViewModelTestFixture {
             addToCartBundleUseCase,
             userSession
         ))
+    }
+
+    init {
+        singleBundleEmpty = getSingleBundle(SINGLE_BUNDLE_EMPTY)
+        singleBundleVariant = getSingleBundle(SINGLE_BUNDLE_VARIANT)
     }
 
     @Before
@@ -85,8 +77,29 @@ abstract class SingleProductBundleViewModelTestFixture {
     }
 
     private fun getJsonFromFile(unit_test_path: String): String {
-        val uri = ClassLoader.getSystemClassLoader().getResource(unit_test_path)
-        val file = File(uri.path)
-        return String(file.readBytes())
+        var json = ""
+        javaClass.classLoader?.getResourceAsStream(unit_test_path)?.let {
+            try {
+                val size = it.available()
+                val buffer = ByteArray(size)
+                it.read(buffer)
+                it.close()
+                json = String(buffer, Charset.forName("UTF-8"))
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return json
+    }
+
+    private fun getSingleBundle(typeBundle: String): GetBundleInfo? {
+        val jsonString = getJsonFromFile(typeBundle)
+        val jsonObject: JsonObject = CommonUtils.fromJson(
+            jsonString,
+            JsonObject::class.java
+        )
+        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
+        val objectType = GetBundleInfoResponse::class.java
+        return CommonUtils.fromJson(data, objectType).getBundleInfo
     }
 }

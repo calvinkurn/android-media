@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.promo.data.request.ValidateUseMvcOrderParam
 import com.tokopedia.minicart.common.promo.data.request.ValidateUseMvcParam
 import com.tokopedia.minicart.common.promo.data.request.ValidateUseMvcProductParam
@@ -27,6 +29,7 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
     internal var currentPageSource: MiniCartAnalytics.Page = MiniCartAnalytics.Page.MVC_PAGE
     internal var currentBusinessUnit: String = ""
     internal var currentSite: String = ""
+    internal var source: MiniCartSource = MiniCartSource.MVC
 
     // State Data
     private val _miniCartSimplifiedState = MutableLiveData<MiniCartSimplifiedState>()
@@ -55,7 +58,7 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
             }
             return
         }
-        getMiniCartListSimplifiedUseCase.setParams(currentShopIds, currentPromoId, currentPromoCode)
+        getMiniCartListSimplifiedUseCase.setParams(currentShopIds, currentPromoId, currentPromoCode, source)
         getMiniCartListSimplifiedUseCase.execute(
             onSuccess = {
                 // hide mini cart simplified if has no available products
@@ -71,8 +74,8 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
             })
     }
 
-    private fun generateValidateUseMvcParam(miniCartItems: List<MiniCartItem>, isMoveToCart: Boolean): ValidateUseMvcParam {
-        val firstAvailableItem = miniCartItems.first { !it.isError }
+    private fun generateValidateUseMvcParam(miniCartItems: Map<MiniCartItemKey, MiniCartItem>, isMoveToCart: Boolean): ValidateUseMvcParam {
+        val firstAvailableItem = miniCartItems.values.first { it is MiniCartItem.MiniCartItemProduct && !it.isError } as MiniCartItem.MiniCartItemProduct
         val cartString = firstAvailableItem.cartString
         val shopId = firstAvailableItem.shopId
         return ValidateUseMvcParam(
@@ -85,8 +88,8 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
             orders = listOf(ValidateUseMvcOrderParam(
                 uniqueId = cartString,
                 shopId = shopId,
-                productDetails = miniCartItems.mapNotNull {
-                    if (!it.isError) {
+                productDetails = miniCartItems.values.mapNotNull {
+                    if (it is MiniCartItem.MiniCartItemProduct && !it.isError) {
                         ValidateUseMvcProductParam(it.productId, it.quantity)
                     } else {
                         null

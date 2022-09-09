@@ -33,6 +33,7 @@ object AtcVariantHelper {
     const val KEY_DISMISS_AFTER_ATC = "dismiss_after_atc"
     const val KEY_EXT_PARAMS = "ext_params"
     const val KEY_SAVE_AFTER_CLOSE = "save_after_close"
+    const val KEY_SHOW_QTY_EDITOR = "show_qty_editor"
 
     /**
      * For PDP and ProductBundle only
@@ -48,7 +49,7 @@ object AtcVariantHelper {
                         productVariant: ProductVariant,
                         warehouseResponse: Map<String, WarehouseInfo>,
                         cartRedirection: Map<String, CartTypeData>,
-                        miniCart: Map<String, MiniCartItem>?,
+                        miniCart: Map<String, MiniCartItem.MiniCartItemProduct>?,
                         alternateCopy: List<AlternateCopy>?,
                         boData: BebasOngkir?,
                         rates: List<P2RatesEstimate>?,
@@ -93,6 +94,7 @@ object AtcVariantHelper {
                 shopId = productInfoP1.basic.shopID,
                 miniCartData = miniCart,
                 minimumShippingPrice = productInfoP1.basic.getDefaultOngkirDouble(),
+                showQtyEditor = isTokoNow
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
@@ -121,6 +123,7 @@ object AtcVariantHelper {
                        extParams: String = "",
                        dismissAfterTransaction: Boolean = false,
                        saveAfterClose: Boolean = true,
+                       showQuantityEditor: Boolean = false,
                        startActivitResult: (Intent, Int) -> Unit) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT,
                 productId,
@@ -128,9 +131,11 @@ object AtcVariantHelper {
                 pageSource.source,
                 isTokoNow.toString(),
                 trackerCdListName)
+        val qtyEditorData = if (isTokoNow) true else showQuantityEditor
         intent.putExtra(KEY_DISMISS_AFTER_ATC, dismissAfterTransaction)
         intent.putExtra(KEY_SAVE_AFTER_CLOSE, saveAfterClose)
         intent.putExtra(KEY_EXT_PARAMS, extParams)
+        intent.putExtra(KEY_SHOW_QTY_EDITOR, qtyEditorData)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 
@@ -191,7 +196,7 @@ enum class VariantPageSource(val source: String) {
     PLAY_PAGESOURCE("play"),
     HOMEPAGE_PAGESOURCE("homepage"),
     DISCOVERY_PAGESOURCE("discovery page"),
-    SHOP_PAGE_PAGESOURCE("shop page - buyer"),
+    SHOP_PAGE_PAGESOURCE("shop-direct-purchase"),
     CART_PAGESOURCE("cart"),
     SEARCH_PAGESOURCE("search result"),
     CATEGORY_PAGESOURCE("category page"),

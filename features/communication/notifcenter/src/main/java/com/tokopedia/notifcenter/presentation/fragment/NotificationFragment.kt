@@ -25,17 +25,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
-import com.tokopedia.wishlist_common.R as Rwishlist
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
@@ -472,6 +471,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     override fun onSwipeRefresh() {
         viewModel.cancelAllUseCase()
         containerListener?.refreshNotificationCounter()
+        rvAdapter?.shopAdsWidgetAdded = false
         super.onSwipeRefresh()
     }
 
@@ -578,11 +578,11 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         if (product.isVariant) {
             showAtcVariantHelper(
                 product.productId,
-                product.shop.id.toString(),
+                product.shop.id,
                 product.shop.isTokonow
             )
         } else {
-            doBuyAndAtc(notification, product) {
+            doBuyAndAtc(product) {
                 analytic.trackSuccessDoBuyAndAtc(
                     notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_BUY
                 )
@@ -595,11 +595,11 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         if (product.isVariant) {
             showAtcVariantHelper(
                 product.productId,
-                product.shop.id.toString(),
+                product.shop.id,
                 product.shop.isTokonow
             )
         } else {
-            doBuyAndAtc(notification, product) {
+            doBuyAndAtc(product) {
                 analytic.trackSuccessDoBuyAndAtc(
                     notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_ATC
                 )
@@ -621,7 +621,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     }
 
     private fun doBuyAndAtc(
-        notification: NotificationUiModel,
         product: ProductData,
         onSuccess: (response: DataModel) -> Unit = {}
     ) {
@@ -629,23 +628,20 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         viewModel.addProductToCart(buyParam, {
             onSuccess(it)
         }, { msg ->
-            showErrorMessage(msg)
+            msg?.let {
+                showErrorMessage(it)
+            }
         })
     }
 
-    private fun getAtcBuyParam(product: ProductData): RequestParams {
-        val addToCartRequestParams = AddToCartRequestParams(
+    private fun getAtcBuyParam(product: ProductData): AddToCartRequestParams {
+        return AddToCartRequestParams(
             productId = product.productId.toLongOrZero(),
             shopId = product.shop.id.toInt(),
             quantity = product.minOrder,
-            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_NOTIFCENTER
+            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_NOTIFCENTER,
+            warehouseId = product.warehouseId.toIntSafely()
         )
-        return RequestParams.create().apply {
-            putObject(
-                AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
-                addToCartRequestParams
-            )
-        }
     }
 
     private fun showAtcVariantHelper(
@@ -713,9 +709,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
                             view?.let { v ->
                                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                             }
-                            if (product.isTopads) {
-                                product.imageUrl
-                            }
                         }
 
                         override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
@@ -753,12 +746,14 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         analytic.trackProductImpression(notification, product, position)
     }
 
-    override fun trackProductClick(
+    override fun onProductClicked(
         notification: NotificationUiModel,
         product: ProductData,
         position: Int
     ) {
         analytic.trackProductClick(notification, product, position)
+        val intent = RouteManager.getIntent(context, product.androidUrl)
+        startActivity(intent)
     }
 
     override fun trackBumpReminder() {

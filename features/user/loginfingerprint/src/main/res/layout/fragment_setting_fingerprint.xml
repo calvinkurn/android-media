@@ -39,9 +39,9 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/fragment_fingerprint_setting_loader"
-        android:layout_width="@dimen/unify_space_40"
-        android:layout_height="@dimen/unify_space_40"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </FrameLayout>

@@ -17,12 +17,14 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
 
     private var params: Map<String, Any>? = null
 
-    fun setParams(shopIds: List<String>) {
+    fun setParams(shopIds: List<String>, isShopDirectPurchase: Boolean = false) {
         params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_ADDITIONAL to mapOf(
                         PARAM_KEY_SHOP_IDS to shopIds,
-                        KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+                        KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                        PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value,
+                        PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
                 )
         )
     }
@@ -50,13 +52,15 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
         const val PARAM_KEY_PROMO = "promo"
         const val PARAM_KEY_PROMO_ID = "promo_id"
         const val PARAM_KEY_PROMO_CODE = "promo_code"
+        const val PARAM_KEY_SOURCE = "source"
+        const val PARAM_KEY_SHOP_DIRECT_PURCHASE = "is_shop_direct_purchase"
 
         const val PARAM_VALUE_ID = "id"
 
         val QUERY = """
-            query mini_cart(${'$'}dummy: Int, ${'$'}lang: String, ${'$'}additional_params: CartRevampAdditionalParams) {
+            query mini_cart_v3(${'$'}lang: String, ${'$'}additional_params: CartRevampAdditionalParams) {
               status
-              mini_cart(dummy: ${'$'}dummy, lang: ${'$'}lang, additional_params: ${'$'}additional_params) {
+              mini_cart_v3(lang: ${'$'}lang, additional_params: ${'$'}additional_params) {
                 error_message
                 status
                 data {
@@ -126,10 +130,29 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                         }
                       }
                       cart_details {
-                        cart_id
-                        selected_unavailable_action_link
                         errors
-                        product {
+                        bundle_detail { 
+                          bundle_id
+                          bundle_name
+                          bundle_type
+                          bundle_status
+                          bundle_description
+                          bundle_price
+                          bundle_price_fmt
+                          bundle_original_price
+                          bundle_original_price_fmt
+                          bundle_min_order
+                          bundle_max_order
+                          bundle_quota
+                          edit_app_link
+                          bundle_qty
+                          bundle_group_id
+                          slash_price_label
+                          bundle_grayscale_icon_url
+                          bundle_icon_url
+                        }
+                        products {
+                          cart_id
                           product_id
                           product_weight
                           product_quantity
@@ -166,6 +189,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           category_id
                           category
                           product_cashback
+                          selected_unavailable_action_link
                         }
                       }
                     }
@@ -213,11 +237,30 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                       }
                       cart_string
                       errors
-                      cart_details {
-                        cart_id
-                        selected_unavailable_action_link
+                      cart_details {                    
                         errors
-                        product {
+                        bundle_detail { 
+                          bundle_id
+                          bundle_name
+                          bundle_type
+                          bundle_status
+                          bundle_description
+                          bundle_price
+                          bundle_price_fmt
+                          bundle_original_price
+                          bundle_original_price_fmt
+                          bundle_min_order
+                          bundle_max_order
+                          bundle_quota
+                          edit_app_link
+                          bundle_qty
+                          bundle_group_id
+                          slash_price_label
+                          bundle_grayscale_icon_url
+                          bundle_icon_url
+                        }
+                        products {
+                          cart_id
                           product_id
                           product_weight
                           product_quantity
@@ -251,6 +294,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           warehouse_id
                           category_id
                           category
+                          selected_unavailable_action_link
                         }
                       }
                     }

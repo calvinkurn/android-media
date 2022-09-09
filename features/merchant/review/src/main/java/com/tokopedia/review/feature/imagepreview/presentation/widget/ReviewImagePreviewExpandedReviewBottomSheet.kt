@@ -9,14 +9,14 @@ import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.review.R
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
-import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
-import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.imagepreview.analytics.ReviewImagePreviewTracking
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewBottomSheetUiModel
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -39,7 +39,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
     private var uiModel: ReviewImagePreviewBottomSheetUiModel =
         ReviewImagePreviewBottomSheetUiModel()
 
-    private var basicInfoWidget: ReviewBasicInfoWidget? = null
+    private var basicInfoWidget: ProductReviewBasicInfoWidget? = null
     private var review: Typography? = null
     private var badRatingWidget: ReviewBadRatingReasonWidget? = null
 
@@ -63,27 +63,31 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         setBadRatingReason()
     }
 
-    override fun onUserNameClicked(userId: String) {
-        dismiss()
-        goToReviewCredibility(userId, uiModel.source)
-    }
-
-    override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
-        ReviewImagePreviewTracking.trackClickReviewerName(
-            uiModel.isFromGallery,
-            feedbackId,
-            userId,
-            statistics,
-            uiModel.productId,
-            uiModel.currentUserId
-        )
+    override fun onUserNameClicked(
+        feedbackId: String,
+        userId: String,
+        statistics: String,
+        label: String
+    ) {
+        if (goToReviewCredibility(userId, uiModel.source)) {
+            dismiss()
+            ReviewImagePreviewTracking.trackClickReviewerName(
+                uiModel.isFromGallery,
+                feedbackId,
+                userId,
+                statistics,
+                uiModel.productId,
+                uiModel.currentUserId,
+                label
+            )
+        }
     }
 
     private fun setBasicInfo() {
         basicInfoWidget?.apply {
             with(uiModel) {
                 setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
-                setListener(this@ReviewImagePreviewExpandedReviewBottomSheet)
+                setListeners(this@ReviewImagePreviewExpandedReviewBottomSheet, null)
                 setRating(rating)
                 setCreateTime(timeStamp)
                 setReviewerName(reviewerName)
@@ -116,8 +120,8 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         bottomSheetHeader.hide()
     }
 
-    private fun goToReviewCredibility(userId: String, source: String) {
-        RouteManager.route(
+    private fun goToReviewCredibility(userId: String, source: String): Boolean {
+        return RouteManager.route(
             context,
             Uri.parse(
                 UriUtil.buildUri(
@@ -126,7 +130,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
                     source
                 )
             ).buildUpon()
-                .appendQueryParameter(ReviewCredibilityActivity.PARAM_PRODUCT_ID, uiModel.productId)
+                .appendQueryParameter(ReviewApplinkConst.PARAM_PRODUCT_ID, uiModel.productId)
                 .build()
                 .toString()
         )

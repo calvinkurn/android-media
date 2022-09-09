@@ -4,7 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.util.FileUtil
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
@@ -243,7 +244,7 @@ class NotificationViewModelTest {
         // then
         verifyOrder {
             notificationItemsObserver.onChanged(Success(expectedValue))
-            topAdsBannerObserver.onChanged(NotificationTopAdsBannerUiModel(topAdsImageView.first()))
+            topAdsBannerObserver.onChanged(NotificationTopAdsBannerUiModel(topAdsImageView))
         }
     }
 
@@ -811,12 +812,12 @@ class NotificationViewModelTest {
         // Given
         val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
         val successAtc = getSuccessAtcModel()
-        every {
-            addToCartUseCase.createObservable(any())
-        } returns Observable.just(successAtc)
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns successAtc
 
         // When
-        viewModel.addProductToCart(RequestParams(), onSuccess, {})
+        viewModel.addProductToCart(AddToCartRequestParams(), onSuccess, {})
 
         // Then
         verify(exactly = 1) {
@@ -825,19 +826,20 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `when success addProductToCart but status success is 0`() {
+    fun `when success addProductToCart but status success is 0 and with error message`() {
         // Given
         val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
         val successAtc = getSuccessAtcModel().apply {
             this.data.success = 0
+            this.errorMessage = arrayListOf("Error message")
         }
-        every {
-            addToCartUseCase.createObservable(any())
-        } returns Observable.just(successAtc)
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns successAtc
 
         // When
-        viewModel.addProductToCart(RequestParams(), onSuccess, onError)
+        viewModel.addProductToCart(AddToCartRequestParams(), onSuccess, onError)
 
         // Then
         verify(exactly = 1) {
@@ -846,16 +848,58 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `when error addProductToCart`() {
+    fun `when success addProductToCart but status success is 0 and with data message`() {
         // Given
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
-        val errorAtc = getErrorAtcModel()
-        every {
-            addToCartUseCase.createObservable(any())
-        } returns Observable.just(errorAtc)
+        val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
+        val successAtc = getSuccessAtcModel().apply {
+            this.data.success = 0
+            this.data.message = arrayListOf("Data Message")
+        }
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns successAtc
 
         // When
-        viewModel.addProductToCart(RequestParams(), {}, onError)
+        viewModel.addProductToCart(AddToCartRequestParams(), onSuccess, onError)
+
+        // Then
+        verify(exactly = 1) {
+            onError.invoke(any())
+        }
+    }
+
+    @Test
+    fun `when success addProductToCart but status success is 0 and no data & error message`() {
+        // Given
+        val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
+        val successAtc = getSuccessAtcModel().apply {
+            this.data.success = 0
+        }
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns successAtc
+
+        // When
+        viewModel.addProductToCart(AddToCartRequestParams(), onSuccess, onError)
+
+        // Then
+        verify(exactly = 0) {
+            onError.invoke(any())
+        }
+    }
+
+    @Test
+    fun `when error addProductToCart`() {
+        // Given
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
+        val errorAtc = getErrorAtcModel()
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns errorAtc
+        // When
+        viewModel.addProductToCart(AddToCartRequestParams(), {}, onError)
 
         // Then
         verify(exactly = 1) {
@@ -866,14 +910,14 @@ class NotificationViewModelTest {
     @Test
     fun `when error throwable addProductToCart`() {
         // Given
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
         val errorMsg = "Gagal menambahkan produk"
-        every {
-            addToCartUseCase.createObservable(any())
-        } throws IllegalStateException(errorMsg)
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } throws Throwable(errorMsg)
 
         // When
-        viewModel.addProductToCart(RequestParams(), {}, onError)
+        viewModel.addProductToCart(AddToCartRequestParams(), {}, onError)
 
         // Then
         verify(exactly = 1) {
@@ -884,14 +928,14 @@ class NotificationViewModelTest {
     @Test
     fun `when error throwable addProductToCart but empty message`() {
         // Given
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val onError: (msg: String?) -> Unit = mockk(relaxed = true)
         val expectedThrowable = Throwable(message = null)
-        every {
-            addToCartUseCase.createObservable(any())
+        coEvery {
+            addToCartUseCase.executeOnBackground()
         } throws expectedThrowable
 
         // When
-        viewModel.addProductToCart(RequestParams(), {}, onError)
+        viewModel.addProductToCart(AddToCartRequestParams(), {}, onError)
 
         // Then
         verify(exactly = 0) {

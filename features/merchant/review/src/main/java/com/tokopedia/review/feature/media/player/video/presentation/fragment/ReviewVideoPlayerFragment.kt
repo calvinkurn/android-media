@@ -110,7 +110,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         super.onPause()
         if (activity?.isChangingConfigurations != true) {
             updateCurrentFrameBitmap()
-            reviewVideoPlayerViewModel.setPlaybackStateToInactive(videoPlayer.getCurrentPosition())
+            reviewVideoPlayerViewModel.setPlaybackStateToInactive(videoPlayer.getCurrentPositionMillis())
             reviewVideoPlayerViewModel.resetVideoPlayerState()
             videoPlayer.pause()
         } else {
@@ -144,27 +144,29 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     }
 
     override fun onReviewVideoPlayerIsPlaying() {
-        reviewVideoPlayerViewModel.setPlaybackStateToPlaying(videoPlayer.getCurrentPosition())
+        reviewVideoPlayerViewModel.setPlaybackStateToPlaying(videoPlayer.getCurrentPositionMillis())
+        sharedReviewMediaGalleryViewModel.updateVideoDurationMillis(videoPlayer.getDurationMillis())
     }
 
     override fun onReviewVideoPlayerIsBuffering() {
-        reviewVideoPlayerViewModel.setPlaybackStateToBuffering(videoPlayer.getCurrentPosition())
+        reviewVideoPlayerViewModel.setPlaybackStateToBuffering(videoPlayer.getCurrentPositionMillis())
     }
 
     override fun onReviewVideoPlayerIsPaused() {
-        reviewVideoPlayerViewModel.setPlaybackStateToPaused(videoPlayer.getCurrentPosition())
+        reviewVideoPlayerViewModel.setPlaybackStateToPaused(videoPlayer.getCurrentPositionMillis())
+        sharedReviewMediaGalleryViewModel.updateVideoDurationMillis(videoPlayer.getDurationMillis())
     }
 
     override fun onReviewVideoPlayerIsPreloading() {
-        reviewVideoPlayerViewModel.setPlaybackStateToPreloading(videoPlayer.getCurrentPosition())
+        reviewVideoPlayerViewModel.setPlaybackStateToPreloading(videoPlayer.getCurrentPositionMillis())
     }
 
     override fun onReviewVideoPlayerIsEnded() {
-        reviewVideoPlayerViewModel.setPlaybackStateToEnded(videoPlayer.getCurrentPosition())
+        reviewVideoPlayerViewModel.setPlaybackStateToEnded(videoPlayer.getCurrentPositionMillis())
     }
 
     override fun onReviewVideoPlayerError(errorCode: String) {
-        reviewVideoPlayerViewModel.setPlaybackStateToError(videoPlayer.getCurrentPosition(), errorCode)
+        reviewVideoPlayerViewModel.setPlaybackStateToError(videoPlayer.getCurrentPositionMillis(), errorCode)
     }
 
     private fun getVideoUri(): String {
@@ -226,6 +228,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     private fun collectVideoPlaybackUiState() {
         videoPlaybackUiStateCollector = videoPlaybackUiStateCollector?.takeIf { !it.isCompleted } ?: launch {
             reviewVideoPlayerViewModel.videoPlaybackUiState.collectLatest {
+                sharedReviewMediaGalleryViewModel.updateIsPlayingVideo(it.isPlaying())
                 when (it) {
                     is ReviewVideoPlaybackUiState.Inactive -> {
                         trackStopped(ceil(it.currentPosition / 1000f).toLong())

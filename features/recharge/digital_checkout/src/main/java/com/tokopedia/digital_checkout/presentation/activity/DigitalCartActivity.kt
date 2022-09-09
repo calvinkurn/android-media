@@ -12,6 +12,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_ATC_SOURCE
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_CATEGORY_ID
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_CLIENT_NUMBER
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_DEVICE_ID
@@ -59,7 +60,8 @@ open class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheck
         passData.operatorId = uriData.getQueryParameter(PARAM_OPERATOR_ID)
         passData.productId = uriData.getQueryParameter(PARAM_PRODUCT_ID)
         passData.isPromo = uriData.getQueryParameter(PARAM_IS_PROMO)
-        passData.deviceId = uriData.getQueryParameter(PARAM_DEVICE_ID)?.toIntOrNull() ?: 5
+        passData.deviceId = uriData.getQueryParameter(PARAM_DEVICE_ID)?.toIntOrNull() ?: DigitalCheckoutPassData.DEFAULT_DEVICE_ID
+        passData.atcSource = uriData.getQueryParameter(PARAM_ATC_SOURCE)
         val instantCheckoutParam = uriData.getQueryParameter(PARAM_INSTANT_CHECKOUT)
         passData.instantCheckout = instantCheckoutParam ?: "0"
         passData.idemPotencyKey = generateATokenRechargeCheckout(context)

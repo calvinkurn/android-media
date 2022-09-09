@@ -26,7 +26,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/pdp_usp_static_header"
         app:layout_constraintTop_toBottomOf="@+id/usp_pdp_img"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_usp_number_1"
@@ -39,7 +39,7 @@
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_header"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -52,7 +52,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_1"
         app:layout_constraintTop_toTopOf="@+id/pdp_usp_number_1"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -64,7 +64,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_1"
         app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_1"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_usp_number_2"
@@ -77,7 +77,7 @@
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_1_2"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -90,7 +90,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_2"
         app:layout_constraintTop_toTopOf="@+id/pdp_usp_number_2"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -102,7 +102,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_2"
         app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_2"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_usp_number_3"
@@ -115,7 +115,7 @@
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_2_2"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -128,7 +128,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_3"
         app:layout_constraintTop_toTopOf="@+id/pdp_usp_number_3"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -140,6 +140,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pdp_usp_number_3"
         app:layout_constraintTop_toBottomOf="@+id/pdp_usp_static_3"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

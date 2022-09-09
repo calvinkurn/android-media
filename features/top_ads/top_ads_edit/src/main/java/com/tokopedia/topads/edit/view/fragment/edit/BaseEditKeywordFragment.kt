@@ -54,6 +54,7 @@ private const val OTOMATIS_LEARN_MORE_LINK = "https://seller.tokopedia.com/edu/t
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
+    val isBidAutomatic : Boolean get() = autoBidSwitch?.isBidAutomatic ?: false
     private var autoBidSwitch: TopadsAutoBidSwitchPartialLayout? = null
     private var keywordGroup: LinearLayout? = null
     private var autoBidTicker: Ticker? = null
@@ -110,9 +111,6 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         renderViewPager()
         chipKeyword?.chipType = ChipsUnify.TYPE_SELECTED
 
-        sharedViewModel.setIsWhiteListedUser(
-            arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER) ?: false
-        )
         arguments?.getBoolean(IS_BID_AUTOMATIC)?.let { handleInitialAutoBidState(it) }
     }
 

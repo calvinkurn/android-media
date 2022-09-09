@@ -12,6 +12,7 @@ class AddEditProductEditingMockResponseConfig: MockModelConfig() {
         private const val GET_PRODUCT_V3 = "getProductV3"
         private const val PRODUCT_ADD_RULE = "ProductAddRule"
         private const val PRODUCT_VALIDATE = "ProductValidateV3"
+        private const val MAX_STOCK = "GetIMSMeta"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -31,9 +32,14 @@ class AddEditProductEditingMockResponseConfig: MockModelConfig() {
                 FIND_BY_CONTAINS
         )
         addMockResponse(
-            PRODUCT_VALIDATE,
-            InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_product_validate),
-            FIND_BY_CONTAINS
+                PRODUCT_VALIDATE,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_product_validate),
+                FIND_BY_CONTAINS
+        )
+        addMockResponse(
+                MAX_STOCK,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_max_stock),
+                FIND_BY_CONTAINS
         )
 
         return this

@@ -8,58 +8,61 @@ import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.VideoResult
 import com.otaliastudios.cameraview.controls.Flash
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentCameraBinding
-import com.tokopedia.media.picker.analytics.CAMERA_BACK_STRING
-import com.tokopedia.media.picker.analytics.CAMERA_FRONT_STRING
-import com.tokopedia.media.picker.analytics.FLASH_AUTO_STRING
-import com.tokopedia.media.picker.analytics.FLASH_OFF_STRING
-import com.tokopedia.media.picker.analytics.FLASH_ON_STRING
+import com.tokopedia.media.picker.analytics.*
 import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
-import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.ui.activity.main.PickerActivity
-import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
-import com.tokopedia.media.picker.ui.fragment.camera.component.CameraControllerComponent
-import com.tokopedia.media.picker.ui.fragment.camera.component.CameraViewComponent
+import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
+import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
+import com.tokopedia.media.picker.ui.activity.picker.PickerViewModel
+import com.tokopedia.media.picker.ui.component.CameraControllerComponent
+import com.tokopedia.media.picker.ui.component.CameraViewComponent
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
-import com.tokopedia.media.picker.ui.uimodel.safeRemove
+import com.tokopedia.media.picker.ui.widget.LoaderDialogWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
-import com.tokopedia.picker.common.utils.FileCamera
-import com.tokopedia.picker.common.utils.safeFileDelete
+import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
+import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-open class CameraFragment : BaseDaggerFragment()
+open class CameraFragment @Inject constructor(
+    private var viewModelFactory: ViewModelProvider.Factory,
+    private var param: ParamCacheManager,
+    private var cameraAnalytics: CameraAnalytics,
+) : BaseDaggerFragment()
     , CameraControllerComponent.Listener
     , CameraViewComponent.Listener {
 
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
+    private val pickerViewModel: PickerViewModel by activityViewModels { viewModelFactory }
 
-    @Inject
-    lateinit var param: ParamCacheManager
-
-    @Inject
-    lateinit var cameraAnalytics: CameraAnalytics
+    private val cameraViewModel: CameraViewModel by lazy {
+        ViewModelProvider(
+            this,
+            viewModelFactory
+        )[CameraViewModel::class.java]
+    }
 
     private val binding: FragmentCameraBinding? by viewBinding()
-    private var listener: PickerActivityListener? = null
+    private var contract: PickerActivityContract? = null
+
+    private var loaderDialog: LoaderDialogWidget? = null
 
     private val cameraView by uiComponent {
         CameraViewComponent(
@@ -72,7 +75,7 @@ open class CameraFragment : BaseDaggerFragment()
     private val controller by uiComponent {
         CameraControllerComponent(
             param = param.get(),
-            activityListener = listener,
+            activityContract = contract,
             controllerListener = this,
             parent = it
         )
@@ -80,15 +83,11 @@ open class CameraFragment : BaseDaggerFragment()
 
     private val medias = mutableListOf<MediaUiModel>()
 
-    private var isTakingPictureMode = true
-    private var isInitFlashState = false
+    // this is needed to determine the shutter button action
+    private var isCameraPhotoMode = true
 
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this,
-            factory
-        )[CameraViewModel::class.java]
-    }
+    // flag for camera flash initialization
+    private var isInitFlashState = false
 
     val gestureDetector by lazy {
         GestureDetector(requireContext(), FlingGestureWrapper(
@@ -130,27 +129,33 @@ open class CameraFragment : BaseDaggerFragment()
         cameraView.close()
     }
 
-    override fun onCameraModeChanged(mode: Int) {
-        isTakingPictureMode = mode == CameraControllerComponent.PHOTO_MODE
+    override fun onCameraModeChanged(mode: CameraMode) {
+        if (mode == CameraMode.Photo) {
+            cameraView.onPictureMode()
+            isCameraPhotoMode = true
+        } else if (mode == CameraMode.Video) {
+            cameraView.onVideoMode()
+            isCameraPhotoMode = false
+        }
     }
 
     override fun onCameraThumbnailClicked() {
         if (medias.isEmpty()) return
 
-        listener?.onCameraThumbnailClicked()
+        contract?.onCameraThumbnailClicked()
         cameraAnalytics.clickThumbnail()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         exceptionHandler {
-            listener = null
+            contract = null
         }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listener = (context as PickerActivity)
+        contract = (context as PickerActivity)
     }
 
     override fun isFrontCamera(): Boolean {
@@ -189,14 +194,14 @@ open class CameraFragment : BaseDaggerFragment()
         }
 
         showShutterEffect {
-            if (isTakingPictureMode) {
+            if (isCameraPhotoMode) {
                 cameraView.onStartTakePicture()
                 cameraAnalytics.clickShutter()
             } else {
                 cameraView.enableFlashTorch()
-                cameraView.onStartTakeVideo()
                 controller.onVideoDurationChanged()
                 cameraAnalytics.clickRecord()
+                cameraViewModel.onVideoTaken()
             }
         }
     }
@@ -221,34 +226,58 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onVideoTaken(result: VideoResult) {
-        val fileToModel = result.file.cameraToUiModel()
+        val videoFile = result.file
+            .asPickerFile()
+            .cameraToUiModel()
 
-        if (listener?.isMinVideoDuration(fileToModel) == true) {
-            listener?.onShowVideoMinDurationToast()
-            safeFileDelete(fileToModel.path)
+        if (contract?.isMinVideoDuration(videoFile) == true) {
+            contract?.onShowVideoMinDurationToast()
+            videoFile.file?.safeDelete()
             return
         }
 
-        if (listener?.isMinStorageThreshold() == true) {
-            listener?.onShowFailToVideoRecordToast()
+        if (contract?.isMinStorageThreshold() == true) {
+            contract?.onShowFailToVideoRecordToast()
             return
         }
 
-        onShowMediaThumbnail(fileToModel)
+        onShowMediaThumbnail(videoFile)
     }
 
     override fun onPictureTaken(result: PictureResult) {
-        FileCamera.createPhoto(cameraView.pictureSize(), result.data) {
-            if (it == null) return@createPhoto
-            val fileToModel = it.cameraToUiModel()
-
-            onShowMediaThumbnail(fileToModel)
-        }
+        cameraViewModel.onPictureTaken(cameraView.pictureSize(), result.data)
     }
 
     private fun initObservable() {
+        cameraViewModel.isLoading.observe(viewLifecycleOwner) {
+            if (it) {
+                loaderDialog = LoaderDialogWidget(requireContext())
+                loaderDialog?.show()
+            } else {
+                loaderDialog?.dismiss()
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.uiEvent.observe(
+            cameraViewModel.pictureTaken.collect {
+                if (it == null) return@collect
+
+                val file = it
+                    .asPickerFile()
+                    .cameraToUiModel()
+
+                onShowMediaThumbnail(file)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            cameraViewModel.videoTaken.collect {
+                cameraView.onStartTakeVideo(it)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            pickerViewModel.uiEvent.observe(
                 onChanged = {
                     medias.clear()
                     medias.addAll(it)
@@ -280,12 +309,12 @@ open class CameraFragment : BaseDaggerFragment()
 
     private fun onStartRecordVideo() {
         controller.startRecording()
-        listener?.tabVisibility(false)
+        contract?.parentTabIsShownAs(false)
     }
 
     private fun onStopRecordVideo() {
         controller.stopRecording()
-        listener?.tabVisibility(true)
+        contract?.parentTabIsShownAs(true)
     }
 
     private fun onShowMediaThumbnail(element: MediaUiModel?) {
@@ -316,14 +345,14 @@ open class CameraFragment : BaseDaggerFragment()
         }
     }
 
-    override fun initInjector() {
-        DaggerPickerComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
-    }
+    override fun initInjector() {}
 
     override fun getScreenName() = "Camera"
+
+    /**
+     * on thumbnail finish load callback for testing purpose
+     */
+    override fun onThumbnailLoaded() {}
 
     companion object {
         private const val OVERLAY_SHUTTER_DELAY = 100L

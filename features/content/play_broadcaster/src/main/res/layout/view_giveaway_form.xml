@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@color/play_dms_N700_80"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_giveaway_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_action_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="ic_close_giveaway_form, tv_bro_giveaway_form_title, tv_bro_giveaway_form_next"
+            />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_close_giveaway_form"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="ARROW_BACK"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bro_giveaway_form_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/play_dp_12"
+            android:text="@string/play_bro_giveaway_form_title"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@id/ic_close_giveaway_form"
+            app:layout_constraintStart_toEndOf="@id/ic_close_giveaway_form"
+            app:layout_constraintTop_toTopOf="@id/ic_close_giveaway_form"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bro_giveaway_form_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/play_bro_next_action"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@id/ic_close_giveaway_form"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ic_close_giveaway_form"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_giveaway_form_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.6"
+            />
+
+        <com.tokopedia.play_common.view.game.GiveawayWidgetView
+            android:id="@+id/view_giveaway"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/gl_giveaway_form_horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        layout="@layout/view_play_interactive_time_picker"
+        />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

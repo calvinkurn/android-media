@@ -14,12 +14,14 @@ import com.tokopedia.review.R
 import com.tokopedia.review.databinding.WidgetCreateReviewProgressBarBinding
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProgressBarUiState
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewProgressBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewProgressBarBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewProgressBarBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val COMPLETE_PROGRESS = 100
@@ -180,15 +182,19 @@ class CreateReviewProgressBar @JvmOverloads constructor(
         layoutProgressBar.reviewFormProgressBarDescription.text = context.getString(R.string.review_form_progress_bar_bad_need_reason)
     }
 
-    fun updateUi(uiState: CreateReviewProgressBarUiState) {
+    fun updateUi(uiState: CreateReviewProgressBarUiState, continuation: Continuation<Unit>) {
         when(uiState) {
             is CreateReviewProgressBarUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewProgressBarUiState.Showing -> {
                 binding.showProgressBar(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }

@@ -34,6 +34,7 @@
     <string name="path_pm_benefit_package" translatable="false">/pm-benefit-package</string>
 
     <string name="path_atc_variant" translatable="false">/atc-variant/.*\\/.*\\/</string>
+    <string name="path_product_educational" translatable="false">/product-edu/.*\\/</string>
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
     <string name="path_product_detail" translatable="false">/product-detail/.*\\/</string>
     <string name="path_product_detail_domain" translatable="false">/product-detail/.*\\/.*\\/</string>
@@ -43,7 +44,6 @@
     <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*</string>
     <string name="path_reserved_stock" translatable="false">/reserved-stock/.*\\/.*\\/</string>
-    <string name="path_set_cashback" translatable="false">/set-cashback/.*\\/</string>
     <string name="path_create_review" translatable="false">/product-review/create/.*\\/.*\\/</string>
     <string name="path_edit_review" translatable="false">/product-review/edit/.*\\/.*\\/</string>
     <string name="path_review_credibility" translatable="false">/review/credibility/.*\\/.*\\/</string>
@@ -91,6 +91,9 @@
     <string name="path_shop_score_performance" translatable="false">/shop/performance</string>
     <string name="path_shop_penalty" translatable="false">/shop-penalty</string>
     <string name="path_shop_penalty_detail" translatable="false">/shop-penalty-detail</string>
+    <string name="path_shop_admin_invitation_confirmation" translatable="false">/shop-admin/invitation-page</string>
+    <string name="path_shop_admin_invitation_accepted" translatable="false">/shop-admin/accepted-page</string>
+    <string name="path_shop_admin_redirection" translatable="false">/shop-admin/redirection-page</string>
     <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
     <string name="path_shop_settings_operational_hours" translatable="false">/shop-settings-operational-hours</string>
     <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>

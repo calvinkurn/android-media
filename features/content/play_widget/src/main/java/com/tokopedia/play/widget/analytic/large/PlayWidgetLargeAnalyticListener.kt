@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.analytic.large
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by meyta.taliti on 29/01/22.
@@ -12,10 +13,17 @@ interface PlayWidgetLargeAnalyticListener {
     fun onClickChannelCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
     ) {
     }
+
+    fun onImpressReminderIcon(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isReminded: Boolean,
+    ) {}
 
     fun onClickToggleReminderChannel(
         view: PlayWidgetLargeView,
@@ -28,8 +36,8 @@ interface PlayWidgetLargeAnalyticListener {
     fun onImpressChannelCard(
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean,
     ) {
     }
 
@@ -44,19 +52,5 @@ interface PlayWidgetLargeAnalyticListener {
         view: PlayWidgetLargeView,
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
-    ) {}
-
-    fun onLabelPromoClicked(
-        view: PlayWidgetLargeView,
-        item: PlayWidgetChannelUiModel,
-        position: Int,
-        isAutoPlay: Boolean,
-    ) {}
-
-    fun onLabelPromoImpressed(
-        view: PlayWidgetLargeView,
-        item: PlayWidgetChannelUiModel,
-        position: Int,
-        isAutoPlay: Boolean,
     ) {}
 }

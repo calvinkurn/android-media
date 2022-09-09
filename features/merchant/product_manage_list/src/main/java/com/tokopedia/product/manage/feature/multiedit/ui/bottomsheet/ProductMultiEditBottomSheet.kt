@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.databinding.BottomSheetProductManageBinding
+import com.tokopedia.product.manage.databinding.BottomSheetProductManageMultiEditBinding
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductMultiEditAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.MultiEditViewHolder.MenuClickListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -28,7 +28,7 @@ class ProductMultiEditBottomSheet(
         R.string.product_bs_delete_title
     )
 
-    private var binding by autoClearedNullable<BottomSheetProductManageBinding>()
+    private var binding by autoClearedNullable<BottomSheetProductManageMultiEditBinding>()
 
     init {
         showHeader = false
@@ -40,7 +40,7 @@ class ProductMultiEditBottomSheet(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = BottomSheetProductManageBinding.inflate(inflater, container, false)
+        binding = BottomSheetProductManageMultiEditBinding.inflate(inflater, container, false)
         setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -71,7 +71,7 @@ class ProductMultiEditBottomSheet(
 
     private fun setupView() {
         val adapter = ProductMultiEditAdapter(menuClickListener())
-        binding?.menuList?.adapter = adapter
+        binding?.rvProductManageMultiEdit?.adapter = adapter
         adapter.menuList = menuList
     }
 

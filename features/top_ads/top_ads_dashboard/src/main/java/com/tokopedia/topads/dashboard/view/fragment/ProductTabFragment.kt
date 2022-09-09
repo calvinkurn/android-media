@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,7 +18,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -46,19 +44,19 @@ import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductEmpt
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemModel
 import com.tokopedia.topads.dashboard.view.interfaces.ChangePlacementFilter
 import com.tokopedia.topads.dashboard.view.interfaces.FetchDate
-import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
+import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 /**
@@ -99,7 +97,6 @@ class ProductTabFragment : BaseDaggerFragment() {
     private var adIds: MutableList<String> = mutableListOf()
     private var itemList: MutableList<String> = mutableListOf()
     private var placementType: Int = 0
-    private var isWhiteListedUser: Boolean = false
 
     companion object {
         fun createInstance(bundle: Bundle): ProductTabFragment {
@@ -114,7 +111,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
+        ViewModelProvider(this, viewModelFactory)
     }
     private val viewModel by lazy {
         viewModelProvider.get(GroupDetailViewModel::class.java)
@@ -143,7 +140,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
-        val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_product_list),
+        val view = inflater.inflate(context?.resources?.getLayout(R.layout.topads_dash_fragment_product_list),
             container, false)
         recyclerView = view.findViewById(R.id.product_list)
         loader = view.findViewById(R.id.loader)
@@ -200,13 +197,11 @@ class ProductTabFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.placementType = arguments?.getInt("placementType", 0)!!
-        this.isWhiteListedUser = arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER) ?: false
         fetchData()
         setPlacementTicker()
         btnFilter?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_FILTER, "")
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(isWhiteListedUser)
             groupFilterSheet.onSubmitClick = {
                 changePlacementFilter?.getSelectedFilter(groupFilterSheet.getSelectedAdPlacementType())
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
@@ -249,15 +244,11 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun startEditActivity() {
-        val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
-                putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
-                putExtra(TopAdsDashboardConstant.GROUPID,
-                    arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
-                putExtra(TopAdsDashboardConstant.GROUP_STRATEGY,
-                    arguments?.getString(TopAdsDashboardConstant.GROUP_STRATEGY))
-                putExtra(ParamObject.ISWHITELISTEDUSER, isWhiteListedUser)
-            }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+            putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
+            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
+            putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, arguments?.getString(TopAdsDashboardConstant.GROUP_STRATEGY))
+        }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_PRODUK,
             "")
@@ -318,8 +309,11 @@ class ProductTabFragment : BaseDaggerFragment() {
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()
             groupList.add(MovetoGroupEmptyModel())
-        } else
-            viewModel.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
+        } else {
+            val resources = context?.resources
+            if (resources != null)
+                viewModel.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
+        }
         movetoGroupSheet.updateData(groupList)
     }
 
@@ -382,10 +376,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun setPlacementTicker() {
-        placementTiker?.visibility = when (isWhiteListedUser) {
-            true -> View.VISIBLE
-            false -> View.GONE
-        }
+        placementTiker?.visibility = View.VISIBLE
         when (groupFilterSheet.getSelectedAdPlacementType()) {
             CONST_0 -> {
                 placementTiker?.tickerTitle =
@@ -429,10 +420,13 @@ class ProductTabFragment : BaseDaggerFragment() {
         if (adIds.isNotEmpty()) {
             val startDate = getDateCallBack?.getStartDate() ?: ""
             val endDate = getDateCallBack?.getEndDate() ?: ""
-            viewModel.getProductStats(resources,
-                startDate, endDate, adIds, ::onSuccessStats,
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                groupFilterSheet.getSelectedAdPlacementType())
+            val resources = context?.resources
+            if (resources != null)
+                viewModel.getProductStats(
+                    resources,
+                    startDate, endDate, adIds, ::onSuccessStats,
+                    groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
+                    groupFilterSheet.getSelectedAdPlacementType())
         }
         setFilterCount()
         (activity as TopAdsGroupDetailViewActivity).getBidForKeywords(itemList)
@@ -462,10 +456,13 @@ class ProductTabFragment : BaseDaggerFragment() {
         activity?.setResult(Activity.RESULT_OK)
         when (actionActivate) {
             ACTION_DELETE -> {
-                view?.let {
-                    Toaster.make(it, getString(R.string.topads_without_product_del_toaster), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal)) {
-                            deleteCancel = true
-                        }
+                view.let {
+                    Toaster.make(it!!,
+                        getString(R.string.topads_without_product_del_toaster),
+                        TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL,
+                        getString(com.tokopedia.topads.common.R.string.topads_common_batal)) {
+                        deleteCancel = true
+                    }
                 }
                 val coroutineScope = CoroutineScope(Dispatchers.Main)
                 coroutineScope.launch {
@@ -488,10 +485,10 @@ class ProductTabFragment : BaseDaggerFragment() {
             }
             ACTION_MOVE -> {
                 totalProductCount -= getAdIds().size
-                viewModel.setProductAction(::onSuccessAction,
-                    actionActivate,
-                    getAdIds(),
-                    selectedFilter)
+                viewModel.setProductActionMoveGroup(
+                    selectedFilter ?: "",
+                    adapter.getSelectedItemsProductId(), ::onSuccessAction
+                )
                 if (totalProductCount == 0) {
                     activity?.finish()
                 }

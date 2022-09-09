@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.promo.domain.data.ValidateUseMvcData
 import com.tokopedia.minicart.common.promo.widget.PromoProgressBarWidget
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
@@ -67,7 +68,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
     * Function to initialize the widget
     * */
     fun initialize(shopIds: List<String>, promoId: String, promoCode: String,
-                   businessUnit: String, currentSite: String, fragment: Fragment,
+                   businessUnit: String, currentSite: String, source: MiniCartSource, fragment: Fragment,
                    pageSource: MiniCartAnalytics.Page, listener: MiniCartSimplifiedWidgetListener) {
         if (viewModel == null) {
             val application = fragment.activity?.application
@@ -82,6 +83,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         viewModel?.currentBusinessUnit = businessUnit
         viewModel?.currentSite = currentSite
         viewModel?.currentPageSource = pageSource
+        viewModel?.source = source
     }
 
     private fun initializeInjector(baseAppComponent: Application?) {
@@ -323,7 +325,8 @@ class MiniCartSimplifiedWidget : BaseCustomView {
                 shopId = viewModel?.currentShopIds?.joinToString() ?: "",
                 pageSource = viewModel?.currentPageSource,
                 businessUnit = viewModel?.currentBusinessUnit ?: "",
-                currentSite = viewModel?.currentSite ?: ""
+                currentSite = viewModel?.currentSite ?: "",
+                trackerId = null
         )
         sendEventMvcProgressBarImpression(isClickCheckCart = true)
     }

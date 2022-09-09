@@ -8,5 +8,6 @@ data class FavoriteShopViewModel (
         var rowNumber: Int = 0,
         var adapterPosition: Int = 0,
         var errorMessage: String = "",
-        var isSuccess: Boolean = false
+        var isSuccess: Boolean = false,
+        var isUnfollowFromShopsMenu: Boolean = false
 )

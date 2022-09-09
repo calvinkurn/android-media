@@ -3,6 +3,9 @@ package com.tokopedia.product_bundle.common.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product_bundle.common.data.model.request.Bundle
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
@@ -11,10 +14,11 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetBundleInfoUseCase @Inject constructor(
-    @ApplicationContext repository: GraphqlRepository
+    @ApplicationContext private val repository: GraphqlRepository
 ) : GraphqlUseCase<GetBundleInfoResponse>(repository) {
 
     companion object {
+        private const val ERROR_INVALID_BUNDLE = "ERROR_INVALID_BUNDLE"
         private const val PARAM_BUNDLES = "bundles"
         private const val PARAM_SQUAD = "squad"
         private const val PARAM_USE_CASE = "usecase"
@@ -96,6 +100,8 @@ class GetBundleInfoUseCase @Inject constructor(
             """.trimIndent()
     }
 
+    private var params: HashMap<String, Any> = hashMapOf()
+
     init {
         setGraphqlQuery(query)
         setTypeClass(GetBundleInfoResponse::class.java)
@@ -113,6 +119,26 @@ class GetBundleInfoUseCase @Inject constructor(
         requestParams.putString(PARAM_USE_CASE, usecase)
         requestParams.putObject(PARAM_REQUEST_DATA, requestData)
         requestParams.putObject(PARAM_PRODUCT_DATA, productData)
-        setRequestParams(requestParams.parameters)
+        params = requestParams.parameters
+    }
+
+    override suspend fun executeOnBackground(): GetBundleInfoResponse {
+        val gqlRequest = GraphqlRequest(query, GetBundleInfoResponse::class.java, params)
+        val gqlResponse: GraphqlResponse = repository.response(listOf(gqlRequest))
+
+        val response = gqlResponse.getData<GetBundleInfoResponse>(GetBundleInfoResponse::class.java)
+        val errorMessage = response?.getBundleInfo?.error?.messages.orEmpty()
+
+        return when {
+            errorMessage == ERROR_INVALID_BUNDLE -> {
+                response
+            }
+            errorMessage.isBlank() -> {
+                response
+            }
+            else -> {
+                throw MessageErrorException(errorMessage)
+            }
+        }
     }
 }

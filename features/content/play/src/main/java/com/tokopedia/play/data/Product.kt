@@ -39,5 +39,9 @@ data class Product(
         @SerializedName("app_link")
         val appLink: String = "",
         @SerializedName("web_link")
-        val webLink: String = ""
+        val webLink: String = "",
+        @SerializedName("is_toko_now")
+        val isTokoNow: Boolean = false,
+        @SerializedName("is_pinned")
+        val isPinned: Boolean = false,
 )

@@ -1,7 +1,10 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
@@ -9,7 +12,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.utils.PMCommonUtils
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.power_merchant.subscribe.R
@@ -18,9 +28,11 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmShopGradeBinding
 import com.tokopedia.power_merchant.subscribe.view.model.PMProStatusInfoUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 
 /**
  * Created By @ilhamsuaib on 03/03/21
@@ -34,7 +46,9 @@ class ShopGradeWidget(
 
     companion object {
         private const val DATE_FORMAT = "dd MMM yyyy"
+        private const val END_OF_TENURE_DAYS = 90L
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
+        const val SATURATION_INACTIVE = 0.0f
     }
 
     private val binding: WidgetPmShopGradeBinding? by viewBinding()
@@ -43,80 +57,134 @@ class ShopGradeWidget(
         setupShopGrade(element)
         setupShopScore(element)
         showTopedIllustration(element)
+        setupCurrentGradeStepper(element)
+    }
+
+    private fun setupCurrentGradeStepper(element: WidgetShopGradeUiModel) {
+        binding?.run {
+            val isPm = element.shopGrade == PMConstant.ShopGrade.PM
+            val isPmProAdvance = element.shopGrade == PMConstant.ShopGrade.PRO_ADVANCE
+            val isPmProExpert = element.shopGrade == PMConstant.ShopGrade.PRO_EXPERT
+            val isPmProUltimate = element.shopGrade == PMConstant.ShopGrade.PRO_ULTIMATE
+
+            when {
+                isPm || element.pmStatus == PMStatusConst.IDLE -> {
+                    stepInActive(badgePmProAdvanced, textPmProAdvanced)
+                    stepInActive(badgePmProExpert, textPmProExpert)
+                    stepInActive(badgePmProUltimate, textPmProUltimate)
+                    separator2.stepSeparatorInActive()
+                    separator3.stepSeparatorInActive()
+                }
+                isPmProAdvance -> {
+                    stepInActive(badgePm)
+                    stepInActive(badgePmProExpert, textPmProExpert)
+                    stepInActive(badgePmProUltimate, textPmProUltimate)
+                    separator.stepSeparatorInActive()
+                    separator3.stepSeparatorInActive()
+                    textPmProAdvanced.setWeight(Typography.BOLD)
+
+                }
+                isPmProExpert -> {
+                    stepInActive(badgePm)
+                    stepInActive(badgePmProAdvanced, textPmProAdvanced)
+                    stepInActive(badgePmProUltimate, textPmProUltimate)
+                    separator.stepSeparatorInActive()
+                    separator2.stepSeparatorInActive()
+                    textPmProExpert.setWeight(Typography.BOLD)
+                }
+                isPmProUltimate -> {
+                    stepInActive(badgePm)
+                    stepInActive(badgePmProAdvanced, textPmProAdvanced)
+                    stepInActive(badgePmProExpert, textPmProExpert)
+                    separator.stepSeparatorInActive()
+                    separator2.stepSeparatorInActive()
+                    separator3.stepSeparatorInActive()
+                    textPmProUltimate.setWeight(Typography.BOLD)
+                }
+            }
+
+            chevronPmGrade.isVisible = element.pmStatus == PMStatusConst.ACTIVE
+            chevronPmGrade.setOnClickListener {
+                listener.goToMembershipDetail()
+                powerMerchantTracking.sendEventClickProgressBar(element.shopGrade)
+            }
+        }
+    }
+
+    private fun stepInActive(stepIcon: IconUnify?, text: Typography? = null) {
+        val colorMatrix = ColorMatrix()
+        colorMatrix.setSaturation(SATURATION_INACTIVE)
+        val colorMatrixColorFilter = ColorMatrixColorFilter(colorMatrix)
+        stepIcon?.iconImg?.colorFilter = colorMatrixColorFilter
+        stepIcon?.layoutParams?.height =
+            itemView.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+        stepIcon?.layoutParams?.width =
+            itemView.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+
+        text?.setTextColor(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN400
+            )
+        )
+    }
+
+    private fun View?.stepSeparatorInActive() {
+        this?.setBackgroundColor(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN200
+            )
+        )
     }
 
     private fun showTopedIllustration(element: WidgetShopGradeUiModel) {
-        val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
-        val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val imgUrl: Triple<Int, Int, String> =
-            if (element.isNewSeller) {
-                when {
-                    isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_PRO_ACTIVE
-                        )
-                    }
-                    isPmPro && !isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_PRO_INACTIVE
-
-                        )
-                    }
-                    !isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_INACTIVE
-                        )
-                    }
-                    else -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
-                            PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_ACTIVE
-                        )
-                    }
-                }
-            } else {
-                when {
-                    isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
-                            PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
-                        )
-                    }
-                    isPmPro && !isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp,
-                            PMConstant.Images.IMG_TOPED_PM_PRO_INACTIVE
-                        )
-                    }
-                    !isPmPro && isPmActive -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
-                            PMConstant.Images.IMG_TOPED_PM_ACTIVE
-                        )
-                    }
-                    else -> {
-                        Triple(
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
-                            com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
-                            PMConstant.Images.IMG_TOPED_PM_INACTIVE
-                        )
-                    }
-                }
-            }
+        val imgUrl: Triple<Int, Int, String> = getIllustrationUrl(element)
         binding?.imgPmShopGradeIllustration?.loadImageWithoutPlaceholder(imgUrl.third)
         setTopedImageSize(Pair(imgUrl.first, imgUrl.second))
     }
 
+    private fun getIllustrationUrl(element: WidgetShopGradeUiModel): Triple<Int, Int, String> {
+        val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
+        val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        return when {
+            isPmPro && isPmActive && element.isNewSeller -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
+                    PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_PRO_ACTIVE
+                )
+            }
+            !isPmPro && isPmActive && element.isNewSeller -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
+                    PMConstant.Images.IMG_TOPED_NEW_SELLER_PM_ACTIVE
+                )
+            }
+            isPmPro && isPmActive && !element.isNewSeller -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp,
+                    PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
+                )
+            }
+            !isPmPro && isPmActive && !element.isNewSeller -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp,
+                    PMConstant.Images.IMG_TOPED_PM_ACTIVE
+                )
+            }
+            else -> {
+                Triple(
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp,
+                    com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp,
+                    PMConstant.Images.IMG_TOPED_PM_INACTIVE
+                )
+            }
+        }
+    }
 
     private fun setTopedImageSize(illustrationSize: Pair<Int, Int>) =
         binding?.imgPmShopGradeIllustration?.run {
@@ -157,14 +225,32 @@ class ShopGradeWidget(
                     root.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                 tvPmShopGradeThreshold.layoutParams = layoutParams
             }
-            pmProStatusInfoView.visible()
-            pmProStatusInfoView.setOnClickListener {
-                listener.showPmProStatusInfo(getPmProStatusInfo(element))
-            }
         } else {
             pmProStatusInfoView.gone()
             tvPmShopGradeThreshold.visible()
             tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
+        }
+
+        when {
+            isPmProActive -> {
+                pmProStatusInfoView.visible()
+                pmProStatusInfoView.showIcon()
+                pmProStatusInfoView.setText(R.string.pm_check_pm_pro_status_info)
+                pmProStatusInfoView.setOnClickListener {
+                    listener.showPmProStatusInfo(getPmProStatusInfo(element))
+                }
+            }
+            isPmActive && !element.isNewSeller -> {
+                pmProStatusInfoView.visible()
+                pmProStatusInfoView.hideIcon()
+                pmProStatusInfoView.setText(R.string.pm_active_cta_if_pm_not_active)
+                pmProStatusInfoView.setOnClickListener {
+                    listener.showHelpPmNotActive()
+                }
+            }
+            else -> {
+                pmProStatusInfoView.gone()
+            }
         }
 
         val isPmShopScoreTipsVisible = element.pmStatus == PMStatusConst.IDLE
@@ -200,7 +286,7 @@ class ShopGradeWidget(
                     R.string.pm_shop_grade_shop_score_threshold_description_pm_active,
                     textColor,
                     element.shopScoreThreshold,
-                    getPmTireLabel(element.pmTierType)
+                    getPmTireLabel(element)
                 )
             }
         } else {
@@ -208,17 +294,16 @@ class ShopGradeWidget(
                 R.string.pm_shop_grade_shop_score_threshold_description_pm_idle,
                 textColor,
                 element.shopScoreThreshold,
-                getPmTireLabel(element.pmTierType)
+                getPmTireLabel(element)
             )
         }
     }
 
     private fun getEndOfTenureDate(element: WidgetShopGradeUiModel): String {
-        val endOfTenureDays = 90L
         val shopAge = element.shopAge
         val nowMillis = Date().time
-        val remainingDays = endOfTenureDays.minus(shopAge)
-        return if (remainingDays < endOfTenureDays) {
+        val remainingDays = END_OF_TENURE_DAYS.minus(shopAge)
+        return if (remainingDays < END_OF_TENURE_DAYS) {
             val remainingDaysMillis = TimeUnit.DAYS.toMillis(remainingDays)
             val endOfTenureMillis = nowMillis.plus(remainingDaysMillis)
             DateFormatUtils.getFormattedDate(endOfTenureMillis, DATE_FORMAT)
@@ -228,7 +313,7 @@ class ShopGradeWidget(
     }
 
     private fun getShopScoreTextColor(element: WidgetShopGradeUiModel): String {
-        val minScore = 1
+        val minScore = Int.ONE
         return when (element.shopScore) {
             in minScore..element.shopScoreThreshold -> {
                 PMCommonUtils.getHexColor(
@@ -244,9 +329,9 @@ class ShopGradeWidget(
     }
 
     private fun setupShopGrade(element: WidgetShopGradeUiModel) = binding?.run {
-        tvPmShopGrade.text = getPmTireLabel(element.pmTierType)
+        tvPmShopGrade.text = getPmTireLabel(element)
         imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl)
-        imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
+        showBadgeImageUrl(element)
 
         val isPmStatusActive = element.pmStatus == PMStatusConst.ACTIVE
         if (isPmStatusActive) {
@@ -260,8 +345,23 @@ class ShopGradeWidget(
         tvPmShopGrade.setTextColor(getPmLabelTextColor(element.pmStatus))
     }
 
-    private fun getPmTireLabel(pmTierType: Int): String {
-        return if (pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO) {
+    private fun showBadgeImageUrl(element: WidgetShopGradeUiModel) {
+        binding?.run {
+            val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
+            val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+            val imageUrl = when {
+                isPmPro && isPmActive -> PMConstant.Images.PM_PRO_BADGE
+                !isPmPro && isPmActive -> PMConstant.Images.PM_BADGE
+                else -> PMConstant.Images.PM_BADGE_INACTIVE
+            }
+            imgPmShopGrade.loadImageWithoutPlaceholder(imageUrl)
+        }
+    }
+
+    private fun getPmTireLabel(element: WidgetShopGradeUiModel): String {
+        val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
+        return if (isPmPro && isPmActive) {
             getString(R.string.pm_power_merchant_pro)
         } else {
             getString(R.string.pm_power_merchant)
@@ -284,7 +384,7 @@ class ShopGradeWidget(
 
     private fun getPmProStatusInfo(element: WidgetShopGradeUiModel): PMProStatusInfoUiModel {
         return PMProStatusInfoUiModel(
-            autoExtendDateFmt = element.autoExtendDateStr,
+            nextMonthlyRefreshDate = getFormattedRefreshDate(element.nextMonthlyRefreshDate),
             pmActiveShopScoreThreshold = element.shopScoreThreshold,
             pmProActiveShopScoreThreshold = element.pmProShopScoreThreshold,
             itemSoldThreshold = element.itemSoldThreshold,
@@ -292,8 +392,17 @@ class ShopGradeWidget(
         )
     }
 
+    private fun getFormattedRefreshDate(nextMonthlyRefreshDate: String): String {
+        return DateFormatUtils.formatDate(
+            DateFormatUtils.FORMAT_YYYY_MM_DD,
+            DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+            nextMonthlyRefreshDate
+        )
+    }
+
     interface Listener {
         fun showPmProStatusInfo(model: PMProStatusInfoUiModel)
-
+        fun showHelpPmNotActive()
+        fun goToMembershipDetail()
     }
 }

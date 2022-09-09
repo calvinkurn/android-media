@@ -139,7 +139,8 @@ class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
             viewModel.getMixLeftData().removeObservers(it)
             viewModel.showErrorState.removeObservers(it)
             viewModel.hideView.removeObservers(it)
-            productViewHolder.removeObservers(it)
+            if (::productViewModel.isInitialized)
+                productViewHolder.removeObservers(it)
         }
     }
 

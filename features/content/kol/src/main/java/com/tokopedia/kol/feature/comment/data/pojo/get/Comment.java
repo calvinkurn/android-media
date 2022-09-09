@@ -8,10 +8,10 @@ public class Comment {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private String id;
     @SerializedName("userID")
     @Expose
-    private int userID;
+    private String userID;
     @SerializedName("userName")
     @Expose
     private String userName;
@@ -37,7 +37,7 @@ public class Comment {
     @Expose
     private boolean isShop;
 
-    public Comment(int id, int userID, String userName, String userPhoto, boolean isKol, boolean
+    public Comment(String id, String userID, String userName, String userPhoto, boolean isKol, boolean
             isCommentOwner, String createTime, String comment, String userBadges, boolean isShop) {
         this.id = id;
         this.userID = userID;
@@ -51,11 +51,11 @@ public class Comment {
         this.isShop = isShop;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 

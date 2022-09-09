@@ -16,8 +16,13 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.util.DiscountUtil
-import com.tokopedia.product_bundle.single.presentation.model.*
 import com.tokopedia.product_bundle.single.presentation.constant.SingleBundleInfoConstants.BUNDLE_QTY
+import com.tokopedia.product_bundle.single.presentation.model.BundleInfoToSingleProductBundleMapper
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleDialogModel
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleUiModel
+import com.tokopedia.product_bundle.single.presentation.model.TotalAmountUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.withContext
@@ -57,6 +62,14 @@ class SingleProductBundleViewModel @Inject constructor(
     private val mThrowableError = MutableLiveData<Throwable>()
     val throwableError: LiveData<Throwable>
         get() = mThrowableError
+
+    fun isUserLoggedIn(): Boolean {
+        return userSession.userId.isNotBlank()
+    }
+
+    fun getUserId(): String {
+        return userSession.userId
+    }
 
     fun setBundleInfo(
         context: Context,
@@ -133,7 +146,7 @@ class SingleProductBundleViewModel @Inject constructor(
                 mToasterError.value = SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED
                 return
             }
-            pageSource == ProductBundleConstants.PAGE_SOURCE_CART &&
+            (pageSource == ProductBundleConstants.PAGE_SOURCE_CART || pageSource == ProductBundleConstants.PAGE_SOURCE_MINI_CART) &&
                     selectedData.bundleId == selectedBundleId &&
                     selectedData.productId == selectedProductId -> {
                 // selected bundleId is not changed

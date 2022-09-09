@@ -1,6 +1,5 @@
 package com.tokopedia.gm.common.data.source.local.model
 
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.constant.PMTier
@@ -21,15 +20,6 @@ data class PMStatusUiModel(
 ) {
     companion object {
         const val PM_AUTO_EXTEND_OFF = "off"
-    }
-
-    fun getExpiredTimeFmt(newFormat: String): String {
-        return try {
-            val currentFormat = "dd MMMM yyyy HH:mm:ss"
-            DateFormatUtils.formatDate(currentFormat, newFormat, expiredTime)
-        } catch (e: IllegalArgumentException) {
-            expiredTime
-        }
     }
 
     fun isRegularMerchant(): Boolean =

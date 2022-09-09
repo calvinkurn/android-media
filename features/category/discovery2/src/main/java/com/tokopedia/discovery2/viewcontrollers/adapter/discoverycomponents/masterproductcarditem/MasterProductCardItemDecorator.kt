@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toPx
@@ -60,6 +61,19 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
                     setMarginsShopBanner(view, left = others,right = right, top = others, bottom = others)
                 }
             }
+            ComponentsList.ShopCardItemView.ordinal -> {
+                if (spanIndex.isZero()) {
+                    //settings for left column
+                    val left = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+                    val others = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                    setMarginsShopCard(view, left = left,right = others, top = others, bottom = others)
+                } else {
+                    //settings for right column
+                    val others = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                    val right = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+                    setMarginsShopCard(view, left = others,right = right, top = others, bottom = others)
+                }
+            }
         }
     }
 
@@ -98,6 +112,20 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
             it.leftMargin = left
             it.bottomMargin = bottom
             it.topMargin = top
+            cardView.layoutParams = it
+        }
+    }
+
+    private fun setMarginsShopCard(view: View?, left: Int = 0, right: Int = 0, top: Int = 0, bottom: Int = 0) {
+        val cardView: CardUnify? = view?.findViewById(R.id.parentLayout)
+        val params = cardView?.layoutParams as? StaggeredGridLayoutManager.LayoutParams
+
+        params?.let {
+            it.rightMargin = right
+            it.leftMargin = left
+            it.bottomMargin = bottom
+            it.topMargin = top
+            it.width = (Utils.getDisplayMetric(view.context).widthPixels )/2
             cardView.layoutParams = it
         }
     }

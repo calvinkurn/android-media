@@ -131,7 +131,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     private fun onAddNoteButtonClicked() {
         context?.let {
             val itemList = arrayListOf<String>()
-            itemList.addAll(resources.getStringArray(R.array.shop_note_type))
+            itemList.addAll(context?.resources?.getStringArray(R.array.shop_note_type).orEmpty())
             addNoteBottomSheet = MenuBottomSheet.newInstance(itemList)
             addNoteBottomSheet?.setListener(object : MenuViewHolder.ItemMenuListener {
                 override fun onItemMenuClicked(text: String, position: Int) {
@@ -213,7 +213,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     override fun onIconMoreClicked(shopNoteUiModel: ShopNoteUiModel) {
         val itemList = arrayListOf<String>()
-        itemList.addAll(resources.getStringArray(R.array.shop_note_menu_more))
+        itemList.addAll(context?.resources?.getStringArray(R.array.shop_note_menu_more).orEmpty())
         iconMoreBottomSheet = MenuBottomSheet.newInstance(itemList)
         iconMoreBottomSheet?.setListener(object : MenuViewHolder.ItemMenuListener {
             override fun onItemMenuClicked(text: String, position: Int) {

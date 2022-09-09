@@ -63,6 +63,7 @@ class SearchApiConst {
         const val FIRST_INSTALL = "first_install"
         const val SRP_PAGE_TITLE = "srp_page_title"
         const val SRP_PAGE_ID = "srp_page_id"
+        const val SRP_EXT_REF = "srp_ext_ref"
         const val USER_LAT = "user_lat"
         const val USER_LONG = "user_long"
         const val USER_CITY_ID = "user_cityId"
@@ -77,6 +78,9 @@ class SearchApiConst {
         const val TYPO = "typo"
         const val IS_FULFILLMENT = "is_fulfillment"
         const val GIFTING = "gift"
+        const val IS_TYPO_CORRECTED = "is_typo_corrected"
+        const val FROM = "from"
+        const val PAGE_SOURCE = "page_source"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"

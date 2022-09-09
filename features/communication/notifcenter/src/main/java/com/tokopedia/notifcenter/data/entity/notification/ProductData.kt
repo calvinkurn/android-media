@@ -13,8 +13,6 @@ data class ProductData(
         val countReview: Int = 0,
         @SerializedName("currency")
         val currency: String = "",
-        @SerializedName("department_id")
-        val departmentId: Long = 0,
         @SerializedName("image_url")
         val imageUrl: String = "",
         @SerializedName("is_buyable")
@@ -58,7 +56,11 @@ data class ProductData(
         @SerializedName("is_variant")
         var isVariant: Boolean = false,
         @SerializedName("is_preorder")
-        var isPreorder: Boolean = false
+        var isPreorder: Boolean = false,
+        @SerializedName("android_url")
+        var androidUrl: String = "",
+        @SerializedName("warehouse_id")
+        var warehouseId: String = "0"
 ) {
     var loadingReminderState: Boolean = false
 

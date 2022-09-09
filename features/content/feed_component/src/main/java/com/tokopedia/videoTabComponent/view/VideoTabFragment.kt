@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
@@ -40,6 +41,7 @@ import com.tokopedia.videoTabComponent.domain.model.data.*
 import com.tokopedia.videoTabComponent.util.PlayFeedSharedPrefsUtil.clearTabMenuPosition
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 import com.tokopedia.videoTabComponent.view.custom.FeedPlayStickyHeaderRecyclerView
+import com.tokopedia.videoTabComponent.view.uimodel.SelectedPlayWidgetCard
 import com.tokopedia.videoTabComponent.view.viewholder.PlayFeedWidgetViewHolder
 import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
@@ -70,6 +72,10 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         private const val THRESHOLD_SCROLL_TEN = 10
         private const val THRESHOLD_SCROLL_MINUS_TEN = -10
 
+        private const val REQUEST_CODE_PLAY_ROOM = 123
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): VideoTabFragment {
@@ -94,6 +100,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     @Inject
     lateinit var playWidgetPreference: PlayWidgetPreference
 
+    @Inject
+    lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
+
     override fun getScreenName(): String {
         return "VideoTabFragment"
     }
@@ -115,6 +124,11 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     private fun initVar() {
         requireActivity().clearTabMenuPosition()
+
+        playWidgetAnalyticsListenerImp.setOnClickChannelCard { channelId, position ->
+            playFeedVideoTabViewModel.selectedPlayWidgetCard = SelectedPlayWidgetCard(channelId, position)
+        }
+
         playWidgetCoordinator = PlayWidgetCoordinatorVideoTab(this).apply {
             setListener(this@VideoTabFragment)
             setAnalyticListener(playWidgetAnalyticsListenerImp)
@@ -203,6 +217,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         swipeToRefresh?.isRefreshing = true
         swipeToRefresh?.isEnabled = false
         playFeedVideoTabViewModel.getInitialPlayData()
+        feedFloatingButtonManager.setInitialData(parentFragment)
         setupView(view)
         playWidgetCoordinator.onResume()
     }
@@ -213,15 +228,19 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
             rvWidget?.addOnScrollListener(it)
             it.resetState()
         }
+        rvWidget?.addOnScrollListener(feedFloatingButtonManager.scrollListener)
         swipeToRefresh?.setOnRefreshListener(this)
 
         setAdapter()
+        rvWidget?.let { feedFloatingButtonManager.setDelayForExpandFab(it.recyclerView) }
     }
 
     private fun setAdapter() {
         rvWidget?.apply {
             adapter = VideoTabAdapter(
-                playWidgetCoordinator, this@VideoTabFragment, requireActivity()
+                playWidgetCoordinator,
+                this@VideoTabFragment,
+                requireActivity(),
             ).also {
                 setAdapter(it)
             }
@@ -303,9 +322,8 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         val intent = RouteManager.getIntent(requireContext(), appLink)
-        startActivity(intent)
+        startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
     }
-
 
     private fun playWidgetOnVisibilityChanged(
         isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(
@@ -414,6 +432,12 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rvWidget?.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        feedFloatingButtonManager.cancel()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (::playWidgetCoordinator.isInitialized) {
@@ -435,8 +459,12 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 else getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_remove_reminder), Toaster.TYPE_NORMAL)
 
         val adapterPositionForItem = adapter.getPositionInList(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.itemPosition)
-        adapter.updateItemInList(adapterPositionForItem, playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType)
-
+        adapter.updatePlayWidgetInfo(
+            adapterPositionForItem,
+            playWidgetFeedReminderInfoData.channelId,
+            null,
+            playWidgetFeedReminderInfoData.reminderType == PlayWidgetReminderType.Reminded,
+        )
     }
 
     override fun onResume() {
@@ -469,10 +497,21 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 val playWidgetFeedReminderInfoData = playFeedVideoTabViewModel.playWidgetReminderEvent.value
                 if (playWidgetFeedReminderInfoData != null) playFeedVideoTabViewModel.updatePlayWidgetToggleReminder(playWidgetFeedReminderInfoData.channelId, playWidgetFeedReminderInfoData.reminderType, playWidgetFeedReminderInfoData.itemPosition)
             }
+            REQUEST_CODE_PLAY_ROOM -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    val selectedCard = playFeedVideoTabViewModel.selectedPlayWidgetCard
 
+                    val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: selectedCard.channelId
+                    val totalView = data?.extras?.getString(EXTRA_TOTAL_VIEW)
+                    val isReminderSet = data?.extras?.getBoolean(EXTRA_IS_REMINDER, false)
+
+                    val position = adapter.getPositionInList(channelId, selectedCard.position)
+
+                    adapter.updatePlayWidgetInfo(position, channelId, totalView, isReminderSet)
+
+                    playFeedVideoTabViewModel.selectedPlayWidgetCard = SelectedPlayWidgetCard.Empty
+                }
+            }
         }
     }
-
-
-
 }

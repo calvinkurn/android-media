@@ -110,9 +110,9 @@ open class SubmitPostUseCaseNew @Inject constructor(
         return Func1 { graphqlResponse -> graphqlResponse.getData(SubmitPostData::class.java) }
     }
 
-    private fun getInputType(type: String): String {
-        return if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
-    }
+    private fun getInputType(type: String) =
+        if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
+
 
     protected open fun getContentSubmitInput(requestParams: RequestParams,
                                              mediumList: List<SubmitPostMedium>): ContentSubmitInput {
@@ -177,12 +177,13 @@ open class SubmitPostUseCaseNew @Inject constructor(
             mediaWidth:Int,
             mediaHeight:Int
         ): RequestParams {
+            val authorType = if (type.isNotEmpty()) type else CONTENT_SHOP
 
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_TYPE, TYPE_CONTENT)
             requestParams.putString(PARAM_TOKEN, token)
             requestParams.putString(PARAM_AUTHOR_ID, authorId)
-            requestParams.putString(PARAM_AUTHOR_TYPE, CONTENT_SHOP)
+            requestParams.putString(PARAM_AUTHOR_TYPE, authorType)
             requestParams.putString(PARAM_CAPTION, caption)
             requestParams.putObject(PARAM_MEDIA_MODEL_LIST, mediaList)
             requestParams.putInt(PARAM_MEDIA_WIDTH, mediaWidth)

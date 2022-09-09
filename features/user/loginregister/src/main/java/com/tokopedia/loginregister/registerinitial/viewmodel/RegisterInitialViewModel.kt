@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.domain.query.MutationRegisterCheck
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
@@ -18,8 +19,6 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
-import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
-import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.RegisterV2Query
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -28,7 +27,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
@@ -41,7 +39,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-10-14.
@@ -58,9 +55,7 @@ class RegisterInitialViewModel @Inject constructor(
         private val getProfileUseCase: GetProfileUseCase,
         private val tickerInfoUseCase: TickerInfoUseCase,
         private val dynamicBannerUseCase: DynamicBannerUseCase,
-        private val checkHasOvoAccUseCase: CheckHasOvoAccUseCase,
         private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
-        @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
         private val dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
@@ -129,10 +124,6 @@ class RegisterInitialViewModel @Inject constructor(
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = _dynamicBannerResponse
 
-    private val _checkOvoResponse = MutableLiveData<Result<CheckOvoResponse>>()
-    val checkOvoResponse: LiveData<Result<CheckOvoResponse>>
-        get() = _checkOvoResponse
-
     var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
 
     fun getProvider() {
@@ -191,16 +182,13 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun registerCheck(id: String) {
         launchCatchError(coroutineContext, {
-            rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK]?.let { query ->
-                val params = mapOf(RegisterInitialQueryConstant.PARAM_ID to id)
-                registerCheckUseCase.setTypeClass(RegisterCheckPojo::class.java)
-                registerCheckUseCase.setRequestParams(params)
-                registerCheckUseCase.setGraphqlQuery(query)
-                idlingResourceProvider?.increment()
-                val response = registerCheckUseCase.executeOnBackground()
-                onSuccessRegisterCheck().invoke(response)
-
-            }
+            val params = mapOf(RegisterInitialQueryConstant.PARAM_ID to id)
+            registerCheckUseCase.setTypeClass(RegisterCheckPojo::class.java)
+            registerCheckUseCase.setRequestParams(params)
+            registerCheckUseCase.setGraphqlQuery(MutationRegisterCheck.getQuery())
+            idlingResourceProvider?.increment()
+            val response = registerCheckUseCase.executeOnBackground()
+            onSuccessRegisterCheck().invoke(response)
         }, {
             onFailedRegisterCheck().invoke(it)
         })
@@ -313,17 +301,6 @@ class RegisterInitialViewModel @Inject constructor(
         })
     }
 
-    fun checkHasOvoAccount(phone: String) {
-        launchCatchError(block = {
-            checkHasOvoAccUseCase.setParams(phone)
-            checkHasOvoAccUseCase.executeOnBackground().run {
-                _checkOvoResponse.postValue(Success(this))
-            }
-        }, onError = {
-            _checkOvoResponse.postValue(Fail(it))
-        })
-    }
-
     private fun onSuccessLoginTokenGoogle(): (LoginTokenPojo) -> Unit {
         return {
             mutableLoginTokenGoogleResponse.value = Success(it)
@@ -427,15 +404,15 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onSuccessActivateUser(): (ActivateUserData) -> Unit {
         return {
             userSession.clearToken()
-            if (it.isSuccess == 1 &&
-                    it.accessToken.isNotEmpty() &&
+            if (it.accessToken.isNotEmpty() &&
                     it.refreshToken.isNotEmpty() &&
                     it.tokenType.isNotEmpty()) {
                 mutableActivateUserResponse.value = Success(it)
             } else if (it.message.isNotEmpty()) {
-                mutableActivateUserResponse.value =
-                        Fail(MessageErrorException(it.message))
-            } else mutableActivateUserResponse.value = Fail(RuntimeException())
+                mutableActivateUserResponse.value = Fail(MessageErrorException(it.message))
+            } else {
+                mutableActivateUserResponse.value = Fail(RuntimeException())
+            }
         }
     }
 

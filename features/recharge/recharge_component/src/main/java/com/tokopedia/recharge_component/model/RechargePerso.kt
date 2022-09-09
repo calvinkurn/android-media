@@ -47,6 +47,9 @@ data class RechargePerso(
         @SerializedName("tracking")
         val tracking: List<RechargeBUWidgetTrackingData> = listOf(),
         @Expose
+        @SerializedName("tracking_data")
+        val trackingData:RechargeBUWidgetTrackUserData = RechargeBUWidgetTrackUserData(),
+        @Expose
         @SerializedName("items")
         val items: List<RechargePersoItem> = listOf()
 ) {

@@ -199,6 +199,7 @@
 
     <!-- Product Detail -->
     <string name="title_activity_product_detail">Rincian Produk</string>
+    <string name="pdp_common_educational_title">Product Educational</string>
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
     <string name="label_product_installment">Cicilan</string>

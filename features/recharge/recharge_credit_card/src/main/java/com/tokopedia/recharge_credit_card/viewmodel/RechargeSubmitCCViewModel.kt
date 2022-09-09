@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrl
 import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrlResponse
@@ -15,11 +16,7 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
 import com.tokopedia.recharge_credit_card.usecase.RechargeSubmitCcUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import okhttp3.internal.http2.ConnectionShutdownException
-import java.io.InterruptedIOException
 import java.lang.reflect.Type
-import java.net.SocketException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
@@ -38,7 +35,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
     fun postCreditCard(rawQuery: String, categoryId: String, paramSubmitCC: HashMap<String, String>) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
-            mapParam[CATEGORY_ID] = categoryId.toInt()
+            mapParam[CATEGORY_ID] = categoryId.toIntSafely()
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCSignatureReponse::class.java, mapParam)
@@ -85,6 +82,18 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         mapParam[PARAM_OPERATOR_ID] = operatorId
         mapParam[PARAM_PRODUCT_ID] = productId
         mapParam[PARAM_USER_ID] = userId
+        return mapParam
+    }
+
+    fun createMaskedMapParam(clientNumber: String, operatorId: String,
+                       productId: String, userId: String, token: String): HashMap<String, String> {
+        val mapParam = HashMap<String, String>()
+        mapParam[PARAM_ACTION] = VALUE_ACTION
+        mapParam[PARAM_MASKED_NUMBER] = clientNumber
+        mapParam[PARAM_OPERATOR_ID] = operatorId
+        mapParam[PARAM_PRODUCT_ID] = productId
+        mapParam[PARAM_USER_ID] = userId
+        mapParam[PARAM_TOKEN] = token
         return mapParam
     }
 

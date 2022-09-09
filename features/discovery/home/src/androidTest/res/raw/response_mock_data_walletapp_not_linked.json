@@ -1,0 +1,25 @@
+[
+  {
+    "data": {
+      "walletappGetBalances": {
+        "balances": [
+          {
+            "activation_cta": "Aktifkan?",
+            "balance": [],
+            "code": "SUCCESS",
+            "icon_url": "https://images.tokopedia.net/img/walletapp/v1/pemuda-logo-short.png",
+            "is_linked": false,
+            "masked_phone": "**********455",
+            "message": "Success",
+            "redirect_url": "",
+            "type": "PEMUDA",
+            "wallet_name": "GoPay",
+            "global_menu_text": {
+              "id": "Activation CTA from BE"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

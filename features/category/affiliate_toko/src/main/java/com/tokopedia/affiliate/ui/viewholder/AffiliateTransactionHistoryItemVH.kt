@@ -28,6 +28,8 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
 
         const val TRANSACTION_TYPE_DEPOSIT = "TRANSACTION_TYPE_DEPOSIT"
         const val TRANSACTION_TYPE_WITHDRAWAL = "TRANSACTION_TYPE_WITHDRAWAL"
+        const val TRANSACTION_TYPE_ADMIN_DEPOSIT = "TRANSACTION_TYPE_ADMIN_DEPOSIT"
+        const val TRANSACTION_TYPE_ADMIN_WITHDRAWAL = "TRANSACTION_TYPE_ADMIN_WITHDRAWAL"
         const val DANGER = "DANGER"
         const val SUCCESS = "SUCCESS"
         const val WARNING = "WARNING"
@@ -75,9 +77,9 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
         itemView.findViewById<Typography>(R.id.transaction_history_heading).text = element?.transaction?.title
         itemView.findViewById<Typography>(R.id.transaction_history_amount).apply {
             text = element?.transaction?.amountFormatted
-            if(element?.transaction?.transactionType == TRANSACTION_TYPE_DEPOSIT)
+            if(element?.transaction?.transactionType == TRANSACTION_TYPE_DEPOSIT || element?.transaction?.transactionType == TRANSACTION_TYPE_ADMIN_DEPOSIT)
                 setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-            else
+            else if (element?.transaction?.transactionType == TRANSACTION_TYPE_WITHDRAWAL || element?.transaction?.transactionType == TRANSACTION_TYPE_ADMIN_WITHDRAWAL)
                 setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         }
     }

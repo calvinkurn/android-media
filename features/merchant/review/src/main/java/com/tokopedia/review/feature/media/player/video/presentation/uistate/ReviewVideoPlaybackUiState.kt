@@ -4,6 +4,10 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 sealed interface ReviewVideoPlaybackUiState: Parcelable {
+    fun isPlaying(): Boolean {
+        return this is Playing || this is Buffering
+    }
+
     val currentPosition: Long
 
     @Parcelize

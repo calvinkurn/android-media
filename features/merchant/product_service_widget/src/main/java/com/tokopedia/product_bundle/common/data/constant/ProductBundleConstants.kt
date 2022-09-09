@@ -1,8 +1,13 @@
 package com.tokopedia.product_bundle.common.data.constant
 
 object ProductBundleConstants {
+
+    /**
+     * Deprecated - Please use BundlingPageSource
+     */
     // page sources
     const val PAGE_SOURCE_CART = "cart"
+    const val PAGE_SOURCE_MINI_CART = "minicart"
     const val PAGE_SOURCE_PDP = "pdp"
 
     // page result extras
@@ -12,4 +17,9 @@ object ProductBundleConstants {
 
     // image resource links
     const val BUNDLE_EMPTY_IMAGE_URL = "https://images.tokopedia.net/img/android/merchant/product_service/product_bundle/product_bundle_empty.png"
+
+    // preorder time unit
+    const val PREORDER_TYPE_DAY: Int = 1
+    const val PREORDER_TYPE_WEEK: Int = 2
+    const val PREORDER_TYPE_MONTH: Int = 3
 }

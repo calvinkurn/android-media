@@ -55,7 +55,7 @@
             app:layout_constraintEnd_toStartOf="@+id/iu_close_sharing"
             app:layout_constraintStart_toEndOf="@+id/iu_sharing"
             app:layout_constraintTop_toTopOf="@+id/iu_sharing"
-            app:typographyType="body_3" />
+            app:typographyType="display_3" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_sharing"

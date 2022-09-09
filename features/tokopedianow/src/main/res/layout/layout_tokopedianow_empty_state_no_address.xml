@@ -43,7 +43,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateTitle"
-        app:typographyType="body_2" />
+        app:typographyType="display_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/tokonow_empty_state_primary_btn"

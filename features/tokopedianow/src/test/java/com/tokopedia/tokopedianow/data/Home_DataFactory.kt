@@ -13,6 +13,8 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.productcard.ProductCardModel
@@ -21,10 +23,31 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
-import com.tokopedia.tokopedianow.home.domain.model.*
-import com.tokopedia.tokopedianow.home.presentation.uimodel.*
+import com.tokopedia.tokopedianow.home.domain.model.Data
+import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
+import com.tokopedia.tokopedianow.home.domain.model.Header
+import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
+import com.tokopedia.tokopedianow.home.domain.model.QuestList
+import com.tokopedia.tokopedianow.home.domain.model.QuestListResponse
+import com.tokopedia.tokopedianow.home.domain.model.QuestUser
+import com.tokopedia.tokopedianow.home.domain.model.ResultStatus
+import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
+import com.tokopedia.tokopedianow.home.domain.model.Ticker
+import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
+import com.tokopedia.tokopedianow.home.domain.model.Tickers
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSpaceUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -109,6 +132,10 @@ fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
             )
         )
     )
+}
+
+fun createDynamicChannelLayoutList(listResponses: List<HomeLayoutResponse>): List<HomeLayoutResponse> {
+    return listResponses
 }
 
 fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
@@ -254,15 +281,19 @@ fun createMiniCartSimplifier(): MiniCartSimplifiedData {
                     totalProductCount = 1,
                     totalProductPrice = 100
             ),
-            miniCartItems = listOf(
-                    MiniCartItem(
+            miniCartItems = mapOf(
+                    MiniCartItemKey("125") to MiniCartItem.MiniCartItemProduct(
                             isError = false,
                             cartId = "123",
                             productId = "125",
                             productParentId = "126",
                             quantity = 12,
                             notes = "Hai"
-                    )
+                    ),
+                    MiniCartItemKey("126", type = MiniCartItemType.PARENT) to MiniCartItem.MiniCartItemParentProduct(
+                            parentId = "126",
+                            totalQuantity = 12,
+                    ),
             ),
             isShowMiniCartWidget = true
     )
@@ -279,7 +310,8 @@ fun createCategoryGridListFirstFetch(): CategoryListResponse {
                     appLinks = "tokoepdia://",
                     imageUrl = "tokopedia://",
                     parentId = "5",
-                    childList = listOf()
+                    childList = listOf(),
+                    isAdult = 0
             )
     ))
 }
@@ -295,9 +327,58 @@ fun createCategoryGridListSecondFetch(): CategoryListResponse {
                             appLinks = "tokoepdia://",
                             imageUrl = "tokopedia://",
                             parentId = "2",
-                            childList = listOf()
+                            childList = listOf(),
+                            isAdult = 0
                     )
             ))
+}
+
+fun createCategoryGridWithAdultDataFetch(): CategoryListResponse {
+    return CategoryListResponse(
+        header = com.tokopedia.abstraction.common.data.model.response.Header(),
+        data = listOf(
+            CategoryResponse(
+                id = "1",
+                name = "Category 1",
+                url = "tokopedia://",
+                appLinks = "tokoepdia://",
+                imageUrl = "tokopedia://",
+                parentId = "2",
+                childList = listOf(),
+                isAdult = 0
+            ),
+            CategoryResponse(
+                id = "2",
+                name = "Category 2",
+                url = "tokopedia://",
+                appLinks = "tokoepdia://",
+                imageUrl = "tokopedia://",
+                parentId = "2",
+                childList = listOf(),
+                isAdult = 1
+            ),
+            CategoryResponse(
+                id = "3",
+                name = "Category 3",
+                url = "tokopedia://",
+                appLinks = "tokoepdia://",
+                imageUrl = "tokopedia://",
+                parentId = "2",
+                childList = listOf(),
+                isAdult = 0
+            ),
+            CategoryResponse(
+                id = "4",
+                name = "Category 4",
+                url = "tokopedia://",
+                appLinks = "tokoepdia://",
+                imageUrl = "tokopedia://",
+                parentId = "2",
+                childList = listOf(),
+                isAdult = 1
+            )
+        )
+    )
 }
 
 fun createDynamicLegoBannerDataModel(

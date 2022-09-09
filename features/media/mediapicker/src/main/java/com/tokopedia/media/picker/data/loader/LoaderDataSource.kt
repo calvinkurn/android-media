@@ -12,8 +12,8 @@ import android.provider.MediaStore.Files.FileColumns.*
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.picker.common.PickerParam
-import com.tokopedia.picker.common.utils.isGifFormat
-import java.io.File
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
+import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 
 interface LoaderDataSource {
     val projection: Array<String>
@@ -81,14 +81,14 @@ open class LoaderDataSourceImpl(
 
         // Exclude GIF when we don't want it
         if (!param.isIncludeGifFile()) {
-            if (isGifFormat(path)) return null
+            if (file.isGif()) return null
         }
 
         val id = cursor.getLong(cursor.getColumnIndex(projection[0]))
         val name = cursor.getString(cursor.getColumnIndex(projection[1]))
 
         if (name != null) {
-            return Media(id, name, path)
+            return Media(id, path.asPickerFile())
         }
 
         return null
@@ -120,11 +120,11 @@ open class LoaderDataSourceImpl(
         private const val VOLUME_NAME = "external"
         private const val QUERY_LIMIT = "limit"
 
-        private fun makeSafeFile(path: String?): File? {
+        private fun makeSafeFile(path: String?): PickerFile? {
             return if (path == null || path.isEmpty()) {
                 null
             } else try {
-                File(path)
+                path.asPickerFile()
             } catch (ignored: Exception) {
                 null
             }

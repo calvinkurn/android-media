@@ -4,6 +4,13 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/menu_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/menu_item"
@@ -11,10 +18,20 @@
         android:layout_height="wrap_content"
         app:typographyType="heading_5"
         android:textColor="@color/Unify_N700_96"
-        android:layout_alignParentStart="true"
+        android:layout_toEndOf="@+id/menu_icon"
         android:layout_centerVertical="true"
+        android:layout_marginStart="15dp"
         android:layout_marginBottom="20dp"
         tools:text="Test Label"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/menu_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/menu_item"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:visibility="gone"/>
 
     <View
         android:id="@+id/divider_label"

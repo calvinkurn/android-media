@@ -18,11 +18,13 @@ import com.tokopedia.review.feature.media.gallery.detailed.presentation.activity
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uimodel.DetailedReviewActionMenuUiModel
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uimodel.ToasterUiModel
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
+import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.MediaCounterUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -36,6 +38,7 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.ceil
@@ -43,7 +46,8 @@ import kotlin.math.ceil
 class SharedReviewMediaGalleryViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val getDetailedReviewMediaUseCase: GetDetailedReviewMediaUseCase,
-    private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase
+    private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -100,6 +104,12 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private val _overlayVisibility = MutableStateFlow(true)
     val overlayVisibility: StateFlow<Boolean>
         get() = _overlayVisibility
+    private val _isPlayingVideo = MutableStateFlow(false)
+    val isPlayingVideo: StateFlow<Boolean>
+        get() = _isPlayingVideo
+    private val _videoDurationMillis = MutableStateFlow(0L)
+    val videoDurationMillis: StateFlow<Long>
+        get() = _videoDurationMillis
     private val _toggleLikeRequest = MutableStateFlow<Pair<String, Int>?>(null)
     private val _detailedReviewActionMenu = _currentReviewDetail.mapLatest {
         if (it?.isReportable == true) {
@@ -137,6 +147,31 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         scope = this,
         started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
         initialValue = ActionMenuBottomSheetUiState.Hidden(emptyList(), "", "")
+    )
+
+    val mediaCounterUiState = combine(
+        _detailedReviewMediaResult,
+        _currentMediaItem,
+        _overlayVisibility
+    ) { detailedReviewMediaResult, currentMediaItem, overlayVisibility ->
+        val isShowingLoading = currentMediaItem is LoadingStateItemUiModel
+        val currentPos = currentMediaItem?.mediaNumber.orZero()
+        val totalMedia = detailedReviewMediaResult?.detail?.mediaCount.orZero().toInt()
+        if (overlayVisibility) {
+            if (isShowingLoading) {
+                MediaCounterUiState.Loading
+            } else if (currentPos.isMoreThanZero() && totalMedia.isMoreThanZero()) {
+                MediaCounterUiState.Showing(currentPos, totalMedia)
+            } else {
+                MediaCounterUiState.Hidden
+            }
+        } else {
+            MediaCounterUiState.Hidden
+        }
+    }.stateIn(
+        scope = this,
+        started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
+        initialValue = MediaCounterUiState.Hidden
     )
 
     private var loadMoreDetailedReviewMediaJob: Job? = null
@@ -459,5 +494,26 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     fun getPageSource(): Int {
         return _pageSource.value
+    }
+
+    fun hideOverlay() {
+        _overlayVisibility.update { false }
+    }
+
+    fun updateIsPlayingVideo(playing: Boolean) {
+        val isPausing = !_isPlayingVideo.updateAndGet {
+            playing
+        }
+        if (isPausing) {
+            _overlayVisibility.value = true
+        }
+    }
+
+    fun updateVideoDurationMillis(totalDuration: Long) {
+        _videoDurationMillis.value = totalDuration
+    }
+
+    fun getUserID(): String {
+        return userSession.userId
     }
 }

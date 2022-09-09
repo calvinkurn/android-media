@@ -1,15 +1,20 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelLoadingModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelRetryModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
@@ -22,6 +27,8 @@ class HomeViewModelDynamicChannelTest{
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
+    private val userSession = mockk<UserSessionInterface>(relaxed = true)
+    private val getHomeBalanceWidgetUseCase = mockk<HomeBalanceWidgetUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
     private val mockExpiredChannelModel = ChannelModel(id = "1", groupId = "1")
@@ -47,6 +54,10 @@ class HomeViewModelDynamicChannelTest{
         homeViewModel.getDynamicChannelDataOnExpired(mockExpiredVisitable, mockExpiredChannelModel, 0)
         Assert.assertTrue(
                 homeViewModel.homeDataModel.list.size == mockNewVisitableList.size
+        )
+        Assert.assertTrue(
+            (homeViewModel.trackingLiveData.value as Event).getContentIfNotHandled()
+                ?.isEmpty() == true
         )
     }
 
@@ -124,10 +135,17 @@ class HomeViewModelDynamicChannelTest{
     @Test
     fun `When catch error on updateHomeData then homeDataModel should contains DynamicChannelRetryModel with state not loading`(){
         getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
-                DynamicChannelRetryModel(true)
+            HomeHeaderDataModel(),
+            DynamicChannelRetryModel(true)
         )))
+        every { userSession.isLoggedIn } returns true
         getHomeUseCase.givenUpdateHomeDataError()
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        getHomeBalanceWidgetUseCase.givenGetLoadingStateReturn()
+        homeViewModel = createHomeViewModel(
+            getHomeUseCase = getHomeUseCase,
+            userSessionInterface = userSession,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+        )
         homeViewModel.refreshHomeData()
         homeViewModel.updateNetworkLiveData.observeOnce {
             Assert.assertTrue(it.error is Throwable)

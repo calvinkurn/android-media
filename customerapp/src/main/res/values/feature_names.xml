@@ -213,6 +213,8 @@
 
     <string name="label_manage_address">Daftar Alamat</string>
 
+    <string name="label_pod">Bukti Pengiriman</string>
+
     <string name="title_activity_add_address">Tambah Alamat</string>
     <string name="title_activity_search_address">Kota atau kecamatan</string>
     <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
@@ -232,7 +234,7 @@
 
     <!-- Dynamic feature for Power Merchant-->
     <string name="pm_title_activity">Power Merchant</string>
-    <string name="pm_benefit_package_title_activity">Paket Keuntungan</string>
+    <string name="pm_membership_detail_title_activity">Detail Keanggotaan</string>
 
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
     <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
@@ -275,6 +277,7 @@
     <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="title_som_waiting_payment">Menunggu Pembayaran</string>
     <string name="title_logistic_info">Informasi Terkait Kurir</string>
+    <string name="title_reschedule_pickup_activity">Ubah Jadwal Pick-up</string>
 
 
     <!-- Dynamic feature for Umrah-->
@@ -342,6 +345,10 @@
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
     <string name="title_wishlist_v2">Wishlist</string>
+    <string name="page_name_wishlist_collection">Wishlist Collection</string>
+    <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
+    <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
+
     <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
     <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>
 
@@ -409,7 +416,9 @@
 
     <string name="title_image_picker_insta_df">Media Picker</string>
 
+    <string name="title_feed_content_creation">Feed Content Creation</string>
     <string name="title_feed_create_post">Create Post</string>
+    <string name="title_feed_people">People</string>
     <string name="swd_activity_withdraw">Penarikan Saldo</string>
     <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
     <string name="gallery_top_bar_title">Foto dari Pembeli</string>
@@ -419,4 +428,11 @@
     <!-- Feedback Form -->
     <string name="create_report_title">Create Report</string>
     <string name="draw_on_picture_label">Edit Images</string>
+
+    <!-- TokoFood -->
+    <string name="title_tokofood" translatable="false">TokoFood</string>
+    <string name="title_tokofood_post_purchase" translatable="false">Detail Pesanan</string>
+
+    <!-- Shop Admin -->
+    <string name="title_shop_admin">Shop Admin</string>
 </resources>

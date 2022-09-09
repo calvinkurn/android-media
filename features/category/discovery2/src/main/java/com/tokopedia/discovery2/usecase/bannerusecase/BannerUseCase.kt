@@ -1,17 +1,16 @@
 package com.tokopedia.discovery2.usecase.bannerusecase
 
-import android.content.Context
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.banner.BannerRepository
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import javax.inject.Inject
 
 class BannerUseCase @Inject constructor(private val repository: BannerRepository) {
 
-    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, applicationContext: Context): Boolean {
+    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, isDarkMode: Boolean = false): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         if (component?.noOfPagesLoaded == CONST_ONE) return false
         component?.let {
@@ -19,7 +18,7 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
             val bannerData = repository.getBanner(
                     if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
                         component.dynamicOriginalId!! else componentId,
-                    getQueryParameterMap(applicationContext),
+                    getQueryParameterMap(isDarkMode,it.userAddressData),
                     pageEndPoint, it.name)
             val bannerListData = (bannerData?.data ?: emptyList()).toMutableList()
             it.noOfPagesLoaded = CONST_ONE
@@ -68,11 +67,13 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
         return null
     }
 
-    private fun getQueryParameterMap(applicationContext: Context): MutableMap<String, Any> {
+    private fun getQueryParameterMap(isDarkMode: Boolean,
+                                     userAddressData: LocalCacheModel?): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
-        queryParameterMap[Utils.DARK_MODE] = applicationContext.isDarkMode()
+        queryParameterMap[Utils.DARK_MODE] = isDarkMode
+        queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(userAddressData))
 
         return queryParameterMap
     }
