@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_redefine_register"
     app:startDestination="@id/redefineRegisterEmailFragment">
 
     <fragment
         android:id="@+id/redefineRegisterEmailFragment"
         android:name="com.tokopedia.loginregister.redefine_register_email.register_email.view.fragment.RedefineRegisterEmailFragment"
-        android:label="RedefineRegisterEmailFragment" >
+        android:label="RedefineRegisterEmailFragment"
+        tools:layout="@layout/fragment_redefine_register_email">
         <action
             android:id="@+id/action_redefineRegisterEmailFragment_to_redefineRegisterInputPhoneFragment"
             app:destination="@id/redefineRegisterInputPhoneFragment" />
@@ -16,7 +18,8 @@
     <fragment
         android:id="@+id/redefineRegisterInputPhoneFragment"
         android:name="com.tokopedia.loginregister.redefine_register_email.input_phone.view.fragment.RedefineRegisterInputPhoneFragment"
-        android:label="RedefineRegisterInputPhoneFragment" >
+        android:label="RedefineRegisterInputPhoneFragment"
+        tools:layout="@layout/fragment_redefine_register_input_phone" >
         <argument
             android:name="source"
             app:argType="string"
