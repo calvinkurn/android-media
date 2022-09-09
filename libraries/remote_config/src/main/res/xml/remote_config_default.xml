@@ -642,4 +642,15 @@
         <key>android_enable_blocking_touch_pdp_navbar</key>
         <value>true</value>
     </entry>
+<<<<<<< HEAD
+    <entry>
+        <key>android_review_form_new_enable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_robust_tester</key>
+        <value></value>
+    </entry>
+=======
+>>>>>>> d17b9862394c1125f5529487fab1d4429617eb76
 </defaultsMap>
