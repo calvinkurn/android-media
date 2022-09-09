@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductOnSelectionProcessBinding
@@ -73,7 +74,7 @@ class OnSelectionProcessDelegateAdapter(
         }
 
         private fun Typography.setPrice(item: OnSelectionProcessItem) {
-            paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            strikethrough()
             text = if (item.price.lowerPrice == item.price.upperPrice)  {
                 item.price.upperPrice.getCurrencyFormatted()
             } else {

@@ -58,7 +58,7 @@ class HasPaginatedListImpl : HasPaginatedList {
         nestedScrollView.apply {
             viewTreeObserver.addOnScrollChangedListener {
                 val scrollState: Int =
-                    this.getChildAt(this.childCount - Int.ONE).bottom - (this.height + this.scrollY)
+                    this.getChildAt(this.childCount.dec()).bottom - (this.height + this.scrollY)
                 if (scrollState == Int.ZERO) {
                     config.onLoadNextPage
                     loadNextPage()

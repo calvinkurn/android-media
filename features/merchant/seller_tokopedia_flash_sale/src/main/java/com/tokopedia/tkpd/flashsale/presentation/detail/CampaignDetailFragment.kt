@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +40,6 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import com.tokopedia.unifyprinciples.R.color
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -301,23 +299,13 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         cdpHeaderBinding?.run {
             when (campaignStatus) {
                 UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> {
-                    tickerHeader.visible()
-                    tickerHeader.setTextDescription(getString(R.string.stfs_description_ticker_upcoming_cdp_product_not_eligible_state))
-                    tgCampaignStatus.text = getString(R.string.registration_over_in_label)
+                    setNoProductEligibleHeader()
                 }
                 UpcomingCampaignStatus.FULL_QUOTA -> {
-                    tickerHeader.visible()
-                    tickerHeader.tickerTitle =
-                        getString(R.string.stfs_title_ticker_upcoming_cdp_full_quota_state)
-                    tickerHeader.setTextDescription(getString(R.string.stfs_description_ticker_upcoming_cdp_full_quota_state))
-                    tgCampaignStatus.text = getString(R.string.registration_over_in_label)
+                    setFullQuotaHeader()
                 }
                 UpcomingCampaignStatus.CLOSED -> {
-                    tickerHeader.visible()
-                    tickerHeader.tickerTitle =
-                        getString(R.string.stfs_title_ticker_upcoming_cdp_registration_close_state)
-                    tickerHeader.setTextDescription(getString(R.string.stfs_description_ticker_upcoming_cdp_registration_close_state))
-                    tgCampaignStatus.text = getString(R.string.registration_closed_in_label)
+                    setClosedHeader()
                 }
                 else -> {
                     tickerHeader.gone()
@@ -331,66 +319,96 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         }
     }
 
+    private fun setNoProductEligibleHeader() {
+        cdpHeaderBinding?.run {
+            tickerHeader.visible()
+            tickerHeader.setTextDescription(getString(R.string.stfs_description_ticker_upcoming_cdp_product_not_eligible_state))
+            tgCampaignStatus.text = getString(R.string.registration_over_in_label)
+        }
+    }
+
+    private fun setFullQuotaHeader() {
+        cdpHeaderBinding?.run {
+            tickerHeader.visible()
+            tickerHeader.tickerTitle =
+                getString(R.string.stfs_title_ticker_upcoming_cdp_full_quota_state)
+            tickerHeader.setTextDescription(getString(R.string.stfs_description_ticker_upcoming_cdp_full_quota_state))
+            tgCampaignStatus.text = getString(R.string.registration_over_in_label)
+        }
+    }
+
+    private fun setClosedHeader() {
+        cdpHeaderBinding?.run {
+            tickerHeader.visible()
+            tickerHeader.tickerTitle =
+                getString(R.string.stfs_title_ticker_upcoming_cdp_registration_close_state)
+            tickerHeader.setTextDescription(getString(R.string.stfs_description_ticker_upcoming_cdp_registration_close_state))
+            tgCampaignStatus.text = getString(R.string.registration_closed_in_label)
+        }
+    }
+
     private fun setupUpcomingMidData(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
         upcomingCdpMidBinding?.run {
             when (campaignStatus) {
-                UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> {
-                    tgCampaignQuota.text = getString(
-                        R.string.campaign_quota_value_placeholder,
-                        flashSale.remainingQuota
-                    )
-                    btnCheckReason.visible()
-                }
-                UpcomingCampaignStatus.FULL_QUOTA -> {
-                    tgCampaignQuota.apply {
-                        text = getString(R.string.full_quota_label)
-                        setTextColor(
-                            ContextCompat.getColor(
-                                context,
-                                color.Unify_R500
-                            )
-                        )
-                    }
-                }
-                UpcomingCampaignStatus.CLOSED -> {
-                    tgCampaignQuota.text = getString(
-                        R.string.campaign_quota_value_placeholder_2,
-                        flashSale.remainingQuota
-                    )
-                }
-                else -> {
-                    tgCampaignQuota.text = getString(
-                        R.string.campaign_quota_value_placeholder,
-                        flashSale.remainingQuota
-                    )
-                }
+                UpcomingCampaignStatus.NO_PRODUCT_ELIGIBLE -> setNoProductEligibleMidSection(
+                    flashSale
+                )
+                UpcomingCampaignStatus.FULL_QUOTA -> setFullQuotaMidSection()
+                UpcomingCampaignStatus.CLOSED -> setClosedMidSection(flashSale)
+                else -> setDefaultUpcomingMidSection(flashSale)
             }
+        }
+    }
+
+    private fun setNoProductEligibleMidSection(flashSale: FlashSale) {
+        upcomingCdpMidBinding?.run {
+            tgCampaignQuota.text = getString(
+                R.string.campaign_quota_value_placeholder,
+                flashSale.remainingQuota
+            )
+            btnCheckReason.visible()
+        }
+    }
+
+    private fun setFullQuotaMidSection() {
+        upcomingCdpMidBinding?.run {
+            tgCampaignQuota.apply {
+                text = getString(R.string.full_quota_label)
+                setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R500
+                    )
+                )
+            }
+        }
+    }
+
+    private fun setClosedMidSection(flashSale: FlashSale) {
+        upcomingCdpMidBinding?.run {
+            tgCampaignQuota.text = getString(
+                R.string.campaign_quota_value_placeholder_2,
+                flashSale.remainingQuota
+            )
+        }
+    }
+
+    private fun setDefaultUpcomingMidSection(flashSale: FlashSale) {
+        upcomingCdpMidBinding?.run {
+            tgCampaignQuota.text = getString(
+                R.string.campaign_quota_value_placeholder,
+                flashSale.remainingQuota
+            )
         }
     }
 
     private fun setupUpcomingTimer(binding: StfsCdpHeaderBinding, flashSale: FlashSale) {
         val targetDate = flashSale.submissionEndDateUnix
         val onTimerFinished = { binding.timer.gone() }
-        when {
-            viewModel.isFlashSaleClosedMoreThan24Hours(targetDate) -> {
-                binding.timer.timerFormat = TimerUnifySingle.FORMAT_DAY
-                binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
-                binding.timer.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
-                binding.timer.onFinish = onTimerFinished
-            }
-            viewModel.isFlashSaleClosedLessThan24Hour(targetDate) -> {
-                binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
-                binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
-                binding.timer.onFinish = onTimerFinished
-            }
-            viewModel.isFlashSaleClosedLessThan60Minutes(targetDate) -> {
-                binding.timer.timerFormat = TimerUnifySingle.FORMAT_MINUTE
-                binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
-                binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
-                binding.timer.onFinish = onTimerFinished
-            }
-        }
+        binding.timer.timerFormat = TimerUnifySingle.FORMAT_AUTO
+        binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
+        binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
+        binding.timer.onFinish = onTimerFinished
     }
 
     private fun setupUpcomingButton() {
@@ -450,23 +468,23 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
             when (flashSale.status) {
                 FlashSaleStatus.NO_REGISTERED_PRODUCT -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
-                    tgCampaignStatus.setTextColorCompat(color.Unify_NN600)
+                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                 }
                 FlashSaleStatus.WAITING_FOR_SELECTION -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_ORANGE)
-                    tgCampaignStatus.setTextColorCompat(color.Unify_YN400)
+                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_YN400)
                 }
                 FlashSaleStatus.ON_SELECTION_PROCESS -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_BLUE)
-                    tgCampaignStatus.setTextColorCompat(color.Unify_BN500)
+                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_BN500)
                 }
                 FlashSaleStatus.SELECTION_FINISHED -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREEN)
-                    tgCampaignStatus.setTextColorCompat(color.Unify_GN500)
+                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 }
                 else -> {
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
-                    tgCampaignStatus.setTextColorCompat(color.Unify_NN600)
+                    tgCampaignStatus.setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                 }
             }
             tickerHeader.gone()
@@ -481,126 +499,129 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
     private fun setupRegisteredMidData(flashSale: FlashSale) {
         registeredCdpMidBinding?.run {
             when (flashSale.status) {
-                FlashSaleStatus.WAITING_FOR_SELECTION -> {
-                    cardProductEligibleForSelection.hide()
-                    llSelectionProcessView.hide()
-                    llBeforeSelectionView.visible()
-                    tgRemainingQuotaValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_remaining_quota_placeholder,
-                            flashSale.remainingQuota,
-                            flashSale.maxProductSubmission
-                        )
-                    )
-                    setupRegisteredTimer(this, flashSale)
-                }
-                FlashSaleStatus.ON_SELECTION_PROCESS -> {
-                    cardProductEligibleForSelection.visible()
-                    llSelectionProcessView.visible()
-                    llBeforeSelectionView.hide()
-                    imageProductEligibleForSelection.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
-                    tpgCardMidTitle.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.product_eligible_for_selection_card_title_placeholder,
-                            flashSale.productMeta.totalProduct
-                        )
-                    )
-                    tpgCardMidDesctiption.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.product_eligible_for_selection_end_date_placeholder,
-                            flashSale.reviewEndDateUnix.formatTo(
-                                DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
-                            )
-                        )
-                    )
-                    tpgProposedProductValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_mid_section_product_count_placeholder,
-                            flashSale.productMeta.totalProduct
-                        )
-                    )
-                }
-                FlashSaleStatus.SELECTION_FINISHED -> {
-                    cardProductEligibleForSelection.visible()
-                    llSelectionProcessView.visible()
-                    llBeforeSelectionView.hide()
-                    imageProductEligibleForSelection.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
-                    tpgCardMidTitle.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.product_eligible_card_title_placeholder,
-                            flashSale.productMeta.acceptedProduct
-                        )
-                    )
-                    tpgCardMidDesctiption.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.product_eligible_start_date_placeholder,
-                            flashSale.startDateUnix.formatTo(
-                                DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
-                            )
-                        )
-                    )
-                    tpgProposedProductValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_mid_section_product_count_placeholder,
-                            flashSale.productMeta.totalProduct
-                        )
-                    )
-                    tpgAcceptedProductValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_mid_section_product_count_placeholder,
-                            flashSale.productMeta.acceptedProduct
-                        )
-                    )
-                    tpgRejectedProductValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_mid_section_product_count_placeholder,
-                            flashSale.productMeta.rejectedProduct
-                        )
-                    )
-                }
-                else -> {
-                    cardProductEligibleForSelection.hide()
-                    llSelectionProcessView.hide()
-                    llBeforeSelectionView.visible()
-                    tgRemainingQuotaValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_remaining_quota_placeholder,
-                            flashSale.remainingQuota,
-                            flashSale.maxProductSubmission
-                        )
-                    )
-                    setupRegisteredTimer(this, flashSale)
-                }
+                FlashSaleStatus.WAITING_FOR_SELECTION -> setWaitingForSelectionMidSection(flashSale)
+                FlashSaleStatus.ON_SELECTION_PROCESS -> setOnSelectionProcessMidSection(flashSale)
+                FlashSaleStatus.SELECTION_FINISHED -> setFinishedSelectionProcessMidSection(
+                    flashSale
+                )
+                else -> setDefaultRegisteredMidSection(flashSale)
             }
+        }
+    }
+
+    private fun setWaitingForSelectionMidSection(flashSale: FlashSale) {
+        registeredCdpMidBinding?.run {
+            cardProductEligibleForSelection.hide()
+            llSelectionProcessView.hide()
+            llBeforeSelectionView.visible()
+            tgRemainingQuotaValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_remaining_quota_placeholder,
+                    flashSale.remainingQuota,
+                    flashSale.maxProductSubmission
+                )
+            )
+            setupRegisteredTimer(this, flashSale)
+        }
+    }
+
+    private fun setOnSelectionProcessMidSection(flashSale: FlashSale) {
+        registeredCdpMidBinding?.run {
+            cardProductEligibleForSelection.visible()
+            llSelectionProcessView.visible()
+            llBeforeSelectionView.hide()
+            imageProductEligibleForSelection.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
+            tpgCardMidTitle.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.product_eligible_for_selection_card_title_placeholder,
+                    flashSale.productMeta.totalProduct
+                )
+            )
+            tpgCardMidDesctiption.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.product_eligible_for_selection_end_date_placeholder,
+                    flashSale.reviewEndDateUnix.formatTo(
+                        DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
+                    )
+                )
+            )
+            tpgProposedProductValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_mid_section_product_count_placeholder,
+                    flashSale.productMeta.totalProduct
+                )
+            )
+        }
+    }
+
+    private fun setFinishedSelectionProcessMidSection(flashSale: FlashSale) {
+        registeredCdpMidBinding?.run {
+            cardProductEligibleForSelection.visible()
+            llSelectionProcessView.visible()
+            llBeforeSelectionView.hide()
+            imageProductEligibleForSelection.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
+            tpgCardMidTitle.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.product_eligible_card_title_placeholder,
+                    flashSale.productMeta.acceptedProduct
+                )
+            )
+            tpgCardMidDesctiption.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.product_eligible_start_date_placeholder,
+                    flashSale.startDateUnix.formatTo(
+                        DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
+                    )
+                )
+            )
+            tpgProposedProductValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_mid_section_product_count_placeholder,
+                    flashSale.productMeta.totalProduct
+                )
+            )
+            tpgAcceptedProductValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_mid_section_product_count_placeholder,
+                    flashSale.productMeta.acceptedProduct
+                )
+            )
+            tpgRejectedProductValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_mid_section_product_count_placeholder,
+                    flashSale.productMeta.rejectedProduct
+                )
+            )
+        }
+    }
+
+    private fun setDefaultRegisteredMidSection(flashSale: FlashSale) {
+        registeredCdpMidBinding?.run {
+            cardProductEligibleForSelection.hide()
+            llSelectionProcessView.hide()
+            llBeforeSelectionView.visible()
+            tgRemainingQuotaValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_remaining_quota_placeholder,
+                    flashSale.remainingQuota,
+                    flashSale.maxProductSubmission
+                )
+            )
+            setupRegisteredTimer(this, flashSale)
         }
     }
 
     private fun setupRegisteredTimer(binding: StfsCdpRegisteredMidBinding, flashSale: FlashSale) {
         val targetDate = flashSale.submissionEndDateUnix
-        when {
-            viewModel.isFlashSaleClosedMoreThan24Hours(targetDate) -> {
-                binding.timerRegistered.timerFormat = TimerUnifySingle.FORMAT_DAY
-                binding.timerRegistered.targetDate = targetDate.removeTimeZone().toCalendar()
-                binding.timerRegistered.timerVariant = TimerUnifySingle.VARIANT_GENERAL
-            }
-            viewModel.isFlashSaleClosedLessThan24Hour(targetDate) -> {
-                binding.timerRegistered.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                binding.timerRegistered.targetDate = targetDate.removeTimeZone().toCalendar()
-                binding.timerRegistered.timerVariant = TimerUnifySingle.VARIANT_GENERAL
-            }
-            viewModel.isFlashSaleClosedLessThan60Minutes(targetDate) -> {
-                binding.timerRegistered.timerFormat = TimerUnifySingle.FORMAT_MINUTE
-                binding.timerRegistered.targetDate = targetDate.removeTimeZone().toCalendar()
-                binding.timerRegistered.timerVariant = TimerUnifySingle.VARIANT_GENERAL
-            }
-        }
+        binding.timerRegistered.timerFormat = TimerUnifySingle.FORMAT_AUTO
+        binding.timerRegistered.targetDate = targetDate.removeTimeZone().toCalendar()
+        binding.timerRegistered.timerVariant = TimerUnifySingle.VARIANT_GENERAL
     }
 
     private fun onShowOrHideItemCheckBox() {
         val oldItems = productAdapter.getItems().filterIsInstance<WaitingForSelectionItem>()
         val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
         val isShown = newItems[Int.ZERO].isCheckBoxShown
-        productAdapter.submit(listOf())
         productAdapter.submit(newItems)
         viewModel.setCheckBoxStateStatus(isShown)
 
@@ -689,33 +710,45 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
     private fun setupOngoingHeaderData(flashSale: FlashSale) {
         ongoingCdpHeaderBinding?.run {
             when (flashSale.status) {
-                FlashSaleStatus.ONGOING -> {
-                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREEN)
-                    tgCampaignStatus.apply {
-                        setTextColorCompat(color.Unify_GN500)
-                        text = context.getString(R.string.stfs_status_ongoing)
-                    }
-                }
-                FlashSaleStatus.REJECTED -> {
-                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_RED)
-                    tgCampaignStatus.apply {
-                        setTextColorCompat(color.Unify_RN500)
-                        text = flashSale.statusText
-                    }
-                }
-                else -> {
-                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
-                    tgCampaignStatus.apply {
-                        setTextColorCompat(color.Unify_NN600)
-                        text = flashSale.statusText
-                    }
-                }
+                FlashSaleStatus.ONGOING -> setOngoingHeader()
+                FlashSaleStatus.REJECTED -> setRejectedHeader(flashSale)
+                else -> setDefaultOngoingHeader(flashSale)
             }
             tickerHeader.gone()
             timer.gone()
             imageCampaign.setImageUrl(flashSale.coverImage)
             tgCampaignName.text = flashSale.name
             setHeaderCampaignPeriod(this, flashSale)
+        }
+    }
+
+    private fun setOngoingHeader() {
+        ongoingCdpHeaderBinding?.run {
+            imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREEN)
+            tgCampaignStatus.apply {
+                setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                text = context.getString(R.string.stfs_status_ongoing)
+            }
+        }
+    }
+
+    private fun setRejectedHeader(flashSale: FlashSale) {
+        ongoingCdpHeaderBinding?.run {
+            imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_RED)
+            tgCampaignStatus.apply {
+                setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                text = flashSale.statusText
+            }
+        }
+    }
+
+    private fun setDefaultOngoingHeader(flashSale: FlashSale) {
+        ongoingCdpHeaderBinding?.run {
+            imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
+            tgCampaignStatus.apply {
+                setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                text = flashSale.statusText
+            }
         }
     }
 
@@ -728,57 +761,65 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                 )
             )
             when (flashSale.status) {
-                FlashSaleStatus.ONGOING -> {
-                    cardFlashSalePerformance.setCardUnifyBackgroundColor(
-                        MethodChecker.getColor(
-                            context,
-                            color.Unify_BN50
-                        )
-                    )
-                    imageCardFlashSalePerformance.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
-                    tpgCardMidTitle.text =
-                        getString(R.string.stft_flash_sale_performace_card_title_label)
-                    tpgCardMidDesctiption.text =
-                        getString(R.string.stfs_flash_sale_performance_card_desc_label)
-                    tpgAcceptedProductValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_mid_section_product_count_placeholder,
-                            flashSale.productMeta.acceptedProduct
-                        )
-                    )
-                    tpgRejectedProductValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_mid_section_product_count_placeholder,
-                            flashSale.productMeta.rejectedProduct
-                        )
-                    )
-                    tpgSoldValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_mid_section_product_count_placeholder,
-                            flashSale.productMeta.totalStockSold
-                        )
-                    )
-                    tpgSellingValue.text =
-                        flashSale.productMeta.totalSoldValue.getCurrencyFormatted()
-                }
-                FlashSaleStatus.REJECTED -> {
-                    cardFlashSalePerformance.setCardUnifyBackgroundColor(
-                        MethodChecker.getColor(
-                            context,
-                            color.Unify_RN50
-                        )
-                    )
-                    imageCardFlashSalePerformance.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
-                    tpgCardMidTitle.text =
-                        getString(R.string.stft_flash_sale_performace_card_title_label_rejected)
-                    tpgCardMidDesctiption.text =
-                        getString(R.string.stft_flash_sale_performace_card_desc_label_rejected)
-                    tpgAcceptedProductValue.text = getString(R.string.stfs_dash_label)
-                    tpgRejectedProductValue.text = getString(R.string.stfs_dash_label)
-                    tpgSoldValue.text = getString(R.string.stfs_dash_label)
-                    tpgSellingValue.text = getString(R.string.stfs_dash_label)
-                }
+                FlashSaleStatus.ONGOING -> setOngoingMidSection(flashSale)
+                else -> setRejectedMidSection()
             }
+        }
+    }
+
+    private fun setOngoingMidSection(flashSale: FlashSale) {
+        ongoingCdpMidBinding?.run {
+            cardFlashSalePerformance.setCardUnifyBackgroundColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_BN50
+                )
+            )
+            imageCardFlashSalePerformance.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
+            tpgCardMidTitle.text =
+                getString(R.string.stft_flash_sale_performace_card_title_label)
+            tpgCardMidDesctiption.text =
+                getString(R.string.stfs_flash_sale_performance_card_desc_label)
+            tpgAcceptedProductValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_mid_section_product_count_placeholder,
+                    flashSale.productMeta.acceptedProduct
+                )
+            )
+            tpgRejectedProductValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_mid_section_product_count_placeholder,
+                    flashSale.productMeta.rejectedProduct
+                )
+            )
+            tpgSoldValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_mid_section_product_count_placeholder,
+                    flashSale.productMeta.totalStockSold
+                )
+            )
+            tpgSellingValue.text =
+                flashSale.productMeta.totalSoldValue.getCurrencyFormatted()
+        }
+    }
+
+    private fun setRejectedMidSection() {
+        ongoingCdpMidBinding?.run {
+            cardFlashSalePerformance.setCardUnifyBackgroundColor(
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN50
+                )
+            )
+            imageCardFlashSalePerformance.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
+            tpgCardMidTitle.text =
+                getString(R.string.stft_flash_sale_performace_card_title_label_rejected)
+            tpgCardMidDesctiption.text =
+                getString(R.string.stft_flash_sale_performace_card_desc_label_rejected)
+            tpgAcceptedProductValue.text = getString(R.string.stfs_dash_label)
+            tpgRejectedProductValue.text = getString(R.string.stfs_dash_label)
+            tpgSoldValue.text = getString(R.string.stfs_dash_label)
+            tpgSellingValue.text = getString(R.string.stfs_dash_label)
         }
     }
 
@@ -830,32 +871,15 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
     private fun setupFinishedHeaderData(flashSale: FlashSale) {
         finishedCdpHeaderBinding?.run {
             when (flashSale.status) {
-                FlashSaleStatus.FINISHED -> {
-                    imageFinishedCampaingBanner.run {
-                        loadImage(FINISHED_HEADER_IMAGE_BANNER_URL)
-                        visible()
-                    }
-                    groupCampaignStatus.gone()
-                }
-                FlashSaleStatus.CANCELLED -> {
-                    imageFinishedCampaingBanner.gone()
-                    groupCampaignStatus.visible()
-                }
-                FlashSaleStatus.MISSED -> {
-                    imageFinishedCampaingBanner.gone()
-                    groupCampaignStatus.visible()
-                }
-                else -> {
-                    imageFinishedCampaingBanner.gone()
-                    groupCampaignStatus.visible()
-                }
+                FlashSaleStatus.FINISHED -> setFinishedHeader()
+                else -> setFinishedDefaultHeader()
             }
             tgCampaignStatus.apply {
                 text = flashSale.statusText
                 setTextColor(
                     ContextCompat.getColor(
                         context,
-                        color.Unify_R500
+                        com.tokopedia.unifyprinciples.R.color.Unify_R500
                     )
                 )
             }
@@ -868,6 +892,23 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         }
     }
 
+    private fun setFinishedHeader() {
+        finishedCdpHeaderBinding?.run {
+            imageFinishedCampaingBanner.run {
+                loadImage(FINISHED_HEADER_IMAGE_BANNER_URL)
+                visible()
+            }
+            groupCampaignStatus.gone()
+        }
+    }
+
+    private fun setFinishedDefaultHeader() {
+        finishedCdpHeaderBinding?.run {
+            imageFinishedCampaingBanner.gone()
+            groupCampaignStatus.visible()
+        }
+    }
+
     private fun setupFinishedMidData(flashSale: FlashSale) {
         finishedCdpMidBinding?.run {
             tpgProposedProductValue.text = MethodChecker.fromHtml(
@@ -877,82 +918,75 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                 )
             )
             when (flashSale.status) {
-                FlashSaleStatus.FINISHED -> {
-                    cardFlashSalePerformance.gone()
-                    groupCampaignStatistics.visible()
-                    tpgAcceptedProductValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_mid_section_product_count_placeholder,
-                            flashSale.productMeta.acceptedProduct
-                        )
-                    )
-                    tpgRejectedProductValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_mid_section_product_count_placeholder,
-                            flashSale.productMeta.rejectedProduct
-                        )
-                    )
-                    tpgSoldValue.text = MethodChecker.fromHtml(
-                        getString(
-                            R.string.stfs_mid_section_product_count_placeholder,
-                            flashSale.productMeta.totalStockSold
-                        )
-                    )
-                    tpgSellingValue.text =
-                        flashSale.productMeta.totalSoldValue.getCurrencyFormatted()
-                }
-                FlashSaleStatus.CANCELLED -> {
-                    cardFlashSalePerformance.visible()
-                    tpgCardMidTitle.text = getString(R.string.stfs_canceled_card_title_label)
-                    tpgCardMidDesctiption.text = getString(
-                        R.string.stfst_canceled_card_description_placeholder,
-                        flashSale.cancellationReason
-                    )
-                    groupCampaignStatistics.gone()
-                }
-                FlashSaleStatus.MISSED -> {
-                    cardFlashSalePerformance.visible()
-                    tpgCardMidTitle.text = getString(R.string.stfs_missed_card_title_label)
-                    tpgCardMidDesctiption.text = getString(R.string.stfs_missed_card_desc_label)
-                    groupCampaignStatistics.gone()
-                }
-                else -> {
-                    cardFlashSalePerformance.visible()
-                    groupCampaignStatistics.gone()
-                    tpgCardMidTitle.text =
-                        getString(R.string.stft_flash_sale_performace_card_title_label_rejected)
-                    tpgCardMidDesctiption.text =
-                        getString(R.string.stft_flash_sale_performace_card_desc_label_rejected)
-                    tpgAcceptedProductValue.text = getString(R.string.stfs_dash_label)
-                    tpgRejectedProductValue.text = getString(R.string.stfs_dash_label)
-                    tpgSoldValue.text = getString(R.string.stfs_dash_label)
-                    tpgSellingValue.text = getString(R.string.stfs_dash_label)
-                }
+                FlashSaleStatus.FINISHED -> setFinishedMidSection(flashSale)
+                FlashSaleStatus.CANCELLED -> setCanceledMidSection(flashSale)
+                FlashSaleStatus.MISSED -> setMissedMidSection()
+                else -> setDefaultFinishedMidSection()
             }
             setupFinishedMidCardTickerAppearance()
         }
     }
 
-    private fun setupFinishedBodyData(flashSale: FlashSale) {
-        when (flashSale.status) {
-            FlashSaleStatus.FINISHED -> {
-                observeSubmittedProductData()
-                loadSubmittedProductListData(Int.ZERO)
-                setupPaging()
-            }
-            FlashSaleStatus.CANCELLED -> {
-                setupSubmittedProductListData()
-                setupFinishedEmptyProductState()
-            }
-            FlashSaleStatus.MISSED -> {
-                setupSubmittedProductListData()
-                setupFinishedEmptyProductState()
-            }
-            else -> {
-                observeSubmittedProductData()
-                loadSubmittedProductListData(Int.ZERO)
-                setupPaging()
-            }
+    private fun setFinishedMidSection(flashSale: FlashSale) {
+        finishedCdpMidBinding?.run {
+            cardFlashSalePerformance.gone()
+            groupCampaignStatistics.visible()
+            tpgAcceptedProductValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_mid_section_product_count_placeholder,
+                    flashSale.productMeta.acceptedProduct
+                )
+            )
+            tpgRejectedProductValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_mid_section_product_count_placeholder,
+                    flashSale.productMeta.rejectedProduct
+                )
+            )
+            tpgSoldValue.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.stfs_mid_section_product_count_placeholder,
+                    flashSale.productMeta.totalStockSold
+                )
+            )
+            tpgSellingValue.text =
+                flashSale.productMeta.totalSoldValue.getCurrencyFormatted()
+        }
+    }
+
+    private fun setCanceledMidSection(flashSale: FlashSale) {
+        finishedCdpMidBinding?.run {
+            cardFlashSalePerformance.visible()
+            tpgCardMidTitle.text = getString(R.string.stfs_canceled_card_title_label)
+            tpgCardMidDesctiption.text = getString(
+                R.string.stfst_canceled_card_description_placeholder,
+                flashSale.cancellationReason
+            )
+            groupCampaignStatistics.gone()
+        }
+    }
+
+    private fun setMissedMidSection() {
+        finishedCdpMidBinding?.run {
+            cardFlashSalePerformance.visible()
+            tpgCardMidTitle.text = getString(R.string.stfs_missed_card_title_label)
+            tpgCardMidDesctiption.text = getString(R.string.stfs_missed_card_desc_label)
+            groupCampaignStatistics.gone()
+        }
+    }
+
+    private fun setDefaultFinishedMidSection() {
+        finishedCdpMidBinding?.run {
+            cardFlashSalePerformance.visible()
+            groupCampaignStatistics.gone()
+            tpgCardMidTitle.text =
+                getString(R.string.stft_flash_sale_performace_card_title_label_rejected)
+            tpgCardMidDesctiption.text =
+                getString(R.string.stft_flash_sale_performace_card_desc_label_rejected)
+            tpgAcceptedProductValue.text = getString(R.string.stfs_dash_label)
+            tpgRejectedProductValue.text = getString(R.string.stfs_dash_label)
+            tpgSoldValue.text = getString(R.string.stfs_dash_label)
+            tpgSellingValue.text = getString(R.string.stfs_dash_label)
         }
     }
 
@@ -961,7 +995,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
             cardFlashSalePerformance.setCardUnifyBackgroundColor(
                 MethodChecker.getColor(
                     context,
-                    color.Unify_RN50
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN50
                 )
             )
             imageCardFlashSalePerformance.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
@@ -1008,7 +1042,7 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                 FlashSaleStatus.NO_REGISTERED_PRODUCT -> {
                     setupNoRegisteredProductEmptyState()
                 }
-                FlashSaleStatus.FINISHED -> {
+                FlashSaleStatus.MISSED -> {
                     setupFinishedEmptyProductState()
                 }
                 FlashSaleStatus.CANCELLED -> {

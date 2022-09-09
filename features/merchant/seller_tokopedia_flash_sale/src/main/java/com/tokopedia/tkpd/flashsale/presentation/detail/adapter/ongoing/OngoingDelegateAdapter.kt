@@ -6,10 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductOngoingBinding
@@ -77,7 +74,7 @@ class OngoingDelegateAdapter(
         }
 
         private fun Typography.setPrice(item: OngoingItem) {
-            paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            strikethrough()
             text = if (item.price.lowerPrice == item.price.upperPrice) {
                 item.price.upperPrice.getCurrencyFormatted()
             } else {

@@ -9,6 +9,7 @@ import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductWaitingForSelectionBinding
@@ -85,7 +86,7 @@ WaitingForSelectionItem::class.java
         }
 
         private fun Typography.setPrice(item: WaitingForSelectionItem) {
-            paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            strikethrough()
             text = if (item.price.lowerPrice == item.price.upperPrice) {
                 item.price.upperPrice.getCurrencyFormatted()
             } else {

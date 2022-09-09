@@ -74,7 +74,7 @@ class OngoingRejectedDelegateAdapter(
         }
 
         private fun Typography.setPrice(item: OngoingRejectedItem) {
-            paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            strikethrough()
             text = if (item.price.lowerPrice == item.price.upperPrice) {
                 item.price.upperPrice.getCurrencyFormatted()
             } else {

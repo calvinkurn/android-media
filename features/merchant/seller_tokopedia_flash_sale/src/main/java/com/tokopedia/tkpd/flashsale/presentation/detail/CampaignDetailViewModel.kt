@@ -223,24 +223,6 @@ class CampaignDetailViewModel @Inject constructor(
         return startDate == endDate
     }
 
-    fun isFlashSaleClosedMoreThan24Hours(targetDate: Date): Boolean {
-        val now = Date()
-        val distanceHoursToSubmissionEndDate = hoursDifference(now, targetDate)
-        return distanceHoursToSubmissionEndDate > TWENTY_FOUR_HOURS
-    }
-
-    fun isFlashSaleClosedLessThan24Hour(targetDate: Date): Boolean {
-        val now = Date()
-        val distanceHoursToSubmissionEndDate = hoursDifference(now, targetDate)
-        return distanceHoursToSubmissionEndDate in Int.ZERO..TWENTY_FOUR_HOURS
-    }
-
-    fun isFlashSaleClosedLessThan60Minutes(targetDate: Date): Boolean {
-        val now = Date()
-        val distanceMinutesToSubmissionEndDate = minutesDifference(now, targetDate)
-        return distanceMinutesToSubmissionEndDate in Int.ZERO..SIXTY_MINUTES
-    }
-
     fun setSelectedItem(selectedItemId: Long) {
         val isExist = selectedItemIds.any { it == selectedItemId }
         if (isExist) {
