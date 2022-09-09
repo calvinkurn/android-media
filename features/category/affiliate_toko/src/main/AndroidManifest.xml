@@ -19,8 +19,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="@string/host_affiliate_toko"
-                    android:scheme="@string/internal_scheme"
-                    />
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity android:name="com.tokopedia.affiliate.ui.activity.AffiliateTransactionDetailActivity"
