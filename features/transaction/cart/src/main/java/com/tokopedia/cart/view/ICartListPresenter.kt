@@ -120,6 +120,10 @@ interface ICartListPresenter {
 
     fun doClearRedPromosBeforeGoToCheckout(clearPromoRequest: ClearPromoRequest)
 
+    fun setLastValidateUseRequest(validateUsePromoRequest: ValidateUsePromoRequest)
+
+    fun getLastValidateUseRequest(): ValidateUsePromoRequest?
+
     fun getValidateUseLastResponse(): ValidateUsePromoRevampUiModel?
 
     fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel?)
@@ -151,6 +155,8 @@ interface ICartListPresenter {
     fun getShowChoosePromoWidget(): Boolean
 
     fun clearAllBo(clearPromoOrderData: ClearPromoOrderData)
+
+    fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel)
 
     companion object {
         const val GET_CART_STATE_DEFAULT = 0

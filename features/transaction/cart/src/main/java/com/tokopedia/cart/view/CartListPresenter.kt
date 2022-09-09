@@ -71,9 +71,11 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -155,8 +157,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
     var isLastApplyResponseStillValid = true
 
-    // Store last validate use request for clearing promo if got akamai error
-    var lastValidateUseRequest: ValidateUsePromoRequest? = null
+    // Store last validate use request
+    private var lastValidateUseRequest: ValidateUsePromoRequest? = null
 
     // Store promo ticker
     private var promoTicker: CartPromoTicker = CartPromoTicker()
@@ -1582,6 +1584,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun doValidateUse(promoRequest: ValidateUsePromoRequest) {
         val requestParams = RequestParams.create()
         requestParams.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
+        lastValidateUseRequest = promoRequest
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
                         .subscribeOn(schedulers.io)
@@ -1652,6 +1655,14 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setLastApplyNotValid()
             setValidateUseLastResponse(ValidateUsePromoRevampUiModel())
         }
+    }
+
+    override fun setLastValidateUseRequest(validateUsePromoRequest: ValidateUsePromoRequest) {
+        lastValidateUseRequest = validateUsePromoRequest
+    }
+
+    override fun getLastValidateUseRequest(): ValidateUsePromoRequest? {
+        return lastValidateUseRequest
     }
 
     override fun getValidateUseLastResponse(): ValidateUsePromoRevampUiModel? {
@@ -1794,5 +1805,70 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 // Do nothing on subscribe
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
         )
+    }
+
+    override fun validateBoPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
+        val shopDataList = view?.getAllShopDataList()
+        if (shopDataList != null) {
+            val boUniqueIds = mutableSetOf<String>()
+            for (voucherOrderUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+                if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0 && voucherOrderUiModel.type == "logistic") {
+                    if (voucherOrderUiModel.messageUiModel.state == "red") {
+                        clearRedBo(voucherOrderUiModel, shopDataList)
+                        boUniqueIds.add(voucherOrderUiModel.uniqueId)
+                    } else if (voucherOrderUiModel.messageUiModel.state == "green") {
+                        shopDataList.firstOrNull { it.cartString == voucherOrderUiModel.uniqueId }?.boCode = voucherOrderUiModel.uniqueId
+                        boUniqueIds.add(voucherOrderUiModel.uniqueId)
+                    }
+                }
+            }
+            for (shop in shopDataList) {
+                if (shop.boCode.isNotEmpty() && !boUniqueIds.contains(shop.cartString)) {
+                    clearBo(shop)
+                }
+            }
+        }
+    }
+
+    private fun clearRedBo(voucherOrderUiModel: PromoCheckoutVoucherOrdersItemUiModel, shopDataList: List<CartShopHolderData>) {
+        val shop = shopDataList.firstOrNull { it.cartString == voucherOrderUiModel.uniqueId } ?: return
+        // todo: hit clear
+        clearCacheAutoApplyStackUseCase.setParams(ClearPromoRequest(
+                serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                orderData = ClearPromoOrderData(
+                        orders = listOf(
+                                ClearPromoOrder(
+                                        uniqueId = shop.cartString,
+                                        boType = shop.boMetadata.boType,
+                                        codes = mutableListOf(voucherOrderUiModel.code),
+                                        shopId = shop.shopId.toLongOrZero(),
+                                        isPo = shop.productUiModelList[0].isPreOrder,
+                                )
+                        )
+                )
+        ))
+        compositeSubscription.add(clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe())
+        lastValidateUseRequest?.orders?.firstOrNull { it.uniqueId == voucherOrderUiModel.uniqueId }?.codes?.remove(voucherOrderUiModel.code)
+        shop.boCode = ""
+    }
+
+    private fun clearBo(shop: CartShopHolderData) {
+        // todo: hit clear
+        clearCacheAutoApplyStackUseCase.setParams(ClearPromoRequest(
+                serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                orderData = ClearPromoOrderData(
+                        orders = listOf(
+                                ClearPromoOrder(
+                                        uniqueId = shop.cartString,
+                                        boType = shop.boMetadata.boType,
+                                        codes = mutableListOf(shop.boCode),
+                                        shopId = shop.shopId.toLongOrZero(),
+                                        isPo = shop.productUiModelList[0].isPreOrder,
+                                )
+                        )
+                )
+        ))
+        compositeSubscription.add(clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe())
+        shop.boCode = ""
     }
 }

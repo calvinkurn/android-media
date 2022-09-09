@@ -167,6 +167,8 @@ object CartUiModelMapper {
                 if (availableGroup.giftingAddOn.addOnIds.isNotEmpty()) {
                     addOnId = availableGroup.giftingAddOn.addOnIds[0]
                 }
+                boCode = cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull { it.uniqueId == cartString && it.shippingId > 0
+                    && it.spId > 0 && it.type == "logistic" }?.code ?: ""
             }
             cartShopHolderDataList.add(shopUiModel)
         }

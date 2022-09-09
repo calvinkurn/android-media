@@ -121,6 +121,7 @@ import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
 import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
@@ -498,8 +499,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun onResultFromPromoPage(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
+            data?.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)?.let {
+                dPresenter.setLastValidateUseRequest(it)
+            }
+
             val validateUseUiModel = data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)
             if (validateUseUiModel != null) {
+                dPresenter.validateBoPromo(validateUseUiModel)
                 dPresenter.setValidateUseLastResponse(validateUseUiModel)
                 dPresenter.setUpdateCartAndValidateUseLastResponse(null)
                 dPresenter.setLastApplyNotValid()
@@ -2654,15 +2660,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dPresenter.isLastApplyValid() -> {
                 val lastApplyPromo = dPresenter.getCartListData()?.promo?.lastApplyPromo
                         ?: LastApplyPromo()
-                PromoRequestMapper.generateValidateUseRequestParams(lastApplyPromo, cartAdapter.selectedCartShopHolderData)
+                PromoRequestMapper.generateValidateUseRequestParams(lastApplyPromo, cartAdapter.selectedCartShopHolderData, null)
             }
             dPresenter.getValidateUseLastResponse() != null -> {
                 val promoUiModel = dPresenter.getValidateUseLastResponse()?.promoUiModel
                         ?: PromoUiModel()
-                PromoRequestMapper.generateValidateUseRequestParams(promoUiModel, cartAdapter.selectedCartShopHolderData)
+                PromoRequestMapper.generateValidateUseRequestParams(promoUiModel, cartAdapter.selectedCartShopHolderData, dPresenter.getLastValidateUseRequest())
             }
             else -> {
-                PromoRequestMapper.generateValidateUseRequestParams(null, cartAdapter.selectedCartShopHolderData)
+                PromoRequestMapper.generateValidateUseRequestParams(null, cartAdapter.selectedCartShopHolderData, null)
             }
         }
     }

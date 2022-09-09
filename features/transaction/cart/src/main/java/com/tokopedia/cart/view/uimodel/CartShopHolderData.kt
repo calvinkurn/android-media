@@ -43,7 +43,8 @@ data class CartShopHolderData(
         var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData(),
         var addOnText: String = "",
         var addOnImgUrl: String = "",
-        var addOnId: String = ""
+        var addOnId: String = "",
+        var boCode: String = "",
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
@@ -89,7 +90,8 @@ data class CartShopHolderData(
             latitude = this.latitude,
             longitude = this.longitude,
             boMetadata = this.boMetadata,
-            boAffordability = this.boAffordability
+            boAffordability = this.boAffordability,
+            boCode = this.boCode,
         )
     }
 
