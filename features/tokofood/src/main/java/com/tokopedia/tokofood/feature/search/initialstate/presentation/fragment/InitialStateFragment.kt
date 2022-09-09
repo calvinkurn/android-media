@@ -199,23 +199,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateListener {
 
     private fun setInitialStateData(initialStateList: List<BaseInitialStateVisitable>) {
         initialSearchAdapter.setInitialStateList(initialStateList)
-        sendAllImpressView(initialStateList)
-    }
-
-    private fun sendAllImpressView(initialStateList: List<BaseInitialStateVisitable>) {
-//        val recentSearchList = initialStateList.filterIsInstance<RecentSearchItemUiModel>()
-//        val chipsPopularList = initialStateList.filterIsInstance<ChipsPopularSearch>()
-//        val cuisineList = initialStateList.filterIsInstance<CuisineItemUiModel>()
-//
-//        if (recentSearchList.isNotEmpty()) {
-//            analytics.impressViewSearchHistory(keyword)
-//        }
-//        if (chipsPopularList.isNotEmpty()) {
-//            analytics.impressViewTopKeyword(keyword)
-//        }
-//        if (cuisineList.isNotEmpty()) {
-//            analytics.impressViewCuisineList(keyword)
-//        }
     }
 
     fun setInitialStateViewUpdateListener(initialStateViewUpdateListener: InitialStateViewUpdateListener) {
