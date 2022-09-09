@@ -30,6 +30,8 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         .setLoadControl(loadControl)
         .build()
 
+    var isEnded = false
+
     init {
 
         exoPlayer.volume = UNMUTE_VOLUME
@@ -45,8 +47,11 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
                     (playWhenReady && playbackState != Player.STATE_READY) || (!playWhenReady && playbackState != Player.STATE_READY)
 
                 when {
-                    isPlaying || playbackState == Player.STATE_ENDED -> {
+                    isPlaying  -> {
                         videoStateListener?.onVideoReadyToPlay()
+                    }
+                    playbackState == Player.STATE_ENDED -> {
+                        isEnded = true
                     }
                     isReadyToPlay -> {
                         videoStateListener?.onVideoReadyToPlay()
@@ -127,14 +132,14 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
 
         const val VIDEO_AT_FIRST_POSITION = 0L
 
-        const val minBufferMs = 50
-        const val maxBufferMs = 50
-        const val bufferForPlaybackMs = 50
-        const val bufferForPlaybackAfterRebufferMs = 50
     }
 
     override fun onCenterPlayButtonClicked() {
         resume()
+        if (isEnded){
+            exoPlayer.seekTo(VIDEO_AT_FIRST_POSITION)
+            isEnded = false
+        }
     }
 
     override fun onCenterPauseButtonClicked() {
