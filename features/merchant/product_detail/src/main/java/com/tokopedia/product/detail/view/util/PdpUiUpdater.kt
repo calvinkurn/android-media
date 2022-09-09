@@ -256,7 +256,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            verticalRecommendationItems.clear()
+            if (loadInitialData) {
+                verticalRecommendationItems.clear()
+            }
+
         }
     }
 
