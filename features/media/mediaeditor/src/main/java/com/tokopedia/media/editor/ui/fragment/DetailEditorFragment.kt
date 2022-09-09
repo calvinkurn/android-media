@@ -213,7 +213,8 @@ class DetailEditorFragment @Inject constructor(
         viewModel.setRotate(
             viewBinding?.imgUcropPreview,
             RotateToolUiComponent.ROTATE_BTN_DEGREE,
-            true
+            true,
+            getImagePairRatio()
         )
         isEdited = true
     }
@@ -653,6 +654,23 @@ class DetailEditorFragment @Inject constructor(
                 },
                 onCleared = {}
             ))
+    }
+
+    private fun getImagePairRatio(): Pair<Float, Float>?{
+        data.cropRotateValue.getRatio()?.let {
+            return Pair(
+                data.cropRotateValue.imageWidth/data.cropRotateValue.imageHeight.toFloat(),
+                data.cropRotateValue.imageHeight/data.cropRotateValue.imageWidth.toFloat()
+            )
+        } ?: kotlin.run {
+            getBitmap()?.let {
+                return Pair(
+                    it.width/it.height.toFloat(),
+                    it.height/it.width.toFloat()
+                )
+            }
+        }
+        return null
     }
 
     override fun getScreenName() = SCREEN_NAME

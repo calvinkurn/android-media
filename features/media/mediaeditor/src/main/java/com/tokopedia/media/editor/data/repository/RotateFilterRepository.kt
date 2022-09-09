@@ -2,13 +2,15 @@ package com.tokopedia.media.editor.data.repository
 
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import javax.inject.Inject
 
 interface RotateFilterRepository {
     fun rotate(
         editorDetailPreview: EditorDetailPreviewWidget?,
         degree: Float,
-        isRotateRatio: Boolean
+        isRotateRatio: Boolean,
+        imageRatio: Pair<Float, Float>?
     )
 
     fun mirror(editorDetailPreview: EditorDetailPreviewWidget?)
@@ -26,10 +28,14 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
 
     private var isRatioRotated = false
 
+    private var initialRatioZoom = 0f
+    private var rotatedRatioZoom = 0f
+
     override fun rotate(
         editorDetailPreview: EditorDetailPreviewWidget?,
         degree: Float,
-        isRotateRatio: Boolean
+        isRotateRatio: Boolean,
+        imageRatio: Pair<Float, Float>?
     ) {
         if (editorDetailPreview == null) return
 
@@ -41,15 +47,18 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
         // rotate logic when rotation is triggered by rotate button instead on slider
         if (isRotateRatio) {
             val cropOverlay = editorDetailPreview.overlayView
-            val originalWidth = cropImageView.drawable?.intrinsicWidth ?: 0
-            val originalHeight = cropImageView.drawable?.intrinsicHeight ?: 0
 
             cropImageView.postRotate(normalizeDegree)
 
+            // isRatioRotated = false mean initial ratio going to rotate 90 degree
             if (isRatioRotated) {
-                cropOverlay.setTargetAspectRatio(originalWidth / originalHeight.toFloat())
+                if (rotatedRatioZoom == 0f) rotatedRatioZoom = cropImageView.currentScale
+                cropOverlay.setTargetAspectRatio(imageRatio?.first ?: 1f)
+                cropImageView.zoomOutImage(initialRatioZoom)
             } else {
-                cropOverlay.setTargetAspectRatio(originalHeight / originalWidth.toFloat())
+                if (initialRatioZoom == 0f) initialRatioZoom = cropImageView.currentScale
+                cropOverlay.setTargetAspectRatio(imageRatio?.second ?: 1f)
+                cropImageView.zoomOutImage(rotatedRatioZoom)
             }
 
             isRatioRotated = !isRatioRotated
@@ -59,7 +68,6 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
 
             previousDegree = normalizeDegree
             sliderValue = degree
-
             cropImageView.zoomOutImage(cropImageView.minScale + 0.01f)
         }
 

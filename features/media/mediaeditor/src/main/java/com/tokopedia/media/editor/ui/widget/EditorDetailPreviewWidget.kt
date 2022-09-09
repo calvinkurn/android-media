@@ -43,7 +43,10 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             )
 
             setCropGridColor(Color.TRANSPARENT)
-            setTargetAspectRatio(ratio)
+        }
+
+        cropImageView.post {
+            overlayView.setTargetAspectRatio(ratio)
         }
 
         disabledTouchEvent()
