@@ -14,18 +14,19 @@ class GetFlashSaleDetailForSellerUseCase @Inject constructor(
     companion object {
         private const val ONE = 1
         private const val FIRST_PAGE = 0
+        private const val TAB_NAME = "detail"
     }
 
     suspend fun execute(
-        tabName: String,
         campaignId: Long
     ): FlashSale {
         return coroutineScope {
             val params = GetFlashSaleListForSellerUseCase.Param(
-                tabName = tabName,
+                tabName = TAB_NAME,
                 offset = FIRST_PAGE,
                 rows = ONE,
-                campaignIds = listOf(campaignId)
+                campaignIds = listOf(campaignId),
+                requestProductMetaData = true
             )
             val campaignList = getFlashSaleListForSellerUseCase.execute(
                 params

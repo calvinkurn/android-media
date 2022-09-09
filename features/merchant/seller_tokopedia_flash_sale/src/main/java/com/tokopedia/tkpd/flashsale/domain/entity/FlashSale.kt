@@ -32,7 +32,8 @@ data class FlashSale(
         val totalProduct: Int,
         val totalProductStock: Int,
         val totalStockSold: Int,
-        val transferredProduct: Int
+        val transferredProduct: Int,
+        val totalSoldValue: Double
     )
 
     data class FormattedDate(

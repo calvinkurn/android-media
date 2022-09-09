@@ -63,7 +63,8 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
                     rejected_product
                     transferred_product
                     total_product_stock
-                    total_stock_sold
+                    total_stock_sold,
+                    float_total_sold_value
                   }
                 }
              }

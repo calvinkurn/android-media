@@ -52,6 +52,4 @@ class HasPaginatedListImpl : HasPaginatedList {
     override fun resetPaging() {
         scrollListener?.resetState()
     }
-
-
 }

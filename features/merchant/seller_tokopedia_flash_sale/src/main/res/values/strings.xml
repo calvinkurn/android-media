@@ -124,4 +124,47 @@
     <string name="product_eligible_card_title_label">Yay, produkmu sesuai kriteria!</string>
     <string name="product_eligible_card_description_label">Tunggu apa lagi? Yuk, daftar campaign sekarang!</string>
     <string name="stfs_campaign_label">Campaign</string>
+
+    <!--    Registered CDP-->
+    <string name="stfs_remaining_quota_label">Sisa kuota!</string>
+    <string name="stfs_remaining_quota_placeholder"><![CDATA[<b>%d</b>]]>/%2d Produk</string>
+    <string name="stfs_proposed_before_label">Ajukan sebelum</string>
+    <string name="product_eligible_for_selection_card_title_placeholder">%d produkmu sedang diseleksi</string>
+    <string name="product_eligible_for_selection_end_date_placeholder">Proses seleksi akan selesai pada %s</string>
+    <string name="product_eligible_card_title_placeholder">Yay, %d produkmu lolos seleksi!</string>
+    <string name="product_eligible_start_date_placeholder">Campaign akan dimulai pada %s</string>
+    <string name="stfs_proposed_label">Diajukan</string>
+    <string name="stfs_accepted_label">Diterima</string>
+    <string name="stfs_rejected_label">Ditolak</string>
+    <string name="stfs_mid_section_product_count_placeholder"><![CDATA[<b>%d</b>]]> Produk</string>
+    <string name="stfs_dash_label">-</string>
+    <string name="stfs_variant_stock_non_variant_non_location_placeholder">Stok Campaign: <![CDATA[<b>%d</b>]]></string>
+    <string name="stfs_variant_stock_single_multiloc_placeholder">Stok Campaign: <![CDATA[<b>%d</b>]]> di %2d lokasi</string>
+    <string name="stfs_variant_stock_variant_singleloc_placeholder">%d Varian Diskon | Stok Campaign: <![CDATA[<b>%2d</b>]]></string>
+    <string name="stfs_variant_stock_variant_multiloc_placeholder">%d Varian Diskon | Stok Campaign: <![CDATA[<b>%2d</b>]]> di %3d lokasi</string>
+    <string name="stfs_choose_all_product_label">Pilih Sekaligus</string>
+    <string name="stfs_product_count_place_holder">%d Produk</string>
+    <string name="stfs_choosen_product_count_placeholder">%d Produk Dipilih</string>
+    <string name="stfs_label_delete">Hapus</string>
+    <string name="stfs_label_edit">Ubah</string>
+    <string name="stfs_register_body_title_label">Daftar Produk Flash Sale Tokopedia</string>
+    <string name="stfs_selection_process_label">Proses Seleksi</string>
+    <string name="stfs_subsidy_value_placeholder">Menerima subsidi sebesar <![CDATA[<font color=#00AA5B>>%s</font>]]> dari Tokopedia</string>
+
+    <!--    Ongoing-->
+    <string name="stft_flash_sale_performace_card_title_label">Pantau peforma Flash Sale-mu, yuk!</string>
+    <string name="stfs_flash_sale_performance_card_desc_label">Performa diperbarui 10 menit lalu.</string>
+    <string name="stft_flash_sale_performace_card_title_label_rejected">Yah, semua produkmu tidak lolos seleksi</string>
+    <string name="stft_flash_sale_performace_card_desc_label_rejected">Tenang, coba daftarkan produkmu lagi di campaign selanjutnya, ya!</string>
+    <string name="stfs_product_sold_value_placeholder">Terjual: <![CDATA[<b>%d</b>]]></string>
+    <string name="stfs_product_sold_rejected_value_placeholder">Terjual: <![CDATA[<font color=#F94D63>-</font>]]></string>
+    <string name="stfs_sold_label">Terjual</string>
+    <string name="stfs_selling_label">Penjualan</string>
+    <string name="stfs_rejection_reason_placeholder"><![CDATA[<font color=#F94D63>Ditolak</font>]]> karena [%s].</string>
+    <string name="stfs_check_another_campaign_label">Cek Campaign Lain</string>
+    <string name="stfs_empty_desc_label">Yuk, cek campaign menarik lainnya yang bisa kamu ikuti!</string>
+    <string name="stfs_canceled_card_title_label">Yah, campaign ini dibatalkan</string>
+    <string name="stfst_canceled_card_description_placeholder">Campaign dibatalkan karena [%s].</string>
+    <string name="stfs_missed_card_title_label">Yah, campaign ini sudah lewat!</string>
+    <string name="stfs_missed_card_desc_label">Kamu tidak mengajukan produk untuk campaign ini.</string>
 </resources>
