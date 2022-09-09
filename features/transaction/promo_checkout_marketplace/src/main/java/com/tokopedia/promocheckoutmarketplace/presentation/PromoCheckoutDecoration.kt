@@ -3,7 +3,6 @@ package com.tokopedia.promocheckoutmarketplace.presentation
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.*
 import javax.inject.Inject
 
