@@ -29,11 +29,11 @@ data class AnnouncementWidgetUiModel(
     override var isNeedToBeRemoved: Boolean = false,
     override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
-    val isDismissible: Boolean = false,
-    val dismissibleState: DismissibleState = DismissibleState.NONE,
-    val dismissToken: String = String.EMPTY,
-    var shouldShowDismissalTimer: Boolean = false
-) : BaseWidgetUiModel<AnnouncementDataUiModel> {
+    override val isDismissible: Boolean = false,
+    override val dismissibleState: DismissibleState = DismissibleState.NONE,
+    override val dismissToken: String = String.EMPTY,
+    override var shouldShowDismissalTimer: Boolean = false
+) : BaseDismissibleWidgetUiModel<AnnouncementDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)

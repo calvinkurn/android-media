@@ -76,4 +76,13 @@ sealed class PostItemUiModel(
             return typeFactory.type(this)
         }
     }
+
+    data class PostTimerDismissalUiModel(
+        val totalDeletedItems: Int
+    ) : PostItemUiModel() {
+
+        override fun type(typeFactory: PostListAdapterTypeFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
 }

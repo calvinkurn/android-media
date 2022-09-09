@@ -15,11 +15,11 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
  */
 
 class PostListPagerAdapter(
-    private val isCheckingMode: Boolean = false,
     private val listener: Listener
 ) : RecyclerView.Adapter<PostListPagerAdapter.PostListPagerViewHolder>() {
 
     var pagers = listOf<PostListPagerUiModel>()
+    private var isCheckingMode: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostListPagerViewHolder {
         val binding = ShcItemPostListPagerBinding.inflate(
@@ -34,6 +34,10 @@ class PostListPagerAdapter(
     }
 
     override fun getItemCount(): Int = pagers.size
+
+    fun setCheckingMode(isCheckingMode: Boolean) {
+        this.isCheckingMode = isCheckingMode
+    }
 
     class PostListPagerViewHolder(
         private val binding: ShcItemPostListPagerBinding,
@@ -60,5 +64,7 @@ class PostListPagerAdapter(
     interface Listener {
         fun onItemClicked(model: PostItemUiModel)
         fun onCheckedListener(isChecked: Boolean)
+        fun onTimerFinished()
+        fun onCancelDismissalClicked()
     }
 }

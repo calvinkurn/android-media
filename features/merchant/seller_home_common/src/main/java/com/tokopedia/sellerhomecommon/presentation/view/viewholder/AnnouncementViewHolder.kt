@@ -106,7 +106,7 @@ class AnnouncementViewHolder(
                 override fun onCancelTimer() {
                     element.shouldShowDismissalTimer = false
                     showSuccessState(element)
-                    listener.setOnAnnouncementWidgetCancelDismissal(element)
+                    listener.setOnWidgetCancelDismissal(element)
                 }
             })
         }
@@ -171,7 +171,7 @@ class AnnouncementViewHolder(
         }
     }
 
-    interface Listener : BaseViewHolderListener {
+    interface Listener : BaseViewHolderListener, WidgetDismissalListener {
         fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {}
 
         fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {}
@@ -181,7 +181,5 @@ class AnnouncementViewHolder(
         fun setOnAnnouncementWidgetYesClicked(element: AnnouncementWidgetUiModel) {}
 
         fun setOnAnnouncementWidgetNoClicked(element: AnnouncementWidgetUiModel) {}
-
-        fun setOnAnnouncementWidgetCancelDismissal(element: AnnouncementWidgetUiModel) {}
     }
 }

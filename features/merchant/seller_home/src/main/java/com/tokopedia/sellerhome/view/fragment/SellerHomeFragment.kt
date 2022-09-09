@@ -92,11 +92,13 @@ import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
+import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseDismissibleWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
@@ -117,6 +119,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiM
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
@@ -783,7 +786,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         showFeedbackLoopOption(element)
     }
 
-    override fun setOnAnnouncementWidgetCancelDismissal(element: AnnouncementWidgetUiModel) {
+    override fun setOnWidgetCancelDismissal(element: BaseDismissibleWidgetUiModel<*>) {
         val param = SubmitWidgetDismissUiModel(
             action = SubmitWidgetDismissUiModel.Action.CANCEL,
             dismissToken = element.dismissToken,
@@ -907,10 +910,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             switchPostWidgetCheckingMode(element)
         }
         bottomSheet.show(childFragmentManager)
-    }
-
-    override fun postWidgetOnCancelChecking(element: PostListWidgetUiModel) {
-        switchPostWidgetCheckingMode(element)
     }
 
     override fun setOnPostWidgetRemoveItemClicked(element: PostListWidgetUiModel) {
@@ -2491,7 +2490,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
                 it.id == result.widgetId && it is PostListWidgetUiModel -> {
                     shouldUpdateWidget = true
-                    getDismissalPostListWidget(it)
+                    getDismissalPostListWidget(it, result)
                 }
                 else -> it
             }
@@ -2504,8 +2503,35 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun getDismissalPostListWidget(widget: PostListWidgetUiModel): PostListWidgetUiModel {
-        return widget
+    private fun getDismissalPostListWidget(
+        widget: PostListWidgetUiModel, result: WidgetDismissalResultUiModel
+    ): BaseWidgetUiModel<*> {
+        val isDismissAction = result.action == SubmitWidgetDismissUiModel.Action.DISMISS
+
+        val prevPostList = widget.data?.postPagers?.flatMap { it.postList }
+            .orEmpty()
+        val postDismissalItem = PostItemUiModel.PostTimerDismissalUiModel(
+            totalDeletedItems = prevPostList.count { it.isChecked }
+        )
+        val uncheckedList = prevPostList.filter { it.isChecked }
+        val tempPostList = listOf(postDismissalItem).plus(prevPostList)
+        val maxItemPerPage = if (widget.maxDisplay == Int.ZERO) {
+            PostMapper.MAX_ITEM_PER_PAGE
+        } else {
+            widget.maxDisplay
+        }
+
+        val postPagers = tempPostList.chunked(maxItemPerPage).map {
+            return@map PostListPagerUiModel(it)
+        }
+        return widget.copy(
+            dismissToken = result.dismissToken,
+            shouldShowDismissalTimer = isDismissAction,
+            data = widget.data?.copy(
+                postPagers = postPagers
+            ),
+            isCheckingMode = false
+        )
     }
 
     private fun getDismissalAnnouncementWidget(

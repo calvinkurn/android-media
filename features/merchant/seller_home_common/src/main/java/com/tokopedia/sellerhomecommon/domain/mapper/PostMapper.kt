@@ -22,7 +22,7 @@ class PostMapper @Inject constructor(
     BaseResponseMapper<GetPostDataResponse, List<PostListDataUiModel>> {
 
     companion object {
-        private const val MAX_ITEM_PER_PAGE = 3
+        const val MAX_ITEM_PER_PAGE = 3
     }
 
     private var dataKeys: List<DataKeyModel> = emptyList()

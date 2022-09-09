@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.common.DismissibleState
@@ -213,7 +214,11 @@ class LayoutMapper @Inject constructor(
             ctaText = widget.ctaText.orEmpty(),
             gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             maxData = widget.maxData.orZero(),
-            maxDisplay = widget.maxDisplay.orZero(),
+            maxDisplay = if (widget.maxDisplay.isMoreThanZero()) {
+                widget.maxDisplay.orZero()
+            } else {
+                PostMapper.MAX_ITEM_PER_PAGE
+            },
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             postFilter = widget.postFilter?.mapIndexed { i, filter ->
@@ -228,7 +233,11 @@ class LayoutMapper @Inject constructor(
             isFromCache = fromCache,
             emptyState = widget.emptyStateModel.mapToUiModel(),
             isDismissible = widget.isDismissible,
-            dismissibleState = widget.dismissibleState
+            dismissibleState = when (widget.dismissibleState) {
+                DismissibleState.ALWAYS.value -> DismissibleState.ALWAYS
+                DismissibleState.TRIGGER.value -> DismissibleState.TRIGGER
+                else -> DismissibleState.NONE
+            }
         )
     }
 
