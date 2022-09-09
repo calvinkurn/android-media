@@ -53,6 +53,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     companion object {
         private const val KEY_PARAM_RECIPE_ID = "recipe_id"
+        private const val KEY_PARAM_SLUG = "slug"
 
         private const val PAGE_NAME = "Tokonow"
         private const val PAGE_TYPE = "Recipe Detail"
@@ -176,9 +177,11 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     override fun getFragmentActivity() = activity
 
     private fun setRecipeData() {
-        val recipeId = activity?.intent?.data
-            ?.getQueryParameter(KEY_PARAM_RECIPE_ID).orEmpty()
-        viewModel.setRecipeId(recipeId)
+        activity?.intent?.data?.let {
+            val recipeId = it.getQueryParameter(KEY_PARAM_RECIPE_ID).orEmpty()
+            val slug = it.getQueryParameter(KEY_PARAM_SLUG).orEmpty()
+            viewModel.setRecipeData(recipeId, slug)
+        }
     }
 
     private fun setupToolbarHeader() {
@@ -258,7 +261,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         val duration = recipeInfo.duration
         val thumbnailImageUrl = recipeInfo.thumbnail
         val imageUrls = recipeInfo.imageUrls
-        val shareUrl = "https://tokopedia.link/aBc123DeF" // To-Do
+        val shareUrl = recipeInfo.shareUrl
         val shareTitle = getString(R.string.tokopedianow_share_recipe_title, title, portion, duration)
         val shareText = getString(R.string.tokopedianow_share_recipe_text, title, shareUrl)
 
@@ -427,11 +430,11 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         binding?.rvRecipeDetail?.setPadding(paddingZero, paddingZero, paddingZero, paddingZero)
     }
 
-    private fun onSuccessGetRecipeInfo(it: RecipeInfoUiModel) {
-        setHeaderTitle(it.title)
+    private fun onSuccessGetRecipeInfo(recipe: RecipeInfoUiModel) {
+        setHeaderTitle(recipe.title)
         setToolbarScrollListener()
         setToolbarIconsColor()
-        setupShareBottomSheet(it)
+        setupShareBottomSheet(recipe)
     }
 
     private fun onSuccessAddItemToCart(data: AddToCartDataModel) {

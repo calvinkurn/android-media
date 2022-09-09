@@ -27,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
+import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow;
 import com.tokopedia.applink.travel.DeeplinkMapperTravel;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -275,6 +276,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openTokoFood(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.NOW_RECIPE:
+                    openNowRecipe(uriData);
+                    screenName = "";
+                    break;
                 case DeepLinkChecker.DEALS:
                 case DeepLinkChecker.OTHER:
                 default:
@@ -467,6 +472,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openTokoFood(Uri uriData) {
         Intent intent = RouteManager.getIntent(context, ApplinkConst.TokoFood.HOME);
+        viewListener.goToPage(intent);
+    }
+
+    private void openNowRecipe(Uri uriData) {
+        String appLink = DeeplinkMapperTokopediaNow.INSTANCE.getRegisteredNavigationFromHttp(uriData);
+        Intent intent = RouteManager.getIntent(context, appLink);
         viewListener.goToPage(intent);
     }
 

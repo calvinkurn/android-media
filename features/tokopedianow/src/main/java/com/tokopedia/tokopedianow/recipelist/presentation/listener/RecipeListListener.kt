@@ -1,7 +1,9 @@
 package com.tokopedia.tokopedianow.recipelist.presentation.listener
 
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.PARAM_RECIPE_ID
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.view.RecipeListView
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeViewHolder
@@ -14,10 +16,10 @@ class RecipeListListener(private val view: RecipeListView) : RecipeViewHolder.Re
 
     private fun goToRecipeDetail(recipe: RecipeUiModel) {
         val context = view.context()
-        RouteManager.route(
-            context,
+        val appLink = UriUtil.buildUriAppendParam(
             ApplinkConstInternalTokopediaNow.RECIPE_DETAIL,
-            recipe.id
+            mapOf(PARAM_RECIPE_ID to recipe.id)
         )
+        RouteManager.route(context, appLink)
     }
 }
