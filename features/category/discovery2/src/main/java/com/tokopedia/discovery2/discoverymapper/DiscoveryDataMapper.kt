@@ -342,7 +342,7 @@ class DiscoveryDataMapper {
             val bundleProductUiModel: ArrayList<BundleProductUiModel> = arrayListOf()
             val bundleModel = BundleUiModel(
                     bundleName = bundleData.bundleName ?: "",
-                    bundleType = if (bundleData.type == "multiple_bundling") BundleTypes.MULTIPLE_BUNDLE else BundleTypes.SINGLE_BUNDLE,
+                    bundleType = if (bundleData.bundleType == "multiple_bundling") BundleTypes.MULTIPLE_BUNDLE else BundleTypes.SINGLE_BUNDLE,
                     bundleDetails = bundleDetailUiModelList.apply {
                         bundleData.bundleDetails?.forEach { bundleDetails ->
                             add(BundleDetailUiModel(
