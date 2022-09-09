@@ -6,20 +6,15 @@ import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusRes
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 @BuyerOrderDetailScope
 @GqlQuery("GetOrderResolutionQuery", GetOrderResolutionUseCase.QUERY)
 class GetOrderResolutionUseCase @Inject constructor(
     val mapper: GetBuyerOrderDetailMapper
-): GraphqlUseCase<GetResolutionTicketStatusResponse>() {
+) : GraphqlUseCase<GetResolutionTicketStatusResponse>() {
 
     init {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
@@ -62,7 +57,5 @@ class GetOrderResolutionUseCase @Inject constructor(
               }
             }
         """
-        private const val ERROR_MESSAGE = "Failed to get resolution ticket status"
     }
-
 }

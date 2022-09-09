@@ -18,6 +18,7 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerTyp
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -106,6 +107,7 @@ object Utils {
         val color = try {
             Color.parseColor(colorHex)
         } catch (t: Throwable) {
+            Timber.e(t)
             defaultColor
         }
         val drawable = MethodChecker.getDrawable(context, R.drawable.bg_due_response)

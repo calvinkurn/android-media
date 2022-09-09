@@ -6,13 +6,14 @@ import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.usecase.coroutines.UseCase
+import timber.log.Timber
 import java.util.HashMap
 import javax.inject.Inject
 
 class GetDetailWithResolutionUseCase @Inject constructor(
     private val getBuyerOrderDetailUseCase: GetBuyerOrderDetailUseCase,
     private val getOrderResolutionUseCase: GetOrderResolutionUseCase
-): UseCase<BuyerOrderDetailUiModel>() {
+) : UseCase<BuyerOrderDetailUiModel>() {
 
     companion object {
         const val ORDER_ID = "ORDER_ID"
@@ -33,7 +34,8 @@ class GetDetailWithResolutionUseCase @Inject constructor(
         val orderId: String = useCaseRequestParams.parameters[ORDER_ID] as String
         val paymentId: String = useCaseRequestParams.parameters[PAYMENT_ID] as String
         val cart: String = useCaseRequestParams.parameters[CART] as String
-        val detailUIModel = getBuyerOrderDetailUseCase.execute(GetBuyerOrderDetailParams(cart, orderId, paymentId))
+        val detailUIModel =
+            getBuyerOrderDetailUseCase.execute(GetBuyerOrderDetailParams(cart, orderId, paymentId))
         if (detailUIModel.hasResoStatus.orFalse()) {
             detailUIModel.orderResolutionUIModel = executeResolutionQuery(orderId)
         }
@@ -48,8 +50,8 @@ class GetDetailWithResolutionUseCase @Inject constructor(
         return try {
             getOrderResolutionUseCase.execute()
         } catch (e: Exception) {
+            Timber.e(e)
             OrderResolutionUIModel()
         }
     }
-
 }

@@ -8,7 +8,6 @@ import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
 import com.tokopedia.buyerorderdetail.presentation.model.*
-import com.tokopedia.kotlin.extensions.orFalse
 import javax.inject.Inject
 
 class GetBuyerOrderDetailMapper @Inject constructor(
@@ -546,7 +545,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
 
     fun mapResolutionResponseToUIModel(
         resolutionData: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
-    ): OrderResolutionUIModel{
+    ): OrderResolutionUIModel {
         return OrderResolutionUIModel(
             title = resolutionData?.cardTitle,
             status = resolutionData?.resolutionStatus?.text,

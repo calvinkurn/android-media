@@ -1,6 +1,6 @@
 package com.tokopedia.sellerorder.detail.data.model
-import com.google.gson.annotations.SerializedName
 
+import com.google.gson.annotations.SerializedName
 
 data class GetResolutionTicketStatusResponse(
     @SerializedName("resolutionGetTicketStatus")
@@ -8,7 +8,7 @@ data class GetResolutionTicketStatusResponse(
 ) {
     data class ResolutionGetTicketStatus(
         @SerializedName("data")
-        val `data`: ResolutionData? = ResolutionData(),
+        val data: ResolutionData? = ResolutionData(),
         @SerializedName("messageError")
         val messageError: List<String>? = listOf(),
         @SerializedName("status")
