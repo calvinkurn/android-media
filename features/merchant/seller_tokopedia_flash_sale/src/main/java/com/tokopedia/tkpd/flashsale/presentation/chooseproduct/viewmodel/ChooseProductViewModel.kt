@@ -3,13 +3,13 @@ package com.tokopedia.tkpd.flashsale.presentation.chooseproduct.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaSelection
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaSelection
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductReserveResult
 import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductCriteriaCheckingUseCase
@@ -20,6 +20,7 @@ import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChoosePr
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.mapper.ChooseProductUiMapper
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.combine
 import java.util.*
 import javax.inject.Inject
 
@@ -50,7 +51,7 @@ class ChooseProductViewModel @Inject constructor(
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
-    private val _selectedProductList = MutableLiveData<List<DelegateAdapterItem>>()
+    private val _selectedProductList = MutableLiveData<List<ChooseProductItem>>()
 
     val categoryAllList = Transformations.map(criteriaList) {
         ChooseProductUiMapper.collectAllCategory(it)
@@ -62,6 +63,12 @@ class ChooseProductViewModel @Inject constructor(
 
     val selectedProductCount = Transformations.map(_selectedProductList) {
         ChooseProductUiMapper.getSelectedProductCount(it)
+    }
+
+    val validationResult = combine(
+        selectedProductCount.asFlow(), criteriaList.asFlow()
+    ) { productCount, criteriaList ->
+        ChooseProductUiMapper.validateSelection(productCount, criteriaList)
     }
 
     val hasNextPage: Boolean get() = productList.value?.size == MAX_PER_PAGE
@@ -108,7 +115,7 @@ class ChooseProductViewModel @Inject constructor(
         _criteriaList.value = ChooseProductUiMapper.chooseCriteria(_criteriaList.value, item)
     }
 
-    fun setSelectedProduct(items: List<DelegateAdapterItem>) {
+    fun setSelectedProduct(items: List<ChooseProductItem>) {
         _selectedProductList.value = items
     }
 

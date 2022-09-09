@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.chooseproduct.mapper
 
-import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.entity.ChooseProductItem
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.Category
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaSelection
@@ -21,23 +21,21 @@ object ChooseProductUiMapper {
         return result
     }
 
-    fun getProductList(list: List<DelegateAdapterItem>) = list.filterIsInstance<ChooseProductItem>()
-
-    fun getSelectedProduct(list: List<DelegateAdapterItem>): List<ChooseProductItem> {
-        return getProductList(list).filter { it.isSelected && it.isEnabled }
+    fun getSelectedProduct(list: List<ChooseProductItem>): List<ChooseProductItem> {
+        return list.filter { it.isSelected && it.isEnabled }
     }
 
-    fun getSelectedProductCount(list: List<DelegateAdapterItem>) = getSelectedProduct(list).size
+    fun getSelectedProductCount(list: List<ChooseProductItem>) = getSelectedProduct(list).size
 
-    fun getMaxSelectedProduct(categories: List<CriteriaSelection>): Int {
+    fun getMaxSelectedProduct(criterias: List<CriteriaSelection>): Int {
         var max = 0
-        categories.forEach {
+        criterias.forEach {
             max += it.selectionCountMax
         }
         return max
     }
 
-    fun mapToReserveParam(campaignId: Long, reservationId: String, selectedProducts: List<DelegateAdapterItem>?): DoFlashSaleProductReserveUseCase.Param {
+    fun mapToReserveParam(campaignId: Long, reservationId: String, selectedProducts: List<ChooseProductItem>?): DoFlashSaleProductReserveUseCase.Param {
         val productList = getSelectedProduct(selectedProducts.orEmpty())
         return DoFlashSaleProductReserveUseCase.Param(
             campaignId,
@@ -56,5 +54,16 @@ object ChooseProductUiMapper {
             if (item.isSelected) selectionCount++ else selectionCount--
         }
         return criteriaList.orEmpty()
+    }
+
+    fun validateSelection(productCount: Int, criteriaList: List<CriteriaSelection>): Boolean {
+        val maxProduct = getMaxSelectedProduct(criteriaList)
+        val productValidation = productCount <= maxProduct && productCount.isMoreThanZero()
+        val criteriaValidation = criteriaList.validateMax()
+        return productValidation && criteriaValidation
+    }
+
+    private fun List<CriteriaSelection>.validateMax(): Boolean {
+        return !any { it.selectionCount > it.selectionCountMax }
     }
 }

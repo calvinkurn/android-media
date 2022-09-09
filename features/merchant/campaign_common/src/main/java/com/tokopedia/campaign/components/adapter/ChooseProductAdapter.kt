@@ -35,4 +35,6 @@ class ChooseProductAdapter {
         compositeAdapter.addItems(newList)
     }
 
+    fun getItems() = compositeAdapter.getItems().filterIsInstance<ChooseProductItem>()
+
 }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -15,8 +16,9 @@ import com.tokopedia.campaign.components.bottomsheet.selection.multiple.Multiple
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.campaign.utils.extension.showToasterError
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.campaign.utils.extension.slideDown
+import com.tokopedia.campaign.utils.extension.slideUp
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentChooseProductBinding
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
@@ -33,6 +35,7 @@ import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChooseProductItem>(),
@@ -91,21 +94,25 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.campaignId = campaignId
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         setupObservers()
         setupHeader()
         setupSearchBar()
         setupCategorySelection()
         setupFilterData()
+        recyclerView?.attachOnScrollListener(onScrollDown = {
+            binding?.layoutSearch?.slideDown()
+        }, onScrollUp = {
+            binding?.layoutSearch?.slideUp()
+        })
         binding?.btnAddProduct?.setOnClickListener {
             viewModel.reserveProduct()
         }
     }
 
     override fun onChooseProductClicked(index: Int, item: ChooseProductItem) {
-        adapter?.getItems()?.let {
-            viewModel.setSelectedProduct(it)
-            viewModel.updateCriteriaList(item)
-        }
+        viewModel.setSelectedProduct(chooseProductAdapter.getItems())
+        viewModel.updateCriteriaList(item)
     }
 
     override fun onDetailClicked(index: Int, item: ChooseProductItem) {
@@ -123,6 +130,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     override fun getPerPage(): Int = MAX_PER_PAGE
 
     override fun addElementToAdapter(list: List<ChooseProductItem>) {
+        binding?.emptyStateProduct?.gone()
         chooseProductAdapter.addItems(list)
     }
 
@@ -143,7 +151,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     }
 
     override fun onDataEmpty() {
-        view?.showToasterError("Data Kosong")
+        binding?.emptyStateProduct?.visible()
     }
 
     override fun onGetListError(message: String) {
@@ -237,6 +245,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
             renderList(it, viewModel.hasNextPage)
         }
         viewModel.criteriaList.observe(viewLifecycleOwner) {
+            binding?.scrollViewCategory?.isVisible = it.isNotEmpty()
             criteriaSelectionAdapter.setDataList(it)
         }
         viewModel.categoryAllList.observe(viewLifecycleOwner) {
@@ -262,6 +271,11 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         }
         viewModel.criteriaCheckingResult.observe(viewLifecycleOwner) {
             showCriteriaCheckBottomSheet(it)
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.validationResult.collectLatest {
+                binding?.btnAddProduct?.isEnabled = it
+            }
         }
     }
 
