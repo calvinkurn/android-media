@@ -99,21 +99,19 @@ class ProductDetailInfoViewHolder(
     }
 
     private fun renderListInfo(element: ProductDetailInfoDataModel) = with(binding) {
-        val isProductCategory = element.catalogBottomSheet != null
         adapter.setAnnotationData(
             data = element.getShowableData(),
-            isProductCatalog = isProductCategory,
+            isProductCatalog = element.isCatalog,
             componentTrackDataModel = getComponentTrackData(element)
         )
         rvProductDetailInfo.adapter = adapter
     }
 
     private fun renderDescription(element: ProductDetailInfoDataModel) = with(binding) {
-        val isCatalog = element.catalogBottomSheet != null
         val descFormatted = element.getDescription()
 
         productDetailInfoDescriptionTitle.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-            val marginTop = if (isCatalog) {
+            val marginTop = if (element.isCatalog) {
                 MARGIN_TOP_DESC_TITLE_WHEN_CATALOG
             } else {
                 MARGIN_TOP_DESC_TITLE_WHEN_NON_CATALOG

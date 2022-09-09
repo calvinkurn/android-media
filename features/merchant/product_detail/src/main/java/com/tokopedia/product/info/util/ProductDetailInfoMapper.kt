@@ -64,7 +64,7 @@ object ProductDetailInfoMapper {
         responseData.bottomsheetData.forEachIndexed { index, it ->
             when (it.componentName) {
                 HEADER_DETAIL_KEY -> {
-                    val isCatalog = parcelData.productInfo.catalogBottomSheet != null
+                    val isCatalog = parcelData.isOpenCatalogDescription
                     val productInfoItems = mutableListOf<ProductDetailInfoContent>()
                     val annotationItems = mutableListOf<ProductDetailInfoContent>()
 

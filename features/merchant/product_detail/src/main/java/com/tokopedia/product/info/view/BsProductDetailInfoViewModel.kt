@@ -2,6 +2,7 @@ package com.tokopedia.product.info.view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -16,7 +17,6 @@ import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLo
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingSpecificationDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
 import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
-import com.tokopedia.product.info.util.ProductDetailInfoConstant
 import com.tokopedia.product.info.util.ProductDetailInfoMapper
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -38,8 +38,13 @@ class BsProductDetailInfoViewModel @Inject constructor(
 
     private val parcelData = MutableLiveData<ProductInfoParcelData>()
 
-    private val _bottomSheetTitle = MutableLiveData("")
-    val bottomSheetTitle: LiveData<String> get() = _bottomSheetTitle
+    val bottomSheetTitle: LiveData<String> get() = parcelData.map {
+        if (it.isOpenSpecification) {
+            it.productInfo.catalogBottomSheet?.bottomSheetTitle.orEmpty()
+        } else {
+            it.productInfo.bottomSheet.bottomSheetTitle
+        }
+    }
 
     val bottomSheetDetailData: LiveData<Result<List<ProductDetailInfoVisitable>>> =
         parcelData.switchMap {
@@ -51,12 +56,12 @@ class BsProductDetailInfoViewModel @Inject constructor(
                 val bottomSheetResponse = getBottomSheetData(it)
                 val visitableData = doGenerateVisitable(bottomSheetResponse, it)
 
-                setBottomSheetTitle(data = bottomSheetResponse)
                 bottomSheetData.postValue(visitableData.asSuccess())
             }) { t ->
                 logProductDetailBottomSheet(t)
                 bottomSheetData.postValue(t.asFail())
             }
+
             bottomSheetData
         }
 
@@ -69,18 +74,10 @@ class BsProductDetailInfoViewModel @Inject constructor(
         productInfoParcel: ProductInfoParcelData
     ): List<ProductDetailInfoVisitable> = if (productInfoParcel.isOpenSpecification) {
         listOf(ProductDetailInfoLoadingSpecificationDataModel())
-    } else if (productInfoParcel.productInfo.catalogBottomSheet != null) {
+    } else if (productInfoParcel.isOpenCatalogDescription) {
         listOf(ProductDetailInfoLoadingDescriptionDataModel())
     } else {
         listOf(ProductDetailInfoLoadingDataModel())
-    }
-
-    private fun setBottomSheetTitle(data: PdpGetDetailBottomSheet) {
-        val title = data.bottomsheetData.firstOrNull {
-            it.title == ProductDetailInfoConstant.DESCRIPTION_DETAIL_KEY
-        }?.title.orEmpty()
-
-        _bottomSheetTitle.postValue(title)
     }
 
     private suspend fun getBottomSheetData(
@@ -90,7 +87,9 @@ class BsProductDetailInfoViewModel @Inject constructor(
             productId = productInfoParcel.productId,
             shopId = productInfoParcel.shopId,
             parentId = productInfoParcel.parentId,
-            isGiftable = productInfoParcel.isGiftable
+            isGiftable = productInfoParcel.isGiftable,
+            bottomSheetParam = productInfoParcel.bottomSheetParam,
+            catalogId = productInfoParcel.catalogId
         )
 
         return getProductDetailBottomSheetUseCase.executeOnBackground(

@@ -18,6 +18,9 @@ data class ProductDetailInfoDataModel(
     val dataContent: List<ProductDetailInfoContent> = listOf()
 ) : DynamicPdpDataModel {
 
+    val isCatalog
+        get() = catalogBottomSheet != null
+
     fun getShowableData(): List<ProductDetailInfoContent> {
         return dataContent.filter { it.showAtFront }
             .filterNot { it.title.toLowerCase() == DESCRIPTION_DETAIL_KEY }

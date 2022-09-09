@@ -12,114 +12,114 @@ import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 
 data class ComponentData(
-        //region General data
+    //region General data
     @SerializedName("applink")
-        val applink: String = "",
+    val applink: String = "",
     @SerializedName("content")
-        val content: List<Content> = listOf(),
+    val content: List<Content> = listOf(),
     @SerializedName("row")
-        val row: String = "",
+    val row: String = "",
     @SerializedName("title")
-        val title: String = "",
+    val title: String = "",
     @SerializedName("isApplink")
-        val isApplink: Boolean = true,
+    val isApplink: Boolean = true,
     @SerializedName("icon")
-        val icon: String = "",
+    val icon: String = "",
     @SerializedName("separator")
-        val separator: String = "",
+    val separator: String = "",
     @SerializedName("description")
-        val description: String = "",
-        //endregion
+    val description: String = "",
+    //endregion
 
-        //region custom info palugada ... on pdpDataCustomInfo
+    //region custom info palugada ... on pdpDataCustomInfo
     @SerializedName("label")
-        val labels: List<CustomInfoLabelData> = listOf(),
+    val labels: List<CustomInfoLabelData> = listOf(),
     @SerializedName("lightIcon")
-        val lightIcon: String = "",
+    val lightIcon: String = "",
     @SerializedName("darkIcon")
-        val darkIcon: String = "",
-        //endregion
+    val darkIcon: String = "",
+    //endregion
 
-        //region Content data
+    //region Content data
     @SerializedName("campaign")
-        val campaign: CampaignModular = CampaignModular(),
+    val campaign: CampaignModular = CampaignModular(),
     @SerializedName("thematicCampaign")
-        val thematicCampaign: ThematicCampaign = ThematicCampaign(),
+    val thematicCampaign: ThematicCampaign = ThematicCampaign(),
     @SerializedName("isCashback")
-        val isCashback: Cashback = Cashback(),
+    val isCashback: Cashback = Cashback(),
     @SerializedName("isOS")
-        val isOS: Boolean = false,
+    val isOS: Boolean = false,
     @SerializedName("isPowerMerchant")
-        val isPowerMerchant: Boolean = false,
+    val isPowerMerchant: Boolean = false,
     @SerializedName("isTradeIn")
-        val isTradeIn: Boolean = false,
+    val isTradeIn: Boolean = false,
     @SerializedName("isWishlist")
-        val isWishlist: Boolean = false,
+    val isWishlist: Boolean = false,
     @SerializedName("media")
-        val media: List<Media> = listOf(),
+    val media: List<Media> = listOf(),
     @SerializedName("containerType")
-        val containerType: String = "",
+    val containerType: String = "",
     @SerializedName("name")
-        val name: String = "",
+    val name: String = "",
     @SerializedName("parentName")
-        val parentName: String = "",
+    val parentName: String = "",
     @SuppressLint("Invalid Data Type")
-        @SerializedName("price")
-        val price: Price = Price(),
+    @SerializedName("price")
+    val price: Price = Price(),
     @SerializedName("stock")
-        val stock: Stock = Stock(),
+    val stock: Stock = Stock(),
     @SerializedName("variant")
-        val variant: VariantBasic = VariantBasic(),
+    val variant: VariantBasic = VariantBasic(),
     @SerializedName("videos")
-        val youtubeVideos: List<YoutubeVideo> = listOf(),
+    val youtubeVideos: List<YoutubeVideo> = listOf(),
     @SerializedName("wholesale")
-        val wholesale: List<Wholesale>? = null,
+    val wholesale: List<Wholesale>? = null,
     @SerializedName("preorder")
-        val preOrder: PreOrder = PreOrder(),
+    val preOrder: PreOrder = PreOrder(),
     @SerializedName("isCOD")
-        val isCod: Boolean = false,
-        //endregion
-        //region Variant data
+    val isCod: Boolean = false,
+    //endregion
+    //region Variant data
     @SerializedName("parentID")
-        val parentId: String = "",
+    val parentId: String = "",
     @SerializedName("errorCode")
-        val errorCode: Int = 0,
+    val errorCode: Int = 0,
     @SerializedName("sizeChart")
-        val sizeChart: String = "",
+    val sizeChart: String = "",
     @SerializedName("maxFinalPrice")
-        val maxFinalPrice: Float = 0F,
+    val maxFinalPrice: Float = 0F,
     @SerializedName("defaultChild")
-        val defaultChild: String = "",
+    val defaultChild: String = "",
     @SerializedName("variants")
-        val variants: List<Variant> = listOf(),
+    val variants: List<Variant> = listOf(),
     @SerializedName("children")
-        val children: List<VariantChild> = listOf(),
-        //endregioncopy
+    val children: List<VariantChild> = listOf(),
+    //endregioncopy
 
-        //region one liners data
+    //region one liners data
     @SerializedName("productID")
-        val productId: String = "",
+    val productId: String = "",
     @SerializedName("oneLinerContent")
-        val oneLinerContent: String = "",
+    val oneLinerContent: String = "",
     @SerializedName("linkText")
-        val linkText: String = "",
+    val linkText: String = "",
     @SerializedName("color")
-        val color: String = "",
+    val color: String = "",
     @SerializedName("isVisible")
-        val isVisible: Boolean = true,
-        //endregioncopy
+    val isVisible: Boolean = true,
+    //endregioncopy
 
-        //region category carousel
+    //region category carousel
     @SerializedName("titleCarousel")
-        val titleCarousel: String = "",
+    val titleCarousel: String = "",
     @SerializedName("list")
-        val categoryCarouselList: List<CategoryCarousel> = listOf(),
+    val categoryCarouselList: List<CategoryCarousel> = listOf(),
 
-        // product detail info since improve to pdp catalog
+    // product detail info since improve to pdp catalog
     @SerializedName("catalogBottomsheet")
-        val catalogBottomSheet: ProductDetailInfoSeeMoreData? = null,
+    val catalogBottomSheet: ProductDetailInfoSeeMoreData? = null,
     @SerializedName("bottomsheet")
-        val bottomSheet: ProductDetailInfoSeeMoreData = ProductDetailInfoSeeMoreData(),
+    val bottomSheet: ProductDetailInfoSeeMoreData = ProductDetailInfoSeeMoreData(),
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
@@ -155,7 +155,9 @@ data class ComponentData(
     }
 
     fun getImagePathExceptVideo(): ArrayList<String>? {
-        val imageData = media.filter { it.type == PRODUCT_IMAGE_TYPE && it.uRLOriginal.isNotEmpty() }.map { it.uRLOriginal }
+        val imageData =
+            media.filter { it.type == PRODUCT_IMAGE_TYPE && it.uRLOriginal.isNotEmpty() }
+                .map { it.uRLOriginal }
         val arrayList = arrayListOf<String>()
         return if (imageData.isEmpty()) {
             null
@@ -202,14 +204,14 @@ data class ComponentData(
 }
 
 data class CategoryCarousel(
-        @SerializedName("icon")
-        val icon: String = "",
-        @SerializedName("title")
-        val title: String = "",
-        @SerializedName("isApplink")
-        var isApplink: Boolean = false,
-        @SerializedName("applink")
-        val applink: String = "",
-        @SerializedName("categoryID")
-        val categoryId: String = ""
+    @SerializedName("icon")
+    val icon: String = "",
+    @SerializedName("title")
+    val title: String = "",
+    @SerializedName("isApplink")
+    var isApplink: Boolean = false,
+    @SerializedName("applink")
+    val applink: String = "",
+    @SerializedName("categoryID")
+    val categoryId: String = ""
 )

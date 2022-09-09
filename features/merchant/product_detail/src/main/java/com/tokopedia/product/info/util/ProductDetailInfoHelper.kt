@@ -76,6 +76,7 @@ object ProductDetailInfoHelper {
                 isTokoNow = productInfoP1.basic.isTokoNow,
                 isGiftable = basic.isGiftable,
                 parentId = parentId,
+                catalogId = basic.catalogID,
                 isOpenSpecification = isOpenSpecification
             )
         } ?: return ProductInfoParcelData()
