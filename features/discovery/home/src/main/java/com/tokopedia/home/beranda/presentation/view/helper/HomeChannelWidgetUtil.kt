@@ -18,8 +18,7 @@ object HomeChannelWidgetUtil {
     ) {
         dividerTop?.layoutParams?.height = DIVIDER_HEIGHT.dpToPx().toInt()
         dividerBottom?.layoutParams?.height = DIVIDER_HEIGHT.dpToPx().toInt()
-//        when(channelModel?.channelConfig?.dividerType) {
-        when(ChannelConfig.DIVIDER_TOP) {
+        when(channelModel?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
                 dividerBottom?.gone()
