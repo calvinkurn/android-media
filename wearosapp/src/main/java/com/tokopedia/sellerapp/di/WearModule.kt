@@ -8,7 +8,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerapp.data.datasource.local.OrderRoomDatasource
 import com.tokopedia.sellerapp.data.datasource.local.dao.OrderDao
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
-import com.tokopedia.sellerapp.data.repository.OrderRepository
+import com.tokopedia.sellerapp.data.repository.NewOrderRepository
+import com.tokopedia.sellerapp.data.repository.ReadyToDeliverOrderRepository
 import com.tokopedia.sellerapp.data.repository.WearCacheActionImpl
 import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
 import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCase
@@ -50,24 +51,32 @@ class WearModule {
     ) = ClientMessageDatasource(nodeClient, messageClient, wearCacheActionImpl)
 
     @Provides
-    fun provideOrderRepository(
+    fun provideNewOrderRepository(
         datasource: ClientMessageDatasource,
         orderRoomDatasource: OrderRoomDatasource
-    ): OrderRepository {
-        return OrderRepository(datasource, orderRoomDatasource)
+    ): NewOrderRepository {
+        return NewOrderRepository(datasource, orderRoomDatasource)
+    }
+
+    @Provides
+    fun provideReadyToDeliverOrderRepository(
+        datasource: ClientMessageDatasource,
+        orderRoomDatasource: OrderRoomDatasource
+    ): ReadyToDeliverOrderRepository {
+        return ReadyToDeliverOrderRepository(datasource, orderRoomDatasource)
     }
 
     @Provides
     fun provideNewOrderUseCase(
-        orderRepository: OrderRepository
+        newOrderRepository: NewOrderRepository
     ): NewOrderUseCase {
-        return NewOrderUseCase(orderRepository)
+        return NewOrderUseCase(newOrderRepository)
     }
 
     @Provides
     fun provideReadyToDeliverOrderUseCase(
-        orderRepository: OrderRepository
+        readyToDeliverOrderRepository: ReadyToDeliverOrderRepository
     ): ReadyToDeliverOrderUseCase {
-        return ReadyToDeliverOrderUseCase(orderRepository)
+        return ReadyToDeliverOrderUseCase(readyToDeliverOrderRepository)
     }
 }

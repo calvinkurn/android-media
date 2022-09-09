@@ -7,27 +7,21 @@ import com.tokopedia.sellerapp.util.Action
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class OrderRepository @Inject constructor(
-    private val datasource: ClientMessageDatasource,
+class ReadyToDeliverOrderRepository @Inject constructor(
+    private val clientMessageDatasource: ClientMessageDatasource,
     private val orderRoomDatasource: OrderRoomDatasource
-) {
-    fun getCachedNewOrderList() : Flow<List<OrderWithProduct>>{
-        return orderRoomDatasource.getNewOrderList()
-    }
+): BaseRepository<List<OrderWithProduct>> {
 
-    fun getCachedNewOrderCount() : Flow<Int>{
-        return orderRoomDatasource.getNewOrderCount()
-    }
-
-    fun getCachedReadyToDeliverOrderList() : Flow<List<OrderWithProduct>>{
+    override fun getCachedData(): Flow<List<OrderWithProduct>> {
         return orderRoomDatasource.getReadyToDeliverOrderList()
     }
 
-    fun getCachedReadyToDeliverOrderCount() : Flow<Int>{
+    override fun getCachedDataCount(): Flow<Int> {
         return orderRoomDatasource.getReadyToDeliverOrderCount()
     }
 
-    suspend fun sendMessagesToNodes(action: Action) {
-        datasource.sendMessagesToNodes(action)
+    override suspend fun sendMessagesToNodes(action: Action) {
+        clientMessageDatasource.sendMessagesToNodes(action)
     }
+
 }
