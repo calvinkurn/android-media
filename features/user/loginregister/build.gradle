@@ -96,11 +96,6 @@ dependencies {
     kapt rootProject.ext.miscDependencies.parceler
 
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
-    implementation rootProject.ext.miscDependencies.coroutineAndroid
-    implementation rootProject.ext.miscDependencies.navigationUiKtx
-    implementation rootProject.ext.miscDependencies.coroutineCore
-    implementation rootProject.ext.miscDependencies.viewModelKtx
-    implementation rootProject.ext.miscDependencies.liveDataKtx
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
