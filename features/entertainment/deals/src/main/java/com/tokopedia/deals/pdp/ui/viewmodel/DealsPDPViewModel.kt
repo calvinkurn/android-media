@@ -302,15 +302,15 @@ class DealsPDPViewModel @Inject constructor (
     }
 
 
-    private fun convertToRatingResponse(typeRestResponseMap: Map<Type, RestResponse>): DealsRatingResponse {
+    private fun convertToRatingResponse(typeRestResponseMap: Map<Type, RestResponse?>): DealsRatingResponse {
         return typeRestResponseMap[DealsRatingResponse::class.java]?.getData() as DealsRatingResponse
     }
 
-    private fun convertToUpdateRatingResponse(typeRestResponseMap: Map<Type, RestResponse>): DealsRatingUpdateResponse {
+    private fun convertToUpdateRatingResponse(typeRestResponseMap: Map<Type, RestResponse?>): DealsRatingUpdateResponse {
         return typeRestResponseMap[DealsRatingUpdateResponse::class.java]?.getData() as DealsRatingUpdateResponse
     }
 
-    private fun convertToTrackingResponse(typeRestResponseMap: Map<Type, RestResponse>): DealsTrackingResponse {
+    private fun convertToTrackingResponse(typeRestResponseMap: Map<Type, RestResponse?>): DealsTrackingResponse {
         return typeRestResponseMap[DealsTrackingResponse::class.java]?.getData() as DealsTrackingResponse
     }
 

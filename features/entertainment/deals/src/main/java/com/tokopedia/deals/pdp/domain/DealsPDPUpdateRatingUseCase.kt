@@ -20,7 +20,7 @@ class DealsPDPUpdateRatingUseCase @Inject constructor(private val repository: Re
         dealsRatingUpdateRequest = dealsRatingUpdateRequestParam
     }
 
-    override suspend fun executeOnBackground(): Map<Type, RestResponse> {
+    override suspend fun executeOnBackground(): Map<Type, RestResponse?> {
         val restRequest = RestRequest.Builder(url, DealsRatingUpdateResponse::class.java)
             .setBody(dealsRatingUpdateRequest)
             .setRequestType(RequestType.POST)

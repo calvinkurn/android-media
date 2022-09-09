@@ -3,6 +3,8 @@ package com.tokopedia.deals.pdp
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.pdp.data.DealsProductDetail
 import com.tokopedia.deals.pdp.data.DealsProductEventContent
+import com.tokopedia.deals.pdp.data.DealsRatingResponse
+import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
@@ -151,5 +153,118 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
         Assert.assertEquals((actualResponse as Fail).throwable.message, errorMessageGeneral)
     }
 
+    @Test
+    fun `when getting rating data should run and give the success result`() {
+        onGetRating_thenReturn(createRating())
+        val expectedResponse = createRating()
+        var actualResponse: Result<DealsRatingResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRating.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setRating("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting rating data should run and give the null result`() {
+        onGetRating_thenReturn()
+        var actualResponse: Result<DealsRatingResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRating.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setRating("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+    }
+
+    @Test
+    fun `when getting rating data should run and give the error result`() {
+        onGetRating_thenReturn(Throwable(errorMessageGeneral))
+
+        var actualResponse: Result<DealsRatingResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRating.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setRating("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+        Assert.assertEquals((actualResponse as Fail).throwable.message, errorMessageGeneral)
+    }
+
+    @Test
+    fun `when getting rating update data should run and give the success result`() {
+        onGetRatingUpdate_thenReturn(createRatingUpdate())
+        val expectedResponse = createRatingUpdate()
+        var actualResponse: Result<DealsRatingUpdateResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowUpdateRating.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.updateRating("", "", false)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting rating update data should run and give the null result`() {
+        onGetRatingUpdate_thenReturn()
+        var actualResponse: Result<DealsRatingUpdateResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowUpdateRating.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.updateRating("", "", false)
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+    }
+
+    @Test
+    fun `when getting rating update data should run and give the error result`() {
+        onGetRatingUpdate_thenReturn(Throwable(errorMessageGeneral))
+
+        var actualResponse: Result<DealsRatingUpdateResponse>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowUpdateRating.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.updateRating("", "", false)
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+        Assert.assertEquals((actualResponse as Fail).throwable.message, errorMessageGeneral)
+    }
 
 }

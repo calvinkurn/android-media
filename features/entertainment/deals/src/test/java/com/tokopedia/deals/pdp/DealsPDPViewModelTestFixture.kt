@@ -1,9 +1,12 @@
 package com.tokopedia.deals.pdp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.pdp.data.DealsProductDetail
 import com.tokopedia.deals.pdp.data.DealsProductEventContent
+import com.tokopedia.deals.pdp.data.DealsRatingResponse
+import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
 import com.tokopedia.deals.pdp.domain.DealsPDPDetailUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPEventContentUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPGetRatingUseCase
@@ -16,6 +19,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import java.lang.reflect.Type
 import org.junit.Before
 import org.junit.Rule
 
@@ -90,6 +94,56 @@ abstract class DealsPDPViewModelTestFixture {
     protected fun onGetRecommendation_thenReturn(errorThrowable: Throwable) {
         coEvery {
             dealsPDPRecommendationUseCase.execute(any())
+        } throws errorThrowable
+    }
+
+    protected fun onGetRating_thenReturn(rating : DealsRatingResponse) {
+        val restResponse = RestResponse(rating, 200, false)
+        val dataRatingMap = mapOf<Type, RestResponse>(
+            DealsRatingResponse::class.java to restResponse
+        )
+        coEvery {
+            dealsPDPGetRatingUseCase.executeOnBackground()
+        } returns dataRatingMap
+    }
+
+    protected fun onGetRating_thenReturn() {
+        val dataRatingMap = mapOf<Type, RestResponse?>(
+            DealsRatingResponse::class.java to null
+        )
+        coEvery {
+            dealsPDPGetRatingUseCase.executeOnBackground()
+        } returns dataRatingMap
+    }
+
+    protected fun onGetRating_thenReturn(errorThrowable: Throwable) {
+        coEvery {
+            dealsPDPGetRatingUseCase.executeOnBackground()
+        } throws errorThrowable
+    }
+
+    protected fun onGetRatingUpdate_thenReturn(rating : DealsRatingUpdateResponse) {
+        val restResponse = RestResponse(rating, 200, false)
+        val dataRatingMap = mapOf<Type, RestResponse>(
+            DealsRatingUpdateResponse::class.java to restResponse
+        )
+        coEvery {
+            dealsPDPUpdateRatingUseCase.executeOnBackground()
+        } returns dataRatingMap
+    }
+
+    protected fun onGetRatingUpdate_thenReturn() {
+        val dataRatingMap = mapOf<Type, RestResponse?>(
+            DealsRatingUpdateResponse::class.java to null
+        )
+        coEvery {
+            dealsPDPUpdateRatingUseCase.executeOnBackground()
+        } returns dataRatingMap
+    }
+
+    protected fun onGetRatingUpdate_thenReturn(errorThrowable: Throwable) {
+        coEvery {
+            dealsPDPUpdateRatingUseCase.executeOnBackground()
         } throws errorThrowable
     }
 }

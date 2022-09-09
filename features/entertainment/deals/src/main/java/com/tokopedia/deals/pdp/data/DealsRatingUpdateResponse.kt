@@ -2,7 +2,7 @@ package com.tokopedia.deals.pdp.data
 
 import com.google.gson.annotations.SerializedName
 
-class DealsRatingUpdateResponse (
+data class DealsRatingUpdateResponse (
     @SerializedName("data")
     val data: DealsRatingUpdate = DealsRatingUpdate(),
     @SerializedName("status")

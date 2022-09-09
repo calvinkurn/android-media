@@ -19,7 +19,7 @@ class DealsPDPRecommendTrackingUseCase @Inject constructor(private val repositor
         dealsRecommendTrackingRequest = dealsRecommendTrackingRequestParam
     }
 
-    override suspend fun executeOnBackground(): Map<Type, RestResponse> {
+    override suspend fun executeOnBackground(): Map<Type, RestResponse?> {
         val restRequest = RestRequest.Builder(url, DealsTrackingResponse::class.java)
             .setBody(dealsRecommendTrackingRequest)
             .setRequestType(RequestType.POST)

@@ -18,7 +18,7 @@ class DealsPDPGetRatingUseCase @Inject constructor(private val repository: RestR
         url = "$url/$id"
     }
 
-    override suspend fun executeOnBackground(): Map<Type, RestResponse> {
+    override suspend fun executeOnBackground(): Map<Type, RestResponse?> {
         val restRequest = RestRequest.Builder(url, DealsRatingResponse::class.java)
         .setRequestType(RequestType.GET)
             .build()

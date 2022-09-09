@@ -5,6 +5,9 @@ import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.pdp.data.DealsProductDetail
 import com.tokopedia.deals.pdp.data.DealsProductEventContent
+import com.tokopedia.deals.pdp.data.DealsRatingResponse
+import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
+import com.tokopedia.deals.pdp.data.DealsTrackingResponse
 
 
 fun createPDPData(): DealsProductDetail {
@@ -32,6 +35,27 @@ fun createRecommendation(): SearchData {
     return Gson().fromJson(
         DealsJsonMapper.getJson("recommendation.json"),
         SearchData::class.java
+    )
+}
+
+fun createRating(): DealsRatingResponse {
+    return Gson().fromJson(
+        DealsJsonMapper.getJson("rating.json"),
+        DealsRatingResponse::class.java
+    )
+}
+
+fun createRatingUpdate(): DealsRatingUpdateResponse {
+    return Gson().fromJson(
+        DealsJsonMapper.getJson("rating_update.json"),
+        DealsRatingUpdateResponse::class.java
+    )
+}
+
+fun createTracking(): DealsTrackingResponse {
+    return Gson().fromJson(
+        DealsJsonMapper.getJson("tracking.json"),
+        DealsTrackingResponse::class.java
     )
 }
 
