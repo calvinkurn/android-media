@@ -280,7 +280,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         launchCatchError(block = {
             val warehouseId = addressData.getWarehouseId().toString()
             val response = getRecipeUseCase.execute(recipeId, warehouseId)
-            _isBookmarked.postValue(response.isBookmarked)
+            val bookmarked = response.isBookmarked
+            recipeId = response.id
 
             val mediaSlider = mapToMediaSlider(response)
             val recipeInfo = mapToRecipeInfo(response)
@@ -295,6 +296,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
                 updateProductQuantity(it)
             }
 
+            _isBookmarked.postValue(bookmarked)
             _recipeInfo.postValue(recipeInfo)
             _layoutList.postValue(layoutItemList)
         }) {

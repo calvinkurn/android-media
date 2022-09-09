@@ -39,6 +39,7 @@ internal object GetRecipe: GqlQueryInterface {
                   portion
                   duration
                   isBookmarked
+                  url
                   category {
                     id
                     name
