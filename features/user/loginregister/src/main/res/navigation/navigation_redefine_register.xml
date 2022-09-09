@@ -42,7 +42,8 @@
             android:defaultValue=""/>
         <argument
             android:name="isRequiredInputPhone"
-            app:argType="boolean" />
+            app:argType="boolean"
+            android:defaultValue="false"/>
         <argument
             android:name="token"
             app:argType="string"
