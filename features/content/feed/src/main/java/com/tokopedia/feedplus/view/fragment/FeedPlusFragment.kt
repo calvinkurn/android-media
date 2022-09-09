@@ -608,7 +608,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         showToast(ErrorHandler.getErrorMessage(context, it.throwable), Toaster.TYPE_ERROR)
                     }
                     is Success -> {
-                        onSuccessFetchStatusIngatkanSayaButton(it.data, true)
+                        onSuccessFetchStatusCampaignReminderButton(it.data, true)
 
                     }
                 }
@@ -617,7 +617,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             asgcReminderButtonInitialStatus.observe(viewLifecycleOwner, Observer {
                 when (it) {
                     is Success -> {
-                        onSuccessFetchStatusIngatkanSayaButton(it.data)
+                        onSuccessFetchStatusCampaignReminderButton(it.data)
                     }
                 }
             })
@@ -2834,7 +2834,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         }
     }
-    private fun onSuccessFetchStatusIngatkanSayaButton(data : FeedAsgcCampaignResponseModel, shouldShowToaster: Boolean = false){
+    private fun onSuccessFetchStatusCampaignReminderButton(data : FeedAsgcCampaignResponseModel, shouldShowToaster: Boolean = false){
         val newList = adapter.getlist()
         val  rowNumber = data.rowNumber
         if (newList.size > rowNumber && newList[rowNumber] is DynamicPostUiModel) {
