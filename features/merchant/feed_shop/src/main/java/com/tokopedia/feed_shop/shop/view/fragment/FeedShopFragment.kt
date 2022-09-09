@@ -29,6 +29,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed_shop.R
 import com.tokopedia.feed_shop.analytics.ShopAnalytics
@@ -83,6 +84,7 @@ import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiMod
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
 import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
@@ -233,9 +235,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun shouldShowShopPageFab(): Boolean {
         val firstItem = adapter?.data?.firstOrNull()
-        return !isSellerMigrationEnabled(context) && shopId == userSession.shopId &&
-                whitelistDomain.authors.isNotEmpty() && firstItem != null &&
-                firstItem !is EmptyModel && firstItem !is EmptyFeedShopUiModel
+        return true
+//        return !isSellerMigrationEnabled(context) && shopId == userSession.shopId &&
+//                whitelistDomain.authors.isNotEmpty() && firstItem != null &&
+//                firstItem !is EmptyModel && firstItem !is EmptyFeedShopUiModel
     }
 
     override fun getShopPageFabConfig(): ShopPageFabConfig? {
@@ -996,8 +999,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
         startActivityForResult(intent, CREATE_POST)
 
-//        /** TODO: find a better way to attach tracker */
-//        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
     }
 
     private fun onGoToLink(url: String) {
