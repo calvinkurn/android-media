@@ -6,12 +6,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.Nullable
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
@@ -45,19 +45,19 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
     private var mFeedXCard: FeedXCard? = null
     private var mFeedXProduct: FeedXProduct? = null
 
-
     init {
         (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
         val view =
-            LayoutInflater.from(context).inflate(R.layout.item_flash_sale_rs_ongoing_card, this, true)
+            LayoutInflater.from(context)
+                .inflate(R.layout.item_flash_sale_rs_ongoing_card, this, true)
 
         fstTimer = findViewById(R.id.fst_ongoing_timer)
         postImageLayout = findViewById(R.id.ribbon_image_parent)
         fstSaleProductTitle = findViewById(R.id.flash_sale_ongoing_title)
         stockText = findViewById(R.id.stock_text)
-        stockProgressBar = findViewById(R.id.ongoing_progressBar)
-
+        stockProgressBar = findViewById(R.id.ongoing_progress_bar)
     }
+
     fun setData(
         feedXCard: FeedXCard,
         positionInFeed: Int,
@@ -82,7 +82,6 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
         setGradientColorForProgressBar()
     }
 
-
     fun setupTimer(startTime: String, onFinished: () -> Unit) {
         val targetCalendar = TimeConverter.convertToCalendar(startTime)
         targetCalendar?.let { target ->
@@ -93,14 +92,12 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
                     show()
                 }
         }?: fstTimer.hide()
-//        fstTimer.onFinish = { mListener?.onTimerFinish() }
     }
-    fun setGradientColorForProgressBar(){
+    private fun setGradientColorForProgressBar(){
         val progressBarColor: IntArray = intArrayOf(
-            ContextCompat.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
-            ContextCompat.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
+            MethodChecker.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
+            MethodChecker.getColor(context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
         )
-
         stockProgressBar.progressBarColor = progressBarColor
 
     }

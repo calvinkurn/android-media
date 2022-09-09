@@ -605,24 +605,22 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             })
 
-            asgcReminderButtonStatus.observe(lifecycleOwner, Observer {
+            asgcReminderButtonStatus.observe(viewLifecycleOwner, Observer {
                 when (it) {
                     is Fail -> {
-                        showToast(it.throwable.message ?: "", Toaster.TYPE_ERROR)
+                        showToast(ErrorHandler.getErrorMessage(context, it.throwable), Toaster.TYPE_ERROR)
                     }
                     is Success -> {
-                        onSuccessFetchStatusIngnatSayaButton(it.data, true)
+                        onSuccessFetchStatusCampaignReminderButton(it.data, true)
 
                     }
                 }
             })
 
-            asgcReminderButtonInitialStatus.observe(lifecycleOwner, Observer {
+            asgcReminderButtonInitialStatus.observe(viewLifecycleOwner, Observer {
                 when (it) {
-                    is Fail -> {
-                    }
                     is Success -> {
-                        onSuccessFetchStatusIngnatSayaButton(it.data)
+                        onSuccessFetchStatusCampaignReminderButton(it.data)
                     }
                 }
             })
@@ -2849,13 +2847,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         }
     }
-    private fun onSuccessFetchStatusIngnatSayaButton(data : FeedAsgcCampaignResponseModel, shouldShowToaster: Boolean = false){
+    private fun onSuccessFetchStatusCampaignReminderButton(data : FeedAsgcCampaignResponseModel, shouldShowToaster: Boolean = false){
         val newList = adapter.getlist()
         val  rowNumber = data.rowNumber
         if (newList.size > rowNumber && newList[rowNumber] is DynamicPostUiModel) {
             val item = (newList[rowNumber] as DynamicPostUiModel)
             val campaign = item.feedXCard.campaign
-            if (campaign.id.toLongOrZero() == data.campaignId)
+            if (campaign.campaignId == data.campaignId)
             campaign.reminder = data.reminderStatus
             if (shouldShowToaster)
             showToastOnSuccessReminderSetForFSTorRS(item.feedXCard)
@@ -2885,8 +2883,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 ) ?: "", Toaster.TYPE_NORMAL
             )
         }
-
-
     }
 
     private fun onErrorLikeDislikeKolPost(errorMessage: String) {
