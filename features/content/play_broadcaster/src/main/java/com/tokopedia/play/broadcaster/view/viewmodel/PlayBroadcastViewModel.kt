@@ -1599,15 +1599,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         val sellerAccount = accountList.first { it.type == TYPE_SHOP }
         return when {
             sellerAccount.hasAcceptTnc -> sellerAccount
-            isHasNonSeller -> nonSellerAccountCheck(accountList)
-            else -> ContentAccountUiModel.Empty
+            isHasNonSeller -> nonSellerAccountCheck(accountList, sellerAccount)
+            else -> sellerAccount
         }
     }
 
-    private fun nonSellerAccountCheck(accountList: List<ContentAccountUiModel>): ContentAccountUiModel {
+    private fun nonSellerAccountCheck(
+        accountList: List<ContentAccountUiModel>,
+        sellerAccount: ContentAccountUiModel? = null
+    ): ContentAccountUiModel {
         val nonSellerAccount = accountList.first { it.type == TYPE_USER }
         return if (nonSellerAccount.hasUsername) nonSellerAccount
-        else ContentAccountUiModel.Empty
+        else sellerAccount ?: nonSellerAccount
     }
 
     /**
