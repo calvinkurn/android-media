@@ -9,11 +9,18 @@ import javax.inject.Inject
 
 class GetFlashSaleProductListToReserveMapper @Inject constructor() {
 
-    fun map(response: GetFlashSaleProductListToReserveResponse) = ProductToReserve(
-        selectedProductIds = response.getFlashSaleProductListToReserve.submittedProductIds,
-        selectedProductCount = response.getFlashSaleProductListToReserve.submittedProductIds.size,
-        productList = mapProduct(response)
-    )
+    private var lastSelectedProductCount: Int = 0
+
+    fun map(response: GetFlashSaleProductListToReserveResponse): ProductToReserve {
+        return response.getFlashSaleProductListToReserve.submittedProductIds.let {
+            val selectedProductCount = getValidProductCount(it)
+            ProductToReserve(
+                selectedProductIds = it,
+                selectedProductCount = selectedProductCount,
+                productList = mapProduct(response)
+            )
+        }
+    }
 
     fun mapProduct(response: GetFlashSaleProductListToReserveResponse) = response.getFlashSaleProductListToReserve.productList.map {
         val submittedProductIds = response.getFlashSaleProductListToReserve.submittedProductIds
@@ -34,6 +41,19 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor() {
             isSelected = isSubmitted,
             criteriaId = it.productCriteria.criteriaId
         )
+    }
+
+    /**
+     * To prevent resetting selected product count to 0
+     * this only happened when searching product using keyword, but has no result
+     */
+    private fun getValidProductCount(selectedList: List<Long>): Int {
+        return if (selectedList.isEmpty()) {
+            lastSelectedProductCount
+        } else {
+            lastSelectedProductCount = selectedList.size
+            selectedList.size
+        }
     }
 
     private fun mapStock(it: GetFlashSaleProductListToReserveResponse.ProductList): String {

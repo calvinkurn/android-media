@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.chooseproduct.mapper
 
 import com.tokopedia.campaign.entity.ChooseProductItem
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.Category
@@ -65,5 +66,15 @@ object ChooseProductUiMapper {
 
     private fun List<CriteriaSelection>.validateMax(): Boolean {
         return !any { it.selectionCount > it.selectionCountMax }
+    }
+
+    fun getSelectedProductList(
+        selectedProductList: List<ChooseProductItem>?,
+        remoteProductList: List<ChooseProductItem>,
+    ): List<ChooseProductItem> {
+        return remoteProductList.onEach { product ->
+            product.isSelected = product.isSelected
+                    || selectedProductList?.any { it.productId == product.productId }.orFalse()
+        }
     }
 }

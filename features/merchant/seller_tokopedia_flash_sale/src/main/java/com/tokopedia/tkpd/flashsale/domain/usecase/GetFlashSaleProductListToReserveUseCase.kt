@@ -104,7 +104,7 @@ class GetFlashSaleProductListToReserveUseCase @Inject constructor(
 
     data class Param(
         val campaignId: Long = 0L,
-        val listType: String = "PRODUCT_CRITERIA_FILTERED",
+        val listType: String = "",
         val filterCategoryIds: List<Long> = emptyList(),
         val filterCityIds: List<Long> = emptyList(),
         val filterKeyword: String = "",

@@ -111,7 +111,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     }
 
     override fun onChooseProductClicked(index: Int, item: ChooseProductItem) {
-        viewModel.setSelectedProduct(chooseProductAdapter.getItems())
+        viewModel.setSelectedProduct(item)
         viewModel.updateCriteriaList(item)
     }
 
