@@ -25,7 +25,7 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor() {
             variantText = it.variantMeta.countVariants.toString() + " Varian Produk",
             variantTips = it.variantMeta.countEligibleVariants.toString()  + " varian sesuai kriteria",
             priceText = mapPrice(it.variantMeta.countVariants, it.price),
-            stockText = "Total Stok ${it.stock} di ${it.countEligibleWarehouses} lokasi",
+            stockText = mapStock(it),
             errorMessage = it.disableDetail.disableTitle,
             hasVariant = it.variantMeta.countVariants.isMoreThanZero(),
             isError = it.disableDetail.isDisabled,
@@ -34,6 +34,12 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor() {
             isSelected = isSubmitted,
             criteriaId = it.productCriteria.criteriaId
         )
+    }
+
+    private fun mapStock(it: GetFlashSaleProductListToReserveResponse.ProductList): String {
+        return "Total Stok ${it.stock} " + if (it.countEligibleWarehouses.isMoreThanZero()) {
+            "di ${it.countEligibleWarehouses} lokasi"
+        } else ""
     }
 
     private fun mapPrice(
