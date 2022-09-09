@@ -37,6 +37,8 @@
     <string name="product_manage_closable_stock_ticker_description">Untuk melihat harga, jumlah, dan alokasi stok produk di tiap lokasi, akses Tokopedia Seller melalui Desktop, ya.</string>
     <string name="product_manage_closable_stock_ticker_title">Hanya menampilkan harga dan stok lokasi utama</string>
     <string name="product_manage_single_location_stock_no_access_description">Kamu tidak punya akses untuk atur stok produk.</string>
+    <string name="product_manage_notifyme_ticker_title">Kamu akan tahu saat produkmu ditunggu!</string>
+    <string name="product_manage_notifyme_ticker_description"><![CDATA[Kini, kamu akan diberi tahu jika ada calon pembeli yang pasang pengingat stok tersedia saat produkmu habis.<a href="tokopedia://seller/product/manage?search=live+monitor+product+test" target="_blank"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
 
     <string name="product_manage_campaign_stock_open_campaign">Lihat detail informasi dan ubah stok campaign lewat Tokopedia versi desktop, ya.</string>
     <string name="product_manage_campaign_label">Campaign</string>
