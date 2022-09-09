@@ -82,6 +82,7 @@ import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
+import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
@@ -129,7 +130,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         ShopPageFabConfig(
             items = arrayListOf(FloatingButtonItem(iconUnifyID = IconUnify.ADD, title = "")),
             onMainCircleButtonClicked = {
-                goToCreatePost(getSellerApplink())
+                goToCreatePost()
                 shopAnalytics.eventClickCreatePost()
             }
         )
@@ -979,35 +980,23 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         shopFeedTabSharedViewModel.showShopPageFab()
     }
 
-    private fun getSellerApplink(): String {
-        var applink = ApplinkConst.CONTENT_CREATE_POST
-        if (whitelistDomain.authors.size != 0) {
-            for (author in whitelistDomain.authors) {
-                if (author.type.equals(Author.TYPE_SHOP)) {
-                    applink = author.link
-                }
-            }
-        }
-        return applink
-    }
-
     fun updateShopInfo(shopInfo: ShopInfo) {
         shopId = shopInfo.shopCore.shopID
         loadInitialData()
     }
 
     private fun goToCreatePost() {
-        goToCreatePost(getSellerApplink())
-    }
+        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
 
-    private fun goToCreatePost(link: String) {
-        startActivityForResult(
-                RouteManager.getIntent(
-                        requireContext(),
-                        link
-                ),
-                CREATE_POST
-        )
+        intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+        intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
+        intent.putExtra(BundleData.TITLE, BundleData.VALUE_POST_SEBAGAI)
+        intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+
+        startActivity(intent)
+
+//        /** TODO: find a better way to attach tracker */
+//        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
     }
 
     private fun onGoToLink(url: String) {

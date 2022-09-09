@@ -80,6 +80,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
+import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.feedcomponent.R as feedComponentR
 
 
@@ -109,14 +110,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
-        const val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
         const val FEED_BACKGROUND_CROSSFADER_DURATION = 200
         const val FEED_FRAGMENT_INDEX = 0
 
-        const val TITLE = "title"
-        const val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
-        const val APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
-        const val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
         private const val BROADCAST_FEED = "BROADCAST_FEED"
         const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
 
@@ -631,10 +627,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
                             if (shouldShowNewContentCreationFlow) {
                                 val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                                intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                intent.putExtra(MAX_MULTI_SELECT_ALLOWED, MAX_MULTI_SELECT_ALLOWED_VALUE)
-                                intent.putExtra(TITLE, getString(feedComponentR.string.feed_post_sebagai))
-                                intent.putExtra(APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
+                                intent.putExtra(BundleData.TITLE, getString(feedComponentR.string.feed_post_sebagai))
+                                intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
                                 startActivity(intent)
                                 TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
                             } else {

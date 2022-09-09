@@ -13,5 +13,9 @@ object BundleData {
     const val SELECTED_FEED_ACCOUNT_ID = "selected_feed_account_id"
     const val IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
     const val KEY_IS_OPEN_FROM = "key_is_open_from"
+
+
     const val VALUE_IS_OPEN_FROM_USER_PROFILE = 11023
+    const val VALUE_POST_SEBAGAI = "Post sebagai"
+    const val VALUE_MAX_MULTI_SELECT_ALLOWED = 5
 }
