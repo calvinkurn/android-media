@@ -5,22 +5,12 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.LayoutInflater
-import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewTreeLifecycleOwner
-import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -63,9 +53,9 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CampaignListFragment : BaseDaggerFragment(),
-        CampaignStatusBottomSheet.OnApplyButtonClickListener,
-        CampaignTypeBottomSheet.OnApplyButtonClickListener,
-        ActiveCampaignViewHolder.OnShareButtonClickListener, ShareBottomsheetListener {
+    CampaignStatusBottomSheet.OnApplyButtonClickListener,
+    CampaignTypeBottomSheet.OnApplyButtonClickListener,
+    ActiveCampaignViewHolder.OnShareButtonClickListener, ShareBottomsheetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -118,32 +108,18 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         DaggerCampaignListComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
-    @Composable
-    fun Greeting(name: String) {
-        Text(text = "Hello $name!")
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
+        val viewBinding = FragmentCampaignListBinding.inflate(inflater, container, false)
+        binding = viewBinding
+        return viewBinding.root
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        initViewTreeOwners()
-
-        return ComposeView(requireContext()).apply {
-            setContent {
-
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    Greeting(name = "Fajar")
-                }
-            }
-        }
-    }
     override fun onDestroyView() {
         binding = null
         super.onDestroyView()
@@ -165,10 +141,10 @@ class CampaignListFragment : BaseDaggerFragment(),
             // TODO log invalid campaign id
         }
         tracker.sendShareButtonClickEvent(
-                viewModel.getCampaignTypeId(),
-                activeCampaign.campaignId,
-                userSession.shopId,
-                userSession.userId,
+            viewModel.getCampaignTypeId(),
+            activeCampaign.campaignId,
+            userSession.shopId,
+            userSession.userId,
         )
     }
 
@@ -321,8 +297,8 @@ class CampaignListFragment : BaseDaggerFragment(),
             setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL)
 
             setMetaData(
-                    tnTitle = viewModel.getShareBottomSheetTitle(shopData.name),
-                    tnImage = NPL_ICON_URL
+                tnTitle = viewModel.getShareBottomSheetTitle(shopData.name),
+                tnImage = NPL_ICON_URL
             )
 
             val campaignType = viewModel.getSelectedActiveCampaign()?.campaignTypeId ?: return
@@ -344,9 +320,9 @@ class CampaignListFragment : BaseDaggerFragment(),
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_NAME , value = shopData.name)
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.BADGE , value = validateShopType(shopData.badge.Title))
             addImageGeneratorData(
-                    key = ImageGeneratorConstants.ImageGeneratorKeys.DATE ,
-                    value = if (validateIsOngoingCampaign(merchantBannerData))
-                        merchantBannerData.formattedSharingEndDate else merchantBannerData.formattedSharingStartDate
+                key = ImageGeneratorConstants.ImageGeneratorKeys.DATE ,
+                value = if (validateIsOngoingCampaign(merchantBannerData))
+                    merchantBannerData.formattedSharingEndDate else merchantBannerData.formattedSharingStartDate
             )
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.ONGOING , value = _isOngoing.toString())
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_COUNT , value = _totalProducts.toString())
@@ -446,10 +422,10 @@ class CampaignListFragment : BaseDaggerFragment(),
                         val selectedActiveCampaign = viewModel.getSelectedActiveCampaign()
                         selectedActiveCampaign?.run {
                             tracker.sendShareBottomSheetDisplayedEvent(
-                                    viewModel.getCampaignTypeId(),
-                                    this.campaignId,
-                                    userSession.userId,
-                                    userSession.shopId
+                                viewModel.getCampaignTypeId(),
+                                this.campaignId,
+                                userSession.userId,
+                                userSession.shopId
                             )
                         }
                     }
@@ -490,31 +466,31 @@ class CampaignListFragment : BaseDaggerFragment(),
             val campaignStatusId = viewModel.getSelectedActiveCampaign()?.campaignStatusId ?: return
             val linkerShareData = viewModel.generateLinkerShareData(shopData, campaignData, shareModel, campaignStatusId)
             LinkerManager.getInstance().executeShareRequest(
-                    LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
-                        override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                            val shareWording = viewModel.getShareDescriptionWording(
-                                    shopData = shopData,
-                                    campaignData = campaignData,
-                                    merchantBannerData = merchantBannerData,
-                                    shareUri = linkerShareData?.shareUri,
-                                    campaignStatusId = campaignStatusId
-                            )
-                            SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareWording)
-                            universalShareBottomSheet?.dismiss()
-                        }
+                LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                        val shareWording = viewModel.getShareDescriptionWording(
+                            shopData = shopData,
+                            campaignData = campaignData,
+                            merchantBannerData = merchantBannerData,
+                            shareUri = linkerShareData?.shareUri,
+                            campaignStatusId = campaignStatusId
+                        )
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareWording)
+                        universalShareBottomSheet?.dismiss()
+                    }
 
-                        override fun onError(linkerError: LinkerError?) {}
-                    })
+                    override fun onError(linkerError: LinkerError?) {}
+                })
             )
         }
         val selectedActiveCampaign = viewModel.getSelectedActiveCampaign()
         selectedActiveCampaign?.run {
             tracker.sendSelectShareChannelClickEvent(
-                    shareModel.channel.orEmpty(),
-                    viewModel.getCampaignTypeId(),
-                    this.campaignId,
-                    userSession.userId,
-                    userSession.shopId
+                shareModel.channel.orEmpty(),
+                viewModel.getCampaignTypeId(),
+                this.campaignId,
+                userSession.userId,
+                userSession.shopId
             )
 
         }
@@ -524,39 +500,39 @@ class CampaignListFragment : BaseDaggerFragment(),
         val selectedActiveCampaign = viewModel.getSelectedActiveCampaign()
         selectedActiveCampaign?.run {
             tracker.sendShareBottomSheetDismissClickEvent(
-                    viewModel.getCampaignTypeId(),
-                    this.campaignId,
-                    userSession.userId,
-                    userSession.shopId
+                viewModel.getCampaignTypeId(),
+                this.campaignId,
+                userSession.userId,
+                userSession.shopId
             )
         }
     }
 
     private fun displayGetCampaignListError(@StringRes stringResourceId: Int) {
         Toaster.build(
-                view = binding?.root ?: return,
-                text = getString(stringResourceId),
-                actionText = getString(R.string.retry),
-                duration = Toaster.LENGTH_LONG,
-                type = Toaster.TYPE_ERROR,
-                clickListener = {
-                    //Retry to get campaign list data with currently selected filter and search bar query
-                    viewModel.getCampaignList(
-                            campaignName = viewModel.getCampaignName(),
-                            campaignTypeId = viewModel.getCampaignTypeId(),
-                            statusId = viewModel.getCampaignStatusId()
-                    )
-                }
+            view = binding?.root ?: return,
+            text = getString(stringResourceId),
+            actionText = getString(R.string.retry),
+            duration = Toaster.LENGTH_LONG,
+            type = Toaster.TYPE_ERROR,
+            clickListener = {
+                //Retry to get campaign list data with currently selected filter and search bar query
+                viewModel.getCampaignList(
+                    campaignName = viewModel.getCampaignName(),
+                    campaignTypeId = viewModel.getCampaignTypeId(),
+                    statusId = viewModel.getCampaignStatusId()
+                )
+            }
         ).show()
     }
 
     private fun displayGetDataError() {
         Toaster.build(
-                view = binding?.root ?: return,
-                text = getString(R.string.campaign_error_fetch_metadata),
-                actionText = getString(R.string.ok),
-                duration = Toaster.LENGTH_LONG,
-                type = Toaster.TYPE_ERROR
+            view = binding?.root ?: return,
+            text = getString(R.string.campaign_error_fetch_metadata),
+            actionText = getString(R.string.ok),
+            duration = Toaster.LENGTH_LONG,
+            type = Toaster.TYPE_ERROR
         ).show()
     }
 
@@ -567,14 +543,5 @@ class CampaignListFragment : BaseDaggerFragment(),
             GetCampaignListUseCase.NPL_LIST_TYPE,
             viewModel.getCampaignStatusId()
         )
-    }
-
-    private fun initViewTreeOwners() {
-        // Set the view tree owners before setting the content view so that the inflation process
-        // and attach listeners will see them already present
-        val decoderView = requireActivity().window.decorView
-        ViewTreeLifecycleOwner.set(decoderView, this)
-        ViewTreeViewModelStoreOwner.set(decoderView, this)
-        ViewTreeSavedStateRegistryOwner.set(decoderView, this)
     }
 }
