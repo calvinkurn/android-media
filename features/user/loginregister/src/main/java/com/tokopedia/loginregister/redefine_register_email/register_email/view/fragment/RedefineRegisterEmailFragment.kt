@@ -90,10 +90,10 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
                 fieldEmail.editText.setText(viewModel.currentEmail)
             }
             if(viewModel.currentPassword.isNotEmpty()) {
-                fieldPassword.editText.setText(viewModel.currentEmail)
+                fieldPassword.editText.setText(viewModel.currentPassword)
             }
             if(viewModel.currentName.isNotEmpty()) {
-                fieldName.editText.setText(viewModel.currentEmail)
+                fieldName.editText.setText(viewModel.currentName)
             }
         }
     }

@@ -211,7 +211,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun submitForm() {
-        if (isUsingNightModeResources()) {
+        if (paramIsRequiredInputPhone) {
             viewModel.submitForm(
                 binding?.fieldInputPhone?.editText?.text.toString()
             )

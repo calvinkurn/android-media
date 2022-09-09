@@ -132,7 +132,7 @@ class RedefineRegisterEmailViewModel @Inject constructor(
             val param = ValidateUserDataParam(
                 email = currentEmail,
                 fullName = currentName,
-                password = currentPassword,
+                password = encryptedPassword,
                 hash = currentHash
             )
             val response = validateUserDataUseCase(param)
