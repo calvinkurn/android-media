@@ -93,6 +93,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private var currRecommendationListPage = 1
     private var hitCountDeletion = false
     private var isOnProgressDeleteWishlist = false
+    private var isEmptyWishlist = false
     private val handler = Handler(Looper.getMainLooper())
     private val progressDeletionRunnable = Runnable {
         getDeleteWishlistProgress()
@@ -283,7 +284,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     private fun loadRecommendationList() {
         currRecommendationListPage += 1
-        collectionViewModel.loadRecommendation(currRecommendationListPage)
+        collectionViewModel.loadRecommendation(currRecommendationListPage, isEmptyWishlist)
     }
 
     private fun setToolbarTitle(title: String) {
@@ -323,11 +324,14 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                         wishlistCollectionPref?.getHasClosed()
                             ?.let { collectionAdapter.setTickerHasClosed(it) }
                         if (result.data.data.isEmptyState) {
+                            isEmptyWishlist = true
                             val items = arrayListOf<Any>()
                             result.data.data.emptyState.messages.forEach { item ->
                                 items.add(WishlistCollectionCarouselEmptyStateData(img = item.imageUrl, desc = item.description))
                             }
                             collectionAdapter.setCarouselEmptyData(items)
+                        } else {
+                            isEmptyWishlist = false
                         }
                         if (result.data.data.showDeleteProgress) {
                             showDeletionProgress()

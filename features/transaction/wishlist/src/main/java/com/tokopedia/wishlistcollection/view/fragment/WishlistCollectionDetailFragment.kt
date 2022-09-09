@@ -186,6 +186,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var collectionIdDestination = ""
     private var collectionNameDestination = ""
     private var isAturMode = false
+    private var isEmptyWishlist = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -516,6 +517,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         }
 
                         if (collectionDetail.totalData <= 0) {
+                            isEmptyWishlist = true
                             if (isAturMode && collectionDetail.emptyState.type == COLLECTION_ITEMS_EMPTY) {
                                 isAturMode = false
                                 clearTextSearchBar()
@@ -541,6 +543,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 }
                             }
                         } else {
+                            isEmptyWishlist = false
                             showRvWishlist()
                             if (isAutoDeletion && isBulkDeleteShow) {
                                 hideSearchBar()
@@ -1108,7 +1111,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun loadRecommendationList() {
         currRecommendationListPage += 1
-        wishlistCollectionDetailViewModel.loadRecommendation(currRecommendationListPage)
+        wishlistCollectionDetailViewModel.loadRecommendation(currRecommendationListPage, isEmptyWishlist)
     }
 
     private fun checkLogin() {

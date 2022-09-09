@@ -74,10 +74,11 @@ class WishlistV2ViewModel @Inject constructor(
         launch {
             try {
                 val wishlistV2Response = wishlistV2UseCase.executeSuspend(params).wishlistV2
+                val recommSrc = if (wishlistV2Response.totalData == 0) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
                 _wishlistV2.value = Success(wishlistV2Response)
                 _wishlistV2Data.value = Success(organizeWishlistV2Data(
                     convertWishlistV2IntoWishlistUiModel(wishlistV2Response),
-                    typeLayout, isAutomaticDelete, getRecommendationWishlistV2(1, listOf(), EMPTY_WISHLIST_PAGE_NAME), getTopAdsData(), isUsingCollection))
+                    typeLayout, isAutomaticDelete, getRecommendationWishlistV2(1, listOf(), recommSrc), getTopAdsData(), isUsingCollection))
             } catch (e: Exception) {
                 _wishlistV2.value = Fail(e)
                 _wishlistV2Data.value = Fail(e)
@@ -85,12 +86,13 @@ class WishlistV2ViewModel @Inject constructor(
         }
     }
 
-    fun loadRecommendation(page: Int) {
+    fun loadRecommendation(page: Int, isEmptyWishlist: Boolean) {
         val listData = arrayListOf<WishlistV2TypeLayoutData>()
         launch {
             try {
+                val recommSrc = if (isEmptyWishlist) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
                 val recommItems =
-                    getRecommendationWishlistV2(page, listOf(), EMPTY_WISHLIST_PAGE_NAME)
+                    getRecommendationWishlistV2(page, listOf(), recommSrc)
                 recommItems.recommendationProductCardModelData.forEach { item ->
                     listData.add(WishlistV2TypeLayoutData(item, TYPE_RECOMMENDATION_LIST))
                 }
@@ -189,6 +191,7 @@ class WishlistV2ViewModel @Inject constructor(
         private const val WISHLIST_TOPADS_SOURCE = "6"
         private const val WISHLIST_TOPADS_ADS_COUNT = 1
         private const val WISHLIST_TOPADS_DIMENS = 3
+        private const val WISHLIST_PAGE_NAME = "wishlist"
         private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
     }
 }

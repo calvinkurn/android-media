@@ -107,6 +107,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val result = getWishlistCollectionItemsUseCase(params)
+            val recommSrc = if (result.getWishlistCollectionItems.totalData == 0) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
             _collectionItems.value = Success(result)
             _collectionData.value = Success(
                 organizeWishlistV2Data(
@@ -114,9 +115,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     typeLayout,
                     isAutomaticDelete,
                     getRecommendationWishlistV2(
-                        1, listOf(),
-                        EMPTY_WISHLIST_PAGE_NAME
-                    ),
+                        1, listOf(), recommSrc),
                     getTopAdsData(), true
                 )
             )
@@ -125,14 +124,13 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         })
     }
 
-    fun loadRecommendation(page: Int) {
+    fun loadRecommendation(page: Int, isEmptyWishlist: Boolean) {
         val listData = arrayListOf<WishlistV2TypeLayoutData>()
         launch {
             try {
+                val recommSrc = if (isEmptyWishlist) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
                 val recommItems = getRecommendationWishlistV2(
-                    page, listOf(),
-                    EMPTY_WISHLIST_PAGE_NAME
-                )
+                    page, listOf(), recommSrc)
                 recommItems.recommendationProductCardModelData.forEach { item ->
                     listData.add(
                         WishlistV2TypeLayoutData(
@@ -268,5 +266,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         }, onError = {
             _addWishlistCollectionItem.value = Fail(it)
         })
+    }
+
+    companion object {
+        private const val WISHLIST_PAGE_NAME = "wishlist"
+        private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
     }
 }

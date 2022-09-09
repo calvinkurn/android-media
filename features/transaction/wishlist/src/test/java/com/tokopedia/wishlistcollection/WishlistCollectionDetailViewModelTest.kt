@@ -36,7 +36,6 @@ import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseC
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
-import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -344,7 +343,7 @@ class WishlistCollectionDetailViewModelTest {
         } returns recommendationWidget
 
         //when
-        wishlistCollectionDetailViewModel.loadRecommendation(0)
+        wishlistCollectionDetailViewModel.loadRecommendation(0, false)
 
         //then
         assert(wishlistCollectionDetailViewModel.collectionData.value is Success<List<WishlistV2TypeLayoutData>>)
@@ -360,7 +359,7 @@ class WishlistCollectionDetailViewModelTest {
         } throws Exception()
 
         //when
-        wishlistCollectionDetailViewModel.loadRecommendation(0)
+        wishlistCollectionDetailViewModel.loadRecommendation(0, true)
 
         //then
         assertSoftly {
