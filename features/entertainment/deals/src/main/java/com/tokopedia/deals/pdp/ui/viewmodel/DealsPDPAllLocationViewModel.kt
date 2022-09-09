@@ -24,8 +24,6 @@ class DealsPDPAllLocationViewModel @Inject constructor(dispatcher: CoroutineDisp
         _inputSearch.flatMapConcat {
             flow {
                 emit(getSearchResult(it.first, it.second))
-            }.catch {
-                emit(emptyList())
             }
         }.shareIn(
             scope = this,
