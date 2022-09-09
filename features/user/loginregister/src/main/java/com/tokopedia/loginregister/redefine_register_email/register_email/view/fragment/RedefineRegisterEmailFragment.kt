@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.redefine_register_email.register_email.view.
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -193,12 +194,19 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
     private fun setUpField() {
         binding?.apply {
-            fieldEmail.editText.imeOptions = EditorInfo.IME_ACTION_NEXT
-            fieldEmail.editText.isSaveEnabled = false
-            fieldPassword.editText.imeOptions = EditorInfo.IME_ACTION_NEXT
-            fieldPassword.editText.isSaveEnabled = false
-            fieldName.editText.imeOptions = EditorInfo.IME_ACTION_DONE
-            fieldName.editText.isSaveEnabled = false
+            fieldEmail.editText.apply {
+                imeOptions = EditorInfo.IME_ACTION_NEXT
+                isSaveEnabled = false
+            }
+            fieldPassword.editText.apply {
+                imeOptions = EditorInfo.IME_ACTION_NEXT
+                isSaveEnabled = false
+            }
+            fieldName.editText.apply {
+                imeOptions = EditorInfo.IME_ACTION_DONE
+                isSaveEnabled = false
+                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
+            }
         }
     }
 
