@@ -21,12 +21,6 @@ import com.google.android.exoplayer2.util.Util
 class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoControlView? = null) : ChatbotVideoControlView.Listener{
 
     private var loadControl: LoadControl = DefaultLoadControl.Builder()
-        .setBufferDurationsMs(
-            minBufferMs,
-            maxBufferMs,
-            bufferForPlaybackMs,
-            bufferForPlaybackAfterRebufferMs
-        )
         .createDefaultLoadControl()
 
     var videoStateListener: ChatbotVideoStateListener? = null
@@ -85,7 +79,6 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         if(videoUrl.isBlank())
             return
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
-        exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource, true, false)
     }
