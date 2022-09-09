@@ -43,5 +43,7 @@ data class SubmitDataModel(
     @SerializedName("fileKtp")
     var idCardImage: String = "",
     @SerializedName("fileSelfie")
-    var selfieImage: String = ""
+    var selfieImage: String = "",
+    @SerializedName("validateToken")
+    var validateToken: String = ""
 ): GqlParam

@@ -5,6 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -60,6 +63,16 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
         }
     }
 
+    private fun goToVerification(phoneNumber: String) {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_OTP_TYPE,
+            InactivePhoneConstant.SQCP_OTP_TYPE
+        )
+        startActivityForResult(intent, InactivePhoneConstant.REQUEST_SQCP_OTP_VERIFICATION)
+    }
+
     override fun initObserver() {
         viewModel.phoneValidation.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -90,14 +103,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
 
                         inactivePhoneUserDataModel?.let { userData ->
                             userData.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
-                            viewModel.submitForm(SubmitDataModel(
-                                email = userData.email,
-                                oldPhone = userData.oldPhoneNumber,
-                                newPhone = userData.newPhoneNumber,
-                                userIndex = userData.userIndex,
-                                idCardImage = idCardObj,
-                                selfieImage = selfieObj
-                            ))
+                            goToVerification(inactivePhoneUserDataModel?.newPhoneNumber.orEmpty())
                         }
                     }
                 }
@@ -173,11 +179,32 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
         }
     }
 
+    private fun onOtpSuccess(validateToken: String) {
+        inactivePhoneUserDataModel?.let { userData ->
+            userData.validateToken = validateToken
+            viewModel.submitForm(SubmitDataModel(
+                email = userData.email,
+                oldPhone = userData.oldPhoneNumber,
+                newPhone = userData.newPhoneNumber,
+                userIndex = userData.userIndex,
+                idCardImage = idCardObj,
+                selfieImage = selfieObj,
+                validateToken = userData.validateToken
+            ))
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
+                InactivePhoneConstant.REQUEST_SQCP_OTP_VERIFICATION -> {
+                    if(data?.extras != null) {
+                        val validateToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+                        onOtpSuccess(validateToken)
+                    }
+                }
                 InactivePhoneConstant.REQUEST_CAPTURE_ID_CARD -> {
                     viewBinding?.imgIdCard?.let { setImage(it, CameraViewMode.ID_CARD.id) }
                 }
