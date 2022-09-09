@@ -12,8 +12,9 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.T
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortItemUiModel
+import javax.inject.Inject
 
-class TokofoodFilterSortMapper {
+class TokofoodFilterSortMapper @Inject constructor() {
 
     fun getQuickSortFilterUiModels(dataValue: DataValue): List<TokofoodSortFilterItemUiModel> {
         val filterItems = dataValue.filter.map(::convertToFilterItemUiModel)
@@ -23,45 +24,10 @@ class TokofoodFilterSortMapper {
 
     fun getAppliedSortFilterUiModels(searchParameters: SearchParameter,
                                      uiModels: List<TokofoodSortFilterItemUiModel>): List<TokofoodSortFilterItemUiModel> {
-
-        // TODO: Divide into methods
         return uiModels.map { item ->
             when(item) {
-                is TokofoodFilterItemUiModel -> {
-                    val updatedFilter = getFilterFromSearchParameter(searchParameters, item)
-                    val selectedCount = updatedFilter.options.count { it.inputState == true.toString() }
-                    val selectedKey =
-                        if (selectedCount > Int.ZERO) {
-                            updatedFilter.options.firstOrNull()?.key
-                        } else {
-                            null
-                        }
-                    item.copy(
-                        filter = updatedFilter,
-                        totalSelectedOptions = selectedCount,
-                        selectedKey = selectedKey
-                    )
-                }
-                is TokofoodSortItemUiModel -> {
-                    val updatedSort = getSelectedSortFromSearchParameter(searchParameters, item)
-                    val selectedCount =
-                        if (updatedSort == null) {
-                            Int.ZERO
-                        } else {
-                            Int.ONE
-                        }
-                    val selectedKey =
-                        if (selectedCount > Int.ZERO) {
-                            updatedSort?.key
-                        } else {
-                            null
-                        }
-                    item.copy(
-                        selectedSort = updatedSort,
-                        totalSelectedOptions = selectedCount,
-                        selectedKey = selectedKey
-                    )
-                }
+                is TokofoodFilterItemUiModel -> getAppliedFilterItemUiModel(item, searchParameters)
+                is TokofoodSortItemUiModel -> getAppliedSortItemUiModel(item, searchParameters)
                 else -> item
             }
         }
@@ -105,6 +71,28 @@ class TokofoodFilterSortMapper {
         return SortFilterItem(String.EMPTY)
     }
 
+    private fun getAppliedFilterItemUiModel(item: TokofoodFilterItemUiModel,
+                                            searchParameters: SearchParameter): TokofoodFilterItemUiModel {
+        val updatedFilter = getFilterFromSearchParameter(searchParameters, item)
+        val (selectedCount, selectedKey) = updatedFilter.getSelectedCountAndKey()
+        return item.copy(
+            filter = updatedFilter,
+            totalSelectedOptions = selectedCount,
+            selectedKey = selectedKey
+        )
+    }
+
+    private fun getAppliedSortItemUiModel(item: TokofoodSortItemUiModel,
+                                          searchParameters: SearchParameter): TokofoodSortItemUiModel {
+        val updatedSort = getSelectedSortFromSearchParameter(searchParameters, item)
+        val (selectedCount, selectedKey) = updatedSort.getSelectedCountAndKey()
+        return item.copy(
+            selectedSort = updatedSort,
+            totalSelectedOptions = selectedCount,
+            selectedKey = selectedKey
+        )
+    }
+
     private fun getFilterFromSearchParameter(searchParameters: SearchParameter,
                                              uiModel: TokofoodFilterItemUiModel): Filter {
         return uiModel.filter.options.firstOrNull()?.key?.let { key ->
@@ -130,6 +118,34 @@ class TokofoodFilterSortMapper {
                 uiModel.sortList.find { it.value == selectedSortValue }
             }
         }
+    }
+
+    private fun Filter.getSelectedCountAndKey(): Pair<Int, String?> {
+        val selectedCount =
+            options.count { it.inputState == true.toString() }
+        val selectedKey =
+            if (selectedCount > Int.ZERO) {
+                options.firstOrNull()?.key
+            } else {
+                null
+            }
+        return selectedCount to selectedKey
+    }
+
+    private fun Sort?.getSelectedCountAndKey(): Pair<Int, String?> {
+        val selectedCount =
+            if (this == null) {
+                Int.ZERO
+            } else {
+                Int.ONE
+            }
+        val selectedKey =
+            if (selectedCount > Int.ZERO) {
+                this?.key
+            } else {
+                null
+            }
+        return selectedCount to selectedKey
     }
 
     companion object {
