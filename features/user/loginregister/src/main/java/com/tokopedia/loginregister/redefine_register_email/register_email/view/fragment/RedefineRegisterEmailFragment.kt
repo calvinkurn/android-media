@@ -95,6 +95,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             if(viewModel.currentName.isNotEmpty()) {
                 fieldName.editText.setText(viewModel.currentName)
             }
+            btnSubmit.isEnabled = viewModel.currentEmail.isNotEmpty() || viewModel.currentPassword.isNotEmpty() || viewModel.currentName.isNotEmpty()
         }
     }
 

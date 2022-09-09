@@ -108,20 +108,16 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         //return inflater.inflate(R.layout.fragment_redefine_register_input_phone, container, false)
     }
 
-    override fun onStart() {
-        super.onStart()
-        binding?.unifyToolbar?.title = getString(R.string.register_email_title)
-        showNavigateBackToolbar(true)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding?.unifyToolbar?.title = getString(R.string.register_email_title)
+        showNavigateBackToolbar(true)
 
         if (!paramIsRequiredInputPhone) onEntireScreenLoading()
         initListener()
         initObserver()
         editorChangesListener()
-        setUpKeyboardListener(view)
         initRegisterRequest()
     }
 
@@ -168,18 +164,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 hash = paramHash
             )
         }
-    }
-
-    private fun setUpKeyboardListener(view: View) {
-        KeyboardHandler(view, object : KeyboardHandler.OnKeyBoardVisibilityChangeListener {
-            override fun onKeyboardShow() {
-                binding?.ivInputPhone?.hide()
-            }
-
-            override fun onKeyboardHide() {
-                binding?.ivInputPhone?.show()
-            }
-        })
     }
 
     private fun editorChangesListener() {

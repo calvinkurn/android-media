@@ -96,7 +96,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
                     RegisteredPhoneState.Registered(phoneNumber = phone)
                 }
                 else -> {
-                    RegisteredPhoneState.Unregistered(phoneNumber = response.data.view)
+                    RegisteredPhoneState.Unregistered(phoneNumber = phone)
                 }
             }
 
