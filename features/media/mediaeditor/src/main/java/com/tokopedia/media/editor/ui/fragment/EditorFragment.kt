@@ -161,6 +161,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 }
 
                 paramData.resultUrl = editorUiModel.getImageUrl()
+                paramData.originalRatio = editorUiModel.originalRatio
 
                 val intent = Intent(it, DetailEditorActivity::class.java).apply {
                     putExtra(DetailEditorActivity.PARAM_EDITOR_DETAIL, paramData)

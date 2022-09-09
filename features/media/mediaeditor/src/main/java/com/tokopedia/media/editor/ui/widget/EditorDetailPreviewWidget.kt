@@ -14,6 +14,7 @@ import androidx.core.graphics.values
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getUCropTempResultPath
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.view.TransformImageView
@@ -26,8 +27,10 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
 
     val scaleNormalizeValue get() = cropImageView.scaleX * cropImageView.scaleY
 
-    fun initializeRotate(uriSource: Uri, listener: Listener) {
+    fun initializeRotate(uriSource: Uri, listener: Listener, data: EditorDetailUiModel) {
         val resultDestination = getUCropTempResultPath()
+
+        val ratio = data.cropRotateValue.getRatio() ?: data.originalRatio
 
         cropImageView.setImageUri(uriSource, resultDestination)
 
@@ -40,6 +43,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             )
 
             setCropGridColor(Color.TRANSPARENT)
+            setTargetAspectRatio(ratio)
         }
 
         disabledTouchEvent()
@@ -107,7 +111,8 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                 sliderValue,
                 rotateNumber,
                 isRotate = isRotate,
-                isCrop = isCrop
+                isCrop = isCrop,
+                croppedSourceWidth = bitmap.width
             )
 
             onCropFinish(
@@ -221,7 +226,8 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             sliderValue,
             rotateNumber,
             isRotate = isRotate,
-            isCrop = isCrop
+            isCrop = isCrop,
+            croppedSourceWidth = originalWidth
         )
 
         val normalizeX =

@@ -14,6 +14,8 @@ class EditorUiModel(
     val isVideo: Boolean = isVideoFormat(originalUrl)
     var isAutoCropped: Boolean = false
 
+    var originalRatio: Float = 1f
+
     fun getImageUrl(): String {
         return if (editList.isNotEmpty()) {
             val index = (editList.size - 1) - backValue
