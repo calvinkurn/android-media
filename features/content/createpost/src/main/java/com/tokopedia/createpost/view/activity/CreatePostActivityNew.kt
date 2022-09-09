@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.createpost.common.SHOP_ID_PARAM
 import com.tokopedia.createpost.common.USER_ID_PARAM
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
@@ -296,8 +297,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         )
         SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
 
-        when (intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0)) {
+        when (isOpenFrom) {
             BundleData.VALUE_IS_OPEN_FROM_USER_PROFILE -> goToUserProfile()
+            BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE -> goToShopPage()
             else -> createPostViewModel?.let { goToFeed(it) }
         }
     }
@@ -320,6 +322,14 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         val appLink = ApplinkConst.PROFILE_SUCCESS_POST.replace(USER_ID_PARAM, userSession.userId)
         val intent = RouteManager.getIntent(this, appLink)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+        finish()
+    }
+
+    private fun goToShopPage() {
+        val appLink = ApplinkConst.SHOP.replace(SHOP_ID_PARAM, userSession.shopId)
+        val intent = RouteManager.getIntent(this, appLink)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         startActivity(intent)
         finish()
     }

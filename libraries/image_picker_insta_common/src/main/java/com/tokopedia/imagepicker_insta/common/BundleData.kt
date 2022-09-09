@@ -16,6 +16,7 @@ object BundleData {
 
 
     const val VALUE_IS_OPEN_FROM_USER_PROFILE = 11023
+    const val VALUE_IS_OPEN_FROM_SHOP_PAGE = 11024
     const val VALUE_POST_SEBAGAI = "Post sebagai"
     const val VALUE_MAX_MULTI_SELECT_ALLOWED = 5
 }

@@ -992,8 +992,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
         intent.putExtra(BundleData.TITLE, BundleData.VALUE_POST_SEBAGAI)
         intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+        intent.putExtra(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE)
 
-        startActivity(intent)
+        startActivityForResult(intent, CREATE_POST)
 
 //        /** TODO: find a better way to attach tracker */
 //        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
