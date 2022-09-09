@@ -203,16 +203,18 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         when (tabName) {
             UPCOMING_TAB -> setupUpcoming(flashSale)
             REGISTERED_TAB -> {
+                setupPaging()
                 loadSubmittedProductListData(Int.ZERO)
                 setupRegistered(flashSale)
-                setupPaging()
             }
             ONGOING_TAB -> {
+                setupPaging()
                 loadSubmittedProductListData(Int.ZERO)
                 setupOngoing(flashSale)
-                setupPaging()
             }
             FINISHED_TAB -> {
+                setupPaging()
+                loadSubmittedProductListData(Int.ZERO)
                 setupFinished(flashSale)
             }
         }
@@ -245,7 +247,6 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                 upcomingCdpBodyBinding = StfsCdpUpcomingBodyBinding.bind(view)
             }
             cardBottomButtonGroup.isVisible = campaignStatus.isFlashSaleAvailable()
-            rvSubmittedProductList.gone()
         }
 
         setupUpcomingHeader(flashSale, campaignStatus)
@@ -799,7 +800,8 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         }
         setupFinishedHeader(flashSale)
         setupFinishedMid(flashSale)
-        setupFinishedBody(flashSale)
+        setupFinishedBody()
+        observeSubmittedProductData()
     }
 
     private fun setupFinishedHeader(flashSale: FlashSale) {
@@ -818,12 +820,11 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         setupFinishedMidData(flashSale)
     }
 
-    private fun setupFinishedBody(flashSale: FlashSale) {
+    private fun setupFinishedBody() {
         val binding = binding ?: return
         val inflatedView = binding.layoutBody
         inflatedView.layoutResource = R.layout.stfs_cdp_body
         inflatedView.inflate()
-        setupFinishedBodyData(flashSale)
     }
 
     private fun setupFinishedHeaderData(flashSale: FlashSale) {
@@ -955,18 +956,6 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         }
     }
 
-    private fun setupFinishedEmptyProductState() {
-        binding?.run {
-            tpgEmptyBodyDescLabel.visible()
-            btnCheckOtherCampaign.run {
-                visible()
-                setOnClickListener {
-                    activity?.finish()
-                }
-            }
-        }
-    }
-
     private fun setupFinishedMidCardTickerAppearance() {
         finishedCdpMidBinding?.run {
             cardFlashSalePerformance.setCardUnifyBackgroundColor(
@@ -1013,11 +1002,30 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
         }
     }
 
+    private fun setupBody() {
+        binding?.run {
+            when (viewModel.getCampaignStatus()) {
+                FlashSaleStatus.NO_REGISTERED_PRODUCT -> {
+                    setupNoRegisteredProductEmptyState()
+                }
+                FlashSaleStatus.FINISHED -> {
+                    setupFinishedEmptyProductState()
+                }
+                FlashSaleStatus.CANCELLED -> {
+                    setupFinishedEmptyProductState()
+                }
+                else -> {
+                    setupSubmittedProductList()
+                }
+            }
+        }
+    }
+
     private fun setupSubmittedProductListData() {
         cdpBodyBinding?.run {
             val isShowButtonToggle =
-                viewModel.getCampaignRegisteredStatus() == FlashSaleStatus.WAITING_FOR_SELECTION
-            val isShowProductListHeader = when (viewModel.getCampaignRegisteredStatus()) {
+                viewModel.getCampaignStatus() == FlashSaleStatus.WAITING_FOR_SELECTION
+            val isShowProductListHeader = when (viewModel.getCampaignStatus()) {
                 FlashSaleStatus.NO_REGISTERED_PRODUCT -> false
                 FlashSaleStatus.CANCELLED -> false
                 FlashSaleStatus.MISSED -> false
@@ -1036,18 +1044,44 @@ class CampaignDetailFragment : BaseDaggerFragment(), HasPaginatedList by HasPagi
                 onShowOrHideItemCheckBox()
             }
         }
-        binding?.run {
-            if (viewModel.getCampaignRegisteredStatus() == FlashSaleStatus.NO_REGISTERED_PRODUCT) {
-                emptyStateProductList.visible()
-                rvSubmittedProductList.gone()
-                emptyStateProductList.setImageUrl(EMPTY_SUBMITTED_PRODUCT_URL)
-            } else {
-                emptyStateProductList.gone()
-                rvSubmittedProductList.visible()
-            }
-        }
+        setupBody()
         observeSelectedProductData()
         setupRegisteredButton()
+    }
+
+    private fun setupNoRegisteredProductEmptyState() {
+        binding?.run {
+            emptyStateProductList.visible()
+            rvSubmittedProductList.gone()
+            emptyStateProductList.setImageUrl(EMPTY_SUBMITTED_PRODUCT_URL)
+            tpgEmptyBodyDescLabel.gone()
+            btnCheckOtherCampaign.gone()
+        }
+    }
+
+    private fun setupSubmittedProductList() {
+        binding?.run {
+            rvSubmittedProductList.visible()
+            emptyStateProductList.gone()
+            emptyStateProductList.gone()
+            tpgEmptyBodyDescLabel.gone()
+            btnCheckOtherCampaign.gone()
+        }
+    }
+
+    private fun setupFinishedEmptyProductState() {
+        binding?.run {
+            tpgEmptyBodyDescLabel.visible()
+            btnCheckOtherCampaign.run {
+                visible()
+                setOnClickListener {
+                    activity?.finish()
+                }
+            }
+            emptyStateProductList.gone()
+            rvSubmittedProductList.gone()
+            emptyStateProductList.gone()
+        }
     }
 
     private fun setupPaging() {

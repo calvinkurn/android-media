@@ -45,7 +45,7 @@ class CampaignDetailViewModel @Inject constructor(
     val selectedItemsId: LiveData<List<Long>>
         get() = _selectedItemsId
 
-    private var campaignRegisteredStatus = FlashSaleStatus.NO_REGISTERED_PRODUCT
+    private var campaignStatus = FlashSaleStatus.NO_REGISTERED_PRODUCT
     private var selectedItemIds = mutableListOf<Long>()
     private var isOnCheckboxState = false
 
@@ -62,7 +62,7 @@ class CampaignDetailViewModel @Inject constructor(
                 val result = getFlashSaleDetailForSellerUseCase.execute(
                     campaignId = campaignId
                 )
-                campaignRegisteredStatus = result.status
+                campaignStatus = result.status
                 _campaign.postValue(Success(result))
             },
             onError = { error ->
@@ -83,7 +83,7 @@ class CampaignDetailViewModel @Inject constructor(
                     )
                 )
                 val formattedProductList =
-                    formatSubmittedProductList(campaignRegisteredStatus, result.productList)
+                    formatSubmittedProductList(campaignStatus, result.productList)
                 _submittedProduct.postValue(Success(formattedProductList))
             },
             onError = { error ->
@@ -256,12 +256,12 @@ class CampaignDetailViewModel @Inject constructor(
         _selectedItemsId.value = selectedItemIds
     }
 
-    fun getCampaignRegisteredStatus(): FlashSaleStatus {
-        return this.campaignRegisteredStatus
+    fun getCampaignStatus(): FlashSaleStatus {
+        return this.campaignStatus
     }
 
     fun getAddProductButtonVisibility(): Boolean {
-        return getCampaignRegisteredStatus() == FlashSaleStatus.NO_REGISTERED_PRODUCT || getCampaignRegisteredStatus() == FlashSaleStatus.WAITING_FOR_SELECTION
+        return getCampaignStatus() == FlashSaleStatus.NO_REGISTERED_PRODUCT || getCampaignStatus() == FlashSaleStatus.WAITING_FOR_SELECTION
     }
 
     fun isOnCheckBoxState(): Boolean {
