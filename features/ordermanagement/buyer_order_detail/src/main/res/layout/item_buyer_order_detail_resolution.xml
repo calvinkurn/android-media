@@ -36,7 +36,7 @@
         android:id="@+id/tv_status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="#04837E"
+        android:textColor="@color/Unify_TN600"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@id/ic_chevron"
         app:layout_constraintStart_toStartOf="@+id/tv_title"
