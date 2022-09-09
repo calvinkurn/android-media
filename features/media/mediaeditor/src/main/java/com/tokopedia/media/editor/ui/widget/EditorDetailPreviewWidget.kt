@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
 import android.net.Uri
-import android.os.Handler
 import android.util.AttributeSet
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -14,7 +13,6 @@ import androidx.core.graphics.values
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getUCropTempResultPath
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.view.TransformImageView
@@ -69,7 +67,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         finalRotationDegree: Float,
         sliderValue: Float,
         rotateNumber: Int,
-        data: EditorDetailUiModel?,
+        data: EditorDetailUiModel,
         onCropFinish: (cropResult: Bitmap) -> Unit,
     ) {
         val bitmap = cropImageView.drawable.toBitmap()
@@ -85,13 +83,26 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
 
         // if previous value is true then use it, otherwise use current editor state for indicator
         val isRotate =
-            if (data?.cropRotateValue?.isRotate == true) true else data?.isToolRotate() ?: false
+            if (data.cropRotateValue.isRotate) true else data.isToolRotate() ?: false
         val isCrop =
-            if (data?.cropRotateValue?.isCrop == true) true else data?.isToolCrop() ?: false
+            if (data.cropRotateValue.isCrop) true else data.isToolCrop() ?: false
 
         // if rotated image is same with original ratio without overflow, ucrop will skip it
         // need to manually crop & save
         if (cropImageView.currentAngle % 90f == 0f && rotateNumber != 0 && isRotate) {
+            val cropRotateData = data.cropRotateValue
+            val scalingSize = bitmap.width.toFloat() / cropRotateData.croppedSourceWidth
+
+            val offsetX = (cropRotateData.offsetX * scalingSize).toInt()
+            val imageWidth = if(cropRotateData.imageWidth != 0) {
+                (cropRotateData.imageWidth * scalingSize).toInt()
+            } else bitmap.width
+
+            val offsetY = (cropRotateData.offsetY * scalingSize).toInt()
+            val imageHeight = if(cropRotateData.imageHeight != 0) {
+                (cropRotateData.imageHeight * scalingSize).toInt()
+            } else bitmap.height
+
             val matrix = Matrix()
             matrix.preScale(
                 cropViewScaleX,
@@ -100,17 +111,31 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
 
             matrix.postRotate(abs(finalRotationDegree))
 
+            val isRatioChange = rotateNumber % 2 != 0
+            var finalWidth = imageWidth
+            var finalHeight = imageHeight
+            var finalOffsetX = offsetX
+            var finalOffsetY = offsetY
+
+            // need to swap the detail if image is rotated
+            if(isRatioChange){
+                finalWidth = imageHeight
+                finalHeight = imageWidth
+                finalOffsetX = offsetY
+                finalOffsetY = offsetX
+            }
+
             // set crop area on data that will be pass to landing pass for state
-            data?.cropRotateValue = EditorCropRotateModel(
-                0,
-                0,
-                bitmap.width,
-                bitmap.height,
+            data.cropRotateValue = EditorCropRotateModel(
+                finalOffsetX,
+                finalOffsetY,
+                finalWidth,
+                finalHeight,
                 imageScale,
                 translateX,
                 translateY,
-                cropViewScaleX,
-                cropViewScaleY,
+                cropViewScaleX * scalingSize,
+                cropViewScaleY * scalingSize,
                 sliderValue,
                 rotateNumber,
                 isRotate = isRotate,
@@ -121,10 +146,10 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             onCropFinish(
                 Bitmap.createBitmap(
                     bitmap,
-                    0,
-                    0,
-                    bitmap.width,
-                    bitmap.height,
+                    offsetX,
+                    offsetY,
+                    imageWidth,
+                    imageHeight,
                     matrix,
                     true
                 )
@@ -151,7 +176,8 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                     onCropFinish(
                         getProcessedBitmap(
                             bitmap,
-                            offsetX, offsetY, imageWidth, imageHeight,
+                            offsetX, offsetY,
+                            imageWidth, imageHeight,
                             finalRotationDegree = finalRotationDegree,
                             sliderValue = sliderValue,
                             rotateNumber = rotateNumber,
@@ -193,8 +219,8 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         scaleX: Float,
         scaleY: Float
     ): Bitmap {
-        val originalWidth = originalBitmap.width
-        val originalHeight = originalBitmap.height
+        var originalWidth = originalBitmap.width
+        var originalHeight = originalBitmap.height
 
         val matrix = Matrix()
 
@@ -237,6 +263,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
         val normalizeY =
             if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
+
         return Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
     }
 
