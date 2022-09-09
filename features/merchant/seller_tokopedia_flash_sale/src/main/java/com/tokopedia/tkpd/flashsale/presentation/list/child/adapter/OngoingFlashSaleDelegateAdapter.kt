@@ -10,10 +10,10 @@ import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant.IMAGE_URL_RIBBON_GREEN
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant.IMAGE_URL_RIBBON_RED
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.toCalendar
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemOngoingFlashSaleBinding
@@ -23,10 +23,6 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 
 class OngoingFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> Unit) : DelegateAdapter<OngoingFlashSaleItem, OngoingFlashSaleDelegateAdapter.OngoingFlashSaleViewHolder>(
     OngoingFlashSaleItem::class.java) {
-
-    companion object{
-        private const val TWENTY_FOUR_HOURS = 24
-    }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemOngoingFlashSaleBinding.inflate(
@@ -104,22 +100,14 @@ class OngoingFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> 
 
 
         private fun TimerUnifySingle.setTimer(item: OngoingFlashSaleItem) {
-            when {
-                item.distanceHoursToEndDate < Int.ZERO -> {
-                    invisible()
-                    binding.tpgDescription.text = binding.tpgDescription.context.getString(R.string.stfs_status_registration_already_closed)
-                }
-                item.distanceHoursToEndDate in Int.ZERO..TWENTY_FOUR_HOURS -> {
-                    timerFormat = TimerUnifySingle.FORMAT_HOUR
-                    timerVariant = TimerUnifySingle.VARIANT_GENERAL
-                    targetDate = item.endDate.toCalendar()
-                }
-                item.distanceHoursToEndDate > TWENTY_FOUR_HOURS -> {
-                    timerFormat = TimerUnifySingle.FORMAT_DAY
-                    binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
-                    targetDate = item.endDate.toCalendar()
-                }
-                else -> {}
+            if (item.distanceMinuteToEndDate < 0) {
+                invisible()
+                binding.tpgDescription.text = binding.tpgDescription.context.getString(R.string.stfs_status_registration_already_closed)
+            } else {
+                binding.timer.visible()
+                binding.timer.timerFormat = TimerUnifySingle.FORMAT_AUTO
+                binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
+                binding.timer.targetDate = item.endDate.toCalendar()
             }
         }
     }

@@ -10,9 +10,9 @@ fun Date.removeTimeZone(): Date {
     return calendar.time
 }
 
-fun minutesDifference(currentDate: Date, futureDate : Date): Int {
+fun minutesDifference(currentDate: Date, futureDate : Date): Long {
     val differenceInMillis = futureDate.time - currentDate.time
-    return TimeUnit.MILLISECONDS.toMinutes(differenceInMillis).toInt()
+    return TimeUnit.MILLISECONDS.toMinutes(differenceInMillis)
 }
 
 fun hoursDifference(currentDate: Date, futureDate : Date): Int {

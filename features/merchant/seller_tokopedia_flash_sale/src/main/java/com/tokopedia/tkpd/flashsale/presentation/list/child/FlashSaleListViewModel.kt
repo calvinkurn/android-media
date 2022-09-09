@@ -17,7 +17,7 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleLis
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEvent
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiState
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
-import com.tokopedia.tkpd.flashsale.util.extension.hoursDifference
+import com.tokopedia.tkpd.flashsale.util.extension.minutesDifference
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,8 +50,8 @@ class FlashSaleListViewModel @Inject constructor(
 
     fun processEvent(event : FlashSaleListUiEvent) {
         when (event) {
-            is FlashSaleListUiEvent.Init -> onPageFirstAppear(event.tabName, event.tabId)
-            is FlashSaleListUiEvent.LoadPage -> onLoadPage(event.offset)
+            is FlashSaleListUiEvent.GetFlashSaleCategory -> getFlashSaleListCategory(event.tabName)
+            is FlashSaleListUiEvent.LoadPage -> onLoadPage(event.tabId, event.tabName, event.offset, event.currentDate)
             is FlashSaleListUiEvent.ChangeSort -> onChangeSort()
             is FlashSaleListUiEvent.ApplySort -> onApplySort(event.selectedSort)
             is FlashSaleListUiEvent.ChangeCategory -> onChangeCategory()
@@ -62,16 +62,15 @@ class FlashSaleListViewModel @Inject constructor(
         }
     }
 
-    private fun onPageFirstAppear(tabName: String, tabId: Int) {
+    private fun onLoadPage(tabId: Int, tabName: String, offset: Int, currentDate: Date) {
         _uiState.update {
-            it.copy(tabName = tabName, tabId = tabId)
+            it.copy(
+                tabId = tabId,
+                tabName = tabName,
+                offset = offset,
+                currentDate = currentDate
+            )
         }
-
-        getFlashSaleListCategory()
-    }
-
-    private fun onLoadPage(offset: Int) {
-        _uiState.update { it.copy(offset = offset) }
         getFlashSaleList()
     }
 
@@ -152,11 +151,13 @@ class FlashSaleListViewModel @Inject constructor(
         getFlashSaleList()
     }
 
-    private fun getFlashSaleListCategory() {
+    private fun getFlashSaleListCategory(tabName: String) {
+        _uiState.update { it.copy(tabName = tabName) }
+
         launchCatchError(
             dispatchers.io,
             block = {
-                val categories = getFlashSaleListForSellerCategoryUseCase.execute(currentState.tabName)
+                val categories = getFlashSaleListForSellerCategoryUseCase.execute(tabName)
                 _uiState.update { it.copy(flashSaleCategories = categories) }
             },
             onError = { error ->
@@ -180,7 +181,7 @@ class FlashSaleListViewModel @Inject constructor(
                     requestProductMetaData = currentState.tabName == "finished" || currentState.tabName == "ongoing"
                 )
                 val response = getFlashSaleListForSellerUseCase.execute(params)
-                val formattedFlashSales = formatFlashSaleData(currentState.tabId, response.flashSales)
+                val formattedFlashSales = formatFlashSaleData(currentState.tabId, response.flashSales, currentState.currentDate)
 
                 val allItems = currentState.allItems + formattedFlashSales
                 _uiEffect.emit(FlashSaleListUiEffect.LoadNextPageSuccess(allItems, formattedFlashSales))
@@ -201,20 +202,19 @@ class FlashSaleListViewModel @Inject constructor(
 
     }
 
-    private fun formatFlashSaleData(tabId: Int, flashSales: List<FlashSale>) : List<DelegateAdapterItem> {
+    private fun formatFlashSaleData(tabId: Int, flashSales: List<FlashSale>, currentDate : Date) : List<DelegateAdapterItem> {
         return flashSales.map { flashSale ->
             when(tabId) {
-                TabConstant.TAB_ID_UPCOMING -> flashSale.toUpcomingItem()
-                TabConstant.TAB_ID_REGISTERED -> flashSale.toRegisteredItem()
-                TabConstant.TAB_ID_ONGOING -> flashSale.toOngoingItem()
+                TabConstant.TAB_ID_UPCOMING -> flashSale.toUpcomingItem(currentDate)
+                TabConstant.TAB_ID_REGISTERED -> flashSale.toRegisteredItem(currentDate)
+                TabConstant.TAB_ID_ONGOING -> flashSale.toOngoingItem(currentDate)
                 TabConstant.TAB_ID_FINISHED -> flashSale.toFinishedItem()
-                else -> flashSale.toUpcomingItem()
+                else -> flashSale.toUpcomingItem(currentDate)
             }
         }
     }
 
-    private fun FlashSale.toUpcomingItem() : DelegateAdapterItem {
-        val now = Date()
+    private fun FlashSale.toUpcomingItem(currentDate : Date) : DelegateAdapterItem {
         return UpcomingFlashSaleItem(
             campaignId,
             name,
@@ -225,7 +225,7 @@ class FlashSaleListViewModel @Inject constructor(
             formattedDate.endDate,
             endDateUnix,
             findQuotaUsagePercentage(),
-            hoursDifference(now, submissionEndDateUnix),
+            minutesDifference(currentDate, submissionEndDateUnix),
             submissionEndDateUnix
         )
     }
@@ -251,8 +251,7 @@ class FlashSaleListViewModel @Inject constructor(
         return soldPercentage.toInt()
     }
 
-    private fun FlashSale.toRegisteredItem() : DelegateAdapterItem {
-        val now = Date()
+    private fun FlashSale.toRegisteredItem(currentDate : Date) : DelegateAdapterItem {
         return RegisteredFlashSaleItem(
             campaignId,
             name,
@@ -263,9 +262,9 @@ class FlashSaleListViewModel @Inject constructor(
             formattedDate.endDate,
             reviewStartDateUnix,
             reviewEndDateUnix,
-            hoursDifference(now, startDateUnix),
-            hoursDifference(now, reviewStartDateUnix),
-            hoursDifference(now, reviewEndDateUnix),
+            minutesDifference(currentDate, startDateUnix),
+            minutesDifference(currentDate, reviewStartDateUnix),
+            minutesDifference(currentDate, reviewEndDateUnix),
             status,
             statusText
         )
@@ -276,8 +275,7 @@ class FlashSaleListViewModel @Inject constructor(
         return ((usedQuota.toFloat() / maxProductSubmission.toFloat()) * PERCENT).toInt()
     }
 
-    private fun FlashSale.toOngoingItem(): DelegateAdapterItem {
-        val now = Date()
+    private fun FlashSale.toOngoingItem(currentDate : Date): DelegateAdapterItem {
         return OngoingFlashSaleItem(
             campaignId,
             name,
@@ -285,7 +283,7 @@ class FlashSaleListViewModel @Inject constructor(
             formattedDate.startDate,
             formattedDate.endDate,
             endDateUnix,
-            hoursDifference(now, endDateUnix),
+            minutesDifference(currentDate, endDateUnix),
             productMeta.totalStockSold,
             productMeta.totalProductStock,
             status,
