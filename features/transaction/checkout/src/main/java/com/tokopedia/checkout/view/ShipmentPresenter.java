@@ -1896,12 +1896,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<String> promoCodeList = new ArrayList<>();
         promoCodeList.add(promoCode);
         ArrayList<ClearPromoOrder> clearOrders = new ArrayList<>();
-        boolean isPreorder = shipmentCartItemModel.isProductIsPreorder()
-        int preorderDuration = shipmentCartItemModel.getCartItemModels().get(0).getPreOrderDurationDay();
         clearOrders.add(new ClearPromoOrder(shipmentCartItemModel.getCartString(),
                 shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
-                promoCodeList, shipmentCartItemModel.getShopId(), isPreorder,
-                String.valueOf(preorderDuration), shipmentCartItemModel.getFulfillmentId())
+                promoCodeList, shipmentCartItemModel.getShopId(), shipmentCartItemModel.isProductIsPreorder(),
+                String.valueOf(shipmentCartItemModel.getCartItemModels().get(0).getPreOrderDurationDay()),
+                shipmentCartItemModel.getFulfillmentId())
         );
 
         clearCacheAutoApplyStackUseCase.setParams(new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, false, new ClearPromoOrderData(new ArrayList<>(), clearOrders)));
