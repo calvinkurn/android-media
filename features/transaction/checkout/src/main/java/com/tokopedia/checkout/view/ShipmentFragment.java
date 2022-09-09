@@ -2602,6 +2602,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ordersItem.setShippingId(0);
             ordersItem.setSpId(0);
             ordersItem.setFreeShippingMetadata("");
+            ordersItem.setBoCampaignId(0);
             ordersItem.setBenefitClass("");
             ordersItem.setShippingSubsidy(0);
             ordersItem.setShippingPrice(0);
@@ -2612,6 +2613,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperId());
                     ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperProductId());
                     if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                        // todo: bo campaign id
                         ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getFreeShippingMetadata());
                         ordersItem.setBenefitClass(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getBenefitClass());
                         ordersItem.setShippingSubsidy(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShippingSubsidy());
@@ -2619,6 +2621,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         ordersItem.setEtaText(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getEtaText());
                     } else {
                         ordersItem.setFreeShippingMetadata("");
+                        ordersItem.setBoCampaignId(0);
                         ordersItem.setBenefitClass("");
                         ordersItem.setShippingSubsidy(0);
                         ordersItem.setShippingPrice(0);
@@ -2628,6 +2631,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setShippingId(0);
                     ordersItem.setSpId(0);
                     ordersItem.setFreeShippingMetadata("");
+                    ordersItem.setBoCampaignId(0);
                     ordersItem.setBenefitClass("");
                     ordersItem.setShippingSubsidy(0);
                     ordersItem.setShippingPrice(0);
@@ -2638,6 +2642,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
                     ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
                     if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                        // todo: bo campaign id
                         ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getFreeShippingMetadata());
                         ordersItem.setBenefitClass(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getBenefitClass());
                         ordersItem.setShippingSubsidy(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShippingSubsidy());
@@ -2645,6 +2650,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         ordersItem.setEtaText(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getEtaText());
                     } else {
                         ordersItem.setFreeShippingMetadata("");
+                        ordersItem.setBoCampaignId(0);
                         ordersItem.setBenefitClass("");
                         ordersItem.setShippingSubsidy(0);
                         ordersItem.setShippingPrice(0);
@@ -2654,6 +2660,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setShippingId(0);
                     ordersItem.setSpId(0);
                     ordersItem.setFreeShippingMetadata("");
+                    ordersItem.setBoCampaignId(0);
                     ordersItem.setBenefitClass("");
                     ordersItem.setShippingSubsidy(0);
                     ordersItem.setShippingPrice(0);

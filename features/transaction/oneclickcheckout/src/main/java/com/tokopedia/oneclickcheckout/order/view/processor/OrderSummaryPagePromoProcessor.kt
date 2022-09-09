@@ -280,6 +280,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         ordersItem.etaText = shipping.shippingEta ?: ""
         ordersItem.shippingPrice = shipping.getRealOriginalPrice().toDouble()
         if (shouldAddLogisticPromo && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
+            // todo: bo campaign id
             ordersItem.freeShippingMetadata = shipping.logisticPromoViewModel.freeShippingMetadata
             ordersItem.benefitClass = shipping.logisticPromoViewModel.benefitClass
             ordersItem.shippingSubsidy = shipping.logisticPromoViewModel.shippingSubsidy
