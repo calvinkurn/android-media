@@ -2,6 +2,7 @@ package com.tokopedia.mediauploader.common.logger
 
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
+import timber.log.Timber
 
 data class DebugLog(
     val sourceId: String,
@@ -12,6 +13,7 @@ data class DebugLog(
 )
 
 fun onShowDebugLogcat(param: DebugLog) {
+    // the logcat debug only shown on app debug
     if (!GlobalConfig.isAllowDebuggingTools()) return
 
     val moduleName = "DevMediaUploader"
@@ -24,5 +26,5 @@ fun onShowDebugLogcat(param: DebugLog) {
         policy: ${param.sourcePolicy}
     """
 
-    println("$moduleName: $message")
+    Timber.d("$moduleName: $message")
 }
