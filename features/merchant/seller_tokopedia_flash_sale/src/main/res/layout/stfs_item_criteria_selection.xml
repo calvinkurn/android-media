@@ -2,6 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
+    android:paddingEnd="8dp"
+    android:paddingStart="0dp"
+    android:minWidth="80dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -13,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"
-        tool:text="Fashion Pria" />
+        tool:text="Fast" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tfValue"
@@ -43,8 +46,9 @@
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iconMoreInfo"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHorizontal_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

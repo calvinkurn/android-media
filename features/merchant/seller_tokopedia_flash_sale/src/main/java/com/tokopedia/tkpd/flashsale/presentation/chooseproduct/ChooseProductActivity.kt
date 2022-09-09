@@ -13,7 +13,8 @@ class ChooseProductActivity : BaseSimpleActivity() {
 
     companion object {
         @JvmStatic
-        fun start(context: Context, campaignId: Long) {
+        fun start(context: Context?, campaignId: Long) {
+            context ?: return
             val intent = Intent(context, ChooseProductActivity::class.java)
             val bundle = Bundle()
             bundle.putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
