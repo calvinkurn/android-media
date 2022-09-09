@@ -996,6 +996,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 clearOrder = ClearPromoOrder(
                         uniqueId = order.uniqueId,
                         boType = order.boType,
+                        shopId = order.shopId,
+                        isPo = order.isPo,
+                        poDuration = order.poDuration.toString(),
+                        warehouseId = order.warehouseId
                 )
                 orders.add(clearOrder)
             }
