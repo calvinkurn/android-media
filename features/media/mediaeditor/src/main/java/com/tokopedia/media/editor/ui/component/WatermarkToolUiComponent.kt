@@ -33,6 +33,14 @@ class WatermarkToolUiComponent constructor(
         }
     }
 
+    fun setWatermark(watermarkType: Int?){
+        when(watermarkType){
+            WATERMARK_TOKOPEDIA -> setButtonSelected(buttonType1)
+            WATERMARK_SHOP -> setButtonSelected(buttonType2)
+            null -> buttonType1.performClick()
+        }
+    }
+
     fun getButtonRef(): Pair<ImageView, ImageView> {
         return Pair(buttonType1, buttonType2)
     }

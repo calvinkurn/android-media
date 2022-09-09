@@ -539,10 +539,17 @@ class DetailEditorFragment @Inject constructor(
             }
         }
 
-        implementPreviousWatermark()
+        // if tools is watermark then execute after implement watermark after base bitmap is set
+        if(!data.isToolWatermark()){
+            implementPreviousWatermark()
+        }
 
         // image that already implemented previous filter
         implementedBaseBitmap = getBitmap()
+
+        if(data.isToolWatermark()){
+            implementPreviousWatermark()
+        }
 
         if (previousState.brightnessValue != null && previousState.isToolBrightness()) {
             // if current editor is brightness keep the filter color so we can adjust it later
@@ -668,7 +675,10 @@ class DetailEditorFragment @Inject constructor(
                     if (readPreviousValue) readPreviousState(data)
                     else implementedBaseBitmap = bitmap
 
-                    if (data.isToolWatermark()) setWatermarkDrawerItem(bitmap)
+                    if (data.isToolWatermark()) {
+                        setWatermarkDrawerItem(bitmap)
+                        watermarkComponent.setWatermark(data.watermarkMode)
+                    }
                 },
                 onCleared = {}
             ))
