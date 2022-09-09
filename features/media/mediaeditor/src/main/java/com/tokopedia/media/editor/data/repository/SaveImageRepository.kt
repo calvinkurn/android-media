@@ -30,7 +30,7 @@ class SaveImageRepositoryImpl @Inject constructor() : SaveImageRepository {
     ): File? {
         return ImageProcessingUtil.writeImageToTkpdPath(
             bitmapParam,
-            Bitmap.CompressFormat.PNG,
+            Bitmap.CompressFormat.JPEG,
             getEditorSaveFolderPath()
         )
     }

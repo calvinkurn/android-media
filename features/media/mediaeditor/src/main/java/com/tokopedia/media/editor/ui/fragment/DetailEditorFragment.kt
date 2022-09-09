@@ -443,6 +443,22 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    private fun implementPreviousWatermark(){
+        data.watermarkMode?.let {
+            getBitmap()?.let { it1 ->
+                val shopName = if (userSession.shopName.isEmpty())
+                    DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
+
+                viewModel.setWatermark(
+                    requireContext(),
+                    it1,
+                    it,
+                    shopName
+                )
+            }
+        }
+    }
+
     private fun readPreviousState(previousState: EditorDetailUiModel) {
         // if current selected editor not brightness and contrast, implement filter with sequence
         if (!previousState.isToolBrightness() && !previousState.isToolContrast()) {
@@ -522,6 +538,8 @@ class DetailEditorFragment @Inject constructor(
                 viewBinding?.imgViewPreview?.setImageBitmap(bitmapResult)
             }
         }
+
+        implementPreviousWatermark()
 
         // image that already implemented previous filter
         implementedBaseBitmap = getBitmap()
