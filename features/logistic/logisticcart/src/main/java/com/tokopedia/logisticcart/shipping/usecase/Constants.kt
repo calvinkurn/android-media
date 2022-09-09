@@ -480,6 +480,7 @@ internal fun ratesQuery() = """
               chosen_courier
               ticker_courier
               bottom_sheet_description
+              promo_message
               title_promo_message
             }
             free_shipping_metadata {

@@ -159,7 +159,8 @@ class ShippingDurationConverter @Inject constructor() {
                 promo.promoTncHtml, applied, promoBadge, promo.discontedRate,
                 promo.shippingRate, promo.benefitAmount, promo.isDisabled, promo.isHideShipperName,
                 promo.cod, promo.eta, promo.texts.bottomSheet, promo.texts.chosenCourier,
-                promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription, promo.texts.titlePromoMessage,
+                promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription,
+                promo.texts.promoMessage, promo.texts.titlePromoMessage,
                 gson.toJson(promo.freeShippingMetadata))
     }
 
