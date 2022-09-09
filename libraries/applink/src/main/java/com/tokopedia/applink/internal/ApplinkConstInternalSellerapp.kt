@@ -100,5 +100,13 @@ object ApplinkConstInternalSellerapp {
     const val SHOP_DISCOUNT_MANAGE_PRODUCT_VARIANT_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/variant"
     const val SHOP_DISCOUNT_MANAGE_PRODUCT_MULTI_LOC_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/multi-loc"
 
+    //TokomemberMainActivity
     const val TOKOMEMBER = "$INTERNAL_SELLERAPP/tokomember"
+    const val TOKOMEMBER_PROGRAM_LIST = "$TOKOMEMBER/program-list"
+    const val TOKOMEMBER_COUPON_LIST = "$TOKOMEMBER/coupon-list"
+
+    //TmDashCreateActivity if registered
+    const val TOKOMEMBER_PROGRAM_CREATION = "$TOKOMEMBER/program-creation"
+    const val TOKOMEMBER_COUPON_CREATION = "$INTERNAL_SELLERAPP/tokomember/coupon-creation"
+    const val TOKOMEMBER_PROGRAM_EXTENSION = "$TOKOMEMBER/program-extension/{program_id}"
 }

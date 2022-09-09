@@ -2,7 +2,10 @@ package com.tokopedia.applink.promo
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+
 
 fun getRegisteredNavigationTokopoints(deeplink: String) =
     when (deeplink) {
@@ -89,4 +92,20 @@ fun getDestinationDeeplink(deeplink: String): String {
         }
     }
     return deepLinkInternal
+}
+
+fun getDynamicDeeplinkForTokomember(deeplink: String) : String{
+    val uri = Uri.parse(deeplink)
+    return when {
+        deeplink.contains(ApplinkConst.Tokomember.PROGRAM_EXTENSION) -> getDeeplinkForProgramExtension(uri)
+        else -> ""
+    }
+}
+
+fun getDeeplinkForProgramExtension(deeplink: Uri):String{
+    if(UriUtil.matchWithPattern(ApplinkConst.SellerApp.TOKOMEMBER_PROGRAM_EXTENSION,deeplink)!=null){
+        val programId = deeplink.lastPathSegment
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_EXTENSION,programId)
+    }
+    return ""
 }

@@ -7,19 +7,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.header.HeaderUnify
-        android:id="@+id/tm_coupon_detail_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:unify_header_title="Detail Kupon TokoMember"
-        app:unify_header_is_show_shadow="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/tm_coupon_detail_header"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         >
@@ -61,6 +52,8 @@
                 app:unify_progress_bar_value="30"
                 />
 
+
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,18 +64,19 @@
                 android:orientation="horizontal"
                 >
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/coupon_detail_progress_value"
+                    android:id="@+id/coupon_detail_used_quota"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:typographyType="heading_3"
                     app:typographyWeight="bold"
-                    tools:text="30"
+                    android:text="30"
                     />
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/coupon_detail_total_quota"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:typographyType="display_3"
-                    tools:text="/100"
+                    android:text="/100"
                     />
             </LinearLayout>
 
@@ -125,7 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:descriptionText="Jenis Cashback"
-                tools:valueText="Rupiah (Rp)"
+                app:valueText="Rupiah (Rp)"
                 app:layout_constraintTop_toBottomOf="@id/coupon_type_tv"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
@@ -138,7 +132,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:descriptionText="Maks. Cashback"
-                tools:valueText="Rp10.000"
+                app:valueText="Rp10.000"
                 app:layout_constraintTop_toBottomOf="@id/coupon_cashback_type_tv"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
@@ -150,7 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:descriptionText="Min. Transaksi"
-                tools:valueText="Rp10.000"
+                app:valueText="Rp10.000"
                 app:layout_constraintTop_toBottomOf="@id/coupon_maks_cashback_tv"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
@@ -162,7 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:descriptionText="Kuota"
-                tools:valueText="100"
+                app:valueText="100"
                 app:layout_constraintTop_toBottomOf="@id/coupon_min_transaksi_tv"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"

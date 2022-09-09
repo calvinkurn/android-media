@@ -1,6 +1,7 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,9 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ACTION
+import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_COUPON_LIST
+import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_PROGRAM_LIST
+import com.tokopedia.tokomember_seller_dashboard.util.TOKOMEMBER_SCREEN
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
 import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
@@ -105,11 +109,27 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         if (programActionType!=-1) {
             setTabsProgramList()
         }
+        routeToScreen()
     }
 
     private fun setTabsProgramList(){
         homeTabs.getUnifyTabLayout().getTabAt(1)?.select()
         homeViewPager.currentItem = 1
+    }
+
+    private fun setTabsCouponList(){
+        homeTabs.getUnifyTabLayout().getTabAt(2)?.select()
+        homeViewPager.currentItem = 2
+    }
+
+    private fun routeToScreen(){
+        val screen = arguments?.get(TOKOMEMBER_SCREEN) as Uri?
+        screen?.let{
+            when(it.lastPathSegment){
+                PATH_TOKOMEMBER_PROGRAM_LIST -> setTabsProgramList()
+                PATH_TOKOMEMBER_COUPON_LIST -> setTabsCouponList()
+            }
+        }
     }
 
     override fun getScreenName() = ""

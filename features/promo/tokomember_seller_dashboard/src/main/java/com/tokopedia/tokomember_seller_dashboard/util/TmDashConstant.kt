@@ -213,3 +213,11 @@ const val COUPON_STATE_EMPTY_LABEL = "Kuota Habis"
 const val COUPON_STATE_ACTIVE_LABEL = "Kupon Aktif"
 const val COUPON_STATE_NOT_STARTED_LABEL = "Belum Aktif"
 const val COUPON_STATE_ENDED_LABEL = "Berakhir"
+
+const val TOKOMEMBER_SCREEN = "tokomember screen"
+const val PATH_TOKOMEMBER_PROGRAM_LIST = "program-list"
+const val PATH_TOKOMEMBER_COUPON_LIST = "coupon-list"
+const val PATH_TOKOMEMBER_PROGRAM_CREATION = "program-creation"
+const val PATH_TOKOMEMBER_COUPON_CREATION = "coupon-creation"
+const val PATH_TOKOMEMBER_PROGRAM_EXTENSION = "program-extension"
+
