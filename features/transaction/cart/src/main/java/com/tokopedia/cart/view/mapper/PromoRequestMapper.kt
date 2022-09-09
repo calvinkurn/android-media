@@ -40,23 +40,28 @@ object PromoRequestMapper {
                                 cartShopHolderData,
                             ).toMutableList()
 
-                            val (first, second) = getShippingFromValidateUseByUniqueId(
+                            val boShipmentData = getShippingFromValidateUseByUniqueId(
                                 it,
                                 cartShopHolderData,
                             )
-                            shippingId = first
-                            spId = second
+                            shippingId = boShipmentData.shippingId
+                            spId = boShipmentData.spId
                         } else if (it is LastApplyPromo) {
                             codes = getPromoCodesFromLastApplyByUniqueId(
                                 it,
                                 cartShopHolderData,
                             ).toMutableList()
-                            val (first, second) = getShippingFromLastApplyByUniqueId(
+                            val boShipmentData = getShippingFromLastApplyByUniqueId(
                                 it,
                                 cartShopHolderData,
                             )
-                            shippingId = first
-                            spId = second
+                            shippingId = boShipmentData.shippingId
+                            spId = boShipmentData.spId
+                            boCampaignId = boShipmentData.boCampaignId
+                            shippingSubsidy = boShipmentData.shippingSubsidy
+                            benefitClass = boShipmentData.benefitClass
+                            shippingPrice = boShipmentData.shippingPrice
+                            etaText = boShipmentData.etaText
                         }
                     }
                     shopId = cartShopHolderData.shopId.toLongOrZero()
@@ -117,33 +122,34 @@ object PromoRequestMapper {
     private fun getShippingFromLastApplyByUniqueId(
         lastApplyPromo: LastApplyPromo,
         cartShopHolderData: CartShopHolderData
-    ): Pair<Int, Int> {
+    ): PromoRequestBoShipmentData {
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
             if (voucherOrder.uniqueId == cartShopHolderData.cartString
                 && voucherOrder.shippingId > 0
                 && voucherOrder.spId > 0
                 && voucherOrder.type == "logistic"
             ) {
-                return Pair(voucherOrder.shippingId, voucherOrder.spId)
+                return PromoRequestBoShipmentData(voucherOrder.shippingId, voucherOrder.spId, voucherOrder.boCampaignId,
+                voucherOrder.shippingSubsidy, voucherOrder.benefitClass, voucherOrder.shippingPrice, voucherOrder.etaText)
             }
         }
-        return Pair(0, 0)
+        return PromoRequestBoShipmentData()
     }
 
     private fun getShippingFromValidateUseByUniqueId(
         promoUiModel: PromoUiModel,
         cartShopHolderData: CartShopHolderData
-    ): Pair<Int, Int> {
+    ): PromoRequestBoShipmentData {
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
             if (voucherOrder.uniqueId == cartShopHolderData.cartString
                 && voucherOrder.shippingId > 0
                 && voucherOrder.spId > 0
                 && voucherOrder.type == "logistic"
             ) {
-                return Pair(voucherOrder.shippingId, voucherOrder.spId)
+                return PromoRequestBoShipmentData(voucherOrder.shippingId, voucherOrder.spId)
             }
         }
-        return Pair(0, 0)
+        return PromoRequestBoShipmentData()
     }
 
     fun generateCouponListRequestParams(promoData: Any?, availableCartShopHolderDataList: List<CartShopHolderData>
@@ -256,3 +262,13 @@ object PromoRequestMapper {
         ) else null
     }
 }
+
+private class PromoRequestBoShipmentData(
+        val shippingId: Int = 0,
+        val spId: Int = 0,
+        val boCampaignId: Long = 0,
+        val shippingSubsidy: Long = 0,
+        val benefitClass: String = "",
+        val shippingPrice: Double = 0.0,
+        val etaText: String = "",
+)
