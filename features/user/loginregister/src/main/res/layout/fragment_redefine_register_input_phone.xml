@@ -7,13 +7,13 @@
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/unify_toolbar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_header_is_show_back_button="true"
-        app:unify_header_is_show_shadow="true" />
+        app:unify_header_is_show_shadow="false" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_unify"

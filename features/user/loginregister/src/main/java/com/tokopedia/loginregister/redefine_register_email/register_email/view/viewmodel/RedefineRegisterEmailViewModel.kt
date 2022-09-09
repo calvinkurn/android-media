@@ -30,7 +30,7 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     val formState: LiveData<RedefineEmailFormState> get() = _formState
     private var _isLoading = SingleLiveEvent<Boolean>()
     val isLoading : LiveData<Boolean> get() = _isLoading
-    private val _validateUserData = MutableLiveData<Result<ValidateUserData>>()
+    private val _validateUserData = SingleLiveEvent<Result<ValidateUserData>>()
     val validateUserData: LiveData<Result<ValidateUserData>> get() = _validateUserData
     private var _currentEmail = ""
     val currentEmail get() = _currentEmail
@@ -40,6 +40,8 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     val currentName get() = _currentName
     private var _currentHash = ""
     val currentHash get() = _currentHash
+    private var _encryptedPassword = ""
+    val encryptedPassword get() = _encryptedPassword
 
     fun validateEmail(email: String, setValue: Boolean = true) {
         state.emailError = when {
@@ -124,8 +126,7 @@ class RedefineRegisterEmailViewModel @Inject constructor(
         _isLoading.value = true
         launchCatchError(coroutineContext, {
             val keyData = generateKeyUseCase(Unit).generateKey
-            val encryptedPassword = RsaUtils.encrypt(_currentPassword, keyData.key.decodeBase64(), true)
-            _currentPassword = encryptedPassword
+            _encryptedPassword = RsaUtils.encrypt(_currentPassword, keyData.key.decodeBase64(), true)
             _currentHash = keyData.h
 
             val param = ValidateUserDataParam(

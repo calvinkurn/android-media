@@ -408,7 +408,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         bottomSheetOtherMethod?.setOnEmailClickedListener {
             bottomSheetOtherMethod?.dismiss()
             //TODO("CHANGE VALUE IS REQUIRED PHONE WHEN KEY AB TEST IS READY")
-            registerInitialRouter.goToRedefineRegisterEmailPageWithParams(this, source, false)
+            registerInitialRouter.goToRedefineRegisterEmailPageWithParams(this, source, true)
         }
         bottomSheetOtherMethod?.show(childFragmentManager, getString(R.string.bottom_sheet_show))
     }

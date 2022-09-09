@@ -28,36 +28,6 @@ fun intentGoToVerification(
     return intent
 }
 
-fun intentGoToInputPhone(
-    email: String,
-    encryptedPassword: String,
-    name: String,
-    source: String,
-    isRequiredInputPhone: Boolean,
-    token: String,
-    hash: String,
-    context: Context
-): Intent {
-    val intent = RouteManager.getIntent(
-        context,
-        ApplinkConstInternalUserPlatform.REDEFINE_REGISTER_INPUT_PHONE
-    )
-    intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_VALUE_EMAIL, email)
-    intent.putExtra(
-        ApplinkConstInternalUserPlatform.PARAM_VALUE_ENCRYPTED_PASSWORD,
-        encryptedPassword
-    )
-    intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_VALUE_NAME, name)
-    intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-    intent.putExtra(
-        ApplinkConstInternalUserPlatform.PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE,
-        isRequiredInputPhone
-    )
-    intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, token)
-    intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_HASH, hash)
-    return intent
-}
-
 fun intentGoToHome(context: Context): Intent {
     val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK

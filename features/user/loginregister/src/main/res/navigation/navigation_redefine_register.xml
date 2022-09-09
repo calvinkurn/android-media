@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_redefine_register"
+    app:startDestination="@id/redefineRegisterEmailFragment">
+
+    <fragment
+        android:id="@+id/redefineRegisterEmailFragment"
+        android:name="com.tokopedia.loginregister.redefine_register_email.register_email.view.fragment.RedefineRegisterEmailFragment"
+        android:label="RedefineRegisterEmailFragment" >
+        <action
+            android:id="@+id/action_redefineRegisterEmailFragment_to_redefineRegisterInputPhoneFragment"
+            app:destination="@id/redefineRegisterInputPhoneFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/redefineRegisterInputPhoneFragment"
+        android:name="com.tokopedia.loginregister.redefine_register_email.input_phone.view.fragment.RedefineRegisterInputPhoneFragment"
+        android:label="RedefineRegisterInputPhoneFragment" >
+        <argument
+            android:name="source"
+            app:argType="string"
+            android:defaultValue=""/>
+        <argument
+            android:name="email"
+            app:argType="string"
+            android:defaultValue=""/>
+        <argument
+            android:name="password"
+            app:argType="string"
+            android:defaultValue=""/>
+        <argument
+            android:name="name"
+            app:argType="string"
+            android:defaultValue=""/>
+        <argument
+            android:name="isRequiredInputPhone"
+            app:argType="boolean" />
+        <argument
+            android:name="token"
+            app:argType="string"
+            android:defaultValue=""/>
+        <argument
+            android:name="hash"
+            app:argType="string"
+            android:defaultValue=""/>
+    </fragment>
+
+</navigation>
