@@ -207,6 +207,11 @@
     <string name="feed_video_tab_success_remove_reminder">Pengingat berhasil terhapus!</string>
     <string name="feed_video_tab_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="feed_asgc_diskon_toko">Barang Diskon</string>
+    <string name="feed_asgc_flash_sale_toko">Flash Sale Toko</string>
+    <string name="feed_asgc_rilisan_special">Rilisan Spesial</string>
+    <string name="feed_asgc_reminder_activate_fst_message">Yay, kamu akan diingatkan sebelum Flash Sale dimulai.</string>
+    <string name="feed_asgc_reminder_activate_rs_message">Yay, kamu akan diingatkan sebelum Rilisan Spesial dimulai.</string>
+    <string name="feed_asgc_reminder_deactivate_message">Pengingat telah dibatalkan.</string>
 
     <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
@@ -237,4 +242,11 @@
     <string name="btn_text_following">Following</string>
     <string name="empty_page_title">Belum ada postingan</string>
     <string name="empty_page_desc">Ayo buat postingan dulu, siapa tahu nanti banyak yang suka!</string>
+
+    <!-- Flash Sale and Rilisan Special -->
+    <string name="btn_asgc_flash_sale_name">Sneaker Fest</string>
+    <string name="btn_asgc_flash_sale_time_text">Dimulai dalam</string>
+    <string name="btn_asgc_ongoing_flash_sale_rs_endtime_text">Berakhir dalam</string>
+    <string name="btn_asgc_flash_remind_btn_text">Ingatkan Saya</string>
+    <string name="btn_asgc_flash_remind_btn_text_disabled">Pengingat Aktif</string>
 </resources>

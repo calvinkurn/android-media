@@ -8,9 +8,9 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
+import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignUpcomingView
 import com.tokopedia.feedcomponent.view.widget.PostTagView
 
 /**
@@ -20,11 +20,12 @@ class FeedPostCarouselAdapter(
     dataSource: DataSource,
     imageListener: CarouselImageViewHolder.Listener,
     videoListener: CarouselVideoViewHolder.Listener,
+    listener: FlashSaleRilisanCampaignUpcomingView.Listener? = null
 ) : BaseDiffUtilAdapter<FeedXMedia>(true) {
 
     init {
         delegatesManager
-            .addDelegate(CarouselImageDelegate(dataSource, imageListener))
+            .addDelegate(CarouselImageDelegate(dataSource, imageListener, listener))
             .addDelegate(CarouselVideoDelegate(videoListener))
     }
 
@@ -38,6 +39,14 @@ class FeedPostCarouselAdapter(
     ): Boolean {
         return if (!oldItem.isImage) false
         else oldItem == newItem
+    }
+
+    /**
+    Using notifyDataSetChanged() here as all the reminder button in each item of carousel needs to be updated
+    Also max items in a carousel can 5
+    ***/
+    fun updateReminderStatusForAllButtonsInCarousel(){
+        notifyDataSetChanged()
     }
 
     fun focusItemAt(position: Int) {
@@ -81,6 +90,7 @@ class FeedPostCarouselAdapter(
     private class CarouselImageDelegate(
         private val dataSource: DataSource,
         private val listener: CarouselImageViewHolder.Listener,
+        private val fstListener: FlashSaleRilisanCampaignUpcomingView.Listener?,
     ) : BaseAdapterDelegate<FeedXMedia, FeedXMedia, CarouselImageViewHolder>(
         R.layout.item_post_image_new
     ) {
@@ -111,7 +121,7 @@ class FeedPostCarouselAdapter(
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): CarouselImageViewHolder {
-            return CarouselImageViewHolder.create(parent, dataSource, listener)
+            return CarouselImageViewHolder.create(parent, dataSource, listener, fstListener)
         }
     }
 

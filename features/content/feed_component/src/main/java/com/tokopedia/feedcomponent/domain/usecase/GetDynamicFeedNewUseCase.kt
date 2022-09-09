@@ -314,6 +314,24 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           webLink
           appLink
         }
+        cta {
+          text
+          color
+          colorGradient {
+          color
+          position
+          }
+          __typename
+        }
+        ribbonImageURL
+        campaign {
+            id
+            status
+            name
+            shortName
+            startTime
+            endTime
+          }
         title
         subTitle
         text
@@ -333,6 +351,11 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           star
           price
           priceFmt
+          priceMasked
+          priceMaskedFmt
+          stockWording
+          stockSoldPercentage
+          cartable
           isDiscount
           discount
           discountFmt

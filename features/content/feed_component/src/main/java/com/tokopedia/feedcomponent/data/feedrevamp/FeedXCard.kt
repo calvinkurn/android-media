@@ -44,6 +44,12 @@ data class FeedXCard(
     var subTitle: String = "",
     @SerializedName("totalProducts")
     var totalProducts: Int = 0,
+    @SerializedName("cta")
+    val cta: FeedXCta = FeedXCta(),
+    @SerializedName("ribbonImageURL")
+    val ribbonImageURL: String = "",
+    @SerializedName("campaign")
+    val campaign: FeedXCampaign = FeedXCampaign(),
     @SerializedName("text")
     var text: String = "",
     @SerializedName("title")
@@ -128,6 +134,15 @@ data class FeedXCard(
     val isASGCDiscountToko: Boolean
          get() = type == ASGC_DISCOUNT_TOKO
 
+    val isFlashSaleToko: Boolean
+        get() = type == ASGC_FLASH_SALE_TOKO
+    val isRilisanSpl: Boolean
+        get() = type == ASGC_RILISAN_SPECIAL
+    val isUpcoming: Boolean
+        get() = campaign.status == Upcoming
+    val isOngoing: Boolean
+        get() = campaign.status == Ongoing
+
     fun copyPostData(): FeedXCard {
         return FeedXCard(
             typename = typename,
@@ -141,6 +156,9 @@ data class FeedXCard(
             products = products,
             subTitle = subTitle,
             text = text,
+            cta = cta,
+            ribbonImageURL = ribbonImageURL,
+            campaign = campaign,
             deletable = deletable,
             appLink = appLink,
             webLink = webLink,
@@ -180,6 +198,10 @@ data class FeedXCard(
 
         private const val USE_ASGC_NEW_DESIGN: String = "use_new_design"
         private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
+        private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
+        private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"
+        private const val Upcoming = "upcoming"
+        private const val Ongoing = "ongoing"
 
     }
 }
