@@ -67,6 +67,9 @@ class DetailEditorFragment @Inject constructor(
 
     private var data = EditorDetailUiModel()
     private var detailState = EditorUiModel()
+
+    // original bitmap that already implement previous state
+    // start point for each editor detail
     private var implementedBaseBitmap: Bitmap? = null
 
     private var removeBackgroundRetryLimit = 3
@@ -96,7 +99,7 @@ class DetailEditorFragment @Inject constructor(
                 finishPage()
             }
         } else {
-            getBitmap(withFilter = true)?.let {
+            getBitmap()?.let {
                 data.resultUrl = viewModel.saveImageCache(
                     requireContext(),
                     it
@@ -251,9 +254,18 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun observeBrightness() {
-        viewModel.brightnessFilter.observe(viewLifecycleOwner) {
-            getImageView()?.colorFilter = it
-            isEdited = true
+        viewModel.brightnessFilter.observe(viewLifecycleOwner) { colorFilter ->
+            getImageView()?.let {
+                val bitmap = implementedBaseBitmap ?: it.drawable.toBitmap()
+                val fastBitmapDrawable = FastBitmapDrawable(bitmap)
+                fastBitmapDrawable.colorFilter = colorFilter
+
+                val tempCanvas = Canvas(fastBitmapDrawable.bitmap)
+                fastBitmapDrawable.draw(tempCanvas)
+
+                it.setImageDrawable(fastBitmapDrawable)
+                isEdited = true
+            }
         }
     }
 
@@ -379,17 +391,9 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun implementPreviousStateBrightness(
-        previousValue: Float?,
-        isRemoveFilter: Boolean = true
+        previousValue: Float?
     ) {
-        val cropView = getImageView()
         viewModel.setBrightness(previousValue ?: 0f)
-
-        // need to remove the filter to prevent any filter trigger re-apply the brightness color filter
-        if (isRemoveFilter) implementedBaseBitmap?.let {
-            cropView?.clearColorFilter()
-            cropView?.setImageBitmap(it)
-        }
     }
 
     private fun implementPreviousStateContrast(previousValue: Float?) {
@@ -486,7 +490,7 @@ class DetailEditorFragment @Inject constructor(
     private fun readPreviousDetailState(previousState: EditorDetailUiModel){
         previousState.apply {
             when(editorToolType){
-                EditorToolType.BRIGHTNESS -> implementPreviousStateBrightness(brightnessValue, true)
+                EditorToolType.BRIGHTNESS -> implementPreviousStateBrightness(brightnessValue)
                 EditorToolType.CONTRAST -> implementPreviousStateContrast(contrastValue)
                 EditorToolType.CROP -> {
                     if(viewBinding?.imgUcropPreview?.isVisible == true && previousState.cropRotateValue.isCrop) {
@@ -632,22 +636,8 @@ class DetailEditorFragment @Inject constructor(
         return null
     }
 
-    private fun getBitmap(withFilter:Boolean = false): Bitmap? {
-        return if(withFilter) {
-            getImageView()?.let {
-                val fastBitmapDrawable = FastBitmapDrawable(it.drawable.toBitmap())
-                fastBitmapDrawable.colorFilter = it.colorFilter
-
-                it.setImageDrawable(fastBitmapDrawable)
-
-                val tempCanvas = Canvas(fastBitmapDrawable.bitmap)
-                fastBitmapDrawable.draw(tempCanvas)
-
-                fastBitmapDrawable.bitmap
-            }
-        } else {
-            getImageView()?.drawable?.toBitmap()
-        }
+    private fun getBitmap(): Bitmap? {
+        return getImageView()?.drawable?.toBitmap()
     }
 
     private fun setImageView(url: String, readPreviousValue: Boolean){
