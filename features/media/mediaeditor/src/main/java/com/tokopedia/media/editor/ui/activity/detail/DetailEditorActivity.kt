@@ -10,6 +10,7 @@ import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.picker.common.EditorParam
 import javax.inject.Inject
@@ -26,6 +27,7 @@ class DetailEditorActivity : BaseEditorActivity() {
 
     private var editorIntent = EditorDetailUiModel()
     private var editorParam = EditorParam()
+    private var editorModel = EditorUiModel()
 
     override fun onHeaderActionClick() {}
 
@@ -42,6 +44,7 @@ class DetailEditorActivity : BaseEditorActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(CACHE_EDITOR_INTENT_DATA, editorIntent)
+        outState.putParcelable(CACHE_EDITOR_INTENT_MODEL, editorModel)
         outState.putParcelable(CACHE_EDITOR_PARAM, editorParam)
     }
 
@@ -57,13 +60,19 @@ class DetailEditorActivity : BaseEditorActivity() {
     }
 
     override fun initBundle(savedInstanceState: Bundle?) {
+        (savedInstanceState?.getParcelable(CACHE_EDITOR_INTENT_MODEL)
+            ?: intent?.getParcelableExtra<EditorUiModel>(PARAM_EDITOR_MODEL))?.also {
+            editorModel = it
+            viewModel.setIntentUiModel(it)
+        }
+
         (savedInstanceState?.getParcelable(CACHE_EDITOR_INTENT_DATA)
             ?: intent?.getParcelableExtra<EditorDetailUiModel>(PARAM_EDITOR_DETAIL))?.also {
             editorIntent = it
             viewModel.setIntentDetailUiModel(it)
         }
 
-        (savedInstanceState?.getParcelable(CACHE_EDITOR_INTENT_DATA)
+        (savedInstanceState?.getParcelable(CACHE_EDITOR_PARAM)
             ?: intent?.getParcelableExtra<EditorParam>(PARAM_EDITOR))?.also {
             editorParam = it
             viewModel.setEditorParam(it)
@@ -117,9 +126,11 @@ class DetailEditorActivity : BaseEditorActivity() {
 
     companion object {
         private const val CACHE_EDITOR_INTENT_DATA = "intent_data.editor_detail"
+        private const val CACHE_EDITOR_INTENT_MODEL = "intent_data.editor_model"
         private const val CACHE_EDITOR_PARAM = "intent_data.editor_detail"
 
         const val PARAM_EDITOR_DETAIL = "param.editor_detail"
+        const val PARAM_EDITOR_MODEL = "param.editor.model"
         const val PARAM_EDITOR = "param.editor"
 
         const val EDITOR_RESULT_PARAM = "intent_data.editor_result"

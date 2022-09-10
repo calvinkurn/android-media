@@ -34,6 +34,7 @@ import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -65,6 +66,7 @@ class DetailEditorFragment @Inject constructor(
     private val cropComponent by uiComponent { CropToolUiComponent(it, this) }
 
     private var data = EditorDetailUiModel()
+    private var detailState = EditorUiModel()
     private var implementedBaseBitmap: Bitmap? = null
 
     private var removeBackgroundRetryLimit = 3
@@ -192,9 +194,9 @@ class DetailEditorFragment @Inject constructor(
                 requireContext(),
                 it,
                 value,
-                shopName
+                shopName,
+                detailUiModel = data
             )
-            data.watermarkMode = value
             isEdited = true
         }
     }
@@ -233,15 +235,13 @@ class DetailEditorFragment @Inject constructor(
 
     // EditorDetailPreviewWidget finish load image
     override fun onLoadComplete() {
-        if (!data.isToolRemoveBackground() && !data.isToolWatermark()) {
-            readPreviousState(data)
-        } else {
-            implementedBaseBitmap = getBitmap()
-        }
+        readPreviousState()
+        initialImageMatrix = viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix
     }
 
     override fun initObserver() {
         observeIntentUiModel()
+        observeIntentUiState()
         observeLoader()
         observeBrightness()
         observeContrast()
@@ -311,6 +311,12 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    private fun observeIntentUiState() {
+        viewModel.intentStateList.observe(viewLifecycleOwner) {
+            detailState = it
+        }
+    }
+
     private fun observeEditorParamModel() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
             cropComponent.setupView(it, data.cropRotateValue)
@@ -367,7 +373,6 @@ class DetailEditorFragment @Inject constructor(
                 // ==========
                 EditorToolType.CROP -> {
                     initializeCrop(uri, this@DetailEditorFragment)
-                    initialImageMatrix = viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix
                 }
             }
         }
@@ -392,6 +397,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun implementPreviousStateCrop(cropRotateData: EditorCropRotateModel) {
+        if(cropRotateData.imageWidth == 0 && cropRotateData.imageHeight == 0) return
         viewBinding?.imgUcropPreview?.let {
             val cropView = it.cropImageView
             val overlayView = it.overlayView
@@ -413,6 +419,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun implementPreviousStateRotate(cropRotateData: EditorCropRotateModel) {
+        if(cropRotateData.imageWidth == 0 && cropRotateData.imageHeight == 0) return
         viewBinding?.imgUcropPreview?.let {
             val originalAsset = it.getBitmap()
 
@@ -443,119 +450,101 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun implementPreviousWatermark(){
-        data.watermarkMode?.let {
-            getBitmap()?.let { it1 ->
+    private fun implementPreviousWatermark(detailUiModel: EditorDetailUiModel?){
+        detailUiModel?.let {
+            getBitmap()?.let { bitmap ->
                 val shopName = if (userSession.shopName.isEmpty())
                     DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
 
-                viewModel.setWatermark(
-                    requireContext(),
-                    it1,
-                    it,
-                    shopName
-                )
+                it.watermarkMode?.let { watermarkData ->
+                    viewModel.setWatermark(
+                        requireContext(),
+                        bitmap,
+                        watermarkData.watermarkType,
+                        shopName,
+                        detailUiModel = it
+                    )
+                }
             }
         }
     }
 
-    private fun readPreviousState(previousState: EditorDetailUiModel) {
-        // if current selected editor not brightness and contrast, implement filter with sequence
-        if (!previousState.isToolBrightness() && !previousState.isToolContrast()) {
-            if (previousState.isContrastExecuteFirst == true) {
-                implementPreviousStateContrast(previousState.contrastValue)
-                implementPreviousStateBrightness(previousState.brightnessValue)
-            } else {
-                implementPreviousStateBrightness(previousState.brightnessValue)
-                implementPreviousStateContrast(previousState.contrastValue)
-            }
-        } else {
-            // === Contrast ===
-            if (previousState.contrastValue != null
-                && !previousState.isToolContrast()
-            ) {
-                implementPreviousStateContrast(previousState.contrastValue ?: 0f)
-            }
-            // === Brightness ===
-            if (previousState.brightnessValue != null
-                && !previousState.isToolBrightness()
-            ) {
-                implementPreviousStateBrightness(previousState.brightnessValue ?: 0f)
-            }
+    private fun readPreviousState(){
+        if(viewBinding?.imgUcropPreview?.isVisible == false && data.cropRotateValue.imageWidth != 0){
+            manualCropBitmap(data.cropRotateValue)
         }
 
-        // if crop / rotate tool implement ucrop previous state, if not then create cropped image
-        if (data.isToolRotate() || data.isToolCrop()) {
-            viewBinding?.imgUcropPreview?.cropImageView?.post {
-                data.cropRotateValue.let { cropRotateValue ->
-                    if (data.cropRotateValue.isRotate) {
-                        implementPreviousStateRotate(cropRotateValue)
-                    }
+        detailState.getFilteredStateList().forEach { editorDetailUi ->
+            if(editorDetailUi.editorToolType == data.editorToolType) return@forEach
+            readPreviousDetailState(editorDetailUi)
+        }
 
-                    if (data.cropRotateValue.isCrop) {
-                        implementPreviousStateCrop(cropRotateValue)
+        implementedBaseBitmap = getBitmap()
+        readPreviousDetailState(data)
+    }
+
+    private fun readPreviousDetailState(previousState: EditorDetailUiModel){
+        previousState.apply {
+            when(editorToolType){
+                EditorToolType.BRIGHTNESS -> implementPreviousStateBrightness(brightnessValue, true)
+                EditorToolType.CONTRAST -> implementPreviousStateContrast(contrastValue)
+                EditorToolType.CROP -> {
+                    if(viewBinding?.imgUcropPreview?.isVisible == true && previousState.cropRotateValue.isCrop) {
+                        viewBinding?.imgUcropPreview?.cropImageView?.post {
+                            implementPreviousStateCrop(cropRotateValue)
+                        }
                     }
                 }
-            }
-        } else if (data.cropRotateValue.isCrop || data.cropRotateValue.isRotate) {
-            val currentBitmap = getBitmap()
-            val cropRotateData = data.cropRotateValue
-            currentBitmap?.let {
-                // need normalize between crop data and loaded image data, ucrop bound the loaded image size according to the view size
-                // but glide will load the image full size
-                val scalingSize = it.width.toFloat() / data.cropRotateValue.croppedSourceWidth
-
-                val finalRotationDegree =
-                    (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + (cropRotateData.rotateDegree)
-
-                val offsetX = (cropRotateData.offsetX * scalingSize).toInt()
-                val imageWidth = (cropRotateData.imageWidth * scalingSize).toInt()
-
-                val offsetY = (cropRotateData.offsetY * scalingSize).toInt()
-                val imageHeight = (cropRotateData.imageHeight * scalingSize).toInt()
-
-                // get processed, since data param is set to be null then other data value is not necessary
-                val bitmapResult = viewBinding?.imgUcropPreview?.getProcessedBitmap(
-                    it,
-                    offsetX,
-                    offsetY,
-                    imageWidth,
-                    imageHeight,
-                    finalRotationDegree,
-                    cropRotateData.rotateDegree,
-                    cropRotateData.orientationChangeNumber,
-                    null,
-                    0f,
-                    0f,
-                    0f,
-                    isRotate = false,
-                    isCrop = false,
-                    cropRotateData.scaleX,
-                    cropRotateData.scaleY
-                )
-
-
-                viewBinding?.imgViewPreview?.setImageBitmap(bitmapResult)
+                EditorToolType.ROTATE -> {
+                    if(viewBinding?.imgUcropPreview?.isVisible == true && previousState.cropRotateValue.isRotate){
+                        viewBinding?.imgUcropPreview?.cropImageView?.post{
+                            implementPreviousStateRotate(cropRotateValue)
+                        }
+                    }
+                }
+                EditorToolType.WATERMARK -> implementPreviousWatermark(this)
             }
         }
+    }
 
-        // if tools is watermark then execute after implement watermark after base bitmap is set
-        if(!data.isToolWatermark()){
-            implementPreviousWatermark()
-        }
+    private fun manualCropBitmap(cropRotateData: EditorCropRotateModel) {
+        val currentBitmap = getBitmap()
+        currentBitmap?.let {
+            // need normalize between crop data and loaded image data, ucrop bound the loaded image size according to the view size
+            // but glide will load the image full size
+            val scalingSize = it.width.toFloat() / cropRotateData.croppedSourceWidth
 
-        // image that already implemented previous filter
-        implementedBaseBitmap = getBitmap()
+            val finalRotationDegree =
+                (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + (cropRotateData.rotateDegree)
 
-        if(data.isToolWatermark()){
-            implementPreviousWatermark()
-        }
+            val offsetX = (cropRotateData.offsetX * scalingSize).toInt()
+            val imageWidth = (cropRotateData.imageWidth * scalingSize).toInt()
 
-        if (previousState.brightnessValue != null && previousState.isToolBrightness()) {
-            // if current editor is brightness keep the filter color so we can adjust it later
-            implementPreviousStateBrightness(previousState.brightnessValue, false)
-        } else if (previousState.contrastValue != null && previousState.isToolContrast()) {
-            viewModel.setContrast(previousState.contrastValue!!, implementedBaseBitmap!!)
+            val offsetY = (cropRotateData.offsetY * scalingSize).toInt()
+            val imageHeight = (cropRotateData.imageHeight * scalingSize).toInt()
+
+            // get processed, since data param is set to be null then other data value is not necessary
+            val bitmapResult = viewBinding?.imgUcropPreview?.getProcessedBitmap(
+                it,
+                offsetX,
+                offsetY,
+                imageWidth,
+                imageHeight,
+                finalRotationDegree,
+                cropRotateData.rotateDegree,
+                cropRotateData.orientationChangeNumber,
+                null,
+                0f,
+                0f,
+                0f,
+                isRotate = false,
+                isCrop = false,
+                cropRotateData.scaleX,
+                cropRotateData.scaleY
+            )
+
+
+            viewBinding?.imgViewPreview?.setImageBitmap(bitmapResult)
         }
     }
 
@@ -672,12 +661,14 @@ class DetailEditorFragment @Inject constructor(
                 onReady = { bitmap ->
                     viewBinding?.imgViewPreview?.setImageBitmap(bitmap)
 
-                    if (readPreviousValue) readPreviousState(data)
+                    if (readPreviousValue) readPreviousState()
                     else implementedBaseBitmap = bitmap
 
                     if (data.isToolWatermark()) {
                         setWatermarkDrawerItem(bitmap)
-                        watermarkComponent.setWatermark(data.watermarkMode)
+                        data.watermarkMode?.let {
+                            watermarkComponent.setWatermark(it.watermarkType)
+                        }
                     }
                 },
                 onCleared = {}

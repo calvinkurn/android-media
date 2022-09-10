@@ -1,21 +1,20 @@
 package com.tokopedia.media.editor.ui.uimodel
 
+import android.os.Parcelable
 import com.tokopedia.picker.common.utils.isVideoFormat
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 class EditorUiModel(
-    private val originalUrl: String
-) {
-    var removedBackgroundUrl: String? = null
-    val editList = mutableListOf<EditorDetailUiModel>()
-
-    var backValue = 0
-    var removeBackgroundStartState: Int? = null
-
-    val isVideo: Boolean = isVideoFormat(originalUrl)
-    var isAutoCropped: Boolean = false
-
+    private val originalUrl: String = "",
+    var removedBackgroundUrl: String? = null,
+    val editList: MutableList<EditorDetailUiModel> = mutableListOf(),
+    var backValue: Int = 0,
+    var removeBackgroundStartState: Int? = null,
+    val isVideo: Boolean = isVideoFormat(originalUrl),
+    var isAutoCropped: Boolean = false,
     var originalRatio: Float = 1f
-
+): Parcelable {
     fun getImageUrl(): String {
         return if (editList.isNotEmpty()) {
             val index = (editList.size - 1) - backValue

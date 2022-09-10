@@ -16,6 +16,7 @@ import com.tokopedia.media.editor.data.repository.WatermarkFilterRepository
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.picker.common.EditorParam
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
@@ -39,6 +40,9 @@ class DetailEditorViewModel @Inject constructor(
     private var _intentUiModel = MutableLiveData<EditorDetailUiModel>()
     val intentUiModel: LiveData<EditorDetailUiModel> get() = _intentUiModel
 
+    private var _intentStateList = MutableLiveData<EditorUiModel>()
+    val intentStateList: LiveData<EditorUiModel> get() = _intentStateList
+
     private var _brightnessFilter = MutableLiveData<ColorMatrixColorFilter>()
     val brightnessFilter: LiveData<ColorMatrixColorFilter> get() = _brightnessFilter
 
@@ -60,6 +64,10 @@ class DetailEditorViewModel @Inject constructor(
 
     fun setIntentDetailUiModel(data: EditorDetailUiModel) {
         _intentUiModel.postValue(data)
+    }
+
+    fun setIntentUiModel(data: EditorUiModel){
+        _intentStateList.postValue(data)
     }
 
     fun setBrightness(value: Float?) {
@@ -103,14 +111,16 @@ class DetailEditorViewModel @Inject constructor(
         bitmapSource: Bitmap,
         watermarkType: Int,
         shopName: String,
-        isThumbnail: Boolean = false
+        isThumbnail: Boolean = false,
+        detailUiModel: EditorDetailUiModel
     ) {
         _watermarkFilter.value = watermarkFilterRepository.watermark(
             context,
             bitmapSource,
             watermarkType,
             shopName,
-            isThumbnail
+            isThumbnail,
+            detailUiModel
         )
     }
 

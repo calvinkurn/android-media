@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import javax.inject.Inject
 import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorWatermarkModel
 import com.tokopedia.media.editor.utils.isDark
 import com.tokopedia.media.loader.loadImageRounded
 import kotlin.math.min
@@ -22,7 +24,8 @@ interface WatermarkFilterRepository {
         source: Bitmap,
         watermarkType: Int,
         shopNameParam: String,
-        isThumbnail: Boolean
+        isThumbnail: Boolean,
+        detailUiModel: EditorDetailUiModel? = null
     ): Bitmap
 
     fun watermarkDrawerItem(
@@ -66,17 +69,25 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         source: Bitmap,
         watermarkType: Int,
         shopNameParam: String,
-        isThumbnail: Boolean
+        isThumbnail: Boolean,
+        detailUiModel: EditorDetailUiModel?
     ): Bitmap {
         shopText = if (shopNameParam.isEmpty()) DEFAULT_SHOP_NAME else shopNameParam
         if (topedDrawable == null) {
             topedDrawable = ContextCompat.getDrawable(context, R.drawable.watermark_tokopedia)
         }
 
+        var isDark = source.isDark()
+        detailUiModel?.watermarkMode?.let {
+            isDark = it.textColorDark
+        } ?: kotlin.run {
+            detailUiModel?.watermarkMode = EditorWatermarkModel(watermarkType, isDark)
+        }
+
         watermarkColor = if (!isThumbnail) {
             ContextCompat.getColor(
                 context,
-                if (source.isDark()) R.color.dms_watermark_text_dark
+                if (isDark) R.color.dms_watermark_text_dark
                 else R.color.dms_watermark_text_light
             )
         } else {

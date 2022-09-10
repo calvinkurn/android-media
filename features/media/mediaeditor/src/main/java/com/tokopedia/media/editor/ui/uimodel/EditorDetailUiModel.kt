@@ -16,7 +16,7 @@ data class EditorDetailUiModel(
 
     var brightnessValue: Float? = null,
     var contrastValue: Float? = null,
-    var watermarkMode: Int? = null,
+    var watermarkMode: EditorWatermarkModel? = null,
     var removeBackgroundUrl: String? = null,
     var isContrastExecuteFirst: Boolean? = null,
     var cropRotateValue: EditorCropRotateModel = getEmptyEditorCropRotateModel(),

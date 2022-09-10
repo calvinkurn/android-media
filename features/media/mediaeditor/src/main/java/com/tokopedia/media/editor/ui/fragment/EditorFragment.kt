@@ -143,8 +143,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                     editorToolType = type
                 )
 
-                editorUiModel.getFilteredStateList().forEachIndexed { index, item ->
-
+                editorUiModel.getFilteredStateList().forEach { item ->
                     paramData.brightnessValue = item.brightnessValue
                     paramData.contrastValue = item.contrastValue
                     paramData.watermarkMode = item.watermarkMode
@@ -165,6 +164,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
                 val intent = Intent(it, DetailEditorActivity::class.java).apply {
                     putExtra(DetailEditorActivity.PARAM_EDITOR_DETAIL, paramData)
+                    putExtra(DetailEditorActivity.PARAM_EDITOR_MODEL, editorUiModel)
                     putExtra(DetailEditorActivity.PARAM_EDITOR, viewModel.editorParam.value)
                 }
 

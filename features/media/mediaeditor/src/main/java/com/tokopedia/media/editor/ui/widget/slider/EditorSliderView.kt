@@ -28,6 +28,8 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
     private var sliderWidth = 0f
     private var thumbWidth = 0f
 
+    private var sliderHandler: Handler? = null
+
     var listener: Listener? = null
 
     var isValueUpdateDelay = false
@@ -166,7 +168,9 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
         currentStepIndex: Int,
         previousValue: Float
     ) {
-        Handler().postDelayed({
+        if(sliderHandler == null) sliderHandler = Handler()
+        sliderHandler?.removeCallbacksAndMessages(null)
+        sliderHandler?.postDelayed({
             if (currentValue == previousValue) {
                 listener?.valueUpdated(currentStepIndex, currentValue)
                 delayFlag = false
