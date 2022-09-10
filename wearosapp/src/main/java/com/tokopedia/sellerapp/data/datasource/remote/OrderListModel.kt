@@ -1,4 +1,4 @@
-package com.tokopedia.watch.orderlist.model
+package com.tokopedia.sellerapp.data.datasource.remote
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
