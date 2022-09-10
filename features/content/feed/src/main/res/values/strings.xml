@@ -106,6 +106,8 @@ dari Feed.</string>
     <string name="feed_onboarding_name_format">Hai, %s</string>
 
     <string name="feed_con_desc_btn_search">button search</string>
+    <!-- Empty feed result -->
+    <string name="feed_result_empty">Empty result</string>
 
     <!-- Like -->
     <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>

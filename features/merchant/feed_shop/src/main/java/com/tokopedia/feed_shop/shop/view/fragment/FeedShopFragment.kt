@@ -962,6 +962,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int) {
 
     }
+    override fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int) {
+
+    }
+
+    override fun removeOngoingCampaignSaleWidget(card: FeedXCard, positionInFeed: Int) {
+
+    }
 
     override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String) {
     }

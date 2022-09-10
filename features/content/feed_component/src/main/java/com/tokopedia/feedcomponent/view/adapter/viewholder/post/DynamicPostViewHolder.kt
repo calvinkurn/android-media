@@ -730,6 +730,8 @@ open class DynamicPostViewHolder(v: View,
         )
         fun onIngatkanSayaBtnImpressed(card : FeedXCard, positionInFeed: Int)
         fun onIngatkanSayaBtnClicked(card : FeedXCard, positionInFeed: Int)
+        fun changeUpcomingWidgetToOngoing(card : FeedXCard, positionInFeed: Int)
+        fun removeOngoingCampaignSaleWidget(card : FeedXCard, positionInFeed: Int)
 
         fun onReadMoreClicked(
             postId: String,

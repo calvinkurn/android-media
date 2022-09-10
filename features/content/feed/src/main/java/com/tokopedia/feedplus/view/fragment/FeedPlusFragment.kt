@@ -617,6 +617,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             })
 
+            feedWidgetLatestData.observe(viewLifecycleOwner, Observer {
+                when (it) {
+                    is Fail -> {
+                        showToast(ErrorHandler.getErrorMessage(context, it.throwable), Toaster.TYPE_ERROR)
+                    }
+                    is Success -> {
+                        onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
+                    }
+                }
+            })
+
             asgcReminderButtonInitialStatus.observe(viewLifecycleOwner, Observer {
                 when (it) {
                     is Success -> {
@@ -2360,6 +2371,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedViewModel.setUnsetReminder(card.campaign, positionInFeed)
     }
 
+    override fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int) {
+        if (::productTagBS.isInitialized)
+            productTagBS.dismiss()
+        feedViewModel.fetchLatestFeedPostWidgetData(card.id, positionInFeed)
+    }
+
+    override fun removeOngoingCampaignSaleWidget(card: FeedXCard, positionInFeed: Int) {
+        if (adapter.getlist().size > positionInFeed && adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
+            adapter.getlist().removeAt(positionInFeed)
+            adapter.notifyItemRemoved(positionInFeed)
+        }
+    }
+
     override fun onImageClicked(
         activityId: String,
         type: String,
@@ -2847,6 +2871,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         }
     }
+
     private fun onSuccessFetchStatusCampaignReminderButton(data : FeedAsgcCampaignResponseModel, shouldShowToaster: Boolean = false){
         val newList = adapter.getlist()
         val  rowNumber = data.rowNumber
@@ -2863,6 +2888,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 DynamicPostNewViewHolder.PAYLOAD_REMINDER_BTN_STATUS_UPDATED
             )
         }
+    }
+
+    private fun onSuccessFetchLatestFeedWidgetData(data : FeedXCard, rowNumber: Int){
+        val newList = adapter.getlist()
+        if (newList.size > rowNumber && newList[rowNumber] is DynamicPostUiModel) {
+            val item = (newList[rowNumber] as DynamicPostUiModel)
+            newList[rowNumber] = item.copy(feedXCard = data)
+
+        }
+        adapter.notifyItemChanged(
+            rowNumber
+        )
     }
 
     private fun showToastOnSuccessReminderSetForFSTorRS(card: FeedXCard) {

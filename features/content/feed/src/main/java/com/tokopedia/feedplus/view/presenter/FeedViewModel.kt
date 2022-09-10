@@ -11,9 +11,7 @@ import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.*
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
@@ -81,7 +79,7 @@ class FeedViewModel @Inject constructor(
     private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
     private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase
 
-) : BaseViewModel(baseDispatcher.main) {
+    ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
         private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
@@ -116,9 +114,14 @@ class FeedViewModel @Inject constructor(
     private val _asgcReminderButtonInitialStatus = MutableLiveData<Result<FeedAsgcCampaignResponseModel>>()
     val asgcReminderButtonInitialStatus: LiveData<Result<FeedAsgcCampaignResponseModel>>
         get() = _asgcReminderButtonInitialStatus
+
     private val _asgcReminderButtonStatus = MutableLiveData<Result<FeedAsgcCampaignResponseModel>>()
     val asgcReminderButtonStatus: LiveData<Result<FeedAsgcCampaignResponseModel>>
         get() = _asgcReminderButtonStatus
+
+    private val _feedWidgetLatestData = MutableLiveData<Result<FeedWidgetData>>()
+    val feedWidgetLatestData: LiveData<Result<FeedWidgetData>>
+        get() = _feedWidgetLatestData
 
     private var currentCursor = ""
     private val pagingHandler: PagingHandler = PagingHandler()
@@ -149,6 +152,33 @@ class FeedViewModel @Inject constructor(
                 reportResponse.value = Fail(it)
             }
         )
+    }
+
+    fun fetchLatestFeedPostWidgetData(detailId: String, rowNumber: Int) {
+        viewModelScope.launchCatchError( block = {
+            val response = getFeedWidgetUpdatedData(detailId)
+
+             if (response.feedXHome.items.isNotEmpty()) {
+                val updatedData = FeedWidgetData(
+                    rowNumber = rowNumber,
+                    feedXCard = response.feedXHome.items.first()
+                )
+                _feedWidgetLatestData.value = Success(updatedData)
+            } else {
+                Fail(CustomUiMessageThrowable(com.tokopedia.feedplus.R.string.feed_result_empty))
+            }
+        }) {
+            _feedWidgetLatestData.value = Fail(it)
+        }
+    }
+
+    private suspend fun getFeedWidgetUpdatedData(detailId: String): FeedXData {
+        try {
+            return getDynamicFeedNewUseCase.executeForCDP(cursor = currentCursor, detailId = detailId)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            throw e
+        }
     }
 
     fun trackVisitChannel(channelId: String,rowNumber: Int) {

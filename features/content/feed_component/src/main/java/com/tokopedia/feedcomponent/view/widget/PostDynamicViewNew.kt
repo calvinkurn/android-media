@@ -58,6 +58,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
+import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -401,8 +402,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
             }
         },
-        listener = object : FlashSaleRilisanCampaignUpcomingView.Listener {
-            override fun onTimerFinish() {
+        listener = object : FeedCampaignListener {
+            override fun onTimerFinishUpcoming() {
+              listener?.changeUpcomingWidgetToOngoing(mData, positionInFeed)
+            }
+
+            override fun onTimerFinishOngoing() {
+                listener?.removeOngoingCampaignSaleWidget(mData, positionInFeed)
 
             }
 

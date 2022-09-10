@@ -10,8 +10,8 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
-import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignUpcomingView
 import com.tokopedia.feedcomponent.view.widget.PostTagView
+import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 
 /**
  * Created by kenny.hadisaputra on 24/06/22
@@ -20,7 +20,7 @@ class FeedPostCarouselAdapter(
     dataSource: DataSource,
     imageListener: CarouselImageViewHolder.Listener,
     videoListener: CarouselVideoViewHolder.Listener,
-    listener: FlashSaleRilisanCampaignUpcomingView.Listener? = null
+    listener: FeedCampaignListener? = null
 ) : BaseDiffUtilAdapter<FeedXMedia>(true) {
 
     init {
@@ -90,7 +90,7 @@ class FeedPostCarouselAdapter(
     private class CarouselImageDelegate(
         private val dataSource: DataSource,
         private val listener: CarouselImageViewHolder.Listener,
-        private val fstListener: FlashSaleRilisanCampaignUpcomingView.Listener?,
+        private val fstListener: FeedCampaignListener?,
     ) : BaseAdapterDelegate<FeedXMedia, FeedXMedia, CarouselImageViewHolder>(
         R.layout.item_post_image_new
     ) {
