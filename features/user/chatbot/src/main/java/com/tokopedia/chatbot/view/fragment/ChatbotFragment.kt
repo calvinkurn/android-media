@@ -159,8 +159,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.compose_message_area.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
-import java.util.*
 import java.io.File
+import java.util.*
 import javax.inject.Inject
 
 /**
