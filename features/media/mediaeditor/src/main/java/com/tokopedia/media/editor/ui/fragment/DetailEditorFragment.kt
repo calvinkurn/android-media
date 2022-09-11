@@ -238,8 +238,10 @@ class DetailEditorFragment @Inject constructor(
 
     // EditorDetailPreviewWidget finish load image
     override fun onLoadComplete() {
-        readPreviousState()
-        initialImageMatrix = viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix
+        viewBinding?.imgUcropPreview?.cropImageView?.post {
+            readPreviousState()
+            initialImageMatrix = viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix
+        }
     }
 
     override fun initObserver() {
