@@ -139,7 +139,6 @@ data class ProductCardOptionsModel(
             var isUserLoggedIn: Boolean = false,
             var isSuccess: Boolean = false,
             var isAddWishlist: Boolean = false,
-            var isUsingWishlistV2: Boolean = false,
             var messageV2: String = "",
             var toasterColorV2: String = "",
             var ctaTextV2: String = "",
@@ -149,7 +148,6 @@ data class ProductCardOptionsModel(
                 parcel.readByte() != 0.toByte(),
                 parcel.readByte() != 0.toByte(),
                 parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte(),
                 parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -159,7 +157,6 @@ data class ProductCardOptionsModel(
             parcel.writeByte(if (isUserLoggedIn) 1 else 0)
             parcel.writeByte(if (isSuccess) 1 else 0)
             parcel.writeByte(if (isAddWishlist) 1 else 0)
-            parcel.writeByte(if (isUsingWishlistV2) 1 else 0)
             parcel.writeString(messageV2)
             parcel.writeString(toasterColorV2)
             parcel.writeString(ctaTextV2)
