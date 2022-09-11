@@ -101,11 +101,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/rvBundle"
         app:layout_constraintTop_toTopOf="@+id/rvBundle"
         app:unifyEmptyStateImageUrl="https://images.tokopedia.net/img/android/campaign/flash-sale-toko/shop_flash_sale_not_found.png"
         app:unifyEmptyStateOrientation="horizontal"
-        app:unifyEmptyStateTitle="Tidak ada data"
+        app:unifyEmptyStateTitle="@string/chooseproduct_nodata_title"
         app:unifyEmptyStateType="section" />
 
     <com.tokopedia.unifycomponents.CardUnify

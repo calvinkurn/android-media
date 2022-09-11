@@ -62,7 +62,6 @@ class ChooseProductViewModel @Inject constructor(
     val selectedProductCount = Transformations.map(selectedProductList) {
         ChooseProductUiMapper.getSelectedProductCount(it)
     }
-
     val productList = Transformations.map(remoteProductList) {
         ChooseProductUiMapper.getSelectedProductList(selectedProductList.value, it)
     }
@@ -77,7 +76,7 @@ class ChooseProductViewModel @Inject constructor(
     val hasNextPage: Boolean get() = remoteProductList.value?.size == MAX_PER_PAGE
     var filterCriteria: String = FILTER_PRODUCT_CRITERIA_PASSED
     var filterCategory: List<Long> = emptyList()
-    var campaignId: Long = 0 //829856
+    var campaignId: Long = 0
 
     fun getProductList(page: Int, perPage: Int, keyword: String) {
         launchCatchError(

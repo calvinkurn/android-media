@@ -1,14 +1,18 @@
 package com.tokopedia.tkpd.flashsale.data.mapper
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleProductListToReserveResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductToReserve
 import javax.inject.Inject
 
-class GetFlashSaleProductListToReserveMapper @Inject constructor() {
-
+class GetFlashSaleProductListToReserveMapper @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
     private var lastSelectedProductCount: Int = 0
 
     fun map(response: GetFlashSaleProductListToReserveResponse): ProductToReserve {
@@ -29,8 +33,8 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor() {
             productId = it.productId.toString(),
             productName = it.name,
             imageUrl = it.pictureUrl,
-            variantText = it.variantMeta.countVariants.toString() + " Varian Produk",
-            variantTips = it.variantMeta.countEligibleVariants.toString()  + " varian sesuai kriteria",
+            variantText = context.getString(R.string.choose_product_variant_count_format, it.variantMeta.countVariants),
+            variantTips = context.getString(R.string.chooseproduct_criteria_variant_format, it.variantMeta.countEligibleVariants),
             priceText = mapPrice(it.price),
             stockText = mapStock(it),
             errorMessage = it.disableDetail.disableTitle,
@@ -57,8 +61,9 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor() {
     }
 
     private fun mapStock(it: GetFlashSaleProductListToReserveResponse.ProductList): String {
-        return "Total Stok ${it.stock} " + if (it.countEligibleWarehouses.isMoreThanZero()) {
-            "di ${it.countEligibleWarehouses} lokasi"
+        val stockTotalTitle = context.getString(R.string.chooseproduct_total_stock_format)
+        return "$stockTotalTitle ${it.stock} " + if (it.countEligibleWarehouses.isMoreThanZero()) {
+            context.getString(R.string.choose_product_location_format, it.countEligibleWarehouses)
         } else ""
     }
 
