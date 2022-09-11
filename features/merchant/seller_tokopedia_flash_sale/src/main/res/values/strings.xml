@@ -137,5 +137,7 @@
     <string name="choose_product_location_format">"di %d lokasi"</string>
     <string name="choose_product_variant_count_format">%d Varian Produk</string>
     <string name="chooseproduct_criteria_variant_format">%d varian sesuai kriteria</string>
+    <string name="chooseproduct_filter_criteria_text">Memenuhi Kriteria</string>
+    <string name="chooseproduct_filter_category_text">Semua Kategori</string>
 
 </resources>

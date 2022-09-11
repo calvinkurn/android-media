@@ -19,6 +19,7 @@ import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentChooseProductBinding
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
@@ -64,8 +65,8 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     private val chooseProductAdapter = ChooseProductAdapter()
     private val criteriaSelectionAdapter = CriteriaSelectionAdapter(this)
     private val filterData = ArrayList<SortFilterItem>()
-    private val filterCriteria = SortFilterItem("Memenuhi Kriteria")
-    private val filterCategory = SortFilterItem("Semua Kategori")
+    private val filterCriteria by lazy { SortFilterItem(getString(R.string.chooseproduct_filter_criteria_text)) }
+    private val filterCategory by lazy { SortFilterItem(getString(R.string.chooseproduct_filter_category_text)) }
     private var binding by autoClearedNullable<StfsFragmentChooseProductBinding>()
     private var criteriaCheckBottomSheet = CampaignCriteriaCheckBottomSheet()
     private var criteriaFilterBottomSheet: SingleSelectionBottomSheet? = null
@@ -171,13 +172,16 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     private fun setupFilterData() {
         filterData.add(filterCriteria)
         filterData.add(filterCategory)
-        binding?.sortFilter?.addItem(filterData)
-        binding?.sortFilter?.parentListener = {
-            filterCriteria.selectedItem = arrayListOf()
-            filterCategory.selectedItem = arrayListOf()
-            viewModel.filterCategory = emptyList()
-            viewModel.filterCriteria = FILTER_PRODUCT_CRITERIA_PASSED
-            loadInitialData()
+        binding?.sortFilter?.apply {
+            addItem(filterData)
+            parentListener = {
+                filterCriteria.selectedItem = arrayListOf()
+                filterCategory.selectedItem = arrayListOf()
+                viewModel.filterCategory = emptyList()
+                viewModel.filterCriteria = FILTER_PRODUCT_CRITERIA_PASSED
+                loadInitialData()
+            }
+            dismissListener = parentListener
         }
 
         setupFilterCriteria()
