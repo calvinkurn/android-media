@@ -71,7 +71,7 @@
         <com.tokopedia.unifycomponents.SearchBarUnify
             android:id="@+id/searchBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@+id/divider"
@@ -101,7 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@+id/rvBundle"
+        app:layout_constraintTop_toBottomOf="@+id/layoutSearch"
         app:unifyEmptyStateImageUrl="https://images.tokopedia.net/img/android/campaign/flash-sale-toko/shop_flash_sale_not_found.png"
         app:unifyEmptyStateOrientation="horizontal"
         app:unifyEmptyStateTitle="@string/chooseproduct_nodata_title"
