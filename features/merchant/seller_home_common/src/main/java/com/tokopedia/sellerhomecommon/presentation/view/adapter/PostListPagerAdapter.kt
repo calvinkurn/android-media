@@ -18,19 +18,19 @@ class PostListPagerAdapter(
     private val listener: Listener
 ) : RecyclerView.Adapter<PostListPagerAdapter.PostListPagerViewHolder>() {
 
-    var pagers = listOf<PostListPagerUiModel>()
+    private val pagers = mutableListOf<PostListPagerUiModel>()
     private var isCheckingMode: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostListPagerViewHolder {
         val binding = ShcItemPostListPagerBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
-        return PostListPagerViewHolder(binding, listener, isCheckingMode)
+        return PostListPagerViewHolder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: PostListPagerViewHolder, position: Int) {
         val pager = pagers[position]
-        holder.bind(pager)
+        holder.bind(pager, isCheckingMode)
     }
 
     override fun getItemCount(): Int = pagers.size
@@ -39,25 +39,28 @@ class PostListPagerAdapter(
         this.isCheckingMode = isCheckingMode
     }
 
+    fun setPagers(pagers: List<PostListPagerUiModel>) {
+        this.pagers.clear()
+        this.pagers.addAll(pagers)
+    }
+
     class PostListPagerViewHolder(
         private val binding: ShcItemPostListPagerBinding,
-        listener: Listener,
-        isCheckingMode: Boolean = false
+        private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val postAdapter = BaseListAdapter<PostItemUiModel, PostListAdapterTypeFactoryImpl>(
-            PostListAdapterTypeFactoryImpl(listener, isCheckingMode)
-        )
-
-        fun bind(pager: PostListPagerUiModel) {
+        fun bind(pager: PostListPagerUiModel, isCheckingMode: Boolean) {
             with(binding) {
+                val postAdapter = BaseListAdapter<PostItemUiModel, PostListAdapterTypeFactoryImpl>(
+                    PostListAdapterTypeFactoryImpl(listener, isCheckingMode)
+                )
+                postAdapter.data.addAll(pager.postList)
+
                 rvShcPostList.layoutManager = object : LinearLayoutManager(itemView.context) {
                     override fun canScrollVertically(): Boolean = false
                 }
                 rvShcPostList.adapter = postAdapter
             }
-
-            postAdapter.data.addAll(pager.postList)
         }
     }
 

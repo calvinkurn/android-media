@@ -168,6 +168,7 @@ class AnnouncementViewHolder(
             shcAnnouncementSuccessState.gone()
             shcAnnouncementLoadingState.visible()
             shcAnnouncementTimerView.gone()
+            viewShcAnnouncementDismissal.gone()
         }
     }
 

@@ -275,7 +275,7 @@ class PostListViewHolder(
             }
 
             override fun onTimerFinished() {
-                removeTimerItem(element)
+                setOnTimerFinished(element)
             }
 
             override fun onCancelDismissalClicked() {
@@ -286,13 +286,29 @@ class PostListViewHolder(
         pagerAdapter?.setCheckingMode(element.isCheckingMode)
     }
 
+    private fun setOnTimerFinished(element: PostListWidgetUiModel) {
+        val postList = getPostsWithoutTimerItem(element).filter { !it.isChecked }
+        val pagers = getPostPagers(postList, element.maxDisplay)
+        setPagers(pagers)
+        notifyPostAdapter()
+
+        setDataPagers(element, pagers)
+    }
+
     private fun removeTimerItem(element: PostListWidgetUiModel) {
-        val postList = getPostsWithoutTimerItem(element)
+        val postList = getPostsWithoutTimerItem(element).map {
+            it.isChecked = false
+            return@map it
+        }
 
         val pagers = getPostPagers(postList, element.maxDisplay)
         setPagers(pagers)
         notifyPostAdapter()
 
+        setDataPagers(element, pagers)
+    }
+
+    private fun setDataPagers(element: PostListWidgetUiModel, pagers: List<PostListPagerUiModel>) {
         element.data = element.data?.copy(
             postPagers = pagers
         )
@@ -468,6 +484,7 @@ class PostListViewHolder(
                     Timber.e(e)
                 }
 
+                clearOnScrollListeners()
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -487,9 +504,7 @@ class PostListViewHolder(
     }
 
     private fun setPagers(pagers: List<PostListPagerUiModel>) {
-        if (pagerAdapter?.pagers != pagers) {
-            pagerAdapter?.pagers = pagers
-        }
+        pagerAdapter?.setPagers(pagers)
     }
 
     interface Listener : BaseViewHolderListener, WidgetDismissalListener {
