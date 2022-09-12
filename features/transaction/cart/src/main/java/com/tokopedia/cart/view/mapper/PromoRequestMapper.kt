@@ -227,7 +227,6 @@ object PromoRequestMapper {
             val order = ClearPromoOrder(
                 uniqueId = cartShopHolderData.cartString,
                 boType = cartShopHolderData.boMetadata.boType,
-                // TODO: verify ambilnya bener nggak
                 shopId = cartShopHolderData.shopId.toLongOrZero(),
                 warehouseId = cartShopHolderData.warehouseId,
                 isPo = cartShopHolderData.isPo,
