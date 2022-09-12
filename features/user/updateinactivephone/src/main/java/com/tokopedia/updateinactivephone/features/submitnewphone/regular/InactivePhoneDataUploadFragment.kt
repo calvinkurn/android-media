@@ -78,7 +78,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
             when (it) {
                 is Success -> {
                     if (it.data.validation.isSuccess) {
-                        doUploadImage(FileType.ID_CARD, ID_CARD)
+                        goToVerification(viewBinding?.textPhoneNumber?.text.orEmpty())
                     } else {
                         hideLoading()
                         onError(MessageErrorException(it.data.validation.error))
@@ -103,7 +103,15 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
 
                         inactivePhoneUserDataModel?.let { userData ->
                             userData.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
-                            goToVerification(inactivePhoneUserDataModel?.newPhoneNumber.orEmpty())
+                            viewModel.submitForm(SubmitDataModel(
+                                email = userData.email,
+                                oldPhone = userData.oldPhoneNumber,
+                                newPhone = userData.newPhoneNumber,
+                                userIndex = userData.userIndex,
+                                idCardImage = idCardObj,
+                                selfieImage = selfieObj,
+                                validateToken = userData.validateToken
+                            ))
                         }
                     }
                 }
@@ -180,18 +188,8 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
     }
 
     private fun onOtpSuccess(validateToken: String) {
-        inactivePhoneUserDataModel?.let { userData ->
-            userData.validateToken = validateToken
-            viewModel.submitForm(SubmitDataModel(
-                email = userData.email,
-                oldPhone = userData.oldPhoneNumber,
-                newPhone = userData.newPhoneNumber,
-                userIndex = userData.userIndex,
-                idCardImage = idCardObj,
-                selfieImage = selfieObj,
-                validateToken = userData.validateToken
-            ))
-        }
+        inactivePhoneUserDataModel?.validateToken = validateToken
+        doUploadImage(FileType.ID_CARD, ID_CARD)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
