@@ -24,7 +24,7 @@ class AuthHelper {
             return if (versionNameStripIndex > 0) {
                 Pair(
                     versionName.substring(0, versionNameStripIndex),
-                    versionName.substring(versionNameStripIndex) + 1
+                    versionName.substring(versionNameStripIndex + 1)
                 )
             } else {
                 Pair(versionName, "")
