@@ -1096,6 +1096,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             ordersItem.setShippingId(courierItemData.getShipperId());
                             ordersItem.setSpId(courierItemData.getShipperProductId());
                             ordersItem.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
+                            ordersItem.setShopId(shipmentCartItemModel.getShopId());
+                            ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
+                            ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
+                                    .get(0).getPreOrderDurationDay());
+                            ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
                             break;
                         }
                     }
@@ -2077,6 +2082,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setSpId(courierData.getShipperProductId());
                     ordersItem.setShippingId(courierData.getShipperId());
                     ordersItem.setFreeShippingMetadata(courierData.getFreeShippingMetadata());
+                    ordersItem.setShopId(shipmentCartItemModel.getShopId());
+                    ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
+                    ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
+                            .get(0).getPreOrderDurationDay());
+                    ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
                     break;
                 }
             }
@@ -2562,6 +2572,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
                     ordersItem.setShopId(shipmentCartItemModel.getShopId());
                     ordersItem.setBoType(shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType());
+                    ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
+                    ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels().get(0).getPreOrderDurationDay());
+                    ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
                     setValidateUseSpIdParam(shipmentCartItemModel, ordersItem);
                     listOrderItem.add(ordersItem);
                 }
