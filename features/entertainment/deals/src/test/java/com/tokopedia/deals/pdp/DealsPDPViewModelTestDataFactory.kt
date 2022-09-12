@@ -8,6 +8,7 @@ import com.tokopedia.deals.pdp.data.DealsProductEventContent
 import com.tokopedia.deals.pdp.data.DealsRatingResponse
 import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
 import com.tokopedia.deals.pdp.data.DealsTrackingResponse
+import com.tokopedia.deals.pdp.data.DealsVerifyResponse
 
 
 fun createPDPData(): DealsProductDetail {
@@ -63,6 +64,34 @@ fun createTracking(): DealsTrackingResponse {
     return Gson().fromJson(
         DealsJsonMapper.getJson("tracking.json"),
         DealsTrackingResponse::class.java
+    )
+}
+
+fun createVerify(): DealsVerifyResponse {
+    return Gson().fromJson(
+        DealsJsonMapper.getJson("verify.json"),
+        DealsVerifyResponse::class.java
+    )
+}
+
+fun createOldVerify(): com.tokopedia.digital_deals.data.DealsVerifyResponse {
+    return Gson().fromJson(
+        DealsJsonMapper.getJson("verify.json"),
+        com.tokopedia.digital_deals.data.DealsVerifyResponse::class.java
+    )
+}
+
+fun createPDPNew(): DealsProductDetail {
+    return Gson().fromJson(
+        DealsJsonMapper.getJson("pdp_new.json"),
+        DealsProductDetail::class.java
+    )
+}
+
+fun createPDPOld(): com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse {
+    return Gson().fromJson(
+        DealsJsonMapper.getJson("pdp_old.json"),
+        com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse::class.java
     )
 }
 

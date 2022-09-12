@@ -38,8 +38,7 @@ import kotlinx.coroutines.withContext
 class DealsPDPSelectQuantityViewModel @Inject constructor(
     private val dealsPDPVerifyUseCase: DealsPDPVerifyUseCase,
     private val dispatcher: CoroutineDispatchers,
-):
-    BaseViewModel(dispatcher.main) {
+): BaseViewModel(dispatcher.main) {
 
     var currentQuantity: Int = 1
     private val _inputVerifyState = MutableSharedFlow<DealsVerifyRequest>(Int.ONE)
@@ -59,42 +58,6 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
 
     fun setVerifyRequest(productDetailData: ProductDetailData) {
         _inputVerifyState.tryEmit(mapVerifyRequest(productDetailData))
-    }
-
-    private fun mapVerifyRequest(dealsResponse: ProductDetailData): DealsVerifyRequest{
-        return DealsVerifyRequest(
-            book = true,
-            checkout = false,
-            cartdata = CartData(
-                metadata = MetaData(
-                    categoryName = categoryName,
-                    totalPrice = currentQuantity * dealsResponse.salesPrice.toIntSafely().toLong(),
-                    quantity = currentQuantity,
-                    productIds = listOf(dealsResponse.id),
-                    productNames = listOf(dealsResponse.displayName),
-                    providerIds = listOf(dealsResponse.providerId),
-                    itemIds = listOf(dealsResponse.id),
-                    itemMaps = listOf(
-                        ItemMap(
-                            id = dealsResponse.id,
-                            name = dealsResponse.displayName,
-                            productId = dealsResponse.id,
-                            productName = dealsResponse.displayName,
-                            providerId = dealsResponse.providerId,
-                            categoryId = dealsResponse.categoryId,
-                            startTime = getDateMilis(dealsResponse.minStartDate.toIntSafely()),
-                            endTime = getDateMilis(dealsResponse.maxEndDate.toIntSafely()),
-                            price = dealsResponse.salesPrice.toDouble(),
-                            quantity = currentQuantity,
-                            totalPrice = currentQuantity * dealsResponse.salesPrice.toIntSafely().toLong(),
-                            scheduleTimestamp = dealsResponse.maxEndDate,
-                            productImage = dealsResponse.imageWeb,
-                            flagID = dealsResponse.customText1
-                        )
-                    )
-                )
-            )
-        )
     }
 
     fun mapperOldVerify(verifyResponse: EventVerifyResponse): com.tokopedia.digital_deals.data.EventVerifyResponse {
@@ -220,7 +183,6 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
             tnc = productDetailData.tnc
             seoUrl = productDetailData.seoUrl
             isLiked = productDetailData.isLiked
-            desktopUrl = productDetailData.webUrl
             webUrl = productDetailData.webUrl
             appUrl = productDetailData.appUrl
             customText1 = productDetailData.customText1.toIntSafely()
@@ -230,7 +192,41 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
         return dealsOldProductDetailData
     }
 
-
+    private fun mapVerifyRequest(dealsResponse: ProductDetailData): DealsVerifyRequest{
+        return DealsVerifyRequest(
+            book = true,
+            checkout = false,
+            cartdata = CartData(
+                metadata = MetaData(
+                    categoryName = categoryName,
+                    totalPrice = currentQuantity * dealsResponse.salesPrice.toIntSafely().toLong(),
+                    quantity = currentQuantity,
+                    productIds = listOf(dealsResponse.id),
+                    productNames = listOf(dealsResponse.displayName),
+                    providerIds = listOf(dealsResponse.providerId),
+                    itemIds = listOf(dealsResponse.id),
+                    itemMaps = listOf(
+                        ItemMap(
+                            id = dealsResponse.id,
+                            name = dealsResponse.displayName,
+                            productId = dealsResponse.id,
+                            productName = dealsResponse.displayName,
+                            providerId = dealsResponse.providerId,
+                            categoryId = dealsResponse.categoryId,
+                            startTime = getDateMilis(dealsResponse.minStartDate.toIntSafely()),
+                            endTime = getDateMilis(dealsResponse.maxEndDate.toIntSafely()),
+                            price = dealsResponse.salesPrice.toDouble(),
+                            quantity = currentQuantity,
+                            totalPrice = currentQuantity * dealsResponse.salesPrice.toIntSafely().toLong(),
+                            scheduleTimestamp = dealsResponse.maxEndDate,
+                            productImage = dealsResponse.imageWeb,
+                            flagID = dealsResponse.customText1
+                        )
+                    )
+                )
+            )
+        )
+    }
 
     private fun mappedOutlet(outlets: List<Outlet>): List<com.tokopedia.digital_deals.view.model.Outlet> {
         val mappedOutlets = mutableListOf<com.tokopedia.digital_deals.view.model.Outlet>()
