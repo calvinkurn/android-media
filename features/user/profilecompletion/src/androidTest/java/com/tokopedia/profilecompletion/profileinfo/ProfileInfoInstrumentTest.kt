@@ -2,7 +2,6 @@ package com.tokopedia.profilecompletion.profileinfo
 
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.home_account.common.idling.FragmentTransactionIdle
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.profilecompletion.di.ActivityComponentFactory
 import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFactory
@@ -49,6 +48,7 @@ class ProfileInfoInstrumentTest {
     fun header_profile_appear() {
         runTest {
             isViewsExists(listOf(R.id.profileInfoImageSubtitle, R.id.profileInfoImageUnify))
+            Thread.sleep(3000)
         }
     }
 
@@ -118,11 +118,6 @@ class ProfileInfoInstrumentTest {
 
     private fun runTest(test: () -> Unit) {
         activity = activityTestRule.launchActivity(Intent())
-        FragmentTransactionIdle(
-                activity.supportFragmentManager,
-                ProfileInfoActivity.TAG
-
-        )
         test.invoke()
     }
 
