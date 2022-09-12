@@ -29,7 +29,7 @@ import javax.inject.Inject
  */
 abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactory> : BaseDaggerFragment() {
 
-    private val productAdapter: ProductDetailAdapter by lazy {
+    val productAdapter: ProductDetailAdapter by lazy {
         createAdapterInstance()
     }
     var productDaggerComponent: ProductDetailComponent? = null

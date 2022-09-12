@@ -92,7 +92,7 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
 
     @Test
     fun captureParentFragmentId() {
-        Espresso.onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
+        Espresso.onView(ViewMatchers.withId(R.id.rv_pdp))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         val parentProductView = activity?.getPdpFragment()?.view
@@ -105,16 +105,15 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
 
     @Test
     fun captureVhId() {
-        Espresso.onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
+        Espresso.onView(ViewMatchers.withId(R.id.rv_pdp))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        val rvSize = activityCommonRule.activity.getPdpFragment().productAdapter?.currentList?.size
-                ?: 0
+        val rvSize = activityCommonRule.activity.getPdpFragment().productAdapter.currentList.size
 
         Thread.sleep(2000)
 
         repeat(rvSize - 1) {
-            findViewHolderAndDo(com.tokopedia.product.detail.R.id.rv_pdp, it) { viewResult ->
+            findViewHolderAndDo(R.id.rv_pdp, it) { viewResult ->
                 viewResult?.let { view ->
                     printCsvAndSave(view, "product_detail_vh_$it", vhViewPrinter)
                 }
