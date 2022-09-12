@@ -935,7 +935,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<ClearPromoOrder> clearOrders = new ArrayList<>();
         for (OrdersItem order : validateUsePromoRequest.getOrders()) {
             if (order != null) {
-                clearOrders.add(new ClearPromoOrder(order.getUniqueId(), order.getBoType(), order.getCodes()));
+                clearOrders.add(new ClearPromoOrder(order.getUniqueId(), order.getBoType(),
+                        order.getCodes(), order.getShopId(), order.isPo(),
+                        String.valueOf(order.getPoDuration()), order.getWarehouseId()));
                 if (!order.getCodes().isEmpty()) {
                     hasPromo = true;
                 }
@@ -1909,7 +1911,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<String> promoCodeList = new ArrayList<>();
         promoCodeList.add(promoCode);
         ArrayList<ClearPromoOrder> clearOrders = new ArrayList<>();
-        clearOrders.add(new ClearPromoOrder(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(), promoCodeList));
+        clearOrders.add(new ClearPromoOrder(shipmentCartItemModel.getCartString(),
+                shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
+                promoCodeList, shipmentCartItemModel.getShopId(), shipmentCartItemModel.isProductIsPreorder(),
+                String.valueOf(shipmentCartItemModel.getCartItemModels().get(0).getPreOrderDurationDay()),
+                shipmentCartItemModel.getFulfillmentId())
+        );
 
         clearCacheAutoApplyStackUseCase.setParams(new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, false, new ClearPromoOrderData(new ArrayList<>(), clearOrders)));
         compositeSubscription.add(
@@ -1977,7 +1984,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             clearOrders.add(new ClearPromoOrder(
                                     notEligiblePromoHolderdata.getUniqueId(),
                                     shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
-                                    codes
+                                    codes, shipmentCartItemModel.getShopId(), shipmentCartItemModel.isProductIsPreorder(),
+                                    String.valueOf(shipmentCartItemModel.getCartItemModels().get(0).getPreOrderDurationDay()),
+                                    shipmentCartItemModel.getFulfillmentId()
                             ));
                             hasPromo = true;
                             break;
@@ -2028,7 +2037,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 clearOrders.add(new ClearPromoOrder(
                                         promoClashVoucherOrdersUiModel.getUniqueId(),
                                         cartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
-                                        codes
+                                        codes, cartItemModel.getShopId(), cartItemModel.isProductIsPreorder(),
+                                        String.valueOf(cartItemModel.getCartItemModels().get(0).getPreOrderDurationDay()),
+                                        cartItemModel.getFulfillmentId()
                                 ));
                             }
                         }
@@ -2057,7 +2068,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 clearOrders.add(new ClearPromoOrder(
                         shipmentCartItemModel.getCartString(),
                         shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
-                        boCodes
+                        boCodes, shipmentCartItemModel.getShopId(), shipmentCartItemModel.isProductIsPreorder(),
+                        String.valueOf(shipmentCartItemModel.getCartItemModels().get(0).getPreOrderDurationDay()),
+                        shipmentCartItemModel.getFulfillmentId()
                 ));
                 hasBo = true;
             }
@@ -2622,7 +2635,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         final List<String> promoCodes = new ArrayList<>();
         promoCodes.add(promoCode);
         clearOrders.add(new ClearPromoOrder(shipmentCartItemModel.getCartString(),
-                shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(), promoCodes));
+                shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(), promoCodes,
+                shipmentCartItemModel.getShopId(), shipmentCartItemModel.isProductIsPreorder(),
+                String.valueOf(shipmentCartItemModel.getCartItemModels().get(0).getPreOrderDurationDay()),
+                shipmentCartItemModel.getFulfillmentId()));
         final ClearPromoRequest params = new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                 false, new ClearPromoOrderData(globalCodes, clearOrders));
         clearCacheAutoApplyStackUseCase.setParams(params);
@@ -2633,9 +2649,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode) {
-        for (OrdersItem order : lastValidateUsePromoRequest.getOrders()) {
-            if (order.getUniqueId().equals(uniqueId)) {
-                order.getCodes().remove(promoCode);
+        if (lastValidateUsePromoRequest != null) {
+            for (OrdersItem order : lastValidateUsePromoRequest.getOrders()) {
+                if (order.getUniqueId().equals(uniqueId)) {
+                    order.getCodes().remove(promoCode);
+                }
             }
         }
     }

@@ -64,4 +64,6 @@ class CourierItemData(
         var isHideChangeCourierCard: Boolean = false,
         var durationCardDescription: String = "",
         var freeShippingMetadata: String = "",
+        var benefitClass: String = "",
+        var shippingSubsidy: Long = 0,
 ) : Parcelable, ShipmentOptionData

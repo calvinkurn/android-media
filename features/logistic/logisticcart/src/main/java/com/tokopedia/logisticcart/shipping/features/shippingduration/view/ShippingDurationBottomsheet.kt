@@ -341,6 +341,8 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         courierData.etaErrorCode = data.etaData.errorCode
         courierData.freeShippingChosenCourierTitle = data.freeShippingChosenCourierTitle
         courierData.freeShippingMetadata = data.freeShippingMetadata
+        courierData.benefitClass = data.benefitClass
+        courierData.shippingSubsidy = data.shippingSubsidy
         try {
             shippingDurationBottomsheetListener?.onLogisticPromoChosen(
                     serviceData.shippingCourierViewModelList, courierData,

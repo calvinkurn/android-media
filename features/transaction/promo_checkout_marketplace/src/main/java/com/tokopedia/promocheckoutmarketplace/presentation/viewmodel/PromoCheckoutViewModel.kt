@@ -761,20 +761,20 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun setApplyPromoRequestDataFromSelectedPromo(promoListItemUiModel: PromoListItemUiModel,
-                                                          order: OrdersItem?,
+                                                          order: OrdersItem,
                                                           validateUsePromoRequest: ValidateUsePromoRequest) {
         if (promoListItemUiModel.uiState.isSelected && !promoListItemUiModel.uiState.isDisabled &&
-                promoListItemUiModel.uiData.currentClashingPromo.isNullOrEmpty()) {
+                promoListItemUiModel.uiData.currentClashingPromo.isEmpty()) {
             // If coupon is selected, not disabled, and not clashing, add to request param
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
-            if (promoListItemUiModel.uiData.uniqueId == order?.uniqueId &&
+            if (promoListItemUiModel.uiData.uniqueId == order.uniqueId &&
                     !order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.add(promoListItemUiModel.uiData.promoCode)
             } else if (promoListItemUiModel.uiState.isBebasOngkir) {
                 // if coupon is bebas ongkir promo, then set shipping id and sp id
                 val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
                 if (boData != null) {
-                    order?.let {
+                    order.let {
                         if (!it.codes.contains(boData.code)) {
                             // if code is not already in request param, then add bo additional data
                             it.shippingId = boData.shippingId
@@ -786,6 +786,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             it.shippingId = boData.shippingId
                             it.spId = boData.shipperProductId
                         }
+                        it.benefitClass = boData.benefitClass
+                        it.boCampaignId = boData.boCampaignId
+                        it.shippingPrice = boData.shippingPrice
+                        it.shippingSubsidy = boData.shippingSubsidy
+                        it.etaText = boData.etaText
                     }
                 }
             } else if (promoListItemUiModel.uiData.shopId == 0 &&
@@ -797,16 +802,21 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
             // Remove BO code only if not disabled and not selected and has no clashing,
             // because if bo code disabled/clashing, bo code still needed in param to get red state to perform unapply logic
-            if (promoListItemUiModel.uiData.uniqueId == order?.uniqueId &&
+            if (promoListItemUiModel.uiData.uniqueId == order.uniqueId &&
                     order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.remove(promoListItemUiModel.uiData.promoCode)
             } else if (!promoListItemUiModel.uiState.isSelected && promoListItemUiModel.uiState.isBebasOngkir && !promoListItemUiModel.uiState.isDisabled
                     && promoListItemUiModel.uiData.currentClashingPromo.isEmpty() && promoListItemUiModel.uiState.isParentEnabled) {
                 val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
                 if (boData != null) {
-                    order?.let {
+                    order.let {
                         if (it.codes.contains(boData.code)) {
                             it.codes.remove(boData.code)
+                            it.benefitClass = ""
+                            it.boCampaignId = 0
+                            it.shippingPrice = 0.0
+                            it.shippingSubsidy = 0
+                            it.etaText = ""
                         }
                     }
                 }
@@ -974,7 +984,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     //------------------------------------//
 
     fun clearPromo(
-        promoRequest: PromoRequest,
         validateUsePromoRequest: ValidateUsePromoRequest,
         bboPromoCodes: ArrayList<String>,
         clearPromoParam: ClearPromoRequest = ClearPromoRequest()
@@ -996,6 +1005,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 clearOrder = ClearPromoOrder(
                         uniqueId = order.uniqueId,
                         boType = order.boType,
+                        shopId = order.shopId,
+                        isPo = order.isPo,
+                        poDuration = order.poDuration.toString(),
+                        warehouseId = order.warehouseId
                 )
                 orders.add(clearOrder)
             }
