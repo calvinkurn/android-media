@@ -1,8 +1,8 @@
 package com.tokopedia.filter.bottomsheet
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterItemUiModel
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterUiModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxItemUiModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxUiModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.testutils.jsonToObject
@@ -34,33 +34,33 @@ internal class OnPriceRangeFoodClickTest: SortFilterBottomSheetViewModelTestFixt
         `Then assert ACTIVE filter map parameter contains the clicked Price Range option`(selectedOptionViewModel)
     }
 
-    private fun `When an Checkbox Option is Clicked And Applied`(priceRangeFilterItemUiModel: PriceRangeFilterItemUiModel,
+    private fun `When an Checkbox Option is Clicked And Applied`(priceRangeFilterCheckboxItemUiModel: PriceRangeFilterCheckboxItemUiModel,
                                                                  isSelected: Boolean) {
-        sortFilterBottomSheetViewModel.onPriceRangeFoodClick(priceRangeFilterItemUiModel, isSelected)
+        sortFilterBottomSheetViewModel.onPriceRangeFoodClick(priceRangeFilterCheckboxItemUiModel, isSelected)
         sortFilterBottomSheetViewModel.applySortFilter()
     }
 
-    private fun `Then assert rangeFilterItem selected state`(priceRangeFilterItemUiModel: PriceRangeFilterItemUiModel, expectedIsSelected: Boolean) {
-        assert(priceRangeFilterItemUiModel.option.inputState.toBoolean() == expectedIsSelected) {
-            "Option ${priceRangeFilterItemUiModel.option.name} inputState should be $expectedIsSelected"
+    private fun `Then assert rangeFilterItem selected state`(priceRangeFilterCheckboxItemUiModel: PriceRangeFilterCheckboxItemUiModel, expectedIsSelected: Boolean) {
+        assert(priceRangeFilterCheckboxItemUiModel.option.inputState.toBoolean() == expectedIsSelected) {
+            "Option ${priceRangeFilterCheckboxItemUiModel.option.name} inputState should be $expectedIsSelected"
         }
 
-        assert(priceRangeFilterItemUiModel.isSelected == expectedIsSelected) {
-            "Option ${priceRangeFilterItemUiModel.option.name} isSelected should be $expectedIsSelected"
+        assert(priceRangeFilterCheckboxItemUiModel.isSelected == expectedIsSelected) {
+            "Option ${priceRangeFilterCheckboxItemUiModel.option.name} isSelected should be $expectedIsSelected"
         }
     }
 
     private fun `Then assert map parameter values contains the clicked option`(
-        existingMapParameter: Map<String, String>, priceRangeFilterItemUiModel: PriceRangeFilterItemUiModel
+        existingMapParameter: Map<String, String>, priceRangeFilterCheckboxItemUiModel: PriceRangeFilterCheckboxItemUiModel
     ) {
         val mapParameter = sortFilterBottomSheetViewModel.mapParameter
 
-        assertMapValueContainsClickedOption(mapParameter, priceRangeFilterItemUiModel)
-        assertNonClickedParameterShouldNotChange(existingMapParameter, mapParameter, priceRangeFilterItemUiModel)
+        assertMapValueContainsClickedOption(mapParameter, priceRangeFilterCheckboxItemUiModel)
+        assertNonClickedParameterShouldNotChange(existingMapParameter, mapParameter, priceRangeFilterCheckboxItemUiModel)
     }
 
-    private fun assertMapValueContainsClickedOption(mapParameter: Map<String, String>, priceRangeFilterItemUiModel: PriceRangeFilterItemUiModel) {
-        val option = priceRangeFilterItemUiModel.option
+    private fun assertMapValueContainsClickedOption(mapParameter: Map<String, String>, priceRangeFilterCheckboxItemUiModel: PriceRangeFilterCheckboxItemUiModel) {
+        val option = priceRangeFilterCheckboxItemUiModel.option
 
         val mapParameterOptions = mapParameter[option.key]?.split(OptionHelper.OPTION_SEPARATOR) ?: listOf()
         val optionValues = option.value.split(OptionHelper.VALUE_SEPARATOR)
@@ -83,10 +83,10 @@ internal class OnPriceRangeFoodClickTest: SortFilterBottomSheetViewModelTestFixt
     private fun assertNonClickedParameterShouldNotChange(
         existingMapParameter: Map<String, String>,
         currentMapParameter: Map<String, String>,
-        priceRangeFilterItemUiModel: PriceRangeFilterItemUiModel
+        priceRangeFilterCheckboxItemUiModel: PriceRangeFilterCheckboxItemUiModel
     ) {
         existingMapParameter.forEach {
-            val isNotClickedOption = it.key != priceRangeFilterItemUiModel.option.key
+            val isNotClickedOption = it.key != priceRangeFilterCheckboxItemUiModel.option.key
 
             if (isNotClickedOption) {
                 assert(currentMapParameter[it.key] == it.value) {
@@ -105,19 +105,19 @@ internal class OnPriceRangeFoodClickTest: SortFilterBottomSheetViewModelTestFixt
     }
 
     private fun `Then assert ACTIVE filter map parameter contains the clicked Price Range option`(
-        clickedPriceRangeFilterItemUiModel: PriceRangeFilterItemUiModel
+        clickedPriceRangeFilterCheckboxItemUiModel: PriceRangeFilterCheckboxItemUiModel
     ) {
         val activeFilterMapParameter = sortFilterBottomSheetViewModel.getSelectedFilterMap()
-        assertMapValueContainsClickedOption(activeFilterMapParameter, clickedPriceRangeFilterItemUiModel)
+        assertMapValueContainsClickedOption(activeFilterMapParameter, clickedPriceRangeFilterCheckboxItemUiModel)
     }
 
 
     private fun getSelectedRangeFilterOption(
-        priceRangeFilterUiModel: PriceRangeFilterUiModel,
-        priceRangeFilterItemUiModel: PriceRangeFilterItemUiModel
-    ) : PriceRangeFilterItemUiModel {
-        return priceRangeFilterUiModel.priceRangeList.first { optionVM ->
-            optionVM.option == priceRangeFilterItemUiModel.option
+        priceRangeFilterCheckboxUiModel: PriceRangeFilterCheckboxUiModel,
+        priceRangeFilterCheckboxItemUiModel: PriceRangeFilterCheckboxItemUiModel
+    ) : PriceRangeFilterCheckboxItemUiModel {
+        return priceRangeFilterCheckboxUiModel.priceRangeList.first { optionVM ->
+            optionVM.option == priceRangeFilterCheckboxItemUiModel.option
         }
     }
 }

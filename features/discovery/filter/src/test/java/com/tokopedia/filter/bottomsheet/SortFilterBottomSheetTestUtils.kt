@@ -5,7 +5,7 @@ import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterUiModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxUiModel
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -42,8 +42,8 @@ internal fun List<Visitable<*>>.findFilterViewModel(filter: Filter): FilterViewM
     return find { it is FilterViewModel && it.filter == filter } as? FilterViewModel
 }
 
-internal fun List<Visitable<*>>.findPriceRangeFilterUiModel(filter: Filter): PriceRangeFilterUiModel? {
-    return find { it is PriceRangeFilterUiModel && it.filter == filter } as? PriceRangeFilterUiModel
+internal fun List<Visitable<*>>.findPriceRangeFilterUiModel(filter: Filter): PriceRangeFilterCheckboxUiModel? {
+    return find { it is PriceRangeFilterCheckboxUiModel && it.filter == filter } as? PriceRangeFilterCheckboxUiModel
 }
 
 internal fun FilterViewModel.getAnyUnselectedFilter(): OptionViewModel {

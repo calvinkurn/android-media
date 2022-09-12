@@ -14,14 +14,13 @@ import com.tokopedia.filter.databinding.FilterPriceRangeItemBinding
 import com.tokopedia.filter.databinding.FilterPriceRangeLayoutBinding
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import java.lang.StringBuilder
 
-internal class PriceRangeFilterViewHolder(
+internal class PriceRangeFilterCheckboxViewHolder(
     itemView: View,
-    private val priceRangeFilterListener: PriceRangeFilterListener
-) : AbstractViewHolder<PriceRangeFilterUiModel>(itemView) {
+    private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
+) : AbstractViewHolder<PriceRangeFilterCheckboxUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -39,24 +38,24 @@ internal class PriceRangeFilterViewHolder(
         }
     }
 
-    override fun bind(element: PriceRangeFilterUiModel) {
+    override fun bind(element: PriceRangeFilterCheckboxUiModel) {
         bindRvFilterPriceRange(element)
         binding.tvPriceRangeLabel.text = element.priceRangeLabel
     }
 
-    private fun bindRvFilterPriceRange(priceRangeFilterUiModel: PriceRangeFilterUiModel) {
+    private fun bindRvFilterPriceRange(priceRangeFilterCheckboxUiModel: PriceRangeFilterCheckboxUiModel) {
         val priceRangeOptionAdapter =
             PriceRangeCbItemAdapter(
-                priceRangeFilterUiModel.priceRangeList,
-                priceRangeFilterListener
+                priceRangeFilterCheckboxUiModel.priceRangeList,
+                priceRangeFilterCheckboxListener
             )
         val removeAndRecycleExistingViews = false
         binding.rvPriceRange.swapAdapter(priceRangeOptionAdapter, removeAndRecycleExistingViews)
     }
 
     private class PriceRangeCbItemAdapter(
-        private val priceRangeFilterList: List<PriceRangeFilterItemUiModel>,
-        private val priceRangeFilterListener: PriceRangeFilterListener
+        private val priceRangeFilterList: List<PriceRangeFilterCheckboxItemUiModel>,
+        private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
     ) : RecyclerView.Adapter<PriceRangeCbItemViewHolder>() {
 
         override fun onCreateViewHolder(
@@ -68,7 +67,7 @@ internal class PriceRangeFilterViewHolder(
                 parent,
                 false
             )
-            return PriceRangeCbItemViewHolder(binding, priceRangeFilterListener)
+            return PriceRangeCbItemViewHolder(binding, priceRangeFilterCheckboxListener)
         }
 
         override fun onBindViewHolder(holder: PriceRangeCbItemViewHolder, position: Int) {
@@ -80,10 +79,10 @@ internal class PriceRangeFilterViewHolder(
 
     private class PriceRangeCbItemViewHolder(
         private val binding: FilterPriceRangeItemBinding,
-        private val priceRangeFilterListener: PriceRangeFilterListener
+        private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PriceRangeFilterItemUiModel, priceRangeSize: Int) {
+        fun bind(item: PriceRangeFilterCheckboxItemUiModel, priceRangeSize: Int) {
             with(binding) {
                 tvPriceRangeDollar.text =
                     MethodChecker.fromHtml(getPriceLevelString(item, priceRangeSize))
@@ -92,7 +91,7 @@ internal class PriceRangeFilterViewHolder(
             }
         }
 
-        private fun bindCheckboxPriceRange(item: PriceRangeFilterItemUiModel) {
+        private fun bindCheckboxPriceRange(item: PriceRangeFilterCheckboxItemUiModel) {
             with(binding.cbPriceRange) {
                 setOnCheckedChangeListener(null)
                 isChecked = item.isSelected
@@ -102,13 +101,13 @@ internal class PriceRangeFilterViewHolder(
                 }
 
                 setOnCheckedChangeListener { _, isChecked ->
-                    priceRangeFilterListener.onPriceRangeItemClicked(item, isChecked)
+                    priceRangeFilterCheckboxListener.onPriceRangeFilterCheckboxItemClicked(item, isChecked)
                 }
             }
         }
 
         private fun getPriceLevelString(
-            item: PriceRangeFilterItemUiModel,
+            item: PriceRangeFilterCheckboxItemUiModel,
             priceRangeSize: Int
         ): String {
             val priceBuilder = StringBuilder()

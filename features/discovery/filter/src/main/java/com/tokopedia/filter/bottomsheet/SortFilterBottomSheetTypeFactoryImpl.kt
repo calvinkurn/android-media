@@ -13,19 +13,19 @@ import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterViewHolder
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewHolder
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterListener
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterUiModel
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterViewHolder
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxListener
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxUiModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxViewHolder
 import com.tokopedia.filter.bottomsheet.sort.SortViewHolder
 import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 
 internal class SortFilterBottomSheetTypeFactoryImpl(
-        private val sortViewListener: SortViewListener,
-        private val filterViewListener: FilterViewListener,
-        private val priceFilterViewListener: PriceFilterViewListener,
-        private val keywordFilterListener: KeywordFilterListener,
-        private val priceRangeFilterListener: PriceRangeFilterListener
+    private val sortViewListener: SortViewListener,
+    private val filterViewListener: FilterViewListener,
+    private val priceFilterViewListener: PriceFilterViewListener,
+    private val keywordFilterListener: KeywordFilterListener,
+    private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener,
 ): SortFilterBottomSheetTypeFactory {
 
     private val recycledViewPool = RecycledViewPool()
@@ -45,8 +45,8 @@ internal class SortFilterBottomSheetTypeFactoryImpl(
     override fun type(keywordFilterDataView: KeywordFilterDataView) =
         KeywordFilterViewHolder.LAYOUT
 
-    override fun type(priceRangeFilterUiModel: PriceRangeFilterUiModel): Int =
-        PriceRangeFilterViewHolder.LAYOUT
+    override fun type(priceRangeFilterCheckboxUiModel: PriceRangeFilterCheckboxUiModel): Int =
+        PriceRangeFilterCheckboxViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when(viewType) {
@@ -54,7 +54,7 @@ internal class SortFilterBottomSheetTypeFactoryImpl(
             FilterViewHolder.LAYOUT -> FilterViewHolder(view, recycledViewPool, filterViewListener)
             PriceFilterViewHolder.LAYOUT -> PriceFilterViewHolder(view, priceFilterViewListener)
             KeywordFilterViewHolder.LAYOUT -> KeywordFilterViewHolder(view, keywordFilterListener)
-            PriceRangeFilterViewHolder.LAYOUT -> PriceRangeFilterViewHolder(view, priceRangeFilterListener)
+            PriceRangeFilterCheckboxViewHolder.LAYOUT -> PriceRangeFilterCheckboxViewHolder(view, priceRangeFilterCheckboxListener)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         }
     }
