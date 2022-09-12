@@ -413,7 +413,6 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "items": [
         {
-
           "shop_id": ".*",
           "quantity": "\\d+(.\\d+)?",
           "category_id": ".*",
@@ -703,6 +702,87 @@
       "eventAction": "click - remove remind me in upcoming section",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod) - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - voucher widget",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - voucher widget",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - voucher bottomsheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "trackerId": "35808",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - toaster private voucher",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - lihat toaster private voucher",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - toaster public voucher",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - toaster public voucher",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "swipe - voucher widget",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
