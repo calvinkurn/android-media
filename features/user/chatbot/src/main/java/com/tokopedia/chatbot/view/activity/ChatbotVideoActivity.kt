@@ -2,9 +2,9 @@ package com.tokopedia.chatbot.view.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.chatbot.ChatbotConstant
+import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.fragment.ChatbotVideoFragment
 
 class ChatbotVideoActivity : BaseSimpleActivity() {

@@ -81,7 +81,7 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
     }
 
     private fun initViews(view : View) {
-        parentLayout = view.findViewById(R.id.parent)
+        parentLayout = view.findViewById(R.id.parent_view)
         parentLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         videoScreenHeader = view.findViewById(R.id.video_screen_header)
         chatbotVideoControl = view.findViewById(R.id.video_control)
