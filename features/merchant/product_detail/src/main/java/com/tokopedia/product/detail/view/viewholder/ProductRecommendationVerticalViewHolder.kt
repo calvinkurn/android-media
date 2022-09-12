@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVe
 import com.tokopedia.product.detail.databinding.ViewProductRecommendationVerticalBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 class ProductRecommendationVerticalViewHolder(
     view: View,
@@ -29,45 +30,60 @@ class ProductRecommendationVerticalViewHolder(
                 item.toProductCardModel(hasThreeDots = true)
             )
 
-            setOnClickListener {
-                val trackData =
-                    listener.getRecommendationVerticalTrackData() ?: return@setOnClickListener
-                listener.eventRecommendationClick(
-                    item,
-                    "",
-                    element.position,
-                    item.pageName,
-                    item.header,
-                    trackData
-                )
+            setOnClickListener { onClickRecommendation(item, element.position) }
 
-                goToProduct(item.productId.toString())
-            }
-
-            setThreeDotsOnClickListener {
-                val recommVerticalData = listener.getRecommendationVerticalTrackData()
-                    ?: return@setThreeDotsOnClickListener
-
-                listener.onThreeDotsClick(
-                    item,
-                    recommVerticalData.adapterPosition,
-                    element.position
-                )
-            }
+            setThreeDotsOnClickListener { onClickThreeDots(item, element.position) }
         }
 
         itemView.addOnImpressionListener(element.impressHolder) {
-            val trackData =
-                listener.getRecommendationVerticalTrackData() ?: return@addOnImpressionListener
-            listener.eventRecommendationImpression(
-                item,
-                "",
-                element.position,
-                item.pageName,
-                item.header,
-                trackData
-            )
+            onImpressRecommendation(item, element.position)
         }
+    }
+
+    private fun onClickRecommendation(
+        item: RecommendationItem,
+        position: Int
+    ) {
+        val trackData = listener.getRecommendationVerticalTrackData() ?: return
+        listener.eventRecommendationClick(
+            item,
+            "",
+            position,
+            item.pageName,
+            item.header,
+            trackData
+        )
+
+        goToProduct(item.productId.toString())
+    }
+
+    private fun onClickThreeDots(
+        item: RecommendationItem,
+        position: Int
+    ) {
+        val recommVerticalData = listener.getRecommendationVerticalTrackData() ?: return
+
+        listener.onThreeDotsClick(
+            item,
+            recommVerticalData.adapterPosition,
+            position
+        )
+    }
+
+    private fun onImpressRecommendation(
+        item: RecommendationItem,
+        position: Int
+    ) {
+        val trackData =
+            listener.getRecommendationVerticalTrackData() ?: return
+        listener.eventRecommendationImpression(
+            item,
+            "",
+            position,
+            item.pageName,
+            item.header,
+            trackData
+        )
     }
 
     private fun goToProduct(productId: String) {
