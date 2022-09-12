@@ -326,16 +326,14 @@ class PlayUserInteractionFragment @Inject constructor(
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
             if (lastAction != null) handleInteractionEvent(lastAction.event)
+        } else if(requestCode == REQUEST_CODE_ADDRESS_LIST && resultCode == Activity.RESULT_OK) {
+            chooseAddressView?.hideBottomSheet()
+            initAddress()
         } else {
             playViewModel.submitAction(
                     OpenPageResultAction(isSuccess = resultCode == Activity.RESULT_OK, requestCode = requestCode)
             )
             super.onActivityResult(requestCode, resultCode, data)
-        }
-
-        if(requestCode == REQUEST_CODE_ADDRESS_LIST && resultCode == Activity.RESULT_OK) {
-            chooseAddressView?.hideBottomSheet()
-            initAddress()
         }
     }
 

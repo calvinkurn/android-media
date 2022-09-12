@@ -57,7 +57,7 @@ object DeviceConnectionInfo {
         var ssid = ""
         try {
             val connManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo = connManager.activeNetworkInfo
             if (networkInfo != null && networkInfo.isConnected &&
                 networkInfo.type == ConnectivityManager.TYPE_WIFI
@@ -101,7 +101,7 @@ object DeviceConnectionInfo {
     ): Boolean {
         var result = false
         val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val networkCapabilities = connectivityManager.activeNetwork ?: return false
             val actNw =
@@ -222,7 +222,7 @@ object DeviceConnectionInfo {
     }
 
     private fun getConnectionTransportType(context: Context): Int {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
             if (capabilities != null) {
@@ -252,7 +252,7 @@ object DeviceConnectionInfo {
                 WIFI -> CONN_WIFI
                 MOBILE -> {
                     val cm =
-                        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                        context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                     if (cm.activeNetworkInfo?.subtype == null) return CONN_UNKNOWN
                     return when (cm.activeNetworkInfo?.subtype) {
                         // 2G:
