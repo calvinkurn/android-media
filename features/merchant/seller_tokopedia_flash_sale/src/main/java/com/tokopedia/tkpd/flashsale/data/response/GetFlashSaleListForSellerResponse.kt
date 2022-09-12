@@ -64,7 +64,9 @@ data class GetFlashSaleListForSellerResponse(
                 @SerializedName("total_stock_sold")
                 val totalStockSold: Int = 0,
                 @SerializedName("transferred_product")
-                val transferredProduct: Int = 0
+                val transferredProduct: Int = 0,
+                @SerializedName("float_total_sold_value")
+                val totalSoldValue: Double = 0.0
             )
         }
     }

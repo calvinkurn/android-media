@@ -7,10 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.toCalendar
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemRegisteredFlashSaleBinding
@@ -25,10 +25,6 @@ class RegisteredFlashSaleDelegateAdapter(
     private val onAddProductButtonClicked: (Int) -> Unit
 ) : DelegateAdapter<RegisteredFlashSaleItem, RegisteredFlashSaleDelegateAdapter.ViewHolder>
     (RegisteredFlashSaleItem::class.java) {
-
-    companion object{
-        private const val TWENTY_FOUR_HOURS = 24
-    }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemRegisteredFlashSaleBinding.inflate(
@@ -137,31 +133,23 @@ class RegisteredFlashSaleDelegateAdapter(
 
         private fun TimerUnifySingle.setTimer(item: RegisteredFlashSaleItem) {
             when (item.status) {
-                FlashSaleStatus.NO_REGISTERED_PRODUCT -> startTimer(this, item.distanceHoursToReviewStartDate,  item.reviewStartDate)
-                FlashSaleStatus.WAITING_FOR_SELECTION -> startTimer(this, item.distanceHoursToReviewStartDate,  item.reviewStartDate)
-                FlashSaleStatus.ON_SELECTION_PROCESS -> startTimer(this, item.distanceHoursToReviewEndDate,  item.reviewEndDate)
-                FlashSaleStatus.SELECTION_FINISHED -> startTimer(this, item.distanceHourToStartDate,  item.startDate)
+                FlashSaleStatus.NO_REGISTERED_PRODUCT -> startTimer(this, item.distanceMinuteToReviewStartDate,  item.reviewStartDate)
+                FlashSaleStatus.WAITING_FOR_SELECTION -> startTimer(this, item.distanceMinuteToReviewStartDate,  item.reviewStartDate)
+                FlashSaleStatus.ON_SELECTION_PROCESS -> startTimer(this, item.distanceMinuteToReviewEndDate,  item.reviewEndDate)
+                FlashSaleStatus.SELECTION_FINISHED -> startTimer(this, item.distanceMinuteToStartDate,  item.startDate)
                 else -> {}
             }
         }
 
-        private fun startTimer(timer: TimerUnifySingle, distanceHourToEndDate: Int, endDate: Date) {
-            when {
-                distanceHourToEndDate < Int.ZERO -> {
-                    timer.invisible()
-                    binding.tpgDescription.text = binding.tpgDescription.context.getString(R.string.stfs_status_registration_already_closed)
-                }
-                distanceHourToEndDate in Int.ZERO..TWENTY_FOUR_HOURS -> {
-                    timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                    timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
-                    timer.targetDate = endDate.toCalendar()
-                }
-                distanceHourToEndDate > TWENTY_FOUR_HOURS -> {
-                    timer.timerFormat = TimerUnifySingle.FORMAT_DAY
-                    binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
-                    timer.targetDate = endDate.toCalendar()
-                }
-                else -> {}
+        private fun startTimer(timer: TimerUnifySingle, distanceMinuteToEndDate: Long, endDate: Date) {
+            if (distanceMinuteToEndDate < 0) {
+                timer.invisible()
+                binding.tpgDescription.text = binding.tpgDescription.context.getString(R.string.stfs_status_registration_already_closed)
+            } else {
+                binding.timer.visible()
+                binding.timer.timerFormat = TimerUnifySingle.FORMAT_AUTO
+                binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
+                binding.timer.targetDate = endDate.toCalendar()
             }
         }
 
