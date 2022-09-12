@@ -23,12 +23,13 @@ import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxItemUiModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxListener
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.configureBottomSheetHeight
-import com.tokopedia.filter.common.helper.isPostProcessingFilter
 import com.tokopedia.filter.common.helper.setBottomSheetActionBold
 import com.tokopedia.filter.databinding.SortFilterBottomSheetBinding
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
@@ -124,12 +125,22 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         }
     }
 
+    private val priceRangeFilterCheckboxListener = object : PriceRangeFilterCheckboxListener {
+        override fun onPriceRangeFilterCheckboxItemClicked(
+            priceRangeFilterCheckboxItemUiModel: PriceRangeFilterCheckboxItemUiModel,
+            isChecked: Boolean
+        ) {
+            sortFilterBottomSheetViewModel?.onPriceRangeFilterCheckboxClick(priceRangeFilterCheckboxItemUiModel, isChecked)
+        }
+    }
+
     private val sortFilterBottomSheetAdapter = SortFilterBottomSheetAdapter(
             SortFilterBottomSheetTypeFactoryImpl(
                 sortViewListener,
                 filterViewListener,
                 priceFilterListener,
                 keywordFilterListener,
+                priceRangeFilterCheckboxListener,
             )
     )
 

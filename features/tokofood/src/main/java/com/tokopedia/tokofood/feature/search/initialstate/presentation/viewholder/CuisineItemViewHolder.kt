@@ -2,11 +2,11 @@ package com.tokopedia.tokofood.feature.search.initialstate.presentation.viewhold
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.databinding.CuisineItemInitialStateBinding
-import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.ChipsListUiModel
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.CuisineItemUiModel
 
 class CuisineItemViewHolder(
@@ -22,6 +22,7 @@ class CuisineItemViewHolder(
     private val binding = CuisineItemInitialStateBinding.bind(itemView)
 
     override fun bind(element: CuisineItemUiModel) {
+        bindImpressionCuisineListener(element, adapterPosition)
         setCuisineImage(element.imageUrl)
         setCuisineTitle(element.title)
         setCuisineAction(element)
@@ -58,7 +59,29 @@ class CuisineItemViewHolder(
         }
     }
 
+    private fun bindImpressionCuisineListener(
+        item: CuisineItemUiModel,
+        position: Int
+    ) {
+        binding.root.addOnImpressionListener(
+            item,
+            createViewHintListener(item, position)
+        )
+    }
+
+    private fun createViewHintListener(
+        item: CuisineItemUiModel,
+        position: Int
+    ): ViewHintListener {
+        return object : ViewHintListener {
+            override fun onViewHint() {
+                actionListener.onImpressCuisineItem(item, position)
+            }
+        }
+    }
+
     interface ActionListener {
         fun setCuisineItemClicked(item: CuisineItemUiModel)
+        fun onImpressCuisineItem(item: CuisineItemUiModel, position: Int)
     }
 }
