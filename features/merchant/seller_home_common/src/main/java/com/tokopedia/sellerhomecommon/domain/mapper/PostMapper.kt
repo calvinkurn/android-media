@@ -45,7 +45,8 @@ class PostMapper @Inject constructor(
                 isFromCache = isFromCache,
                 showWidget = post.showWidget,
                 emphasizeType = post.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED,
-                lastUpdated = getLastUpdatedMillis(post.dataKey, isFromCache)
+                lastUpdated = getLastUpdatedMillis(post.dataKey, isFromCache),
+                widgetDataSign = post.widgetDataSign
             )
         }
     }

@@ -30,7 +30,9 @@ data class PostDataModel(
     @SerializedName("emphasizeType")
     val emphasizeType: Int? = Int.ZERO,
     @SerializedName("showWidget")
-    val showWidget: Boolean = true
+    val showWidget: Boolean = true,
+    @SerializedName("widgetDataSign")
+    val widgetDataSign: String = String.EMPTY
 )
 
 data class PostItemDataModel(

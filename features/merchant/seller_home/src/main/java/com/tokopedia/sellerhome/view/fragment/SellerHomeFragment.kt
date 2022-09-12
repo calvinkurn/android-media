@@ -2444,18 +2444,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showFeedbackLoopOption(element: BaseWidgetUiModel<*>) {
         val dismissObjectIDs: List<String>
+        val dismissSign: String
         val dismissKey = when (element) {
             is AnnouncementWidgetUiModel -> {
                 dismissObjectIDs = listOf(element.id)
+                dismissSign = element.data?.widgetDataSign.orEmpty()
                 String.format(ANNOUNCEMENT_DISMISSAL_KEY, element.dataKey)
             }
             is PostListWidgetUiModel -> {
                 dismissObjectIDs = element.data?.postPagers?.flatMap { it.postList }
                     ?.filter { it.isChecked }?.map { it.postItemId }.orEmpty()
+                dismissSign = element.data?.widgetDataSign.orEmpty()
                 String.format(POST_LIST_DISMISSAL_KEY, element.dataKey)
             }
             else -> {
                 dismissObjectIDs = emptyList()
+                dismissSign = String.EMPTY
                 String.EMPTY
             }
         }
@@ -2472,6 +2476,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     ?.value.orEmpty(),
                 feedbackWidgetIDParent = element.id,
                 dismissObjectIDs = dismissObjectIDs,
+                dismissSign = dismissSign,
                 shopId = userSession.shopId
             )
             sellerHomeViewModel.submitWidgetDismissal(param)
