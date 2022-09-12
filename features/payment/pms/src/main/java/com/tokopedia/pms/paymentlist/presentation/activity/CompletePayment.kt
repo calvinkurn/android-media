@@ -30,21 +30,19 @@ class CompletePayment : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window?.statusBarColor =
-                    ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-            } else {
-                window?.statusBarColor =
-                    ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-            }
-        }
-
+        setActionViewColor()
         initBundleData()
         initView()
         initUrlLoad()
+    }
+
+    private fun setActionViewColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window?.statusBarColor =
+                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        }
     }
 
     private fun initBundleData() {
@@ -111,7 +109,6 @@ class CompletePayment : AppCompatActivity() {
 
         override fun onPageFinished(view: WebView?, url: String?) {
             hideProgressBar()
-            // cancel timer
             if (::timerJob.isInitialized)
                 timerJob.cancel()
 
@@ -144,7 +141,7 @@ class CompletePayment : AppCompatActivity() {
             binding.scroogeExtendedWebview.stopLoading()
             Toaster.build(
                 binding.activityCompletepayment,
-                "Gagal memuat pembayaran. Silakan coba lagi",
+                resources.getString(com.tokopedia.pms.R.string.pms_complete_payment_timeout),
                 Toaster.LENGTH_SHORT,
                 Toaster.TYPE_ERROR
             ).show()

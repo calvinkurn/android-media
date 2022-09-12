@@ -140,6 +140,7 @@
             app:layout_constraintTop_toTopOf="@+id/tvTotalAmountHeading"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
+            tools:visibility="visible"
             app:unifyButtonVariant="filled" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
