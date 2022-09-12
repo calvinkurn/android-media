@@ -1,17 +1,19 @@
 package com.tokopedia.topads.sdk.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
+import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
 
-class TopAdsHeadlineViewModel(private val applicationContext: Application) : AndroidViewModel(applicationContext) {
+class TopAdsHeadlineViewModel @Inject constructor(private val topAdsAddressHelper: TopAdsAddressHelper) :
+    BaseViewModel(Dispatchers.Main) {
 
     private val graphqlRepository: GraphqlRepository by lazy {
         GraphqlInteractor.getInstance().graphqlRepository
@@ -28,10 +30,10 @@ class TopAdsHeadlineViewModel(private val applicationContext: Application) : And
     ) {
         viewModelScope.launchCatchError(
                 block = {
-                    val addressData = TopAdsAddressHelper(applicationContext).getAddressData()
+                    val addressData = topAdsAddressHelper.getAddressData()
                     getTopAdsHeadlineUseCase.setParams(params, addressData)
                     val data = getTopAdsHeadlineUseCase.executeOnBackground()
-                    if (data.displayAds.data?.isNotEmpty() == true) {
+                    if (data.displayAds.data.isNotEmpty()) {
                         onSuccess?.invoke(data.displayAds)
                     } else {
                         onError?.invoke()

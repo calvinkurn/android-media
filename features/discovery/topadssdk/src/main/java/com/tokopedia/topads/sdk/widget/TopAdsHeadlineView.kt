@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,13 +20,18 @@ import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
+import javax.inject.Inject
 
 class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel by lazy {
-        ViewModelProvider(context as AppCompatActivity).get(TopAdsHeadlineViewModel::class.java)
-    }
+//    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel by lazy {
+//        ViewModelProvider(context as AppCompatActivity).get(TopAdsHeadlineViewModel::class.java)
+//    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val topAdsHeadlineViewModel by lazy { ViewModelProvider(context as AppCompatActivity, viewModelFactory) }
 
     var topadsBannerView: TopAdsBannerView
         private set
@@ -35,6 +41,7 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
         val view = View.inflate(context, R.layout.layout_widget_topads_headline, this)
         topadsBannerView = view.findViewById(R.id.top_ads_banner)
         shimmerView= view.findViewById(R.id.shimmer_view)
+        initDagger()
         topadsBannerView.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
             override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
                 RouteManager.route(context, applink)
@@ -42,6 +49,14 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
         })
         topadsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener(){
         })
+    }
+
+    private fun initDagger() {
+        val application = context.applicationContext as BaseMainApplication
+        val component = DaggerTopAdsComponent.builder()
+            .baseAppComponent(application.baseAppComponent)
+            .build()
+        component.inject(this)
     }
 
     fun getHeadlineAds(params: String, onSuccess: ((CpmModel) -> Unit)? = null, onError: (() -> Unit)? = null) {
