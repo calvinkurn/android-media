@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailResolutionBinding
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -29,7 +30,7 @@ class OrderResolutionViewHolder(
             uiModel?.let {
                 binding?.tvTitle?.text = uiModel.title
                 binding?.tvStatus?.text = uiModel.status
-                binding?.tvDescription?.text = uiModel.description
+                binding?.tvDescription?.text = uiModel.description.orEmpty().parseAsHtml()
                 binding?.ivDisplay?.loadImage(uiModel.picture)
                 showDeadline(context, uiModel)
                 itemView.setOnClickListener {

@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.sellerorder.R
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.databinding.DetailResolutionItemBinding
@@ -32,7 +33,7 @@ class SomDetailResolutionViewHolder(
                 val uiModel: SomDetailResolution = it.dataObject as SomDetailResolution
                 binding?.tvTitle?.text = uiModel.title
                 binding?.tvStatus?.text = uiModel.status
-                binding?.tvDescription?.text = uiModel.description
+                binding?.tvDescription?.text = uiModel.description.orEmpty().parseAsHtml()
                 binding?.ivDisplay?.loadImage(uiModel.picture)
                 showDeadline(context, uiModel)
                 itemView.setOnClickListener {
