@@ -17,7 +17,6 @@ import com.tokopedia.profilecompletion.common.helper.clickViewHolder
 import com.tokopedia.profilecompletion.common.helper.goToAnotherActivity
 import com.tokopedia.profilecompletion.common.helper.isViewsExists
 import com.tokopedia.profilecompletion.common.helper.clickChildWithViewId
-import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
@@ -88,7 +87,7 @@ class ProfileInfoInstrumentTest {
     @Test
     fun click_email_go_to_change_email() {
         runTest {
-            goToAnotherActivity(ProfileSettingWebViewActivity::class.java)
+            goToAnotherActivity(null, specifyClass = false)
             clickViewHolder(SECTION_EMAIL)
         }
     }
