@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -85,7 +86,15 @@ class EditorToolViewHolder(
 
     fun bind(tool: ToolUiModel, isActive: Boolean = false) {
         txtName.text = context.getString(tool.name)
-        icTool.setImage(tool.icon)
+        when (tool.id) {
+            EditorToolType.WATERMARK -> {
+                icTool.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.editor_watermark))
+            }
+            EditorToolType.REMOVE_BACKGROUND -> {
+                icTool.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.editor_remove_background))
+            }
+            else -> icTool.setImage(tool.icon)
+        }
 
         itemView.setOnClickListener {
             listener.onItemClicked(tool.id)
