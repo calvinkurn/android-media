@@ -22,11 +22,11 @@ class MerchantVoucherNewViewHolder(
     private val listener: Listener
 ) : BaseViewHolder(binding.root) {
 
-    private val baseColor: ForegroundColorSpan by lazy {
+    private val baseColor: ForegroundColorSpan by lazy(LazyThreadSafetyMode.NONE) {
         ForegroundColorSpan(MethodChecker.getColor(itemView.context, unifyR.color.Unify_RN500))
     }
 
-    private val fgColor: ForegroundColorSpan by lazy {
+    private val fgColor: ForegroundColorSpan by lazy(LazyThreadSafetyMode.NONE) {
         ForegroundColorSpan(
             MethodChecker.getColor(
                 itemView.context,
