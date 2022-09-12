@@ -13,7 +13,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/initialStateContainer"
-        android:name="com.tokopedia.tokofood.feature.search.initialstate.presentation.fragment.InitialStateFragment"
+        android:name="com.tokopedia.tokofood.feature.search.initialstate.presentation.fragment.InitialSearchStateFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
