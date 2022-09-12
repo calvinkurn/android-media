@@ -21,27 +21,17 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/home_component_divider_header"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container_recycler_vps_widget"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_component_vps_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:translationY="-5dp"
-        android:paddingBottom="4dp"
+        android:paddingHorizontal="12dp"
+        android:clipToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_component_header_view">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/home_component_vps_rv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="12dp"
-            android:clipToPadding="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
+        android:translationY="-5dp"
+        android:paddingBottom="11dp" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/home_component_divider_footer"
@@ -49,7 +39,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         tools:layout_height="8dp"
-        app:layout_constraintTop_toBottomOf="@id/container_recycler_vps_widget"
+        app:layout_constraintTop_toBottomOf="@id/home_component_vps_rv"
         tools:visibility="visible"
         tools:background="@color/Unify_B500"/>
 
