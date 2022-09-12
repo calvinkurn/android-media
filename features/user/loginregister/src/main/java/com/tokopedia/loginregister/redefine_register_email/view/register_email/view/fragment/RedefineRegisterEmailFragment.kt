@@ -83,6 +83,12 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         editorChangesListener()
     }
 
+    override fun getScreenName(): String = SCREEN_NAME
+
+    override fun initInjector() {
+        getComponent(RedefineRegisterEmailComponent::class.java).inject(this)
+    }
+
     private fun setUpValue() {
         binding?.apply {
             if(viewModel.currentEmail.isNotEmpty()) {
@@ -359,12 +365,6 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         val intent = intentGoToLoginWithEmail(email, paramSource, requireActivity())
         startActivity(intent)
         activity?.finish()
-    }
-
-    override fun getScreenName(): String = SCREEN_NAME
-
-    override fun initInjector() {
-        getComponent(RedefineRegisterEmailComponent::class.java).inject(this)
     }
 
     override fun onDestroyView() {

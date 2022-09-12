@@ -39,8 +39,8 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private var phoneError = RESOURCE_NOT_CHANGED
     private val _formState = SingleLiveEvent<Int>()
     val formState: LiveData<Int> get() = _formState
-    private val _isRegisteredPhone = SingleLiveEvent<RegisteredPhoneState>()
-    val isRegisteredPhone: LiveData<RegisteredPhoneState> get() = _isRegisteredPhone
+    private val _isRegisteredPhone = SingleLiveEvent<RegistrationPhoneState>()
+    val isRegisteredPhone: LiveData<RegistrationPhoneState> get() = _isRegisteredPhone
     private val _registerV2 = MutableLiveData<Result<Register>>()
     val registerV2: LiveData<Result<Register>> get() = _registerV2
     private val _getUserInfo = MutableLiveData<Result<GetUserInfoModel>>()
@@ -84,24 +84,24 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     }
 
     private fun registerCheck(phone: String) {
-        _isRegisteredPhone.value = RegisteredPhoneState.Loading()
+        _isRegisteredPhone.value = RegistrationPhoneState.Loading()
         launchCatchError(coroutineContext, {
             val response = registerCheckUseCase(phone)
 
             _isRegisteredPhone.value = when {
                 response.data.errors.isNotEmpty() -> {
-                    RegisteredPhoneState.Ineligible(message = response.data.errors[0])
+                    RegistrationPhoneState.Ineligible(message = response.data.errors[0])
                 }
                 response.data.isExist -> {
-                    RegisteredPhoneState.Registered(phoneNumber = phone)
+                    RegistrationPhoneState.Registration(phoneNumber = phone)
                 }
                 else -> {
-                    RegisteredPhoneState.Unregistered(phoneNumber = phone)
+                    RegistrationPhoneState.Unregistered(phoneNumber = phone)
                 }
             }
 
         }, {
-            _isRegisteredPhone.value = RegisteredPhoneState.Failed(throwable = it)
+            _isRegisteredPhone.value = RegistrationPhoneState.Failed(throwable = it)
         })
     }
 

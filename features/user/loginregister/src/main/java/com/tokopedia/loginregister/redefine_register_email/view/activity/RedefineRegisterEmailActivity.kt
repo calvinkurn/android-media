@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.redefine_register_email.di.DaggerRedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.viewmodel.RedefineRegisterViewModel
 import javax.inject.Inject
 
 class RedefineRegisterEmailActivity : BaseSimpleActivity(), HasComponent<RedefineRegisterEmailComponent> {

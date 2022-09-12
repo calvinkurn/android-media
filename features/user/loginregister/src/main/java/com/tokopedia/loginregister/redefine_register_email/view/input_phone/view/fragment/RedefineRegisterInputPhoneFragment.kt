@@ -37,9 +37,9 @@ import com.tokopedia.loginregister.redefine_register_email.common.intentGoToHome
 import com.tokopedia.loginregister.redefine_register_email.common.intentGoToLoginWithPhone
 import com.tokopedia.loginregister.redefine_register_email.common.intentGoToVerification
 import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
+import com.tokopedia.loginregister.redefine_register_email.view.activity.RedefineRegisterViewModel
 import com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.viewmodel.RedefineRegisterInputPhoneViewModel
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.viewmodel.RedefineRegisterViewModel
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.viewmodel.RegisteredPhoneState
+import com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.viewmodel.RegistrationPhoneState
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.network.utils.ErrorHandler
@@ -115,6 +115,12 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         initObserver()
         editorChangesListener()
         initRegisterRequest()
+    }
+
+    override fun getScreenName(): String = SCREEN_NAME
+
+    override fun initInjector() {
+        getComponent(RedefineRegisterEmailComponent::class.java).inject(this)
     }
 
     private fun showNavigateBackToolbar(isShow: Boolean) {
@@ -211,22 +217,22 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
         viewModel.isRegisteredPhone.observe(viewLifecycleOwner) {
             when (it) {
-                is RegisteredPhoneState.Loading -> {
+                is RegistrationPhoneState.Loading -> {
                     showRegisteredPhoneCheckLoading(true)
                 }
-                is RegisteredPhoneState.Registered -> {
+                is RegistrationPhoneState.Registration -> {
                     showRegisteredPhoneCheckLoading(false)
                     showDialogOfferLogin()
                 }
-                is RegisteredPhoneState.Unregistered -> {
+                is RegistrationPhoneState.Unregistered -> {
                     showRegisteredPhoneCheckLoading(false)
                     showDialogConfirmPhone(phone = it.message)
                 }
-                is RegisteredPhoneState.Ineligible -> {
+                is RegistrationPhoneState.Ineligible -> {
                     showRegisteredPhoneCheckLoading(false)
                     binding?.fieldInputPhone?.setMessageField(it.message)
                 }
-                is RegisteredPhoneState.Failed -> {
+                is RegistrationPhoneState.Failed -> {
                     showRegisteredPhoneCheckLoading(false)
 
                     when (it.throwable) {
@@ -311,6 +317,56 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun registerPushNotif() {
+        context?.let {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
+            val isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(
+                RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF,
+                false
+            )
+            if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                RegisterPushNotificationWorker.scheduleWorker(it)
+            }
+        }
+    }
+
+    private fun actionAfterLoggedIn() {
+        registerPushNotif()
+        saveFirstInstallTime()
+        activity?.let {
+            SubmitDeviceWorker.scheduleWorker(requireContext(), true)
+            DataVisorWorker.scheduleWorker(it, true)
+            AppAuthWorker.scheduleWorker(it, true)
+            TwoFactorMluHelper.clear2FaInterval(it)
+        }
+    }
+
+    private fun saveFirstInstallTime() {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(
+                LoginConstants.PrefKey.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE
+            )
+            sharedPrefs?.edit()?.putLong(
+                LoginConstants.PrefKey.KEY_FIRST_INSTALL_TIME_SEARCH, 0
+            )?.apply()
+        }
+    }
+
+    private fun reloadWithCondition() {
+        if (viewModel.registerV2.value is Fail) {
+            submitRegisterV2()
+        } else if (viewModel.getUserInfo.value is Fail) {
+            viewModel.getUserInfo()
+        } else if (viewModel.userPhoneUpdate.value is Fail) {
+            submitUpdatePhone()
+        }
+    }
+
+    private fun submitUpdatePhone() {
+        onEntireScreenLoading()
+        viewModel.userProfileUpdate(binding?.fieldInputPhone?.editText?.text.toString(), paramToken)
+    }
+
     private fun showGlobalError(errorType: Int) {
         binding?.globalError?.setType(errorType)
     }
@@ -373,56 +429,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun registerPushNotif() {
-        context?.let {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
-            val isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(
-                RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF,
-                false
-            )
-            if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                RegisterPushNotificationWorker.scheduleWorker(it)
-            }
-        }
-    }
-
-    private fun actionAfterLoggedIn() {
-        registerPushNotif()
-        saveFirstInstallTime()
-        activity?.let {
-            SubmitDeviceWorker.scheduleWorker(requireContext(), true)
-            DataVisorWorker.scheduleWorker(it, true)
-            AppAuthWorker.scheduleWorker(it, true)
-            TwoFactorMluHelper.clear2FaInterval(it)
-        }
-    }
-
-    private fun saveFirstInstallTime() {
-        context?.let {
-            sharedPrefs = it.getSharedPreferences(
-                LoginConstants.PrefKey.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE
-            )
-            sharedPrefs?.edit()?.putLong(
-                LoginConstants.PrefKey.KEY_FIRST_INSTALL_TIME_SEARCH, 0
-            )?.apply()
-        }
-    }
-
-    private fun reloadWithCondition() {
-        if (viewModel.registerV2.value is Fail) {
-            submitRegisterV2()
-        } else if (viewModel.getUserInfo.value is Fail) {
-            viewModel.getUserInfo()
-        } else if (viewModel.userPhoneUpdate.value is Fail) {
-            submitUpdatePhone()
-        }
-    }
-
-    private fun submitUpdatePhone() {
-        onEntireScreenLoading()
-        viewModel.userProfileUpdate(binding?.fieldInputPhone?.editText?.text.toString(), paramToken)
-    }
-
     private fun showRegisteredPhoneCheckLoading(isLoading: Boolean) {
         com.tokopedia.abstraction.common.utils.view.KeyboardHandler.hideSoftKeyboard(activity)
         binding?.btnSubmit?.isLoading = isLoading
@@ -481,6 +487,24 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         failedDialog.show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_REGISTER -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    submitRegisterV2()
+                }
+            }
+            RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_UPDATE_PROFILE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    paramToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+                    submitUpdatePhone()
+                }
+            }
+        }
+    }
+
     private fun goToVerification(phone: String, context: Context) {
 
         val otpType = if (paramIsRequiredInputPhone) {
@@ -504,24 +528,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_UPDATE_PROFILE
         }
         startActivityForResult(intent, otpResultCode)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when (requestCode) {
-            RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_REGISTER -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    submitRegisterV2()
-                }
-            }
-            RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_UPDATE_PROFILE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    paramToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
-                    submitUpdatePhone()
-                }
-            }
-        }
     }
 
     private fun goToPhoneLogin() {
@@ -566,12 +572,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private fun showToasterError(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(requireActivity(), throwable)
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-    }
-
-    override fun getScreenName(): String = SCREEN_NAME
-
-    override fun initInjector() {
-        getComponent(RedefineRegisterEmailComponent::class.java).inject(this)
     }
 
     override fun onDestroyView() {

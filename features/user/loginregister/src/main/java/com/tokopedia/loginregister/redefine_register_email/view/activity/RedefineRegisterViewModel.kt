@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.viewmodel
+package com.tokopedia.loginregister.redefine_register_email.view.activity
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
