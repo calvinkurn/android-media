@@ -170,4 +170,6 @@ object UohConsts {
     const val TDN_ADS_COUNT = 1
     const val TDN_DIMEN_ID = 3
     const val TDN_RADIUS = 16
+
+    const val PMS_IMAGE_URL = "https://images.tokopedia.net/img/android/uoh/saldo_tempo.png"
 }

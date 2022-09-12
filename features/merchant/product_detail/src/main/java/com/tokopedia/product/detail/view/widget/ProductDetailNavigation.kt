@@ -5,9 +5,9 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -31,13 +31,13 @@ class ProductDetailNavigation(
          */
         fun calculateFirstVisibleItemPosition(recyclerView: RecyclerView, offsetY: Int = Int.ZERO): Int {
             val layoutManager = recyclerView.layoutManager
-            if (layoutManager !is LinearLayoutManager) return -1
+            if (layoutManager !is CenterLayoutManager) return -1
 
             if (offsetY <= 0){
-                return layoutManager.findFirstVisibleItemPosition()
+                return layoutManager.findFirstVisibleItemPositions(null).firstOrNull() ?: -1
             }
 
-            val position = layoutManager.findFirstVisibleItemPosition()
+            val position = layoutManager.findFirstVisibleItemPositions(null).firstOrNull() ?: -1
             val someItem = layoutManager.findViewByPosition(position)
             val rectItem = Rect()
             someItem?.getGlobalVisibleRect(rectItem)

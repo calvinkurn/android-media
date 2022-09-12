@@ -110,7 +110,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.BlockActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
-import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
@@ -169,6 +168,7 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
@@ -202,7 +202,8 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
+import java.util.Stack
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -282,6 +283,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
+
+    /**
+     * Ticker Reminder flag, only 1 ticker can exist in 1 session
+     */
+    private var isTickerNotShownYet = true
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -602,8 +608,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun renderTickerReminderIfNotYet() {
-        val ticker = viewModel.srwTickerReminder.value
-        if (ticker != null && ticker is Success) {
+        val ticker = viewModel.tickerReminder.value
+        if (ticker != null && ticker is Success && isTickerNotShownYet) {
             onSuccessGetTickerReminder(ticker.data)
         }
     }
@@ -817,14 +823,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (isSeller()) {
             setupFirstTimeForSeller()
         }
+        viewModel.getTickerReminder(isSeller())
         interlocutorShopType = chatRoom.shopType
     }
 
     private fun setupFirstTimeForSeller() {
         viewModel.adjustInterlocutorWarehouseId(messageId)
-        if (!viewModel.isInTheMiddleOfThePage()) {
-            viewModel.getTickerReminder()
-        }
     }
 
     private fun reloadSrw() {
@@ -1019,6 +1023,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
+
+        renderTickerReminder(chatBubble)
+    }
+
+    private fun renderTickerReminder(chatBubble: BaseChatUiModel?) {
+        chatBubble?.tickerReminder?.let {
+            val reminderTickerUiModel = ReminderTickerUiModel.mapToReminderTickerUiModel(it)
+            if (isTickerNotShownYet) {
+                onSuccessGetTickerReminder(reminderTickerUiModel)
+            }
+        }
     }
 
     override fun loadData(page: Int) {}
@@ -1287,7 +1302,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 addSrwBubbleToChat()
             }
         })
-        viewModel.attachments
         onSendingMessage().invoke()
         sendAttachmentPreviews(sticker.intention)
         viewModel.sendSticker(sticker, referredMsg)
@@ -2803,7 +2817,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             }
         }
 
-        viewModel.srwTickerReminder.observe(viewLifecycleOwner) {
+        viewModel.tickerReminder.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTickerReminder(it.data)
                 else -> {}
@@ -3066,11 +3080,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun onSuccessGetTickerReminder(
         data: ReminderTickerUiModel
     ) {
-        if (!data.enable) return
-        val eligiblePosition = adapter.findSrwTickerPosition(data.regexMessage)
+        if (!data.isEnable) return
+        val eligiblePosition = adapter.findTickerPosition(data.replyId)
         if (eligiblePosition == RecyclerView.NO_POSITION) return
         adapter.addElement(eligiblePosition, data)
-        viewModel.removeTicker()
+        isTickerNotShownYet = false
+        if (getFirstVisibleItemPosition() == 0 && eligiblePosition == 0) {
+            rv?.smoothScrollToPosition(eligiblePosition)
+        }
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
@@ -3230,9 +3247,38 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return widgets
     }
 
-    override fun closeReminderTicker(element: ReminderTickerUiModel, position: Int) {
-        viewModel.closeTickerReminder(element)
+    override fun trackSeenTicker(element: ReminderTickerUiModel) {
+        TopChatAnalyticsKt.eventViewTicker(
+            element.getTickerFeature(),
+            isSeller(),
+            viewModel.roomMetaData.msgId,
+            element.replyId
+        )
+    }
+
+    override fun onClickLinkReminderTicker(element: ReminderTickerUiModel, linkUrl: String) {
+        TopChatAnalyticsKt.eventClickLinkTicker(
+            element.getTickerFeature(),
+            isSeller(),
+            viewModel.roomMetaData.msgId,
+            element.replyId
+        )
+
+        if (linkUrl.isNotEmpty()) {
+            RouteManager.route(context, linkUrl)
+        }
+    }
+
+    override fun onCloseReminderTicker(element: ReminderTickerUiModel, position: Int) {
+        TopChatAnalyticsKt.eventClickCloseTicker(
+            element.getTickerFeature(),
+            isSeller(),
+            viewModel.roomMetaData.msgId,
+            element.replyId
+        )
+        viewModel.closeTickerReminder(element, isSeller())
         adapter.removeViewHolder(element, position)
+        isTickerNotShownYet = true
     }
 
     private fun goToOCC() {

@@ -154,9 +154,6 @@ public class TopChatAnalytics {
         String CLICK_SRW = "click smart reply widget";
         String CLICK_UPDATE_STOCK = "click on update stock";
         String CLICK_THREE_BULLET_MENU = "click header - three bullet";
-        String IMPRESSION_SMART_REPLY_TICKER = "impression smart reply ticker";
-        String CLICK_CLOSE_TICKER = "click close on smart reply ticker";
-        String CLICK_CTA_TICKER = "click cta on smart reply ticker";
     }
 
     public interface Label {
@@ -575,51 +572,6 @@ public class TopChatAnalytics {
                         BusinessUnit.Communication,
                         CurrentSite.TokopediaMarketplace,
                         userId
-                )
-        );
-    }
-
-    // 23136
-    public void eventViewTickerReminder(String shopId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                createGeneralEvent(
-                        Name.VIEW_CHAT_DETAIL,
-                        Category.MESSAGE_ROOM,
-                        Action.IMPRESSION_SMART_REPLY_TICKER,
-                        String.valueOf(shopId),
-                        BusinessUnit.CommunicationMedia,
-                        CurrentSite.TokopediaMarketplace,
-                        null
-                )
-        );
-    }
-
-    // 23137
-    public void eventClickTickerReminderCta(String shopId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                createGeneralEvent(
-                        Name.CHAT_DETAIL,
-                        Category.MESSAGE_ROOM,
-                        Action.CLICK_CTA_TICKER,
-                        String.valueOf(shopId),
-                        BusinessUnit.CommunicationMedia,
-                        CurrentSite.TokopediaMarketplace,
-                        null
-                )
-        );
-    }
-
-    // 23138
-    public void eventCloseTickerReminder(String shopId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                createGeneralEvent(
-                        Name.CHAT_DETAIL,
-                        Category.MESSAGE_ROOM,
-                        Action.CLICK_CLOSE_TICKER,
-                        String.valueOf(shopId),
-                        BusinessUnit.CommunicationMedia,
-                        CurrentSite.TokopediaMarketplace,
-                        null
                 )
         );
     }
