@@ -48,7 +48,6 @@ class ProfileInfoInstrumentTest {
     fun header_profile_appear() {
         runTest {
             isViewsExists(listOf(R.id.profileInfoImageSubtitle, R.id.profileInfoImageUnify))
-            Thread.sleep(3000)
         }
     }
 
