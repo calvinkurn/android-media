@@ -632,21 +632,23 @@ class InitialStatePresenter @Inject constructor(
 
     override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch) {
         trackEventItemClicked(item)
+        val view = view ?: return
 
-        view?.route(item.applink, searchParameter)
-        view?.finish()
+        view.route(item.applink, searchParameter)
+        view.finish()
     }
 
     private fun trackEventItemClicked(item: BaseItemInitialStateSearch) {
+        val view = view ?: return
         when(item.type) {
             TYPE_SHOP ->
-                view?.trackEventClickRecentShop(
+                view.trackEventClickRecentShop(
                     item,
                     getRecentShopLabelForTracking(item),
                     getUserId(),
                 )
             else ->
-                view?.trackEventClickRecentSearch(
+                view.trackEventClickRecentSearch(
                     item,
                     getItemEventLabelForTracking(item),
                 )
@@ -697,9 +699,11 @@ class InitialStatePresenter @Inject constructor(
 
         this.recentSearchList = null
 
-        view?.trackEventClickSeeMoreRecentSearch(getUserId())
-        view?.dropKeyBoard()
-        view?.renderCompleteRecentSearch(recentSearchDataVisitable)
+        val view = view ?: return
+
+        view.trackEventClickSeeMoreRecentSearch(getUserId())
+        view.dropKeyBoard()
+        view.renderCompleteRecentSearch(recentSearchDataVisitable)
     }
 
     override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch) {
@@ -727,10 +731,11 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView) {
+        val view = view ?: return
         val label = getCuratedCampaignEventLabel(curatedCampaignDataView)
         val baseItemInitialState = curatedCampaignDataView.baseItemInitialState
 
-        view?.trackEventClickCuratedCampaignCard(
+        view.trackEventClickCuratedCampaignCard(
             getUserId(),
             label,
             baseItemInitialState,
@@ -738,38 +743,42 @@ class InitialStatePresenter @Inject constructor(
             baseItemInitialState.campaignCode
         )
 
-        view?.route(baseItemInitialState.applink, searchParameter)
-        view?.finish()
+        view.route(baseItemInitialState.applink, searchParameter)
+        view.finish()
     }
 
     override fun onRecentViewClicked(item: BaseItemInitialStateSearch) {
+        val view = view ?: return
         val label = "po: ${item.position} - applink: ${item.applink}"
-        view?.trackEventClickRecentView(item, label)
+        view.trackEventClickRecentView(item, label)
 
-        view?.route(item.applink, searchParameter)
-        view?.finish()
+        view.route(item.applink, searchParameter)
+        view.finish()
     }
 
     override fun onProductLineClicked(item: BaseItemInitialStateSearch) {
+        val view = view ?: return
         val label = "po: ${item.position} - applink: ${item.applink}"
-        view?.trackEventClickProductLine(item, getUserId(), label)
+        view.trackEventClickProductLine(item, getUserId(), label)
 
-        view?.route(item.applink, searchParameter)
-        view?.finish()
+        view.route(item.applink, searchParameter)
+        view.finish()
     }
 
     override fun onChipClicked(item: BaseItemInitialStateSearch) {
+        val view = view ?: return
         val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
-        view?.trackEventClickChip(getUserId(), label, item, item.featureId, item.dimension90)
+        view.trackEventClickChip(getUserId(), label, item, item.featureId, item.dimension90)
 
-        view?.route(item.applink, searchParameter)
-        view?.finish()
+        view.route(item.applink, searchParameter)
+        view.finish()
     }
 
     override fun onSearchBarEducationClick(item: BaseItemInitialStateSearch) {
-        view?.trackEventClickSearchBarEducation(item)
+        val view = view ?: return
+        view.trackEventClickSearchBarEducation(item)
 
-        view?.route(item.applink, searchParameter)
-        view?.finish()
+        view.route(item.applink, searchParameter)
+        view.finish()
     }
 }
