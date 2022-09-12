@@ -6,13 +6,16 @@ import android.content.ContentResolver
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
+import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.SpannedString
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -381,3 +384,16 @@ inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit):
     builder.builderAction()
     return SpannedString(builder)
 }
+
+inline fun SpannableStringBuilder.inSpans(
+    span: Any,
+    builderAction: SpannableStringBuilder.() -> Unit
+): SpannableStringBuilder {
+    val start = length
+    builderAction()
+    setSpan(span, start, length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+    return this
+}
+
+inline fun SpannableStringBuilder.bold(builderAction: SpannableStringBuilder.() -> Unit) =
+    inSpans(StyleSpan(Typeface.BOLD), builderAction = builderAction)

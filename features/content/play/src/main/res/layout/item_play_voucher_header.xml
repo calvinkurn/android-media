@@ -6,27 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="56dp">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.play_common.view.RemoteImageView
+        android:id="@+id/iv_header"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_margin="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_toped_left" />
+        app:imageUrl="@string/img_play_tokped_left"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/textView4"
+        android:id="@+id/tv_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/play_dp_12"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/iv_header"
+        app:layout_constraintTop_toTopOf="@+id/iv_header"
         app:typographyType="body_3"
         tools:text="Kupon bisa dipilih lewat keranjang jika ada barang dari toko Rockbros Indonesia." />
 </androidx.constraintlayout.widget.ConstraintLayout>

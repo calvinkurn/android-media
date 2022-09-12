@@ -5,7 +5,6 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -443,7 +442,7 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionPrivateVoucher(voucher: PlayVoucherUiModel.MerchantVoucherUiModel) {
+    fun impressionPrivateVoucher(voucher: PlayVoucherUiModel.Merchant) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,

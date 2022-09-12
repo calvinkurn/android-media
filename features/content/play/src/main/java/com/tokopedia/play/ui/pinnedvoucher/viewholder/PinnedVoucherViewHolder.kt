@@ -29,7 +29,7 @@ class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) : 
         tvVoucherDescription.setOnClickListener(childClickListener)
     }
 
-    fun bind(item: PlayVoucherUiModel.MerchantVoucherUiModel) {
+    fun bind(item: PlayVoucherUiModel.Merchant) {
         itemView.addOnImpressionListener(item.impressHolder) {
             listener.onVoucherImpressed(item, adapterPosition)
         }
@@ -51,7 +51,7 @@ class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) : 
     }
 
     interface Listener {
-        fun onVoucherImpressed(voucher: PlayVoucherUiModel.MerchantVoucherUiModel, position: Int)
-        fun onVoucherClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel)
+        fun onVoucherImpressed(voucher: PlayVoucherUiModel.Merchant, position: Int)
+        fun onVoucherClicked(voucher: PlayVoucherUiModel.Merchant)
     }
 }

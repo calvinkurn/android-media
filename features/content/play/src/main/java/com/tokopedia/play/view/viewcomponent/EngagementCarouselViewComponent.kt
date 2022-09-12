@@ -5,20 +5,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.engagement.adapter.EngagementWidgetAdapter
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.unifycomponents.PageControl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 /**
@@ -32,6 +35,8 @@ class EngagementCarouselViewComponent(
 ) : ViewComponent(container, resId) {
 
     private val carousel: RecyclerView = findViewById(R.id.rv_engagement_widget)
+    private val indicator: PageControl = findViewById(R.id.play_engagement_indicator)
+
     private var job: Job? = null
 
     private val carouselAdapter =
@@ -58,11 +63,23 @@ class EngagementCarouselViewComponent(
         PagerSnapHelper()
     }
 
-    private val linearLayoutManager =
+    private val linearLayoutManager by lazy (LazyThreadSafetyMode.NONE){
         LinearLayoutManager(rootView.context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                indicator.setCurrentIndicator(linearLayoutManager.findFirstCompletelyVisibleItemPosition())
+        }
+    }
+
+    private val size: Int
+        get() = carouselAdapter.itemCount
 
     private val touchListener = View.OnTouchListener { v, event ->
         if (event?.action == MotionEvent.ACTION_UP || event?.action == MotionEvent.ACTION_UP)
+            v.performClick()
             listener.onWidgetSwipe(this@EngagementCarouselViewComponent, v?.findViewById<ConstraintLayout>(R.id.cl_vh_engagement)?.tag.toString())
         false
     }
@@ -72,20 +89,31 @@ class EngagementCarouselViewComponent(
             adapter = carouselAdapter
             layoutManager = linearLayoutManager
             setOnTouchListener(touchListener)
+            addOnScrollListener(scrollListener)
         }
         snapHelper.attachToRecyclerView(carousel)
     }
 
     fun setData(list: List<EngagementUiModel>) {
         carouselAdapter.setItemsAndAnimateChanges(list)
-        startAutoScroll()
+        handleAutoScroll()
+        setupView()
     }
 
-    private fun startAutoScroll() {
-        val size = carouselAdapter.itemCount
+    private fun setupView() {
+        indicator.showWithCondition(size > 1)
+        indicator.setIndicator(size)
+
+        if (size == 1)
+            carousel.updateLayoutParams {
+                height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+    }
+
+    private fun handleAutoScroll() {
         if (size <= 1) return
         job?.cancel()
-        job = scope.launch {
+        job = scope.launchCatchError(block = {
             var count = 0
             repeat(Int.MAX_VALUE) {
                 delay(AUTO_SCROLL_DELAY)
@@ -96,7 +124,7 @@ class EngagementCarouselViewComponent(
                 }
                 carousel.smoothScrollToPosition(count)
             }
-        }
+        }, onError = {})
     }
 
     private fun stopAutoScroll() {
@@ -108,6 +136,7 @@ class EngagementCarouselViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         stopAutoScroll()
+        carousel.removeOnScrollListener(scrollListener)
     }
 
     interface Listener {

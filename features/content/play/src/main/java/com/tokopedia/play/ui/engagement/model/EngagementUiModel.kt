@@ -9,5 +9,5 @@ import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 
 sealed class EngagementUiModel{
     data class Game(val interactive: InteractiveUiModel): EngagementUiModel()
-    data class Promo(val info: PlayVoucherUiModel.MerchantVoucherUiModel, val size: Int): EngagementUiModel()
+    data class Promo(val info: PlayVoucherUiModel.Merchant, val size: Int): EngagementUiModel()
 }

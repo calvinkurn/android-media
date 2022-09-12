@@ -11,9 +11,9 @@ import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 /**
  * Created by jegul on 13/03/20
  */
-class VoucherPlaceholderAdapterDelegate : TypedAdapterDelegate<PlayVoucherUiModel.VoucherPlaceholderUiModel, PlayVoucherUiModel, RecyclerView.ViewHolder>(R.layout.item_play_voucher_placeholder) {
+class VoucherPlaceholderAdapterDelegate : TypedAdapterDelegate<PlayVoucherUiModel.Placeholder, PlayVoucherUiModel, RecyclerView.ViewHolder>(R.layout.item_play_voucher_placeholder) {
 
-    override fun onBindViewHolder(item: PlayVoucherUiModel.VoucherPlaceholderUiModel, holder: RecyclerView.ViewHolder) {
+    override fun onBindViewHolder(item: PlayVoucherUiModel.Placeholder, holder: RecyclerView.ViewHolder) {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): RecyclerView.ViewHolder {
