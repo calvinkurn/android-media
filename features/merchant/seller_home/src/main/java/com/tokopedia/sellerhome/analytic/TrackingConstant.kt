@@ -28,10 +28,9 @@ object TrackingConstant {
     const val CLICK_PG = "clickPG"
 
     //category
-    const val HOME = "home"
-    const val SELLER_APP = "seller app"
     const val TOP_NAV = "top nav"
     const val BOTTOM_NAV = "bottom nav"
+    const val SELLER_APP_HOME = "seller app - home"
 
     //action
     const val IMPRESSION_WIDGET_CARD = "impression widget card"
