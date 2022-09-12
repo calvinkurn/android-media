@@ -184,9 +184,11 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         viewModel.getEditState(originalUrl)?.let { editorUiModel ->
             viewBinding?.viewPager?.currentItem = clickedIndex
 
-            renderUndoButton(editorUiModel)
-            renderRedoButton(editorUiModel)
-            renderToolsIconActiveState(editorUiModel)
+            viewBinding?.viewPager?.post {
+                renderUndoButton(editorUiModel)
+                renderRedoButton(editorUiModel)
+                renderToolsIconActiveState(editorUiModel)
+            }
         }
     }
 
