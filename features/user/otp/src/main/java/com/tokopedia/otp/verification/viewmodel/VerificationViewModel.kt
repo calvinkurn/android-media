@@ -14,6 +14,9 @@ import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
+import com.tokopedia.otp.verification.domain.pojo.ParamGetModeList168
+import com.tokopedia.otp.verification.domain.pojo.ParamOtpRequest168
+import com.tokopedia.otp.verification.domain.pojo.ParamOtpValidate168
 import com.tokopedia.otp.verification.domain.usecase.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -36,12 +39,15 @@ open class VerificationViewModel @Inject constructor(
     private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
     private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
     private val getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase,
+    private val getModeList168UseCase: GetModeList168UseCase,
     private val checkPinHashV2UseCase: CheckPinHashV2UseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val otpValidateUseCase: OtpValidateUseCase,
     private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
+    private val otpValidate168UseCase: OtpValidate168UseCase,
     private val sendOtpUseCase: SendOtpUseCase,
     private val sendOtpUseCase2FA: SendOtp2FAUseCase,
+    private val sendOtpRequest168UseCase: SendOtpRequest168UseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: RemoteConfig,
     dispatcherProvider: CoroutineDispatchers
@@ -61,6 +67,44 @@ open class VerificationViewModel @Inject constructor(
 
     var done = false
     var isLoginRegisterFlow = false
+
+    fun getVerificationMethod168(
+        otpType: String,
+        validateToken: String,
+        email: String,
+        msisdn: String
+    ) {
+        launchCatchError(block = {
+            TkpdIdlingResource.increment()
+            val response = getModeList168UseCase(
+                ParamGetModeList168(
+                    otpType = otpType,
+                    msisdn = msisdn,
+                    email = email,
+                    validateToken = validateToken
+                )
+            )
+
+            when {
+                response.data.success -> {
+                    _getVerificationMethodResult.value = Success(response.data)
+                    TkpdIdlingResource.decrement()
+                }
+                response.data.errorMessage.isNotEmpty() -> {
+                    _getVerificationMethodResult.value =
+                        Fail(MessageErrorException(response.data.errorMessage))
+                    TkpdIdlingResource.decrement()
+                }
+                else -> {
+                    _getVerificationMethodResult.value = Fail(Throwable())
+                    TkpdIdlingResource.decrement()
+                }
+            }
+        }, onError = {
+            _getVerificationMethodResult.value = Fail(it)
+            TkpdIdlingResource.decrement()
+        })
+    }
 
     fun getVerificationMethod2FA(
         otpType: String,
@@ -174,6 +218,33 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
+    fun sendOtp168(
+        otpType: String,
+        mode: String,
+        msisdn: String,
+        email: String,
+        otpDigit: Int,
+        validateToken: String
+    ) {
+        launchCatchError(coroutineContext, {
+            TkpdIdlingResource.increment()
+            val response = sendOtpRequest168UseCase(
+                ParamOtpRequest168(
+                    otpType = otpType,
+                    mode = mode,
+                    msisdn = msisdn,
+                    email = email,
+                    otpDigit = otpDigit,
+                    validateToken = validateToken
+                )
+            )
+            val data = response.data
+            _sendOtpResult.value = Success(data)
+        }, {
+            _sendOtpResult.postValue(Fail(it))
+        })
+    }
+
     fun sendOtp2FA(
         otpType: String,
         mode: String,
@@ -219,6 +290,42 @@ open class VerificationViewModel @Inject constructor(
         }, {
             _sendOtpResult.postValue(Fail(it))
             TkpdIdlingResource.decrement()
+        })
+    }
+
+    fun otpValidate168(
+        code: String,
+        otpType: String,
+        mode: String,
+        msisdn: String,
+        email: String,
+        validateToken: String
+    ) {
+        launchCatchError(coroutineContext, {
+            val params = ParamOtpValidate168(
+                code,
+                otpType,
+                mode,
+                msisdn,
+                email,
+                validateToken
+            )
+
+            val data = otpValidate168UseCase(params).data
+
+            when {
+                data.success -> {
+                    _otpValidateResult.value = Success(data)
+                }
+                data.errorMessage.isNotEmpty() -> {
+                    _otpValidateResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                }
+                else -> {
+                    _otpValidateResult.postValue(Fail(Throwable()))
+                }
+            }
+        }, {
+            _otpValidateResult.postValue(Fail(it))
         })
     }
 

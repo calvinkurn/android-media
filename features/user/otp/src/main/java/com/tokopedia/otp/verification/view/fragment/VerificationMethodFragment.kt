@@ -255,7 +255,14 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     open fun getVerificationMethod() {
         showLoading()
         val otpType = otpData.otpType.toString()
-        if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
+        if (otpType == OtpConstant.OtpType.OTP_TYPE_168.toString()) {
+            viewmodel.getVerificationMethod168(
+                otpType = otpType,
+                msisdn = otpData.msisdn,
+                email = otpData.email,
+                validateToken = otpData.accessToken
+            )
+        } else if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
                 && otpData.userIdEnc.isNotEmpty()) {
             viewmodel.getVerificationMethod2FA(
                     otpType = otpType,
