@@ -83,6 +83,26 @@
     <string name="error_empty_product_price">Harga produk tidak boleh kosong</string>
     <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100</string>
 
+    <!-- add edit product price suggestion -->
+    <string name="label_price_suggestion_range">Kisaran rekomendasi</string>
+    <string name="label_price_range">Kisaran harga:</string>
+    <string name="price_suggestion_range">%1s - %2s</string>
+    <string name="label_check_detail">Lihat Detail</string>
+    <string name="label_is_competitive">Sudah kompetitif</string>
+    <string name="label_competitive_product_size">%s produk terkompetitif</string>
+    <string name="label_best_recommendation">Rekomendasi terbaik:</string>
+    <string name="label_price_recommendation">Rekomendasi Harga</string>
+    <string name="label_about_price_recommendation">Tentang rekomendasi harga</string>
+    <string name="action_apply_price_recommendation">Terapkan</string>
+    <string name="label_range_and_recommendation">Kisaran dan Rekomendasi</string>
+    <string name="content_range_and_recommendation">Rekomendasi berdasarkan kategori produk dan harga paling kompetitif 1 minggu terakhir.</string>
+    <string name="label_most_competitive_product">Produk Terkompetitif</string>
+    <string name="content_most_competitive_product">Info harga, ulasan, dan jumlah terjual diperoleh sesuai lamanya produk berikut ini dijual.</string>
+    <string name="label_learn_more">Pelajari Selengkapnya</string>
+    <string name="label_or">atau</string>
+    <string name="label_feedback">Beri Masukan</string>
+    <string name="label_sold_product">Terjual %s</string>
+
     <!-- add edit product price recommendation -->
     <string name="title_price_recommendation">Rekomendasi Harga Pasar</string>
     <string name="title_price_recommendation_applied">Rekomendasi harga sudah diterapkan</string>

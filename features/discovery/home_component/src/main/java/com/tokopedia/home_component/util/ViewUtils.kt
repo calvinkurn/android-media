@@ -14,16 +14,21 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.dpToPx
 
 /**
  * Created by Lukas on 2019-08-20
  */
 object ChannelWidgetUtil {
+    private const val DIVIDER_HEIGHT = 1f
+
     fun validateHomeComponentDivider(
         channelModel: ChannelModel?,
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?
     ) {
+        dividerTop?.layoutParams?.height = DIVIDER_HEIGHT.dpToPx().toInt()
+        dividerBottom?.layoutParams?.height = DIVIDER_HEIGHT.dpToPx().toInt()
         when(channelModel?.channelConfig?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
