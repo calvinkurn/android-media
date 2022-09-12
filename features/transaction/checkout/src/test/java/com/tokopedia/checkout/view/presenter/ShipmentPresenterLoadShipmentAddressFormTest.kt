@@ -167,6 +167,24 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
+    fun firstLoadCheckoutPage_ShouldShipmentAddressFormEmpty() {
+        // Given
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData?) -> Unit>().invoke(null)
+        }
+        every { shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(any()) } just Runs
+
+        // When
+        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.onShipmentAddressFormEmpty()
+        }
+    }
+
+    @Test
     fun firstLoadCheckoutPageError_ShouldHideInitialLoadingAndShowToastError() {
         // Given
         val errorMessage = "error"
