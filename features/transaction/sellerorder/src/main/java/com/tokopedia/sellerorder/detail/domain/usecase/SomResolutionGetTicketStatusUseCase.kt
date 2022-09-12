@@ -27,17 +27,17 @@ class SomResolutionGetTicketStatusUseCase @Inject constructor(
         setTypeClass(GetResolutionTicketStatusResponse::class.java)
     }
 
-    suspend fun execute(): Result<GetResolutionTicketStatusResponse> {
+    suspend fun execute(): GetResolutionTicketStatusResponse {
         val response = executeOnBackground()
         val errors = response.resolutionGetTicketStatus?.messageError
         return try {
             if (errors.isNullOrEmpty()) {
-                Success(response)
+                response
             } else {
-                Fail(MessageErrorException(errors.firstOrNull() ?: ERROR_MESSAGE))
+                throw MessageErrorException(ERROR_MESSAGE)
             }
         } catch (e: Exception) {
-            Fail(e)
+            throw e
         }
     }
 

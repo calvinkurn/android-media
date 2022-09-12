@@ -31,7 +31,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
         return mapOf(VAR_PARAM_ORDERID to orderId, VAR_PARAM_LANG to PARAM_LANG_ID)
     }
 
-    suspend fun execute(orderId: String): Result<GetSomDetailResponse> {
+    suspend fun execute(orderId: String): GetSomDetailResponse {
         val getSomDetailResponse = GetSomDetailResponse()
         val somDynamicPriceParams = createParamDynamicPrice(orderId)
         val somDetailRequestParam = createParamGetOrderDetail(orderId)
@@ -45,10 +45,9 @@ class SomGetOrderDetailUseCase @Inject constructor(
             val gqlResponse = graphQlRepository.response(multipleRequest)
             getSomDetailResponse.getSomDetail = requireNotNull(gqlResponse.getData<SomDetailOrder.Data>(SomDetailOrder.Data::class.java).getSomDetail)
             getSomDetailResponse.somDynamicPriceResponse = requireNotNull(gqlResponse.getData<SomDynamicPriceResponse>(SomDynamicPriceResponse::class.java).getSomDynamicPrice)
-            Success(getSomDetailResponse)
+            getSomDetailResponse
         } catch (e: Throwable) {
-            if (e is CancellationException) throw e
-            Fail(e)
+            throw e
         }
     }
 

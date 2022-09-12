@@ -22,30 +22,19 @@ class SomGetOrderDetailWithResolutionUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): Result<GetSomDetailResponse> {
-        try {
+        return try {
             val orderId: String = useCaseRequestParams.parameters[ORDER_ID_PARAM] as String
             val detailResponse = somGetOrderDetailUseCase.execute(orderId)
-            if (detailResponse is Success) {
-                if (detailResponse.data.getSomDetail?.hasResoStatus.orFalse()) {
-                    val orderIdLong = orderId.toLongOrZero()
-                    val params = HashMap<String, Any?>()
-                    params[ORDER_ID_PARAM] = orderIdLong
-                    somResolutionGetTicketStatusUseCase.setRequestParams(params)
-                    val resolutionResponse = somResolutionGetTicketStatusUseCase.execute()
-                    return if (resolutionResponse is Success) {
-                        detailResponse.data.somResolution = resolutionResponse
-                            .data.resolutionGetTicketStatus?.data
-                        detailResponse
-                    } else {
-                        detailResponse.data.somResolution = GetResolutionTicketStatusResponse
-                                                                .ResolutionGetTicketStatus.ResolutionData()
-                        detailResponse
-                    }
-                } else {
-                    return detailResponse
-                }
+            if (detailResponse.getSomDetail?.hasResoStatus.orFalse()) {
+                val orderIdLong = orderId.toLongOrZero()
+                val params = HashMap<String, Any?>()
+                params[ORDER_ID_PARAM] = orderIdLong
+                somResolutionGetTicketStatusUseCase.setRequestParams(params)
+                val resolutionResponse = somResolutionGetTicketStatusUseCase.execute()
+                detailResponse.somResolution = resolutionResponse.resolutionGetTicketStatus?.data
+                Success(detailResponse)
             } else {
-                return detailResponse
+                Success(detailResponse)
             }
         } catch (e: Exception) {
             return Fail(e)
