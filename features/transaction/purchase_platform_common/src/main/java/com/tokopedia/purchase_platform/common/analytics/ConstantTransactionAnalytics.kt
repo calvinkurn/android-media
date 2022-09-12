@@ -383,6 +383,10 @@ object ConstantTransactionAnalytics {
         const val VIEW_GOTOPLUS_TICKER = "view gotoplus ticker"
         const val VIEW_GOTOPLUS_UPSELL_TICKER = "view gotoplus upsell ticker"
         const val CLICK_GOTOPLUS_UPSELL_TICKER = "click gotoplus upsell ticker"
+        const val VIEW_GOTOPLUS_CROSS_SELL_CEK_PLUS = "view gotoplus cross sell - cek plus"
+        const val VIEW_GOTOPLUS_CROSS_SELL_BATAL = "view gotoplus cross sell - batal"
+        const val CLICK_GOTOPLUS_CROSS_SELL_CEK_PLUS = "click gotoplus cross sell - cek plus"
+        const val CLICK_GOTOPLUS_CROSS_SELL_BATAL = "click gotoplus cross sell - batal"
     }
 
     object EventLabel {
@@ -474,6 +478,11 @@ object ConstantTransactionAnalytics {
         const val VIEW_GOTOPLUS_UPSELL_TICKER = "33466"
         const val CLICK_GOTOPLUS_UPSELL_TICKER = "33467"
         const val VIEW_GOTOPLUS_TICKER_OCC = "33468"
+        const val VIEW_GOTOPLUS_CROSS_SELL_CEK_PLUS = "36316"
+        const val VIEW_GOTOPLUS_CROSS_SELL_BATAL = "36318"
+        const val CLICK_GOTOPLUS_CROSS_SELL_CEK_PLUS = "36317"
+        const val CLICK_GOTOPLUS_CROSS_SELL_BATAL = "36319"
+
         const val CLICK_BAYAR_OCC = "15570"
     }
 }

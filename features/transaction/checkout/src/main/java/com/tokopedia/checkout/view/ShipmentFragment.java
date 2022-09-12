@@ -3614,6 +3614,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onClickApplyNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel) {
         startActivityForResult(UpsellWebViewActivity.Companion.getStartIntent(requireContext(), shipmentUpsellModel.getAppLink(), true, true, false, ""), REQUEST_CODE_UPSELL);
+        checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel.isSelected());
     }
 
     @Override
@@ -3622,6 +3623,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.cancelUpsell(true, isOneClickShipment(), isTradeIn(), true,
                 false, null, getDeviceId(), getCheckoutLeasingId(),
                 isPlusSelected());
+        checkoutAnalyticsCourierSelection.eventClickNewUpsell(shipmentUpsellModel.isSelected());
     }
 
     @Override
