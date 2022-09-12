@@ -31,6 +31,7 @@ import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
@@ -167,6 +168,9 @@ object CartUiModelMapper {
                 if (availableGroup.giftingAddOn.addOnIds.isNotEmpty()) {
                     addOnId = availableGroup.giftingAddOn.addOnIds[0]
                 }
+                warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero()
+                isPo = availableGroup.shipmentInformation.preorder.isPreorder
+                poDuration = availableGroup.cartDetails[0].products[0].productPreorder.durationDay.toString()
                 boCode = cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull { it.uniqueId == cartString && it.shippingId > 0
                     && it.spId > 0 && it.type == "logistic" }?.code ?: ""
             }
@@ -282,6 +286,9 @@ object CartUiModelMapper {
                     isCollapsible = isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
                     isCollapsed = isCollapsible
                     isError = true
+                    warehouseId = unavailableGroup.warehouse.warehouseId.toLongOrZero()
+                    isPo = unavailableGroup.shipmentInformation.preorder.isPreorder
+                    poDuration = unavailableGroup.cartDetails[0].products[0].productPreorder.durationDay.toString()
                 }
                 unavailableSectionList.add(shopUiModel)
             }

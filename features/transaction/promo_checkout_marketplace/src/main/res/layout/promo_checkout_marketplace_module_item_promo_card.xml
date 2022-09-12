@@ -302,7 +302,7 @@
         android:id="@+id/last_promo_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card_promo_item" />
 
@@ -310,7 +310,7 @@
         android:id="@+id/last_promo_divider_2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="4dp"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/last_promo_divider" />

@@ -2,6 +2,7 @@ package com.tokopedia.cart.view.mapper
 
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
@@ -68,6 +69,9 @@ object PromoRequestMapper {
                     shopId = cartShopHolderData.shopId.toLongOrZero()
                     uniqueId = cartShopHolderData.cartString
                     boType = cartShopHolderData.boMetadata.boType
+                    warehouseId = cartShopHolderData.warehouseId
+                    isPo = cartShopHolderData.isPo
+                    poDuration = cartShopHolderData.poDuration.toIntOrZero()
                 }
                 tmpOrders.add(ordersItem)
             }
@@ -235,8 +239,12 @@ object PromoRequestMapper {
         val orders = arrayListOf<ClearPromoOrder>()
         availableCartShopHolderDataList.forEach { cartShopHolderData ->
             val order = ClearPromoOrder(
-                    uniqueId = cartShopHolderData.cartString,
-                    boType = cartShopHolderData.boMetadata.boType,
+                uniqueId = cartShopHolderData.cartString,
+                boType = cartShopHolderData.boMetadata.boType,
+                shopId = cartShopHolderData.shopId.toLongOrZero(),
+                warehouseId = cartShopHolderData.warehouseId,
+                isPo = cartShopHolderData.isPo,
+                poDuration = cartShopHolderData.poDuration,
             )
             orders.add(order)
         }
@@ -245,8 +253,11 @@ object PromoRequestMapper {
         if (promoData is PromoUiModel) {
             promoData.voucherOrderUiModels.forEach { voucherOrder ->
                 orders.forEach { order ->
-                    if (voucherOrder.uniqueId == order.uniqueId && voucherOrder.shippingId > 0
-                            && voucherOrder.spId > 0 && voucherOrder.type == "logistic") {
+                    if (voucherOrder.uniqueId == order.uniqueId
+                        && voucherOrder.shippingId > 0
+                        && voucherOrder.spId > 0
+                        && voucherOrder.type == "logistic"
+                    ) {
                         order.codes.add(voucherOrder.code)
                         hasBo = true
                     }
@@ -256,8 +267,11 @@ object PromoRequestMapper {
         } else if (promoData is LastApplyPromo) {
             promoData.lastApplyPromoData.listVoucherOrders.forEach { voucherOrders ->
                 orders.forEach { order ->
-                    if (voucherOrders.uniqueId == order.uniqueId && voucherOrders.shippingId > 0
-                            && voucherOrders.spId > 0 && voucherOrders.type == "logistic") {
+                    if (voucherOrders.uniqueId == order.uniqueId
+                        && voucherOrders.shippingId > 0
+                        && voucherOrders.spId > 0
+                        && voucherOrders.type == "logistic"
+                    ) {
                         order.codes.add(voucherOrders.code)
                         hasBo = true
                     }

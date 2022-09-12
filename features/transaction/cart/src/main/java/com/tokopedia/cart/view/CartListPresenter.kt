@@ -1640,9 +1640,13 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                             codes = it.codes,
                             orders = it.orders.map { order ->
                                 ClearPromoOrder(
-                                        uniqueId = order.uniqueId,
-                                        boType = order.boType,
-                                        codes = order.codes
+                                    uniqueId = order.uniqueId,
+                                    boType = order.boType,
+                                    codes = order.codes,
+                                    shopId = order.shopId,
+                                    warehouseId = order.warehouseId,
+                                    isPo = order.isPo,
+                                    poDuration = order.poDuration.toString(),
                                 )
                             }
                     )

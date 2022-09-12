@@ -84,9 +84,12 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                         ClearPromoOrderData(
                                 orders = listOf(
                                         ClearPromoOrder(
-                                                uniqueId = orderCart.cartString,
-                                                boType = orderCart.shop.boMetadata.boType,
-                                                codes = arrayListOf(oldPromoCode)
+                                            uniqueId = orderCart.cartString,
+                                            boType = orderCart.shop.boMetadata.boType,
+                                            codes = arrayListOf(oldPromoCode),
+                                            isPo = orderCart.products[0].isPreOrder == 1,
+                                            poDuration = orderCart.products[0].preOrderDuration.toString(),
+                                            warehouseId = orderCart.shop.warehouseId,
                                         )
                                 )
                         )
@@ -174,9 +177,13 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                 codes = notEligiblePromoHolderdataList.mapNotNull { if (it.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) it.promoCode else null },
                                 orders = listOf(
                                         ClearPromoOrder(
-                                                uniqueId = orderCart.cartString,
-                                                boType = orderCart.shop.boMetadata.boType,
-                                                codes = notEligiblePromoHolderdataList.mapNotNull { if (it.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) null else it.promoCode }.toMutableList()
+                                            uniqueId = orderCart.cartString,
+                                            boType = orderCart.shop.boMetadata.boType,
+                                            codes = notEligiblePromoHolderdataList.mapNotNull { if (it.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) null else it.promoCode }
+                                                .toMutableList(),
+                                            warehouseId = orderCart.shop.warehouseId,
+                                            isPo = orderCart.products[0].isPreOrder == 1,
+                                            poDuration = orderCart.products[0].preOrderDuration.toString(),
                                         )
                                 )
                         )
@@ -266,6 +273,9 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         ordersItem.shopId = orderCart.shop.shopId
         ordersItem.uniqueId = orderCart.cartString
         ordersItem.boType = orderCart.shop.boMetadata.boType
+        ordersItem.warehouseId = orderCart.shop.warehouseId
+        ordersItem.isPo = orderCart.products[0].isPreOrder == 1
+        ordersItem.poDuration = orderCart.products[0].preOrderDuration
 
         val productDetails: ArrayList<ProductDetailsItem> = ArrayList()
         orderCart.products.forEach {
@@ -401,9 +411,12 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                 codes = validateUsePromoRequest.codes,
                                 orders = listOf(
                                         ClearPromoOrder(
-                                                uniqueId = order.uniqueId,
-                                                boType = order.boType,
-                                                codes = order.codes
+                                            uniqueId = order.uniqueId,
+                                            boType = order.boType,
+                                            codes = order.codes,
+                                            warehouseId = order.warehouseId,
+                                            isPo = order.isPo,
+                                            poDuration = order.poDuration.toString(),
                                         )
                                 )
                         )

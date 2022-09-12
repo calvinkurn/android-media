@@ -984,7 +984,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     //------------------------------------//
 
     fun clearPromo(
-        promoRequest: PromoRequest,
         validateUsePromoRequest: ValidateUsePromoRequest,
         bboPromoCodes: ArrayList<String>,
         clearPromoParam: ClearPromoRequest = ClearPromoRequest()
@@ -1006,6 +1005,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 clearOrder = ClearPromoOrder(
                         uniqueId = order.uniqueId,
                         boType = order.boType,
+                        shopId = order.shopId,
+                        isPo = order.isPo,
+                        poDuration = order.poDuration.toString(),
+                        warehouseId = order.warehouseId
                 )
                 orders.add(clearOrder)
             }
