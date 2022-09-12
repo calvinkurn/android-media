@@ -242,15 +242,6 @@ class PlayAnalytic(
         )
     }
 
-    fun scrollMerchantVoucher(lastPositionViewed: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "scroll merchant voucher",
-                "$mChannelId - $lastPositionViewed"
-        )
-    }
-
     fun clickActionProductWithVariant(productId: String, productAction: ProductAction) {
         when(productAction) {
             ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)

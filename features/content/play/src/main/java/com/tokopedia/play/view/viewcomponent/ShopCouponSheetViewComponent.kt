@@ -36,8 +36,6 @@ class ShopCouponSheetViewComponent(
     private val clContent: ConstraintLayout = findViewById(R.id.cl_coupon_content)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
 
-    private var isShopCouponSheetsInitialized = false
-
     private val voucherAdapter =
         MerchantVoucherAdapter(object : MerchantVoucherNewViewHolder.Listener {
             override fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel) {
@@ -49,26 +47,20 @@ class ShopCouponSheetViewComponent(
             }
         })
 
-    private val layoutManagerVoucherList =
-        object : LinearLayoutManager(rvVoucherList.context, RecyclerView.VERTICAL, false) {
-            override fun onLayoutCompleted(state: RecyclerView.State?) {
-                super.onLayoutCompleted(state)
-                listener.onVouchersImpressed(
-                    this@ShopCouponSheetViewComponent,
-                    getVisibleVouchers()
-                )
-            }
-        }
+    private val layoutManagerVoucher =
+        LinearLayoutManager(rvVoucherList.context, RecyclerView.VERTICAL, false)
+
+    private var voucherList = emptyList<PlayVoucherUiModel.MerchantVoucherUiModel>()
 
     private val voucherScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            val layoutManager = recyclerView.layoutManager
-            if (newState == RecyclerView.SCROLL_STATE_SETTLING &&
-                layoutManager is LinearLayoutManager
+            if (newState == RecyclerView.SCROLL_STATE_IDLE &&
+                recyclerView.layoutManager is LinearLayoutManager
             ) {
-                listener.onVoucherScrolled(
+                val index = layoutManagerVoucher.findFirstCompletelyVisibleItemPosition()
+                listener.onVouchersImpressed(
                     this@ShopCouponSheetViewComponent,
-                    layoutManager.findLastVisibleItemPosition()
+                    voucherList[index].id
                 )
             }
         }
@@ -80,7 +72,12 @@ class ShopCouponSheetViewComponent(
             vBottomOverlay.layoutParams = vBottomOverlay.layoutParams.apply {
                 height = insets.systemWindowInsetBottom
             }
-            clContent.setPadding(clContent.paddingLeft, clContent.paddingTop, clContent.paddingRight, insets.systemWindowInsetBottom)
+            clContent.setPadding(
+                clContent.paddingLeft,
+                clContent.paddingTop,
+                clContent.paddingRight,
+                insets.systemWindowInsetBottom
+            )
 
             insets
         }
@@ -91,7 +88,7 @@ class ShopCouponSheetViewComponent(
             }
 
         rvVoucherList.apply {
-            layoutManager = layoutManagerVoucherList
+            layoutManager = layoutManagerVoucher
             adapter = voucherAdapter
             addItemDecoration(MerchantVoucherItemDecoration(rvVoucherList.context))
         }
@@ -110,6 +107,8 @@ class ShopCouponSheetViewComponent(
     }
 
     fun setVoucherList(voucherList: List<PlayVoucherUiModel>) {
+        this.voucherList = voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
+
         rvVoucherList.shouldShowWithAction(voucherList.isNotEmpty()) {
             voucherAdapter.setItemsAndAnimateChanges(voucherList)
         }
@@ -123,29 +122,6 @@ class ShopCouponSheetViewComponent(
             rootView.layoutParams = layoutParams
         }
         show()
-        sendImpression()
-    }
-
-    fun getVisibleVouchers(): List<PlayVoucherUiModel.MerchantVoucherUiModel> {
-        val vouchers = voucherAdapter.getItems()
-        if (vouchers.isNotEmpty()) {
-            val startPosition = layoutManagerVoucherList.findFirstCompletelyVisibleItemPosition()
-            val endPosition = layoutManagerVoucherList.findLastCompletelyVisibleItemPosition()
-            if (startPosition > -1 && endPosition < vouchers.size) {
-                return vouchers
-                    .slice(startPosition..endPosition)
-                    .filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
-            }
-        }
-        return emptyList()
-    }
-
-    private fun sendImpression() {
-        if (isShopCouponSheetsInitialized) {
-            listener.onVouchersImpressed(this@ShopCouponSheetViewComponent, getVisibleVouchers())
-        }
-        else isShopCouponSheetsInitialized = true
-
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -155,16 +131,16 @@ class ShopCouponSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: ShopCouponSheetViewComponent)
-        fun onVoucherScrolled(view: ShopCouponSheetViewComponent, lastPositionViewed: Int)
         fun onVouchersImpressed(
             view: ShopCouponSheetViewComponent,
-            vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel>
+            voucherId: String
         )
 
         fun onCopyVoucherCodeClicked(
             view: ShopCouponSheetViewComponent,
             voucher: PlayVoucherUiModel.MerchantVoucherUiModel
         )
+
         fun onVoucherItemClicked(
             view: ShopCouponSheetViewComponent,
             voucher: PlayVoucherUiModel.MerchantVoucherUiModel

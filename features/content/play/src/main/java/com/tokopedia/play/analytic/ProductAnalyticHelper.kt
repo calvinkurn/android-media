@@ -5,7 +5,6 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
-
 /**
  * Created by mzennis on 20/04/21.
  */
@@ -16,9 +15,6 @@ class ProductAnalyticHelper(
 
     @TrackingField
     private val impressedProducts = mutableListOf<Pair<PlayProductUiModel.Product, Int>>()
-
-    @TrackingField
-    private val impressedVouchers = mutableListOf<PlayVoucherUiModel.MerchantVoucherUiModel>()
 
     private var sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
 
@@ -34,14 +30,6 @@ class ProductAnalyticHelper(
         sectionInfo = section
     }
 
-    fun trackImpressedVouchers(vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel>) {
-        if (vouchers.isNotEmpty()) impressedVouchers.addAll(vouchers)
-    }
-
-    fun sendImpressedProductSheets() {
-        sendImpressedPrivateVoucher()
-    }
-
     /**
      * Send double tracker due to DA request
      */
@@ -49,12 +37,6 @@ class ProductAnalyticHelper(
         analytic.impressFeaturedProducts(getFinalProducts())
         if(partner == PartnerType.TokoNow) newAnalytic.impressFeaturedProductNow(getFinalProducts())
         clearProducts()
-    }
-
-    private fun sendImpressedPrivateVoucher() {
-        val voucher = impressedVouchers.distinctBy { it.id }.firstOrNull { it.highlighted }
-        voucher?.let { analytic.impressionPrivateVoucher(it) }
-        impressedVouchers.clear()
     }
 
     private fun getFinalProducts() = impressedProducts.distinctBy { it.first.id }

@@ -271,8 +271,8 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.hideCouponSheet()
     }
 
-    override fun onVouchersImpressed(view: ShopCouponSheetViewComponent, vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel>) {
-        trackImpressedVoucher(vouchers)
+    override fun onVouchersImpressed(view: ShopCouponSheetViewComponent, voucherId: String) {
+        if (playViewModel.bottomInsets.isCouponSheetsShown) newAnalytic.impressVoucherBottomSheet(voucherId)
     }
 
     override fun onCopyVoucherCodeClicked(view: ShopCouponSheetViewComponent, voucher: PlayVoucherUiModel.MerchantVoucherUiModel) {
@@ -302,10 +302,6 @@ class PlayBottomSheetFragment @Inject constructor(
         )
         newAnalytic.impressToasterPublic()
         newAnalytic.clickToasterPublic()
-    }
-
-    override fun onVoucherScrolled(view: ShopCouponSheetViewComponent, lastPositionViewed: Int) {
-        analytic.scrollMerchantVoucher(lastPositionViewed)
     }
 
     fun showVariantSheet(
@@ -697,10 +693,6 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(SendUpcomingReminder(productSectionUiModel))
     }
 
-    private fun trackImpressedVoucher(vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
-        if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
-    }
-
     override fun onInformationClicked(
         view: ProductSheetViewComponent
     ) {
@@ -736,7 +728,6 @@ class PlayBottomSheetFragment @Inject constructor(
                 voucherList = tagItem.voucher.voucherList,
                 title = bottomSheetTitle,
             )
-            productAnalyticHelper.sendImpressedProductSheets()
         } else {
             productSheetView.showEmpty(emptyBottomSheetInfoUi)
         }
