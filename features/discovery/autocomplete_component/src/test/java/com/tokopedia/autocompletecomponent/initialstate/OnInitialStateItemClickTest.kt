@@ -366,6 +366,8 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     private fun `Then verify searchbar education track`(item: BaseItemInitialStateSearch) {
         verify {
             initialStateView.trackEventClickSearchBarEducation(item)
+            initialStateView.route(item.applink, initialStatePresenter.getSearchParameter())
+            initialStateView.finish()
         }
     }
 
