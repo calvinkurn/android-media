@@ -140,7 +140,6 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
             submissionEndDate: Date
         ) {
             val onTimerFinished = {
-                binding.timer.gone()
                 binding.tpgCampaignStatus.text = binding.tpgCampaignStatus.context.getString(R.string.stfs_status_registration_closed)
                 binding.imgFlashSale.dimmed()
                 binding.btnRegister.text = binding.btnRegister.context.getString(R.string.stfs_view_detail)
@@ -154,6 +153,7 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
             }
 
             if (distanceMinuteToSubmissionEndDate < 0) {
+                binding.timer.gone()
                 onTimerFinished()
             } else {
                 binding.timer.visible()
