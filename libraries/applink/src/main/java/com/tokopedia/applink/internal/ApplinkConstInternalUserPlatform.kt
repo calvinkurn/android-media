@@ -142,4 +142,14 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val OTP_PUSH_NOTIF_SETTING = "${NEW_INTERNAL_USER}/otp-push-notif-setting"
 
+    /**
+     * com.tokopedia.loginregister.redefine_register_email.view.activity.RedefineRegisterEmailActivity
+     * @Applink : tokopedia-android-internal://user/redefine-register-email
+     * @param
+     * Required : [ApplinkConstInternalGlobal.PARAM_SOURCE] (type: String)
+     * Required : [PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE] (type: Boolean)
+     **/
+    const val REDEFINE_REGISTER_EMAIL = "$NEW_INTERNAL_USER/redefine-register-email"
+    const val PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE = "register_required_input_phone"
+
 }

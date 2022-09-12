@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android{
     defaultConfig {
@@ -93,6 +94,8 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     kapt rootProject.ext.miscDependencies.parceler
+
+    implementation rootProject.ext.miscDependencies.navigationFragmentKtx
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
