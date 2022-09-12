@@ -7,7 +7,19 @@ import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
-import com.tokopedia.buyerorderdetail.presentation.model.*
+import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
+import com.tokopedia.kotlin.extensions.orFalse
 import javax.inject.Inject
 
 class GetBuyerOrderDetailMapper @Inject constructor(
@@ -55,7 +67,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 buyerOrderDetail.adsPageName,
                 buyerOrderDetail.details?.nonBundles.orEmpty()
             ),
-            hasResoStatus = buyerOrderDetail.hasResoStatus ?: false,
+            hasResoStatus = buyerOrderDetail.hasResoStatus.orFalse(),
             orderResolutionUIModel = OrderResolutionUIModel()
         )
     }

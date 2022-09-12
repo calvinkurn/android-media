@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils
@@ -18,9 +19,10 @@ class OrderResolutionViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_resolution
+        const val APP_ROUTE_FORMAT = "%s?url=%s"
     }
 
-    val binding by viewBinding<ItemBuyerOrderDetailResolutionBinding>()
+    private val binding by viewBinding<ItemBuyerOrderDetailResolutionBinding>()
 
     override fun bind(uiModel: OrderResolutionUIModel?) {
         itemView.context?.let { context ->
@@ -31,7 +33,10 @@ class OrderResolutionViewHolder(
                 binding?.ivDisplay?.loadImage(uiModel.picture)
                 showDeadline(context, uiModel)
                 itemView.setOnClickListener {
-                    orderResolutionListener.onResolutionWidgetClicked(uiModel.redirectPath)
+                    uiModel.redirectPath?.let {
+                        val path = String.format(APP_ROUTE_FORMAT, ApplinkConst.WEBVIEW, it)
+                        orderResolutionListener.onResolutionWidgetClicked(path)
+                    }
                 }
             }
         }
