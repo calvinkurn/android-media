@@ -379,8 +379,8 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     private fun setTitleTab(title: String, counter: String): CharSequence? {
         if (counter.toLongOrZero() > 0) {
             val counterFormatted: String =
-                    if (counter.toLongOrZero() > LIMIT_NOTIFICATION) {
-                        LIMIT_NOTIFICATION_STRING
+                    if (counter.toLongOrZero() > 99) {
+                        "99+"
                     } else {
                         counter
                     }
