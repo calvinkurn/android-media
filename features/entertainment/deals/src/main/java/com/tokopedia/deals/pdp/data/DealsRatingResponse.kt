@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class DealsRatingResponse(
     @SerializedName("data")
-    val data: List<DealsRating> = emptyList(),
+    val data: List<DealsRating>? = null,
     @SerializedName("status")
     val status: String = ""
 )

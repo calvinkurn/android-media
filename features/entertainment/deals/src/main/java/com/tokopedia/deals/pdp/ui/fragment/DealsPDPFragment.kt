@@ -262,9 +262,14 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 when (it) {
                     is Success -> {
                         hideLoading()
-                        it.data.data.first().apply {
-                            setRating(productId.toString(), totalLikes, isLiked, )
+                        if (it.data.data.isNullOrEmpty()){
+                            setRating("0", Int.ZERO, false, isHideImageRating = true)
+                        } else {
+                            it.data.data?.first()?.let {
+                                setRating(productId.toString(), it.totalLikes, it.isLiked)
+                            }
                         }
+
                     }
 
                     is Fail -> {
