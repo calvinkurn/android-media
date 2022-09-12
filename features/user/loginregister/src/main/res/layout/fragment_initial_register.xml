@@ -43,7 +43,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/space_16"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl3">
 
@@ -73,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginHorizontal="@dimen/space_16"
+                android:layout_marginHorizontal="16dp"
                 android:contentDescription="@string/content_desc_socmed_btn_register"
                 android:text="@string/another_method"
                 android:textAllCaps="false"
@@ -84,7 +84,7 @@
                 android:id="@+id/register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/space_16"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
                 app:backgroundColor="@color/Unify_N700"
