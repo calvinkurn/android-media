@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ViewProductVoucherInfoBinding
@@ -45,7 +43,7 @@ class PlayVoucherView : FrameLayout {
         }
     }
 
-    fun setupView(voucher: PlayVoucherUiModel.MerchantVoucherUiModel, voucherSize: Int) {
+    fun setupView(voucher: PlayVoucherUiModel.Merchant, voucherSize: Int) {
         binding.ivPromo.setImage(newIconId = getIcon(voucher.type))
         binding.tvVoucherCount.text = getDescription(voucherSize)
         binding.tvFirstVoucherTitle.text = voucher.title
@@ -67,8 +65,8 @@ class PlayVoucherView : FrameLayout {
         mListener = listener
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy(){
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
         mListener = null
     }
 

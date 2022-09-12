@@ -12,8 +12,8 @@ import javax.inject.Inject
 @PlayScope
 class PlayMerchantVoucherUiMapper @Inject constructor() {
 
-    fun mapMerchantVoucher(input: Voucher): PlayVoucherUiModel.MerchantVoucherUiModel {
-        return PlayVoucherUiModel.MerchantVoucherUiModel(
+    fun mapMerchantVoucher(input: Voucher): PlayVoucherUiModel.Merchant {
+        return PlayVoucherUiModel.Merchant(
             id = input.id,
             title = input.title,
             description = input.subtitle,

@@ -68,7 +68,7 @@ class PlaySocketToModelMapper @Inject constructor(
         )
     }
 
-    fun mapMerchantVoucher(input: MerchantVoucher): List<PlayVoucherUiModel.MerchantVoucherUiModel> {
+    fun mapMerchantVoucher(input: MerchantVoucher): List<PlayVoucherUiModel.Merchant> {
         return input.listOfVouchers.map(merchantVoucherMapper::mapMerchantVoucher)
     }
 

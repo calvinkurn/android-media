@@ -27,7 +27,7 @@ class MerchantVoucherItemDecoration(context: Context) : RecyclerView.ItemDecorat
         val position = parent.getChildAdapterPosition(view)
 
         when {
-            position != 0 -> {
+            position > 0 -> {
                 outRect.top = dividerHeight
             }
             position == 0 -> {

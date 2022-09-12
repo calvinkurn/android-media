@@ -1163,7 +1163,15 @@ class PlayViewModel @AssistedInject constructor(
             val warehouseId = _warehouseInfo.value.warehouseId
             val tagItem = repo.getTagItem(channelId, warehouseId)
 
-            _tagItems.value = tagItem.copy(voucher = createNewVoucherList(tagItem.voucher.voucherList))
+            _tagItems.update {
+                it.copy(
+                    product = tagItem.product,
+                    voucher = createNewVoucherList(tagItem.voucher.voucherList),
+                    maxFeatured = tagItem.maxFeatured,
+                    bottomSheetTitle = tagItem.bottomSheetTitle,
+                    resultState = tagItem.resultState
+                )
+            }
 
             checkReminderStatus()
 
@@ -1178,7 +1186,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun createNewVoucherList(vouchers: List<PlayVoucherUiModel>): VoucherUiModel {
-        val eligibleForShown = vouchers.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>().find { it.type != MerchantVoucherType.Private}
+        val eligibleForShown = vouchers.filterIsInstance<PlayVoucherUiModel.Merchant>().find { it.type != MerchantVoucherType.Private}
         val newVoucher = mutableListOf<PlayVoucherUiModel>().apply {
             if(eligibleForShown != null) add(PlayVoucherUiModel.InfoHeader(_partnerInfo.value.name))
             addAll(vouchers)

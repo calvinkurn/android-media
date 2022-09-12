@@ -46,7 +46,7 @@ class PlayUiModelMapper @Inject constructor(
         return input.map(productTagMapper::mapSection)
     }
 
-    fun mapMerchantVouchers(input: List<Voucher>): List<PlayVoucherUiModel.MerchantVoucherUiModel> {
+    fun mapMerchantVouchers(input: List<Voucher>): List<PlayVoucherUiModel.Merchant> {
         return input.map(merchantVoucherMapper::mapMerchantVoucher)
     }
 

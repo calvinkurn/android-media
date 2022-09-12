@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -271,11 +270,11 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.hideCouponSheet()
     }
 
-    override fun onVouchersImpressed(view: ShopCouponSheetViewComponent, vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel>) {
+    override fun onVouchersImpressed(view: ShopCouponSheetViewComponent, vouchers: List<PlayVoucherUiModel.Merchant>) {
         trackImpressedVoucher(vouchers)
     }
 
-    override fun onCopyVoucherCodeClicked(view: ShopCouponSheetViewComponent, voucher: PlayVoucherUiModel.MerchantVoucherUiModel) {
+    override fun onCopyVoucherCodeClicked(view: ShopCouponSheetViewComponent, voucher: PlayVoucherUiModel.Merchant) {
         copyToClipboard(content = voucher.code)
         doShowToaster(
             bottomSheetType = BottomInsetsType.CouponSheet,
@@ -291,7 +290,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onVoucherItemClicked(
         view: ShopCouponSheetViewComponent,
-        voucher: PlayVoucherUiModel.MerchantVoucherUiModel
+        voucher: PlayVoucherUiModel.Merchant
     ) {
         doShowToaster(
             bottomSheetType = BottomInsetsType.CouponSheet,
@@ -693,7 +692,7 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(SendUpcomingReminder(productSectionUiModel))
     }
 
-    private fun trackImpressedVoucher(vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
+    private fun trackImpressedVoucher(vouchers: List<PlayVoucherUiModel.Merchant> = couponSheetView.getVisibleVouchers()) {
         if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
     }
 

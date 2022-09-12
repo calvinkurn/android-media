@@ -376,7 +376,7 @@ class PlayViewModelWebSocketTest {
 //                is PlayProductTagsUiModel.Complete -> {
 //                    val mockMerchantVoucher = (mockData.productTags as PlayProductTagsUiModel.Complete).voucherList
 //                    merchantVoucher.voucherList.forEachIndexed { index, playVoucherUiModel ->
-//                        (playVoucherUiModel as MerchantVoucherUiModel).isEqualToIgnoringFields(mockMerchantVoucher[index], MerchantVoucherUiModel::impressHolder)
+//                        (playVoucherUiModel as Merchant).isEqualToIgnoringFields(mockMerchantVoucher[index], Merchant::impressHolder)
 //                    }
 //                }
 //                else -> {

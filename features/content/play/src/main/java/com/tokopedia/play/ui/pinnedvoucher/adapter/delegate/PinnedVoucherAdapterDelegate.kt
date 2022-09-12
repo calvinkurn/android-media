@@ -13,9 +13,9 @@ import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
  */
 class PinnedVoucherAdapterDelegate(
         listener: PinnedVoucherViewHolder.Listener
-) : TypedAdapterDelegate<PlayVoucherUiModel.MerchantVoucherUiModel, PlayVoucherUiModel, PinnedVoucherViewHolder>(R.layout.item_play_pinned_voucher), PinnedVoucherViewHolder.Listener by listener {
+) : TypedAdapterDelegate<PlayVoucherUiModel.Merchant, PlayVoucherUiModel, PinnedVoucherViewHolder>(R.layout.item_play_pinned_voucher), PinnedVoucherViewHolder.Listener by listener {
 
-    override fun onBindViewHolder(item: PlayVoucherUiModel.MerchantVoucherUiModel, holder: PinnedVoucherViewHolder) {
+    override fun onBindViewHolder(item: PlayVoucherUiModel.Merchant, holder: PinnedVoucherViewHolder) {
         holder.bind(item)
     }
 

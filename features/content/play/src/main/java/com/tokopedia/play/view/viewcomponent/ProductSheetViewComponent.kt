@@ -2,7 +2,6 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
@@ -34,9 +33,6 @@ import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * Created by jegul on 31/07/20
@@ -176,7 +172,7 @@ class ProductSheetViewComponent(
 
         productSectionAdapter.setItemsAndAnimateChanges(sectionList)
 
-        val merchantVoucher = voucherList.filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
+        val merchantVoucher = voucherList.filterIsInstance<PlayVoucherUiModel.Merchant>()
         voucherInfo.showWithCondition(merchantVoucher.isNotEmpty())
         if (merchantVoucher.isEmpty()) return
         voucherInfo.setupView(merchantVoucher.first(), merchantVoucher.size)

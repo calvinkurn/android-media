@@ -40,11 +40,11 @@ class ShopCouponSheetViewComponent(
 
     private val voucherAdapter =
         MerchantVoucherAdapter(object : MerchantVoucherNewViewHolder.Listener {
-            override fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel) {
+            override fun onCopyItemVoucherClicked(voucher: PlayVoucherUiModel.Merchant) {
                 listener.onCopyVoucherCodeClicked(this@ShopCouponSheetViewComponent, voucher)
             }
 
-            override fun onVoucherItemClicked(voucher: PlayVoucherUiModel.MerchantVoucherUiModel) {
+            override fun onVoucherItemClicked(voucher: PlayVoucherUiModel.Merchant) {
                 listener.onVoucherItemClicked(this@ShopCouponSheetViewComponent, voucher)
             }
         })
@@ -126,7 +126,7 @@ class ShopCouponSheetViewComponent(
         sendImpression()
     }
 
-    fun getVisibleVouchers(): List<PlayVoucherUiModel.MerchantVoucherUiModel> {
+    fun getVisibleVouchers(): List<PlayVoucherUiModel.Merchant> {
         val vouchers = voucherAdapter.getItems()
         if (vouchers.isNotEmpty()) {
             val startPosition = layoutManagerVoucherList.findFirstCompletelyVisibleItemPosition()
@@ -134,7 +134,7 @@ class ShopCouponSheetViewComponent(
             if (startPosition > -1 && endPosition < vouchers.size) {
                 return vouchers
                     .slice(startPosition..endPosition)
-                    .filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
+                    .filterIsInstance<PlayVoucherUiModel.Merchant>()
             }
         }
         return emptyList()
@@ -158,16 +158,16 @@ class ShopCouponSheetViewComponent(
         fun onVoucherScrolled(view: ShopCouponSheetViewComponent, lastPositionViewed: Int)
         fun onVouchersImpressed(
             view: ShopCouponSheetViewComponent,
-            vouchers: List<PlayVoucherUiModel.MerchantVoucherUiModel>
+            vouchers: List<PlayVoucherUiModel.Merchant>
         )
 
         fun onCopyVoucherCodeClicked(
             view: ShopCouponSheetViewComponent,
-            voucher: PlayVoucherUiModel.MerchantVoucherUiModel
+            voucher: PlayVoucherUiModel.Merchant
         )
         fun onVoucherItemClicked(
             view: ShopCouponSheetViewComponent,
-            voucher: PlayVoucherUiModel.MerchantVoucherUiModel
+            voucher: PlayVoucherUiModel.Merchant
         )
     }
 }
