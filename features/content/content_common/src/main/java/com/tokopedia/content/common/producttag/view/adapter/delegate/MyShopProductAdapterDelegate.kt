@@ -39,6 +39,31 @@ internal class MyShopProductAdapterDelegate private constructor() {
         }
     }
 
+    internal class ProductWithCheckbox(
+        private val onSelected: (ProductUiModel, Int) -> Unit,
+    ) : TypedAdapterDelegate<
+            MyShopProductAdapter.Model.ProductWithCheckbox,
+            MyShopProductAdapter.Model,
+            MyShopProductViewHolder.ProductWithCheckbox>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: MyShopProductAdapter.Model.ProductWithCheckbox,
+            holder: MyShopProductViewHolder.ProductWithCheckbox
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): MyShopProductViewHolder.ProductWithCheckbox {
+            return MyShopProductViewHolder.ProductWithCheckbox.create(
+                parent, onSelected
+            )
+        }
+    }
+
     internal class Loading : TypedAdapterDelegate<
             MyShopProductAdapter.Model.Loading,
             MyShopProductAdapter.Model,

@@ -1,22 +1,22 @@
 package com.tokopedia.content.common.producttag.view.uimodel.config
 
-import com.tokopedia.content.common.producttag.util.PAGE_SOURCE_FEED
-import com.tokopedia.content.common.producttag.util.PAGE_SOURCE_PLAY
-
 /**
  * Created By : Jonathan Darwin on August 23, 2022
  */
-abstract class ContentProductTagConfig {
+data class ContentProductTagConfig(
+    val isMultipleSelectionProduct: Boolean,
+    val isFullPageAutocomplete: Boolean,
+    val maxSelectedProduct: Int,
+    val backButton: BackButton,
+    val isShowActionBarDivider: Boolean,
+) {
+    enum class BackButton(val value: Int) {
+        Back(1),
+        Close(2);
 
-    abstract val isMultipleSelectionProduct: Boolean
-    abstract val isFullPageAutocomplete: Boolean
-
-    companion object {
-        fun mapFromString(s: String): ContentProductTagConfig {
-            return when(s) {
-                PAGE_SOURCE_FEED -> FeedProductTagConfig()
-                PAGE_SOURCE_PLAY -> PlayProductTagConfig()
-                else -> UnknownProductTagConfig()
+        companion object {
+            fun mapFromValue(v: Int): BackButton {
+                return values().firstOrNull { it.value == v } ?: Back
             }
         }
     }

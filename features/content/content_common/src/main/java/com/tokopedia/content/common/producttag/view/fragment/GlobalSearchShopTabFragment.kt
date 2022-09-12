@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentGlobalSearchShopTabBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ShopImpressionCoordinator
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.view.adapter.ShopCardAdapter
@@ -34,7 +34,6 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on May 10, 2022
  */
 class GlobalSearchShopTabFragment @Inject constructor(
-    private val analytic: ProductTagAnalytic,
     private val impressionCoordinator: ShopImpressionCoordinator,
 ) : BaseProductTagChildFragment() {
 
@@ -48,7 +47,7 @@ class GlobalSearchShopTabFragment @Inject constructor(
     private val adapter: ShopCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ShopCardAdapter(
             onSelected = { shop, position ->
-                analytic.clickShopCard(shop, position + 1)
+                mAnalytic?.clickShopCard(shop, position + 1)
                 viewModel.submitAction(ProductTagAction.ShopSelected(shop))
             },
             onLoading = {
@@ -123,7 +122,10 @@ class GlobalSearchShopTabFragment @Inject constructor(
     }
 
     private fun setupAnalytic() {
-        impressionCoordinator.setInitialData(viewModel.selectedTagSource)
+        impressionCoordinator.setInitialData(
+            mAnalytic,
+            viewModel.selectedTagSource
+        )
     }
 
     private fun setupView() {

@@ -49,7 +49,7 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
     )
 
     init {
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
     }
 
     @Test

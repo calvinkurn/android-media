@@ -1,8 +1,6 @@
 package com.tokopedia.content.common.producttag.view.fragment.base
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,30 +15,37 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentProductTagParentBinding
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
-import com.tokopedia.content.common.producttag.util.PAGE_SOURCE_FEED
-import com.tokopedia.content.common.producttag.util.PAGE_SOURCE_PLAY
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.currentSource
+import com.tokopedia.content.common.producttag.util.extension.isAutocomplete
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.util.getAutocompleteApplink
 import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
-import com.tokopedia.content.common.producttag.view.fragment.*
+import com.tokopedia.content.common.producttag.view.fragment.ContentAutocompleteFragment
+import com.tokopedia.content.common.producttag.view.fragment.GlobalSearchFragment
+import com.tokopedia.content.common.producttag.view.fragment.LastPurchasedProductFragment
+import com.tokopedia.content.common.producttag.view.fragment.LastTaggedProductFragment
+import com.tokopedia.content.common.producttag.view.fragment.MyShopProductFragment
+import com.tokopedia.content.common.producttag.view.fragment.ShopProductFragment
+import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagSourceUiState
+import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.content.common.producttag.view.viewmodel.factory.ProductTagViewModelFactory
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import kotlinx.coroutines.flow.collectLatest
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
 
@@ -50,13 +55,15 @@ import com.tokopedia.abstraction.R as abstractionR
 class ProductTagParentFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
-    private val analytic: ProductTagAnalytic,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = "ProductTagParentFragment"
 
     private lateinit var viewModel: ProductTagViewModel
+
     private var mListener: Listener? = null
+    private var mDataSource: DataSource? = null
+    private var mAnalytic: ContentProductTagAnalytic? = null
 
     private var _binding: FragmentProductTagParentBinding? = null
     private val binding: FragmentProductTagParentBinding
@@ -92,6 +99,7 @@ class ProductTagParentFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         if(childFragment is BaseProductTagChildFragment) {
             childFragment.createViewModelProvider(createViewModelProvider())
+            childFragment.setAnalytic(mAnalytic)
         }
 
         when(childFragment) {
@@ -99,7 +107,7 @@ class ProductTagParentFragment @Inject constructor(
                 childFragment.apply {
                     setListener(object : ProductTagSourceBottomSheet.Listener {
                         override fun onSelectProductTagSource(source: ProductTagSource) {
-                            analytic.clickProductTagSource(source)
+                            mAnalytic?.clickProductTagSource(source)
                             viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
                         }
                     })
@@ -119,9 +127,24 @@ class ProductTagParentFragment @Inject constructor(
         _binding = null
     }
 
+    fun setLoading(isLoading: Boolean) {
+        viewModel.submitAction(ProductTagAction.LoadingSubmitProduct(isLoading))
+    }
+
     private fun setupView() {
+        binding.icCcProductTagBack.setImage(
+            newIconId = when(viewModel.backButton) {
+                ContentProductTagConfig.BackButton.Back -> {
+                    IconUnify.ARROW_BACK
+                }
+                ContentProductTagConfig.BackButton.Close -> {
+                    IconUnify.CLOSE
+                }
+            }
+        )
+
         binding.icCcProductTagBack.setOnClickListener {
-            analytic.clickBackButton(viewModel.selectedTagSource)
+            mAnalytic?.clickBackButton(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.BackPressed)
         }
 
@@ -141,6 +164,10 @@ class ProductTagParentFragment @Inject constructor(
             clickBreadcrumb()
         }
 
+        binding.btnSave.setOnClickListener {
+            viewModel.submitAction(ProductTagAction.ClickSaveButton)
+        }
+
         showBreadcrumb(viewModel.isUser)
         showCoachmarkGlobalTag(viewModel.isShowCoachmarkGlobalTag)
     }
@@ -149,26 +176,16 @@ class ProductTagParentFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderSelectedProductTagSource(it.prevValue?.productTagSource, it.value.productTagSource)
+                renderActionBar(it.prevValue, it.value)
+                renderSaveButton(it.prevValue, it.value)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 when(it) {
-                    is ProductTagUiEvent.ProductSelected -> {
-                        val product = it.product
-
-                        val data = Intent().apply {
-                            putExtra(RESULT_PRODUCT_ID, product.id)
-                            putExtra(RESULT_PRODUCT_NAME, product.name)
-                            putExtra(RESULT_PRODUCT_PRICE, if(product.isDiscount) product.priceDiscountFmt else product.priceFmt)
-                            putExtra(RESULT_PRODUCT_IMAGE, product.coverURL)
-                            putExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT, product.priceOriginalFmt)
-                            putExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT, product.discountFmt)
-                            putExtra(RESULT_PRODUCT_IS_DISCOUNT, product.isDiscount)
-                        }
-                        requireActivity().setResult(Activity.RESULT_OK, data)
-                        requireActivity().finish()
+                    is ProductTagUiEvent.FinishProductTag -> {
+                        mListener?.onFinishProductTag(it.products)
                     }
                     is ProductTagUiEvent.ShowSourceBottomSheet -> {
                         ProductTagSourceBottomSheet.getFragment(
@@ -201,15 +218,53 @@ class ProductTagParentFragment @Inject constructor(
         if(prevState == currState) return
 
         updateFragmentContent(prevState?.productTagSourceStack ?: emptySet(), currState.productTagSourceStack)
-
-        updateActionBar(currState.productTagSourceStack)
         updateBreadcrumb(currState.productTagSourceStack)
     }
 
-    private fun updateActionBar(productTagSourceStack: Set<ProductTagSource>) {
-        binding.groupActionBar.showWithCondition(
-            productTagSourceStack.currentSource != ProductTagSource.Autocomplete
+    private fun renderActionBar(
+        prevState: ProductTagUiState?,
+        currState: ProductTagUiState,
+    ) {
+        if(prevState?.selectedProduct == currState.selectedProduct &&
+            prevState.productTagSource == currState.productTagSource
+        ) return
+
+        updateActionBar(currState.productTagSource.productTagSourceStack)
+        updateTitle(currState.selectedProduct)
+    }
+
+    private fun renderSaveButton(
+        prevState: ProductTagUiState?,
+        currState: ProductTagUiState,
+    ) {
+        if(prevState?.selectedProduct == currState.selectedProduct &&
+            prevState.productTagSource == currState.productTagSource &&
+            prevState.isSubmitting == currState.isSubmitting
+        ) return
+
+        binding.flBtnSave.showWithCondition(
+            !currState.productTagSource.productTagSourceStack.isAutocomplete &&
+                    viewModel.isMultipleSelectionProduct
         )
+
+        binding.btnSave.isEnabled = currState.selectedProduct.isNotEmpty() && !viewModel.isSameAsInitialSelectedProduct
+        binding.btnSave.isLoading = currState.isSubmitting
+    }
+
+    private fun updateActionBar(productTagSourceStack: Set<ProductTagSource>) {
+        val isShowActionBar = !productTagSourceStack.isAutocomplete
+
+        binding.icCcProductTagBack.showWithCondition(isShowActionBar)
+        binding.tvCcProductTagPageTitle.showWithCondition(isShowActionBar)
+        binding.viewCcProductTagDivider.showWithCondition(isShowActionBar && viewModel.isShowActionBarDivider)
+    }
+
+    private fun updateTitle(selectedProduct: List<SelectedProductUiModel>) {
+        val title = if(viewModel.isMultipleSelectionProduct)
+            getString(R.string.content_creation_multiple_product_tag_title).format(selectedProduct.size, viewModel.maxSelectedProduct)
+        else getString(R.string.content_creation_product_tag_title)
+
+        binding.tvCcProductTagPageTitle.text = title
     }
 
     private fun updateFragmentContent(prevStack: Set<ProductTagSource>, currStack: Set<ProductTagSource>) {
@@ -245,12 +300,10 @@ class ProductTagParentFragment @Inject constructor(
     private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
         if(viewModel.isUser) {
 
-            if(productTagSourceStack.currentSource == ProductTagSource.Autocomplete) {
+            if(productTagSourceStack.isAutocomplete) {
                 showBreadcrumb(false)
                 return
             }
-
-            showBreadcrumb(true)
 
             /** Update the First Part */
             if(productTagSourceStack.isNotEmpty()) {
@@ -258,6 +311,11 @@ class ProductTagParentFragment @Inject constructor(
 
                 binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_DOWN)
                 binding.tvCcProductTagProductSource.text = getProductTagSourceText(firstSource)
+
+                binding.tvCcProductTagProductSourceLabel.show()
+                binding.tvCcProductTagProductSource.show()
+                binding.icCcProductTagChevron1.show()
+
                 if(firstSource == ProductTagSource.MyShop && viewModel.shopBadge.isNotEmpty()) {
                     binding.imgCcProductTagShopBadge1.setImageUrl(viewModel.shopBadge)
                     binding.imgCcProductTagShopBadge1.show()
@@ -321,17 +379,30 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun createViewModelProvider(): ViewModelProvider {
+        val productTagArgument = getProductTagArgument()
+
         return ViewModelProvider(
             this,
             viewModelFactoryCreator.create(
                 this,
-                getStringArgument(EXTRA_PRODUCT_TAG_LIST),
-                getStringArgument(EXTRA_SHOP_BADGE),
-                getStringArgument(EXTRA_AUTHOR_ID),
-                getStringArgument(EXTRA_AUTHOR_TYPE),
-                ContentProductTagConfig.mapFromString(getStringArgument(EXTRA_PAGE_SOURCE))
+                productTagSourceRaw = productTagArgument.productTagSource,
+                shopBadge = productTagArgument.shopBadge,
+                authorId = productTagArgument.authorId,
+                authorType = productTagArgument.authorType,
+                initialSelectedProduct = mDataSource?.getInitialSelectedProduct() ?: emptyList(),
+                productTagConfig = ContentProductTagConfig(
+                    isMultipleSelectionProduct = productTagArgument.isMultipleSelectionProduct,
+                    isFullPageAutocomplete = productTagArgument.isFullPageAutocomplete,
+                    maxSelectedProduct = productTagArgument.maxSelectedProduct,
+                    backButton = productTagArgument.backButton,
+                    isShowActionBarDivider = productTagArgument.isShowActionBarDivider,
+                )
             )
         )
+    }
+
+    private fun getProductTagArgument(): ContentProductTagArgument {
+        return ContentProductTagArgument.mapFromString(getStringArgument(EXTRA_QUERY))
     }
 
     private fun getStringArgument(key: String): String {
@@ -339,7 +410,7 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun clickBreadcrumb() {
-        analytic.clickBreadcrumb(viewModel.selectedTagSource == ProductTagSource.Shop)
+        mAnalytic?.clickBreadcrumb(viewModel.selectedTagSource == ProductTagSource.Shop)
         viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
     }
 
@@ -382,62 +453,39 @@ class ProductTagParentFragment @Inject constructor(
         viewModel.submitAction(ProductTagAction.BackPressed)
     }
 
-    fun setListener(listener: Listener) {
+    fun setListener(listener: Listener?) {
         mListener = listener
+    }
+
+    fun setDataSource(dataSource: DataSource) {
+        mDataSource = dataSource
+    }
+
+    fun setAnalytic(analytic: ContentProductTagAnalytic?) {
+        mAnalytic = analytic
     }
 
     companion object {
         const val TAG = "ProductTagParentFragment"
-        private const val EXTRA_PRODUCT_TAG_LIST = "EXTRA_PRODUCT_TAG_LIST"
-        private const val EXTRA_SHOP_BADGE = "EXTRA_SHOP_BADGE"
-        private const val EXTRA_AUTHOR_ID = "EXTRA_AUTHOR_ID"
-        private const val EXTRA_AUTHOR_TYPE = "EXTRA_AUTHOR_TYPE"
-        private const val EXTRA_PAGE_SOURCE = "EXTRA_PAGE_SOURCE"
-
-        const val RESULT_PRODUCT_ID = "RESULT_PRODUCT_ID"
-        const val RESULT_PRODUCT_NAME = "RESULT_PRODUCT_NAME"
-        const val RESULT_PRODUCT_PRICE = "RESULT_PRODUCT_PRICE"
-        const val RESULT_PRODUCT_IMAGE = "RESULT_PRODUCT_IMAGE"
-        const val RESULT_PRODUCT_PRICE_ORIGINAL_FMT = "RESULT_PRODUCT_PRICE_ORIGINAL_FMT"
-        const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
-        const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
+        private const val EXTRA_QUERY = "EXTRA_QUERY"
 
         fun findFragment(fragmentManager: FragmentManager): ProductTagParentFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
         }
 
-        fun getFragmentWithFeedSource(
+        fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            productTagSource: String,
-            shopBadge: String,
-            authorId: String,
-            authorType: String,
+            argumentBuilder: ContentProductTagArgument.Builder,
         ): ProductTagParentFragment {
             val oldInstance = findFragment(fragmentManager)
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, PAGE_SOURCE_FEED)
-        }
-
-        fun getFragmentWithPlaySource(
-            fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
-            productTagSource: String,
-            shopBadge: String,
-            authorId: String,
-            authorType: String,
-        ): ProductTagParentFragment {
-            val oldInstance = findFragment(fragmentManager)
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, PAGE_SOURCE_PLAY)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, argumentBuilder)
         }
 
         private fun createFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            productTagSource: String,
-            shopBadge: String,
-            authorId: String,
-            authorType: String,
-            pageSource: String,
+            argumentBuilder: ContentProductTagArgument.Builder,
         ): ProductTagParentFragment {
             return (
                 fragmentManager.fragmentFactory.instantiate(
@@ -446,11 +494,7 @@ class ProductTagParentFragment @Inject constructor(
                 ) as ProductTagParentFragment
             ).apply {
                 arguments = Bundle().apply {
-                    putString(EXTRA_PRODUCT_TAG_LIST, productTagSource)
-                    putSerializable(EXTRA_SHOP_BADGE, shopBadge)
-                    putSerializable(EXTRA_AUTHOR_ID, authorId)
-                    putSerializable(EXTRA_AUTHOR_TYPE, authorType)
-                    putString(EXTRA_PAGE_SOURCE, pageSource)
+                    putString(EXTRA_QUERY, argumentBuilder.build())
                 }
             }
         }
@@ -458,5 +502,10 @@ class ProductTagParentFragment @Inject constructor(
 
     interface Listener {
         fun onCloseProductTag()
+        fun onFinishProductTag(products: List<SelectedProductUiModel>)
+    }
+
+    interface DataSource {
+        fun getInitialSelectedProduct(): List<SelectedProductUiModel>
     }
 }

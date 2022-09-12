@@ -11,15 +11,16 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentLastTaggedProductBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
+import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.common.producttag.view.uimodel.PagedState
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
-import com.tokopedia.content.common.producttag.view.uimodel.state.LastTaggedProductUiState
+import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
@@ -32,7 +33,6 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on April 25, 2022
  */
 class LastTaggedProductFragment @Inject constructor(
-    private val analytic: ProductTagAnalytic,
     private val impressionCoordinator: ProductImpressionCoordinator,
 ) : BaseProductTagChildFragment() {
 
@@ -46,7 +46,7 @@ class LastTaggedProductFragment @Inject constructor(
     private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProductTagCardAdapter(
             onSelected = { product, position ->
-                analytic.clickProductCard(
+                mAnalytic?.clickProductCard(
                     viewModel.selectedTagSource,
                     product,
                     position,
@@ -105,6 +105,7 @@ class LastTaggedProductFragment @Inject constructor(
 
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
+            mAnalytic,
             viewModel.selectedTagSource,
             isEntryPoint = true,
         )
@@ -120,6 +121,7 @@ class LastTaggedProductFragment @Inject constructor(
 
         binding.rvLastTaggedProduct.addOnScrollListener(scrollListener)
         binding.rvLastTaggedProduct.layoutManager = layoutManager
+        binding.rvLastTaggedProduct.itemAnimator = null
         binding.rvLastTaggedProduct.adapter = adapter
 
         binding.globalError.apply {
@@ -131,7 +133,7 @@ class LastTaggedProductFragment @Inject constructor(
         }
 
         binding.clSearch.setOnClickListener {
-            analytic.clickSearchBar(viewModel.selectedTagSource)
+            mAnalytic?.clickSearchBar(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
         }
     }
@@ -139,16 +141,25 @@ class LastTaggedProductFragment @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                renderLastTaggedProducts(it.prevValue?.lastTaggedProduct, it.value.lastTaggedProduct)
+                renderLastTaggedProducts(it.prevValue, it.value)
             }
         }
     }
 
-    private fun renderLastTaggedProducts(prev: LastTaggedProductUiState?, curr: LastTaggedProductUiState) {
+    private fun renderLastTaggedProducts(prev: ProductTagUiState?, curr: ProductTagUiState) {
 
         fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
-            val finalProducts = products.map {
-                ProductTagCardAdapter.Model.Product(product = it)
+            val finalProducts = products.map { product ->
+                if(viewModel.isMultipleSelectionProduct) {
+                    ProductTagCardAdapter.Model.ProductWithCheckbox(
+                        product = product,
+                        isSelected = curr.selectedProduct.isProductFound(product),
+                    )
+                }
+                else {
+                    ProductTagCardAdapter.Model.Product(product = product)
+                }
+
             } + if(hasNextPage) listOf(ProductTagCardAdapter.Model.Loading) else emptyList()
 
             if(binding.rvLastTaggedProduct.isComputingLayout.not())
@@ -160,21 +171,27 @@ class LastTaggedProductFragment @Inject constructor(
             impressProduct()
         }
 
-        if(prev?.products == curr.products && prev.state == curr.state) return
+        if(prev?.lastTaggedProduct?.products == curr.lastTaggedProduct.products &&
+            prev.lastTaggedProduct.state == curr.lastTaggedProduct.state &&
+            prev.selectedProduct == curr.selectedProduct
+        ) return
 
-        when(curr.state) {
+        val currProducts = curr.lastTaggedProduct.products
+        val currState = curr.lastTaggedProduct.state
+
+        when(currState) {
             is PagedState.Loading -> {
-                updateAdapterData(curr.products, true)
+                updateAdapterData(curr.lastTaggedProduct.products, true)
             }
             is PagedState.Success -> {
-                if(curr.products.isEmpty()) {
+                if(currProducts.isEmpty()) {
                     binding.rvLastTaggedProduct.hide()
                     binding.globalError.show()
                 }
-                else updateAdapterData(curr.products, curr.state.hasNextPage)
+                else updateAdapterData(currProducts, currState.hasNextPage)
             }
             is PagedState.Error -> {
-                updateAdapterData(curr.products, false)
+                updateAdapterData(currProducts, false)
 
                 Toaster.build(
                     binding.root,

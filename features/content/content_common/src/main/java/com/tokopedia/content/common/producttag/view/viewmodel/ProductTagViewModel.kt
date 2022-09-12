@@ -11,6 +11,7 @@ import com.tokopedia.content.common.producttag.util.AUTHOR_USER
 import com.tokopedia.content.common.producttag.util.PRODUCT_TAG_SOURCE_RAW
 import com.tokopedia.content.common.producttag.util.SHOP_BADGE
 import com.tokopedia.content.common.producttag.util.extension.combine
+import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.setValue
 import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.content.common.producttag.util.extension.removeLast
@@ -38,6 +39,7 @@ class ProductTagViewModel @AssistedInject constructor(
     @Assisted(SHOP_BADGE) val shopBadge: String,
     @Assisted(AUTHOR_ID) private val authorId: String,
     @Assisted(AUTHOR_TYPE) private val authorType: String,
+    @Assisted(INITIAL_SELECTED_PRODUCT) private val initialSelectedProduct: List<SelectedProductUiModel>,
     @Assisted(PRODUCT_TAG_CONFIG) private val productTagConfig: ContentProductTagConfig,
     private val repo: ProductTagRepository,
     private val userSession: UserSessionInterface,
@@ -51,6 +53,7 @@ class ProductTagViewModel @AssistedInject constructor(
             @Assisted(SHOP_BADGE) shopBadge: String,
             @Assisted(AUTHOR_ID) authorId: String,
             @Assisted(AUTHOR_TYPE) authorType: String,
+            @Assisted(INITIAL_SELECTED_PRODUCT) initialSelectedProduct: List<SelectedProductUiModel>,
             @Assisted(PRODUCT_TAG_CONFIG) productTagConfig: ContentProductTagConfig,
         ): ProductTagViewModel
     }
@@ -100,6 +103,22 @@ class ProductTagViewModel @AssistedInject constructor(
     val globalSearchQuery: String
         get() = _globalSearchProduct.value.param.query
 
+    val isSameAsInitialSelectedProduct: Boolean
+        get() = initialSelectedProduct.sortedBy { it.id } == _selectedProduct.value.sortedBy { it.id }
+
+    /** Config Public Getter */
+    val isMultipleSelectionProduct: Boolean
+        get() = productTagConfig.isMultipleSelectionProduct
+
+    val maxSelectedProduct: Int
+        get() = productTagConfig.maxSelectedProduct
+
+    val backButton: ContentProductTagConfig.BackButton
+        get() = productTagConfig.backButton
+
+    val isShowActionBarDivider: Boolean
+        get() = productTagConfig.isShowActionBarDivider
+
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _productTagSourceStack = MutableStateFlow(setOf(if(isSeller) ProductTagSource.MyShop else ProductTagSource.LastTagProduct))
@@ -112,6 +131,10 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _shopProduct = MutableStateFlow(ShopProductUiModel.Empty)
 
     private val _myShopSort = MutableStateFlow<List<SortUiModel>>(emptyList())
+
+    private val _selectedProduct = MutableStateFlow<List<SelectedProductUiModel>>(emptyList())
+
+    private val _isSubmitting = MutableStateFlow(false)
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
@@ -192,9 +215,11 @@ class ProductTagViewModel @AssistedInject constructor(
         _globalSearchProductUiState,
         _globalSearchShopUiState,
         _shopProductUiState,
+        _selectedProduct,
+        _isSubmitting,
     ) { productTagSource, lastTaggedProduct, lastPurchasedProduct,
             myShopProduct, globalSearchProduct, globalSearchShop,
-            shopProduct ->
+            shopProduct, selectedProduct, isSubmitting ->
         ProductTagUiState(
             productTagSource = productTagSource,
             lastTaggedProduct = lastTaggedProduct,
@@ -203,6 +228,8 @@ class ProductTagViewModel @AssistedInject constructor(
             globalSearchProduct = globalSearchProduct,
             globalSearchShop = globalSearchShop,
             shopProduct = shopProduct,
+            selectedProduct = selectedProduct,
+            isSubmitting = isSubmitting,
         )
     }
 
@@ -213,13 +240,14 @@ class ProductTagViewModel @AssistedInject constructor(
 
     init {
         processProductTagSource(productTagSourceRaw)
+        _selectedProduct.update { initialSelectedProduct }
     }
 
     private fun processProductTagSource(productTagSourceRaw: String) {
         viewModelScope.launchCatchError(block = {
             val split = productTagSourceRaw.split(",")
             _productTagSourceList.value = split.map {
-                ProductTagSource.mapFromString(it)
+                ProductTagSource.mapFromString(it.trim())
             }
         }) { }
     }
@@ -233,6 +261,7 @@ class ProductTagViewModel @AssistedInject constructor(
             is ProductTagAction.SetDataFromAutoComplete -> handleSetDataFromAutoComplete(action.source, action.query, action.shopId, action.componentId)
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
             is ProductTagAction.ProductSelected -> handleProductSelected(action.product)
+            ProductTagAction.ClickSaveButton -> handleClickSaveButton()
 
             /** Tagged Product */
             ProductTagAction.LoadLastTaggedProduct -> handleLoadLastTaggedProduct()
@@ -269,6 +298,8 @@ class ProductTagViewModel @AssistedInject constructor(
             /** Shop Product */
             ProductTagAction.LoadShopProduct -> handleLoadShopProduct()
             is ProductTagAction.SearchShopProduct -> handleSearchShopProduct(action.query)
+
+            is ProductTagAction.LoadingSubmitProduct -> handleLoadingSubmit(action.isLoading)
         }
     }
 
@@ -326,7 +357,7 @@ class ProductTagViewModel @AssistedInject constructor(
                     }
                 }
                 ProductTagSource.Shop -> {
-                    val shop = repo.getShopInfoByID(listOf(shopId.toInt()))
+                    val shop = repo.getShopInfoByID(listOf(shopId.toLong()))
                     _shopProduct.setValue {
                         ShopProductUiModel.Empty.copy(
                             shop = shop,
@@ -351,8 +382,37 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleProductSelected(product: ProductUiModel) {
+        if (_isSubmitting.value) return
+
         viewModelScope.launch {
-            _uiEvent.emit(ProductTagUiEvent.ProductSelected(product))
+            if(isMultipleSelectionProduct) {
+
+                val currSelectedProduct = _selectedProduct.value
+                val newSelectedProduct = if(currSelectedProduct.isProductFound(product)) {
+                    currSelectedProduct.filter { it.id != product.id }
+                }
+                else {
+                    val currSelectedProductSize = _selectedProduct.value.size
+
+                    if(currSelectedProductSize < maxSelectedProduct) {
+                        currSelectedProduct.toMutableList().apply {
+                            add(SelectedProductUiModel.createOnlyId(id = product.id))
+                        }.toList()
+                    }
+                    else currSelectedProduct
+                }
+
+                _selectedProduct.value = newSelectedProduct
+            }
+            else {
+                _uiEvent.emit(ProductTagUiEvent.FinishProductTag(listOf(product.toSelectedProduct())))
+            }
+        }
+    }
+
+    private fun handleClickSaveButton() {
+        viewModelScope.launch {
+            _uiEvent.emit(ProductTagUiEvent.FinishProductTag(_selectedProduct.value))
         }
     }
 
@@ -859,6 +919,10 @@ class ProductTagViewModel @AssistedInject constructor(
             )
         }
         handleLoadShopProduct()
+    }
+
+    private fun handleLoadingSubmit(isLoading: Boolean) {
+        _isSubmitting.value = isLoading
     }
 
     /** Util */

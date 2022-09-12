@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.model
 
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.ShopUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.SortUiModel
 
@@ -42,6 +43,26 @@ class CommonModelBuilder {
             bebasOngkirURL = "",
         )
     }
+
+    fun buildSelectedProduct(
+        id: String = "1",
+        name: String = "",
+        cover: String = "",
+        price: String = "",
+        priceDiscount: String = "",
+        isDiscount: Boolean = false,
+        priceOriginal: String = "",
+        discount: String = "",
+    ) = SelectedProductUiModel(
+        id = id,
+        name = name,
+        cover = cover,
+        price = price,
+        priceDiscount = priceDiscount,
+        isDiscount = isDiscount,
+        priceOriginal = priceOriginal,
+        discount = discount,
+    )
 
     fun buildSortModel(
         text: String = "Sort",

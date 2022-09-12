@@ -42,6 +42,7 @@ import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
@@ -684,7 +685,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onClickSetProduct() {
         analytic.clickSetupProductMenu()
-        
+
         childFragmentManager.beginTransaction()
             .add(ProductSetupFragment::class.java, null, null)
             .commit()

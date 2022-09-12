@@ -1,14 +1,6 @@
-package com.tokopedia.content.common.producttag.analytic.product
+package com.tokopedia.content.common.sample.analytic
 
-import com.tokopedia.content.common.producttag.analytic.*
-import com.tokopedia.content.common.producttag.analytic.KEY_BUSINESS_UNIT
-import com.tokopedia.content.common.producttag.analytic.KEY_CURRENT_SITE
-import com.tokopedia.content.common.producttag.analytic.KEY_EVENT
-import com.tokopedia.content.common.producttag.analytic.KEY_EVENT_ACTION
-import com.tokopedia.content.common.producttag.analytic.KEY_EVENT_CATEGORY
-import com.tokopedia.content.common.producttag.analytic.KEY_EVENT_LABEL
-import com.tokopedia.content.common.producttag.analytic.KEY_SESSION_IRIS
-import com.tokopedia.content.common.producttag.analytic.VAL_CURRENT_SITE
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -17,12 +9,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
- * Created By : Jonathan Darwin on May 23, 2022
+ * Created By : Jonathan Darwin on September 12, 2022
  */
-class ProductTagAnalyticImpl @Inject constructor(
+class ContentProductTagSampleAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val trackingQueue: TrackingQueue,
-) : ProductTagAnalytic {
+) : ContentProductTagAnalytic {
 
     override fun trackGlobalSearchProduct(
         header: SearchHeaderUiModel,

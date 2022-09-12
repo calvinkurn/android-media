@@ -49,6 +49,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LO
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
+import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
+import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
@@ -1121,6 +1123,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             userSession.autofillUserData = emailPhoneEditText?.text.toString()
 
         registerPushNotif()
+        submitIntegrityApi()
 
         activity?.let {
             if (GlobalConfig.isSellerApp()) {
@@ -1919,6 +1922,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             context?.let {
                 RegisterPushNotificationWorker.scheduleWorker(it)
             }
+        }
+    }
+
+    private fun submitIntegrityApi() {
+        context?.let {
+            IntegrityApiWorker.scheduleWorker(it.applicationContext, IntegrityApiConstant.EVENT_LOGIN)
         }
     }
 

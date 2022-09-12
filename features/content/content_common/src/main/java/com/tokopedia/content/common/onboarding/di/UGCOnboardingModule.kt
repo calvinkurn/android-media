@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.onboarding.di
 
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.content.common.onboarding.data.UGCOnboardingRepositoryImpl
 import com.tokopedia.content.common.onboarding.di.qualifier.CompleteStrategy
 import com.tokopedia.content.common.onboarding.di.qualifier.TncStrategy

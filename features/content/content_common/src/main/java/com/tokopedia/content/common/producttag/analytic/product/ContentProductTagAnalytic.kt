@@ -6,7 +6,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.*
 /**
  * Created By : Jonathan Darwin on May 23, 2022
  */
-interface ProductTagAnalytic {
+interface ContentProductTagAnalytic {
 
     fun trackGlobalSearchProduct(
         header: SearchHeaderUiModel,

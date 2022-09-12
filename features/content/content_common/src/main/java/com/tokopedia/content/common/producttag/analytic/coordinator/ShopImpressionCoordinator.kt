@@ -1,6 +1,6 @@
 package com.tokopedia.content.common.producttag.analytic.coordinator
 
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.ShopUiModel
 import javax.inject.Inject
@@ -8,14 +8,18 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on May 24, 2022
  */
-class ShopImpressionCoordinator @Inject constructor(
-    private val analytic: ProductTagAnalytic,
-) {
+class ShopImpressionCoordinator @Inject constructor() {
+
     private val mShopImpress = mutableListOf<Pair<ShopUiModel, Int>>()
 
+    private var mAnalytic: ContentProductTagAnalytic? = null
     private var mTagSource: ProductTagSource = ProductTagSource.Unknown
 
-    fun setInitialData(source: ProductTagSource) {
+    fun setInitialData(
+        analytic: ContentProductTagAnalytic?,
+        source: ProductTagSource
+    ) {
+        mAnalytic = analytic
         mTagSource = source
     }
 
@@ -28,8 +32,8 @@ class ShopImpressionCoordinator @Inject constructor(
 
         if(finalShop.isEmpty()) return
 
-        analytic.impressShopCard(mTagSource, finalShop)
-        analytic.sendAll()
+        mAnalytic?.impressShopCard(mTagSource, finalShop)
+        mAnalytic?.sendAll()
 
         mShopImpress.clear()
     }

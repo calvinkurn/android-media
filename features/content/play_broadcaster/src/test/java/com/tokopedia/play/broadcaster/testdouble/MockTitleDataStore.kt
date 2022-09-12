@@ -32,8 +32,12 @@ open class MockTitleDataStore(
         return titleDataStore.setTitle(title)
     }
 
-    override suspend fun uploadTitle(channelId: String, title: String): NetworkResult<Unit> {
+    override suspend fun uploadTitle(
+        authorId: String,
+        channelId: String,
+        title: String
+    ): NetworkResult<Unit> {
         isUploaded = true
-        return titleDataStore.uploadTitle(channelId, title)
+        return titleDataStore.uploadTitle(authorId, channelId, title)
     }
 }

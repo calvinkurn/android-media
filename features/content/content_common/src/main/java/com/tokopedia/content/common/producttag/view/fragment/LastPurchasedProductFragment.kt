@@ -10,15 +10,16 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentLastPurchasedProductBinding
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.isNetworkError
+import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.common.producttag.view.uimodel.PagedState
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
-import com.tokopedia.content.common.producttag.view.uimodel.state.LastPurchasedProductUiState
+import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
@@ -28,9 +29,7 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
-class LastPurchasedProductFragment @Inject constructor(
-    private val analytic: ProductTagAnalytic,
-) : BaseProductTagChildFragment() {
+class LastPurchasedProductFragment @Inject constructor(): BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "LastPurchasedProductFragment"
 
@@ -43,7 +42,7 @@ class LastPurchasedProductFragment @Inject constructor(
         /** do nothing */
         ProductTagCardAdapter(
             onSelected = { product, position ->
-                analytic.clickProductCard(
+                mAnalytic?.clickProductCard(
                     viewModel.selectedTagSource,
                     product,
                     position,
@@ -88,6 +87,7 @@ class LastPurchasedProductFragment @Inject constructor(
 
     private fun setupView() {
         binding.rvLastPurchasedProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL,)
+        binding.rvLastPurchasedProduct.itemAnimator = null
         binding.rvLastPurchasedProduct.adapter = adapter
 
         binding.globalError.apply {
@@ -102,16 +102,22 @@ class LastPurchasedProductFragment @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                renderLastPurchasedProducts(it.prevValue?.lastPurchasedProduct, it.value.lastPurchasedProduct)
+                renderLastPurchasedProducts(it.prevValue, it.value)
             }
         }
     }
 
-    private fun renderLastPurchasedProducts(prev: LastPurchasedProductUiState?, curr: LastPurchasedProductUiState) {
+    private fun renderLastPurchasedProducts(prev: ProductTagUiState?, curr: ProductTagUiState) {
 
         fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
-            val finalProducts = products.map {
-                ProductTagCardAdapter.Model.Product(product = it)
+            val finalProducts = products.map { product ->
+                if(viewModel.isMultipleSelectionProduct) {
+                    ProductTagCardAdapter.Model.ProductWithCheckbox(
+                        product = product,
+                        isSelected = curr.selectedProduct.isProductFound(product),
+                    )
+                }
+                else ProductTagCardAdapter.Model.Product(product = product)
             } + if(hasNextPage) listOf(ProductTagCardAdapter.Model.Loading) else emptyList()
 
             if(binding.rvLastPurchasedProduct.isComputingLayout.not())
@@ -121,28 +127,34 @@ class LastPurchasedProductFragment @Inject constructor(
             binding.globalError.hide()
         }
 
-        if(prev?.products == curr.products && prev.state == curr.state) return
+        if(prev?.lastPurchasedProduct?.products == curr.lastPurchasedProduct.products &&
+            prev.lastPurchasedProduct.state == curr.lastPurchasedProduct.state &&
+            prev.selectedProduct == curr.selectedProduct
+        ) return
 
-        when(curr.state) {
+        val currProducts = curr.lastPurchasedProduct.products
+        val currState = curr.lastPurchasedProduct.state
+
+        when(currState) {
             is PagedState.Loading -> {
-                updateAdapterData(curr.products, true)
+                updateAdapterData(currProducts, true)
             }
             is PagedState.Success -> {
-                if(curr.products.isEmpty()) {
+                if(currProducts.isEmpty()) {
                     binding.rvLastPurchasedProduct.hide()
                     binding.globalError.show()
                 }
-                else updateAdapterData(curr.products, false)
+                else updateAdapterData(currProducts, false)
 
-                binding.tickerInfo.showWithCondition(curr.isCoachmarkShown)
-                binding.tickerInfo.setTextDescription(curr.coachmark)
+                binding.tickerInfo.showWithCondition(curr.lastPurchasedProduct.isCoachmarkShown)
+                binding.tickerInfo.setTextDescription(curr.lastPurchasedProduct.coachmark)
             }
             is PagedState.Error -> {
                 binding.tickerInfo.hide()
                 binding.rvLastPurchasedProduct.hide()
                 binding.globalError.apply {
                     setType(
-                        if(curr.state.error.isNetworkError) GlobalError.NO_CONNECTION
+                        if(currState.error.isNetworkError) GlobalError.NO_CONNECTION
                         else GlobalError.SERVER_ERROR
                     )
 

@@ -1,100 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl4"
-        android:text="Demo Content Product Tag"
-        app:typographyType="heading_2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_source_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Source"
-        android:layout_marginTop="@dimen/spacing_lvl6"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
-        app:layout_constraintStart_toStartOf="@id/tv_title"
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lvl4"
+            >
 
-    <RadioGroup
-        android:id="@+id/rg_source"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toBottomOf="@id/tv_source_label"
-        app:layout_constraintStart_toStartOf="parent"
-        >
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Demo Content Product Tag"
+                app:typographyType="heading_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <RadioButton
-            android:id="@+id/rb_feed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Feed"
-            />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_open_as_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Open As"
+                android:layout_marginTop="@dimen/spacing_lvl6"
+                app:layout_constraintTop_toBottomOf="@id/tv_title"
+                app:layout_constraintStart_toStartOf="@id/tv_title"
+                />
 
-        <RadioButton
-            android:id="@+id/rb_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Play"
-            />
+            <RadioGroup
+                android:id="@+id/rg_open_as"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                >
 
-    </RadioGroup>
+                <RadioButton
+                    android:id="@+id/rb_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User"
+                    />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_open_as_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open As"
-        android:layout_marginTop="@dimen/spacing_lvl6"
-        app:layout_constraintTop_toBottomOf="@id/rg_source"
-        app:layout_constraintStart_toStartOf="@id/tv_title"
-        />
+                <RadioButton
+                    android:id="@+id/rb_seller"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Seller"
+                    />
 
-    <RadioGroup
-        android:id="@+id/rg_open_as"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toBottomOf="@id/tv_open_as_label"
-        app:layout_constraintStart_toStartOf="parent"
-        >
+            </RadioGroup>
 
-        <RadioButton
-            android:id="@+id/rb_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User"
-            />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_multiple_selection_product_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Multiple Product Selection"
+                android:layout_marginTop="@dimen/spacing_lvl6"
+                app:layout_constraintTop_toBottomOf="@id/rg_open_as"
+                app:layout_constraintStart_toStartOf="@id/tv_title"
+                />
 
-        <RadioButton
-            android:id="@+id/rb_seller"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Seller"
-            />
+            <RadioGroup
+                android:id="@+id/rg_multiple_selection_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                >
 
-    </RadioGroup>
+                <RadioButton
+                    android:id="@+id/rb_multiple_selection_product_yes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yes"
+                    />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_open"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Open"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        app:layout_constraintTop_toBottomOf="@id/rg_open_as"
-        app:layout_constraintStart_toStartOf="@id/tv_title"
-        app:layout_constraintEnd_toEndOf="@id/tv_title"
-        />
+                <RadioButton
+                    android:id="@+id/rb_multiple_selection_product_no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No"
+                    />
+
+            </RadioGroup>
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/text_field_max_selected_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                app:unify_text_field_input_type="number"
+                app:layout_constraintEnd_toEndOf="@id/tv_title"
+                app:layout_constraintStart_toStartOf="@id/rg_multiple_selection_product"
+                app:layout_constraintTop_toBottomOf="@id/rg_multiple_selection_product"
+                app:unify_text_field_label="Max Selected Product"
+                app:unify_text_field_label_static="true" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_full_page_autocomplete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Full page Autocomplete"
+                android:layout_marginTop="@dimen/spacing_lvl6"
+                />
+
+            <RadioGroup
+                android:id="@+id/rg_full_page_autocomplete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                >
+
+                <RadioButton
+                    android:id="@+id/rb_full_page_autocomplete_yes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yes"
+                    />
+
+                <RadioButton
+                    android:id="@+id/rb_full_page_autocomplete_no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No"
+                    />
+
+            </RadioGroup>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_product_tag_source_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Product Tag Source"
+                android:layout_marginTop="@dimen/spacing_lvl6"
+                />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cbx_global_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Global Search"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cbx_last_purchased"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last Purchased"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cbx_my_shop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Shop"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_open"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Open"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"

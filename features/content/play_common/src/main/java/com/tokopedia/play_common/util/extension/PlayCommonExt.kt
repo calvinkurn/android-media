@@ -299,7 +299,6 @@ val List<GraphqlError>.defaultErrorMessage: String
 
 
 fun dismissToaster() {
-    try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 }
 
 fun SpannableStringBuilder.append(

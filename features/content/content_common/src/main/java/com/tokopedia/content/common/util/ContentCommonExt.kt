@@ -30,3 +30,11 @@ fun EditText.showKeyboard(isShow: Boolean) {
     if (isShow) imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
     else imm.hideSoftInputFromWindow(this.windowToken, 0)
 }
+
+fun Map<String, Any>.forEachIndexed(callback: (idx: Int, entry: Map.Entry<String, Any>) -> Unit) {
+    var counter = 0
+
+    forEach {
+        callback(counter++, it)
+    }
+}

@@ -54,6 +54,17 @@ data class ProductUiModel(
         )
     )
 
+    fun toSelectedProduct() = SelectedProductUiModel(
+        id = id,
+        name = name,
+        cover = coverURL,
+        price = priceFmt,
+        priceDiscount = priceDiscountFmt,
+        isDiscount = isDiscount,
+        priceOriginal = priceOriginalFmt,
+        discount = discountFmt,
+    )
+
     private fun generateTotalSold(totalSold: Int, totalSoldFmt: String): String {
         if(totalSoldFmt.contains("Terjual")) return totalSoldFmt
 

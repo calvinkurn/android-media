@@ -53,35 +53,6 @@ class PlayBroadcastUiMapper @Inject constructor(
     private val uriParser: UriParser,
 ) : PlayBroadcastMapper {
 
-    override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> =
-        etalaseList.map {
-            val type = EtalaseType.getByType(it.type, it.id)
-            EtalaseContentUiModel(
-                id = if (type is EtalaseType.Group) type.fMenu else it.id,
-                name = it.name,
-                productMap = mutableMapOf(),
-                totalProduct = it.count,
-                stillHasProduct = true
-            )
-        }
-
-    override fun mapProductList(
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (String) -> Boolean,
-        isSelectableHandler: (Boolean) -> SelectableState
-    ) = productsResponse.data.map {
-        ProductContentUiModel(
-            id = it.id,
-            name = it.name,
-            imageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
-            originalImageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
-            stock = if (it.stock > 0) StockAvailable(it.stock) else OutOfStock,
-            price = PriceUnknown,
-            isSelectedHandler = isSelectedHandler,
-            isSelectable = isSelectableHandler
-        )
-    }
-
     override fun mapSearchSuggestionList(
         keyword: String,
         productsResponse: GetProductsByEtalaseResponse.GetProductListData

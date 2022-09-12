@@ -1,18 +1,20 @@
 package com.tokopedia.createpost.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.createpost.createpost.databinding.ActivityProductTagBinding
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
-import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import javax.inject.Inject
 
 /**
@@ -22,6 +24,9 @@ class ProductTagActivity : BaseActivity() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
+    lateinit var productTagAnalytic: ContentProductTagAnalytic
 
     private lateinit var binding: ActivityProductTagBinding
 
@@ -59,13 +64,33 @@ class ProductTagActivity : BaseActivity() {
                     override fun onCloseProductTag() {
                         finish()
                     }
+
+                    override fun onFinishProductTag(products: List<SelectedProductUiModel>) {
+                        val product = products.firstOrNull()
+
+                        if(product == null) {
+                            finish()
+                            return
+                        }
+
+                        val data = Intent().apply {
+                            putExtra(RESULT_PRODUCT_ID, product.id)
+                            putExtra(RESULT_PRODUCT_NAME, product.name)
+                            putExtra(RESULT_PRODUCT_PRICE, if(product.isDiscount) product.priceDiscount else product.price)
+                            putExtra(RESULT_PRODUCT_IMAGE, product.cover)
+                            putExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT, product.priceOriginal)
+                            putExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT, product.discount)
+                            putExtra(RESULT_PRODUCT_IS_DISCOUNT, product.isDiscount)
+                        }
+
+                        setResult(Activity.RESULT_OK, data)
+                        finish()
+                    }
                 })
+
+                fragment.setAnalytic(productTagAnalytic)
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -97,13 +122,18 @@ class ProductTagActivity : BaseActivity() {
         authorId: String,
         authorType: String,
     ): ProductTagParentFragment {
-        return ProductTagParentFragment.getFragmentWithFeedSource(
+        return ProductTagParentFragment.getFragment(
             supportFragmentManager,
             classLoader,
-            productTagList,
-            shopBadge,
-            authorId,
-            authorType,
+            ContentProductTagArgument.Builder()
+                .setShopBadge(shopBadge)
+                .setAuthorId(authorId)
+                .setAuthorType(authorType)
+                .setProductTagSource(productTagList)
+                .setMultipleSelectionProduct(false, 0)
+                .setFullPageAutocomplete(true)
+                .setBackButton(ContentProductTagConfig.BackButton.Back)
+                .setIsShowActionBarDivider(true)
         )
     }
 
@@ -118,6 +148,14 @@ class ProductTagActivity : BaseActivity() {
         private const val EXTRA_SHOP_BADGE = "shop_badge"
         private const val EXTRA_AUTHOR_ID = "author_id"
         private const val EXTRA_AUTHOR_TYPE = "author_type"
+
+        const val RESULT_PRODUCT_ID = "RESULT_PRODUCT_ID"
+        const val RESULT_PRODUCT_NAME = "RESULT_PRODUCT_NAME"
+        const val RESULT_PRODUCT_PRICE = "RESULT_PRODUCT_PRICE"
+        const val RESULT_PRODUCT_IMAGE = "RESULT_PRODUCT_IMAGE"
+        const val RESULT_PRODUCT_PRICE_ORIGINAL_FMT = "RESULT_PRODUCT_PRICE_ORIGINAL_FMT"
+        const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
+        const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
 
         private const val PRODUCT = "product"
         private const val SHOP = "shop"

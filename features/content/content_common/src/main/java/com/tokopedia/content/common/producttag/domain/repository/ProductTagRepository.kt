@@ -45,6 +45,6 @@ interface ProductTagRepository {
     ): String
 
     suspend fun getShopInfoByID(
-        shopIds: List<Int>,
+        shopIds: List<Long>,
     ): ShopUiModel
 }

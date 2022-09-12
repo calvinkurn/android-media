@@ -29,6 +29,28 @@
             app:unify_image_corner_radius="0"
             />
 
+        <View
+            android:id="@+id/view_top_gradient"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/layout_lvl6"
+            android:background="@drawable/bg_product_chooser_top_overlay"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+            android:id="@+id/checkbox_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/content_common_space_10"
+            android:layout_marginTop="@dimen/content_common_space_10"
+            android:clickable="false"
+            app:bold="true"
+            app:indeterminate="false"
+            app:layout_constraintStart_toStartOf="@id/view_top_gradient"
+            app:layout_constraintTop_toTopOf="@id/view_top_gradient"
+            app:unify_checkbox_type="type_default" />
+
         <LinearLayout
             android:id="@+id/ll_product_info"
             android:layout_width="0dp"

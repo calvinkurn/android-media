@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.sample
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -8,7 +9,16 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.databinding.ActivityContentProductTagSampleBinding
 import com.tokopedia.content.common.di.DaggerContentProductTagSampleComponent
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
+import com.tokopedia.content.common.sample.analytic.ContentProductTagSampleAnalyticImpl
+import com.tokopedia.content.common.types.ContentCommonUserType
+import com.tokopedia.content.common.util.hideKeyboard
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -23,6 +33,9 @@ class ContentProductTagSampleActivity : BaseActivity() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var mAnalytic: ContentProductTagAnalytic
+
     private lateinit var binding: ActivityContentProductTagSampleBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,62 +47,97 @@ class ContentProductTagSampleActivity : BaseActivity() {
         )
         setContentView(binding.root)
 
-        setupDefault()
         setupListener()
+        setupDefault()
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+
+        when(fragment) {
+            is ProductTagParentFragment -> {
+                fragment.setListener(object : ProductTagParentFragment.Listener {
+                    override fun onCloseProductTag() {
+                        closeFragment()
+                    }
+
+                    override fun onFinishProductTag(products: List<SelectedProductUiModel>) {
+                        Log.d("<LOG>", products.toString())
+                        closeFragment()
+                    }
+                })
+
+                fragment.setDataSource(object : ProductTagParentFragment.DataSource {
+                    override fun getInitialSelectedProduct(): List<SelectedProductUiModel> {
+                        return listOf(
+                            SelectedProductUiModel.createOnlyId("2148279610"),
+                            SelectedProductUiModel.createOnlyId("4207525260"),
+                            SelectedProductUiModel.createOnlyId("2653580529"),
+                        )
+                    }
+                })
+
+                fragment.setAnalytic(mAnalytic)
+            }
+        }
     }
 
     private fun setupDefault() {
-        binding.rbFeed.isChecked = true
         binding.rbUser.isChecked = true
+        binding.rbMultipleSelectionProductYes.isChecked = true
+        binding.rbFullPageAutocompleteNo.isChecked = true
+        binding.textFieldMaxSelectedProduct.editText.setText("3")
+
+        binding.cbxGlobalSearch.isChecked = true
+        binding.cbxLastPurchased.isChecked = true
+        binding.cbxMyShop.isChecked = true
     }
 
     private fun setupListener() {
         binding.btnOpen.setOnClickListener {
-            setupFragment()
+            hideKeyboard()
+            binding.textFieldMaxSelectedProduct.clearFocus()
+
+            if(validate()) {
+                setupFragment()
+            }
+        }
+
+        binding.rgMultipleSelectionProduct.setOnCheckedChangeListener { radioGroup, i ->
+            binding.textFieldMaxSelectedProduct.showWithCondition(
+                binding.rgMultipleSelectionProduct.checkedRadioButtonId == binding.rbMultipleSelectionProductYes.id
+            )
         }
     }
 
     private fun setupFragment() {
-        val fragment = getFragment()
-
-        if(fragment == null) {
-            Toast.makeText(this, "Fragment is not found.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         supportFragmentManager.beginTransaction()
             .replace(
                 binding.fragmentContainer.id,
-                fragment,
+                getFragment(),
                 ProductTagParentFragment.TAG
             )
             .commit()
     }
 
-    private fun getFragment(): Fragment? {
-        return when(binding.rgSource.checkedRadioButtonId) {
-            binding.rbFeed.id -> {
-                ProductTagParentFragment.getFragmentWithFeedSource(
-                    supportFragmentManager,
-                    classLoader,
-                    "global_search,own_shop,last_purchase",
-                    "",
-                    getAuthorId(),
-                    getAuthorType(),
-                )
-            }
-            binding.rbPlay.id -> {
-                ProductTagParentFragment.getFragmentWithPlaySource(
-                    supportFragmentManager,
-                    classLoader,
-                    "global_search,own_shop,last_purchase",
-                    "",
-                    getAuthorId(),
-                    getAuthorType(),
-                )
-            }
-            else -> null
-        }
+    private fun getFragment(): Fragment {
+        return ProductTagParentFragment.getFragment(
+            supportFragmentManager,
+            classLoader,
+            ContentProductTagArgument.Builder()
+                .setShopBadge("")
+                .setAuthorId(getAuthorId())
+                .setAuthorType(getAuthorType())
+                .setProductTagSource(getProductTagSource())
+                .setMultipleSelectionProduct(isMultipleSelectionProduct(), getMaxSelectedProduct())
+                .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
+                .setBackButton(ContentProductTagConfig.BackButton.Close)
+                .setIsShowActionBarDivider(false)
+        )
+    }
+
+    private fun closeFragment() {
+        supportFragmentManager.beginTransaction().remove(getFragment()).commit()
     }
 
     private fun getAuthorId(): String {
@@ -102,10 +150,44 @@ class ContentProductTagSampleActivity : BaseActivity() {
 
     private fun getAuthorType(): String {
         return when(binding.rgOpenAs.checkedRadioButtonId) {
-            binding.rbUser.id -> "content-user"
-            binding.rbSeller.id -> "content-shop"
+            binding.rbUser.id -> ContentCommonUserType.TYPE_USER
+            binding.rbSeller.id -> ContentCommonUserType.TYPE_SHOP
             else -> ""
         }
+    }
+
+    private fun getProductTagSource(): String{
+        return mutableListOf<String>().apply {
+            if(binding.cbxGlobalSearch.isChecked) {
+                add("global_search")
+            }
+
+            if(binding.cbxLastPurchased.isChecked) {
+                add("last_purchase")
+            }
+
+            if(binding.cbxMyShop.isChecked) {
+                add("own_shop")
+            }
+        }.joinToString(separator = ",")
+    }
+
+    private fun isMultipleSelectionProduct(): Boolean {
+        return binding.rbMultipleSelectionProductYes.isChecked
+    }
+
+    private fun getMaxSelectedProduct(): Int {
+        return if(isMultipleSelectionProduct())
+            binding.textFieldMaxSelectedProduct.editText.text.toString().toIntOrZero()
+        else 0
+    }
+
+    private fun validate(): Boolean {
+        return if(binding.rbMultipleSelectionProductYes.isChecked && binding.textFieldMaxSelectedProduct.editText.text.isEmpty()) {
+            Toast.makeText(this, "Please input Max Selected Product", Toast.LENGTH_SHORT).show()
+            false
+        }
+        else true
     }
 
     private fun inject() {
@@ -113,5 +195,11 @@ class ContentProductTagSampleActivity : BaseActivity() {
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    override fun onBackPressed() {
+        ProductTagParentFragment.findFragment(supportFragmentManager)?.let {
+            it.onBackPressed()
+        } ?: super.onBackPressed()
     }
 }
