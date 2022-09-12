@@ -9,18 +9,18 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.dilayanitokopedia.databinding.ActivityDtBaseBinding
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.dilayanitokopedia.R
+import com.tokopedia.dilayanitokopedia.databinding.DtBaseActivityBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 abstract class BaseDtActivity : BaseActivity() {
 
-    private var binding : ActivityDtBaseBinding? = null
+    private var binding : DtBaseActivityBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDtBaseBinding.inflate(layoutInflater)
+        binding = DtBaseActivityBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         setStatusBarColor()
         setBackgroundColor()
