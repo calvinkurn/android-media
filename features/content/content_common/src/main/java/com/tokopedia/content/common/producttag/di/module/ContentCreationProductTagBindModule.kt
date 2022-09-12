@@ -2,8 +2,6 @@ package com.tokopedia.content.common.producttag.di.module
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalyticImpl
 import com.tokopedia.content.common.producttag.data.ProductTagRepositoryImpl
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
@@ -67,8 +65,4 @@ abstract class ContentCreationProductTagBindModule {
     /** Repository */
     @Binds
     abstract fun bindProductTagRepository(productTagRepositoryImpl: ProductTagRepositoryImpl): ProductTagRepository
-
-    /** Analytic */
-    @Binds
-    abstract fun bindProductTagAnalytic(productTagAnalytic: ProductTagAnalyticImpl): ProductTagAnalytic
 }

@@ -11,7 +11,6 @@ import com.tokopedia.content.common.onboarding.view.bottomsheet.UserTnCOnboardin
 import com.tokopedia.content.common.onboarding.view.strategy.UGCCompleteOnboardingStrategy
 import com.tokopedia.content.common.onboarding.view.strategy.UGCTncOnboardingStrategy
 import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingStrategy
-import com.tokopedia.content.common.di.FragmentKey
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
