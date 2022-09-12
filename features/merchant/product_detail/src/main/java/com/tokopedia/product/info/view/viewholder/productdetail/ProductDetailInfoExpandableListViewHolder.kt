@@ -36,9 +36,9 @@ class ProductDetailInfoExpandableListViewHolder(private val view: View, private 
 
         expandableContainer.removeViews(1, expandableContainer.childCount - 1)
 
-        element.shopNotes.forEachIndexed { index, it ->
+        element.shopNotes.forEach {
             val layoutValuePoint = inflater.inflate(R.layout.partial_item_value_point, null)
-            setupPartialView(layoutValuePoint, it)
+            setupPartialView(layoutValuePoint, element, it)
             expandableContainer.addView(layoutValuePoint)
         }
 
@@ -47,16 +47,19 @@ class ProductDetailInfoExpandableListViewHolder(private val view: View, private 
 
         view.setOnClickListener {
             expandableTitleChevron.isExpand = expandableTitleChevron.isExpand != true
-            listener.closeAllExpand(element.uniqueIdentifier(), expandableTitleChevron.isExpand
-                    ?: false)
+            listener.closeAllExpand(element.uniqueIdentifier(), expandableTitleChevron.isExpand)
         }
     }
 
-    private fun setupPartialView(rootView: View, shopNotesData: ShopNotesData) = with(view) {
+    private fun setupPartialView(
+        rootView: View,
+        element: ProductDetailInfoExpandableListDataModel,
+        shopNotesData: ShopNotesData
+    ) = with(view) {
         val title: Typography = rootView.findViewById(R.id.point_title)
         val action: Typography = rootView.findViewById(R.id.point_action)
         action.setOnClickListener {
-            listener.goToShopNotes(shopNotesData.title, shopNotesData.updateTime, shopNotesData.content)
+            listener.goToShopNotes(element = element, shopNotesData = shopNotesData)
         }
         title.text = shopNotesData.title
     }

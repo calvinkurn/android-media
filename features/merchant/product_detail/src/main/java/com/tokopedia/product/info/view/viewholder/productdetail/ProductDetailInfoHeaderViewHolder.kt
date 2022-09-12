@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
@@ -27,15 +27,13 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
 
     companion object {
         val LAYOUT = R.layout.bs_item_product_detail_header
-
-        private const val HEADER_IMAGE_ROUND_SIZE = 8f
     }
 
     private val binding = BsItemProductDetailHeaderBinding.bind(view)
 
     override fun bind(element: ProductDetailInfoHeaderDataModel) {
         binding.pdpHeaderProductTitle.text = element.productTitle
-        binding.pdpHeaderImg.loadImageRounded(element.img, HEADER_IMAGE_ROUND_SIZE)
+        binding.pdpHeaderImg.loadImage(element.img)
         setupItemList(element.listOfInfo)
         setupSpecification(element.listOfAnnotation, element.needToShowSpecification())
     }

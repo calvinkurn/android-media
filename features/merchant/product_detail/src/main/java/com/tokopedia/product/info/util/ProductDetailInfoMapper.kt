@@ -107,7 +107,9 @@ object ProductDetailInfoMapper {
                                 componentName = index,
                                 title = it.title,
                                 shopNotes = responseData.dataShopNotes.shopNotesData,
-                                isShowable = it.isShowable
+                                isShowable = it.isShowable,
+                                productName = parcelData.productTitle,
+                                productImage = parcelData.productImageUrl
                             )
                         )
                     }

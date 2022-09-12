@@ -33,6 +33,7 @@ import com.tokopedia.product.detail.tracking.ProductDetailBottomSheetTracking
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
+import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
@@ -301,15 +302,19 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         }
     }
 
-    override fun goToShopNotes(title: String, date: String, desc: String) {
+    override fun goToShopNotes(
+        element: ProductDetailInfoExpandableListDataModel,
+        shopNotesData: ShopNotesData
+    ) {
         context?.let {
             DynamicProductDetailTracking.ProductDetailSheet.onShopNotesClicked(
                 listener?.getPdpDataSource(),
                 userSession.userId.orEmpty(),
-                title
+                shopNotesData.title
             )
-            val bsShopNotes =
-                ProductDetailBottomSheetBuilder.getShopNotesBottomSheet(it, date, desc, title)
+            val bsShopNotes = ProductDetailBottomSheetBuilder.getShopNotesBottomSheet(
+                context = it, element = element, shopNotesData = shopNotesData
+            )
             bsShopNotes.show(childFragmentManager, "shopNotes")
         }
     }
