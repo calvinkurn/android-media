@@ -45,7 +45,7 @@ class ContrastToolsUiComponent constructor(
 
         /**
          * convert slider value -100...100 to contrast value 0...3
-         * -100...1 => 0...1
+         * -100...1 => 0,01...1
          * 0...100 => 1...3
          */
         fun contrastRawToStdValue(rawStorageValue: Float): Float {
@@ -54,7 +54,7 @@ class ContrastToolsUiComponent constructor(
                 ((rawStorageValue / CONTRAST_SLIDER_RANGE) * CONTRAST_REAL_POSITIVE_VALUE) + 1
             } else {
                 // 0...0.99
-                ((rawStorageValue + CONTRAST_SLIDER_RANGE) / CONTRAST_SLIDER_RANGE)
+                ((rawStorageValue + CONTRAST_SLIDER_RANGE) / CONTRAST_SLIDER_RANGE) + 0.01f
             }
         }
     }
