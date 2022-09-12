@@ -359,7 +359,7 @@ object DynamicProductDetailMapper {
     private fun mapToProductDetailInfo(component: Component): ProductDetailInfoDataModel {
         val data = component.componentData.firstOrNull()
         val contents = mapToProductDetailInfoContent(data = data)
-        val catalog  = data?.catalogBottomSheet?.asModel()
+        val catalog = data?.catalogBottomSheet?.asModel()
         val bottomSheet = data?.bottomSheet?.asModel() ?: ProductDetailInfoSeeMore()
 
         return ProductDetailInfoDataModel(

@@ -36,7 +36,6 @@ import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownlo
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLoadingDataModel
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
@@ -83,9 +82,10 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     private val productDetailInfoAdapter by lazy {
         BsProductDetailInfoAdapter(
-            AsyncDifferConfig.Builder(ProductDetailInfoDiffUtil())
+            differ = AsyncDifferConfig.Builder(ProductDetailInfoDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
-                .build(), adapterTypeFactory
+                .build(),
+            adapterTypeFactory = adapterTypeFactory
         )
     }
 
@@ -141,13 +141,13 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         viewLifecycleOwner.observe(bottomSheetDetailData) { data ->
             data.doSuccessOrFail({
                 currentList = ArrayList(it.data)
-                binding.bsProductInfoRv.viewTreeObserver?.addOnGlobalLayoutListener(object :
-                    ViewTreeObserver.OnGlobalLayoutListener {
+                val layoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         binding.bsProductInfoRv.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                         setupFullScreen(it.data)
                     }
-                })
+                }
+                binding.bsProductInfoRv.viewTreeObserver?.addOnGlobalLayoutListener(layoutListener)
                 productDetailInfoAdapter.submitList(it.data)
             }) {
             }
@@ -198,7 +198,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         }
     }
 
-    private fun setupFullScreen(data: List<ProductDetailInfoVisitable>) {
+    private fun setupFullScreen(data: List<ProductDetailInfoVisitable>) = with(binding) {
         var isFullScreen = false
         data.forEach {
             if (it is ProductDetailInfoExpandableImageDataModel || it is ProductDetailInfoExpandableDataModel || it is ProductDetailInfoExpandableListDataModel) {
@@ -213,13 +213,12 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             val height = displayMetrics.heightPixels
 
             if (isFullScreen) {
-                binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 20.dpToPx(displayMetrics))
-                binding?.bsProductInfoContainer?.layoutParams?.height =
+                bsProductInfoContainer.setPadding(0, 0, 0, 20.dpToPx(displayMetrics))
+                bsProductInfoContainer.layoutParams?.height =
                     height - bottomSheetHeader.height - (bottomSheetHeader.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin - bottomSheetWrapper.paddingTop
             } else {
-                binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
-                binding?.bsProductInfoContainer?.layoutParams?.height =
-                    ViewGroup.LayoutParams.WRAP_CONTENT
+                bsProductInfoContainer.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
+                bsProductInfoContainer.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
         } catch (_: Throwable) {
         }
@@ -227,8 +226,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToCatalog(url: String, catalogName: String) {
         DynamicProductDetailTracking.ProductDetailSheet.onCatalogBottomSheetClicked(
-            listener?.getPdpDataSource(), userSession.userId
-                ?: "", catalogName
+            listener?.getPdpDataSource(), userSession.userId.orEmpty(), catalogName
         )
         goToApplink(url)
     }
@@ -236,8 +234,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     override fun goToCategory(url: String) {
         if (!GlobalConfig.isSellerApp()) {
             DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(
-                listener?.getPdpDataSource(), userSession.userId
-                    ?: ""
+                listener?.getPdpDataSource(), userSession.userId.orEmpty()
             )
             goToApplink(url)
         }
@@ -245,8 +242,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToEtalase(url: String) {
         DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(
-            listener?.getPdpDataSource(), userSession.userId
-                ?: ""
+            listener?.getPdpDataSource(), userSession.userId.orEmpty()
         )
         goToApplink(url)
     }
@@ -308,8 +304,9 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     override fun goToShopNotes(title: String, date: String, desc: String) {
         context?.let {
             DynamicProductDetailTracking.ProductDetailSheet.onShopNotesClicked(
-                listener?.getPdpDataSource(), userSession.userId
-                    ?: "", title
+                listener?.getPdpDataSource(),
+                userSession.userId.orEmpty(),
+                title
             )
             val bsShopNotes =
                 ProductDetailBottomSheetBuilder.getShopNotesBottomSheet(it, date, desc, title)
@@ -319,8 +316,8 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToSpecification(annotation: List<ProductDetailInfoContent>) {
         DynamicProductDetailTracking.ProductDetailSheet.onSpecificationClick(
-            listener?.getPdpDataSource(), userSession.userId
-                ?: ""
+            listener?.getPdpDataSource(),
+            userSession.userId.orEmpty()
         )
         val bs = ProductAnnotationBottomSheet()
         bs.getData(annotation)
@@ -343,8 +340,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     private fun onVariantGuideLineBottomSheetClicked(url: String) {
         activity?.let {
             DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(
-                listener?.getPdpDataSource(), userSession.userId
-                    ?: ""
+                listener?.getPdpDataSource(), userSession.userId.orEmpty()
             )
             startActivity(getIntentImagePreviewWithoutDownloadButton(it, arrayListOf(url)))
         }

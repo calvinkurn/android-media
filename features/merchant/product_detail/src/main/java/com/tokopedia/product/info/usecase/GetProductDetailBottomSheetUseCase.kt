@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.di.ProductDetailScope
 import com.tokopedia.product.info.model.productdetail.response.BottomSheetProductDetailInfoResponse
 import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
@@ -35,7 +34,7 @@ class GetProductDetailBottomSheetUseCase @Inject constructor(private val graphql
             parentId: String,
             isGiftable: Boolean,
             catalogId: String,
-            bottomSheetParam: String,
+            bottomSheetParam: String
         ): RequestParams = RequestParams.create().apply {
             putString(PRODUCT_ID_PARAM, productId)
             putString(SHOP_ID_PARAM, shopId)
@@ -102,8 +101,9 @@ class GetProductDetailBottomSheetUseCase @Inject constructor(private val graphql
 
     override suspend fun executeOnBackground(): PdpGetDetailBottomSheet {
         val request = GraphqlRequest(
-            QUERY,
-            BottomSheetProductDetailInfoResponse::class.java, requestParams.parameters
+            query = QUERY,
+            typeOfT = BottomSheetProductDetailInfoResponse::class.java,
+            variables = requestParams.parameters
         )
         val cacheStrategy =
             GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)

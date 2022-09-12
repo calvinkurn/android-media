@@ -153,7 +153,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
-import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs

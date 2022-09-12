@@ -69,7 +69,6 @@ class BsProductDetailInfoViewModel @Inject constructor(
         this.parcelData.value = parcelData
     }
 
-
     private fun getLoadingData(
         productInfoParcel: ProductInfoParcelData
     ): List<ProductDetailInfoVisitable> = if (productInfoParcel.isOpenSpecification) {

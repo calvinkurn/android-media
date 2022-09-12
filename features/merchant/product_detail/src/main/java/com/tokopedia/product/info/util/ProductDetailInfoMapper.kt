@@ -56,42 +56,19 @@ object ProductDetailInfoMapper {
 
     private fun generateVisitableDescription(
         responseData: PdpGetDetailBottomSheet,
-        parcelData: ProductInfoParcelData,
+        parcelData: ProductInfoParcelData
     ): MutableList<ProductDetailInfoVisitable> {
         val listOfComponent: MutableList<ProductDetailInfoVisitable> = mutableListOf()
         val dataContent = parcelData.productInfo.dataContent
 
         responseData.bottomsheetData.forEachIndexed { index, it ->
             when (it.componentName) {
-                HEADER_DETAIL_KEY -> {
-                    val isCatalog = parcelData.isOpenCatalogDescription
-                    val productInfoItems = mutableListOf<ProductDetailInfoContent>()
-                    val annotationItems = mutableListOf<ProductDetailInfoContent>()
-
-                    dataContent.forEach { data ->
-                        if (data.title.lowercase() != DESCRIPTION_DETAIL_KEY) {
-                            val notShownMax = isInfoUnderMax(currentSize = productInfoItems.size)
-
-                            if (data.showAtBottomSheet && !isCatalog && notShownMax) {
-                                productInfoItems.add(data)
-                            }
-
-                            if (data.isAnnotation) {
-                                annotationItems.add(data)
-                            }
-                        }
-                    }
-
-                    listOfComponent.add(
-                        ProductDetailInfoHeaderDataModel(
-                            componentId = index,
-                            img = parcelData.productImageUrl,
-                            productTitle = parcelData.productTitle,
-                            listOfInfo = productInfoItems,
-                            listOfAnnotation = annotationItems
-                        )
+                HEADER_DETAIL_KEY -> listOfComponent.add(
+                    generateHeaderDetailDescription(
+                        componentId = index,
+                        parcelData = parcelData
                     )
-                }
+                )
                 DESCRIPTION_DETAIL_KEY -> {
                     val descriptionValue = dataContent.firstOrNull {
                         it.title.lowercase() == DESCRIPTION_DETAIL_KEY
@@ -169,43 +146,52 @@ object ProductDetailInfoMapper {
         return listOfComponent
     }
 
+    private fun generateHeaderDetailDescription(
+        componentId: Int,
+        parcelData: ProductInfoParcelData
+    ): ProductDetailInfoHeaderDataModel {
+        val isCatalog = parcelData.isOpenCatalogDescription
+        val productInfoItems = mutableListOf<ProductDetailInfoContent>()
+        val annotationItems = mutableListOf<ProductDetailInfoContent>()
+        val dataContent = parcelData.productInfo.dataContent
+
+        dataContent.forEach { data ->
+            if (data.title.lowercase() != DESCRIPTION_DETAIL_KEY) {
+                val notShownMax = isInfoUnderMax(currentSize = productInfoItems.size)
+
+                if (data.showAtBottomSheet && !isCatalog && notShownMax) {
+                    productInfoItems.add(data)
+                }
+
+                if (data.isAnnotation) {
+                    annotationItems.add(data)
+                }
+            }
+        }
+
+        return ProductDetailInfoHeaderDataModel(
+            componentId = componentId,
+            img = parcelData.productImageUrl,
+            productTitle = parcelData.productTitle,
+            listOfInfo = productInfoItems,
+            listOfAnnotation = annotationItems
+        )
+    }
+
     private fun generateVisitableSpecification(
         responseData: PdpGetDetailBottomSheet,
         parcelData: ProductInfoParcelData
     ): MutableList<ProductDetailInfoVisitable> {
         val listOfComponent: MutableList<ProductDetailInfoVisitable> = mutableListOf()
-        val dataContent = parcelData.productInfo.dataContent
 
         responseData.bottomsheetData.forEachIndexed { index, it ->
             when (it.componentName) {
-                HEADER_DETAIL_KEY -> {
-                    val productInfoItems = mutableListOf<ProductDetailInfoContent>()
-                    val annotationItems = mutableListOf<ProductDetailInfoContent>()
-
-                    dataContent.forEach { data ->
-                        if (data.title.lowercase() != DESCRIPTION_DETAIL_KEY) {
-                            val notShownMax = isInfoUnderMax(currentSize = productInfoItems.size)
-
-                            if (data.showAtBottomSheet && notShownMax) {
-                                productInfoItems.add(data)
-                            }
-
-                            if (data.isAnnotation) {
-                                annotationItems.add(data)
-                            }
-                        }
-                    }
-
-                    listOfComponent.add(
-                        ProductDetailInfoHeaderDataModel(
-                            componentId = index,
-                            img = parcelData.productImageUrl,
-                            productTitle = parcelData.productTitle,
-                            listOfInfo =  productInfoItems,
-                            listOfAnnotation = annotationItems
-                        )
+                HEADER_DETAIL_KEY -> listOfComponent.add(
+                    generateHeaderDetailSpecification(
+                        componentId = index,
+                        parcelData = parcelData
                     )
-                }
+                )
                 CATALOG -> {
                     listOfComponent.add(
                         ProductDetailInfoCatalogDataModel(
@@ -220,6 +206,39 @@ object ProductDetailInfoMapper {
 
         return listOfComponent
     }
+
+
+    private fun generateHeaderDetailSpecification(
+        componentId: Int,
+        parcelData: ProductInfoParcelData
+    ): ProductDetailInfoHeaderDataModel {
+        val productInfoItems = mutableListOf<ProductDetailInfoContent>()
+        val annotationItems = mutableListOf<ProductDetailInfoContent>()
+        val dataContent = parcelData.productInfo.dataContent
+
+        dataContent.forEach { data ->
+            if (data.title.lowercase() != DESCRIPTION_DETAIL_KEY) {
+                val notShownMax = isInfoUnderMax(currentSize = productInfoItems.size)
+
+                if (data.showAtBottomSheet && notShownMax) {
+                    productInfoItems.add(data)
+                }
+
+                if (data.isAnnotation) {
+                    annotationItems.add(data)
+                }
+            }
+        }
+
+        return ProductDetailInfoHeaderDataModel(
+            componentId = componentId,
+            img = parcelData.productImageUrl,
+            productTitle = parcelData.productTitle,
+            listOfInfo = productInfoItems,
+            listOfAnnotation = annotationItems
+        )
+    }
+
 
     private fun isInfoUnderMax(currentSize: Int) = currentSize < SPECIFICATION_SIZE_THRESHOLD
 }
