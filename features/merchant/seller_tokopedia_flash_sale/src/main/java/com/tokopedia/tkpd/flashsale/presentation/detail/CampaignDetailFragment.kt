@@ -157,6 +157,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeCampaignDetail()
         loadCampaignDetailData()
+        setupChooseProductRedirection()
     }
 
     private fun observeCampaignDetail() {
@@ -507,6 +508,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 )
                 else -> setDefaultRegisteredMidSection(flashSale)
             }
+        }
+    }
+
+    private fun setupChooseProductRedirection() {
+        binding?.btnRegister?.setOnClickListener {
+            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId)
+        }
+        upcomingCdpMidBinding?.btnCheckReason?.setOnClickListener {
+            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId)
         }
     }
 

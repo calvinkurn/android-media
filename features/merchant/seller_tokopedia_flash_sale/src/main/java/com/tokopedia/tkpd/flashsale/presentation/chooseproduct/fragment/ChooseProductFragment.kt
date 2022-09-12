@@ -45,10 +45,10 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
 
     companion object {
         @JvmStatic
-        fun newInstance(campaignId: Long): ChooseProductFragment {
+        fun newInstance(flashSaleId: Long): ChooseProductFragment {
             val fragment = ChooseProductFragment()
             val bundle = Bundle()
-            bundle.putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+            bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
             fragment.arguments = bundle
             return fragment
         }
@@ -59,8 +59,8 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     @Inject
     lateinit var commonBottomSheetInitializer: CommonBottomSheetInitializer
 
-    private val campaignId by lazy {
-        arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orZero()
+    private val flashSaleId by lazy {
+        arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
     }
     private val chooseProductAdapter = ChooseProductAdapter()
     private val criteriaSelectionAdapter = CriteriaSelectionAdapter(this)
@@ -93,7 +93,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.campaignId = campaignId
+        viewModel.campaignId = flashSaleId
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         setupObservers()
