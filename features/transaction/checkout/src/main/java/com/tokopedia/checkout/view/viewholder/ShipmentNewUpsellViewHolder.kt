@@ -9,14 +9,12 @@ import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class ShipmentNewUpsellViewHolder(itemView: View, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
 
@@ -54,7 +52,7 @@ class ShipmentNewUpsellViewHolder(itemView: View, private val shipmentAdapterAct
 
         if (!data.hasSeenUpsell) {
             data.hasSeenUpsell = true
-//            shipmentAdapterActionListener.onViewNewUpsellCard(data)
+            shipmentAdapterActionListener.onViewNewUpsellCard(data)
         }
     }
 

@@ -3608,7 +3608,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onViewNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel) {
-
+        checkoutAnalyticsCourierSelection.eventViewNewUpsell(shipmentUpsellModel.isSelected());
     }
 
     @Override

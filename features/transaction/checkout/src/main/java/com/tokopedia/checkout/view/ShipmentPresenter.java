@@ -2778,7 +2778,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     clearOrders.add(new ClearPromoOrder(
                             shipmentCartItemModel.getCartString(),
                             shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
-                            boCodes
+                            boCodes, shipmentCartItemModel.getShopId(), shipmentCartItemModel.isProductIsPreorder(),
+                            String.valueOf(shipmentCartItemModel.getCartItemModels().get(0).getPreOrderDurationDay()), shipmentCartItemModel.getFulfillmentId()
                     ));
                     hasBo = true;
                 }

@@ -792,4 +792,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_GOTOPLUS_UPSELL_TICKER
         sendGeneralEvent(gtmData)
     }
+
+    fun eventViewNewUpsell(isSelected: Boolean) {
+
+    }
 }
