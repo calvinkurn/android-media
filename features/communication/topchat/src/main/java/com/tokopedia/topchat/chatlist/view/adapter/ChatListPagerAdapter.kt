@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.view.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
@@ -32,7 +33,7 @@ class ChatListPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) 
     data class ChatListTab(
         val title: String,
         val fragment: Fragment,
-        @DrawableRes val icon: Drawable?,
+        @SuppressLint("SupportAnnotationUsage") val icon: Drawable?,
         var counter: String = "0"
     ) {
         fun increaseTabCounter() {
