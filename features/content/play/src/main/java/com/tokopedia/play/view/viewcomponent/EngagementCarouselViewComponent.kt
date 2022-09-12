@@ -9,11 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.engagement.adapter.EngagementWidgetAdapter
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.unifycomponents.PageControl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -30,6 +32,8 @@ class EngagementCarouselViewComponent(
 ) : ViewComponent(container, resId) {
 
     private val carousel: RecyclerView = findViewById(R.id.rv_engagement_widget)
+    private val indicator: PageControl = findViewById(R.id.play_engagement_indicator)
+
     private var job: Job? = null
 
     private val carouselAdapter =
@@ -52,8 +56,16 @@ class EngagementCarouselViewComponent(
         PagerSnapHelper()
     }
 
-    private val linearLayoutManager =
+    private val linearLayoutManager by lazy (LazyThreadSafetyMode.NONE){
         LinearLayoutManager(rootView.context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                indicator.setCurrentIndicator(linearLayoutManager.findFirstCompletelyVisibleItemPosition())
+        }
+    }
 
     private val size: Int
         get() = carouselAdapter.itemCount
@@ -62,6 +74,7 @@ class EngagementCarouselViewComponent(
         carousel.apply {
             adapter = carouselAdapter
             layoutManager = linearLayoutManager
+            addOnScrollListener(scrollListener)
         }
 
         snapHelper.attachToRecyclerView(carousel)
@@ -69,18 +82,22 @@ class EngagementCarouselViewComponent(
 
     fun setData(list: List<EngagementUiModel>) {
         carouselAdapter.setItemsAndAnimateChanges(list)
-        startAutoScroll()
-        resize()
+        handleAutoScroll()
+        setupView()
     }
 
-    private fun resize() {
+    private fun setupView() {
+        indicator.showWithCondition(size > 1)
+        indicator.setIndicator(size)
+        indicator.setCurrentIndicator(linearLayoutManager.findFirstCompletelyVisibleItemPosition())
+
         if (size == 1)
             carousel.updateLayoutParams {
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
     }
 
-    private fun startAutoScroll() {
+    private fun handleAutoScroll() {
         if (size <= 1) return
         job?.cancel()
         job = scope.launchCatchError(block = {
@@ -106,6 +123,7 @@ class EngagementCarouselViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         stopAutoScroll()
+        carousel.removeOnScrollListener(scrollListener)
     }
 
     interface Listener {
