@@ -1,6 +1,6 @@
 package com.tokopedia.sellerorder.detail.data.model
 
-class SomDetailResolution(
+data class SomDetailResolution(
     val title: String? = "",
     val status: String? = "",
     val description: String? = "",

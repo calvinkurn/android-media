@@ -66,6 +66,7 @@
     <string name="sale_from_top_ads">Penjualan dari TopAds</string>
     <string name="sale_from_broadcast_chat">Penjualan dari Broadcast Chat</string>
     <string name="som_detail_product_note_format"><![CDATA[<i>%1$s</i>]]></string>
+    <string name="som_response_deadline">Batas respons</string>
 
     <string name="chat">Chat</string>
 

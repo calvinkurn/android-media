@@ -14,7 +14,6 @@ import com.tokopedia.sellerorder.detail.di.SomDetailScope
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.utils.view.binding.viewBinding
 
-@SomDetailScope
 class SomDetailResolutionViewHolder(
     itemView: View?,
     val actionListener: SomDetailAdapterFactoryImpl.ActionListener,

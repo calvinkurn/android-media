@@ -28,6 +28,12 @@ data class GetResolutionTicketStatusResponse(
             @SerializedName("resolution_status")
             val resolutionStatus: ResolutionStatus? = ResolutionStatus()
         ) {
+
+            fun shouldShow(): Boolean {
+                return !cardTitle.isNullOrEmpty() && !resolutionStatus?.text.isNullOrEmpty()
+                        && !description.isNullOrEmpty()
+            }
+
             data class Deadline(
                 @SerializedName("background_color")
                 val backgroundColor: String? = "",
@@ -50,11 +56,6 @@ data class GetResolutionTicketStatusResponse(
                 @SerializedName("text")
                 val text: String? = ""
             )
-
-            fun shouldShow(): Boolean {
-                return !cardTitle.isNullOrEmpty() && !resolutionStatus?.text.isNullOrEmpty()
-                        && !description.isNullOrEmpty()
-            }
         }
     }
 }

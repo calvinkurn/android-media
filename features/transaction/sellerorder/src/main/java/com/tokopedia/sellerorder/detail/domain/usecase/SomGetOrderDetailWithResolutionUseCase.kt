@@ -21,11 +21,6 @@ class SomGetOrderDetailWithResolutionUseCase @Inject constructor(
         const val ORDER_ID_PARAM = "orderID"
     }
 
-    suspend fun execute(orderId: String): Result<GetSomDetailResponse> {
-        useCaseRequestParams.parameters[ORDER_ID_PARAM] = orderId
-        return executeOnBackground()
-    }
-
     override suspend fun executeOnBackground(): Result<GetSomDetailResponse> {
         try {
             val orderId: String = useCaseRequestParams.parameters[ORDER_ID_PARAM] as String
@@ -43,17 +38,22 @@ class SomGetOrderDetailWithResolutionUseCase @Inject constructor(
                         detailResponse
                     } else {
                         detailResponse.data.somResolution = GetResolutionTicketStatusResponse
-                            .ResolutionGetTicketStatus.ResolutionData()
+                                                                .ResolutionGetTicketStatus.ResolutionData()
                         detailResponse
                     }
                 } else {
                     return detailResponse
                 }
             } else {
-                return Fail(MessageErrorException("failed retrieving detail"))
+                return detailResponse
             }
         } catch (e: Exception) {
             return Fail(e)
         }
+    }
+
+    suspend fun execute(orderId: String): Result<GetSomDetailResponse> {
+        useCaseRequestParams.parameters[ORDER_ID_PARAM] = orderId
+        return executeOnBackground()
     }
 }
