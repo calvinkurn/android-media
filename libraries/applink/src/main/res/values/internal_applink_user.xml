@@ -45,6 +45,5 @@
 
     <!--Redefine Register-->
     <string name="path_redefine_register_email">/redefine-register-email</string>
-    <string name="path_redefine_register_input_phone">/redefine-register-input-phone</string>
 
 </resources>
