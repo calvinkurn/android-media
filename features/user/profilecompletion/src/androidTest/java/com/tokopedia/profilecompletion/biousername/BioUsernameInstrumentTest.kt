@@ -75,7 +75,6 @@ class BioUsernameInstrumentTest {
     @Test
     fun test_success_create_username() {
         runTest(true) {
-            goToAnotherActivity(null, specifyClass = false)
             typingTextOn(R.id.et_username, USERNAME_VALID)
             checkMessageText(R.id.et_username, activity.getString(R.string.description_textfield_username))
             clickSubmitButton(R.id.btn_submit)
@@ -96,7 +95,6 @@ class BioUsernameInstrumentTest {
     @Test
     fun test_success_create_bio() {
         runTest(false){
-            goToAnotherActivity(null, specifyClass = false)
             typingTextOn(R.id.et_bio, BIO_VALID)
             clickSubmitButton(R.id.btn_submit)
             checkResultCode(activityTestRule.activityResult, Activity.RESULT_OK)
@@ -106,7 +104,6 @@ class BioUsernameInstrumentTest {
     @Test
     fun test_fail_create_bio() {
         runTest(false) {
-            goToAnotherActivity(null, specifyClass = false)
             typingTextOn(R.id.et_bio, BIO_FAILED)
             clickSubmitButton(R.id.btn_submit)
             checkMessageText(R.id.et_bio, ERROR_MESSAGE_BIO)
