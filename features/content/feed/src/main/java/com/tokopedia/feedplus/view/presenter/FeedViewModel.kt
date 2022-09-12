@@ -689,7 +689,6 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-
     private suspend fun addToCart(
         postTagItem: FeedXProduct,
         shopId: String,
