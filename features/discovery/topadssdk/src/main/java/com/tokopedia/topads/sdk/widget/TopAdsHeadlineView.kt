@@ -19,6 +19,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
+import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
 import javax.inject.Inject
 
@@ -31,7 +32,11 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val topAdsHeadlineViewModel by lazy { ViewModelProvider(context as AppCompatActivity, viewModelFactory) }
+    private val viewModelProvider by lazy { ViewModelProvider(context as AppCompatActivity, viewModelFactory) }
+
+    private val topAdsHeadlineViewModel by lazy {
+        viewModelProvider.get(TopAdsHeadlineViewModel::class.java)
+    }
 
     var topadsBannerView: TopAdsBannerView
         private set
