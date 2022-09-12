@@ -50,7 +50,6 @@ class AnnouncementViewHolder(
                     listener.onRemoveWidget(adapterPosition)
                     itemView.toggleWidgetHeight(false)
                 }
-                binding.shcAnnouncementTimerView.gone()
             }
             else -> showSuccessState(element)
         }
@@ -66,7 +65,6 @@ class AnnouncementViewHolder(
                 return
             }
 
-            shcAnnouncementContainer.visible()
             shcAnnouncementTimerView.gone()
 
             tvShcAnnouncementTitle.text = element.data?.title
@@ -91,7 +89,7 @@ class AnnouncementViewHolder(
 
     private fun showTimerState(element: AnnouncementWidgetUiModel) {
         with(binding) {
-            shcAnnouncementContainer.gone()
+            hideDismissibleView()
             shcAnnouncementSuccessState.gone()
             shcAnnouncementTimerView.visible()
             shcAnnouncementTimerView.setBackgroundResource(R.drawable.shc_dashed_background)
@@ -142,6 +140,7 @@ class AnnouncementViewHolder(
     private fun showDismissibleView(element: AnnouncementWidgetUiModel) {
         binding.run {
             shcAnnouncementContainer.visible()
+            viewShcAnnouncementDismissal.visible()
             viewShcSpacer.visible()
             tvShcAnnouncementDismissYes.setOnClickListener {
                 tvShcAnnouncementDismissYes.gone()
@@ -166,6 +165,7 @@ class AnnouncementViewHolder(
     private fun showLoadingState() {
         with(binding) {
             shcAnnouncementSuccessState.gone()
+            shcAnnouncementContainer.visible()
             shcAnnouncementLoadingState.visible()
             shcAnnouncementTimerView.gone()
             viewShcAnnouncementDismissal.gone()
