@@ -10,7 +10,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
 import timber.log.Timber
-import kotlin.math.log
 
 class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContract.View,
                                                 private val presenter: ShipmentContract.Presenter,
