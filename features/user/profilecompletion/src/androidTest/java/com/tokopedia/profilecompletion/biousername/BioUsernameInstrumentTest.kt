@@ -13,7 +13,6 @@ import com.tokopedia.profilecompletion.common.helper.checkTextOnEditText
 import com.tokopedia.profilecompletion.common.helper.clickSubmitButton
 import com.tokopedia.profilecompletion.common.helper.typingTextOn
 import com.tokopedia.profilecompletion.common.helper.checkResultCode
-import com.tokopedia.profilecompletion.common.helper.goToAnotherActivity
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
