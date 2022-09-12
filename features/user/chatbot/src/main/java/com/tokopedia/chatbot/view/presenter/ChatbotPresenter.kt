@@ -918,7 +918,7 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    private fun startNewUploadMediaJob(
+    fun startNewUploadMediaJob(
         uri: String,
         messageId: String,
         startTime: String,
@@ -948,7 +948,7 @@ class ChatbotPresenter @Inject constructor(
         })
     }
 
-    private fun updateMediaUploadResults(
+    fun updateMediaUploadResults(
         uri: String,
         uploadMediaResult: ChatbotVideoUploadResult
     ) {
@@ -984,9 +984,9 @@ class ChatbotPresenter @Inject constructor(
     override fun checkUploadVideoEligibility(msgId: String) {
         chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
         chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
-            msgId,
             ::onSuccessVideoUploadEligibility,
-            ::onFailureVideoUploadEligibility
+            ::onFailureVideoUploadEligibility,
+            msgId
         )
     }
 

@@ -14,9 +14,9 @@ class ChatbotUploadVideoEligibilityUseCase @Inject constructor(
 ) : GraphqlUseCase<ChatbotUploadVideoEligibilityResponse>(graphqlRepository) {
 
     fun getVideoUploadEligibility(
-        messageId: String,
         onSuccess: (ChatbotUploadVideoEligibilityResponse) -> Unit,
-        onError: (Throwable) -> Unit
+        onError: (Throwable) -> Unit,
+        messageId: String
     ) {
         try {
             this.setTypeClass(ChatbotUploadVideoEligibilityResponse::class.java)

@@ -4,15 +4,14 @@ import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
-import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
-import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
@@ -22,6 +21,7 @@ import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
@@ -59,11 +59,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import org.junit.After
+import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.Assert.assertEquals
 
 @ExperimentalCoroutinesApi
 class ChatbotPresenterTest {
@@ -94,6 +95,7 @@ class ChatbotPresenterTest {
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
     private lateinit var uploaderUseCase: UploaderUseCase
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
+    private lateinit var chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase
 
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
@@ -125,6 +127,7 @@ class ChatbotPresenterTest {
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
         getExistingChatMapper = mockk(relaxed = true)
         uploaderUseCase = mockk(relaxed = true)
+        chatbotVideoUploadVideoEligibilityUseCase = mockk(relaxed = true)
 
         presenter = spyk(
             ChatbotPresenter(
@@ -146,9 +149,9 @@ class ChatbotPresenterTest {
                 getTopBotNewSessionUseCase,
                 checkUploadSecureUseCase,
                 chatBotSecureImageUploadUseCase,
-                getExistingChatMapper
-                chatBotSecureImageUploadUseCase,
-                uploaderUseCase
+                uploaderUseCase,
+                chatbotVideoUploadVideoEligibilityUseCase,
+                getExistingChatMapper,
             )
         )
 
@@ -981,7 +984,7 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `uploadVideo success when uploaderUseCase returns success`() {
+    fun `startNewUploadMediaJob success when uploaderUseCase returns success`() {
         val response = mockk<UploadResult.Success>(relaxed = true)
         var result : String? = null
 
@@ -993,19 +996,18 @@ class ChatbotPresenterTest {
             result = response.videoUrl
         } just runs
 
-        presenter.uploadVideo(
-            VideoUploadUiModel(VideoUploadUiModel.Builder().withVideoUrl("https://vod-tokopedia.com/abc")),
-            "",
-            "",
-            "123456"
-        ) { _, _ -> }
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
 
         assertNotNull(result)
 
     }
 
     @Test
-    fun `uploadVideo failure when uploaderUseCase returns failure` () {
+    fun `startNewUploadMediaJob failure when uploaderUseCase returns failure` () {
         val response = mockk<UploadResult.Error>(relaxed = true)
         var message : String? = null
 
@@ -1017,20 +1019,17 @@ class ChatbotPresenterTest {
             message = response.message
         } just runs
 
-        presenter.uploadVideo(
-            VideoUploadUiModel(VideoUploadUiModel.Builder().withVideoUrl("https://vod-tokopedia.com/abc")),
-            "",
-            "",
-            "123456"
-        ) { _, _ -> }
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
 
         assertNotNull(message)
     }
 
     @Test
-    fun `uploadVideo failure` () {
-
-        var exception : String? = null
+    fun `startNewUploadMediaJob failure` () {
 
         coEvery {
             uploaderUseCase.invoke(any())
@@ -1038,16 +1037,35 @@ class ChatbotPresenterTest {
             throw mockThrowable
         }
 
-        presenter.uploadVideo(
-            VideoUploadUiModel(VideoUploadUiModel.Builder().withVideoUrl("https://vod-tokopedia.com/abc")),
-            "",
-            "",
-            "123456"
-        ) { e, _ -> exception = e }
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
 
-        assertNotNull(exception)
+        verify {
+            presenter.updateMediaUploadResults(any(), any())
+        }
 
     }
 
+    @Test
+    fun `checkUploadVideoEligibility success`() {
+
+        val response = mockk<ChatbotUploadVideoEligibilityResponse>(relaxed = true)
+
+        coEvery {
+            chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(ChatbotUploadVideoEligibilityResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.checkUploadVideoEligibility("1234")
+
+        verify {
+            view.videoUploadEligibilityHandler(any())
+        }
+
+    }
 
 }
