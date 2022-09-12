@@ -34,7 +34,7 @@ class TagItemBuilderImpl : TagItemBuilder {
     )
 
     override fun buildVoucherModel(
-        voucherList: List<PlayVoucherUiModel.MerchantVoucherUiModel>
+        voucherList: List<PlayVoucherUiModel.Merchant>
     ) = VoucherUiModel(
         voucherList = voucherList,
     )
@@ -79,7 +79,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         highlighted: Boolean,
         voucherStock: Int,
         expiredDate: String
-    ) = PlayVoucherUiModel.MerchantVoucherUiModel(
+    ) = PlayVoucherUiModel.Merchant(
         id = id,
         type = type,
         title = title,

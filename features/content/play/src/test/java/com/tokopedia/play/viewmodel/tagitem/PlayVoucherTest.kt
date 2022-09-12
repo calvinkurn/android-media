@@ -38,7 +38,7 @@ class PlayVoucherTest {
     @Test
     fun `given empty voucher, when on init, then it should return empty voucher`() {
         val repo: PlayViewerRepository = mockk(relaxed = true)
-        val emptyVoucherList = emptyList<PlayVoucherUiModel.MerchantVoucherUiModel>()
+        val emptyVoucherList = emptyList<PlayVoucherUiModel.Merchant>()
         val emptyVoucher = channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
                 voucher = modelBuilder.buildVoucherModel(
@@ -130,7 +130,7 @@ class PlayVoucherTest {
     @Test
     fun `given voucher cannot be shown, when page is focused, then it should return initial voucher`() {
         val repo: PlayViewerRepository = mockk(relaxed = true)
-        val initialVoucherList = emptyList<PlayVoucherUiModel.MerchantVoucherUiModel>()
+        val initialVoucherList = emptyList<PlayVoucherUiModel.Merchant>()
         every { repo.getChannelData(any()) } returns channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
                 product = modelBuilder.buildProductModel(
@@ -212,12 +212,12 @@ class PlayVoucherTest {
                 )
             }
             state.tagItems.voucher.voucherList
-                .filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
+                .filterIsInstance<PlayVoucherUiModel.Merchant>()
                 .size
                 .assertEqualTo(voucherSize)
 
             state.tagItems.voucher.voucherList
-                .filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
+                .filterIsInstance<PlayVoucherUiModel.Merchant>()
                 .forEachIndexed { index, voucher ->
                     voucher.title.assertEqualTo("$voucherBaseTitle ${index+1}%")
                 }

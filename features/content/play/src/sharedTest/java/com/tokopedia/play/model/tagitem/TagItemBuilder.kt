@@ -25,7 +25,7 @@ interface TagItemBuilder {
     ): ProductUiModel
 
     fun buildVoucherModel(
-        voucherList: List<PlayVoucherUiModel.MerchantVoucherUiModel> = emptyList()
+        voucherList: List<PlayVoucherUiModel.Merchant> = emptyList()
     ): VoucherUiModel
 
     fun buildProduct(
@@ -54,7 +54,7 @@ interface TagItemBuilder {
         highlighted: Boolean = false,
         voucherStock: Int = 1,
         expiredDate: String = "",
-    ): PlayVoucherUiModel.MerchantVoucherUiModel
+    ): PlayVoucherUiModel.Merchant
 
     fun buildProductSection(
         productList: List<PlayProductUiModel.Product> = emptyList(),

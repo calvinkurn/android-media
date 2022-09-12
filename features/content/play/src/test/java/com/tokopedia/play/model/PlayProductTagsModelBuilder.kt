@@ -56,7 +56,7 @@ class PlayProductTagsModelBuilder {
         description: String = "Min. Pembelanjaan 10rb",
         expiredDate: String = "2018-12-07T23:30:00Z",
         voucherStock: Int = 0,
-    ) = PlayVoucherUiModel.MerchantVoucherUiModel(
+    ) = PlayVoucherUiModel.Merchant(
         type = type,
         title = title,
         description = description,
