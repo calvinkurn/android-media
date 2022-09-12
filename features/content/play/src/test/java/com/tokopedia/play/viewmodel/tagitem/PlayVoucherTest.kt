@@ -8,7 +8,7 @@ import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertNotEqualTo
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.websocket.response.PlayMerchantVoucherSocketResponse
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
@@ -38,7 +38,7 @@ class PlayVoucherTest {
     @Test
     fun `given empty voucher, when on init, then it should return empty voucher`() {
         val repo: PlayViewerRepository = mockk(relaxed = true)
-        val emptyVoucherList = emptyList<MerchantVoucherUiModel>()
+        val emptyVoucherList = emptyList<PlayVoucherUiModel.MerchantVoucherUiModel>()
         val emptyVoucher = channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
                 voucher = modelBuilder.buildVoucherModel(
@@ -130,7 +130,7 @@ class PlayVoucherTest {
     @Test
     fun `given voucher cannot be shown, when page is focused, then it should return initial voucher`() {
         val repo: PlayViewerRepository = mockk(relaxed = true)
-        val initialVoucherList = emptyList<MerchantVoucherUiModel>()
+        val initialVoucherList = emptyList<PlayVoucherUiModel.MerchantVoucherUiModel>()
         every { repo.getChannelData(any()) } returns channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
                 product = modelBuilder.buildProductModel(
@@ -212,10 +212,12 @@ class PlayVoucherTest {
                 )
             }
             state.tagItems.voucher.voucherList
+                .filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
                 .size
                 .assertEqualTo(voucherSize)
 
             state.tagItems.voucher.voucherList
+                .filterIsInstance<PlayVoucherUiModel.MerchantVoucherUiModel>()
                 .forEachIndexed { index, voucher ->
                     voucher.title.assertEqualTo("$voucherBaseTitle ${index+1}%")
                 }

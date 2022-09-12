@@ -1,8 +1,8 @@
 package com.tokopedia.play.model.tagitem
 
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -25,7 +25,7 @@ interface TagItemBuilder {
     ): ProductUiModel
 
     fun buildVoucherModel(
-        voucherList: List<MerchantVoucherUiModel> = emptyList()
+        voucherList: List<PlayVoucherUiModel.MerchantVoucherUiModel> = emptyList()
     ): VoucherUiModel
 
     fun buildProduct(
@@ -54,7 +54,7 @@ interface TagItemBuilder {
         highlighted: Boolean = false,
         voucherStock: Int = 1,
         expiredDate: String = "",
-    ): MerchantVoucherUiModel
+    ): PlayVoucherUiModel.MerchantVoucherUiModel
 
     fun buildProductSection(
         productList: List<PlayProductUiModel.Product> = emptyList(),
