@@ -327,6 +327,11 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 }
                 codes.add(logisticPromoUiModel.promoCode)
                 freeShippingMetadata = logisticPromoUiModel.freeShippingMetadata
+                // todo: bo campaign id
+                benefitClass = logisticPromoUiModel.benefitClass
+                shippingSubsidy = logisticPromoUiModel.shippingSubsidy
+                shippingPrice = logisticPromoUiModel.shippingRate.toDouble()
+                etaText = logisticPromoUiModel.etaData.textEta
             }
         }
     }
