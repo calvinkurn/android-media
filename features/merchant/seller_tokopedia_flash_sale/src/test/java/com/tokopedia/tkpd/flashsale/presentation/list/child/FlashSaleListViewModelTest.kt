@@ -234,7 +234,6 @@ class FlashSaleListViewModelTest {
                 "",
                 flashSaleEndDate,
                 0,
-                420,
                 flashSaleSubmission
             )
 
@@ -412,9 +411,6 @@ class FlashSaleListViewModelTest {
                 "",
                 flashSaleReview,
                 flashSaleReview,
-                420,
-                300,
-                300,
                 FlashSaleStatus.WAITING_FOR_SELECTION,
                 "Proses Seleksi"
             )
@@ -502,7 +498,6 @@ class FlashSaleListViewModelTest {
                 "",
                 "",
                 flashSaleEndDate,
-                720,
                 5,
                 5,
                 FlashSaleStatus.ONGOING,
@@ -593,7 +588,6 @@ class FlashSaleListViewModelTest {
                 "",
                 flashSaleEndDate,
                 0,
-                420,
                 flashSaleSubmission
             )
 
