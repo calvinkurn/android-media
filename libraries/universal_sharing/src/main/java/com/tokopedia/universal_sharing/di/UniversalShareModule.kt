@@ -19,10 +19,11 @@ class UniversalShareModule {
 
     @Provides
     fun provideExtractBranchLinkApi(retrofitBuilder: Retrofit.Builder, logger: HttpLoggingInterceptor): ExtractBranchLinkApi {
+        val baseUrl = "https://www.tokopedia.com/"
         return retrofitBuilder.client(OkHttpClient.Builder()
                 .addInterceptor(logger)
                 .addInterceptor(ErrorResponseInterceptor(BranchLinkErrorResponse::class.java))
-                .build()).baseUrl("https://www.tokopedia.com/").build().create(ExtractBranchLinkApi::class.java)
+                .build()).baseUrl(baseUrl).build().create(ExtractBranchLinkApi::class.java)
     }
 
     @Module
