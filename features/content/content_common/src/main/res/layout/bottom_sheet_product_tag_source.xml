@@ -123,8 +123,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ic_my_shop"
-            android:layout_width="@dimen/content_common_space_20"
-            android:layout_height="@dimen/content_common_space_20"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             app:unify_image_corner_radius="0"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -135,7 +135,7 @@
             android:id="@+id/tv_my_shop"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginStart="12dp"
             android:layout_marginEnd="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="@id/ic_my_shop"
             app:layout_constraintEnd_toStartOf="@+id/ic_my_shop_chevron"

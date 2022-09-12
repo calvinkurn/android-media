@@ -43,7 +43,7 @@
         app:layout_constraintEnd_toEndOf="@+id/radShcSingleDateRange"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radShcSingleDateRange"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/verLineShcCustom"
