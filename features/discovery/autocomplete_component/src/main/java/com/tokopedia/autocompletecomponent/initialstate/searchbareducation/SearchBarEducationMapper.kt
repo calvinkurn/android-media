@@ -23,6 +23,7 @@ fun InitialStateData.convertToSearchBarEducationDataView(
             shortcutImage = item.shortcutImage,
             productId = item.itemId,
             dimension90 = dimension90,
+            type = item.type,
             position = 1,
             componentId = item.componentId,
             trackingOption = trackingOption,
