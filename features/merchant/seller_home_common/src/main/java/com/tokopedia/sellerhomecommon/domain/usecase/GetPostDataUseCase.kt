@@ -70,6 +70,7 @@ class GetPostDataUseCase(
                     stateMediaURL
                     stateText
                     pinned
+                    postItemID
                   }
                   cta{
                     text
