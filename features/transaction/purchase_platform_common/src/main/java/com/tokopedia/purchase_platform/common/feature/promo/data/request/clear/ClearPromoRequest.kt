@@ -33,7 +33,4 @@ data class ClearPromoOrder(
         val poDuration: String = "0",
         @SerializedName("warehouseID")
         val warehouseId: Long = 0,
-) {
-        // TODO: Remove temporary constructor (this is only for ShipmentPresenter compatibility)
-        constructor(uniqueId: String, boType: Int, codes: List<String>): this(uniqueId, boType, codes.toMutableList(), 0, false, "0", 0)
-}
+)
