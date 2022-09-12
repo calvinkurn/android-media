@@ -5,12 +5,12 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
 import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalyticImpl
 import com.tokopedia.content.common.producttag.data.ProductTagRepositoryImpl
-import com.tokopedia.content.common.producttag.di.key.FragmentKey
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.content.common.producttag.view.fragment.*
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
-import com.tokopedia.content.common.producttag.view.fragment.factory.ProductTagFragmentFactory
+import com.tokopedia.abstraction.base.view.fragment.FragmentKey
+import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -23,7 +23,7 @@ abstract class ContentCreationProductTagBindModule {
 
     /** Fragment */
     @Binds
-    abstract fun bindFragmentFactory(fragmentFactory: ProductTagFragmentFactory): FragmentFactory
+    abstract fun bindFragmentFactory(fragmentFactory: TkpdFragmentFactory): FragmentFactory
 
     @Binds
     @IntoMap

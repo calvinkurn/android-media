@@ -352,6 +352,11 @@ fun View.showKeyboard() {
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
 
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
 @Deprecated(
     message = "please use showKeyboard(isShow: Boolean) from content_common module",
     replaceWith = ReplaceWith(

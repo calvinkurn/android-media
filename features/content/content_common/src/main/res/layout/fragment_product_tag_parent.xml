@@ -31,7 +31,7 @@
     <View
         android:id="@+id/view_cc_product_tag_divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/content_common_space_1"
+        android:layout_height="1dp"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@id/tv_cc_product_tag_page_title" />
@@ -55,8 +55,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_cc_product_tag_shop_badge_1"
-        android:layout_width="@dimen/unify_space_12"
-        android:layout_height="@dimen/unify_space_12"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tv_cc_product_tag_product_source_label"
@@ -116,8 +116,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_cc_product_tag_shop_badge_2"
-        android:layout_width="@dimen/unify_space_12"
-        android:layout_height="@dimen/unify_space_12"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tv_cc_product_tag_product_source_label"

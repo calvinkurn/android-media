@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.home.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.tokofood.common.util.TokofoodExt.getLocalTimeZone
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodParamFilterMerchant
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodParamSort
 
@@ -45,7 +46,7 @@ object TokoFoodMerchantListQuery: GqlQueryInterface {
     private const val LIMIT_KEY = "limit"
 
     private const val LIMIT = 10
-    private const val TIMEZONE = "Asia/Jakarta"
+    private val TIMEZONE = getLocalTimeZone()
 
     @JvmStatic
     fun createRequestParams(localCacheModel: LocalCacheModel?, option: Int = 0, brandUId: String = "",

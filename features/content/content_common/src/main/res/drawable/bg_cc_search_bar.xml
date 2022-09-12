@@ -3,12 +3,12 @@
     android:shape="rectangle">
 
     <corners
-        android:radius="@dimen/content_common_space_8"
+        android:radius="@dimen/layout_lvl1"
         />
 
     <solid android:color="@color/Unify_N0"/>
     <stroke
-        android:width="@dimen/content_common_space_1"
+        android:width="1dp"
         android:color="@color/Unify_NN200"
         />
 

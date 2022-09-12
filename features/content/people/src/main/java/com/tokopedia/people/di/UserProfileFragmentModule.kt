@@ -1,11 +1,11 @@
 package com.tokopedia.people.di
 
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.people.views.fragment.UserProfileFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import com.tokopedia.content.common.di.FragmentKey
 import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment
 import com.tokopedia.people.views.fragment.FollowerListingFragment
 import com.tokopedia.people.views.fragment.FollowingListingFragment
