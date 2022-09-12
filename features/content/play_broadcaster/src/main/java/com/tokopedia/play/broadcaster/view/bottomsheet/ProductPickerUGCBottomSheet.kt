@@ -155,8 +155,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                 )
                 .setAuthorId(selectedAccount.id)
                 .setShopBadge(selectedAccount.badge)
-                .setMultipleSelectionProduct(true)
-                .setMaxSelectedProduct(viewModel.maxProduct)
+                .setMultipleSelectionProduct(true, viewModel.maxProduct)
                 .setIsShowActionBarDivider(false)
         )
 
