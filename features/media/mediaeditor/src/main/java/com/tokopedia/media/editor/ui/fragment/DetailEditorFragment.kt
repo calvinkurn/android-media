@@ -231,8 +231,6 @@ class DetailEditorFragment @Inject constructor(
 
             overlayView.setTargetAspectRatio(ratio)
             cropView.targetAspectRatio = ratio
-
-            isEdited = true
         }
     }
 
@@ -240,7 +238,7 @@ class DetailEditorFragment @Inject constructor(
     override fun onLoadComplete() {
         viewBinding?.imgUcropPreview?.cropImageView?.post {
             readPreviousState()
-            initialImageMatrix = viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix
+            initialImageMatrix = Matrix(viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix)
         }
     }
 
@@ -266,7 +264,6 @@ class DetailEditorFragment @Inject constructor(
                 fastBitmapDrawable.draw(tempCanvas)
 
                 it.setImageDrawable(fastBitmapDrawable)
-                isEdited = true
             }
         }
     }
@@ -274,7 +271,6 @@ class DetailEditorFragment @Inject constructor(
     private fun observeContrast() {
         viewModel.contrastFilter.observe(viewLifecycleOwner) {
             getImageView()?.setImageBitmap(it)
-            isEdited = true
         }
     }
 
@@ -346,7 +342,6 @@ class DetailEditorFragment @Inject constructor(
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkBitmap ->
             getImageView()?.setImageBitmap(watermarkBitmap)
-            isEdited = true
         }
     }
 
@@ -403,7 +398,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun implementPreviousStateCrop(cropRotateData: EditorCropRotateModel) {
-        if(cropRotateData.imageWidth == 0 && cropRotateData.imageHeight == 0) return
+        if (cropRotateData.imageWidth == 0 && cropRotateData.imageHeight == 0) return
         viewBinding?.imgUcropPreview?.let {
             val cropView = it.cropImageView
             val overlayView = it.overlayView
@@ -425,7 +420,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun implementPreviousStateRotate(cropRotateData: EditorCropRotateModel) {
-        if(cropRotateData.imageWidth == 0 && cropRotateData.imageHeight == 0) return
+        if (cropRotateData.imageWidth == 0 && cropRotateData.imageHeight == 0) return
         viewBinding?.imgUcropPreview?.let {
             val originalAsset = it.getBitmap()
 
@@ -456,7 +451,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun implementPreviousWatermark(detailUiModel: EditorDetailUiModel?){
+    private fun implementPreviousWatermark(detailUiModel: EditorDetailUiModel?) {
         detailUiModel?.let {
             getBitmap()?.let { bitmap ->
                 val shopName = if (userSession.shopName.isEmpty())
@@ -475,13 +470,13 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun readPreviousState(){
-        if(viewBinding?.imgUcropPreview?.isVisible == false && data.cropRotateValue.imageWidth != 0){
+    private fun readPreviousState() {
+        if (viewBinding?.imgUcropPreview?.isVisible == false && data.cropRotateValue.imageWidth != 0) {
             manualCropBitmap(data.cropRotateValue)
         }
 
         detailState.getFilteredStateList().forEach { editorDetailUi ->
-            if(editorDetailUi.editorToolType == data.editorToolType) return@forEach
+            if (editorDetailUi.editorToolType == data.editorToolType) return@forEach
             readPreviousDetailState(editorDetailUi)
         }
 
@@ -489,21 +484,21 @@ class DetailEditorFragment @Inject constructor(
         readPreviousDetailState(data)
     }
 
-    private fun readPreviousDetailState(previousState: EditorDetailUiModel){
+    private fun readPreviousDetailState(previousState: EditorDetailUiModel) {
         previousState.apply {
-            when(editorToolType){
+            when (editorToolType) {
                 EditorToolType.BRIGHTNESS -> implementPreviousStateBrightness(brightnessValue)
                 EditorToolType.CONTRAST -> implementPreviousStateContrast(contrastValue)
                 EditorToolType.CROP -> {
-                    if(viewBinding?.imgUcropPreview?.isVisible == true && previousState.cropRotateValue.isCrop) {
+                    if (viewBinding?.imgUcropPreview?.isVisible == true && previousState.cropRotateValue.isCrop) {
                         viewBinding?.imgUcropPreview?.cropImageView?.post {
                             implementPreviousStateCrop(cropRotateValue)
                         }
                     }
                 }
                 EditorToolType.ROTATE -> {
-                    if(viewBinding?.imgUcropPreview?.isVisible == true && previousState.cropRotateValue.isRotate){
-                        viewBinding?.imgUcropPreview?.cropImageView?.post{
+                    if (viewBinding?.imgUcropPreview?.isVisible == true && previousState.cropRotateValue.isRotate) {
+                        viewBinding?.imgUcropPreview?.cropImageView?.post {
                             implementPreviousStateRotate(cropRotateValue)
                         }
                     }
@@ -631,9 +626,9 @@ class DetailEditorFragment @Inject constructor(
         activity?.finish()
     }
 
-    private fun getImageView(): ImageView?{
+    private fun getImageView(): ImageView? {
         viewBinding?.let {
-            return if(it.imgUcropPreview.isVisible) it.imgUcropPreview.cropImageView else it.imgViewPreview
+            return if (it.imgUcropPreview.isVisible) it.imgUcropPreview.cropImageView else it.imgViewPreview
         }
         return null
     }
@@ -642,7 +637,7 @@ class DetailEditorFragment @Inject constructor(
         return getImageView()?.drawable?.toBitmap()
     }
 
-    private fun setImageView(url: String, readPreviousValue: Boolean){
+    private fun setImageView(url: String, readPreviousValue: Boolean) {
         viewBinding?.imgUcropPreview?.hide()
         viewBinding?.imgViewPreview?.visible()
 
@@ -667,17 +662,17 @@ class DetailEditorFragment @Inject constructor(
             ))
     }
 
-    private fun getImagePairRatio(): Pair<Float, Float>?{
+    private fun getImagePairRatio(): Pair<Float, Float>? {
         data.cropRotateValue.getRatio()?.let {
             return Pair(
-                data.cropRotateValue.imageWidth/data.cropRotateValue.imageHeight.toFloat(),
-                data.cropRotateValue.imageHeight/data.cropRotateValue.imageWidth.toFloat()
+                data.cropRotateValue.imageWidth / data.cropRotateValue.imageHeight.toFloat(),
+                data.cropRotateValue.imageHeight / data.cropRotateValue.imageWidth.toFloat()
             )
         } ?: kotlin.run {
             getBitmap()?.let {
                 return Pair(
-                    it.width/it.height.toFloat(),
-                    it.height/it.width.toFloat()
+                    it.width / it.height.toFloat(),
+                    it.height / it.width.toFloat()
                 )
             }
         }
