@@ -144,6 +144,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -170,11 +171,18 @@ private const val DELETE = 0
 private const val REPLY = 0
 private const val SEE_ALL_INVOICE_TEXT = "lihat_semua_transaksi"
 
-class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
-    AttachedInvoiceSelectionListener, QuickReplyListener,
-    ChatActionListBubbleListener, ChatRatingListener,
-    TypingListener, ChatOptionListListener, CsatOptionListListener,
-    View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener,
+class ChatbotFragment : BaseChatFragment(),
+    ChatbotContract.View,
+    AttachedInvoiceSelectionListener,
+    QuickReplyListener,
+    ChatActionListBubbleListener,
+    ChatRatingListener,
+    TypingListener,
+    ChatOptionListListener,
+    CsatOptionListListener,
+    View.OnClickListener,
+    TransactionInvoiceBottomSheetListener,
+    StickyActionButtonClickListener,
     ReplyBubbleAreaMessage.Listener {
 
     override fun clearChatText() {
@@ -264,8 +272,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onClick(v: View?) {
         getBindingView().composeArea.replyBox.hide()
         val id = v?.id
-        if (id == getBindingView().chatbotViewHelpRate.btnInactive1.id || id == getBindingView().chatbotViewHelpRate.btnInactive2.id || id == getBindingView().chatbotViewHelpRate.btnInactive3.id
-            || id == getBindingView().chatbotViewHelpRate.btnInactive4.id || id == getBindingView().chatbotViewHelpRate.btnInactive5.id
+        if (id == getBindingView().chatbotViewHelpRate.btnInactive1.id ||
+            id == getBindingView().chatbotViewHelpRate.btnInactive2.id ||
+            id == getBindingView().chatbotViewHelpRate.btnInactive3.id ||
+            id == getBindingView().chatbotViewHelpRate.btnInactive4.id ||
+            id == getBindingView().chatbotViewHelpRate.btnInactive5.id
         ) {
             onEmojiClick(v)
         }
@@ -385,8 +396,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     val generatedInvoice = presenter.generateInvoice(invoice, opponentId)
                     getViewState()?.onShowInvoiceToChat(generatedInvoice)
                     presenter.sendInvoiceAttachment(
-                        messageId, invoice, generatedInvoice.startTime,
-                        opponentId, isArticleEntry, hashMap.get(USED_BY).toBlankOrString()
+                        messageId,
+                        invoice,
+                        generatedInvoice.startTime,
+                        opponentId,
+                        isArticleEntry,
+                        hashMap.get(USED_BY).toBlankOrString()
                     )
                 }
                 if (hashMap.get(ARTICLE_ID)?.isNotEmpty() == true) {
@@ -492,8 +507,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             val generatedInvoice = presenter.generateInvoice(invoice, opponentId)
             getViewState()?.onShowInvoiceToChat(generatedInvoice)
             presenter.sendInvoiceAttachment(
-                messageId, invoice, generatedInvoice.startTime,
-                opponentId, isArticleEntry, hashMap.get(USED_BY).toBlankOrString()
+                messageId,
+                invoice,
+                generatedInvoice.startTime,
+                opponentId,
+                isArticleEntry,
+                hashMap.get(USED_BY).toBlankOrString()
             )
         }
 
@@ -528,12 +547,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
 
     private fun setChatBackground() {
-        activity?.window?.setBackgroundDrawable(context?.let {
-            ContextCompat.getDrawable(
-                it,
-                R.drawable.layered_chatbot_background
-            )
-        })
+        activity?.window?.setBackgroundDrawable(
+            context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    R.drawable.layered_chatbot_background
+                )
+            }
+        )
     }
 
     private fun bindReplyTextBackground() {
@@ -550,11 +571,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             Gravity.CENTER
         )
         val paddingStart =
-            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toInt()
+            requireActivity().resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toInt()
         val paddingEnd =
-            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
-        val paddingTop = resources.getDimension(R.dimen.dp_chatbot_11).toInt()
-        val paddingBottom = resources.getDimension(R.dimen.dp_chatbot_10).toInt()
+            requireActivity().resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
+        val paddingTop = requireActivity().resources.getDimension(R.dimen.dp_chatbot_11).toInt()
+        val paddingBottom = requireActivity().resources.getDimension(R.dimen.dp_chatbot_10).toInt()
         replyEditTextContainer.background = replyEditTextBg
         replyEditTextContainer.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }
@@ -824,18 +845,18 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private val onGetChatRatingListMessageError: (String) -> Unit = {
         if (view != null) {
-            Toaster.make(view!!, it, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(requireView(), it, Snackbar.LENGTH_LONG, TYPE_ERROR)
         }
     }
 
     private fun onError(): (Throwable) -> Unit {
         return {
             if (view != null) {
-                Toaster.make(
-                    view!!,
-                    ErrorHandler.getErrorMessage(view!!.context, it),
+                Toaster.build(
+                    requireView(),
+                    ErrorHandler.getErrorMessage(requireView().context, it),
                     Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
+                    TYPE_ERROR
                 )
             }
         }
@@ -898,8 +919,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, opponentId)
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(
-            messageId, invoiceLinkPojo, generatedInvoice.startTime,
-            opponentId, isArticleEntry, hashMap.get(USED_BY).toBlankOrString()
+            messageId,
+            invoiceLinkPojo,
+            generatedInvoice.startTime,
+            opponentId,
+            isArticleEntry,
+            hashMap.get(USED_BY).toBlankOrString()
         )
         enableTyping()
     }
@@ -908,8 +933,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val generatedInvoice = presenter.generateInvoice(selectedInvoice, "")
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(
-            messageId, selectedInvoice, generatedInvoice.startTime,
-            opponentId, isArticleEntry, hashMap.get(USED_BY).toBlankOrString()
+            messageId,
+            selectedInvoice,
+            generatedInvoice.startTime,
+            opponentId,
+            isArticleEntry,
+            hashMap.get(USED_BY).toBlankOrString()
         )
     }
 
@@ -941,7 +970,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 ImagePreviewActivity.getCallingIntent(
                     it,
                     strings,
-                    null, 0
+                    null,
+                    0
                 )
             )
         }
@@ -979,7 +1009,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private val onsubmitingChatCsatSuccess: (String) -> Unit = { message ->
         view?.let {
             csatOptionsViewModel?.let { it -> getViewState()?.hideCsatOptionList(it) }
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACK_BAR_TEXT_OK)
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACK_BAR_TEXT_OK)
         }
     }
 
@@ -1005,7 +1035,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         input.triggerRuleType = csatAttributes?.triggerRuleType
 
         presenter.submitCsatRating(
-            input, onError(),
+            input,
+            onError(),
             onSuccessSubmitCsatRating()
         )
     }
@@ -1031,12 +1062,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         hideCsatRatingView()
         return { str ->
             view?.let {
-                Toaster.showNormalWithAction(
+                Toaster.build(
                     it,
                     str,
                     Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
                     SNACK_BAR_TEXT_OK,
-                    View.OnClickListener { })
+                    { })
             }
             getBindingView().listQuickReply.show()
         }
@@ -1076,11 +1108,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onErrorImageUpload(): (Throwable, ImageUploadUiModel) -> Unit {
         return { throwable, image ->
             if (view != null) {
-                Toaster.make(
-                    view!!,
-                    ErrorHandler.getErrorMessage(view!!.context, throwable),
+                Toaster.build(
+                    requireView(),
+                    ErrorHandler.getErrorMessage(requireContext(), throwable),
                     Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
+                    TYPE_ERROR
                 )
                 getViewState()?.showRetryUploadImages(image, true)
             }
@@ -1140,7 +1172,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     onSendButtonClicked()
                 }
             } else
-                Toaster.make(
+                Toaster.build(
                     it,
                     getString(R.string.chatbot_float_invoice_input_length_zero),
                     Toaster.LENGTH_LONG,
@@ -1278,29 +1310,29 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onUploadUndersizedImage() {
         view?.let {
-            Toaster.make(
+            Toaster.build(
                 it,
                 getString(R.string.undersize_image),
                 Snackbar.LENGTH_LONG,
-                Toaster.TYPE_ERROR
+                TYPE_ERROR
             )
         }
     }
 
     override fun onUploadOversizedImage() {
         view?.let {
-            Toaster.make(
+            Toaster.build(
                 it,
                 getString(R.string.oversize_image),
                 Snackbar.LENGTH_LONG,
-                Toaster.TYPE_ERROR
+                TYPE_ERROR
             )
         }
     }
 
     override fun showSnackbarError(stringId: Int) {
         view?.let {
-            Toaster.make(it, getString(stringId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(it, getString(stringId), Snackbar.LENGTH_LONG, TYPE_ERROR)
         }
     }
 
@@ -1339,10 +1371,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun showErrorToast(it: Throwable) {
         view?.let { mView ->
-            Toaster.showErrorWithAction(
+            Toaster.build(
                 mView,
                 it.message.toString(),
                 Snackbar.LENGTH_LONG,
+                TYPE_ERROR,
                 SNACK_BAR_TEXT_OK,
                 View.OnClickListener { })
         }
@@ -1466,7 +1499,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     removeDummy(element)
                     bottomSheetPage.dismiss()
                     view?.let {
-                        Toaster.make(
+                        Toaster.build(
                             it, context?.getString(R.string.chatbot_your_picture_has_been_deleted)
                                 ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL
                         )
