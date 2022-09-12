@@ -24,7 +24,7 @@ import javax.inject.Inject
 private const val ACTION_KIRIM_CSAT_SMILEY_BUTTON_CLICKED = "click kirim csat smiley button"
 private const val ACTION_CSAT_SMILEY_REASON_BUTTON_CLICKED = "click csat smiley reason button"
 
-class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
+class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
 
     @Inject
     lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
@@ -33,8 +33,8 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
     private fun getBindingView() = viewBinding!!
 
     companion object {
-        const val BOT_OTHER_REASON= "bot_other_reason"
-        const val OTHER_REASON_TITLE= "otherReasonTitle"
+        const val BOT_OTHER_REASON = "bot_other_reason"
+        const val OTHER_REASON_TITLE = "otherReasonTitle"
         const val IS_SHOW_OTHER_REASON = "is_show_other_reason"
         const val TIME_STAMP = "time_stamp"
         const val minLength = 1
@@ -47,7 +47,11 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = ChatbotFragmentRatingProvideBinding.inflate(inflater, container, false)
         return getBindingView().root
     }
@@ -57,20 +61,32 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
         super.onViewCreated(view, savedInstanceState)
         initChatbotInjector()
         arguments?.let {
-            if (!((it.getBoolean(IS_SHOW_OTHER_REASON))?:false)) {
+            if (!((it.getBoolean(IS_SHOW_OTHER_REASON)) ?: false)) {
                 getBindingView().topBotReasonLayout.reasonLayout.hide()
             } else {
-                getBindingView().topBotReasonLayout.botReasonText.text = it.getString(OTHER_REASON_TITLE)
-                getBindingView().topBotReasonLayout.etState.addTextChangedListener(object : TextWatcher {
+                getBindingView().topBotReasonLayout.botReasonText.text =
+                    it.getString(OTHER_REASON_TITLE)
+                getBindingView().topBotReasonLayout.etState.addTextChangedListener(object :
+                    TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
 
                     }
 
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
 
                     }
 
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
                         val reviewLength = s.toString().findLength()
                         updateReviewLength(reviewLength)
                         if (reviewLength in minLength..maxLength) {
@@ -87,7 +103,7 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
     }
 
     //Calculates the length of alphanumeric characters
-    private fun String.findLength() : Int {
+    private fun String.findLength(): Int {
         return this.filter {
             it.isLetterOrDigit()
         }.length
@@ -118,16 +134,19 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
     }
 
 
-    override fun getTextHelpTitleId():Int = getBindingView().txtHelpTitle.id
-    override fun getSmilleLayoutId():Int = getBindingView().smileLayout.id
-    override fun getSmileSelectedId():Int = getBindingView().txtSmileSelected.id
-    override fun getFeedbackQuestionId():Int = getBindingView().txtFeedbackQuestion.id
-    override fun getTextFinishedId():Int = getBindingView().txtFinished.id
-    override fun getFilterReviewId():Int = getBindingView().filterReview.id
+    override fun getTextHelpTitleId(): Int = getBindingView().txtHelpTitle.id
+    override fun getSmilleLayoutId(): Int = getBindingView().smileLayout.id
+    override fun getSmileSelectedId(): Int = getBindingView().txtSmileSelected.id
+    override fun getFeedbackQuestionId(): Int = getBindingView().txtFeedbackQuestion.id
+    override fun getTextFinishedId(): Int = getBindingView().txtFinished.id
+    override fun getFilterReviewId(): Int = getBindingView().filterReview.id
 
     override fun onSuccessSubmit(intent: Intent) {
         chatbotAnalytics.get().eventClick(ACTION_KIRIM_CSAT_SMILEY_BUTTON_CLICKED)
-        intent.putExtra(BOT_OTHER_REASON, getBindingView().topBotReasonLayout.etState.text.toString())
+        intent.putExtra(
+            BOT_OTHER_REASON,
+            getBindingView().topBotReasonLayout.etState.text.toString()
+        )
         intent.putExtra(TIME_STAMP, arguments?.getString(TIME_STAMP) ?: "")
         super.onSuccessSubmit(intent)
     }
@@ -139,7 +158,8 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
     private fun initChatbotInjector() {
         if (activity != null && (activity as Activity).application != null) {
             val chatbotComponent = DaggerChatbotComponent.builder().baseAppComponent(
-                ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                ((activity as Activity).application as BaseMainApplication).baseAppComponent
+            )
                 .chatbotModule(context?.let { ChatbotModule(it) })
                 .build()
 

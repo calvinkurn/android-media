@@ -22,8 +22,11 @@ class ChatBotCsatFragment : BaseFragmentProvideRating() {
     private var viewBinding: ChatbotFragmentCsatBinding? = null
     private fun getBindingView() = viewBinding!!
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = ChatbotFragmentCsatBinding.inflate(inflater, container, false)
         return getBindingView().root
     }
@@ -36,8 +39,14 @@ class ChatBotCsatFragment : BaseFragmentProvideRating() {
     override fun getFilterReviewId(): Int = getBindingView().filterReview.id
 
     override fun onSuccessSubmit(intent: Intent) {
-        intent.putExtra(ChatBotCsatActivity.CASE_CHAT_ID, arguments?.getString(ChatBotCsatActivity.CASE_CHAT_ID))
-        intent.putExtra(ChatBotCsatActivity.CASE_ID, arguments?.getString(ChatBotCsatActivity.CASE_ID))
+        intent.putExtra(
+            ChatBotCsatActivity.CASE_CHAT_ID,
+            arguments?.getString(ChatBotCsatActivity.CASE_CHAT_ID)
+        )
+        intent.putExtra(
+            ChatBotCsatActivity.CASE_ID,
+            arguments?.getString(ChatBotCsatActivity.CASE_ID)
+        )
         super.onSuccessSubmit(intent)
     }
 

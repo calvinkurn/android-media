@@ -91,7 +91,9 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
-import com.tokopedia.chatbot.databinding.*
+import com.tokopedia.chatbot.databinding.FragmentChatbotBinding
+import com.tokopedia.chatbot.databinding.RetryUploadImageBottomSheetLayoutBinding
+import com.tokopedia.chatbot.databinding.ReplyBubbleBottomSheetLayoutBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -172,12 +174,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     AttachedInvoiceSelectionListener, QuickReplyListener,
     ChatActionListBubbleListener, ChatRatingListener,
     TypingListener, ChatOptionListListener, CsatOptionListListener,
-    View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener
-    , ReplyBubbleAreaMessage.Listener{
+    View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener,
+    ReplyBubbleAreaMessage.Listener {
 
     override fun clearChatText() {
         replyEditText.setText("")
     }
+
     val SNACK_BAR_TEXT_OK = "OK"
     val BOT_OTHER_REASON_TEXT = "bot_other_reason"
     val SELECTED_ITEMS = "selected_items"
@@ -214,32 +217,32 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isChatRefreshed = false
     private var isFirstPage = true
     private var isArticleEntry = false
-    private var hashMap: Map<String,String> = HashMap<String,String>()
-    var isAttached : Boolean = false
+    private var hashMap: Map<String, String> = HashMap<String, String>()
+    var isAttached: Boolean = false
     private lateinit var invoiceLabel: Label
-    private lateinit var invoiceName : Typography
-    private lateinit var invoiceImage : ImageView
-    private lateinit var invoiceCancel : ImageView
-    private lateinit var sendButton : ImageView
-    private var isSendButtonActivated : Boolean = true
+    private lateinit var invoiceName: Typography
+    private lateinit var invoiceImage: ImageView
+    private lateinit var invoiceCancel: ImageView
+    private lateinit var sendButton: ImageView
+    private var isSendButtonActivated: Boolean = true
     private var isFloatingSendButton: Boolean = false
-    private var isFloatingInvoiceCancelled : Boolean = false
-    private lateinit var replyBubbleContainer : ReplyBubbleAreaMessage
-    private var replyBubbleEnabled : Boolean = false
+    private var isFloatingInvoiceCancelled: Boolean = false
+    private lateinit var replyBubbleContainer: ReplyBubbleAreaMessage
+    private var replyBubbleEnabled: Boolean = false
     private var senderNameForReply = ""
-    private var smoothScroll : SmoothScroller? = null
-    private var rvScrollListener : RecyclerViewScrollListener? = null
-    private var rvLayoutManager : LinearLayoutManager? = null
-    private var messageCreateTime : String = ""
+    private var smoothScroll: SmoothScroller? = null
+    private var rvScrollListener: RecyclerViewScrollListener? = null
+    private var rvLayoutManager: LinearLayoutManager? = null
+    private var messageCreateTime: String = ""
     private lateinit var chatbotAdapter: ChatbotAdapter
 
     @Inject
-    lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
-    private var recyclerView : RecyclerView? = null
-    private var isArticleDataSent : Boolean = false
+    lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
+    private var recyclerView: RecyclerView? = null
+    private var isArticleDataSent: Boolean = false
 
     @Inject
-    lateinit var getUserNameForReplyBubble : GetUserNameForReplyBubble
+    lateinit var getUserNameForReplyBubble: GetUserNameForReplyBubble
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -248,7 +251,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
             val chatbotComponent = DaggerChatbotComponent.builder().baseAppComponent(
-                ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                ((activity as Activity).application as BaseMainApplication).baseAppComponent
+            )
                 .chatbotModule(context?.let { ChatbotModule(it) })
                 .build()
 
@@ -261,7 +265,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         getBindingView().composeArea.replyBox.hide()
         val id = v?.id
         if (id == getBindingView().chatbotViewHelpRate.btnInactive1.id || id == getBindingView().chatbotViewHelpRate.btnInactive2.id || id == getBindingView().chatbotViewHelpRate.btnInactive3.id
-            || id == getBindingView().chatbotViewHelpRate.btnInactive4.id || id == getBindingView().chatbotViewHelpRate.btnInactive5.id) {
+            || id == getBindingView().chatbotViewHelpRate.btnInactive4.id || id == getBindingView().chatbotViewHelpRate.btnInactive5.id
+        ) {
             onEmojiClick(v)
         }
     }
@@ -296,7 +301,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun showCsatRatingView() {
         chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
-        getBindingView().chatbotViewHelpRate.txtHelpTitle.text = mCsatResponse.attachment?.attributes?.title
+        getBindingView().chatbotViewHelpRate.txtHelpTitle.text =
+            mCsatResponse.attachment?.attributes?.title
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(getBindingView().composeArea.newComment.windowToken, 0)
         getBindingView().composeArea.replyBox.hide()
@@ -324,9 +330,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return ""
     }
 
-    lateinit var textWatcher : TextWatcher
+    lateinit var textWatcher: TextWatcher
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         val bundle = this.arguments
         if (bundle != null) {
@@ -343,7 +353,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return getBindingView().root
     }
 
-    private fun initSmoothScroller(){
+    private fun initSmoothScroller() {
         smoothScroll = SmoothScroller(context)
     }
 
@@ -366,7 +376,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             if (!isAttached) {
 
                 if (hashMap.get(CODE)?.isNotEmpty() == true) {
-                    val attachInvoiceSingleViewModel = presenter.createAttachInvoiceSingleViewModel(hashMap)
+                    val attachInvoiceSingleViewModel =
+                        presenter.createAttachInvoiceSingleViewModel(hashMap)
                     var invoice: InvoiceLinkPojo =
                         AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(
                             attachInvoiceSingleViewModel
@@ -375,7 +386,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     getViewState()?.onShowInvoiceToChat(generatedInvoice)
                     presenter.sendInvoiceAttachment(
                         messageId, invoice, generatedInvoice.startTime,
-                        opponentId, isArticleEntry,hashMap.get(USED_BY).toBlankOrString()
+                        opponentId, isArticleEntry, hashMap.get(USED_BY).toBlankOrString()
                     )
                 }
                 if (hashMap.get(ARTICLE_ID)?.isNotEmpty() == true) {
@@ -471,7 +482,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         sendButton.setImageResource(R.drawable.ic_chatbot_send)
         replyEditText.removeTextChangedListener(textWatcher)
 
-        if(!isFloatingInvoiceCancelled) {
+        if (!isFloatingInvoiceCancelled) {
 
             val attachInvoiceSingleViewModel = presenter.createAttachInvoiceSingleViewModel(hashMap)
             var invoice: InvoiceLinkPojo =
@@ -502,7 +513,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         isFloatingSendButton = false
     }
 
-    private fun emptyReplyEditText(){
+    private fun emptyReplyEditText() {
         replyEditText.setText("")
     }
 
@@ -517,7 +528,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
 
     private fun setChatBackground() {
-        activity?.window?.setBackgroundDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.layered_chatbot_background) })
+        activity?.window?.setBackgroundDrawable(context?.let {
+            ContextCompat.getDrawable(
+                it,
+                R.drawable.layered_chatbot_background
+            )
+        })
     }
 
     private fun bindReplyTextBackground() {
@@ -533,8 +549,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             R.dimen.dp_chatbot_1,
             Gravity.CENTER
         )
-        val paddingStart = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toInt()
-        val paddingEnd = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
+        val paddingStart =
+            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toInt()
+        val paddingEnd =
+            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
         val paddingTop = resources.getDimension(R.dimen.dp_chatbot_11).toInt()
         val paddingBottom = resources.getDimension(R.dimen.dp_chatbot_10).toInt()
         replyEditTextContainer.background = replyEditTextBg
@@ -558,8 +576,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         )
     }
 
-    fun setDateIndicator() :(String) ->Unit ={
-        if (it.isNotEmpty()){
+    fun setDateIndicator(): (String) -> Unit = {
+        if (it.isNotEmpty()) {
             dateIndicator.text = it
             dateIndicatorContainer.show()
         }
@@ -698,9 +716,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val mockData = arrayListOf<com.tokopedia.unifycomponents.ticker.TickerData>()
 
         tickerData.items?.forEach {
-            mockData.add(com.tokopedia.unifycomponents.ticker.TickerData(it?.title,
-                it?.text ?: "",
-                getTickerType(tickerData.type ?: "")))
+            mockData.add(
+                com.tokopedia.unifycomponents.ticker.TickerData(
+                    it?.title,
+                    it?.text ?: "",
+                    getTickerType(tickerData.type ?: "")
+                )
+            )
         }
 
         val adapter = TickerPagerAdapter(activity, mockData)
@@ -725,12 +747,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onSwipeRefresh() {
-        if (!isChatRefreshed && isFirstPage){
+        if (!isChatRefreshed && isFirstPage) {
             hideSnackBarRetry()
-            presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
+            presenter.getExistingChat(
+                messageId,
+                onError(),
+                onSuccessGetExistingChatFirstTime(),
+                onGetChatRatingListMessageError
+            )
             swipeToRefresh.isRefreshing = true
             isChatRefreshed = true
-        } else{
+        } else {
             swipeToRefresh.isRefreshing = false
             swipeToRefresh.isEnabled = false
             swipeToRefresh.setOnRefreshListener(null)
@@ -747,7 +774,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun loadInitialData() {
         getViewState()?.clearChatOnLoadChatHistory()
         showTopLoading()
-        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
+        presenter.getExistingChat(
+            messageId,
+            onError(),
+            onSuccessGetExistingChatFirstTime(),
+            onGetChatRatingListMessageError
+        )
     }
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel, ChatReplies) -> Unit {
@@ -799,7 +831,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onError(): (Throwable) -> Unit {
         return {
             if (view != null) {
-                Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, it), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.make(
+                    view!!,
+                    ErrorHandler.getErrorMessage(view!!.context, it),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                )
             }
         }
     }
@@ -817,7 +854,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun managePreviousStateOfBubble(visitable: Visitable<*>) {
-        if(visitable is MessageUiModel && visitable.attachmentType != SESSION_CHANGE){
+        if (visitable is MessageUiModel && visitable.attachmentType != SESSION_CHANGE) {
             getViewState()?.hideInvoiceList()
             getViewState()?.hideHelpfullOptions()
         }
@@ -847,8 +884,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun mapMessageToList(visitable: Visitable<*>) {
         when (visitable) {
             is QuickReplyListViewModel -> getViewState()?.onReceiveQuickReplyEvent(visitable)
-            is ChatActionSelectionBubbleViewModel -> getViewState()?.onReceiveQuickReplyEventWithActionButton(visitable)
-            is ChatRatingViewModel -> getViewState()?.onReceiveQuickReplyEventWithChatRating(visitable)
+            is ChatActionSelectionBubbleViewModel -> getViewState()?.onReceiveQuickReplyEventWithActionButton(
+                visitable
+            )
+            is ChatRatingViewModel -> getViewState()?.onReceiveQuickReplyEventWithChatRating(
+                visitable
+            )
             else -> super.onReceiveMessageEvent(visitable)
         }
     }
@@ -856,21 +897,29 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onInvoiceSelected(invoiceLinkPojo: InvoiceLinkPojo) {
         val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, opponentId)
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
-        presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime,
-            opponentId,isArticleEntry,hashMap.get(USED_BY).toBlankOrString())
+        presenter.sendInvoiceAttachment(
+            messageId, invoiceLinkPojo, generatedInvoice.startTime,
+            opponentId, isArticleEntry, hashMap.get(USED_BY).toBlankOrString()
+        )
         enableTyping()
     }
 
     private fun attachInvoiceRetrieved(selectedInvoice: InvoiceLinkPojo) {
         val generatedInvoice = presenter.generateInvoice(selectedInvoice, "")
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
-        presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime,
-            opponentId,isArticleEntry,hashMap.get(USED_BY).toBlankOrString())
+        presenter.sendInvoiceAttachment(
+            messageId, selectedInvoice, generatedInvoice.startTime,
+            opponentId, isArticleEntry, hashMap.get(USED_BY).toBlankOrString()
+        )
     }
 
     fun showSearchInvoiceScreen() {
         activity?.let {
-            val bottomSheetUnify = TransactionInvoiceBottomSheet.newInstance(it, messageId.convertMessageIdToLong(), this)
+            val bottomSheetUnify = TransactionInvoiceBottomSheet.newInstance(
+                it,
+                messageId.convertMessageIdToLong(),
+                this
+            )
             bottomSheetUnify.clearContentPadding = true
             bottomSheetUnify.show(childFragmentManager, "")
         }
@@ -888,9 +937,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
             val strings: ArrayList<String> = ArrayList()
             strings.add(imageUrl)
-            it.startActivity(ImagePreviewActivity.getCallingIntent(it,
-                strings,
-                null, 0))
+            it.startActivity(
+                ImagePreviewActivity.getCallingIntent(
+                    it,
+                    strings,
+                    null, 0
+                )
+            )
         }
     }
 
@@ -951,8 +1004,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         input.timestamp = data?.getStringExtra("time_stamp")
         input.triggerRuleType = csatAttributes?.triggerRuleType
 
-        presenter.submitCsatRating(input, onError(),
-            onSuccessSubmitCsatRating())
+        presenter.submitCsatRating(
+            input, onError(),
+            onSuccessSubmitCsatRating()
+        )
     }
 
     private fun getFilters(data: Intent?, reasonList: List<String?>?): String? {
@@ -967,7 +1022,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 return filters.substring(0, filters.length - 1)
             }
             return ""
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             return ""
         }
     }
@@ -976,7 +1031,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         hideCsatRatingView()
         return { str ->
             view?.let {
-                Toaster.showNormalWithAction(it, str, Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { })
+                Toaster.showNormalWithAction(
+                    it,
+                    str,
+                    Snackbar.LENGTH_LONG,
+                    SNACK_BAR_TEXT_OK,
+                    View.OnClickListener { })
             }
             getBindingView().listQuickReply.show()
         }
@@ -995,7 +1055,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val path = ImagePickerResultExtractor.extract(data).imageUrlOrPathList.getOrNull(0)
         processImagePathToUpload(data)?.let {
             getViewState()?.onImageUpload(it)
-            presenter.uploadImageSecureUpload(it, messageId, opponentId, onErrorImageUpload(), path, context)
+            presenter.uploadImageSecureUpload(
+                it,
+                messageId,
+                opponentId,
+                onErrorImageUpload(),
+                path,
+                context
+            )
         }
     }
 
@@ -1009,7 +1076,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onErrorImageUpload(): (Throwable, ImageUploadUiModel) -> Unit {
         return { throwable, image ->
             if (view != null) {
-                Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.make(
+                    view!!,
+                    ErrorHandler.getErrorMessage(view!!.context, throwable),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                )
                 getViewState()?.showRetryUploadImages(image, true)
             }
         }
@@ -1047,8 +1119,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         if (resultCode == Activity.RESULT_OK) {
             data?.run {
                 val selectedInvoice = data.getParcelableExtra(
-                    ChatbotInternalRouter.Companion.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY) ?: SelectedInvoice()
-                attachInvoiceRetrieved(AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(selectedInvoice))
+                    ChatbotInternalRouter.Companion.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY
+                ) ?: SelectedInvoice()
+                attachInvoiceRetrieved(
+                    AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(
+                        selectedInvoice
+                    )
+                )
             }
         }
         enableTyping()
@@ -1092,12 +1169,21 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
 
-    private fun onSendingMessage(sendMessage: String, startTime: String,parentReply: ParentReply?): () -> Unit {
+    private fun onSendingMessage(
+        sendMessage: String,
+        startTime: String,
+        parentReply: ParentReply?
+    ): () -> Unit {
         return {
             if (rvScrollListener?.hasNextAfterPage == true) {
                 resetData()
                 showTopLoading()
-                presenter.getExistingChat(messageId, onError(), onSuccessResetChatToFirstPage(), onGetChatRatingListMessageError)
+                presenter.getExistingChat(
+                    messageId,
+                    onError(),
+                    onSuccessResetChatToFirstPage(),
+                    onGetChatRatingListMessageError
+                )
             } else {
                 getViewState()?.onSendingMessage(
                     messageId, getUserSession().userId, getUserSession()
@@ -1108,21 +1194,31 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
+    override fun onChatActionBalloonSelected(
+        selected: ChatActionBubbleViewModel,
+        model: ChatActionSelectionBubbleViewModel
+    ) {
         chatbotAnalytics.get().eventClick(ACTION_ACTION_BUBBLE_CLICKED)
         if (selected.action.equals(SEE_ALL_INVOICE_TEXT, true)) {
             showSearchInvoiceScreen()
         } else {
             getViewState()?.hideActionBubble(model)
-            presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
+            presenter.sendActionBubble(
+                messageId,
+                selected,
+                SendableUiModel.generateStartTime(),
+                opponentId
+            )
             enableTyping()
         }
     }
 
     override fun onClickRating(element: ChatRatingViewModel, rating: Int) {
         sendEvent(rating)
-        presenter.sendRating(messageId, rating, element.replyTimeNano.toString(), onError(),
-            onSuccessSendRating(rating, element))
+        presenter.sendRating(
+            messageId, rating, element.replyTimeNano.toString(), onError(),
+            onSuccessSendRating(rating, element)
+        )
     }
 
     private fun sendEvent(rating: Int) {
@@ -1155,10 +1251,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         && !TextUtils.equals(uri.encodedPath, "/r")
                 val isNeedAuthToken = isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect
 
-                val urlWithSession = URLGenerator.generateURLSessionLogin(url,
+                val urlWithSession = URLGenerator.generateURLSessionLogin(
+                    url,
                     session.deviceId,
-                    session.userId)
-                val applinkWebview = String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlWithSession)
+                    session.userId
+                )
+                val applinkWebview =
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlWithSession)
                 if (isNeedAuthToken && RouteManager.isSupportApplink(activity, applinkWebview)) {
                     RouteManager.route(activity, applinkWebview)
                 } else {
@@ -1179,13 +1278,23 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onUploadUndersizedImage() {
         view?.let {
-            Toaster.make(it, getString(R.string.undersize_image), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(
+                it,
+                getString(R.string.undersize_image),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            )
         }
     }
 
     override fun onUploadOversizedImage() {
         view?.let {
-            Toaster.make(it, getString(R.string.oversize_image), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(
+                it,
+                getString(R.string.oversize_image),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            )
         }
     }
 
@@ -1229,15 +1338,28 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun showErrorToast(it: Throwable) {
-        view?.let { mView -> Toaster.showErrorWithAction(mView, it.message.toString(), Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { }) }
+        view?.let { mView ->
+            Toaster.showErrorWithAction(
+                mView,
+                it.message.toString(),
+                Snackbar.LENGTH_LONG,
+                SNACK_BAR_TEXT_OK,
+                View.OnClickListener { })
+        }
     }
 
-    override fun onReceiveConnectionEvent(connectionDividerViewModel: ConnectionDividerViewModel, quickReplyList: List<QuickReplyViewModel>) {
+    override fun onReceiveConnectionEvent(
+        connectionDividerViewModel: ConnectionDividerViewModel,
+        quickReplyList: List<QuickReplyViewModel>
+    ) {
         getViewState()?.showDividerViewOnConnection(connectionDividerViewModel)
         getViewState()?.showLiveChatQuickReply(quickReplyList)
     }
 
-    override fun onReceiveChatSepratorEvent(chatSepratorViewModel: ChatSepratorViewModel, quickReplyList: List<QuickReplyViewModel>) {
+    override fun onReceiveChatSepratorEvent(
+        chatSepratorViewModel: ChatSepratorViewModel,
+        quickReplyList: List<QuickReplyViewModel>
+    ) {
         getViewState()?.showLiveChatSeprator(chatSepratorViewModel)
         getViewState()?.showLiveChatQuickReply(quickReplyList)
     }
@@ -1250,7 +1372,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.OnClickLeaveQueue()
     }
 
-    override fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
+    override fun updateToolbar(
+        profileName: String?,
+        profileImage: String?,
+        badgeImage: ToolbarAttributes.BadgeImage?
+    ) {
         if (activity is ChatbotActivity) {
             (activity as ChatbotActivity).upadateToolbar(profileName, profileImage, badgeImage)
         }
@@ -1260,7 +1386,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         getViewState()?.showErrorWebSocket(isWebSocketError)
     }
 
-    override fun chatOptionListSelected(selected: ChatOptionListViewModel, model: HelpFullQuestionsViewModel?) {
+    override fun chatOptionListSelected(
+        selected: ChatOptionListViewModel,
+        model: HelpFullQuestionsViewModel?
+    ) {
         model?.let { getViewState()?.hideOptionList(it) }
         sendOptionListSelectedMessage(selected.text ?: "")
 
@@ -1270,11 +1399,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun sendOptionListSelectedMessage(selectedMessage: String) {
         val sendMessage = selectedMessage
         val startTime = SendableUiModel.generateStartTime()
-        presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
-            onSendingMessage(sendMessage, startTime,null))
+        presenter.sendMessage(
+            messageId, sendMessage, startTime, opponentId,
+            onSendingMessage(sendMessage, startTime, null)
+        )
     }
 
-    override fun csatOptionListSelected(selected: ChatOptionListViewModel, model: CsatOptionsViewModel?) {
+    override fun csatOptionListSelected(
+        selected: ChatOptionListViewModel,
+        model: CsatOptionsViewModel?
+    ) {
         csatOptionsViewModel = model
         startActivityForResult(context?.let {
             ChatBotCsatActivity
@@ -1284,19 +1418,28 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onRetrySendImage(element: ImageUploadUiModel) {
         val bottomSheetPage = BottomSheetUnify()
-        val viewBottomSheetPage = RetryUploadImageBottomSheetLayoutBinding.inflate(LayoutInflater.from(context)).apply {
-            val rvPages = this.rvImageUploadOption
-            rvPages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            val adapter = ImageRetryBottomSheetAdapter(onBottomSheetItemClicked(element, bottomSheetPage))
-            rvPages.adapter = adapter
-            adapter.setList(listOf(context?.getString(R.string.chatbot_delete)
-                ?: "", context?.getString(R.string.chatbot_resend) ?: ""))
+        val viewBottomSheetPage =
+            RetryUploadImageBottomSheetLayoutBinding.inflate(LayoutInflater.from(context)).apply {
+                val rvPages = this.rvImageUploadOption
+                rvPages.layoutManager =
+                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                val adapter =
+                    ImageRetryBottomSheetAdapter(onBottomSheetItemClicked(element, bottomSheetPage))
+                rvPages.adapter = adapter
+                adapter.setList(
+                    listOf(
+                        context?.getString(R.string.chatbot_delete)
+                            ?: "", context?.getString(R.string.chatbot_resend) ?: ""
+                    )
+                )
 
-        }
+            }
 
         bottomSheetPage.apply {
-            setTitle(this@ChatbotFragment.context?.getString(R.string.chatbot_retry_image_upload_bottom_sheet_title)
-                ?: "")
+            setTitle(
+                this@ChatbotFragment.context?.getString(R.string.chatbot_retry_image_upload_bottom_sheet_title)
+                    ?: ""
+            )
             showCloseIcon = false
             setChild(viewBottomSheetPage.root)
             showKnob = true
@@ -1307,7 +1450,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     }
 
-    fun onBottomSheetItemClicked(element: ImageUploadUiModel, bottomSheetPage: BottomSheetUnify): (Int) -> Unit {
+    fun onBottomSheetItemClicked(
+        element: ImageUploadUiModel,
+        bottomSheetPage: BottomSheetUnify
+    ): (Int) -> Unit {
         return {
             when (it) {
                 RESEND -> {
@@ -1320,8 +1466,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     removeDummy(element)
                     bottomSheetPage.dismiss()
                     view?.let {
-                        Toaster.make(it, context?.getString(R.string.chatbot_your_picture_has_been_deleted)
-                            ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        Toaster.make(
+                            it, context?.getString(R.string.chatbot_your_picture_has_been_deleted)
+                                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL
+                        )
                     }
                 }
             }
@@ -1338,10 +1486,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         this.replyText = replyText
         presenter.checkLinkForRedirection(invoiceRefNum,
             onGetSuccessResponse = {
-                if (it.isNotEmpty()){
-                    onGoToWebView(it, it)}
+                if (it.isNotEmpty()) {
+                    onGoToWebView(it, it)
+                }
             },
-            setStickyButtonStatus = { isResoListNotEmpty->
+            setStickyButtonStatus = { isResoListNotEmpty ->
                 if (!isResoListNotEmpty) this.isStickyButtonClicked = true
             },
             onError = {
@@ -1363,8 +1512,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 setStickyButtonStatus = { isResoListNotEmpty ->
                     if (isResoListNotEmpty) {
                         val startTime = SendableUiModel.generateStartTime()
-                        presenter.sendMessage(messageId, replyText, startTime, opponentId,
-                            onSendingMessage(replyText, startTime,null))
+                        presenter.sendMessage(
+                            messageId, replyText, startTime, opponentId,
+                            onSendingMessage(replyText, startTime, null)
+                        )
                     }
                 },
                 onError = {
@@ -1389,7 +1540,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun transactionNotFoundClick() {
         val selected = presenter.getActionBubbleforNoTrasaction()
-        presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
+        presenter.sendActionBubble(
+            messageId,
+            selected,
+            SendableUiModel.generateStartTime(),
+            opponentId
+        )
         getViewState()?.handleReplyBox(true)
     }
 
@@ -1403,7 +1559,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             val viewBottomSheetPage = initBottomSheetForReply(bottomSheetPage, messageUiModel)
 
             bottomSheetPage.apply {
-                setTitle(this@ChatbotFragment.context?.getString(R.string.chatbot_reply_bubble_bottomsheet_title)?: "")
+                setTitle(
+                    this@ChatbotFragment.context?.getString(R.string.chatbot_reply_bubble_bottomsheet_title)
+                        ?: ""
+                )
                 showCloseIcon = true
                 setChild(viewBottomSheetPage)
                 showKnob = false
@@ -1418,19 +1577,24 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun initBottomSheetForReply(
         bottomSheetPage: BottomSheetUnify,
         messageUiModel: MessageUiModel
-    ) : View {
+    ): View {
         return ReplyBubbleBottomSheetLayoutBinding.inflate(LayoutInflater.from(context)).apply {
             val rvPages = this.rvReplyBubble
             rvPages.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             val adapter =
-                ReplyBubbleBottomSheetAdapter(onReplyBottomSheetItemClicked(bottomSheetPage,messageUiModel))
+                ReplyBubbleBottomSheetAdapter(
+                    onReplyBottomSheetItemClicked(
+                        bottomSheetPage,
+                        messageUiModel
+                    )
+                )
             rvPages.adapter = adapter
         }.root
     }
 
     override fun goToBubble(parentReply: ParentReply) {
-        val bubblePosition = chatbotAdapter.getBubblePosition (
+        val bubblePosition = chatbotAdapter.getBubblePosition(
             parentReply.replyTime
         )
         if (bubblePosition != RecyclerView.NO_POSITION) {
@@ -1442,18 +1606,31 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun loadDataOnClick(replyTime : String){
+    private fun loadDataOnClick(replyTime: String) {
         showTopLoading()
-        presenter.getTopChat(messageId, onSuccessGetTopChatData(replyTime = replyTime, fromOnClick = true), onErrorGetTopChat(), onGetChatRatingListMessageError)
+        presenter.getTopChat(
+            messageId,
+            onSuccessGetTopChatData(replyTime = replyTime, fromOnClick = true),
+            onErrorGetTopChat(),
+            onGetChatRatingListMessageError
+        )
     }
 
-    private fun onReplyBottomSheetItemClicked(bottomSheetPage: BottomSheetUnify,messageUiModel: MessageUiModel): (position: Int) -> Unit {
+    private fun onReplyBottomSheetItemClicked(
+        bottomSheetPage: BottomSheetUnify,
+        messageUiModel: MessageUiModel
+    ): (position: Int) -> Unit {
         return {
             when (it) {
                 REPLY -> {
                     replyBubbleOnBoarding.dismiss()
                     senderNameForReply = messageUiModel.from
-                    replyBubbleContainer.composeReplyData(messageUiModel,"",true, getUserNameForReplyBubble.getUserName(messageUiModel))
+                    replyBubbleContainer.composeReplyData(
+                        messageUiModel,
+                        "",
+                        true,
+                        getUserNameForReplyBubble.getUserName(messageUiModel)
+                    )
                     bottomSheetPage.dismiss()
                 }
             }
@@ -1471,10 +1648,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         if (!replyBubbleEnabled)
             return
         recyclerView?.let {
-            if (!hasBeenShown){
-                replyBubbleOnBoarding.showReplyBubbleOnBoarding(it,
+            if (!hasBeenShown) {
+                replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+                    it,
                     chatbotAdapter,
-                    getBindingView().composeArea.replyBox, context)
+                    getBindingView().composeArea.replyBox, context
+                )
             }
         }
     }
@@ -1483,34 +1662,45 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         if (!state) {
             replyBubbleContainer.referredMsg = null
             replyBubbleContainer.hide()
-        }else{
+        } else {
             replyBubbleContainer.show()
         }
     }
 
     private fun initRecyclerViewListener() {
-        rvScrollListener = object : RecyclerViewScrollListener((recyclerView?.layoutManager as LinearLayoutManager)) {
+        rvScrollListener = object :
+            RecyclerViewScrollListener((recyclerView?.layoutManager as LinearLayoutManager)) {
             override fun loadMoreTop() {
                 showTopLoading()
-                presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat(), onGetChatRatingListMessageError)
+                presenter.getTopChat(
+                    messageId,
+                    onSuccessGetTopChatData(),
+                    onErrorGetTopChat(),
+                    onGetChatRatingListMessageError
+                )
             }
 
             override fun loadMoreDown() {
                 showBottomLoading()
-                presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+                presenter.getBottomChat(
+                    messageId,
+                    onSuccessGetBottomChatData(),
+                    onErrorGetBottomChat(),
+                    onGetChatRatingListMessageError
+                )
             }
         }.also {
             recyclerView?.addOnScrollListener(it)
         }
     }
 
-    private fun onErrorGetBottomChat() : (Throwable) -> Unit =  {
+    private fun onErrorGetBottomChat(): (Throwable) -> Unit = {
         chatbotAdapter.hideBottomLoading()
         onError()
         rvScrollListener?.finishBottomLoadingState()
     }
 
-    private fun onErrorGetTopChat() : (Throwable) -> Unit = {
+    private fun onErrorGetTopChat(): (Throwable) -> Unit = {
         hideTopLoading()
         onError()
         rvScrollListener?.finishTopLoadingState()
@@ -1520,14 +1710,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         hideLoading()
     }
 
-    private fun onSuccessGetTopChatData(replyTime: String = "", fromOnClick : Boolean = false): (ChatroomViewModel,ChatReplies) -> Unit {
-        return { chatroom , chatReplies ->
+    private fun onSuccessGetTopChatData(
+        replyTime: String = "",
+        fromOnClick: Boolean = false
+    ): (ChatroomViewModel, ChatReplies) -> Unit {
+        return { chatroom, chatReplies ->
             val list = chatroom.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
                         (it is MessageUiModel && it.message.isEmpty()))
             }
-            if (list.isNotEmpty()){
-                val filteredList= getViewState()?.clearDuplicate(list)
+            if (list.isNotEmpty()) {
+                val filteredList = getViewState()?.clearDuplicate(list)
                 updateHasNextState(chatReplies)
                 rvScrollListener?.finishTopLoadingState()
                 filteredList?.let { renderList ->
@@ -1545,31 +1738,45 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 if (fromOnClick && replyTime.isNotEmpty()) {
                     updateHasNextAfterState(chatReplies)
                 }
-            }else{
-                presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
+            } else {
+                presenter.getExistingChat(
+                    messageId,
+                    onError(),
+                    onSuccessGetExistingChatFirstTime(),
+                    onGetChatRatingListMessageError
+                )
             }
         }
     }
 
-    private fun onSuccessGetBottomChatData(): (ChatroomViewModel,ChatReplies) -> Unit {
-        return { chatroom , chatReplies ->
+    private fun onSuccessGetBottomChatData(): (ChatroomViewModel, ChatReplies) -> Unit {
+        return { chatroom, chatReplies ->
             val list = chatroom.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
                         (it is MessageUiModel && it.message.isEmpty()))
             }
-            if (list.isNotEmpty()){
-                val filteredList= getViewState()?.clearDuplicate(list)
+            if (list.isNotEmpty()) {
+                val filteredList = getViewState()?.clearDuplicate(list)
                 rvScrollListener?.finishBottomLoadingState()
-                if (filteredList?.isNotEmpty()==true) {
+                if (filteredList?.isNotEmpty() == true) {
                     renderBottomList(filteredList)
-                } else{
-                    presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+                } else {
+                    presenter.getBottomChat(
+                        messageId,
+                        onSuccessGetBottomChatData(),
+                        onErrorGetBottomChat(),
+                        onGetChatRatingListMessageError
+                    )
                 }
                 updateHasNextAfterState(chatReplies)
-            }
-            else{
-                if(rvScrollListener?.hasNextAfterPage==true)
-                    presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
+            } else {
+                if (rvScrollListener?.hasNextAfterPage == true)
+                    presenter.getBottomChat(
+                        messageId,
+                        onSuccessGetBottomChatData(),
+                        onErrorGetBottomChat(),
+                        onGetChatRatingListMessageError
+                    )
                 else {
                     chatbotAdapter.hideBottomLoading()
                     rvScrollListener?.finishBottomLoadingState()
@@ -1634,7 +1841,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun resetData(){
+    private fun resetData() {
         rvScrollListener?.reset()
         presenter.clearGetChatUseCase()
         chatbotAdapter.reset()

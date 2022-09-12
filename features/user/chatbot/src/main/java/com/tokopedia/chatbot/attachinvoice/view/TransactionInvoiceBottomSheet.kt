@@ -45,8 +45,10 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
 
     companion object {
         @JvmStatic
-        fun newInstance(context: FragmentActivity, messageId: Long,
-                        listener: TransactionInvoiceBottomSheetListener): TransactionInvoiceBottomSheet {
+        fun newInstance(
+            context: FragmentActivity, messageId: Long,
+            listener: TransactionInvoiceBottomSheetListener
+        ): TransactionInvoiceBottomSheet {
             return TransactionInvoiceBottomSheet().apply {
                 this.context = context
                 this.messageId = messageId
@@ -55,7 +57,11 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = BottomsheetTransactionInvoiceBinding.inflate(LayoutInflater.from(context))
         setChild(getBindingView().root)
         getBindingView().run {
@@ -91,8 +97,10 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         list.add(TransactionInvoiceListFragment.newInstance(messageId, VALUE_PEMBELIAN, this))
         list.add(TransactionInvoiceListFragment.newInstance(messageId, VALUE_PENJUALAN, this))
         list.add(TransactionInvoiceListFragment.newInstance(messageId, VALUE_PENARIKAN_DANA, this))
-        return ChatBotViewPagerAdapter(arrayOf(TITLE_PURCHASE, TITLE_SALES, TITLE_WITHDRAWING_FUNDS),
-            childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT).apply {
+        return ChatBotViewPagerAdapter(
+            arrayOf(TITLE_PURCHASE, TITLE_SALES, TITLE_WITHDRAWING_FUNDS),
+            childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        ).apply {
             setData(list)
         }
     }

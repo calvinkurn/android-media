@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.databinding.ListitemContactUsMigrationBinding
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -15,11 +16,11 @@ class ContactUsMigrationAdapter :
 
     val list = mutableListOf<Pair<Int,String>>()
 
-    inner class ContactUsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ContactUsViewHolder(itemView: ListitemContactUsMigrationBinding) : RecyclerView.ViewHolder(itemView.root) {
         private val contentTitle: Typography? =
-            itemView.findViewById(R.id.content_text)
+            itemView.contentText
         private val contentIndex: Typography? =
-            itemView.findViewById(R.id.content_index)
+            itemView.contentIndex
 
         fun bind(item: Pair<Int, String>) {
             val index = item.first.toString() + ". "
@@ -29,8 +30,7 @@ class ContactUsMigrationAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactUsViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.listitem_contact_us_migration, parent, false)
+        val view = ListitemContactUsMigrationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ContactUsViewHolder(view)
     }
 

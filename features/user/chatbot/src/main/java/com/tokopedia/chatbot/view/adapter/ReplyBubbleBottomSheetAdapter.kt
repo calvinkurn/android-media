@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.databinding.ReplyButtonItemviewBinding
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -17,9 +18,9 @@ class ReplyBubbleBottomSheetAdapter(private val onReplyBottomSheetItemClicked: (
         list.add(Pair("Balas",IconUnify.REPLY))
     }
 
-    inner class ReplyBubbleBottomSheetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val title: Typography = itemView.findViewById(R.id.title)
-        private val icon: IconUnify = itemView.findViewById(R.id.icon)
+    inner class ReplyBubbleBottomSheetViewHolder(itemView: ReplyButtonItemviewBinding) : RecyclerView.ViewHolder(itemView.root) {
+        private val title: Typography = itemView.title
+        private val icon: IconUnify = itemView.icon
         fun bind(item: Pair<String, Int>, position: Int) {
             title.text = item.first
             icon.setImage(item.second)
@@ -31,7 +32,7 @@ class ReplyBubbleBottomSheetAdapter(private val onReplyBottomSheetItemClicked: (
         parent: ViewGroup,
         viewType: Int
     ): ReplyBubbleBottomSheetViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.reply_button_itemview, parent, false)
+        val view = ReplyButtonItemviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ReplyBubbleBottomSheetViewHolder(view)
     }
 

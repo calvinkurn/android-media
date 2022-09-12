@@ -21,23 +21,28 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.CardUnify
 
-class CsatOptionListViewHolder(itemView: View,
-                               private val csatOptionListListener: CsatOptionListListener,
-                               chatLinkHandlerListener: ChatLinkHandlerListener,
-                               chatbotAdapterListener: ChatbotAdapterListener
+class CsatOptionListViewHolder(
+    itemView: View,
+    private val csatOptionListListener: CsatOptionListListener,
+    chatLinkHandlerListener: ChatLinkHandlerListener,
+    chatbotAdapterListener: ChatbotAdapterListener
 ) : BaseChatBotViewHolder<CsatOptionsViewModel>(itemView, chatbotAdapterListener) {
 
     private val adapter: ChatOptionListAdapter
     private var model: CsatOptionsViewModel? = null
-    private val chatActionListSelection: RecyclerView = itemView.findViewById<RecyclerView>(R.id.chat_csat_option_list_selection)
-    private val chatActionBubbleSelectionContainer: CardUnify = itemView.findViewById<CardUnify>(R.id.chat_csat_option_list_container)
+    private val chatActionListSelection: RecyclerView =
+        itemView.findViewById<RecyclerView>(R.id.chat_csat_option_list_selection)
+    private val chatActionBubbleSelectionContainer: CardUnify =
+        itemView.findViewById<CardUnify>(R.id.chat_csat_option_list_container)
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
     init {
         ViewCompat.setNestedScrollingEnabled(chatActionListSelection, false)
         adapter = ChatOptionListAdapter(onOptionListSelected())
-        chatActionListSelection.layoutManager = LinearLayoutManager(itemView.context,
-            LinearLayoutManager.VERTICAL, false)
+        chatActionListSelection.layoutManager = LinearLayoutManager(
+            itemView.context,
+            LinearLayoutManager.VERTICAL, false
+        )
         chatActionListSelection.adapter = adapter
         chatActionListSelection.addItemDecoration(OptionListRecyclerItemDecorator(itemView.context))
 
@@ -45,7 +50,11 @@ class CsatOptionListViewHolder(itemView: View,
 
     override fun bind(viewModel: CsatOptionsViewModel) {
         super.bind(viewModel)
-        ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
+        ChatbotMessageViewHolderBinder.bindChatMessage(
+            viewModel.message,
+            customChatLayout,
+            movementMethod
+        )
         model = viewModel
         if (viewModel.isSubmited == true) {
             chatActionBubbleSelectionContainer.hide()
@@ -80,7 +89,7 @@ class CsatOptionListViewHolder(itemView: View,
         super.onViewRecycled()
     }
 
-    override fun getCustomChatLayoutId(): Int =  R.id.customChatLayout
+    override fun getCustomChatLayoutId(): Int = R.id.customChatLayout
     override fun getSenderAvatarId(): Int = R.id.senderAvatar
     override fun getSenderNameId(): Int = R.id.senderName
     override fun getDateContainerId(): Int = R.id.dateContainer

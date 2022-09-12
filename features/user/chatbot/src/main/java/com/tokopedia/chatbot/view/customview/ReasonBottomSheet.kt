@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.widget.ImageView
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.databinding.BottomSheetReasonBinding
 import com.tokopedia.chatbot.view.adapter.ReasonAdapter
 import java.util.*
 
@@ -27,12 +28,11 @@ class ReasonBottomSheet(private val activity: Activity,
     }
 
     private fun init() {
-        val bottomSheetView = activity.layoutInflater.inflate(R.layout
-                .bottom_sheet_reason, null)
-        setContentView(bottomSheetView)
+        val bottomSheetView = BottomSheetReasonBinding.inflate(LayoutInflater.from(activity.baseContext))
+        setContentView(bottomSheetView.root)
 
-        reasonRecyclerView = bottomSheetView.findViewById(R.id.reason_rv)
-        closeIcon = bottomSheetView.findViewById(R.id.close_icon)
+        reasonRecyclerView = bottomSheetView.reasonRv
+        closeIcon = bottomSheetView.closeIcon
 
         reasonRecyclerView!!.isFocusable = false
         closeIcon!!.setOnClickListener { this@ReasonBottomSheet.dismiss() }

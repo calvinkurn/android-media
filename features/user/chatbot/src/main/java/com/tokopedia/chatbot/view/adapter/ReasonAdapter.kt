@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.databinding.ItemReasonBinding
 import java.util.*
 import javax.inject.Inject
 
@@ -24,9 +25,7 @@ constructor(private val onClickReasonRating: (String) -> Unit)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ReasonViewHolder {
-        val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.item_reason, viewGroup, false)
-
+        val view = ItemReasonBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         return ReasonViewHolder(view)
     }
 
@@ -52,8 +51,8 @@ constructor(private val onClickReasonRating: (String) -> Unit)
         this.reasonList.addAll(reasonList)
     }
 
-    inner class ReasonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var reason: TextView = itemView.findViewById(R.id.reason)
+    inner class ReasonViewHolder(itemView: ItemReasonBinding) : RecyclerView.ViewHolder(itemView.root) {
+        var reason: TextView = itemView.reason
 
         init {
             reason.setOnClickListener { onClickReasonRating(reasonList[adapterPosition]) }
