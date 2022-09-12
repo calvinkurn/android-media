@@ -1101,6 +1101,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
                                     .get(0).getPreOrderDurationDay());
                             ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
+                            ordersItem.setBoCampaignId(0);
+                            ordersItem.setShippingSubsidy(courierItemData.getShippingSubsidy());
+                            ordersItem.setBenefitClass(courierItemData.getBenefitClass());
+                            ordersItem.setShippingPrice(courierItemData.getShippingRate());
+                            ordersItem.setEtaText(courierItemData.getEtaText());
                             break;
                         }
                     }
@@ -2087,6 +2092,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
                             .get(0).getPreOrderDurationDay());
                     ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
+                    ordersItem.setBoCampaignId(0);
+                    ordersItem.setShippingSubsidy(courierData.getShippingSubsidy());
+                    ordersItem.setBenefitClass(courierData.getBenefitClass());
+                    ordersItem.setShippingPrice(courierData.getShippingRate());
+                    ordersItem.setEtaText(courierData.getEtaText());
                     break;
                 }
             }
@@ -2615,26 +2625,69 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ordersItem.setShippingId(0);
             ordersItem.setSpId(0);
             ordersItem.setFreeShippingMetadata("");
+            ordersItem.setBoCampaignId(0);
+            ordersItem.setBenefitClass("");
+            ordersItem.setShippingSubsidy(0);
+            ordersItem.setShippingPrice(0);
+            ordersItem.setEtaText("");
         } else {
             if (isTradeInByDropOff()) {
                 if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
                     ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperId());
                     ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperProductId());
-                    ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getFreeShippingMetadata());
+                    if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                        // todo: bo campaign id
+                        ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getFreeShippingMetadata());
+                        ordersItem.setBenefitClass(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getBenefitClass());
+                        ordersItem.setShippingSubsidy(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShippingSubsidy());
+                        ordersItem.setShippingPrice(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShippingRate());
+                        ordersItem.setEtaText(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getEtaText());
+                    } else {
+                        ordersItem.setFreeShippingMetadata("");
+                        ordersItem.setBoCampaignId(0);
+                        ordersItem.setBenefitClass("");
+                        ordersItem.setShippingSubsidy(0);
+                        ordersItem.setShippingPrice(0);
+                        ordersItem.setEtaText("");
+                    }
                 } else {
                     ordersItem.setShippingId(0);
                     ordersItem.setSpId(0);
                     ordersItem.setFreeShippingMetadata("");
+                    ordersItem.setBoCampaignId(0);
+                    ordersItem.setBenefitClass("");
+                    ordersItem.setShippingSubsidy(0);
+                    ordersItem.setShippingPrice(0);
+                    ordersItem.setEtaText("");
                 }
             } else {
                 if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
                     ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
                     ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
-                    ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getFreeShippingMetadata());
+                    if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                        // todo: bo campaign id
+                        ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getFreeShippingMetadata());
+                        ordersItem.setBenefitClass(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getBenefitClass());
+                        ordersItem.setShippingSubsidy(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShippingSubsidy());
+                        ordersItem.setShippingPrice(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShippingRate());
+                        ordersItem.setEtaText(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getEtaText());
+                    } else {
+                        ordersItem.setFreeShippingMetadata("");
+                        ordersItem.setBoCampaignId(0);
+                        ordersItem.setBenefitClass("");
+                        ordersItem.setShippingSubsidy(0);
+                        ordersItem.setShippingPrice(0);
+                        ordersItem.setEtaText("");
+                    }
                 } else {
                     ordersItem.setShippingId(0);
                     ordersItem.setSpId(0);
                     ordersItem.setFreeShippingMetadata("");
+                    ordersItem.setBoCampaignId(0);
+                    ordersItem.setBenefitClass("");
+                    ordersItem.setShippingSubsidy(0);
+                    ordersItem.setShippingPrice(0);
+                    ordersItem.setEtaText("");
                 }
             }
         }

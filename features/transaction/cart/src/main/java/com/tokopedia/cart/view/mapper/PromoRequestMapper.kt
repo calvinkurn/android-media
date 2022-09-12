@@ -17,7 +17,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 
 object PromoRequestMapper {
 
-    fun generateValidateUseRequestParams(promoData: Any?, selectedCartShopHolderDataList: List<CartShopHolderData>): ValidateUsePromoRequest {
+    fun generateValidateUseRequestParams(promoData: Any?, selectedCartShopHolderDataList: List<CartShopHolderData>, lastValidateUsePromoRequest: ValidateUsePromoRequest?): ValidateUsePromoRequest {
         return ValidateUsePromoRequest().apply {
             val tmpOrders = mutableListOf<OrdersItem>()
             selectedCartShopHolderDataList.forEach { cartShopHolderData ->
@@ -41,23 +41,34 @@ object PromoRequestMapper {
                                 cartShopHolderData,
                             ).toMutableList()
 
-                            val (first, second) = getShippingFromValidateUseByUniqueId(
-                                it,
-                                cartShopHolderData,
+                            val boShipmentData = getShippingFromValidateUseByUniqueId(
+                                    it,
+                                    cartShopHolderData,
+                                    lastValidateUsePromoRequest
                             )
-                            shippingId = first
-                            spId = second
+                            shippingId = boShipmentData.shippingId
+                            spId = boShipmentData.spId
+                            boCampaignId = boShipmentData.boCampaignId
+                            shippingSubsidy = boShipmentData.shippingSubsidy
+                            benefitClass = boShipmentData.benefitClass
+                            shippingPrice = boShipmentData.shippingPrice
+                            etaText = boShipmentData.etaText
                         } else if (it is LastApplyPromo) {
                             codes = getPromoCodesFromLastApplyByUniqueId(
                                 it,
                                 cartShopHolderData,
                             ).toMutableList()
-                            val (first, second) = getShippingFromLastApplyByUniqueId(
+                            val boShipmentData = getShippingFromLastApplyByUniqueId(
                                 it,
                                 cartShopHolderData,
                             )
-                            shippingId = first
-                            spId = second
+                            shippingId = boShipmentData.shippingId
+                            spId = boShipmentData.spId
+                            boCampaignId = boShipmentData.boCampaignId
+                            shippingSubsidy = boShipmentData.shippingSubsidy
+                            benefitClass = boShipmentData.benefitClass
+                            shippingPrice = boShipmentData.shippingPrice
+                            etaText = boShipmentData.etaText
                         }
                     }
                     shopId = cartShopHolderData.shopId.toLongOrZero()
@@ -121,33 +132,41 @@ object PromoRequestMapper {
     private fun getShippingFromLastApplyByUniqueId(
         lastApplyPromo: LastApplyPromo,
         cartShopHolderData: CartShopHolderData
-    ): Pair<Int, Int> {
+    ): PromoRequestBoShipmentData {
         lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
             if (voucherOrder.uniqueId == cartShopHolderData.cartString
                 && voucherOrder.shippingId > 0
                 && voucherOrder.spId > 0
                 && voucherOrder.type == "logistic"
             ) {
-                return Pair(voucherOrder.shippingId, voucherOrder.spId)
+                return PromoRequestBoShipmentData(voucherOrder.shippingId, voucherOrder.spId, voucherOrder.boCampaignId,
+                        voucherOrder.shippingSubsidy, voucherOrder.benefitClass, voucherOrder.shippingPrice,
+                        voucherOrder.etaText)
             }
         }
-        return Pair(0, 0)
+        return PromoRequestBoShipmentData()
     }
 
     private fun getShippingFromValidateUseByUniqueId(
         promoUiModel: PromoUiModel,
-        cartShopHolderData: CartShopHolderData
-    ): Pair<Int, Int> {
+        cartShopHolderData: CartShopHolderData,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest?
+    ): PromoRequestBoShipmentData {
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
             if (voucherOrder.uniqueId == cartShopHolderData.cartString
                 && voucherOrder.shippingId > 0
                 && voucherOrder.spId > 0
                 && voucherOrder.type == "logistic"
             ) {
-                return Pair(voucherOrder.shippingId, voucherOrder.spId)
+                val validateOrderRequest = lastValidateUsePromoRequest?.orders?.firstOrNull { it.uniqueId == cartShopHolderData.cartString }
+                if (validateOrderRequest != null) {
+                    return PromoRequestBoShipmentData(voucherOrder.shippingId, voucherOrder.spId, validateOrderRequest.boCampaignId,
+                            validateOrderRequest.shippingSubsidy, validateOrderRequest.benefitClass, validateOrderRequest.shippingPrice,
+                            validateOrderRequest.etaText)
+                }
             }
         }
-        return Pair(0, 0)
+        return PromoRequestBoShipmentData()
     }
 
     fun generateCouponListRequestParams(promoData: Any?, availableCartShopHolderDataList: List<CartShopHolderData>
@@ -270,3 +289,13 @@ object PromoRequestMapper {
         ) else null
     }
 }
+
+private class PromoRequestBoShipmentData(
+        val shippingId: Int = 0,
+        val spId: Int = 0,
+        val boCampaignId: Long = 0,
+        val shippingSubsidy: Long = 0,
+        val benefitClass: String = "",
+        val shippingPrice: Double = 0.0,
+        val etaText: String = "",
+)

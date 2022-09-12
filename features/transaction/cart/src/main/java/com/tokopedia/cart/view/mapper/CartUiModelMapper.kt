@@ -171,6 +171,8 @@ object CartUiModelMapper {
                 warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero()
                 isPo = availableGroup.shipmentInformation.preorder.isPreorder
                 poDuration = availableGroup.cartDetails[0].products[0].productPreorder.durationDay.toString()
+                boCode = cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull { it.uniqueId == cartString && it.shippingId > 0
+                    && it.spId > 0 && it.type == "logistic" }?.code ?: ""
             }
             cartShopHolderDataList.add(shopUiModel)
         }

@@ -161,7 +161,7 @@ class ShippingDurationConverter @Inject constructor() {
                 promo.cod, promo.eta, promo.texts.bottomSheet, promo.texts.chosenCourier,
                 promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription,
                 promo.texts.promoMessage, promo.texts.titlePromoMessage,
-                gson.toJson(promo.freeShippingMetadata))
+                gson.toJson(promo.freeShippingMetadata), promo.freeShippingMetadata.benefitClass, promo.freeShippingMetadata.shippingSubsidy)
     }
 
     private fun convertToPreOrderModel(preOrder: PreOrder?): PreOrderModel? {

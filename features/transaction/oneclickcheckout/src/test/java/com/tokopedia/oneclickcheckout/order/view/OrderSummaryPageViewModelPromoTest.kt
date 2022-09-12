@@ -176,7 +176,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         assertEquals(ValidateUsePromoRequest(isSuggested = 0, skipApply = 0, cartType = "occmulti", state = "checkout",
                 orders = listOf(OrdersItem(shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId, freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
-                        codes = mutableListOf(helper.logisticPromo.promoCode),
+                        codes = mutableListOf(helper.logisticPromo.promoCode), shippingPrice = 2000.0,
                         shopId = helper.orderData.cart.shop.shopId, productDetails = listOf(ProductDetailsItem(helper.product.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
         assertEquals(PromoRequest(cartType = "occmulti", state = "checkout",
                 orders = listOf(Order(isChecked = true, shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId, freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
