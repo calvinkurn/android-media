@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.content.common.databinding.FragmentGlobalSearchBinding
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.withCache
 import com.tokopedia.content.common.producttag.view.adapter.GlobalSearchResultPagerAdapter
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
@@ -25,9 +25,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
 /**
 * Created By : Jonathan Darwin on May 10, 2022
 */
-class GlobalSearchFragment @Inject constructor(
-    private val analytic: ProductTagAnalytic,
-) : BaseProductTagChildFragment() {
+class GlobalSearchFragment @Inject constructor() : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "GlobalSearchFragment"
 
@@ -81,7 +79,7 @@ class GlobalSearchFragment @Inject constructor(
         binding.tabLayout.setupWithViewPager(binding.viewPager)
 
         binding.clSearch.setOnClickListener {
-            analytic.clickSearchBar(viewModel.selectedTagSource)
+            mAnalytic?.clickSearchBar(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
         }
 
@@ -93,8 +91,8 @@ class GlobalSearchFragment @Inject constructor(
             ) { }
 
             override fun onPageSelected(position: Int) {
-                if(position == 0) analytic.clickGlobalSearchTab(TYPE_PRODUCT)
-                else analytic.clickGlobalSearchTab(TYPE_SHOP)
+                if(position == 0) mAnalytic?.clickGlobalSearchTab(TYPE_PRODUCT)
+                else mAnalytic?.clickGlobalSearchTab(TYPE_SHOP)
             }
 
             override fun onPageScrollStateChanged(state: Int) { }
@@ -112,10 +110,10 @@ class GlobalSearchFragment @Inject constructor(
             viewModel.uiEvent.collect {
                 when(it) {
                     is ProductTagUiEvent.HitGlobalSearchProductTracker -> {
-                        analytic.trackGlobalSearchProduct(it.header, it.param)
+                        mAnalytic?.trackGlobalSearchProduct(it.header, it.param)
                     }
                     is ProductTagUiEvent.HitGlobalSearchShopTracker -> {
-                        analytic.trackGlobalSearchShop(it.header, it.param)
+                        mAnalytic?.trackGlobalSearchShop(it.header, it.param)
                     }
                     else -> {}
                 }

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentGlobalSearchProductTabBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
 import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.withCache
@@ -20,7 +20,6 @@ import com.tokopedia.content.common.producttag.view.decoration.ProductTagItemDec
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.producttag.view.uimodel.PagedState
-import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
@@ -39,7 +38,6 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on May 10, 2022
  */
 class GlobalSearchProductTabFragment @Inject constructor(
-    private val analytic: ProductTagAnalytic,
     private val impressionCoordinator: ProductImpressionCoordinator,
 ): BaseProductTagChildFragment() {
 
@@ -53,7 +51,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
     private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProductTagCardAdapter(
             onSelected = { product, position ->
-                analytic.clickProductCard(
+                mAnalytic?.clickProductCard(
                     viewModel.selectedTagSource,
                     product,
                     position,
@@ -132,6 +130,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
 
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
+            mAnalytic,
             viewModel.selectedTagSource,
             isEntryPoint = false,
         )

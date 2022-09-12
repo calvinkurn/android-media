@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.createpost.createpost.databinding.ActivityProductTagBinding
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
@@ -23,6 +24,9 @@ class ProductTagActivity : BaseActivity() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
+    lateinit var productTagAnalytic: ContentProductTagAnalytic
 
     private lateinit var binding: ActivityProductTagBinding
 
@@ -83,12 +87,10 @@ class ProductTagActivity : BaseActivity() {
                         finish()
                     }
                 })
+
+                fragment.setAnalytic(productTagAnalytic)
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     override fun onNewIntent(intent: Intent?) {

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentLastTaggedProductBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
 import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.withCache
@@ -20,7 +20,6 @@ import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTag
 import com.tokopedia.content.common.producttag.view.uimodel.PagedState
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
-import com.tokopedia.content.common.producttag.view.uimodel.state.LastTaggedProductUiState
 import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -34,7 +33,6 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on April 25, 2022
  */
 class LastTaggedProductFragment @Inject constructor(
-    private val analytic: ProductTagAnalytic,
     private val impressionCoordinator: ProductImpressionCoordinator,
 ) : BaseProductTagChildFragment() {
 
@@ -48,7 +46,7 @@ class LastTaggedProductFragment @Inject constructor(
     private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProductTagCardAdapter(
             onSelected = { product, position ->
-                analytic.clickProductCard(
+                mAnalytic?.clickProductCard(
                     viewModel.selectedTagSource,
                     product,
                     position,
@@ -107,6 +105,7 @@ class LastTaggedProductFragment @Inject constructor(
 
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
+            mAnalytic,
             viewModel.selectedTagSource,
             isEntryPoint = true,
         )
@@ -134,7 +133,7 @@ class LastTaggedProductFragment @Inject constructor(
         }
 
         binding.clSearch.setOnClickListener {
-            analytic.clickSearchBar(viewModel.selectedTagSource)
+            mAnalytic?.clickSearchBar(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.OpenAutoCompletePage)
         }
     }
