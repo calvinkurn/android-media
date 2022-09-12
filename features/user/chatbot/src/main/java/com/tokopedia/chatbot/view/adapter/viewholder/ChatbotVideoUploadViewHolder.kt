@@ -58,7 +58,7 @@ class ChatbotVideoUploadViewHolder(
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
         chatBalloon,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
+        com.tokopedia.unifyprinciples.R.color.Unify_Static_Black,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
