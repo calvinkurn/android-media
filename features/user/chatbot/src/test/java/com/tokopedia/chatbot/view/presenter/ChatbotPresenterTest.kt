@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
-import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
@@ -20,13 +19,14 @@ import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
+import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueData
 import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueHeader
 import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueResponse
+import com.tokopedia.chatbot.domain.pojo.leavequeue.PostLeaveQueue
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
-import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.domain.resolink.ResoLinkResponse
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
@@ -61,6 +61,7 @@ import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -95,7 +96,6 @@ class ChatbotPresenterTest {
     private lateinit var checkUploadSecureUseCase: CheckUploadSecureUseCase
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
-    private lateinit var chatResponse : ChatSocketPojo
 
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
@@ -125,7 +125,6 @@ class ChatbotPresenterTest {
         checkUploadSecureUseCase = mockk(relaxed = true)
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
         getExistingChatMapper = mockk(relaxed = true)
-        chatResponse = mockk(relaxed = true)
 
         presenter = spyk(
             ChatbotPresenter(
@@ -166,9 +165,9 @@ class ChatbotPresenterTest {
         val response = mockk<ChipSubmitChatCsatResponse>(relaxed = true)
 
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(),any(),any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
         } coAnswers {
-            firstArg<(ChipSubmitChatCsatResponse)-> Unit>().invoke(response)
+            firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
         }
 
         presenter.submitChatCsat(ChipSubmitChatCsatInput())
@@ -181,7 +180,7 @@ class ChatbotPresenterTest {
     @Test
     fun `submitChatCsat failure`() {
         coEvery {
-            chipSubmitChatCsatUseCase.chipSubmitChatCsat(any(),captureLambda(),any())
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(any(), captureLambda(), any())
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
@@ -203,7 +202,7 @@ class ChatbotPresenterTest {
         } returns leaveQueueHeader
 
         coEvery {
-            leaveQueueUseCase.execute(captureLambda(), any(), any(),any())
+            leaveQueueUseCase.execute(captureLambda(), any(), any(), any())
         } coAnswers {
             firstArg<(LeaveQueueResponse) -> Unit>().invoke(response)
         }
@@ -215,70 +214,70 @@ class ChatbotPresenterTest {
 
     @Test
     fun `leaveQueue failure`() {
-        var response : Throwable?= null
+        runBlockingTest {
+            every { presenter.chatResponse.msgId } returns "1234"
 
-        coEvery {
-            leaveQueueUseCase.execute(any(), {
-                response = it
-            }, any(), any())
-        } just runs
+            every {
+                leaveQueueUseCase.execute(any(), any(), any(), any())
+            } answers {
+                secondArg<(Throwable) -> Unit>().invoke(Exception())
+            }
+            presenter.leaveQueue().invoke()
 
-        presenter.leaveQueue()
-
-        assertEquals(mockThrowable, response)
+            verify { view.showErrorToast(any()) }
+        }
     }
 
     @Test
     fun `OnClickLeaveQueue success`() {
-        val response = mockk<LeaveQueueResponse>(relaxed = true)
-        val leaveQueueHeader = mockk<LeaveQueueHeader>(relaxed = true)
+        runBlockingTest {
+            every { presenter.chatResponse.msgId } returns "1234"
+            every {
+                leaveQueueUseCase.execute(any(), any(), any(), any())
+            } answers {
+                firstArg<(LeaveQueueResponse) -> Unit>().invoke(
+                    LeaveQueueResponse(
+                        postLeaveQueue = PostLeaveQueue(
+                            leaveQueueData = LeaveQueueData("Ok"),
+                            leaveQueueHeader = LeaveQueueHeader(200, "400", 1, "reason")
+                        )
+                    )
+                )
+            }
 
-        every {
-            response.postLeaveQueue?.leaveQueueHeader
-        } returns leaveQueueHeader
+            presenter.OnClickLeaveQueue("123456")
 
-        coEvery {
-            leaveQueueUseCase.execute(captureLambda(), any(), chatResponse.msgId, any())
-        } coAnswers {
-            firstArg<(LeaveQueueResponse) -> Unit>().invoke(response)
+            verify { presenter.onSuccess(any()) }
         }
-
-        presenter.OnClickLeaveQueue("123456")
-
-        assertNotNull(leaveQueueHeader)
     }
 
     @Test
     fun `OnClickLeaveQueue failure`() {
+        runBlockingTest {
+            every { presenter.chatResponse.msgId } returns "1234"
+            coEvery {
+                leaveQueueUseCase.execute(any(), any(), any(), any())
+            } answers {
+                secondArg<(Throwable) -> Unit>().invoke(Exception())
+            }
 
-        var exception = mockk<Throwable>(relaxed = true)
+            presenter.OnClickLeaveQueue("123456")
 
-        coEvery {
-            leaveQueueUseCase.execute(any(), {
-                exception = it
-            }, chatResponse.msgId, any())
-        } just runs
-
-        presenter.OnClickLeaveQueue("123456")
-
-        assertEquals(mockThrowable, exception)
+            verify { view.showErrorToast(any()) }
+        }
     }
 
     @Test
     fun `hitGqlforOptionList failure`() {
-        var response : Throwable? = null
-        var input = mockk<SubmitOptionInput>(relaxed = true)
-
         coEvery {
-            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(captureLambda(), input)
-        } coAnswers {
-            response = mockThrowable
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
+        } answers {
+            firstArg<(Throwable) -> Unit>().invoke(Exception())
         }
 
-        presenter.hitGqlforOptionList(1,null)
+        presenter.hitGqlforOptionList(1, null)
 
-        assertNotNull(response)
+        verify { presenter.onSubmitError(any()) }
     }
 
     @Test
@@ -343,7 +342,7 @@ class ChatbotPresenterTest {
         val response = mockk<TickerDataResponse>(relaxed = true)
 
         coEvery {
-            getTickerDataUseCase.getTickerData(captureLambda(),any())
+            getTickerDataUseCase.getTickerData(captureLambda(), any())
         } coAnswers {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
@@ -359,7 +358,7 @@ class ChatbotPresenterTest {
     @Test
     fun `showTickerData failure`() {
         coEvery {
-            getTickerDataUseCase.getTickerData(any(),captureLambda())
+            getTickerDataUseCase.getTickerData(any(), captureLambda())
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
@@ -376,12 +375,12 @@ class ChatbotPresenterTest {
         val response = mockk<SubmitCsatGqlResponse>(relaxed = true)
 
         coEvery {
-            submitCsatRatingUseCase.submitCsatRating(captureLambda(),any(),any())
+            submitCsatRatingUseCase.submitCsatRating(captureLambda(), any(), any())
         } coAnswers {
             firstArg<(SubmitCsatGqlResponse) -> Unit>().invoke(response)
         }
 
-        presenter.submitCsatRating(InputItem(0,"","","","","",""))
+        presenter.submitCsatRating(InputItem(0, "", "", "", "", "", ""))
 
         verify {
             view.onSuccessSubmitCsatRating(any())
@@ -393,12 +392,12 @@ class ChatbotPresenterTest {
     fun `submitCsatRating failure`() {
 
         coEvery {
-            submitCsatRatingUseCase.submitCsatRating(any(),captureLambda(),any())
+            submitCsatRatingUseCase.submitCsatRating(any(), captureLambda(), any())
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        presenter.submitCsatRating(InputItem(0,"","","","","",""))
+        presenter.submitCsatRating(InputItem(0, "", "", "", "", "", ""))
 
         verify {
             view.onError(any())
@@ -904,9 +903,13 @@ class ChatbotPresenterTest {
         val uiModel = mockk<ChatRatingViewModel>(relaxed = true)
 
         coEvery {
-            sendChatRatingUseCase.sendChatRating( captureLambda(), any(), any(),any(), any())
+            sendChatRatingUseCase.sendChatRating(captureLambda(), any(), any(), any(), any())
         } coAnswers {
-            firstArg<(SendRatingPojo, Int, ChatRatingViewModel ) -> Unit>().invoke(response, rating, uiModel)
+            firstArg<(SendRatingPojo, Int, ChatRatingViewModel) -> Unit>().invoke(
+                response,
+                rating,
+                uiModel
+            )
         }
 
         presenter.sendRating("123456", 5, ChatRatingViewModel())
@@ -921,7 +924,7 @@ class ChatbotPresenterTest {
     fun `sendRating throws exception `() {
 
         coEvery {
-            sendChatRatingUseCase.sendChatRating(captureLambda(), any(), any(),any(), any())
+            sendChatRatingUseCase.sendChatRating(captureLambda(), any(), any(), any(), any())
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }

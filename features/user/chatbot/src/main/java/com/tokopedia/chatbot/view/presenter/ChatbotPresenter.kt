@@ -204,7 +204,7 @@ class ChatbotPresenter @Inject constructor(
     private var isUploading: Boolean = false
     private var listInterceptor: ArrayList<Interceptor>
     private var isErrorOnLeaveQueue = false
-    private lateinit var chatResponse:ChatSocketPojo
+    lateinit var chatResponse:ChatSocketPojo
     private val job= SupervisorJob()
 
     init {
