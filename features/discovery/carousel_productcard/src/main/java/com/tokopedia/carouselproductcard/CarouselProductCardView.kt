@@ -38,7 +38,6 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
     private val snapHelper = StartSnapHelper()
     private var isUseDefaultItemDecorator = true
     private val masterJob = SupervisorJob()
-    private val carouselProductCardListenerInfo = CarouselProductCardListenerInfo()
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
 
     override val coroutineContext = masterJob + Dispatchers.Main
@@ -111,7 +110,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
 
         initBindCarousel(true, recyclerViewPool)
 
-        createCarouselProductCardListenerInfo(
+        val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
             carouselProductCardOnItemClickListener,
             carouselProductCardOnItemImpressedListener,
             carouselProductCardOnItemAddToCartListener,
@@ -163,7 +162,11 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
             carouselProductCardAddVariantClickListener: OnAddVariantClickListener? = null,
             carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
             carouselViewAllCardClickListener: OnViewAllCardClickListener? = null,
-    ) {
+    )
+    : CarouselProductCardListenerInfo {
+
+        val carouselProductCardListenerInfo = CarouselProductCardListenerInfo()
+
         carouselProductCardListenerInfo.onItemClickListener = carouselProductCardOnItemClickListener
         carouselProductCardListenerInfo.onItemImpressedListener = carouselProductCardOnItemImpressedListener
         carouselProductCardListenerInfo.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
@@ -172,6 +175,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
         carouselProductCardListenerInfo.onATCNonVariantClickListener = carouselProductCardATCNonVariantClickListener
         carouselProductCardListenerInfo.onAddVariantClickListener = carouselProductCardAddVariantClickListener
         carouselProductCardListenerInfo.onViewAllCardClickListener = carouselViewAllCardClickListener
+
+        return carouselProductCardListenerInfo
     }
 
     private fun initLayoutManager() {
@@ -316,7 +321,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
 
         initBindCarousel(false, recyclerViewPool)
 
-        createCarouselProductCardListenerInfo(
+        val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
                 carouselProductCardOnItemClickListener,
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
