@@ -87,10 +87,9 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                             uniqueId = orderCart.cartString,
                                             boType = orderCart.shop.boMetadata.boType,
                                             codes = arrayListOf(oldPromoCode),
-                                            //todo verify bener nggak ngambilnya
                                             isPo = orderCart.products[0].isPreOrder == 1,
                                             poDuration = orderCart.products[0].preOrderDuration.toString(),
-                                            warehouseId = orderCart.shop.warehouseId
+                                            warehouseId = orderCart.shop.warehouseId,
                                         )
                                 )
                         )
@@ -184,7 +183,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                                 .toMutableList(),
                                             warehouseId = orderCart.shop.warehouseId,
                                             isPo = orderCart.products[0].isPreOrder == 1,
-                                            poDuration = orderCart.products[0].preOrderDuration.toString()
+                                            poDuration = orderCart.products[0].preOrderDuration.toString(),
                                         )
                                 )
                         )
