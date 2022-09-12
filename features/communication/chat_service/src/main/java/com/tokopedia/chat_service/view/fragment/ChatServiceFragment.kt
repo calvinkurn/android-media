@@ -1,19 +1,19 @@
 package com.tokopedia.chat_service.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.babble.network.data.OrderChatType
-import com.gojek.conversations.channel.GetChannelRequest
+import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
+import com.gojek.conversations.network.ConversationsNetworkError
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.chat_service.databinding.FragmentChatServiceBinding
 import com.tokopedia.chat_service.di.ChatServiceComponent
 import com.tokopedia.chat_service.view.viewmodel.ChatServiceViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -23,6 +23,8 @@ class ChatServiceFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModel: ChatServiceViewModel
+
+    private var channelUrl: String = ""
 
     override fun getScreenName(): String = TAG
 
@@ -41,6 +43,7 @@ class ChatServiceFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews()
         initObservers()
         setupDummyChatService()
     }
@@ -49,50 +52,95 @@ class ChatServiceFragment: BaseDaggerFragment() {
         getComponent(ChatServiceComponent::class.java).inject(this)
     }
 
-    private fun setupDummyChatService() {
+    private fun initViews() {
         AndroidThreeTen.init(context?.applicationContext)
-        viewModel.createChannel(
-            name = "Omar Maryadi",
-            memberIds = listOf("942317400"),
-            type = "REGULAR",
-            source = ""
-        )
-//        viewModel.initGroupBooking(
-//            "RB-133978-9720561",
-//            1,
-//            OrderChatType.Driver
-//        )
 
-//        viewModel.getAllChannels(
-//            GetChannelRequest(
-//                types = listOf(ChannelType.GroupBooking),
-//                batchSize = 10,
-//                timestamp = System.currentTimeMillis(),
-//                shouldRetry = false
-//            )
-//        )
+        binding?.goBtn?.setOnClickListener {
+            viewModel.getChatHistory(channelUrl).removeObservers(viewLifecycleOwner)
+            viewModel.deRegisterActiveChannel(channelUrl)
+            initObservers()
+            setupDummyChatService()
+        }
 
-//        viewModel.loadPreviousMessages()
+        binding?.mainBtn?.setOnClickListener {
+            val message = binding?.mainEdt?.text.toString()
+            binding?.mainEdt?.setText("")
+            viewModel.sendMessage(message, channelUrl)
+        }
+
+        binding?.clearBtn?.setOnClickListener {
+            binding?.mainTv?.text = ""
+        }
     }
 
     private fun initObservers() {
-        viewModel.conversationsMessage.observe(viewLifecycleOwner) {
-            Log.d(TAG, it.toString())
-        }
-
         viewModel.error.observe(viewLifecycleOwner) {
-            Log.d(TAG, it.message.toString())
             it.printStackTrace()
         }
-
-//        viewModel.getAllChannels().observe(viewLifecycleOwner) {
-//            Log.d(TAG, it.toString())
-//        }
     }
 
-    override fun onStop() {
-        super.onStop()
-//        viewModel.deRegisterActiveChannel()
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.deRegisterActiveChannel(channelUrl)
+    }
+
+    private fun setupDummyChatService() {
+        viewModel.initGroupBooking(
+            getOrderIdOrDefault(),
+            1,
+            getGroupBookingListener(),
+            OrderChatType.Driver
+        )
+    }
+
+    private fun getOrderIdOrDefault(): String {
+        val text = binding?.orderIdEdt?.text
+        return if (text.isNullOrEmpty()) {
+            "RB-169991-4236640"
+        } else {
+            text.toString()
+        }
+    }
+
+    private fun getGroupBookingListener(): ConversationsGroupBookingListener {
+        return object : ConversationsGroupBookingListener {
+            override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
+                view?.let {
+                    Toaster.build(
+                        it, error.getErrorMessage(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
+                    ).show()
+                }
+            }
+
+            override fun onGroupBookingChannelCreationStarted() {
+                view?.let {
+                    Toaster.build(
+                        it, "Starting", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL
+                    ).show()
+                }
+            }
+
+            override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
+                this@ChatServiceFragment.channelUrl = channelUrl
+                viewModel.registerActiveChannel(channelUrl)
+                observeChatHistory(channelUrl)
+            }
+
+        }
+    }
+
+    private fun observeChatHistory(channelUrl: String) {
+        viewModel.getChatHistory(channelUrl).observe(viewLifecycleOwner) {
+            activity?.runOnUiThread {
+                binding?.mainTv?.text = ""
+                var messageText = ""
+                for (message in it) {
+                    messageText += "${message.messageSender?.userName}:\n ${message.messageText} - ${message.readReceipt}\n\n"
+                }
+                binding?.mainTv?.text = messageText
+            }
+            viewModel.markChatAsRead(channelUrl)
+        }
     }
 
     companion object {

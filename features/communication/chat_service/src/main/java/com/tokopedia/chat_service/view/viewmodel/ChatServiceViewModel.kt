@@ -1,9 +1,7 @@
 package com.tokopedia.chat_service.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.gojek.conversations.babble.channel.data.CreateChannelInfo
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.babble.network.data.OrderChatType
@@ -40,62 +38,92 @@ class ChatServiceViewModel @Inject constructor(
     val conversationsChannel: LiveData<Result<ConversationsChannel>>
         get() = _conversationsChannel
 
-    private val _channelUrl = MutableLiveData<String>()
-    val conversationsMessage: LiveData<List<ConversationsMessage>> =
-        Transformations.switchMap(_channelUrl) {
-            getChatHistoryUseCase(it)
-        }
-
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable>
         get() = _error
 
-    fun createChannel(name: String, memberIds: List<String>, type: String, source: String) {
-        val params = getChannelParam(name, memberIds, type, source)
+    fun sendMessage(channelUrl: String, text: String) {
         try {
-            createChannelUseCase(params)
+            val messageMetaData = SendMessageMetaData()
+            sendMessageUseCase.sendTextMessage(
+                channelUrl,
+                text,
+                messageMetaData
+            )
         } catch (throwable: Throwable) {
-            params.onError(ConversationsNetworkError(throwable))
-        }
-    }
-
-    private fun getChannelParam(
-        name: String,
-        memberIds: List<String>,
-        type: String,
-        source: String
-    ): CreateChannelUseCase.CreateChannelParam {
-        return CreateChannelUseCase.CreateChannelParam(
-            createChannelInfo = CreateChannelInfo(
-                name, memberIds, type, source
-            ),
-            onSuccess = {
-                _conversationsChannel.value = Success(it)
-            },
-            onError = {
-                _conversationsChannel.value = Fail(it)
-            }
-        )
-    }
-
-    fun setChannelUrl(channelUrl: String) {
-        _channelUrl.value = channelUrl
-    }
-
-    fun registerActiveChannel() {
-        try {
-            val channelUrl = _channelUrl.value
-            registrationActiveChannelUseCase.registerActiveChannel(channelUrl!!)
-        } catch (throwable: Throwable) {
-            Log.d("RegisterActiveChannel", "Error - ${throwable.message}")
             _error.value = throwable
         }
     }
 
-    fun deRegisterActiveChannel() {
+    fun initGroupBooking(
+        orderId: String,
+        serviceType: Int,
+        groupBookingListener: ConversationsGroupBookingListener,
+        orderChatType: OrderChatType
+    ) {
         try {
-            val channelUrl = _channelUrl.value
-            registrationActiveChannelUseCase.deRegisterActiveChannel(channelUrl!!)
+            createChannelUseCase.initGroupBookingChat(
+                orderId = orderId,
+                serviceType = serviceType,
+                groupBookingListener = groupBookingListener,
+                orderChatType = orderChatType
+            )
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+        }
+    }
+
+    fun getChatHistory(channelUrl: String): LiveData<List<ConversationsMessage>> {
+        return try {
+            getChatHistoryUseCase(channelUrl)
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+            MutableLiveData()
+        }
+    }
+
+    fun loadPreviousMessages() {
+        try {
+            getChatHistoryUseCase.loadPreviousMessage()
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+        }
+    }
+
+    fun markChatAsRead(channelUrl: String) {
+        try {
+            markAsReadUseCase(channelUrl)
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+        }
+    }
+
+    fun registerActiveChannel(channelUrl: String) {
+        try {
+            registrationActiveChannelUseCase.registerActiveChannel(channelUrl)
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+        }
+    }
+
+    fun deRegisterActiveChannel(channelUrl: String) {
+        try {
+            registrationActiveChannelUseCase.deRegisterActiveChannel(channelUrl)
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+        }
+    }
+
+    fun getAllChannels(
+        getChannelRequest: GetChannelRequest,
+        onSuccess: (List<ConversationsChannel>) -> Unit,
+        onError: (ConversationsNetworkError?) -> Unit
+    ) {
+        try {
+            getAllChannelsUseCase(getChannelRequest,
+                onSuccess = onSuccess,
+                onError = onError
+            )
         } catch (throwable: Throwable) {
             _error.value = throwable
         }
@@ -110,45 +138,18 @@ class ChatServiceViewModel @Inject constructor(
         }
     }
 
-    fun getAllChannels(getChannelRequest: GetChannelRequest) {
-        try {
-            getAllChannelsUseCase(getChannelRequest, onSuccess = {
-                Log.d("GetAllChannels", "$it")
-            }, onError = {
-                Log.d("GetAllChannels", "${it?.message}")
-            })
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-        }
-    }
+    /**
+     * Not P0
+     */
 
-    fun sendMessage(text: String) {
+    fun sendExtensionMessage(channelUrl: String) {
         try {
-            val channelUrl = _channelUrl.value
-            val messageMetaData = SendMessageMetaData()
-            sendMessageUseCase.sendTextMessage(
-                channelUrl!!,
-                text,
-                messageMetaData
-            )
-        } catch (throwable: Throwable) {
-            Log.d("SendMessage", "Error - ${throwable.message}")
-            _error.value = throwable
-        }
-    }
-
-    fun sendExtensionMessage() {
-        try {
-            val channelUrl = _channelUrl.value
             val extensionMessage = getExtensionMessage()
             sendMessageUseCase.sendExtensionMessage(
-                channelUrl!!,
+                channelUrl,
                 extensionMessage,
-                onSuccess = {
-                    Log.d("SendExtensionMsg", "Success")
-                },
+                onSuccess = {},
                 onError = {
-                    Log.d("SendExtensionMsg", "$it")
                     _error.value = it
                 }
             )
@@ -173,56 +174,22 @@ class ChatServiceViewModel @Inject constructor(
         )
     }
 
-    fun markChatAsRead() {
-        try {
-            val channelUrl = _channelUrl.value
-            markAsReadUseCase(channelUrl!!)
-        } catch (throwable: Throwable) {
-            Log.d("MarkAsRead", "Error - ${throwable.message}")
-            _error.value = throwable
-        }
-    }
-
-    fun initGroupBooking(
-        orderId: String,
-        serviceType: Int,
-        orderChatType: OrderChatType
-    ) {
-        try {
-            createChannelUseCase.initGroupBookingChat(
-                orderId = orderId,
-                serviceType = serviceType,
-                groupBookingListener = getGroupBookingListener(),
-                orderChatType = orderChatType
-            )
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-        }
-    }
-
-    private fun getGroupBookingListener(): ConversationsGroupBookingListener {
-        return object : ConversationsGroupBookingListener {
-            override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
-                _error.value = error
+    private fun getChannelParam(
+        name: String,
+        memberIds: List<String>,
+        type: String,
+        source: String
+    ): CreateChannelUseCase.CreateChannelParam {
+        return CreateChannelUseCase.CreateChannelParam(
+            createChannelInfo = CreateChannelInfo(
+                name, memberIds, type, source
+            ),
+            onSuccess = {
+                _conversationsChannel.value = Success(it)
+            },
+            onError = {
+                _conversationsChannel.value = Fail(it)
             }
-
-            override fun onGroupBookingChannelCreationStarted() {
-                Log.d("GroupBooking", "Started")
-            }
-
-            override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
-                registrationActiveChannelUseCase.registerActiveChannel(channelUrl)
-                setChannelUrl(channelUrl)
-            }
-
-        }
-    }
-
-    fun loadPreviousMessages() {
-        try {
-            getChatHistoryUseCase.loadPreviousMessage()
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-        }
+        )
     }
 }
