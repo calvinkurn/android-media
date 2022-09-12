@@ -34,8 +34,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivDeleteRecentSearch"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         tools:text="es teh indonesia"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"

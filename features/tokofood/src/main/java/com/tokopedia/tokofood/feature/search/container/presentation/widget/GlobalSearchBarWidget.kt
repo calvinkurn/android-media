@@ -63,7 +63,6 @@ class GlobalSearchBarWidget: ConstraintLayout {
                                          searchTextBoxListener: SearchTextBoxListener) {
         this.globalSearchBarWidgetListener = globalSearchBarWidgetListener
         this.searchTextBoxListener = searchTextBoxListener
-        searchBarTextFieldRequestFocus()
     }
 
     fun setKeywordSearchBar(keyword: String) {

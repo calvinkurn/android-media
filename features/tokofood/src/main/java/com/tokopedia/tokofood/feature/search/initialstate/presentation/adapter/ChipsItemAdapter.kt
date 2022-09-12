@@ -7,9 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokofood.databinding.ChipsItemInitialStatePopularSearchBinding
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.diffutil.ChipsHighlightDiffUtil
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.ChipsPopularSearch
+import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.RecentSearchItemUiModel
 
 class ChipsItemAdapter(private val chipsItemListener: ChipsItemListener) :
     RecyclerView.Adapter<ChipsItemAdapter.ChipsItemViewHolder>() {
@@ -48,6 +51,7 @@ class ChipsItemAdapter(private val chipsItemListener: ChipsItemListener) :
 
         fun bind(data: ChipsPopularSearch) {
             with(binding.chipsPopularSearch) {
+                bindImpressionRecentSearchListener(data, adapterPosition)
                 val searchColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN400)
                 chipImageResource = getIconUnifyDrawable(context, IconUnify.SEARCH, searchColor)
                 centerText = true
@@ -57,9 +61,31 @@ class ChipsItemAdapter(private val chipsItemListener: ChipsItemListener) :
                 }
             }
         }
+
+        private fun bindImpressionRecentSearchListener(
+            item: ChipsPopularSearch,
+            position: Int
+        ) {
+            binding.root.addOnImpressionListener(
+                item,
+                createViewHintListener(item, position)
+            )
+        }
+
+        private fun createViewHintListener(
+            item: ChipsPopularSearch,
+            position: Int
+        ): ViewHintListener {
+            return object : ViewHintListener {
+                override fun onViewHint() {
+                    chipsItemListener.onImpressionPopularSearch(item, position)
+                }
+            }
+        }
     }
 
     interface ChipsItemListener {
         fun onChipsClicked(data: ChipsPopularSearch)
+        fun onImpressionPopularSearch(item: ChipsPopularSearch, position: Int)
     }
 }

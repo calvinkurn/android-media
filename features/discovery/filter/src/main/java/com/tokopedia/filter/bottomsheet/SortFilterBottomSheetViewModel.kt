@@ -10,6 +10,8 @@ import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxItemUiModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxUiModel
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DataValue
@@ -187,9 +189,24 @@ internal class SortFilterBottomSheetViewModel {
             when {
                 filter.isPriceFilter -> sortFilterList.add(createPriceFilterViewModel(filter))
                 filter.isKeywordFilter -> sortFilterList.add(createKeywordFilterDataView(filter))
+                filter.isPriceRangeCbFilter -> sortFilterList.add(createPriceRangeFilterCheckbox(filter))
                 else -> sortFilterList.add(createFilterViewModel(filter))
             }
         }
+    }
+
+    private fun createPriceRangeFilterCheckbox(priceFilter: Filter): PriceRangeFilterCheckboxUiModel {
+        return PriceRangeFilterCheckboxUiModel(
+            filter = priceFilter,
+            priceRangeList = priceFilter.options.map {
+                PriceRangeFilterCheckboxItemUiModel(
+                    option = it
+                ).apply {
+                    isSelected = it.inputState.toBoolean()
+                }
+            }.toMutableList(),
+            priceRangeLabel = priceFilter.title
+        )
     }
 
     private fun createPriceFilterViewModel(priceFilter: Filter): PriceFilterViewModel {
@@ -319,6 +336,52 @@ internal class SortFilterBottomSheetViewModel {
         sortedOptionViewModelList.addAll(optionViewModelList.filter { !it.isSelected })
 
         optionViewModelList = sortedOptionViewModelList
+    }
+
+    fun onPriceRangeFilterCheckboxClick(priceRangeFilterCheckboxItemUiModel: PriceRangeFilterCheckboxItemUiModel, isSelected: Boolean) {
+        filterController.setFilter(priceRangeFilterCheckboxItemUiModel.option, isSelected)
+        val sortFilterIndexSet : MutableSet<Int> = mutableSetOf()
+        updatePriceRangeFilterCheckbox(sortFilterIndexSet)
+        refreshMapParameter()
+        notifyViewOnApplyFilter(sortFilterIndexSet.toList())
+    }
+
+    private fun updatePriceRangeFilterCheckbox(
+        sortFilterIndexSet: MutableSet<Int>
+    ) {
+        sortFilterList.forEachIndexed { index, visitable ->
+            if(visitable is PriceRangeFilterCheckboxUiModel) {
+                visitable.refreshOptionList()
+                sortFilterIndexSet.add(index)
+            }
+        }
+    }
+
+    private fun PriceRangeFilterCheckboxUiModel.refreshOptionList() {
+        val newPriceRangeFilterItemList = mutableListOf<PriceRangeFilterCheckboxItemUiModel>()
+        processOptionCheckboxList(this.filter.options, newPriceRangeFilterItemList)
+
+        this.priceRangeList.clear()
+        this.priceRangeList.addAll(newPriceRangeFilterItemList)
+    }
+
+    private fun processOptionCheckboxList(optionList: List<Option>, newPriceRangeList: MutableList<PriceRangeFilterCheckboxItemUiModel>) {
+        val selectedOrPopularOptionList = mutableListOf<Option>()
+
+        optionList.forEach { option ->
+            option.updateInputState()
+            selectedOrPopularOptionList.addIfSelectedOrPopular(option)
+        }
+
+        selectedOrPopularOptionList.forEach {
+            newPriceRangeList.add(createPriceRangeFilterItemUiModel(it))
+        }
+    }
+
+    private fun createPriceRangeFilterItemUiModel(option: Option): PriceRangeFilterCheckboxItemUiModel {
+        return PriceRangeFilterCheckboxItemUiModel(option).also {
+            it.isSelected = option.inputState.toBoolean()
+        }
     }
 
     fun onOptionClick(filterViewModel: FilterViewModel, optionViewModel: OptionViewModel) {

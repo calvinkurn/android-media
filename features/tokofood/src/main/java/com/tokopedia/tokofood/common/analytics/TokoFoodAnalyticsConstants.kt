@@ -12,6 +12,13 @@ object TokoFoodAnalyticsConstants {
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val SCREEN_NAME = "screenName"
     const val GOFOOD_PAGENAME = "gofood"
+    const val PAGE_SOURCE = "pageSource"
+
+    const val KEY_EE_PROMOTIONS = "promotions"
+    const val KEY_EE_CREATIVE_NAME = "creative_name"
+    const val KEY_EE_CREATIVE_SLOT = "creative_slot"
+    const val KEY_EE_ITEM_ID = "item_id"
+    const val KEY_EE_ITEM_NAME = "item_name"
 
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val OPEN_SCREEN = "openScreen"

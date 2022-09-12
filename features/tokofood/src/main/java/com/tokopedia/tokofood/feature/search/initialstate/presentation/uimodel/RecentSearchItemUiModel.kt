@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.InitialStateTypeFactoryImpl
 
 data class RecentSearchItemUiModel(
@@ -9,7 +10,7 @@ data class RecentSearchItemUiModel(
     val title: String,
     val template: String,
     val imageActionUrl: String
-) : BaseInitialStateVisitable {
+) : BaseInitialStateVisitable, ImpressHolder() {
     override fun type(typeFactory: InitialStateTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }

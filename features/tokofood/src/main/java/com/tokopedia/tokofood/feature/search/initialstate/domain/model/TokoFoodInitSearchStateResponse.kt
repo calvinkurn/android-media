@@ -32,8 +32,6 @@ data class TokoFoodInitSearchStateResponse(
                 val id: String = "",
                 @SerializedName("imageUrl")
                 val imageUrl: String = "",
-                @SerializedName("itemId")
-                val itemId: String = "",
                 @SerializedName("label")
                 val label: String = "",
                 @SerializedName("labelType")

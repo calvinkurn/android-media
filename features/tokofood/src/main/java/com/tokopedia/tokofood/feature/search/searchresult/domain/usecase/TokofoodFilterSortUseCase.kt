@@ -18,6 +18,7 @@ private const val QUERY = """
               subtitle
               options {
                 name
+                description
                 key
                 value
                 inputType

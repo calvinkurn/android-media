@@ -1,11 +1,11 @@
 package com.tokopedia.tokofood.feature.search.container.presentation.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -17,13 +17,14 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.databinding.FragmentSearchContainerBinding
 import com.tokopedia.tokofood.feature.search.container.di.component.DaggerSearchContainerComponent
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.InitialStateViewUpdateListener
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
 import com.tokopedia.tokofood.feature.search.container.presentation.viewmodel.SearchContainerViewModel
 import com.tokopedia.tokofood.feature.search.container.presentation.widget.GlobalSearchBarWidget
-import com.tokopedia.tokofood.feature.search.initialstate.presentation.fragment.InitialStateFragment
+import com.tokopedia.tokofood.feature.search.initialstate.presentation.fragment.InitialSearchStateFragment
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.fragment.SearchResultFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
@@ -47,8 +48,19 @@ class SearchContainerFragment : BaseDaggerFragment(),
     private var binding by autoClearedNullable<FragmentSearchContainerBinding>()
 
     private var searchResultFragment: SearchResultFragment? = null
-    private var initialStateFragment: InitialStateFragment? = null
+    private var initialSearchStateFragment: InitialSearchStateFragment? = null
     private var globalSearchBarWidget: GlobalSearchBarWidget? = null
+
+    private var keyword: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val bundle = arguments?.getString(Constant.DATA_KEY).orEmpty()
+        if (bundle.isNotBlank()) {
+            val uri = Uri.parse(bundle)
+            keyword = uri.getQueryParameter(KEYWORD_PARAM).orEmpty()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,12 +75,14 @@ class SearchContainerFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         observeSearchKeyword()
+        keyword?.let { setKeywordSearchBarView(it) }
     }
 
     override fun onDestroyView() {
-        initialStateFragment = null
+        initialSearchStateFragment = null
         searchResultFragment = null
         globalSearchBarWidget = null
+        keyword = null
         super.onDestroyView()
     }
 
@@ -94,7 +108,7 @@ class SearchContainerFragment : BaseDaggerFragment(),
             initialStateContainer.show()
         }
 
-        initialStateFragment?.let { initialStateFragment ->
+        initialSearchStateFragment?.let { initialStateFragment ->
             searchResultFragment?.let { searchResultFragment ->
                 val ft = childFragmentManager.beginTransaction()
                 if (searchResultFragment.isVisible && !initialStateFragment.isVisible) {
@@ -113,7 +127,7 @@ class SearchContainerFragment : BaseDaggerFragment(),
         }
 
         searchResultFragment?.let { searchResultFragment ->
-            initialStateFragment?.let { initialStateFragment ->
+            initialSearchStateFragment?.let { initialStateFragment ->
                 val ft = childFragmentManager.beginTransaction()
                 if (!searchResultFragment.isVisible && initialStateFragment.isVisible) {
                     ft.hide(initialStateFragment)
@@ -154,9 +168,9 @@ class SearchContainerFragment : BaseDaggerFragment(),
         globalSearchBarWidget = view.findViewById(R.id.globalSearchBarWidget)
         searchResultFragment =
             childFragmentManager.findFragmentById(R.id.searchResultContainer) as? SearchResultFragment
-        initialStateFragment =
-            childFragmentManager.findFragmentById(R.id.initialStateContainer) as? InitialStateFragment
-        initialStateFragment?.setInitialStateViewUpdateListener(this)
+        initialSearchStateFragment =
+            childFragmentManager.findFragmentById(R.id.initialStateContainer) as? InitialSearchStateFragment
+        initialSearchStateFragment?.setInitialStateViewUpdateListener(this)
         searchResultFragment?.setSearchResultViewUpdateListener(this)
         globalSearchBarWidget?.setGlobalSearchBarWidgetListener(this, this)
     }
@@ -174,7 +188,7 @@ class SearchContainerFragment : BaseDaggerFragment(),
     }
 
     private fun proceedInitialState(keyword: String) {
-        initialStateFragment?.showInitialSearchState(keyword)
+        initialSearchStateFragment?.showInitialSearchState(keyword)
     }
 
     private fun proceedSearchResult(keyword: String) {
@@ -193,5 +207,6 @@ class SearchContainerFragment : BaseDaggerFragment(),
         }
 
         const val THREE_LETTERS = 3
+        const val KEYWORD_PARAM = "q"
     }
 }
