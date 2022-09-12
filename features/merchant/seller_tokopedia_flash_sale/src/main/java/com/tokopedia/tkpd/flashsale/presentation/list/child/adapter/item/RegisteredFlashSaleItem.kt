@@ -14,9 +14,6 @@ data class RegisteredFlashSaleItem(
     val formattedEndDate: String,
     val reviewStartDate: Date,
     val reviewEndDate: Date,
-    val distanceMinuteToStartDate: Long,
-    val distanceMinuteToReviewStartDate: Long,
-    val distanceMinuteToReviewEndDate: Long,
     val status: FlashSaleStatus,
     val statusText: String
 ) : DelegateAdapterItem {

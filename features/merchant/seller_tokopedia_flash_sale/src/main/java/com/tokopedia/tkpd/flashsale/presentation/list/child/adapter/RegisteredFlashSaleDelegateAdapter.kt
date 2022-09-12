@@ -26,6 +26,8 @@ class RegisteredFlashSaleDelegateAdapter(
 ) : DelegateAdapter<RegisteredFlashSaleItem, RegisteredFlashSaleDelegateAdapter.ViewHolder>
     (RegisteredFlashSaleItem::class.java) {
 
+    private val now = Date()
+
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemRegisteredFlashSaleBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -133,16 +135,16 @@ class RegisteredFlashSaleDelegateAdapter(
 
         private fun TimerUnifySingle.setTimer(item: RegisteredFlashSaleItem) {
             when (item.status) {
-                FlashSaleStatus.NO_REGISTERED_PRODUCT -> startTimer(this, item.distanceMinuteToReviewStartDate,  item.reviewStartDate)
-                FlashSaleStatus.WAITING_FOR_SELECTION -> startTimer(this, item.distanceMinuteToReviewStartDate,  item.reviewStartDate)
-                FlashSaleStatus.ON_SELECTION_PROCESS -> startTimer(this, item.distanceMinuteToReviewEndDate,  item.reviewEndDate)
-                FlashSaleStatus.SELECTION_FINISHED -> startTimer(this, item.distanceMinuteToStartDate,  item.startDate)
+                FlashSaleStatus.NO_REGISTERED_PRODUCT -> startTimer(this, item.reviewStartDate)
+                FlashSaleStatus.WAITING_FOR_SELECTION -> startTimer(this, item.reviewStartDate)
+                FlashSaleStatus.ON_SELECTION_PROCESS -> startTimer(this, item.reviewEndDate)
+                FlashSaleStatus.SELECTION_FINISHED -> startTimer(this, item.startDate)
                 else -> {}
             }
         }
 
-        private fun startTimer(timer: TimerUnifySingle, distanceMinuteToEndDate: Long, endDate: Date) {
-            if (distanceMinuteToEndDate < 0) {
+        private fun startTimer(timer: TimerUnifySingle, endDate: Date) {
+            if (now.after(endDate)) {
                 timer.invisible()
                 binding.tpgDescription.text = binding.tpgDescription.context.getString(R.string.stfs_status_registration_already_closed)
             } else {
