@@ -9,6 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
 
 /**
@@ -18,7 +19,8 @@ import com.tokopedia.report.view.fragment.models.ProductReportUiState
 
 @Composable
 fun ProductReportComposeContent(
-    uiState: ProductReportUiState
+    uiState: ProductReportUiState,
+    onEvent: (ProductReportUiEvent) -> Unit
 ) {
     if (uiState.error.isNullOrBlank().not()) {
         Text(
@@ -35,12 +37,20 @@ fun ProductReportComposeContent(
         }
 
         items(uiState.data) { item ->
-            Text(text = item.strLabel)
+            ProductReportReasonItem(
+                reason = item,
+                onClick = {
+                    onEvent.invoke(ProductReportUiEvent.ItemClicked(it))
+                }
+            )
         }
 
         item {
             ProductReportReasonFooter(
-                text = stringResource(id = R.string.product_report_see_all_types)
+                text = stringResource(id = R.string.product_report_see_all_types),
+                onClick = {
+                    onEvent.invoke(ProductReportUiEvent.FooterClicked(it))
+                }
             )
         }
     }
@@ -62,7 +72,8 @@ fun ProductReportComposeContentPreview() {
                 )
             }
         )
-    )
+    ) {
+    }
 }
 
 @Preview
@@ -70,7 +81,8 @@ fun ProductReportComposeContentPreview() {
 fun ProductReportComposeContentLoadingPreview() {
     ProductReportComposeContent(
         uiState = ProductReportUiState()
-    )
+    ) {
+    }
 }
 
 @Preview
@@ -78,5 +90,6 @@ fun ProductReportComposeContentLoadingPreview() {
 fun ProductReportComposeContentErrorPreview() {
     ProductReportComposeContent(
         uiState = ProductReportUiState(error = "error gan")
-    )
+    ) {
+    }
 }

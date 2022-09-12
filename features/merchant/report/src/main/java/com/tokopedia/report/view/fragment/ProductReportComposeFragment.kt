@@ -15,17 +15,23 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.ViewTreeViewModelStoreOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.di.MerchantReportComponent
 import com.tokopedia.report.view.activity.ProductReportFormActivity
 import com.tokopedia.report.view.adapter.ReportReasonAdapter
 import com.tokopedia.report.view.fragment.components.ProductReportComposeContent
+import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.util.extensions.argsString
 import com.tokopedia.report.view.viewmodel.ProductReportViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.collectLatest
 
 
 class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReasonClick {
@@ -59,6 +65,11 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
         getComponent(MerchantReportComponent::class.java).inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        observe()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,7 +85,8 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
                     modifier = Modifier.fillMaxSize()
                 ) {
                     ProductReportComposeContent(
-                        uiState = uiState.value
+                        uiState = uiState.value,
+                        onEvent = viewModel::onEvent
                     )
                 }
             }
@@ -88,6 +100,22 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
         ViewTreeLifecycleOwner.set(decoderView, this)
         ViewTreeViewModelStoreOwner.set(decoderView, this)
         ViewTreeSavedStateRegistryOwner.set(decoderView, this)
+    }
+
+    private fun observe() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collectLatest {
+                when (it) {
+                    is ProductReportUiEvent.FooterClicked -> onFooterClicked()
+                }
+            }
+        }
+    }
+
+    private fun onFooterClicked() {
+        val appLink =  "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}"
+        tracking.eventReportLearnMore()
+        RouteManager.route(requireContext(), appLink)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

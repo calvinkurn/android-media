@@ -9,10 +9,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
 import com.tokopedia.usecase.coroutines.Result
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -73,6 +76,9 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
     private val _uiState = MutableStateFlow(ProductReportUiState())
     val uiState get() = _uiState.asStateFlow()
 
+    private val _uiEvent = MutableSharedFlow<ProductReportUiEvent>()
+    val uiEvent get() = _uiEvent.asSharedFlow()
+
     init {
         getReportReason()
     }
@@ -86,5 +92,9 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
         }){ throwable ->
             _uiState.update { it.copy(error = throwable.message) }
         }
+    }
+
+    fun onEvent(event: ProductReportUiEvent) = viewModelScope.launch {
+        _uiEvent.emit(event)
     }
 }
