@@ -30,6 +30,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.BottomsheetAddWishlistCollectionBinding
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionsBottomSheetParams
@@ -173,6 +174,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         val productId = arguments?.get(PRODUCT_IDs).toString()
         isProductActive = arguments?.get(IS_PRODUCT_ACTIVE) as Boolean
         source = arguments?.get(SOURCE).toString()
+        WishlistCollectionAnalytics.sendClickCheckWishlistEvent(productId, source)
         var sourceParam = source
         if (sourceParam == SRC_WISHLIST_COLLECTION_BULK_ADD) sourceParam = SRC_WISHLIST_COLLECTION
         val param = GetWishlistCollectionsBottomSheetParams(

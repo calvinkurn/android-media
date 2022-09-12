@@ -74,6 +74,9 @@ object WishlistCollectionAnalytics {
     private const val CLICK_LIHAT_BARANG_BUTTON_ON_CLEANER_BOTTOMSHEET = "click lihat barang button on cleaner bottomsheet"
     private const val CLICK_HAPUS_BUTTON_ON_CONFIRMATION_DELETION_POPUP = "click hapus button on confirmation deletion pop-up"
     private const val VIEW_MAX_QTY_TICKER_ON_WISHLIST_PAGE = "view max qty ticker on wishlist page"
+    private const val CLICK_CHECK_WISHLIST = "click - check wishlist"
+    private const val CLICK_COLLECTION_FOLDER = "click - collection folder"
+    private const val CLICK_NEW_COLLECTION = "click - + koleksi baru"
 
     // event category
     private const val ALL_WISHLIST_PAGE = "all wishlist page"
@@ -105,11 +108,14 @@ object WishlistCollectionAnalytics {
     private const val SHOP_ID = "shop_id"
     private const val SHOP_NAME = "shop_name"
     private const val SHOP_TYPE = "shop_type"
+    private const val COLLECTION_BOTTOMSHEET = "- collection bottomsheet"
+    private const val PRODUCT_ID = "productId"
 
     // tracker id
     private const val OPEN_WISHLIST_HOME_PAGE_TRACKER_ID = "32118"
     private const val OPEN_ALL_WISHLIST_PAGE_TRACKER_ID = "32119"
     private const val OPEN_COLLECTION_DETAIL_PAGE_TRACKER_ID = "32120"
+
 
     private const val CREATE_NEW_COLLECTION_ON_WISHLIST_PAGE_TRACKER_ID = "32121"
     private const val CLICK_BUAT_KOLEKSI_ON_CREATE_NEW_COLLECTION_BOTTOMSHEET_TRACKER_ID = "32122"
@@ -152,6 +158,9 @@ object WishlistCollectionAnalytics {
     private const val CLICK_LIHAT_BARANG_BUTTON_ON_CLEANER_BOTTOMSHEET_TRACKER_ID = "32706"
     private const val CLICK_HAPUS_BUTTON_ON_CONFIRMATION_DELETION_POPUP_TRACKER_ID = "32707"
     private const val VIEW_MAX_QTY_TICKER_ON_WISHLIST_PAGE_TRACKER_ID = "32708"
+    private const val VIEW_BOTTOMSHEET_ADD_COLLECTION_TRACKER_ID = "36182"
+    private const val CLICK_COLLECTION_FOLDER_BOTTOMSHEET_TRACKER_ID = "36183"
+    private const val CLICK_NEW_COLLECTION_BOTTOMSHEET_TRACKER_ID = "36184"
 
     private fun wishlistCollectionTrackerBuilder(): Tracker.Builder {
         return Tracker.Builder()
@@ -718,6 +727,45 @@ object WishlistCollectionAnalytics {
             .setEventCategory(ALL_WISHLIST_PAGE)
             .setEventLabel("${if (isErrorTicker) "red" else "yellow"} ticker")
             .setCustomProperty(TRACKER_ID, VIEW_MAX_QTY_TICKER_ON_WISHLIST_PAGE_TRACKER_ID)
+            .build()
+            .send()
+    }
+
+
+    fun sendClickCheckWishlistEvent(productId: String, source: String) {
+        wishlistCollectionTrackerBuilder()
+            .setEvent(CLICK_PP)
+            .setEventAction(CLICK_CHECK_WISHLIST)
+            .setEventCategory("$source $COLLECTION_BOTTOMSHEET")
+            .setEventLabel("")
+            .setCustomProperty(TRACKER_ID, VIEW_BOTTOMSHEET_ADD_COLLECTION_TRACKER_ID)
+            .setCustomProperty(PRODUCT_ID, productId)
+            .build()
+            .send()
+    }
+
+
+    fun sendClickCollectionFolderEvent(collectionId: String, productId: String, source: String) {
+        wishlistCollectionTrackerBuilder()
+            .setEvent(CLICK_PP)
+            .setEventAction(CLICK_COLLECTION_FOLDER)
+            .setEventCategory("$source $COLLECTION_BOTTOMSHEET")
+            .setEventLabel(collectionId)
+            .setCustomProperty(TRACKER_ID, CLICK_COLLECTION_FOLDER_BOTTOMSHEET_TRACKER_ID)
+            .setCustomProperty(PRODUCT_ID, productId)
+            .build()
+            .send()
+    }
+
+
+    fun sendClickKoleksiBaruEvent(productId: String, source: String) {
+        wishlistCollectionTrackerBuilder()
+            .setEvent(CLICK_PP)
+            .setEventAction(CLICK_NEW_COLLECTION)
+            .setEventCategory("$source $COLLECTION_BOTTOMSHEET")
+            .setEventLabel("")
+            .setCustomProperty(TRACKER_ID, CLICK_NEW_COLLECTION_BOTTOMSHEET_TRACKER_ID)
+            .setCustomProperty(PRODUCT_ID, productId)
             .build()
             .send()
     }
