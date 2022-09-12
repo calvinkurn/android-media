@@ -6,13 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.babble.network.data.OrderChatType
+import com.gojek.conversations.channel.GetChannelRequest
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.chat_service.databinding.FragmentChatServiceBinding
 import com.tokopedia.chat_service.di.ChatServiceComponent
 import com.tokopedia.chat_service.view.viewmodel.ChatServiceViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -49,48 +50,33 @@ class ChatServiceFragment: BaseDaggerFragment() {
     }
 
     private fun setupDummyChatService() {
+        AndroidThreeTen.init(context?.applicationContext)
         viewModel.createChannel(
-            name = "Kelvin",
-            memberIds = listOf("1", "2"),
-            type = "personal",
-            source = "tokopedia-chatservice"
+            name = "Omar Maryadi",
+            memberIds = listOf("942317400"),
+            type = "REGULAR",
+            source = ""
         )
+//        viewModel.initGroupBooking(
+//            "RB-133978-9720561",
+//            1,
+//            OrderChatType.Driver
+//        )
 
-        val channelUrl = "https://integration-api.gojekapi.com"
-        viewModel.setChannelUrl(channelUrl)
-        viewModel.registerActiveChannel()
+//        viewModel.getAllChannels(
+//            GetChannelRequest(
+//                types = listOf(ChannelType.GroupBooking),
+//                batchSize = 10,
+//                timestamp = System.currentTimeMillis(),
+//                shouldRetry = false
+//            )
+//        )
 
-        viewModel.markChatAsRead()
-
-        viewModel.sendMessage("Hello test 123")
-        viewModel.sendExtensionMessage()
-
-        viewModel.initGroupBooking(
-            "orderId1",
-            0,
-            OrderChatType.getTypeFor("shopper")
-        )
+//        viewModel.loadPreviousMessages()
     }
 
     private fun initObservers() {
-        viewModel.conversationsChannel.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    Log.d("CreateChannel", "Success - ${it.data}")
-                    viewModel.setChannelUrl(it.data.url)
-                }
-                is Fail -> {
-                    Log.d("CreateChannel", "Error - ${it.throwable.message}")
-                    it.throwable.printStackTrace()
-                }
-            }
-        }
-
         viewModel.conversationsMessage.observe(viewLifecycleOwner) {
-            Log.d(TAG, it.toString())
-        }
-
-        viewModel.getAllChannels().observe(viewLifecycleOwner) {
             Log.d(TAG, it.toString())
         }
 
@@ -98,11 +84,15 @@ class ChatServiceFragment: BaseDaggerFragment() {
             Log.d(TAG, it.message.toString())
             it.printStackTrace()
         }
+
+//        viewModel.getAllChannels().observe(viewLifecycleOwner) {
+//            Log.d(TAG, it.toString())
+//        }
     }
 
     override fun onStop() {
         super.onStop()
-        viewModel.deRegisterActiveChannel()
+//        viewModel.deRegisterActiveChannel()
     }
 
     companion object {

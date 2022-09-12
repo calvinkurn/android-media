@@ -33,19 +33,19 @@ class ChatServiceRepository @Inject constructor(
     }
 
     override fun d(tag: String, message: String) {
-        Log.d("ChatServiceFragment-d", message)
+        Log.d("ChatServiceRepository-d", message)
     }
 
     override fun e(tag: String, error: String, e: Throwable) {
-        Log.d("ChatServiceFragment-e", error)
-        Log.d("ChatServiceFragment-e", e.message.toString())
+        Log.d("ChatServiceRepository-e", error)
+        Log.d("ChatServiceRepository-e", e.message.toString())
     }
 
     override fun v(tag: String, message: String) {
-        Log.d("ChatServiceFragment-v", message)
+        Log.d("ChatServiceRepository-v", message)
     }
 
     override fun w(tag: String, message: String) {
-        Log.d("ChatServiceFragment-w", message)
+        Log.d("ChatServiceRepository-w", message)
     }
 }

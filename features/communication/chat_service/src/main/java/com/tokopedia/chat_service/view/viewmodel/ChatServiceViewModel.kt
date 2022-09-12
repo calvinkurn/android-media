@@ -8,6 +8,7 @@ import com.gojek.conversations.babble.channel.data.CreateChannelInfo
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
+import com.gojek.conversations.channel.GetChannelRequest
 import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.extensions.ExtensionMessage
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
@@ -109,6 +110,18 @@ class ChatServiceViewModel @Inject constructor(
         }
     }
 
+    fun getAllChannels(getChannelRequest: GetChannelRequest) {
+        try {
+            getAllChannelsUseCase(getChannelRequest, onSuccess = {
+                Log.d("GetAllChannels", "$it")
+            }, onError = {
+                Log.d("GetAllChannels", "${it?.message}")
+            })
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+        }
+    }
+
     fun sendMessage(text: String) {
         try {
             val channelUrl = _channelUrl.value
@@ -190,8 +203,6 @@ class ChatServiceViewModel @Inject constructor(
     private fun getGroupBookingListener(): ConversationsGroupBookingListener {
         return object : ConversationsGroupBookingListener {
             override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
-                Log.d("GroupBooking", "Error - ${error.errorList}")
-                error.printStackTrace()
                 _error.value = error
             }
 
@@ -200,9 +211,18 @@ class ChatServiceViewModel @Inject constructor(
             }
 
             override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
-                Log.d("GroupBooking", "Success - channelUrl : $channelUrl")
+                registrationActiveChannelUseCase.registerActiveChannel(channelUrl)
+                setChannelUrl(channelUrl)
             }
 
+        }
+    }
+
+    fun loadPreviousMessages() {
+        try {
+            getChatHistoryUseCase.loadPreviousMessage()
+        } catch (throwable: Throwable) {
+            _error.value = throwable
         }
     }
 }
