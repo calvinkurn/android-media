@@ -112,7 +112,8 @@ class DetailEditorViewModel @Inject constructor(
         watermarkType: Int,
         shopName: String,
         isThumbnail: Boolean = false,
-        detailUiModel: EditorDetailUiModel
+        detailUiModel: EditorDetailUiModel,
+        useStorageColor: Boolean
     ) {
         _watermarkFilter.value = watermarkFilterRepository.watermark(
             context,
@@ -120,7 +121,8 @@ class DetailEditorViewModel @Inject constructor(
             watermarkType,
             shopName,
             isThumbnail,
-            detailUiModel
+            detailUiModel,
+            useStorageColor
         )
     }
 

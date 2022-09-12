@@ -198,7 +198,8 @@ class DetailEditorFragment @Inject constructor(
                 it,
                 value,
                 shopName,
-                detailUiModel = data
+                detailUiModel = data,
+                useStorageColor = false
             )
             isEdited = true
         }
@@ -462,7 +463,8 @@ class DetailEditorFragment @Inject constructor(
                         bitmap,
                         watermarkData.watermarkType,
                         shopName,
-                        detailUiModel = it
+                        detailUiModel = it,
+                        useStorageColor = true
                     )
                 }
 

@@ -25,7 +25,8 @@ interface WatermarkFilterRepository {
         watermarkType: Int,
         shopNameParam: String,
         isThumbnail: Boolean,
-        detailUiModel: EditorDetailUiModel? = null
+        detailUiModel: EditorDetailUiModel? = null,
+        useStorageColor: Boolean
     ): Bitmap
 
     fun watermarkDrawerItem(
@@ -70,7 +71,8 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         watermarkType: Int,
         shopNameParam: String,
         isThumbnail: Boolean,
-        detailUiModel: EditorDetailUiModel?
+        detailUiModel: EditorDetailUiModel?,
+        useStorageColor: Boolean
     ): Bitmap {
         shopText = if (shopNameParam.isEmpty()) DEFAULT_SHOP_NAME else shopNameParam
         if (topedDrawable == null) {
@@ -78,10 +80,11 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         }
 
         var isDark = source.isDark()
-        detailUiModel?.watermarkMode?.let {
-            isDark = it.textColorDark
-        } ?: kotlin.run {
-            detailUiModel?.watermarkMode = EditorWatermarkModel(watermarkType, isDark)
+        if (useStorageColor) {
+            detailUiModel?.watermarkMode?.let {
+                isDark = it.textColorDark
+            }
+
         }
 
         watermarkColor = if (!isThumbnail) {
@@ -129,6 +132,13 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
             }
         }
 
+        detailUiModel?.watermarkMode?.let {
+            it.textColorDark = isDark
+            it.watermarkType = watermarkType
+        } ?: kotlin.run {
+            detailUiModel?.watermarkMode = EditorWatermarkModel(watermarkType, isDark)
+        }
+
         return result
     }
 
@@ -144,7 +154,8 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
                 bitmap,
                 WatermarkToolUiComponent.WATERMARK_TOKOPEDIA,
                 shopName,
-                true
+                true,
+                useStorageColor = false
             )
 
             val resultBitmap2 = watermark(
@@ -152,7 +163,8 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
                 bitmap,
                 WatermarkToolUiComponent.WATERMARK_SHOP,
                 shopName,
-                true
+                true,
+                useStorageColor = false
             )
 
             val roundedCorner =
