@@ -15,7 +15,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentProductTagParentBinding
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.currentSource
 import com.tokopedia.content.common.producttag.util.extension.isAutocomplete
 import com.tokopedia.content.common.producttag.util.extension.withCache
@@ -55,14 +55,15 @@ import com.tokopedia.abstraction.R as abstractionR
 class ProductTagParentFragment @Inject constructor(
     private val userSession: UserSessionInterface,
     private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
-    private val analytic: ProductTagAnalytic,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = "ProductTagParentFragment"
 
     private lateinit var viewModel: ProductTagViewModel
+
     private var mListener: Listener? = null
     private var mDataSource: DataSource? = null
+    private var mAnalytic: ContentProductTagAnalytic? = null
 
     private var _binding: FragmentProductTagParentBinding? = null
     private val binding: FragmentProductTagParentBinding
@@ -98,6 +99,7 @@ class ProductTagParentFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         if(childFragment is BaseProductTagChildFragment) {
             childFragment.createViewModelProvider(createViewModelProvider())
+            childFragment.setAnalytic(mAnalytic)
         }
 
         when(childFragment) {
@@ -105,7 +107,7 @@ class ProductTagParentFragment @Inject constructor(
                 childFragment.apply {
                     setListener(object : ProductTagSourceBottomSheet.Listener {
                         override fun onSelectProductTagSource(source: ProductTagSource) {
-                            analytic.clickProductTagSource(source)
+                            mAnalytic?.clickProductTagSource(source)
                             viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
                         }
                     })
@@ -142,7 +144,7 @@ class ProductTagParentFragment @Inject constructor(
         )
 
         binding.icCcProductTagBack.setOnClickListener {
-            analytic.clickBackButton(viewModel.selectedTagSource)
+            mAnalytic?.clickBackButton(viewModel.selectedTagSource)
             viewModel.submitAction(ProductTagAction.BackPressed)
         }
 
@@ -408,7 +410,7 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun clickBreadcrumb() {
-        analytic.clickBreadcrumb(viewModel.selectedTagSource == ProductTagSource.Shop)
+        mAnalytic?.clickBreadcrumb(viewModel.selectedTagSource == ProductTagSource.Shop)
         viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
     }
 
@@ -457,6 +459,10 @@ class ProductTagParentFragment @Inject constructor(
 
     fun setDataSource(dataSource: DataSource) {
         mDataSource = dataSource
+    }
+
+    fun setAnalytic(analytic: ContentProductTagAnalytic?) {
+        mAnalytic = analytic
     }
 
     companion object {

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentMyShopProductBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
 import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.withCache
@@ -46,7 +46,6 @@ import kotlinx.coroutines.flow.collect
  */
 class MyShopProductFragment @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val analytic: ProductTagAnalytic,
     private val impressionCoordinator: ProductImpressionCoordinator,
 ) : BaseProductTagChildFragment() {
 
@@ -60,7 +59,7 @@ class MyShopProductFragment @Inject constructor(
     private val adapter: MyShopProductAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         MyShopProductAdapter(
             onSelected = { product, position ->
-                analytic.clickProductCard(
+                mAnalytic?.clickProductCard(
                     viewModel.selectedTagSource,
                     product,
                     position,
@@ -137,6 +136,7 @@ class MyShopProductFragment @Inject constructor(
 
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
+            mAnalytic,
             viewModel.selectedTagSource,
             isEntryPoint = true,
         )
@@ -168,7 +168,7 @@ class MyShopProductFragment @Inject constructor(
 
         binding.sbShopProduct.searchBarTextField.setOnTouchListener { _, motionEvent ->
             if(motionEvent.action == MotionEvent.ACTION_UP) {
-                analytic.clickSearchBar(viewModel.selectedTagSource)
+                mAnalytic?.clickSearchBar(viewModel.selectedTagSource)
             }
             false
         }
@@ -179,6 +179,7 @@ class MyShopProductFragment @Inject constructor(
 
                 impressionCoordinator.sendProductImpress()
                 impressionCoordinator.setInitialData(
+                    mAnalytic,
                     viewModel.selectedTagSource,
                     isEntryPoint = query.isEmpty(),
                 )

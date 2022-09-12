@@ -8,11 +8,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.databinding.ActivityContentProductTagSampleBinding
 import com.tokopedia.content.common.di.DaggerContentProductTagSampleComponent
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
+import com.tokopedia.content.common.sample.analytic.ContentProductTagSampleAnalyticImpl
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -27,6 +29,9 @@ class ContentProductTagSampleActivity : BaseActivity() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var mAnalytic: ContentProductTagAnalytic
 
     private lateinit var binding: ActivityContentProductTagSampleBinding
 
@@ -68,6 +73,8 @@ class ContentProductTagSampleActivity : BaseActivity() {
                         )
                     }
                 })
+
+                fragment.setAnalytic(mAnalytic)
             }
         }
     }

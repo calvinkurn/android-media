@@ -1,7 +1,9 @@
 package com.tokopedia.content.common.di
 
 import androidx.fragment.app.FragmentFactory
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.view.fragment.factory.ProductTagFragmentFactory
+import com.tokopedia.content.common.sample.analytic.ContentProductTagSampleAnalyticImpl
 import dagger.Binds
 import dagger.Module
 
@@ -13,4 +15,7 @@ abstract class ContentProductTagSampleBindModule {
 
     @Binds
     abstract fun bindFragmentFactory(fragmentFactory: ProductTagFragmentFactory): FragmentFactory
+
+    @Binds
+    abstract fun bindContentProductTagSampleAnalytic(analytic: ContentProductTagSampleAnalyticImpl): ContentProductTagAnalytic
 }

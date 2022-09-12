@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentShopProductBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.getVisibleItems
 import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.withCache
@@ -23,7 +23,6 @@ import com.tokopedia.content.common.producttag.view.uimodel.PagedState
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
-import com.tokopedia.content.common.producttag.view.uimodel.state.ShopProductUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.gone
@@ -38,7 +37,6 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on April 25, 2022
  */
 class ShopProductFragment @Inject constructor(
-    private val analytic: ProductTagAnalytic,
     private val impressionCoordinator: ProductImpressionCoordinator,
 ) : BaseProductTagChildFragment() {
 
@@ -52,7 +50,7 @@ class ShopProductFragment @Inject constructor(
     private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProductTagCardAdapter(
             onSelected = { product, position ->
-                analytic.clickProductCardOnShop(product, position)
+                mAnalytic?.clickProductCardOnShop(product, position)
                 viewModel.submitAction(ProductTagAction.ProductSelected(product))
             },
             onLoading = { viewModel.submitAction(ProductTagAction.LoadShopProduct) }
@@ -105,6 +103,7 @@ class ShopProductFragment @Inject constructor(
 
     private fun setupAnalytic() {
         impressionCoordinator.setInitialData(
+            mAnalytic,
             viewModel.selectedTagSource,
             isEntryPoint = false,
         )
@@ -136,7 +135,7 @@ class ShopProductFragment @Inject constructor(
 
         binding.sbShopProduct.searchBarTextField.setOnTouchListener { _, motionEvent ->
             if(motionEvent.action == MotionEvent.ACTION_UP) {
-                analytic.clickSearchBarOnShop()
+                mAnalytic?.clickSearchBarOnShop()
             }
             false
         }

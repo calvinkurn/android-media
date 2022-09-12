@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentLastPurchasedProductBinding
-import com.tokopedia.content.common.producttag.analytic.product.ProductTagAnalytic
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.util.extension.isNetworkError
 import com.tokopedia.content.common.producttag.util.extension.isProductFound
 import com.tokopedia.content.common.producttag.util.extension.withCache
@@ -19,7 +19,6 @@ import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTag
 import com.tokopedia.content.common.producttag.view.uimodel.PagedState
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
-import com.tokopedia.content.common.producttag.view.uimodel.state.LastPurchasedProductUiState
 import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -30,9 +29,7 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
-class LastPurchasedProductFragment @Inject constructor(
-    private val analytic: ProductTagAnalytic,
-) : BaseProductTagChildFragment() {
+class LastPurchasedProductFragment @Inject constructor(): BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "LastPurchasedProductFragment"
 
@@ -45,7 +42,7 @@ class LastPurchasedProductFragment @Inject constructor(
         /** do nothing */
         ProductTagCardAdapter(
             onSelected = { product, position ->
-                analytic.clickProductCard(
+                mAnalytic?.clickProductCard(
                     viewModel.selectedTagSource,
                     product,
                     position,
