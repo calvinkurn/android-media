@@ -10,6 +10,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
 import timber.log.Timber
+import kotlin.math.log
 
 class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContract.View,
                                                 private val presenter: ShipmentContract.Presenter,
@@ -89,6 +90,8 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
             etaErrorCode = logisticPromoUiModel.etaData.errorCode
             freeShippingChosenCourierTitle = logisticPromoUiModel.freeShippingChosenCourierTitle
             freeShippingMetadata = logisticPromoUiModel.freeShippingMetadata
+            benefitClass = logisticPromoUiModel.benefitClass
+            shippingSubsidy = logisticPromoUiModel.shippingSubsidy
         }
         return courierItemData
     }

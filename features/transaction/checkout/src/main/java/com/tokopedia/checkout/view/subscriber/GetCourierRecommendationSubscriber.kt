@@ -161,6 +161,8 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
             courierItemData.etaErrorCode = it.etaData.errorCode
             courierItemData.freeShippingChosenCourierTitle = it.freeShippingChosenCourierTitle
             courierItemData.freeShippingMetadata = it.freeShippingMetadata
+            courierItemData.benefitClass = it.benefitClass
+            courierItemData.shippingSubsidy = it.shippingSubsidy
         }
         return courierItemData
     }
