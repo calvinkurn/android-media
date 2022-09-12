@@ -9,6 +9,12 @@ kapt {
     useBuildCache = true
 }
 
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 buildscript {
     repositories {
         google()
@@ -26,6 +32,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)

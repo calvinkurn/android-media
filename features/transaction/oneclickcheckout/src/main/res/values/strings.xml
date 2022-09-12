@@ -5,8 +5,6 @@
 
     <string name="title_one_click_checkout_choose_payment_method">Pilih Metode Pembayaran</string>
 
-    <string name="label_pilih">Pilih</string>
-
     <string name="label_pay_total">Total Bayar</string>
 
     <string name="lbl_osp_header">Barang yang dibeli</string>
@@ -39,10 +37,6 @@
     <string name="lbl_try_again">Coba Lagi</string>
     <string name="lbl_go_to_home">Ke Homepage</string>
 
-    <string name="lbl_shipping">Pengiriman</string>
-    <string name="lbl_shipping_with_name">Pengiriman %1$s</string>
-    <string name="lbl_shipping_with_name_and_price">Pengiriman %1$s (%2$s)</string>
-
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="lbl_installment_type">Jenis Pembayaran</string>
     <string name="lbl_installment_not_available">Cicilan tidak tersedia untuk jenis kartu ini</string>
@@ -64,18 +58,12 @@
     <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
     <string name="title_one_click_checkout_top_up">Top-up</string>
 
-    <string name="lbl_reload_shipping">Refresh</string>
-
     <string name="content_description_img_payment">Payment Image</string>
 
     <string name="occ_lbl_title_no_address">Tambahkan Alamat dulu, ya!</string>
     <string name="occ_lbl_desc_no_address">Cuma satu langkah lagi sebelum\nmelanjutkan proses Beli Langsung :)</string>
 
     <string name="occ_custom_ticker_action">Lihat</string>
-
-    <string name="occ_pinpoint_error_title">Atur pinpoint alamatmu dulu, ya.</string>
-    <string name="occ_pinpoint_error_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
-    <string name="occ_pinpoint_error_action">Atur</string>
 
     <string name="occ_lbl_notes_placeholder">Tulis Catatan</string>
     <string name="occ_lbl_notes_label">Catatan untuk Barang Ini</string>
