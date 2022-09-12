@@ -146,6 +146,7 @@ class EditorViewModel @Inject constructor(
                 scaleY = 1f
                 isCrop = true
                 this.isAutoCrop = true
+                croppedSourceWidth = it.width
             }
 
             editorDetailUiModel.editList.add(newEditorDetailUiModel)
