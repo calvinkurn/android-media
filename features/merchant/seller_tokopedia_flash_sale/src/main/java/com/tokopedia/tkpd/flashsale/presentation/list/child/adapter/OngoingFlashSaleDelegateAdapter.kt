@@ -20,9 +20,12 @@ import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemOngoingFlas
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.OngoingFlashSaleItem
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import java.util.Date
 
 class OngoingFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> Unit) : DelegateAdapter<OngoingFlashSaleItem, OngoingFlashSaleDelegateAdapter.OngoingFlashSaleViewHolder>(
     OngoingFlashSaleItem::class.java) {
+
+    private val now = Date()
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemOngoingFlashSaleBinding.inflate(
@@ -100,7 +103,7 @@ class OngoingFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> 
 
 
         private fun TimerUnifySingle.setTimer(item: OngoingFlashSaleItem) {
-            if (item.distanceMinuteToEndDate < 0) {
+            if (now.after(item.endDate)) {
                 invisible()
                 binding.tpgDescription.text = binding.tpgDescription.context.getString(R.string.stfs_status_registration_already_closed)
             } else {
