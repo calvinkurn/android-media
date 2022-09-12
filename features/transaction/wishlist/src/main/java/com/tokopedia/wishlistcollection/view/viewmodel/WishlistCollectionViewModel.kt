@@ -61,7 +61,7 @@ class WishlistCollectionViewModel @Inject constructor(
         launchCatchError(block = {
             val result = getWishlistCollectionUseCase(Unit)
             if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
-                val recommSrc = if (result.getWishlistCollections.data.totalCollection == 0) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
+                val recommSrc = if (result.getWishlistCollections.data.isEmptyState) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
                 _collections.value = Success(result.getWishlistCollections)
                 _collectionData.value =
                     Success(
