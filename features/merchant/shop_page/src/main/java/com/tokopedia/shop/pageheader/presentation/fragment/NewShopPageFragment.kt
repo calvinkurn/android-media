@@ -203,7 +203,11 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.PageDetail
+import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -2939,6 +2943,18 @@ class NewShopPageFragment :
 
     private fun showUniversalShareBottomSheet() {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            val inputShare = AffiliatePDPInput().apply {
+                pageDetail = PageDetail(pageId = shopId, pageType = "shop", siteId = "1", verticalId = "1")
+                pageType = "shop"
+                product = Product()
+                shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
+            }
+            universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
+            if (shopPageHeaderDataModel?.shopStatus == null) {
+                universalShareBottomSheet?.affiliateRequestDataAwaited()
+            } else {
+                universalShareBottomSheet?.affiliateRequestDataReceived(true)
+            }
             init(this@NewShopPageFragment)
             setUtmCampaignData(
                     SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME,
