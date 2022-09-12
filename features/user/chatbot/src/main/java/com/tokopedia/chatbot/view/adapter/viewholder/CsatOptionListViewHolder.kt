@@ -37,7 +37,7 @@ class CsatOptionListViewHolder(itemView: View,
         ViewCompat.setNestedScrollingEnabled(chatActionListSelection, false)
         adapter = ChatOptionListAdapter(onOptionListSelected())
         chatActionListSelection.layoutManager = LinearLayoutManager(itemView.context,
-                LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager.VERTICAL, false)
         chatActionListSelection.adapter = adapter
         chatActionListSelection.addItemDecoration(OptionListRecyclerItemDecorator(itemView.context))
 
@@ -80,7 +80,7 @@ class CsatOptionListViewHolder(itemView: View,
         super.onViewRecycled()
     }
 
-    override fun getCustomChatLayoutId(): Int =  com.tokopedia.chatbot.R.id.customChatLayout
+    override fun getCustomChatLayoutId(): Int =  R.id.customChatLayout
     override fun getSenderAvatarId(): Int = R.id.senderAvatar
     override fun getSenderNameId(): Int = R.id.senderName
     override fun getDateContainerId(): Int = R.id.dateContainer

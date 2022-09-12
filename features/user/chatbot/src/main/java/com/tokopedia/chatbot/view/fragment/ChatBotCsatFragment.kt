@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.databinding.ChatbotFragmentCsatBinding
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 
@@ -19,16 +19,21 @@ class ChatBotCsatFragment : BaseFragmentProvideRating() {
         }
     }
 
+    private var viewBinding: ChatbotFragmentCsatBinding? = null
+    private fun getBindingView() = viewBinding!!
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.chatbot_fragment_csat, container, false)
+        viewBinding = ChatbotFragmentCsatBinding.inflate(inflater, container, false)
+        return getBindingView().root
     }
 
-    override fun getTextHelpTitleId(): Int = R.id.txt_help_title
-    override fun getSmilleLayoutId(): Int = R.id.smile_layout
-    override fun getSmileSelectedId(): Int = R.id.txt_smile_selected
-    override fun getFeedbackQuestionId(): Int = R.id.txt_feedback_question
-    override fun getTextFinishedId(): Int = R.id.txt_finished
-    override fun getFilterReviewId(): Int = R.id.filter_review
+    override fun getTextHelpTitleId(): Int = getBindingView().txtHelpTitle.id
+    override fun getSmilleLayoutId(): Int = getBindingView().smileLayout.id
+    override fun getSmileSelectedId(): Int = getBindingView().txtSmileSelected.id
+    override fun getFeedbackQuestionId(): Int = getBindingView().txtFeedbackQuestion.id
+    override fun getTextFinishedId(): Int = getBindingView().txtFinished.id
+    override fun getFilterReviewId(): Int = getBindingView().filterReview.id
 
     override fun onSuccessSubmit(intent: Intent) {
         intent.putExtra(ChatBotCsatActivity.CASE_CHAT_ID, arguments?.getString(ChatBotCsatActivity.CASE_CHAT_ID))

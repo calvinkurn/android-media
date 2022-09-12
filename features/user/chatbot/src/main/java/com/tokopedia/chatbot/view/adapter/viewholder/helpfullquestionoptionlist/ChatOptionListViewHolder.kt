@@ -1,22 +1,21 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.helpfullquestionoptionlist
 
-import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
+import com.tokopedia.chatbot.databinding.ItemChatHelpfullBinding
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
 const val OPTION_TYPE_CSAT = "csat"
-class ChatOptionListViewHolder(itemView: View, private val onOptionListSelected: (ChatOptionListViewModel) -> Unit) : RecyclerView.ViewHolder(itemView) {
+class ChatOptionListViewHolder(itemView: ItemChatHelpfullBinding, private val onOptionListSelected: (ChatOptionListViewModel) -> Unit) : RecyclerView.ViewHolder(itemView.root) {
     private val chatActionMessage: Typography
     private val chatRaing: ImageView
 
     init {
-        chatActionMessage = itemView.findViewById(R.id.helpfull_question_option)
-        chatRaing = itemView.findViewById(R.id.chat_rating)
+        chatActionMessage = itemView.helpfullQuestionOption
+        chatRaing = itemView.chatRating
     }
 
     fun bind(element: ChatOptionListViewModel) {

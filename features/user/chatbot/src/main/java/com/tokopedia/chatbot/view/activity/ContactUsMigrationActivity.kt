@@ -16,6 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chatbot.ChatbotConstant.CONTACT_US_APPLINK
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
+import com.tokopedia.chatbot.databinding.ActivityChatbotInboxMigrationBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.view.adapter.ContactUsMigrationAdapter
@@ -42,6 +43,8 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     private lateinit var buttonTokopediaCare : UnifyButton
     private lateinit var contentListRV : RecyclerView
     private var isDismissedCalledDirectly : Boolean = false
+    private var viewBinding: ActivityChatbotInboxMigrationBinding? = null
+    private fun getBindingView() = viewBinding!!
 
     @Inject
     lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
@@ -50,7 +53,8 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chatbot_inbox_migration)
+        viewBinding= ActivityChatbotInboxMigrationBinding.inflate(layoutInflater)
+        setContentView(getBindingView().root)
 
         initInjector()
         startObservingViewModels()

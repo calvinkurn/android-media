@@ -25,6 +25,7 @@
             tools:visibility="visible">
 
             <include
+                android:id="@+id/attach_invoice_float_chat_item"
                 layout="@layout/attached_invoice_float_chat_item"
                 android:layout_width="@dimen/dp_chatbot_220"
                 android:layout_height="wrap_content">
@@ -55,7 +56,9 @@
                 tools:listitem="@layout/chatbot_item_quick_reply"
                 tools:visibility="visible" />
 
-            <include layout="@layout/compose_message_area"
+            <include
+                android:id="@+id/compose_area"
+                layout="@layout/compose_message_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

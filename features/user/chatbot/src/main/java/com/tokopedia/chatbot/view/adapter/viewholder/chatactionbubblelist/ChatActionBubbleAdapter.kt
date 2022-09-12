@@ -3,8 +3,9 @@ package com.tokopedia.chatbot.view.adapter.viewholder.chatactionbubblelist
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.chatbot.databinding.ItemChatHelpfullBinding
+import com.tokopedia.chatbot.databinding.ItemReadMoreActionBubbleBinding
 import java.util.*
 
 /**
@@ -20,13 +21,11 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseChatActionBubbleViewHolder {
         var holder: BaseChatActionBubbleViewHolder?
         if (viewType == 0) {
-            val itemView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_chat_helpfull, parent, false)
-            holder = ChatActionBubbleViewHolder(itemView!!)
+            val itemView = ItemChatHelpfullBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            holder = ChatActionBubbleViewHolder(itemView.root)
         } else {
-            val itemView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_read_more_action_bubble, parent, false)
-            holder = ChatActionBubbleReadMoreViewHolder(itemView!!)
+            val itemView = ItemReadMoreActionBubbleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            holder = ChatActionBubbleReadMoreViewHolder(itemView.root)
         }
 
         return holder
