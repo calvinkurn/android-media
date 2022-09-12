@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.onboarding.di
 
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.content.common.onboarding.data.UGCOnboardingRepositoryImpl
 import com.tokopedia.content.common.onboarding.di.qualifier.CompleteStrategy
 import com.tokopedia.content.common.onboarding.di.qualifier.TncStrategy
@@ -10,7 +11,6 @@ import com.tokopedia.content.common.onboarding.view.bottomsheet.UserTnCOnboardin
 import com.tokopedia.content.common.onboarding.view.strategy.UGCCompleteOnboardingStrategy
 import com.tokopedia.content.common.onboarding.view.strategy.UGCTncOnboardingStrategy
 import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingStrategy
-import com.tokopedia.feedcomponent.di.FragmentKey
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
