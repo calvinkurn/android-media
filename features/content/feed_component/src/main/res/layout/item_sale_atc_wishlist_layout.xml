@@ -16,12 +16,12 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             >
-
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/image_add_to_wishlist"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            app:srcCompat="@drawable/icon_add_to_wishlist"
+            app:icon_name="HEART"
+            app:icon_color_light_enable="@color/Unify_NN500"
             />
         </FrameLayout>
 
