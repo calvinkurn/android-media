@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
-import com.tokopedia.tokofood.databinding.FragmentInitialStateBinding
+import com.tokopedia.tokofood.databinding.FragmentInitialStateFoodBinding
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.InitialStateViewUpdateListener
 import com.tokopedia.tokofood.feature.search.initialstate.analytics.TokoFoodInitSearchStateAnalytics
 import com.tokopedia.tokofood.feature.search.initialstate.di.component.DaggerInitialStateComponent
@@ -32,7 +32,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class InitialStateFragment : BaseDaggerFragment(), InitialStateListener {
+class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -57,7 +57,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateListener {
         ViewModelProvider(this, viewModelFactory).get(InitialStateSearchViewModel::class.java)
     }
 
-    private var binding by autoClearedNullable<FragmentInitialStateBinding>()
+    private var binding by autoClearedNullable<FragmentInitialStateFoodBinding>()
 
     private var initialStateViewUpdateListener: InitialStateViewUpdateListener? = null
     private var localCacheModel: LocalCacheModel? = null
@@ -68,7 +68,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentInitialStateBinding.inflate(inflater, container, false)
+        binding = FragmentInitialStateFoodBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
