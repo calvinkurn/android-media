@@ -46,11 +46,7 @@ class DataViewMapper @Inject constructor(
 
     private fun getEmailFromDataStore(): String {
         return try {
-            var tempMail = userSessionDataStore.get().getEmail().toBlocking()
-            if(tempMail.isEmpty()) {
-                tempMail = userSession.email
-            }
-            tempMail
+            userSessionDataStore.get().getEmail().toBlocking().ifEmpty { userSession.email }
         } catch (e: Exception) {
             logDataStoreError("email", e)
             userSession.email
@@ -59,11 +55,7 @@ class DataViewMapper @Inject constructor(
 
     private fun getPhoneNumberFromDataStore(): String {
         return try {
-            var tempPhone = userSessionDataStore.get().getPhoneNumber().toBlocking()
-            if(tempPhone.isEmpty()) {
-                tempPhone = userSession.phoneNumber
-            }
-            tempPhone
+            userSessionDataStore.get().getPhoneNumber().toBlocking().ifEmpty { userSession.phoneNumber  }
         } catch (e: Exception) {
             logDataStoreError("phoneNumber", e)
             userSession.phoneNumber
