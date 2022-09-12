@@ -141,7 +141,7 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
             when (it) {
                 is Success -> {
                     resetRateAndTime()
-                    if (it.data.error?.message.isNullOrEmpty())
+                    if (it.data.error?.message.isNullOrEmpty() && !it.data.services.isNullOrEmpty())
                         setCourierRatesBottomSheet(it.data)
                     else {
                         val courierBtn = findViewById<UnifyButton>(R.id.courier_btn)
@@ -204,23 +204,25 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
 
     private fun setCourierRatesBottomSheet(data: RatesV4.Data) {
         val courierBtn = findViewById<UnifyButton>(R.id.courier_btn)
-        spId = data.services[0].products[0].shipper.shipperProduct.id
-        val moneyInCourierBottomSheet = MoneyInCourierBottomSheet.newInstance(
-                data.services[0].products[0].features.moneyIn,
-                data.services[0].products[0].shipper.shipperProduct.description)
-        courierBtn.setOnClickListener {
-            sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
+        if (!data.services.first().products.isNullOrEmpty()) {
+            spId = data.services.first().products.first().shipper.shipperProduct.id
+            val moneyInCourierBottomSheet = MoneyInCourierBottomSheet.newInstance(
+                data.services.first().products.first().features.moneyIn,
+                data.services.first().products.first().shipper.shipperProduct.description)
+            courierBtn.setOnClickListener {
+                sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
                     MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                     when {
                         isCourierSet -> MoneyInGTMConstants.ACTION_CLICK_UBAH_KURIR
                         else -> MoneyInGTMConstants.ACTION_CLICK_PILIH_KURIR
                     },
                     "")
-            moneyInCourierBottomSheet.show(supportFragmentManager, "")
+                moneyInCourierBottomSheet.show(supportFragmentManager, "")
+            }
+            moneyInCourierBottomSheet.setActionListener(this)
+            val totalPaymentValue = findViewById<Typography>(R.id.tv_total_payment_value) as Typography
+            totalPaymentValue.text = data.services.first().products.first().price.text
         }
-        moneyInCourierBottomSheet.setActionListener(this)
-        val totalPaymentValue = findViewById<Typography>(R.id.tv_total_payment_value) as Typography
-        totalPaymentValue.text = data.services[0].products[0].price.text
     }
 
     private fun resetRateAndTime() {
