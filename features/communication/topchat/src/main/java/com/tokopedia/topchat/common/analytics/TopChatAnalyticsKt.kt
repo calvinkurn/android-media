@@ -447,6 +447,62 @@ object TopChatAnalyticsKt {
         """.trimIndent()
     }
 
+    fun eventViewTicker(
+        tickerType: String,
+        isSeller: Boolean,
+        msgId: String,
+        lastReplyId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.CHAT_DETAIL,
+                action = Action.VIEW_TICKER,
+                label = "$tickerType - ${getRole(isSeller)} - $msgId - $lastReplyId",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "35989"
+            )
+        )
+    }
+
+    fun eventClickLinkTicker(
+        tickerType: String,
+        isSeller: Boolean,
+        msgId: String,
+        lastReplyId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_LINK_INSIDE_TICKER,
+                label = "$tickerType - ${getRole(isSeller)} - $msgId - $lastReplyId",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "35990"
+            )
+        )
+    }
+
+    fun eventClickCloseTicker(
+        tickerType: String,
+        isSeller: Boolean,
+        msgId: String,
+        lastReplyId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_CLOSE_TICKER,
+                label = "$tickerType - ${getRole(isSeller)}  - $msgId - $lastReplyId",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "35991"
+            )
+        )
+    }
 
     private fun createGeneralEvent(
         event: String,
@@ -479,6 +535,14 @@ object TopChatAnalyticsKt {
             data[SHOPID] = shopId
         }
         return data
+    }
+
+    private fun getRole(isSeller: Boolean): String {
+        return if (isSeller) {
+            "seller"
+        } else {
+            "buyer"
+        }
     }
 
     object Event {
@@ -516,6 +580,9 @@ object TopChatAnalyticsKt {
         const val SELLER_IMPRESS_TICKER_BOTTOMSHEET = "seller impress ticker bottomsheet"
         const val SELLER_CLICK_SHOP_PERFORMANCE = "seller click performa toko in bottomsheet"
         const val SELLER_CLICK_OPERATIONAL_INSIGHT_CTA = "seller click cta wawasan in bottomsheet"
+        const val VIEW_TICKER = "user impress ticker"
+        const val CLICK_LINK_INSIDE_TICKER = "user click link inside ticker"
+        const val CLICK_CLOSE_TICKER = "user click close ticker"
     }
 
     //Event Name
