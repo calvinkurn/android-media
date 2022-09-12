@@ -165,6 +165,5 @@ class CompletePayment : AppCompatActivity() {
 
     override fun onBackPressed() {
         webViewBackLogic()
-        super.onBackPressed()
     }
 }
