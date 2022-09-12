@@ -102,7 +102,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             divider.showWithCondition(feedDetailProductModel.rating != 0 && feedDetailProductModel.totalSold != 0)
             rating.showWithCondition(feedDetailProductModel.rating != 0)
             soldInfo.showWithCondition(feedDetailProductModel.totalSold != 0)
-            menuBtn.showWithCondition(feedDetailProductModel.saleStatus.isBlank().not())
+            menuBtn.showWithCondition(feedDetailProductModel.saleStatus.isBlank())
             btnAddToWishlist.showWithCondition(feedDetailProductModel.isUpcoming || feedDetailProductModel.isOngoing)
             btnAddToCart.showWithCondition(feedDetailProductModel.isUpcoming || feedDetailProductModel.isOngoing)
             val isUpcomingAndRilisanSpecial = feedDetailProductModel.isUpcoming && feedDetailProductModel.isRilisanSpl
