@@ -89,7 +89,6 @@ class EngagementCarouselViewComponent(
     private fun setupView() {
         indicator.showWithCondition(size > 1)
         indicator.setIndicator(size)
-        indicator.setCurrentIndicator(linearLayoutManager.findFirstCompletelyVisibleItemPosition())
 
         if (size == 1)
             carousel.updateLayoutParams {
