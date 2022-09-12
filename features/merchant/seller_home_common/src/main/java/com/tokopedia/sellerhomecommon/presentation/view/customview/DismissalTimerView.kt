@@ -5,6 +5,7 @@ import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcDismissalTimerViewBinding
 
@@ -15,8 +16,8 @@ import com.tokopedia.sellerhomecommon.databinding.ShcDismissalTimerViewBinding
 class DismissalTimerView : ConstraintLayout {
 
     companion object {
-        private const val DURATION = 8000L
         private const val INTERVAL = 1000L
+        const val DEFAULT_DURATION = 8000L
     }
 
     private var isTimerRunning = false
@@ -40,15 +41,16 @@ class DismissalTimerView : ConstraintLayout {
         initView(context)
     }
 
-    fun startTimer(title: String, listener: Listener) {
+    fun startTimer(title: String, duration: Long = DEFAULT_DURATION, listener: Listener) {
         if (!isTimerRunning) {
             this.listener = listener
             binding?.tvShcDismissalTitle?.text = title
-            timer = object : CountDownTimer(DURATION, INTERVAL) {
+            timer = object : CountDownTimer(duration, INTERVAL) {
 
                 override fun onTick(millisUntilFinished: Long) {
                     isTimerRunning = true
                     onTimerTicked(millisUntilFinished)
+                    this@DismissalTimerView.listener?.onTicked(millisUntilFinished)
                 }
 
                 override fun onFinish() {
@@ -75,12 +77,13 @@ class DismissalTimerView : ConstraintLayout {
     }
 
     private fun onTimerTicked(millisUntilFinished: Long) {
-        val second = (millisUntilFinished / INTERVAL).toInt()
+        val second: Int = (millisUntilFinished / INTERVAL).toInt().plus(Int.ONE)
         binding?.tvShcDismissalTimer?.text = context.getString(R.string.shc_cancel_timer, second)
     }
 
     interface Listener {
         fun onFinished()
+        fun onTicked(millisUntilFinished: Long)
         fun onCancelTimer()
     }
 }

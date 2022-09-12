@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerhomecommon.presentation.adapter.factory.PostListAdapterTypeFactory
 
 /**
@@ -78,7 +79,8 @@ sealed class PostItemUiModel(
     }
 
     data class PostTimerDismissalUiModel(
-        val totalDeletedItems: Int
+        val totalDeletedItems: Int = Int.ZERO,
+        var runningTimeInMillis: Long = Int.ZERO.toLong()
     ) : PostItemUiModel() {
 
         override fun type(typeFactory: PostListAdapterTypeFactory): Int {

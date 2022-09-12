@@ -2,6 +2,8 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemPostTimerDismissalBinding
 import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
@@ -31,15 +33,29 @@ class PostTimerDismissalViewHolder(
                 R.string.shc_n_info_deleted, element.totalDeletedItems
             )
             setBackgroundRes()
-            shcPostListTimerView.startTimer(title, object : DismissalTimerView.Listener {
-                override fun onFinished() {
-                    listener.onTimerFinished()
-                }
+            val duration = if (element.runningTimeInMillis.isZero()) {
+                DismissalTimerView.DEFAULT_DURATION
+            } else {
+                element.runningTimeInMillis
+            }
 
-                override fun onCancelTimer() {
-                    listener.onCancelDismissalClicked()
-                }
-            })
+            shcPostListTimerView.startTimer(title = title,
+                duration = duration,
+                listener = object : DismissalTimerView.Listener {
+                    override fun onFinished() {
+                        listener.onTimerFinished()
+                        element.runningTimeInMillis = Int.ZERO.toLong()
+                    }
+
+                    override fun onCancelTimer() {
+                        listener.onCancelDismissalClicked()
+                        element.runningTimeInMillis = Int.ZERO.toLong()
+                    }
+
+                    override fun onTicked(millisUntilFinished: Long) {
+                        element.runningTimeInMillis = millisUntilFinished
+                    }
+                })
         }
     }
 

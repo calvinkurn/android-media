@@ -95,18 +95,24 @@ class AnnouncementViewHolder(
             shcAnnouncementTimerView.setBackgroundResource(R.drawable.shc_dashed_background)
 
             val title = root.context.getString(R.string.shc_info_deleted)
-            shcAnnouncementTimerView.startTimer(title, object : DismissalTimerView.Listener {
+            shcAnnouncementTimerView.startTimer(
+                title = title,
+                duration = DismissalTimerView.DEFAULT_DURATION,
+                listener = object : DismissalTimerView.Listener {
 
-                override fun onFinished() {
-                    listener.removeWidget(adapterPosition, element)
-                }
+                    override fun onFinished() {
+                        listener.removeWidget(adapterPosition, element)
+                    }
 
-                override fun onCancelTimer() {
-                    element.shouldShowDismissalTimer = false
-                    showSuccessState(element)
-                    listener.setOnWidgetCancelDismissal(element)
+                    override fun onCancelTimer() {
+                        element.shouldShowDismissalTimer = false
+                        showSuccessState(element)
+                        listener.setOnWidgetCancelDismissal(element)
+                    }
+
+                    override fun onTicked(millisUntilFinished: Long) {}
                 }
-            })
+            )
         }
     }
 

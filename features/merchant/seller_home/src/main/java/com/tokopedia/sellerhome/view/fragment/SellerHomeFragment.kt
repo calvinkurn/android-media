@@ -2511,9 +2511,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val prevPostList = widget.data?.postPagers?.flatMap { it.postList }
             .orEmpty()
         val postDismissalItem = PostItemUiModel.PostTimerDismissalUiModel(
-            totalDeletedItems = prevPostList.count { it.isChecked }
+            totalDeletedItems = prevPostList.count { it.isChecked },
+            runningTimeInMillis = Int.ZERO.toLong()
         )
-        val uncheckedList = prevPostList.filter { it.isChecked }
         val tempPostList = listOf(postDismissalItem).plus(prevPostList)
         val maxItemPerPage = if (widget.maxDisplay == Int.ZERO) {
             PostMapper.MAX_ITEM_PER_PAGE
