@@ -370,8 +370,7 @@ class DetailEditorFragment @Inject constructor(
                 }
                 // ==========
                 EditorToolType.WATERMARK -> {
-                    val watermarkUrl = data.resultUrl ?: url
-                    setImageView(watermarkUrl, false)
+                    setImageView(url, true)
                     watermarkComponent.setupView()
                 }
                 // ==========
@@ -466,6 +465,8 @@ class DetailEditorFragment @Inject constructor(
                         detailUiModel = it
                     )
                 }
+
+                watermarkComponent.setWatermarkTypeSelected(it.watermarkMode?.watermarkType)
             }
         }
     }
@@ -653,9 +654,6 @@ class DetailEditorFragment @Inject constructor(
 
                     if (data.isToolWatermark()) {
                         setWatermarkDrawerItem(bitmap)
-                        data.watermarkMode?.let {
-                            watermarkComponent.setWatermark(it.watermarkType)
-                        }
                     }
                 },
                 onCleared = {}
