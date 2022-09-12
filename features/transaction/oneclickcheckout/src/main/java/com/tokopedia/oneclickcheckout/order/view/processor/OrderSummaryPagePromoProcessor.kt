@@ -90,6 +90,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                             isPo = orderCart.products[0].isPreOrder == 1,
                                             poDuration = orderCart.products[0].preOrderDuration.toString(),
                                             warehouseId = orderCart.shop.warehouseId,
+                                            shopId = orderCart.shop.shopId,
                                         )
                                 )
                         )
@@ -184,6 +185,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                             warehouseId = orderCart.shop.warehouseId,
                                             isPo = orderCart.products[0].isPreOrder == 1,
                                             poDuration = orderCart.products[0].preOrderDuration.toString(),
+                                            shopId = orderCart.shop.shopId,
                                         )
                                 )
                         )
@@ -417,6 +419,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                             warehouseId = order.warehouseId,
                                             isPo = order.isPo,
                                             poDuration = order.poDuration.toString(),
+                                            shopId = order.shopId,
                                         )
                                 )
                         )

@@ -1101,6 +1101,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
                                     .get(0).getPreOrderDurationDay());
                             ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
+                            ordersItem.setBoCampaignId(0);
+                            ordersItem.setShippingSubsidy(courierItemData.getShippingSubsidy());
+                            ordersItem.setBenefitClass(courierItemData.getBenefitClass());
+                            ordersItem.setShippingPrice(courierItemData.getShippingRate());
+                            ordersItem.setEtaText(courierItemData.getEtaText());
                             break;
                         }
                     }
@@ -2087,6 +2092,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
                             .get(0).getPreOrderDurationDay());
                     ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
+                    ordersItem.setBoCampaignId(0);
+                    ordersItem.setShippingSubsidy(courierData.getShippingSubsidy());
+                    ordersItem.setBenefitClass(courierData.getBenefitClass());
+                    ordersItem.setShippingPrice(courierData.getShippingRate());
+                    ordersItem.setEtaText(courierData.getEtaText());
                     break;
                 }
             }

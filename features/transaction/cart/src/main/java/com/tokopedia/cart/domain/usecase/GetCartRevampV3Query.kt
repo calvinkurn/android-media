@@ -736,6 +736,11 @@ const val CART_REVAMP_V3_QUERY =
                       unique_id
                       shipping_id
                       sp_id
+                      shipping_subsidy
+                      shipping_price
+                      benefit_class
+                      bo_campaign_id
+                      eta_txt
                       order_id
                       shop_id
                       is_po

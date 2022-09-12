@@ -48,6 +48,11 @@ object PromoRequestMapper {
                             )
                             shippingId = boShipmentData.shippingId
                             spId = boShipmentData.spId
+                            boCampaignId = boShipmentData.boCampaignId
+                            shippingSubsidy = boShipmentData.shippingSubsidy
+                            benefitClass = boShipmentData.benefitClass
+                            shippingPrice = boShipmentData.shippingPrice
+                            etaText = boShipmentData.etaText
                         } else if (it is LastApplyPromo) {
                             codes = getPromoCodesFromLastApplyByUniqueId(
                                 it,

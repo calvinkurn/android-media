@@ -32,7 +32,7 @@ data class OrdersItem(
         var benefitClass: String = "",
         @SerializedName("shipping_price")
         var shippingPrice: Double = 0.0,
-        @SerializedName("eta_text")
+        @SerializedName("eta_txt")
         var etaText: String = "",
         @Transient
         var boType: Int = 0,

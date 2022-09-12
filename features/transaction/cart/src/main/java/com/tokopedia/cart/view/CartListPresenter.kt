@@ -1836,7 +1836,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     private fun clearRedBo(voucherOrderUiModel: PromoCheckoutVoucherOrdersItemUiModel, shopDataList: List<CartShopHolderData>) {
         val shop = shopDataList.firstOrNull { it.cartString == voucherOrderUiModel.uniqueId } ?: return
-        // todo: hit clear
         clearCacheAutoApplyStackUseCase.setParams(ClearPromoRequest(
                 serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                 orderData = ClearPromoOrderData(
@@ -1846,7 +1845,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                         boType = shop.boMetadata.boType,
                                         codes = mutableListOf(voucherOrderUiModel.code),
                                         shopId = shop.shopId.toLongOrZero(),
-                                        isPo = shop.productUiModelList[0].isPreOrder,
+                                        isPo = shop.isPo,
+                                        poDuration = shop.poDuration,
+                                        warehouseId = shop.warehouseId
                                 )
                         )
                 )
@@ -1857,7 +1858,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     private fun clearBo(shop: CartShopHolderData) {
-        // todo: hit clear
         clearCacheAutoApplyStackUseCase.setParams(ClearPromoRequest(
                 serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                 orderData = ClearPromoOrderData(
@@ -1867,7 +1867,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                         boType = shop.boMetadata.boType,
                                         codes = mutableListOf(shop.boCode),
                                         shopId = shop.shopId.toLongOrZero(),
-                                        isPo = shop.productUiModelList[0].isPreOrder,
+                                        isPo = shop.isPo,
+                                        poDuration = shop.poDuration,
+                                        warehouseId = shop.warehouseId
                                 )
                         )
                 )
