@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
@@ -47,7 +48,7 @@ class ProductRecommendationVerticalViewHolder(
         val trackData = listener.getRecommendationVerticalTrackData() ?: return
         listener.eventRecommendationClick(
             item,
-            "",
+            String.EMPTY,
             position,
             item.pageName,
             item.header,
@@ -78,7 +79,7 @@ class ProductRecommendationVerticalViewHolder(
             listener.getRecommendationVerticalTrackData() ?: return
         listener.eventRecommendationImpression(
             item,
-            "",
+            String.EMPTY,
             position,
             item.pageName,
             item.header,

@@ -1212,7 +1212,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getVerticalRecommendationData(pageName: String, page: Int? = DEFAULT_PAGE_NUMBER, productId: String?) {
         val nonNullPage = page ?: DEFAULT_PAGE_NUMBER
-        val nonNullProductId = productId ?: ""
+        val nonNullProductId = productId.orEmpty()
         launchCatchError(block = {
             val requestParams = GetRecommendationRequestParam(
                 pageNumber = nonNullPage,

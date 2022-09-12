@@ -1,13 +1,14 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 data class ProductRecommendationVerticalPlaceholderDataModel(
-    private val type: String = "",
-    private val name: String = "",
+    private val type: String = String.EMPTY,
+    private val name: String = String.EMPTY,
     override val impressHolder: ImpressHolder = ImpressHolder(),
     var recomWidgetData: RecommendationWidget? = null
 ) : DynamicPdpDataModel {
@@ -33,6 +34,6 @@ data class ProductRecommendationVerticalPlaceholderDataModel(
                 name = item.productId.toString(),
                 recommendationItem = item
             )
-        } ?: emptyList()
+        }.orEmpty()
     }
 }

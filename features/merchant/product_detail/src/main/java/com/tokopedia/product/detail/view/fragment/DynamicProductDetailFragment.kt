@@ -2831,7 +2831,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun updateUi() {
-        val newData = pdpUiUpdater?.getCurrentDataModels() ?: emptyList()
+        val newData = pdpUiUpdater?.getCurrentDataModels().orEmpty()
         submitList(newData)
     }
 
