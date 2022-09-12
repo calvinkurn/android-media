@@ -18,6 +18,9 @@ import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECI
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
+import com.tokopedia.campaign.utils.extension.routeToUrl
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
@@ -27,6 +30,7 @@ import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
@@ -37,8 +41,11 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.Finis
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.OnSelectionProcessDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.WaitingForSelectionDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
+import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
+import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
+import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerFragment
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -197,7 +204,22 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setupHeader(flashSale: FlashSale) {
+        val activity = activity ?: return
+        val infoIcon = IconUnify(activity, IconUnify.INFORMATION)
+        binding?.run {
+            header.run {
+                setNavigationOnClickListener { activity.finish() }
+                addCustomRightContent(infoIcon)
+                setOnClickListener {
+                    showGeneralBottomSheet(flashSale)
+                }
+            }
+        }
+    }
+
     private fun setupView(flashSale: FlashSale) {
+        setupHeader(flashSale)
         when (tabName) {
             UPCOMING_TAB -> setupUpcoming(flashSale)
             REGISTERED_TAB -> {
@@ -277,6 +299,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 startSubmissionDate,
                 endSubmissionDate
             )
+            iconRegisterPeriodInfo.setOnClickListener {
+                showTimelineBottomSheet(flashSale)
+            }
+            btnSeeCriteria.setOnClickListener {
+                showProductCriteriaBottomSheet(flashSale)
+            }
         }
     }
 
@@ -1124,7 +1152,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             applyPaddingToLastItem()
             adapter = productAdapter
         }
-        
+
         binding?.nsvContent?.enablePaging() {
             val isInCheckBoxState = viewModel.isOnCheckBoxState()
             val hasNextPage = productAdapter.itemCount >= PAGE_SIZE
@@ -1163,6 +1191,36 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun showTimelineBottomSheet(flashSale: FlashSale) {
+        val activity = activity ?: return
+        CampaignDetailBottomSheet.newInstance(
+            viewModel.getBottomSheetData(
+                DetailBottomSheetType.TIMELINE,
+                flashSale
+            )
+        ).show(activity.supportFragmentManager, "")
+    }
+
+    private fun showProductCriteriaBottomSheet(flashSale: FlashSale) {
+        val activity = activity ?: return
+        CampaignDetailBottomSheet.newInstance(
+            viewModel.getBottomSheetData(
+                DetailBottomSheetType.PRODUCT_CRITERIA,
+                flashSale
+            )
+        ).show(activity.supportFragmentManager, "")
+    }
+
+    private fun showGeneralBottomSheet(flashSale: FlashSale) {
+        val activity = activity ?: return
+        CampaignDetailBottomSheet.newInstance(
+            viewModel.getBottomSheetData(
+                DetailBottomSheetType.GENERAL,
+                flashSale
+            )
+        ).show(activity.supportFragmentManager, "")
     }
 
     private fun onProductClicked(itemPosition: Int) {

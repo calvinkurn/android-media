@@ -53,7 +53,8 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 flashSale.submissionStartDateUnix.epochToDate(),
                 flashSale.useMultilocation,
                 flashSale.formatDate(),
-                flashSale.toCampaignStatus()
+                flashSale.toCampaignStatus(),
+                flashSale.toProductCriteria()
             )
         }
     }
@@ -89,8 +90,42 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
 
     private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.formatDate(): FlashSale.FormattedDate {
         return FlashSale.FormattedDate(
-            startDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
-            endDateUnix.epochToDate().formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
+            startDateUnix.epochToDate()
+                .formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT),
+            endDateUnix.epochToDate()
+                .formatTo(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT)
         )
+    }
+
+    private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.toProductCriteria(): List<FlashSale.ProductCriteria> {
+        return productCriteria.map { productCriteria ->
+            FlashSale.ProductCriteria(
+                productCriteria.criteriaId,
+                productCriteria.minPrice,
+                productCriteria.maxPrice,
+                productCriteria.minFinalPrice,
+                productCriteria.maxFinalPrice,
+                productCriteria.minDiscount,
+                productCriteria.minCustomStock,
+                productCriteria.maxCustomStock,
+                productCriteria.minRating,
+                productCriteria.minProductScore,
+                productCriteria.minQuantitySold,
+                productCriteria.maxQuantitySold,
+                productCriteria.maxSubmission,
+                productCriteria.maxProductAppear,
+                productCriteria.dayPeriodTimeAppear,
+                productCriteria.toProductCategories()
+            )
+        }
+    }
+
+    private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.ProductCriteria.toProductCategories(): List<FlashSale.ProductCategories> {
+        return categories.map { category ->
+            FlashSale.ProductCategories(
+                category.categoryId,
+                category.categoryName
+            )
+        }
     }
 }

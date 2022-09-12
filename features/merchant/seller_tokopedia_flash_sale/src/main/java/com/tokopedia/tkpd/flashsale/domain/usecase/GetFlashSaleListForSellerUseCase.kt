@@ -66,6 +66,27 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
                     total_stock_sold,
                     float_total_sold_value
                   }
+                  product_criteria {
+                    criteria_id
+                    min_price
+                    max_price
+                    min_final_price
+                    max_final_price
+                    min_discount
+                    min_custom_stock
+                    max_custom_stock
+                    min_rating
+                    min_product_score
+                    min_qty_sold
+                    max_qty_sold
+                    max_submission
+                    max_product_appear
+                    day_periode_time_appear
+                    categories {
+                      category_id
+                      category_name
+                    }
+                  }
                 }
              }
        }

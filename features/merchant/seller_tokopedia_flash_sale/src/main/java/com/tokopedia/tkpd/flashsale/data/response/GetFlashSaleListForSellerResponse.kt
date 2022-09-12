@@ -50,7 +50,9 @@ data class GetFlashSaleListForSellerResponse(
             @SerializedName("submission_start_date_unix")
             val submissionStartDateUnix: Long = 0,
             @SerializedName("use_multilocation")
-            val useMultilocation: Boolean = false
+            val useMultilocation: Boolean = false,
+            @SerializedName("product_criteria")
+            val productCriteria: List<ProductCriteria> = listOf()
         ) {
             data class ProductMeta(
                 @SerializedName("accepted_product")
@@ -67,6 +69,47 @@ data class GetFlashSaleListForSellerResponse(
                 val transferredProduct: Int = 0,
                 @SerializedName("float_total_sold_value")
                 val totalSoldValue: Double = 0.0
+            )
+            data class ProductCriteria(
+                @SerializedName("criteria_id")
+                val criteriaId: Long = 0,
+                @SerializedName("min_price")
+                val minPrice: Double = 0.0,
+                @SerializedName("max_price")
+                val maxPrice: Double = 0.0,
+                @SerializedName("min_final_price")
+                val minFinalPrice: Double = 0.0,
+                @SerializedName("max_final_price")
+                val maxFinalPrice: Double = 0.0,
+                @SerializedName("min_discount")
+                val minDiscount: Int = 0,
+                @SerializedName("min_custom_stock")
+                val minCustomStock: Int = 0,
+                @SerializedName("max_custom_stock")
+                val maxCustomStock: Int = 0,
+                @SerializedName("min_rating")
+                val minRating: Int = 0,
+                @SerializedName("min_product_score")
+                val minProductScore: Int = 0,
+                @SerializedName("min_qty_sold")
+                val minQuantitySold: Int = 0,
+                @SerializedName("max_qty_sold")
+                val maxQuantitySold: Int = 0,
+                @SerializedName("max_submission")
+                val maxSubmission: Int = 0,
+                @SerializedName("max_product_appear")
+                val maxProductAppear: Int = 0,
+                @SerializedName("day_periode_time_appear")
+                val dayPeriodTimeAppear: Int = 0,
+                @SerializedName("categories")
+                val categories: List<ProductCategories> = listOf(),
+            )
+
+            data class ProductCategories(
+                @SerializedName("category_id")
+                val categoryId: Long = 0,
+                @SerializedName("category_name")
+                val categoryName: String = ""
             )
         }
     }

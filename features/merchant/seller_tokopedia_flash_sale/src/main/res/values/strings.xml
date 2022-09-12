@@ -102,6 +102,13 @@
     <string name="commonbs_field_required">Diwajibkan</string>
     <string name="commonbs_field_limited">Dibatasi</string>
 
+    <!--    CDP-->
+    <string name="stfs_bottom_sheet_register_period_label">Periode Pendaftaran</string>
+    <string name="stfs_bottom_sheet_add_product_label">Tambah Produk</string>
+    <string name="stfs_bottom_sheet_selection_process_label">Proses Seleksi</string>
+    <string name="stfs_bottom_sheet_active_promotion_label">Promosi Aktif</string>
+    <string name="stfs_bottom_sheet_done_label">Selesai</string>
+
     <!--    Upcoming CDP-->
     <string name="stfs_deskripsi_label">Deskripsi</string>
     <string name="stft_check_reason">Cek Alasan</string>
