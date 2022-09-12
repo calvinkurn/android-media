@@ -18,13 +18,15 @@ open class CloseReminderTicker @Inject constructor(
 
     private fun generateParam(param: GetReminderTickerUseCase.Param): Map<String, Any> {
         return mapOf(
-            PARAM_FEATURE_ID to param.featureId
+            PARAM_FEATURE_ID to param.featureId,
+            PARAM_IS_SELLER to param.isSeller,
+            PARAM_MSG_ID to param.msgId
         )
     }
 
     override fun graphqlQuery(): String = """
-        mutation CloseReminderTicker($$PARAM_FEATURE_ID: Int!) {
-            CloseReminderTicker($PARAM_FEATURE_ID: $$PARAM_FEATURE_ID) {
+        mutation CloseReminderTicker($$PARAM_FEATURE_ID: Int!, $$PARAM_IS_SELLER: Boolean, $$PARAM_MSG_ID: Int) {
+            CloseReminderTicker($PARAM_FEATURE_ID: $$PARAM_FEATURE_ID, $PARAM_IS_SELLER: $$PARAM_IS_SELLER, $PARAM_MSG_ID: $$PARAM_MSG_ID) {
                 success
             }
         }
@@ -32,5 +34,7 @@ open class CloseReminderTicker @Inject constructor(
 
     companion object {
         private const val PARAM_FEATURE_ID: String = "featureId"
+        private const val PARAM_IS_SELLER: String = "isSeller"
+        private const val PARAM_MSG_ID: String = "msgId"
     }
 }

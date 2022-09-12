@@ -91,7 +91,7 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
          trafficCommissionCardDetail?.let {
              if(page == PAGE_ZERO) {
                  tempList.add(AffiliateCommisionThickDividerItemModel())
-                 tempList.add(AffiliateWithdrawalTitleItemModel("10"))
+                 tempList.add(AffiliateWithdrawalTitleItemModel("10", pageType))
              }
              it.forEach { cardDetail ->
                  tempList.add(AffiliateTrafficCardModel(cardDetail))
