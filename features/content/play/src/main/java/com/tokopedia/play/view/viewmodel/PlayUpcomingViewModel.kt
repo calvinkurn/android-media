@@ -8,7 +8,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.SocketCredential
 import com.tokopedia.play.data.UpcomingChannelUpdateActive
 import com.tokopedia.play.data.UpcomingChannelUpdateLive
@@ -51,7 +50,6 @@ class PlayUpcomingViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val playUiModelMapper: PlayUiModelMapper,
-    private val playAnalytic: PlayNewAnalytic,
     private val playChannelSSE: PlayChannelSSE,
     private val repo: PlayViewerRepository,
     private val playShareExperience: PlayShareExperience,
@@ -76,6 +74,7 @@ class PlayUpcomingViewModel @Inject constructor(
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _upcomingInfo = MutableStateFlow(PlayUpcomingUiModel())
     private val _upcomingState = MutableStateFlow<PlayUpcomingState>(PlayUpcomingState.Unknown)
+    private val _widgetState = MutableStateFlow(DescriptionUiState())
 
     private val _observableKolId = MutableLiveData<String>()
 
@@ -91,12 +90,13 @@ class PlayUpcomingViewModel @Inject constructor(
     val uiState: Flow<PlayUpcomingUiState> = combine(
         _partnerInfo,
         _upcomingInfoUiState.distinctUntilChanged(),
-        _channelDetail,
-    ) { partner, upcomingInfo, channelDetail ->
+        _channelDetail, _widgetState,
+    ) { partner, upcomingInfo, channelDetail, widgetState ->
         PlayUpcomingUiState(
             partner = partner,
             upcomingInfo = upcomingInfo,
             channel = channelDetail,
+            description = widgetState,
         )
     }.flowOn(dispatchers.computation)
 
@@ -117,6 +117,21 @@ class PlayUpcomingViewModel @Inject constructor(
             )
         }
 
+    val isExpanded: Boolean
+            get() = _widgetState.value.isExpand
+
+    val isWidgetShown: Boolean
+        get() = _widgetState.value.isShown
+
+    val remindState: PlayUpcomingState
+        get() = _upcomingState.value
+
+    val isCustomSharingAllowed: Boolean
+        get() = playShareExperience.isCustomSharingAllow()
+
+    val isSharingBottomSheet: Boolean
+        get() = playShareExperience.isScreenshotBottomSheet()
+
     fun initPage(channelId: String, channelData: PlayChannelData) {
         this.mChannelId = channelId
         this.mChannelData = channelData
@@ -128,6 +143,11 @@ class PlayUpcomingViewModel @Inject constructor(
         updateUpcomingState(channelData.upcomingInfo)
         updateStatusInfo(mChannelId, false)
         updatePartnerInfo(channelData.partnerInfo)
+        handleWidgetState(channelData.upcomingInfo.description.isNotBlank())
+    }
+
+    private fun handleWidgetState(isShown: Boolean){
+        _widgetState.update { it.copy(isShown = isShown) }
     }
 
     override fun onCleared() {
@@ -141,8 +161,8 @@ class PlayUpcomingViewModel @Inject constructor(
                 _upcomingState.emit(
                     when {
                         upcomingInfo.isAlreadyLive -> PlayUpcomingState.WatchNow
-                        upcomingInfo.isReminderSet -> PlayUpcomingState.Reminded
-                        else -> PlayUpcomingState.RemindMe
+                        upcomingInfo.isReminderSet -> PlayUpcomingState.ReminderStatus(isReminded = upcomingInfo.isReminderSet)
+                        else -> PlayUpcomingState.ReminderStatus(isReminded = false)
                     }
                 )
             }
@@ -207,7 +227,6 @@ class PlayUpcomingViewModel @Inject constructor(
 
     fun submitAction(action: PlayUpcomingAction) {
         when(action) {
-            ImpressUpcomingChannel -> handleImpressUpcomingChannel()
             ClickUpcomingButton -> handleClickUpcomingButton()
             UpcomingTimerFinish -> handleUpcomingTimerFinish()
             ClickFollowUpcomingAction -> handleClickFollow(isFromLogin = false)
@@ -217,14 +236,19 @@ class PlayUpcomingViewModel @Inject constructor(
             ClickShareUpcomingAction -> handleClickShareIcon()
             ShowShareExperienceUpcomingAction -> handleOpenSharingOption(false)
             ScreenshotTakenUpcomingAction -> handleOpenSharingOption(true)
-            CloseSharingOptionUpcomingAction -> handleCloseSharingOption()
             is ClickSharingOptionUpcomingAction -> handleSharingOption(action.shareModel)
-            is SharePermissionUpcomingAction -> handleSharePermission(action.label)
+            ExpandDescriptionUpcomingAction -> handleExpandText()
+            TapCover -> handleTapCover()
         }
     }
 
-    private fun handleImpressUpcomingChannel() {
-        playAnalytic.impressUpcomingPage(mChannelId)
+    private fun handleExpandText(){
+        _widgetState.update { it.copy(isExpand = !it.isExpand) }
+    }
+
+    private fun handleTapCover(){
+        if (_upcomingInfo.value.description.isNotBlank() && isExpanded) handleExpandText()
+        else _widgetState.update { it.copy(isShown = !it.isShown) }
     }
 
     private fun handleClickUpcomingButton() {
@@ -233,20 +257,17 @@ class PlayUpcomingViewModel @Inject constructor(
 
         when(currState) {
             PlayUpcomingState.WatchNow -> handleWatchNowUpcomingChannel()
-            PlayUpcomingState.RemindMe -> handleRemindMeUpcomingChannel(userClick = true)
+            is PlayUpcomingState.ReminderStatus -> handleRemindMeUpcomingChannel()
             PlayUpcomingState.Refresh -> handleRefreshUpcomingChannel()
             else -> {}
         }
     }
 
-    private fun handleRemindMeUpcomingChannel(userClick: Boolean)  {
-
+    private fun handleRemindMeUpcomingChannel() {
         suspend fun failedRemindMe() {
-            _upcomingState.emit(PlayUpcomingState.RemindMe)
+            _upcomingState.emit(PlayUpcomingState.ReminderStatus(isReminded = isReminderSet))
             _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
         }
-
-        if(userClick) playAnalytic.clickRemindMe(mChannelId)
 
         needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
             viewModelScope.launchCatchError(block = {
@@ -255,17 +276,19 @@ class PlayUpcomingViewModel @Inject constructor(
                     val status: Boolean
 
                     withContext(dispatchers.io) {
-                        playChannelReminderUseCase.setRequestParams(PlayChannelReminderUseCase.createParams(it.id, true))
+                        playChannelReminderUseCase.setRequestParams(PlayChannelReminderUseCase.createParams(it.id, !isReminderSet))
                         val response = playChannelReminderUseCase.executeOnBackground()
                         status = PlayChannelReminderUseCase.checkRequestSuccess(response)
                     }
 
                     if(!status) failedRemindMe()
                     else {
-                        _upcomingState.emit(PlayUpcomingState.Reminded)
-                        _upcomingInfo.setValue { copy(isReminderSet = status) }
+                        _upcomingInfo.setValue { copy(isReminderSet = !isReminderSet) }
+                        _upcomingState.emit(PlayUpcomingState.ReminderStatus(isReminded = isReminderSet))
 
-                        _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
+                        _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(
+                            if (!isReminderSet) R.string.play_cancel_remind_me_success else R.string.play_remind_me_success),
+                            isSuccess = status))
                     }
                 } ?: failedRemindMe()
             }) {
@@ -277,7 +300,6 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun handleWatchNowUpcomingChannel() {
-        playAnalytic.clickWatchNow(mChannelId)
         stopSSE()
 
         viewModelScope.launch {
@@ -316,21 +338,12 @@ class PlayUpcomingViewModel @Inject constructor(
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
         if(isFromLogin) updatePartnerInfo(_partnerInfo.value)
         if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable) {
-            val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
-            val shopId = _partnerInfo.value.id
-            if (_partnerInfo.value.type == PartnerType.Shop) playAnalytic.clickFollowShop(
-                mChannelId,
-                channelType,
-                shopId.toString(),
-                action.value
-            )
+           doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
         }
     }
 
     private fun handleClickPartnerName(appLink: String) {
         viewModelScope.launch {
-            val partnerInfo = _partnerInfo.value
-            if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(mChannelId, channelType, partnerInfo.id.toString())
             _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(appLink))
         }
     }
@@ -387,8 +400,6 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleClickShareIcon() {
         viewModelScope.launch {
-            playAnalytic.clickShareButton(mChannelId, partnerId, channelType.value)
-
             _uiEvent.emit(
                 PlayUpcomingUiEvent.SaveTemporarySharingImage(imageUrl = _channelDetail.value.channelInfo.coverUrl)
             )
@@ -398,9 +409,6 @@ class PlayUpcomingViewModel @Inject constructor(
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
             if(playShareExperience.isCustomSharingAllow()) {
-                if(isScreenshot) playAnalytic.takeScreenshotForSharing(mChannelId, partnerId, channelType.value)
-                else playAnalytic.impressShareBottomSheet(mChannelId, partnerId, channelType.value)
-
                 _uiEvent.emit(PlayUpcomingUiEvent.OpenSharingOptionEvent(
                     title = _channelDetail.value.channelInfo.title,
                     coverUrl = _channelDetail.value.channelInfo.coverUrl,
@@ -414,14 +422,8 @@ class PlayUpcomingViewModel @Inject constructor(
         }
     }
 
-    private fun handleCloseSharingOption() {
-        playAnalytic.closeShareBottomSheet(mChannelId, partnerId, channelType.value, playShareExperience.isScreenshotBottomSheet())
-    }
-
     private fun handleSharingOption(shareModel: ShareModel) {
         viewModelScope.launch {
-            playAnalytic.clickSharingOption(mChannelId, partnerId, channelType.value, shareModel.channel, playShareExperience.isScreenshotBottomSheet())
-
             val playShareExperienceData = getPlayShareExperienceData()
 
             playShareExperience
@@ -454,10 +456,6 @@ class PlayUpcomingViewModel @Inject constructor(
                 }
             )
         }
-    }
-
-    private fun handleSharePermission(label: String) {
-        playAnalytic.clickSharePermission(mChannelId, partnerId, channelType.value, label)
     }
 
     /**
@@ -537,14 +535,14 @@ class PlayUpcomingViewModel @Inject constructor(
         if (!isSuccess) {
             if(requestCode == REQUEST_CODE_LOGIN_REMIND_ME) {
                 viewModelScope.launch {
-                    _upcomingState.value = PlayUpcomingState.RemindMe
+                    _upcomingState.value = PlayUpcomingState.ReminderStatus(isReminded = isReminderSet)
                 }
             }
             return
         }
 
         when (requestCode) {
-            REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel(userClick = false)
+            REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel()
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             else -> {}
         }

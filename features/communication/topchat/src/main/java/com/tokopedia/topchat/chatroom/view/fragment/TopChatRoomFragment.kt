@@ -137,7 +137,6 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.math.abs
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
@@ -146,10 +145,12 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity.Companion.IS_FROM_ANOTHER_CALL
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
@@ -238,6 +239,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
+
+    /**
+     * Ticker Reminder flag, only 1 ticker can exist in 1 session
+     */
+    private var isTickerNotShownYet = true
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -558,8 +564,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun renderTickerReminderIfNotYet() {
-        val ticker = viewModel.srwTickerReminder.value
-        if (ticker != null && ticker is Success) {
+        val ticker = viewModel.tickerReminder.value
+        if (ticker != null && ticker is Success && isTickerNotShownYet) {
             onSuccessGetTickerReminder(ticker.data)
         }
     }
@@ -773,14 +779,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (isSeller()) {
             setupFirstTimeForSeller()
         }
+        viewModel.getTickerReminder(isSeller())
         interlocutorShopType = chatRoom.shopType
     }
 
     private fun setupFirstTimeForSeller() {
         viewModel.adjustInterlocutorWarehouseId(messageId)
-        if (!viewModel.isInTheMiddleOfThePage()) {
-            viewModel.getTickerReminder()
-        }
     }
 
     private fun reloadSrw() {
@@ -875,9 +879,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun goToDetailOpponent() {
-        if (opponentRole.toLowerCase() == ChatRoomHeaderUiModel.Companion.ROLE_USER) {
+        if (opponentRole.lowercase(Locale.getDefault()) == ChatRoomHeaderUiModel.Companion.ROLE_USER) {
             goToProfile(opponentId)
-        } else if (opponentRole.toLowerCase()
+        } else if (opponentRole.lowercase(Locale.getDefault())
                 .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP)
         ) {
             onGoToShop()
@@ -975,6 +979,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
+
+        renderTickerReminder(chatBubble)
+    }
+
+    private fun renderTickerReminder(chatBubble: BaseChatUiModel?) {
+        chatBubble?.tickerReminder?.let {
+            val reminderTickerUiModel = ReminderTickerUiModel.mapToReminderTickerUiModel(it)
+            if (isTickerNotShownYet) {
+                onSuccessGetTickerReminder(reminderTickerUiModel)
+            }
+        }
     }
 
     override fun loadData(page: Int) {}
@@ -2724,7 +2739,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             }
         }
 
-        viewModel.srwTickerReminder.observe(viewLifecycleOwner) {
+        viewModel.tickerReminder.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTickerReminder(it.data)
                 else -> {}
@@ -2987,11 +3002,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun onSuccessGetTickerReminder(
         data: ReminderTickerUiModel
     ) {
-        if (!data.enable) return
-        val eligiblePosition = adapter.findSrwTickerPosition(data.regexMessage)
+        if (!data.isEnable) return
+        val eligiblePosition = adapter.findTickerPosition(data.replyId)
         if (eligiblePosition == RecyclerView.NO_POSITION) return
         adapter.addElement(eligiblePosition, data)
-        viewModel.removeTicker()
+        isTickerNotShownYet = false
+        if (getFirstVisibleItemPosition() == 0 && eligiblePosition == 0) {
+            rv?.smoothScrollToPosition(eligiblePosition)
+        }
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
@@ -3151,9 +3169,38 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return widgets
     }
 
-    override fun closeReminderTicker(element: ReminderTickerUiModel, position: Int) {
-        viewModel.closeTickerReminder(element)
+    override fun trackSeenTicker(element: ReminderTickerUiModel) {
+        TopChatAnalyticsKt.eventViewTicker(
+            element.getTickerFeature(),
+            isSeller(),
+            viewModel.roomMetaData.msgId,
+            element.replyId
+        )
+    }
+
+    override fun onClickLinkReminderTicker(element: ReminderTickerUiModel, linkUrl: String) {
+        TopChatAnalyticsKt.eventClickLinkTicker(
+            element.getTickerFeature(),
+            isSeller(),
+            viewModel.roomMetaData.msgId,
+            element.replyId
+        )
+
+        if (linkUrl.isNotEmpty()) {
+            RouteManager.route(context, linkUrl)
+        }
+    }
+
+    override fun onCloseReminderTicker(element: ReminderTickerUiModel, position: Int) {
+        TopChatAnalyticsKt.eventClickCloseTicker(
+            element.getTickerFeature(),
+            isSeller(),
+            viewModel.roomMetaData.msgId,
+            element.replyId
+        )
+        viewModel.closeTickerReminder(element, isSeller())
         adapter.removeViewHolder(element, position)
+        isTickerNotShownYet = true
     }
 
     private fun goToOCC() {
@@ -3165,10 +3212,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
-        TopChatAnalyticsKt.eventClickProductBundlingCta(
-            element.productBundling.bundleItem?.first()?.productId?: "",
-            element.productBundling.bundleId?: ""
-        )
+        if (element.isBroadcast()) {
+            TopChatAnalyticsKt.eventClickCtaOnProductBundlingBroadcast(
+                element.blastId,
+                element.productBundling.bundleStatus.toString(),
+                element.productBundling.bundleId.toString(),
+                getBroadcastSenderShopId(element),
+                session.userId
+            )
+        } else {
+            TopChatAnalyticsKt.eventClickProductBundlingCta(
+                element.productBundling.bundleItem?.first()?.productId?: "",
+                element.productBundling.bundleId?: ""
+            )
+        }
+
         if (!element.productBundling.ctaBundling?.buttonAndroidLink.isNullOrEmpty()) {
             context?.let {
                 val intent = RouteManager.getIntent(it,
@@ -3180,10 +3238,48 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onSeenProductBundling(element: ProductBundlingUiModel) {
         if (seenAttachmentProductBundling.add(element.productBundling.bundleId?: "")) {
-            TopChatAnalyticsKt.eventViewProductBundling(
-                element.productBundling.bundleItem?.first()?.productId?: "",
-                element.productBundling.bundleId?: ""
+            if (element.isBroadcast()) {
+                TopChatAnalyticsKt.eventViewProductBundlingBroadcast(
+                    element.blastId,
+                    element.productBundling.bundleStatus.toString(),
+                    element.productBundling.bundleId.toString(),
+                    getBroadcastSenderShopId(element),
+                    session.userId
+                )
+            } else {
+                TopChatAnalyticsKt.eventViewProductBundling(
+                    element.productBundling.bundleItem?.first()?.productId?: "",
+                    element.productBundling.bundleId?: ""
+                )
+            }
+        }
+    }
+
+    override fun onClickProductBundlingImage(item: BundleItem, element: ProductBundlingUiModel) {
+        if (element.isBroadcast()) {
+            TopChatAnalyticsKt.eventClickProductAttachmentOnProductBundlingBroadcast(
+                element.blastId,
+                element.productBundling.bundleStatus.toString(),
+                element.productBundling.bundleId.toString(),
+                item.productId,
+                getBroadcastSenderShopId(element),
+                session.userId
             )
+        }
+
+        if (item.androidUrl.isNotEmpty()) {
+            context?.let {
+                val intent = RouteManager.getIntent(it, item.androidUrl)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun getBroadcastSenderShopId(element: ProductBundlingUiModel): String {
+        return if (element.isSender) {
+            session.shopId
+        } else {
+            shopId
         }
     }
 
@@ -3248,7 +3344,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         const val AB_TEST_NEW_SRW = "srw_new_design"
         const val AB_TEST_OLD_SRW = "control_variant"
-        const val ROLLENCE_ENABLE_MEDIA_PICKER = "android_chat_picker"
+        const val ROLLENCE_ENABLE_MEDIA_PICKER = "and_chat_picker_v2"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

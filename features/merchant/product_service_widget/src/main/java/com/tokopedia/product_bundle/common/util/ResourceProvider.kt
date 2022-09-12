@@ -17,12 +17,16 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         }
     }
 
-    fun getPreOrderTimeUnitDay(): String? {
-        return getString(R.string.preorder_time_unit_day)
+    fun getPreOrderTimeUnitDay(): String {
+        return getString(R.string.preorder_time_unit_day).orEmpty()
     }
 
-    fun getPreOrderTimeUnitMonth(): String? {
-        return getString(R.string.preorder_time_unit_month)
+    fun getPreOrderTimeUnitWeek(): String {
+        return getString(R.string.preorder_time_unit_week).orEmpty()
+    }
+
+    fun getPreOrderTimeUnitMonth(): String {
+        return getString(R.string.preorder_time_unit_month).orEmpty()
     }
 
     fun getProductVariantNotSelected(): String {
