@@ -33,6 +33,7 @@ public class FeedAnalytics {
     private static final String KEY_USER_ID = "userId";
     private static final String KEY_USER_ID_MOD = "userIdmodulo";
     private static final String KEY_BUSINESS_UNIT = "content";
+    private static final String KEY_TRACKER_ID = "trackerId";
     private static final String KEY_CURRENT_SITE = "tokopediamarketplace";
     private static final String KEY_BUSINESS_UNIT_EVENT = "businessUnit";
     private static final String KEY_CURRENT_SITE_EVENT = "currentSite";
@@ -573,23 +574,30 @@ public class FeedAnalytics {
             return ASGC;
     }
 
-    public void eventDetailProductClick(ProductEcommerce product, int userId, String shopId, String activityId, String type, boolean isFollowed) {
+    public void eventDetailProductClick(ProductEcommerce product, int userId, String shopId, String activityId, String type, boolean isFollowed, String trackerid, String campaignStatus) {
         String eventAction = ACTION_CLICK_PRODUCT+" - " + getPostType(type, isFollowed);
-        trackEnhancedEcommerceEvent(
-                DataLayer.mapOf(
-                        EVENT_NAME, PRODUCT_CLICK,
-                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE_BOTTOM_SHEET,
-                        EVENT_ACTION, eventAction,
-                        EVENT_LABEL, activityId+" - "+shopId+" - "+product.getProductId(),
-                        KEY_USER_ID, userId,
-                        KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
-                        KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
-                        EVENT_ECOMMERCE, getProductEcommerceClick(
-                                product,
-                                "/feed - "+ getPostType(type, isFollowed)
-                        )
+        String eventlabel = "";
+        if (campaignStatus.isEmpty()) {
+            eventlabel = activityId + " - " + shopId + " - " + product.getProductId();
+        } else {
+            eventlabel = activityId + " - " + shopId + " - " + product.getProductId() + " - " + campaignStatus;
+        }
+        Map map = DataLayer.mapOf(
+                EVENT_NAME, PRODUCT_CLICK,
+                EVENT_CATEGORY, CONTENT_FEED_TIMELINE_BOTTOM_SHEET,
+                EVENT_ACTION, eventAction,
+                EVENT_LABEL, eventlabel,
+                KEY_USER_ID, userId,
+                KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
+                KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
+                EVENT_ECOMMERCE, getProductEcommerceClick(
+                        product,
+                        "/feed - "+ getPostType(type, isFollowed)
                 )
         );
+        if (!trackerid.isEmpty())
+           map.put(KEY_TRACKER_ID, trackerid);
+        trackEnhancedEcommerceEvent(map);
     }
 
     public void eventNewPostClick() {

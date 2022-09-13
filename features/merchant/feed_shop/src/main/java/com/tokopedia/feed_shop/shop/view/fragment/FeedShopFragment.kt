@@ -962,7 +962,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
-    override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
+    override fun onImageClicked(card: FeedXCard) {
     }
 
     override fun onTagClicked(

@@ -262,10 +262,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             override fun onImageClicked(viewHolder: CarouselImageViewHolder) {
                 changeCTABtnColorAsPerWidget(mData)
                 listener?.onImageClicked(
-                    mData.id,
-                    mData.typename,
-                    mData.followers.isFollowed,
-                    mData.author.id,
+                    mData
                 )
             }
 

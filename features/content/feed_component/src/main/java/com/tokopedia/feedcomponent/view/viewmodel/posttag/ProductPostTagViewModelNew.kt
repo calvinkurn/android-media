@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.viewmodel.posttag
 
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactory
 
@@ -46,6 +47,8 @@ data class ProductPostTagViewModelNew(
 
     val isRilisanSpl: Boolean
         get() = saleType == ASGC_RILISAN_SPECIAL
+    val isFlashSaleToko: Boolean
+        get() = type == ASGC_FLASH_SALE_TOKO
     val isUpcoming: Boolean
         get() = saleStatus == Upcoming
     val isOngoing: Boolean
@@ -53,6 +56,7 @@ data class ProductPostTagViewModelNew(
 
     companion object {
         private const val ASGC_RILISAN_SPECIAL = "Rilisan Spesial"
+        private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
         private const val Upcoming = "upcoming"
         private const val Ongoing = "ongoing"
 
