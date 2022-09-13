@@ -325,6 +325,9 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                     TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_NORMAL_BOTTOMSHEET -> {
                         onOpenQuickFilterNormalBottomSheet(event.data)
                     }
+                    TokofoodSearchUiEvent.EVENT_FAILED_LOAD_MORE -> {
+                        onShowLoadMoreErrorToaster(event.throwable)
+                    }
                 }
             }
         }
@@ -454,6 +457,11 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                 this
             )
         }
+    }
+
+    private fun onShowLoadMoreErrorToaster(throwable: Throwable?) {
+        val errorMessage = throwable?.message.orEmpty()
+        showToasterError(errorMessage)
     }
 
     private fun showDetailFilterBottomSheet(dynamicFilterModel: DynamicFilterModel?) {

@@ -338,9 +338,9 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                 _uiState.emit(getMoreSearchResultSuccessState(searchResult))
             },
             onError = {
-                _uiState.emit(
-                    TokofoodSearchUiState(
-                        state = TokofoodSearchUiState.STATE_ERROR_LOAD_MORE,
+                _uiEventFlow.emit(
+                    TokofoodSearchUiEvent(
+                        state = TokofoodSearchUiEvent.EVENT_FAILED_LOAD_MORE,
                         throwable = it
                     )
                 )
@@ -439,6 +439,9 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                     TokofoodSearchUiState.STATE_SUCCESS_LOAD_MORE -> {
                         getSuccessLoadSearchResultMore(uiState)
                     }
+                    TokofoodSearchUiState.STATE_ERROR_INITIAL -> {
+                        getErrorSearchResultInitial(uiState)
+                    }
                     else -> {
                         listOf()
                     }
@@ -473,6 +476,12 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     private fun getSuccessLoadSearchResultMore(uiState: TokofoodSearchUiState): List<Visitable<*>> {
         return (uiState.data as? TokofoodSearchMerchantResponse)?.let { response ->
             currentVisitables.value.orEmpty() + tokofoodMerchantSearchResultMapper.mapResponseToVisitables(response)
+        }.orEmpty()
+    }
+
+    private fun getErrorSearchResultInitial(uiState: TokofoodSearchUiState): List<Visitable<*>> {
+        return uiState.throwable?.let {
+            listOf(TokoFoodErrorStateUiModel(String.EMPTY, it))
         }.orEmpty()
     }
 
