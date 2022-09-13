@@ -36,30 +36,36 @@ internal val Throwable.isNetworkError: Boolean
             this is UnknownHostException
 
 
-fun StaggeredGridLayoutManager.getVisibleItems(adapter: ProductTagCardAdapter): List<Pair<ProductUiModel, Int>> {
+fun StaggeredGridLayoutManager.getVisibleItems(
+    adapter: ProductTagCardAdapter,
+    isMultipleSelectionProduct: Boolean,
+): List<Pair<ProductUiModel, Int>> {
     val items = adapter.getItems()
     val (start, end) = getVisibleItemsPosition(this, adapter)
 
     if (start > -1 && end < items.size && start <= end) {
         return items.slice(start..end)
-            .filterIsInstance<ProductTagCardAdapter.Model.Product>()
+            .getProductUiModel(isMultipleSelectionProduct)
             .mapIndexed { index, item ->
-                Pair(item.product, start + index)
+                Pair(item, start + index)
             }
     }
 
     return emptyList()
 }
 
-fun StaggeredGridLayoutManager.getVisibleItems(adapter: MyShopProductAdapter): List<Pair<ProductUiModel, Int>> {
+fun StaggeredGridLayoutManager.getVisibleItems(
+    adapter: MyShopProductAdapter,
+    isMultipleSelectionProduct: Boolean,
+): List<Pair<ProductUiModel, Int>> {
     val items = adapter.getItems()
     val (start, end) = getVisibleItemsPosition(this, adapter)
 
     if (start > -1 && end < items.size && start <= end) {
         return items.slice(start..end)
-            .filterIsInstance<MyShopProductAdapter.Model.Product>()
+            .getShopProductUiModel(isMultipleSelectionProduct)
             .mapIndexed { index, item ->
-                Pair(item.product, start + index)
+                Pair(item, start + index)
             }
     }
 
@@ -114,6 +120,18 @@ private fun <T: Any> getVisibleItemsPosition(
     }
 
     return Pair(-1, -1)
+}
+
+private fun List<ProductTagCardAdapter.Model>.getProductUiModel(isMultipleSelectionProduct: Boolean): List<ProductUiModel> {
+    return if(isMultipleSelectionProduct)
+        filterIsInstance<ProductTagCardAdapter.Model.ProductWithCheckbox>().map { it.product }
+    else filterIsInstance<ProductTagCardAdapter.Model.Product>().map { it.product }
+}
+
+private fun List<MyShopProductAdapter.Model>.getShopProductUiModel(isMultipleSelectionProduct: Boolean): List<ProductUiModel> {
+    return if(isMultipleSelectionProduct)
+        filterIsInstance<MyShopProductAdapter.Model.ProductWithCheckbox>().map { it.product }
+    else filterIsInstance<MyShopProductAdapter.Model.Product>().map { it.product }
 }
 
 fun List<SelectedProductUiModel>.isProductFound(product: ProductUiModel): Boolean {
