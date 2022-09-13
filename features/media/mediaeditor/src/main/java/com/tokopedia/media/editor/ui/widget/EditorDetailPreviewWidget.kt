@@ -36,7 +36,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             setDimmedColor(
                 ContextCompat.getColor(
                     context,
-                    principleR.color.Unify_Static_White
+                    principleR.color.Unify_NN50
                 )
             )
 
