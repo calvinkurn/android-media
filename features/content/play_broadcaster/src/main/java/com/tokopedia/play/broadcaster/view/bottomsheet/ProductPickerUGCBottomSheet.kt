@@ -81,6 +81,11 @@ class ProductPickerUGCBottomSheet @Inject constructor(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
+            override fun onBackPressed() {
+                ProductTagParentFragment.findFragment(childFragmentManager)
+                    ?.onBackPressed()
+            }
+
             override fun cancel() {
                 closeBottomSheet()
             }
