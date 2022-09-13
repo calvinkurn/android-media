@@ -1603,7 +1603,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return when {
             sellerAccount.hasAcceptTnc -> sellerAccount
             isHasNonSeller -> nonSellerAccountCheck(accountList, sellerAccount)
-            else -> sellerAccount
+            else -> {
+                _accountStateInfo.update { AccountStateInfo() }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.NotAcceptTNC,
+                        selectedAccount = sellerAccount,
+                    )
+                }
+                sellerAccount
+            }
         }
     }
 
