@@ -50,14 +50,15 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
     private var topedDrawable: Drawable? = null
 
     // image ratio 14:3 || refer to watermark_tokopedia.xml vector drawable
-    private var imageWidth: Float = 0f
+    private var tokopediaLogoWidth: Float = 0f
         set(value) {
             field = value
-            imageHeight = (value / 14) * 3
-            fontSize = imageHeight
+            tokopediaLogoHeight = (value / 14) * 3
+            fontSize = tokopediaLogoHeight
         }
 
-    private var imageHeight = 0f
+    private var tokopediaLogoHeight = 0f
+
     private var fontSize = 0f
 
     private var textWidth = 0
@@ -101,7 +102,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         val sourceHeight: Int = source.height
         val result = Bitmap.createBitmap(sourceWidth, sourceHeight, source.config)
 
-        imageWidth = if (!isThumbnail)
+        tokopediaLogoWidth = if (!isThumbnail)
             (sourceWidth / IMAGE_SIZE_DIVIDER).toFloat()
         else
             min(sourceWidth, sourceHeight) / 3f
@@ -190,13 +191,13 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         canvas.drawText(shopText, xPos, yPos, paint)
 
 
-        xPos = ((width / 2) - (imageWidth / 2))
-        yPos = ((height / 2) - (imageHeight))
+        xPos = ((width / 2) - (tokopediaLogoWidth / 2))
+        yPos = ((height / 2) - (tokopediaLogoHeight))
         topedDrawable?.setBounds(
             0,
             0,
-            imageWidth.toInt(),
-            imageHeight.toInt()
+            tokopediaLogoWidth.toInt(),
+            tokopediaLogoHeight.toInt()
         )
         canvas.translate(xPos, yPos)
         topedDrawable?.draw(canvas)
@@ -213,18 +214,20 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         val paddingVertical = height / PADDING_DIVIDER
 
         var xLastPost: Float
-        var yLastPost = imageHeight
+        var yLastPost = tokopediaLogoHeight
 
+        // text box bound height will be 2x source height
+        // text box bound width will be source width + 2x text column
         val yLimit = height * 2
-        val xStart = -(textWidth + paddingHorizontal)
+        val xStart = -((textWidth + paddingHorizontal) * 2)
 
 
         var index: Int
         topedDrawable?.setBounds(
             0,
             0,
-            imageWidth.toInt(),
-            imageHeight.toInt()
+            tokopediaLogoWidth.toInt(),
+            tokopediaLogoHeight.toInt()
         )
 
         while (yLastPost <= yLimit) {
@@ -237,7 +240,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
                 if (index % 2 == 1) {
                     canvas.translate(xLastPost, yLastPost)
                     topedDrawable?.draw(canvas)
-                    xLastPost += (imageWidth + (paddingHorizontal))
+                    xLastPost += (tokopediaLogoWidth + (paddingHorizontal))
                 } else {
                     canvas.drawText(shopText, xLastPost, yLastPost, paint)
                     xLastPost += (textWidth + (paddingHorizontal))
@@ -246,7 +249,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
                 canvas.restore()
                 index++
             }
-            yLastPost += imageHeight + (paddingVertical)
+            yLastPost += tokopediaLogoHeight + (paddingVertical)
         }
     }
 

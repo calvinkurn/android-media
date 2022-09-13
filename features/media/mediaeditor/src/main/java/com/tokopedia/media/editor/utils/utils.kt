@@ -27,11 +27,11 @@ fun getUCropTempResultPath(): Uri {
 // if total of dark pixel > total of pixel * 0.45 count that as dark image
 fun Bitmap.isDark(): Boolean {
     try {
-        val ratio = this.width / this.height
+        val ratio = this.width.toFloat() / this.height
         val widthBitmapChecker = 50
-        val heightBitmapChecker = widthBitmapChecker / ratio
+        val heightBitmapChecker = widthBitmapChecker * ratio
         val bitmapChecker =
-            Bitmap.createScaledBitmap(this, widthBitmapChecker, heightBitmapChecker, false)
+            Bitmap.createScaledBitmap(this, widthBitmapChecker, heightBitmapChecker.toInt(), false)
         val darkThreshold = bitmapChecker.width * bitmapChecker.height * 0.45f
         var darkPixels = 0
         val pixels = IntArray(bitmapChecker.width * bitmapChecker.height)
