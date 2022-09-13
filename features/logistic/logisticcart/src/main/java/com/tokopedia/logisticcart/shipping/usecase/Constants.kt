@@ -488,6 +488,7 @@ internal fun ratesQuery() = """
               benefit_class
               shipping_subsidy
             }
+            bo_campaign_id
           }
           pre_order {
             header

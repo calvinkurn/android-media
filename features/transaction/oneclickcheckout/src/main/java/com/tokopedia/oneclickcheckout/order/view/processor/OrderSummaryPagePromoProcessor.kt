@@ -292,11 +292,11 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         ordersItem.etaText = shipping.shippingEta ?: ""
         ordersItem.shippingPrice = shipping.getRealOriginalPrice().toDouble()
         if (shouldAddLogisticPromo && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-            // todo: bo campaign id
             ordersItem.freeShippingMetadata = shipping.logisticPromoViewModel.freeShippingMetadata
             ordersItem.benefitClass = shipping.logisticPromoViewModel.benefitClass
             ordersItem.shippingSubsidy = shipping.logisticPromoViewModel.shippingSubsidy
             ordersItem.etaText = shipping.logisticPromoViewModel.etaData.textEta
+            ordersItem.boCampaignId = shipping.logisticPromoViewModel.boCampaignId
         }
 
         ordersItem.codes = generateOrderPromoCodes(lastValidateUsePromoRequest, ordersItem.uniqueId, shipping, orderPromo, shouldAddLogisticPromo)
@@ -327,11 +327,11 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 }
                 codes.add(logisticPromoUiModel.promoCode)
                 freeShippingMetadata = logisticPromoUiModel.freeShippingMetadata
-                // todo: bo campaign id
                 benefitClass = logisticPromoUiModel.benefitClass
                 shippingSubsidy = logisticPromoUiModel.shippingSubsidy
                 shippingPrice = logisticPromoUiModel.shippingRate.toDouble()
                 etaText = logisticPromoUiModel.etaData.textEta
+                boCampaignId = logisticPromoUiModel.boCampaignId
             }
         }
     }
