@@ -235,10 +235,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun shouldShowShopPageFab(): Boolean {
         val firstItem = adapter?.data?.firstOrNull()
-        return true
-//        return !isSellerMigrationEnabled(context) && shopId == userSession.shopId &&
-//                whitelistDomain.authors.isNotEmpty() && firstItem != null &&
-//                firstItem !is EmptyModel && firstItem !is EmptyFeedShopUiModel
+        return !isSellerMigrationEnabled(context) && shopId == userSession.shopId &&
+                whitelistDomain.authors.isNotEmpty() && firstItem != null &&
+                firstItem !is EmptyModel && firstItem !is EmptyFeedShopUiModel
     }
 
     override fun getShopPageFabConfig(): ShopPageFabConfig? {
