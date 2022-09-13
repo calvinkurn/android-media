@@ -44,6 +44,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.network.exception.MessageErrorException
@@ -2473,7 +2474,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 dismissObjectIDs = element.data?.postPagers?.flatMap { it.postList }
                     ?.filter { it.isChecked }?.map { it.postItemId }.orEmpty()
                 dismissSign = element.data?.widgetDataSign.orEmpty()
-                SellerHomeTracking.sendClickWidgetPostSubmitDismissalEvent(element.dataKey)
+                val numberPosts = dismissObjectIDs.size
+                SellerHomeTracking.sendClickWidgetPostSubmitDismissalEvent(
+                    element.dataKey,
+                    numberPosts
+                )
 
                 String.format(POST_LIST_DISMISSAL_KEY, element.dataKey)
             }
@@ -2572,7 +2577,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 SellerHomeTracking.sendClickWidgetAnnouncementCancelDismissalEvent(element.dataKey)
             }
             is PostListWidgetUiModel -> {
-                SellerHomeTracking.sendClickWidgetPostCancelDismissalEvent(element.dataKey)
+                val numberOfPosts = element.data?.postPagers?.flatMap { it.postList }
+                    ?.count { it.isChecked }.orZero()
+                SellerHomeTracking.sendClickWidgetPostCancelDismissalEvent(
+                    element.dataKey,
+                    numberOfPosts
+                )
             }
         }
     }
