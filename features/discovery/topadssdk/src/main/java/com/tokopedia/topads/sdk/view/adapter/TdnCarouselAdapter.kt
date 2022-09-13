@@ -132,7 +132,7 @@ class TdnCarouselAdapter(
         }
 
         private fun calculatedWidth(width: Int): Int {
-            return width - (width * 20 / 100)
+            return width - (width * 10 / 100)
         }
 
         private fun recordClick(

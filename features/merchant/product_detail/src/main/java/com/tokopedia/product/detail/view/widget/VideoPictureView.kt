@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -16,7 +17,9 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ThumbnailDataModel
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
@@ -31,7 +34,7 @@ import com.tokopedia.product.detail.view.util.ThumbnailSmoothScroller
  */
 @SuppressLint("WrongConstant")
 class VideoPictureView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), ProductMainThumbnailListener {
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
@@ -39,22 +42,17 @@ class VideoPictureView @JvmOverloads constructor(
     private var videoPictureAdapter: VideoPictureAdapter? = null
     private var thumbnailAdapter: ProductMainThumbnailAdapter? = null
     private var animator: ThumbnailAnimator? = null
-    private var binding: WidgetVideoPictureBinding = WidgetVideoPictureBinding.inflate(LayoutInflater.from(context))
+    private var binding: WidgetVideoPictureBinding =
+        WidgetVideoPictureBinding.inflate(LayoutInflater.from(context))
     private var lastPosition = 0
     private var smoothScroller = ThumbnailSmoothScroller(
-            context,
-            binding.pdpMainThumbnailRv
+        context,
+        binding.pdpMainThumbnailRv
     )
 
     init {
         addView(binding.root)
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
-        measureScreenHeight(binding)
-    }
-
-    private fun measureScreenHeight(binding: WidgetVideoPictureBinding) {
-        val screenWidth = binding.root.resources.displayMetrics.widthPixels
-        binding.viewPagerContainer.layoutParams.height = screenWidth
     }
 
     private fun showThumbnail() {
@@ -63,17 +61,20 @@ class VideoPictureView @JvmOverloads constructor(
         }
     }
 
-    fun setup(media: List<MediaDataModel>,
-              listener: DynamicProductDetailListener?,
-              componentTrackDataModel: ComponentTrackDataModel?,
-              initialScrollPosition: Int,
-              shouldAnimateLabel: Boolean) {
+    fun setup(
+        media: List<MediaDataModel>,
+        listener: DynamicProductDetailListener?,
+        componentTrackDataModel: ComponentTrackDataModel?,
+        initialScrollPosition: Int,
+        shouldAnimateLabel: Boolean,
+        containerType: MediaContainerType
+    ) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
 
         if (videoPictureAdapter == null) {
             setupViewPagerCallback()
-            setupViewPager()
+            setupViewPager(containerType = containerType)
             //If first position is video and selected: process the video
         }
 
@@ -118,10 +119,11 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun updateThumbnail(selectedPosition: Int) {
         showThumbnail()
-        thumbnailAdapter?.submitList(thumbnailAdapter?.currentList?.toMutableList()?.mapIndexed { index, data ->
-            val isSelected = selectedPosition == index
-            data.copy(isSelected = isSelected)
-        } ?: listOf())
+        thumbnailAdapter?.submitList(
+            thumbnailAdapter?.currentList?.toMutableList()?.mapIndexed { index, data ->
+                val isSelected = selectedPosition == index
+                data.copy(isSelected = isSelected)
+            } ?: listOf())
 
         binding.pdpMainThumbnailRv.addOneTimeGlobalLayoutListener {
             smoothScroller.scrollThumbnail(selectedPosition)
@@ -145,21 +147,24 @@ class VideoPictureView @JvmOverloads constructor(
             return
         }
         thumbnailAdapter = ProductMainThumbnailAdapter(
-                this,
-                mListener,
-                componentTrackDataModel
+            this,
+            mListener,
+            componentTrackDataModel
         )
 
-        binding.pdpMainThumbnailRv.layoutManager = LinearLayoutManager(context,
-                LinearLayoutManager.HORIZONTAL,
-                false)
+        binding.pdpMainThumbnailRv.layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
         binding.pdpMainThumbnailRv.adapter = thumbnailAdapter
         animator = ThumbnailAnimator(binding.pdpMainThumbnailRv)
     }
 
     private fun hideThumbnail(media: List<MediaDataModel>): Boolean {
         if (media.size < MIN_MEDIA_TO_SHOW_THUMBNAIL
-                || mListener?.showThumbnailImage() == false) {
+            || mListener?.showThumbnailImage() == false
+        ) {
             thumbnailAdapter = null
             animator = null
             binding.pdpMainThumbnailRv.layoutParams.height = 0
@@ -170,14 +175,25 @@ class VideoPictureView @JvmOverloads constructor(
         return false
     }
 
-    private fun setupViewPager() {
+    private fun setupViewPager(
+        containerType: MediaContainerType
+    ) {
         videoPictureAdapter = VideoPictureAdapter(
-                mListener,
-                componentTrackDataModel)
+            listener = mListener,
+            componentTrackDataModel = componentTrackDataModel,
+            containerType = containerType
+        )
 
-        binding.pdpViewPager.adapter = videoPictureAdapter
-        binding.pdpViewPager.setPageTransformer { _, _ ->
+        val viewPager = binding.pdpViewPager
+        viewPager.adapter = videoPictureAdapter
+        viewPager.setPageTransformer { _, _ ->
             //NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
+        }
+
+        viewPager.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            if (this != null) {
+                dimensionRatio = containerType.ratio
+            }
         }
     }
 
@@ -191,11 +207,17 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun setupViewPagerCallback() {
-        binding.pdpViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.pdpViewPager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 if (lastPosition != position) {
                     videoPictureAdapter?.currentList?.getOrNull(position)?.run {
-                        mListener?.onSwipePicture(type, if (isVideoType()) videoUrl else urlOriginal, position + 1, componentTrackDataModel)
+                        mListener?.onSwipePicture(
+                            type,
+                            if (isVideoType()) videoUrl else urlOriginal,
+                            position + 1,
+                            componentTrackDataModel
+                        )
                     }
                     updateMediaLabel(position)
                     updateThumbnail(position)
@@ -205,7 +227,8 @@ class VideoPictureView @JvmOverloads constructor(
 
             override fun onPageScrollStateChanged(state: Int) {
                 if (state == RecyclerView.SCROLL_STATE_IDLE) {
-                    mListener?.getProductVideoCoordinator()?.onScrollChangedListener(binding.pdpViewPager, lastPosition)
+                    mListener?.getProductVideoCoordinator()
+                        ?.onScrollChangedListener(binding.pdpViewPager, lastPosition)
                 }
             }
         })
@@ -215,17 +238,21 @@ class VideoPictureView @JvmOverloads constructor(
         return if (media == null || media.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
             val res = context.resources
-            val uriNoPhoto = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                    + "://" + res.getResourcePackageName(resId)
-                    + '/'.toString() + res.getResourceTypeName(resId)
-                    + '/'.toString() + res.getResourceEntryName(resId))
+            val uriNoPhoto = Uri.parse(
+                ContentResolver.SCHEME_ANDROID_RESOURCE
+                        + "://" + res.getResourcePackageName(resId)
+                        + '/'.toString() + res.getResourceTypeName(resId)
+                        + '/'.toString() + res.getResourceEntryName(resId)
+            )
             mutableListOf(MediaDataModel(urlOriginal = uriNoPhoto.toString()))
         } else
             media.toMutableList()
     }
 
-    private fun updateMediaLabel(position: Int,
-                                 shouldAnimateLabel: Boolean = false) {
+    private fun updateMediaLabel(
+        position: Int,
+        shouldAnimateLabel: Boolean = false
+    ) {
         val mediaData = videoPictureAdapter?.currentList?.getOrNull(position)
         val variantName = mediaData?.mediaDescription ?: ""
         val totalMediaCount = videoPictureAdapter?.currentList?.size ?: 0
