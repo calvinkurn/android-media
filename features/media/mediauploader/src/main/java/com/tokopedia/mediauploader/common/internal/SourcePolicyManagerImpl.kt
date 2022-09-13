@@ -3,33 +3,34 @@ package com.tokopedia.mediauploader.common.internal
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
-import com.tokopedia.mediauploader.common.data.entity.UploaderPolicy
-import com.tokopedia.url.Env
 import javax.inject.Inject
 
-class SourcePolicyManager @Inject constructor(
-    @ApplicationContext val context: Context
-) : LocalCacheHandler(context, NAME_PREFERENCE_SOURCE_POLICY) {
+interface SourcePolicyManager {
+    fun set(policy: SourcePolicy)
+    fun get(): SourcePolicy?
+}
 
-    fun set(policy: SourcePolicy) {
-        val content = Gson().toJson(policy)
+class SourcePolicyManagerImpl @Inject constructor(
+    @ApplicationContext val context: Context
+) : SourcePolicyManager, LocalCacheHandler(context, NAME_PREFERENCE_SOURCE_POLICY) {
+
+    private val gson by lazy {
+        Gson()
+    }
+
+    override fun set(policy: SourcePolicy) {
+        val content = gson.toJson(policy)
         putString(KEY_SOURCE_POLICY, content)
 
         applyEditor()
     }
 
-    fun policy(): SourcePolicy {
-        val json = getString(KEY_SOURCE_POLICY, "")
-        return Gson().fromJson(json, SourcePolicy::class.java)
-    }
-
-    fun clear() {
-        val json = getString(KEY_SOURCE_POLICY, "")
-        if (json.isEmpty()) return
-
-        clearCache()
+    override fun get(): SourcePolicy? {
+        val json = getString(KEY_SOURCE_POLICY)?: return null
+        return gson.fromJson(json, SourcePolicy::class.java)
     }
 
     companion object {

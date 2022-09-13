@@ -33,7 +33,7 @@ import javax.inject.Inject
  * Created by Pika on 18/9/20.
  */
 
-class AutoAdsWidgetViewModelCommon @Inject constructor(
+class AutoAdsWidgetViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatcher,
         private val repository: GraphqlRepository,
         @ActivityContext private val context: Context,
