@@ -656,14 +656,8 @@ class DealsPDPFragment: BaseDaggerFragment() {
                         }
 
                         toolbar?.let { toolbar ->
-                            setDrawableColorFilter(
-                                toolbar.navigationIcon,
-                                colorInt
-                            )
-                            setDrawableColorFilter(
-                                toolbar.menu.getItem(Int.ZERO)?.icon,
-                                colorInt
-                            )
+                            setDrawableColorFilter(toolbar.navigationIcon, colorInt)
+                            setDrawableColorFilter(toolbar.menu.getItem(Int.ZERO)?.icon, colorInt)
                         }
                     }
                 }

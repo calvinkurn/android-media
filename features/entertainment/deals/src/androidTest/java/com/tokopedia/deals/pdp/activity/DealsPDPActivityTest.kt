@@ -25,13 +25,11 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.pdp.common.DealsPDPIdlingResource
 import com.tokopedia.deals.pdp.mock.DealsPDPGQLMockResponse
-import com.tokopedia.deals.pdp.mock.DealsPDPRestMockResponse
 import com.tokopedia.deals.pdp.rule.DealsIdlingResourceTestRule
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.test.application.util.setupRestMockResponse
 import com.tokopedia.deals.test.R
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
@@ -63,7 +61,6 @@ class DealsPDPActivityTest {
         Intents.init()
         graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse(DealsPDPGQLMockResponse())
-        setupRestMockResponse(DealsPDPRestMockResponse())
         idlingResource = DealsPDPIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
 
