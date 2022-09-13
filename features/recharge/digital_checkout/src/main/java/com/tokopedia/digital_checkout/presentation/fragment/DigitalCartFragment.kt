@@ -53,6 +53,8 @@ import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrForm
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -182,10 +184,12 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun loadData() {
         cartPassData?.let {
             if (it.isFromPDP || it.needGetCart) {
+                val categoryId = cartPassData?.categoryId ?: ""
+                val isSpecialProduct = cartPassData?.isSpecialProduct ?: false
                 viewModel.getCart(
-                    cartPassData?.categoryId
-                        ?: "", getString(R.string.digital_cart_login_message),
-                    cartPassData?.isSpecialProduct ?: false
+                    categoryId,
+                    getString(R.string.digital_cart_login_message),
+                    isSpecialProduct
                 )
             } else {
                 hideContent()
@@ -203,10 +207,12 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun getCartAfterCheckout() {
         cartPassData?.let {
+            val categoryId = cartPassData?.categoryId ?: ""
+            val isSpecialProduct = cartPassData?.isSpecialProduct ?: false
             viewModel.getCart(
-                cartPassData?.categoryId
-                    ?: "", getString(R.string.digital_cart_login_message),
-                cartPassData?.isSpecialProduct ?: false
+                categoryId,
+                getString(R.string.digital_cart_login_message),
+                isSpecialProduct
             )
         }
     }
@@ -385,8 +391,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 }
 
                 override fun collapseAdditionalList() {
-                    it.tvSeeDetailToggle.text =
-                        getString(R.string.digital_cart_detail_see_detail_label)
+                    it.tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_see_detail_label)
                     it.ivSeeDetail.loadImage(CommonRes.drawable.ic_system_action_arrow_down_normal_24)
                 }
             })
@@ -570,12 +575,12 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
         if (postPaidPopupAttribute.title.isNotEmpty() || postPaidPopupAttribute.content.isNotEmpty()) {
-            val dialog =
-                DialogUnify(
-                    requireActivity(),
-                    DialogUnify.SINGLE_ACTION,
-                    DialogUnify.WITH_ILLUSTRATION
-                )
+            val dialog = DialogUnify(
+                requireActivity(),
+                DialogUnify.SINGLE_ACTION,
+                DialogUnify.WITH_ILLUSTRATION
+            )
+
             dialog.setTitle(postPaidPopupAttribute.title)
             dialog.setDescription(MethodChecker.fromHtml(postPaidPopupAttribute.content))
             dialog.setImageUrl(postPaidPopupAttribute.imageUrl)
@@ -702,7 +707,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             )
             val moreInfoText: Typography = moreInfoView.findViewById(R.id.egold_tooltip)
             moreInfoText.setPadding(
-                0, 0, 0,
+                Int.ZERO, Int.ZERO, Int.ZERO,
                 getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
             )
             moreInfoText.text = MethodChecker.fromHtml(fintechProductInfo.tooltipText)
@@ -733,11 +738,13 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             if (!userInputPriceDigital.minPayment.isNullOrEmpty())
                 binding?.inputPriceHolderView?.actionListener = this
 
+            val minPayment = userInputPriceDigital.minPayment ?: ""
+            val maxPayment = userInputPriceDigital.maxPayment ?: ""
             binding?.inputPriceHolderView?.setMinMaxPayment(
                 userInputPriceDigital.minPaymentPlain.toLong(),
                 userInputPriceDigital.maxPaymentPlain.toLong(),
-                userInputPriceDigital.minPayment ?: "",
-                userInputPriceDigital.maxPayment ?: ""
+                minPayment,
+                maxPayment,
             )
             binding?.inputPriceHolderView?.setPriceInput(total)
         }
@@ -769,9 +776,12 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun redirectToTopPayActivity(paymentPassData: PaymentPassData) {
+        val categoryId = cartPassData?.categoryId ?: ""
         digitalAnalytics.eventProceedToPayment(
-            getCartDigitalInfoData(), getPromoData().promoCode, userSession.userId,
-            cartPassData?.categoryId ?: ""
+            getCartDigitalInfoData(),
+            getPromoData().promoCode,
+            userSession.userId,
+            categoryId
         )
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
@@ -780,10 +790,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun sendGetCartAndCheckoutAnalytics() {
         digitalAnalytics.sendCartScreen()
-        rechargeAnalytics.trackAddToCartRechargePushEventRecommendation(
-            cartPassData?.categoryId?.toIntOrNull()
-                ?: 0
-        )
+        val categoryId = cartPassData?.categoryId?.toIntOrNull() ?: Int.ZERO
+        rechargeAnalytics.trackAddToCartRechargePushEventRecommendation(categoryId)
     }
 
     private fun onClickUsePromo() {
@@ -808,7 +816,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun navigateToPromoListPage() {
-        val couponActive = viewModel.cartDigitalInfoData.value?.attributes?.isCouponActive == 1
+        val couponActive = viewModel.cartDigitalInfoData.value?.attributes?.isCouponActive == Int.ONE
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
         intent.putExtra(EXTRA_COUPON_ACTIVE, couponActive)
         intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
@@ -828,7 +836,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             linearLayout.orientation = LinearLayout.VERTICAL
             linearLayout.setPadding(
                 getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                0,
+                Int.ZERO,
                 getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
                 getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_24),
             )
@@ -838,7 +846,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                     ?: emptyArray()
             descriptionArray.forEachIndexed { index, text ->
                 val simpleWidget = DigitalCheckoutSimpleWidget(it)
-                simpleWidget.setContent("${index + 1}.", text)
+                simpleWidget.setContent("${index + Int.ONE}.", text)
 
                 linearLayout.addView(simpleWidget)
             }
@@ -880,7 +888,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun getDimensionPixelSize(@DimenRes id: Int): Int {
-        return context?.resources?.getDimensionPixelSize(id) ?: 0
+        return context?.resources?.getDimensionPixelSize(id) ?: Int.ZERO
     }
 
     companion object {
