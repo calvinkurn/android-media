@@ -1,6 +1,6 @@
 package com.tokopedia.sellerapp.data.repository
 
-import com.tokopedia.sellerapp.data.datasource.local.model.OrderWithProduct
+import com.tokopedia.sellerapp.data.datasource.remote.AcceptBulkOrderModel
 import com.tokopedia.sellerapp.util.Action
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -11,6 +11,8 @@ interface BaseRepository<T> {
 
     fun getCachedDataCount(params: Array<String> = arrayOf()) : Flow<Int> = flowOf()
 
-    suspend fun sendMessagesToNodes(action: Action) { }
+    fun getAcceptBulkOrder(): Flow<AcceptBulkOrderModel> = flowOf()
+
+    suspend fun <T> sendMessagesToNodes(action: Action, data: T) { }
 
 }

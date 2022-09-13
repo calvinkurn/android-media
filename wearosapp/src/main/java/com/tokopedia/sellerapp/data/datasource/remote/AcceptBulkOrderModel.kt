@@ -1,6 +1,6 @@
-package com.tokopedia.watch.orderlist.model
+package com.tokopedia.sellerapp.data.datasource.remote
 
-data class SomListAcceptBulkOrderUiModel(
+data class AcceptBulkOrderModel(
         val `data`: Data = Data(),
         val errors: List<Error> = listOf()
 ) {

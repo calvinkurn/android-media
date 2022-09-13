@@ -56,6 +56,12 @@ class DataLayerServiceListener: WearableListenerService() {
     override fun onMessageReceived(messageEvent: MessageEvent) {
         super.onMessageReceived(messageEvent)
         when (messageEvent.path) {
+            MESSAGE_CLIENT_ACCEPT_BULK_ORDER_PATH -> {
+                val intent = Intent(this, TokopediaWatchActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.putExtra("order_ids", messageEvent.data.decodeToString())
+                startActivity(intent)
+            }
             MESSAGE_CLIENT_START_ORDER_ACTIVITY -> {
                 startActivity(
                     Intent(this, TokopediaWatchActivity::class.java)
@@ -218,6 +224,6 @@ class DataLayerServiceListener: WearableListenerService() {
         const val ACCEPT_BULK_ORDER_PATH = "/accept_bulk-order"
         const val TAG = "DataLayerServiceListener"
         const val OPEN_LOGIN_PAGE = "/open-login-page"
-
+        const val MESSAGE_CLIENT_ACCEPT_BULK_ORDER_PATH = "/accept-bulk-order"
     }
 }

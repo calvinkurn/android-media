@@ -5,14 +5,14 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.watch.orderlist.mapper.AcceptBulkOrderMapper
 import com.tokopedia.watch.orderlist.model.SomListAcceptBulkOrderResponse
-import com.tokopedia.watch.orderlist.model.SomListAcceptBulkOrderUiModel
+import com.tokopedia.watch.orderlist.model.AcceptBulkOrderModel
 import com.tokopedia.watch.orderlist.param.SomListAcceptBulkOrderParam
 import javax.inject.Inject
 
 class SomListAcceptBulkOrderUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: AcceptBulkOrderMapper
-) : BaseGraphqlUseCase<SomListAcceptBulkOrderUiModel>(gqlRepository) {
+) : BaseGraphqlUseCase<AcceptBulkOrderModel>(gqlRepository) {
 
     companion object {
         const val PARAM_INPUT = "input"
@@ -44,11 +44,11 @@ class SomListAcceptBulkOrderUseCase @Inject constructor(
         """.trimIndent()
     }
 
-    override suspend fun executeOnBackground(): SomListAcceptBulkOrderUiModel {
+    override suspend fun executeOnBackground(): AcceptBulkOrderModel {
         return executeOnBackground(false)
     }
 
-    override suspend fun executeOnBackground(useCache: Boolean): SomListAcceptBulkOrderUiModel {
+    override suspend fun executeOnBackground(useCache: Boolean): AcceptBulkOrderModel {
         val cacheStrategy = getCacheStrategy(useCache)
         val gqlRequest = GraphqlRequest(QUERY, SomListAcceptBulkOrderResponse.Data::class.java, params.parameters)
         val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)

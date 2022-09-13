@@ -14,7 +14,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.watch.orderlist.model.OrderListModel
 import com.tokopedia.watch.orderlist.model.SomListAcceptBulkOrderStatusUiModel
-import com.tokopedia.watch.orderlist.model.SomListAcceptBulkOrderUiModel
+import com.tokopedia.watch.orderlist.model.AcceptBulkOrderModel
 import com.tokopedia.watch.orderlist.param.SomListGetAcceptBulkOrderStatusParam
 import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
 import com.tokopedia.watch.orderlist.usecase.SomListAcceptBulkOrderUseCase
@@ -37,8 +37,8 @@ class TokopediaWatchViewModel @Inject constructor(
 
     private var orderIds: List<String> = emptyList()
 
-    private val _bulkAcceptOrderResult = MutableLiveData<Result<SomListAcceptBulkOrderUiModel>>()
-    val bulkAcceptOrderResult: LiveData<Result<SomListAcceptBulkOrderUiModel>>
+    private val _bulkAcceptOrderResult = MutableLiveData<Result<AcceptBulkOrderModel>>()
+    val bulkAcceptOrderResult: LiveData<Result<AcceptBulkOrderModel>>
         get() = _bulkAcceptOrderResult
 
     private val _orderListModel = MutableLiveData<Result<OrderListModel>>()
@@ -59,7 +59,7 @@ class TokopediaWatchViewModel @Inject constructor(
         })
     }
 
-    fun acceptBulkOrder() {
+    fun acceptBulkOrder(orderIds: List<String>) {
         launchCatchError(block = {
             resetGetAcceptBulkOrderStatusState()
             somListAcceptBulkOrderUseCase.setParams(orderIds, userSession.userId)

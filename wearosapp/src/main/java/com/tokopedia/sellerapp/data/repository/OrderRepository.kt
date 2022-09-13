@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.data.repository
 
 import com.tokopedia.sellerapp.data.datasource.local.OrderRoomDatasource
 import com.tokopedia.sellerapp.data.datasource.local.model.OrderWithProduct
+import com.tokopedia.sellerapp.data.datasource.remote.AcceptBulkOrderModel
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.util.Action
 import kotlinx.coroutines.flow.Flow
@@ -20,8 +21,12 @@ class OrderRepository @Inject constructor(
         return orderRoomDatasource.getOrderCount(params)
     }
 
-    override suspend fun sendMessagesToNodes(action: Action) {
-        clientMessageDatasource.sendMessagesToNodes(action)
+    override suspend fun <T> sendMessagesToNodes(action: Action, data: T) {
+        clientMessageDatasource.sendMessagesToNodes(action, data)
+    }
+
+    override fun getAcceptBulkOrder(): Flow<AcceptBulkOrderModel> {
+        return clientMessageDatasource.acceptBulkOrder
     }
 
 }
