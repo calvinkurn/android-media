@@ -207,13 +207,11 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun setupHeader(flashSale: FlashSale) {
         val activity = activity ?: return
         val infoIcon = IconUnify(activity, IconUnify.INFORMATION)
-        binding?.run {
-            header.run {
-                setNavigationOnClickListener { activity.finish() }
-                addCustomRightContent(infoIcon)
-                setOnClickListener {
-                    showBottomSheet(flashSale, DetailBottomSheetType.GENERAL)
-                }
+        binding?.header?.run {
+            setNavigationOnClickListener { activity.finish() }
+            addCustomRightContent(infoIcon)
+            setOnClickListener {
+                showBottomSheet(flashSale, DetailBottomSheetType.GENERAL)
             }
         }
     }
