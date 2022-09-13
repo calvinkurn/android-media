@@ -30,6 +30,8 @@ class InboxViewModelTest {
 
     private val viewModel = InboxViewModel(useCase, userSession, cacheManager)
 
+    private val testShopId = "123"
+
     @Before
     fun setUp() {
         viewModel.notifications.observeForever(notificationObserver)
@@ -40,13 +42,13 @@ class InboxViewModelTest {
         // given
         val expectedValue = inboxCounter.notifications
 
-        every { useCase.getNotification(captureLambda(), any()) } answers {
+        every { useCase.getNotification(any(), captureLambda(), any()) } answers {
             val onSuccess = lambda<(Notifications) -> Unit>()
             onSuccess.invoke(expectedValue)
         }
 
         // when
-        viewModel.getNotifications()
+        viewModel.getNotifications(testShopId)
 
         // then
         verify(exactly = 1) {
@@ -59,13 +61,13 @@ class InboxViewModelTest {
         // given
         val expectedValue = Throwable()
 
-        every { useCase.getNotification(any(), captureLambda()) } answers {
+        every { useCase.getNotification(any(), any(), captureLambda()) } answers {
             val onError = lambda<(Throwable) -> Unit>()
             onError.invoke(expectedValue)
         }
 
         // when
-        viewModel.getNotifications()
+        viewModel.getNotifications(testShopId)
 
         // then
         verify(exactly = 1) {

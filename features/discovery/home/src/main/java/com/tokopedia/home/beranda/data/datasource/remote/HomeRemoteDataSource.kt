@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.datasource.remote
 
+import android.os.Bundle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.interactor.repository.*
@@ -41,17 +42,19 @@ class HomeRemoteDataSource(
                                       numOfChannel: Int = 0,
                                       params: String = "",
                                       locationParams: String = "",
+                                      channelIds: String = "",
                                       doQueryHash: Boolean = false
-    ): HomeChannelData = homeDynamicChannelsRepository.getDynamicChannelData(
-            HomeDynamicChannelsRepository.buildParams(
-                    groupIds = groupIds,
-                    token = token,
-                    numOfChannel = numOfChannel,
-                    queryParams = params,
-                    locationParams = locationParams,
-                    doQueryHash = doQueryHash
-            )
-    )
+    ): HomeChannelData {
+        val bundle = Bundle().apply {
+            putString(HomeDynamicChannelsRepository.GROUP_IDS, groupIds)
+            putString(HomeDynamicChannelsRepository.TOKEN, token)
+            putInt(HomeDynamicChannelsRepository.NUM_OF_CHANNEL, numOfChannel)
+            putString(HomeDynamicChannelsRepository.PARAMS, params)
+            putString(HomeDynamicChannelsRepository.LOCATION, locationParams)
+            putString(HomeDynamicChannelsRepository.CHANNEL_IDS, channelIds)
+        }
+        return homeDynamicChannelsRepository.getRemoteData(bundle)
+    } 
     suspend fun getHomePageBannerData(): HomeBannerData? = withContext(dispatchers.io) {
         homePageBannerRepository.executeOnBackground()
     }

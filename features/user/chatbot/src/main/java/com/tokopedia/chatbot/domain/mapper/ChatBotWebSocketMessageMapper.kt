@@ -12,8 +12,10 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
 import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
@@ -63,10 +65,13 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(pojo)
             TYPE_STICKED_BUTTON_ACTIONS -> convertToStickedButtonActionsViewModel(pojo)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(pojo, jsonAttributes)
+            TYPE_REPLY_BUBBLE -> convertToReplyBubble(pojo,jsonAttributes)
             AttachmentType.Companion.TYPE_INVOICE_SEND -> convertToSendInvoice(pojo, jsonAttributes)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
     }
+
+
 
     private fun convertToSendInvoice(pojo: ChatSocketPojo, jsonAttributes: JsonObject): AttachInvoiceSentUiModel {
         val invoiceSentPojo = GsonBuilder().create().fromJson(jsonAttributes,
@@ -263,5 +268,15 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             }
         }
         return list
+    }
+
+    private fun convertToReplyBubble(pojo: ChatSocketPojo, jsonAttributes: JsonObject): MessageUiModel {
+        val pojoAttribute = GsonBuilder().create().fromJson<ChatSocketPojo>(jsonAttributes,
+            ChatSocketPojo::class.java)
+
+        return MessageUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withParentReply(pojoAttribute.parentReply)
+            .build()
     }
 }

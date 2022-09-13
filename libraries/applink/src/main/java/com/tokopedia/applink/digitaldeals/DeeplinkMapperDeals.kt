@@ -4,10 +4,32 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 object DeeplinkMapperDeals {
+
+    private const val DEALS = "deals"
+    private const val DEALS_PRODUCT_DETAIL = "deals/i"
+    private const val DEALS_BRAND_DETAIL = "deals/b"
+
+    fun getRegisteredNavigationFromHttpDeals(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+        val path = uri.pathSegments.joinToString("/")
+        return when {
+            path == DEALS -> {
+                ApplinkConstInternalDeals.DEALS_HOMEPAGE
+            }
+            path.startsWith(DEALS_PRODUCT_DETAIL) -> {
+                UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.lastPathSegment)
+            }
+            path.startsWith(DEALS_BRAND_DETAIL) -> {
+                "${ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE}?${uri.lastPathSegment}"
+            }
+            else -> ""
+        }
+    }
 
     fun getRegisteredNavigationDeals(context: Context, deeplink: String) : String {
         val uri = Uri.parse(deeplink)

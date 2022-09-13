@@ -434,7 +434,7 @@ class NotificationViewModel @Inject constructor(
                     )
                 )
                 if (results.isNotEmpty()) {
-                    _topAdsBanner.postValue(NotificationTopAdsBannerUiModel(results.first()))
+                    _topAdsBanner.postValue(NotificationTopAdsBannerUiModel(results))
                 }
                 loadRecommendations(1)
             },
@@ -476,7 +476,7 @@ class NotificationViewModel @Inject constructor(
 
     companion object {
         const val TOP_ADS_SOURCE = "19"
-        const val TOP_ADS_COUNT = 1
+        const val TOP_ADS_COUNT = 3
         const val TOP_ADS_DIMEN_ID = 3
 
         const val RECOM_WIDGET = "recom_widget"
