@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
@@ -166,7 +167,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             cartPassData?.deviceId ?: DEFAULT_ANDROID_DEVICE_ID
 
         initViews()
-        loadData()
+        requestDataWithAuth()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -181,28 +182,45 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         super.onSaveInstanceState(outState)
     }
 
+    private fun requestDataWithAuth(){
+        if (userSession.isLoggedIn){
+            loadData()
+        } else {
+            RouteManager.getIntent(context, ApplinkConst.LOGIN).apply {
+                startActivityForResult(this, REQUEST_CODE_LOGIN)
+            }
+        }
+    }
+
     private fun loadData() {
         cartPassData?.let {
             if (it.isFromPDP || it.needGetCart) {
-                val categoryId = cartPassData?.categoryId ?: ""
-                val isSpecialProduct = cartPassData?.isSpecialProduct ?: false
-                viewModel.getCart(
-                    categoryId,
-                    getString(R.string.digital_cart_login_message),
-                    isSpecialProduct
-                )
+                requestGetCart(it)
             } else {
-                hideContent()
-                binding?.loaderCheckout?.visible()
-                it.idemPotencyKey = generateATokenRechargeCheckout(requireContext())
-                addToCartViewModel.addToCart(
-                    it,
-                    getDigitalIdentifierParam(),
-                    digitalSubscriptionParams,
-                    remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
-                )
+                requestAddToCart(it)
             }
         }
+    }
+
+    private fun requestGetCart(passData: DigitalCheckoutPassData){
+        val categoryId = passData.categoryId ?: ""
+        viewModel.getCart(
+            categoryId,
+            getString(R.string.digital_cart_login_message),
+            passData.isSpecialProduct
+        )
+    }
+
+    private fun requestAddToCart(passData: DigitalCheckoutPassData){
+        hideContent()
+        binding?.loaderCheckout?.visible()
+        passData.idemPotencyKey = generateATokenRechargeCheckout(requireContext())
+        addToCartViewModel.addToCart(
+            passData,
+            getDigitalIdentifierParam(),
+            digitalSubscriptionParams,
+            remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+        )
     }
 
     private fun getCartAfterCheckout() {
@@ -570,6 +588,12 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             }
         } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER && resultCode == Activity.RESULT_OK){
             loadData()
+        } else if (requestCode == REQUEST_CODE_LOGIN) {
+            if (resultCode == Activity.RESULT_OK) {
+                loadData()
+            } else {
+                activity?.finish()
+            }
         }
     }
 
@@ -900,6 +924,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"
 
         private const val REQUEST_VERIFY_PHONE_NUMBER = 1012
+        private const val REQUEST_CODE_LOGIN = 1013
         private const val REQUEST_CODE_OTP = 1001
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16
 
