@@ -151,6 +151,6 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_FIRST_SELECT_QUIZ_OPTION = "first_select_quiz_option_%s"
         private const val KEY_FIRST_GAME_RESULT = "first_game_result_%s"
         private const val KEY_FIRST_SWITCH_ACCOUNT = "first_switch_account_%s"
-        private const val KEY_LAST_SELECTED_ACCOUNT = "last_selected_account_%s_%s"
+        private const val KEY_LAST_SELECTED_ACCOUNT = "last_selected_account_%s"
     }
 }
