@@ -69,11 +69,13 @@ class SmartBillsActivityTest {
                     KEY_DELETE_PRODUCT,
                     ResourcePathUtil.getJsonFromResource(PATH_DELELTE_BILLS),
                     MockModelConfig.FIND_BY_CONTAINS)
+
             addMockResponse(
-                KEY_HIGHLIGHT_CATEGORY,
-                ResourcePathUtil.getJsonFromResource(PATH_HIGHLIGHT_CATEGORY),
-                MockModelConfig.FIND_BY_CONTAINS)
+                    KEY_HIGHLIGHT_CATEGORY,
+                    ResourcePathUtil.getJsonFromResource(PATH_HIGHLIGHT_CATEGORY),
+                    MockModelConfig.FIND_BY_CONTAINS)
         }
+
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         LocalCacheHandler(context, SmartBillsFragment.SMART_BILLS_PREF).also {
@@ -96,6 +98,16 @@ class SmartBillsActivityTest {
         validate_click_bayar()
         validate_tooltip()
         validate_refresh_action()
+
+        MatcherAssert.assertThat(
+            cassavaTestRule.validate(SMART_BILLS_VALIDATOR_QUERY),
+            hasAllSuccess()
+        )
+    }
+
+    @Test
+    fun validateSmartBillsAddBills() {
+        Thread.sleep(3000)
         click_add_bills()
         click_delete_cancel()
         click_delete_success()
@@ -103,7 +115,7 @@ class SmartBillsActivityTest {
         close_highlight_widget()
 
         MatcherAssert.assertThat(
-            cassavaTestRule.validate(SMART_BILLS_VALIDATOR_QUERY),
+            cassavaTestRule.validate(SMART_BILLS_ADD_BILLS_VALIDATOR_QUERY),
             hasAllSuccess()
         )
     }
@@ -254,5 +266,6 @@ class SmartBillsActivityTest {
         private const val PATH_HIGHLIGHT_CATEGORY = "highlight_category.json"
 
         private const val SMART_BILLS_VALIDATOR_QUERY = "tracker/recharge/smart_bills_management_test.json"
+        private const val SMART_BILLS_ADD_BILLS_VALIDATOR_QUERY = "tracker/recharge/smart_bills_management_add_bills_test.json"
     }
 }
