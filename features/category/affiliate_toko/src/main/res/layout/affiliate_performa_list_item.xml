@@ -34,7 +34,7 @@
         android:id="@+id/head"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/affiliate_promoted_products"
+        android:text="@string/link_dengan_performa"
         app:layout_constraintTop_toBottomOf="@+id/performaItem_RV"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
