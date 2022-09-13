@@ -47,6 +47,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -158,27 +159,27 @@ class FeedViewModel @Inject constructor(
         viewModelScope.launchCatchError( block = {
             val response = getFeedWidgetUpdatedData(detailId)
 
-             if (response.feedXHome.items.isNotEmpty()) {
+             if (response?.feedXHome?.items?.isNotEmpty() == true) {
                 val updatedData = FeedWidgetData(
                     rowNumber = rowNumber,
                     feedXCard = response.feedXHome.items.first()
                 )
                 _feedWidgetLatestData.value = Success(updatedData)
             } else {
-                Fail(CustomUiMessageThrowable(com.tokopedia.feedplus.R.string.feed_result_empty))
+                _feedWidgetLatestData.value = Fail(CustomUiMessageThrowable(com.tokopedia.feedplus.R.string.feed_result_empty))
             }
         }) {
             _feedWidgetLatestData.value = Fail(it)
         }
     }
 
-    private suspend fun getFeedWidgetUpdatedData(detailId: String): FeedXData {
+    private suspend fun getFeedWidgetUpdatedData(detailId: String): FeedXData? {
         try {
             return getDynamicFeedNewUseCase.executeForCDP(cursor = currentCursor, detailId = detailId)
         } catch (e: Throwable) {
-            e.printStackTrace()
-            throw e
+            Timber.e(e)
         }
+        return null
     }
 
     fun trackVisitChannel(channelId: String,rowNumber: Int) {

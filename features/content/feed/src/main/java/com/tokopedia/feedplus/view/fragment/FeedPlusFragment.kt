@@ -584,9 +584,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             feedWidgetLatestData.observe(viewLifecycleOwner, Observer {
                 when (it) {
-                    is Fail -> {
-                        showToast(ErrorHandler.getErrorMessage(context, it.throwable), Toaster.TYPE_ERROR)
-                    }
                     is Success -> {
                         onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
                     }
@@ -2286,7 +2283,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         } else {
             onGoToLogin()
         }
-        feedViewModel.setUnsetReminder(card.campaign, positionInFeed)
     }
 
     override fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int) {
