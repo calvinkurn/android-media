@@ -18,30 +18,28 @@ import javax.crypto.spec.SecretKeySpec
 class AuthHelper {
     companion object {
 
-        val p = Pattern.compile("([\\d]*[^-\\w][\\d]*)-([\\D]*)")
-
-        const val ERROR = "error read version name"
-
         @JvmStatic
         fun getVersionName(versionName: String): Pair<String, String> {
-            val m = p.matcher(versionName)
-            if(m.groupCount()==2){
-                while(m.find()){
-                    return Pair(m.group(1), m.group(2))
-                }
+            val versionNameStripIndex = versionName.indexOf("-")
+            return if (versionNameStripIndex > 0) {
+                Pair(
+                    versionName.substring(0, versionNameStripIndex),
+                    versionName.substring(versionNameStripIndex + 1)
+                )
+            } else {
+                Pair(versionName, "")
             }
-            return Pair(ERROR, ERROR)
         }
 
         @JvmStatic
         fun getDefaultHeaderMap(
-                path: String,
-                strParam: String,
-                method: String,
-                contentType: String,
-                authKey: String,
-                dateFormat: String,
-                userSession: UserSessionInterface
+            path: String,
+            strParam: String,
+            method: String,
+            contentType: String,
+            authKey: String,
+            dateFormat: String,
+            userSession: UserSessionInterface
         ): MutableMap<String, String> {
             val date = generateDate(dateFormat)
             val contentMD5 = getMD5Hash(strParam)
@@ -60,7 +58,8 @@ class AuthHelper {
             headerMap.remove(HEADER_RELEASE_TRACK)
 
             headerMap[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
-            headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
+            headerMap[HEADER_ACCOUNT_AUTHORIZATION] =
+                "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
             headerMap[HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
@@ -74,14 +73,14 @@ class AuthHelper {
 
         @JvmStatic
         fun getDefaultHeaderMapOld(
-                path: String,
-                strParam: String,
-                method: String,
-                contentType: String,
-                authKey: String,
-                dateFormat: String,
-                userId: String,
-                session: UserSessionInterface
+            path: String,
+            strParam: String,
+            method: String,
+            contentType: String,
+            authKey: String,
+            dateFormat: String,
+            userId: String,
+            session: UserSessionInterface
         ): MutableMap<String, String> {
             val date = generateDate(dateFormat)
             val contentMD5 = getMD5Hash(strParam)
@@ -115,22 +114,22 @@ class AuthHelper {
 
         @JvmStatic
         fun generateHeaders(
-                path: String,
-                strParam: String,
-                method: String,
-                authKey: String,
-                contentType: String?,
-                userId: String,
-                userSession: UserSessionInterface
+            path: String,
+            strParam: String,
+            method: String,
+            authKey: String,
+            contentType: String?,
+            userId: String,
+            userSession: UserSessionInterface
         ): MutableMap<String, String> {
             val finalHeader = getDefaultHeaderMap(
-                    path,
-                    strParam,
-                    method,
-                    contentType ?: CONTENT_TYPE,
-                    authKey,
-                    DATE_FORMAT,
-                    userSession
+                path,
+                strParam,
+                method,
+                contentType ?: CONTENT_TYPE,
+                authKey,
+                DATE_FORMAT,
+                userSession
             )
 
             finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
@@ -149,7 +148,8 @@ class AuthHelper {
             finalHeader[HEADER_CACHE_CONTROL] = "no-cache"
 
             if (authKey.isEmpty()) {
-                finalHeader[HEADER_AUTHORIZATION] = "Basic ${AuthHelperJava.base64Encoder(encodeString, Base64.NO_WRAP)}"
+                finalHeader[HEADER_AUTHORIZATION] =
+                    "Basic ${AuthHelperJava.base64Encoder(encodeString, Base64.NO_WRAP)}"
             } else {
                 finalHeader[HEADER_AUTHORIZATION] = authKey
             }
@@ -166,23 +166,23 @@ class AuthHelper {
 
         @JvmStatic
         fun generateHeadersWithPath(
-                path: String,
-                strParam: String,
-                method: String,
-                authKey: String,
-                contentType: String?,
-                userId: String,
-                userSessionInterface: UserSessionInterface
+            path: String,
+            strParam: String,
+            method: String,
+            authKey: String,
+            contentType: String?,
+            userId: String,
+            userSessionInterface: UserSessionInterface
         ): MutableMap<String, String> {
             val finalHeader = getDefaultHeaderMapOld(
-                    path,
-                    strParam,
-                    method,
-                    contentType ?: CONTENT_TYPE,
-                    authKey,
-                    DATE_FORMAT,
-                    userId,
-                    userSessionInterface
+                path,
+                strParam,
+                method,
+                contentType ?: CONTENT_TYPE,
+                authKey,
+                DATE_FORMAT,
+                userId,
+                userSessionInterface
             ) as ArrayMap<String, String>
 
             finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
@@ -193,9 +193,9 @@ class AuthHelper {
 
         @JvmStatic
         fun generateParamsNetwork(
-                userId: String,
-                deviceId: String,
-                params: MutableMap<String, String>
+            userId: String,
+            deviceId: String,
+            params: MutableMap<String, String>
         ): MutableMap<String, String> {
             val hash = getMD5Hash("${userId}~${deviceId}")
 
@@ -240,7 +240,7 @@ class AuthHelper {
             return try {
                 val simpleDateFormat = SimpleDateFormat(dateFormat, Locale.ENGLISH)
                 simpleDateFormat.format(Date())
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 logException(e)
                 ""
             }

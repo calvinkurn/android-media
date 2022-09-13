@@ -1261,7 +1261,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
             if (shipmentCartItemModel.isCustomPinpointError()) {
                 renderErrorPinpointCourier();
-            } else if ((shipmentCartItemModel.getShippingId() > 0 && shipmentCartItemModel.getSpId() > 0) || !shipmentCartItemModel.getBoCode().isEmpty() || shipmentCartItemModel.isAutoCourierSelection()) {
+            } else if (shouldAutoLoadCourier(shipmentCartItemModel, recipientAddressModel)) {
                 if (!hasLoadCourier) {
                     ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
                             shipmentCartItemModel, recipientAddressModel);
@@ -1286,6 +1286,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 renderNoSelectedCourier(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, saveStateType);
             }
         }
+    }
+
+    private boolean shouldAutoLoadCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel) {
+        return (recipientAddressModel.isTradeIn() && recipientAddressModel.getSelectedTabIndex() != 0 && shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0 && !TextUtils.isEmpty(recipientAddressModel.getDropOffAddressName())) // trade in dropoff
+                || (recipientAddressModel.isTradeIn() && recipientAddressModel.getSelectedTabIndex() == 0 && shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0 && !TextUtils.isEmpty(recipientAddressModel.getProvinceName())) // trade in pickup
+                || (!recipientAddressModel.isTradeIn() && shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0 && !TextUtils.isEmpty(recipientAddressModel.getProvinceName())) // normal address
+                || (!recipientAddressModel.isTradeIn() && !shipmentCartItemModel.getBoCode().isEmpty() && !TextUtils.isEmpty(recipientAddressModel.getProvinceName())) // normal address auto apply BO
+                || shipmentCartItemModel.isAutoCourierSelection(); // tokopedia now
     }
 
     private void renderNoSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter, int saveStateType) {
