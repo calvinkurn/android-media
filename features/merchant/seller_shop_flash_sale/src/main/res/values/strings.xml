@@ -51,7 +51,11 @@
     <string name="sfs_quota_monitoring_value_placeholder_normal_state">Sisa Kuota: &lt;b>%d&lt;/b> dari &lt;b>%2d&lt;/b> |</string>
     <string name="sfs_quota_monitoring_value_placeholder_empty_state"><![CDATA[Sisa Kuota: <b><font color=#F94D63>%d</font></b> dari <b>%2d</b> |]]></string>
     <string name="sfs_quota_source_monitoring_value_placeholder">Sumber Kuota: &lt;b>%d&lt;/b> sumber</string>
-
+    <string name="sfs_cannot_update_campaign_title">Kamu belum bisa ubah campaign baru</string>
+    <string name="sfs_cannot_create_campaign_title">Kamu belum bisa buat campaign</string>
+    <string name="sfs_cannot_create_campaign_description">Upgrade ke PM PRO atau beli paket lainnya supaya bisa buat campaign baru. Baca Artikel</string>
+    <string name="sfs_read_article">Baca Artikel</string>
+    <string name="sfs_vps_package_auto_switch">Sumber kuota dan jadwal campaign telah diubah secara otomatis karena ada paket yang sudah kadaluarsa</string>
     <string name="sfs_search_result_not_found_title">Campaign yang kamu cari tidak ditemukan.</string>
     <string name="sfs_search_result_not_found_description">Coba kata kunci lain, ya.</string>
 

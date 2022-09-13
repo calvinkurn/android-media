@@ -104,11 +104,11 @@ class CampaignListViewModel @Inject constructor(
 
     }
 
-    fun getCampaignPrerequisiteData(vpsPackageId: Long) {
+    fun getCampaignPrerequisiteData() {
         launchCatchError(
             dispatchers.io,
             block = {
-                val prerequisiteData = getCampaignPrerequisiteDataUseCase.execute(vpsPackageId)
+                val prerequisiteData = getCampaignPrerequisiteDataUseCase.execute()
                 _campaignPrerequisiteData.postValue(Success(prerequisiteData))
             },
             onError = { error ->
