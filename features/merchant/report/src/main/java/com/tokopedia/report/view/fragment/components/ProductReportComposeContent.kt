@@ -11,6 +11,7 @@ import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
+import com.tokopedia.report.view.fragment.unify_components.getString
 
 /**
  * Created by yovi.putra on 07/09/22"
@@ -32,15 +33,16 @@ fun ProductReportComposeContent(
     LazyColumn {
         item {
             ProductReportReasonHeader(
-                text = stringResource(id = R.string.product_report_header)
+                text = uiState.title.getString().orEmpty()
             )
         }
 
-        items(uiState.data) { item ->
+        items(uiState.getFilterReason()) { item ->
             ProductReportReasonItem(
                 reason = item,
+                subtitleVisible = uiState.isSubtitleVisible(reason = item),
                 onClick = {
-                    onEvent.invoke(ProductReportUiEvent.ItemClicked(it))
+                    onEvent.invoke(ProductReportUiEvent.OnItemClicked(it))
                 }
             )
         }
@@ -49,7 +51,7 @@ fun ProductReportComposeContent(
             ProductReportReasonFooter(
                 text = stringResource(id = R.string.product_report_see_all_types),
                 onClick = {
-                    onEvent.invoke(ProductReportUiEvent.FooterClicked(it))
+                    onEvent.invoke(ProductReportUiEvent.OnFooterClicked(it))
                 }
             )
         }

@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
@@ -95,6 +96,53 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun onEvent(event: ProductReportUiEvent) = viewModelScope.launch {
-        _uiEvent.emit(event)
+        when (event) {
+            is ProductReportUiEvent.OnItemClicked -> {
+                onItemClicked(reason = event.reason)
+            }
+            is ProductReportUiEvent.OnBackPressed -> {
+                onBackPressed()
+            }
+            else -> _uiEvent.emit(event)
+        }
+    }
+
+    private fun onItemClicked(reason: ProductReportReason) = viewModelScope.launch {
+        val filterId = _uiState.value.filterId.toMutableList()
+
+        if (reason.children.isNotEmpty()) {
+            val baseParent = if (filterId.isEmpty()) reason else _uiState.value.baseParent
+            filterId.add(reason.categoryId.toIntOrZero())
+
+            _uiState.update {
+                it.copy(baseParent = baseParent, filterId = filterId)
+            }
+            _uiEvent.emit(ProductReportUiEvent.OnScrollTop(reason = reason))
+        } else {
+            val baseParent = _uiState.value.baseParent
+            val fieldReason = if (baseParent != null && filterId.isNotEmpty()) {
+                reason.copy(
+                    additionalInfo = baseParent.additionalInfo,
+                    additionalFields = baseParent.additionalFields
+                ).also {
+                    it.parentLabel = baseParent.strLabel
+                }
+            } else reason
+
+            _uiEvent.emit(ProductReportUiEvent.OnGoToForm(fieldReason))
+        }
+    }
+
+    private fun onBackPressed() = viewModelScope.launch {
+        var baseParent = _uiState.value.baseParent
+        val filterId = _uiState.value.filterId.toMutableList()
+
+        filterId.removeLast()
+        baseParent = if (filterId.isEmpty()) null else baseParent
+
+        _uiState.update {
+            it.copy(baseParent = baseParent, filterId = filterId)
+        }
+        _uiEvent.emit(ProductReportUiEvent.OnBackPressed)
     }
 }

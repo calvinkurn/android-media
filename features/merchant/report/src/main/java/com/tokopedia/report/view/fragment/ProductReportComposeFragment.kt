@@ -50,8 +50,7 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
         }
     }
 
-    val isInRoot: Boolean
-        get() = true
+    var isInRoot: Boolean = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -106,7 +105,14 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
         lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collectLatest {
                 when (it) {
-                    is ProductReportUiEvent.FooterClicked -> onFooterClicked()
+                    is ProductReportUiEvent.OnFooterClicked -> onFooterClicked()
+                    is ProductReportUiEvent.OnScrollTop -> onScrollTop(it.reason)
+                    is ProductReportUiEvent.OnGoToForm -> gotoForm(it.reason)
+                    is ProductReportUiEvent.OnBackPressed -> {
+                        isInRoot = viewModel.uiState.value.filterId.isEmpty()
+                    }
+                    else -> {
+                    }
                 }
             }
         }
@@ -116,6 +122,11 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
         val appLink =  "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}"
         tracking.eventReportLearnMore()
         RouteManager.route(requireContext(), appLink)
+    }
+
+    private fun onScrollTop(reason: ProductReportReason) {
+        tracking.eventReportReason(reason.strLabel)
+        scrollToTop()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -129,6 +140,7 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
     }
 
     fun onBackPressed() {
+        viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
     }
 
     companion object {

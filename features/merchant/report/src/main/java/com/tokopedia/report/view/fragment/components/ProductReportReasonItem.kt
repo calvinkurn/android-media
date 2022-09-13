@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
@@ -35,13 +34,15 @@ import com.tokopedia.report.view.fragment.unify_components.TextUnifyWeight
 @Composable
 fun ProductReportReasonItem(
     reason: ProductReportReason,
+    subtitleVisible: Boolean,
     onClick: (ProductReportReason) -> Unit
 ) {
+
     Column(
         modifier = Modifier
             .clickable {
                 onClick.invoke(reason)
-            }
+            },
     ) {
         Row(
             modifier = Modifier
@@ -69,7 +70,7 @@ fun ProductReportReasonItem(
                     }
                 )
 
-                if (reason.detail.isNotBlank()) {
+                if (subtitleVisible) {
                     TextUnify(
                         modifier = Modifier,
                         type = TextUnifyType.Body3,
@@ -86,7 +87,7 @@ fun ProductReportReasonItem(
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.width(4.dp))
 
             Icon(
@@ -117,7 +118,8 @@ fun ProductReportReasonItem() {
             additionalInfo = emptyList(),
             detail = "adsf",
             value = "vakue ajajajjaaaa"
-        )
+        ),
+        subtitleVisible = true
     ) {
 
     }
