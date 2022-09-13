@@ -13,6 +13,7 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
@@ -773,6 +774,7 @@ class NewShopPageFragment :
                     it.location = result.data.location
                     it.description = result.data.shopCore.description
                     it.tagline = result.data.shopCore.tagLine
+                    it.shopStatus = result.data.statusInfo.shopStatus
                 }
             }
         })
@@ -2943,18 +2945,6 @@ class NewShopPageFragment :
 
     private fun showUniversalShareBottomSheet() {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            val inputShare = AffiliatePDPInput().apply {
-                pageDetail = PageDetail(pageId = shopId, pageType = "shop", siteId = "1", verticalId = "1")
-                pageType = "shop"
-                product = Product()
-                shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
-            }
-            universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
-            if (shopPageHeaderDataModel?.shopStatus == null) {
-                universalShareBottomSheet?.affiliateRequestDataAwaited()
-            } else {
-                universalShareBottomSheet?.affiliateRequestDataReceived(true)
-            }
             init(this@NewShopPageFragment)
             setUtmCampaignData(
                     SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME,
@@ -2970,7 +2960,16 @@ class NewShopPageFragment :
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
         }
-        universalShareBottomSheet?.show(fragmentManager, this, screenShotDetector)
+        universalShareBottomSheet?.show(activity?.supportFragmentManager, this, screenShotDetector, safeViewAction = {
+            val inputShare = AffiliatePDPInput().apply {
+                pageDetail = PageDetail(pageId = shopId, pageType = "shop", siteId = "1", verticalId = "1")
+                pageType = "shop"
+                product = Product()
+                shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
+            }
+            universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
+            universalShareBottomSheet?.affiliateRequestDataReceived(true)
+        })
     }
 
     override fun onRequestPermissionsResult(
