@@ -202,30 +202,6 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
 
     }
 
-    override fun onErrorNoQuota() {
-        //DO nothing
-    }
-
-    override fun onSuccessGetPostEdit(feedDetail: FeedDetail) {
-        hideLoading()
-    }
-
-    override fun onErrorGetPostEdit(e: Throwable?) {
-        //Do noting
-    }
-
-    override fun onGetAvailableShareTypeList(typeList: List<ShareType>) {
-        //Do noting
-    }
-
-    override fun onAuthenticateTwitter(authenticator: TwitterAuthenticator) {
-        //Do noting
-    }
-
-    override fun changeShareHeaderText(text: String) {
-        //Do noting
-    }
-
     override fun getScreenName(): String {
         return ""
     }
