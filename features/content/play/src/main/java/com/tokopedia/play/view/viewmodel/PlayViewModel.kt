@@ -1161,16 +1161,10 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val warehouseId = _warehouseInfo.value.warehouseId
-            val tagItem = repo.getTagItem(channelId, warehouseId)
+            val tagItem = repo.getTagItem(channelId, warehouseId, _partnerInfo.value.name)
 
             _tagItems.update {
-                it.copy(
-                    product = tagItem.product,
-                    voucher = createNewVoucherList(tagItem.voucher.voucherList),
-                    maxFeatured = tagItem.maxFeatured,
-                    bottomSheetTitle = tagItem.bottomSheetTitle,
-                    resultState = tagItem.resultState
-                )
+               tagItem
             }
 
             checkReminderStatus()
@@ -1183,17 +1177,6 @@ class PlayViewModel @AssistedInject constructor(
         }) { err ->
             _tagItems.update { it.copy(resultState = ResultState.Fail(err)) }
         }
-    }
-
-    private fun createNewVoucherList(vouchers: List<PlayVoucherUiModel>): VoucherUiModel {
-        val eligibleForShown = vouchers.filterIsInstance<PlayVoucherUiModel.Merchant>().find { it.type != MerchantVoucherType.Private}
-        val newVoucher = mutableListOf<PlayVoucherUiModel>().apply {
-            if(eligibleForShown != null) add(PlayVoucherUiModel.InfoHeader(_partnerInfo.value.name))
-            addAll(vouchers)
-        }
-        return VoucherUiModel(
-            newVoucher
-        )
     }
 
     private fun checkReminderStatus(){
@@ -1711,12 +1694,11 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is MerchantVoucher -> {
-                val mappedVoucher = playSocketToModelMapper.mapMerchantVoucher(result)
+                val mappedVoucher = playSocketToModelMapper.mapMerchantVoucher(result, _partnerInfo.value.name)
                 _tagItems.update {
                     it.copy(
-                        voucher = createNewVoucherList(mappedVoucher)
+                        voucher = mappedVoucher
                     )
-
                 }
             }
             is ChannelInteractiveStatus -> {

@@ -10,6 +10,8 @@ import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemShopCouponBinding
 import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
+import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
+import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter.getDayDiffFromToday
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -51,7 +53,8 @@ class MerchantVoucherNewViewHolder(
                 )
                 if (item.voucherStock <= 20) {
                     append(
-                        " " + getString(R.string.play_product_pinned_info_separator) + " ", baseColor,
+                        " " + getString(R.string.play_product_pinned_info_separator) + " ",
+                        baseColor,
                         Spanned.SPAN_EXCLUSIVE_INCLUSIVE
                     )
                     append(
@@ -78,7 +81,10 @@ class MerchantVoucherNewViewHolder(
     }
 
     private fun countDays(expiredDate: String): Long {
-        val diff = DateUtil.getDayDiffFromToday(expiredDate)
+        val diff = PlayDateTimeFormatter.convertToCalendar(
+            raw = expiredDate,
+            pattern = DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z
+        )?.time?.getDayDiffFromToday() ?: 0
         return if (diff > 0) diff else 1
     }
 
