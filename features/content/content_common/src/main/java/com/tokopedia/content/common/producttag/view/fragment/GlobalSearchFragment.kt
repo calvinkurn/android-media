@@ -64,6 +64,7 @@ class GlobalSearchFragment @Inject constructor() : BaseProductTagChildFragment()
         super.onAttachFragment(childFragment)
         if(childFragment is BaseProductTagChildFragment) {
             childFragment.createViewModelProvider(viewModelProvider)
+            childFragment.setAnalytic(mAnalytic)
         }
     }
 
