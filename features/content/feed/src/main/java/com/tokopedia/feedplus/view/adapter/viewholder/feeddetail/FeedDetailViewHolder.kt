@@ -45,7 +45,6 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
     private lateinit var btnAddToWishlist: FrameLayout
     private lateinit var progressBar: ProgressBarUnify
     private lateinit var stockProgressBarLayout: View
-    private lateinit var btnlayout: View
     private lateinit var stockText: Typography
 
 
@@ -61,9 +60,8 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             freeShipping = findViewById(R.id.free_shipping)
             rating = findViewById(R.id.rating)
             menuBtn = findViewById(R.id.menu)
-            btnlayout = findViewById(R.id.product_atc_wishlist_section)
-            btnAddToCart = btnlayout.findViewById(R.id.button_add_to_cart)
-            btnAddToWishlist = btnlayout.findViewById(R.id.button_add_to_wishlist)
+            btnAddToCart = findViewById(R.id.button_add_to_cart_product_detail)
+            btnAddToWishlist = findViewById(R.id.button_add_to_wishlist_product_detail)
             progressBar = findViewById(R.id.ongoing_progress_bar)
             stockText = findViewById(R.id.stock_text)
             stockProgressBarLayout = findViewById(R.id.product_stock_bar_layout)
