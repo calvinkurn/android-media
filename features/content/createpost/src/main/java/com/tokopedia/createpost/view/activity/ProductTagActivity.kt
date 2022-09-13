@@ -137,12 +137,6 @@ class ProductTagActivity : BaseActivity() {
         )
     }
 
-    override fun onBackPressed() {
-        ProductTagParentFragment.findFragment(supportFragmentManager)?.let {
-            it.onBackPressed()
-        } ?: super.onBackPressed()
-    }
-
     companion object {
         private const val EXTRA_PRODUCT_TAG_LIST = "product_tag_source"
         private const val EXTRA_SHOP_BADGE = "shop_badge"

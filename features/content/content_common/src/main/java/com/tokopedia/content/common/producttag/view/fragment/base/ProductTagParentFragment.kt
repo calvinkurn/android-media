@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -70,6 +71,18 @@ class ProductTagParentFragment @Inject constructor(
         get() = _binding!!
 
     private var coachmark: CoachMark2? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    viewModel.submitAction(ProductTagAction.BackPressed)
+                }
+            }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -293,7 +306,7 @@ class ProductTagParentFragment @Inject constructor(
 
             childFragmentManager.beginTransaction()
                 .replace(binding.flCcProductTagContainer.id, fragment, tag)
-                .commit()
+                .commitNow()
         }
     }
 
@@ -447,10 +460,6 @@ class ProductTagParentFragment @Inject constructor(
 
     fun onNewIntent(source: ProductTagSource, query: String, shopId: String, componentId: String) {
         viewModel.submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId, componentId))
-    }
-
-    fun onBackPressed() {
-        viewModel.submitAction(ProductTagAction.BackPressed)
     }
 
     fun setListener(listener: Listener?) {
