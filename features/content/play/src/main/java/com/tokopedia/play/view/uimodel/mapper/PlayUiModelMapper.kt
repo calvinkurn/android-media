@@ -5,14 +5,12 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.OutOfStock
-import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
@@ -46,8 +44,15 @@ class PlayUiModelMapper @Inject constructor(
         return input.map(productTagMapper::mapSection)
     }
 
-    fun mapMerchantVouchers(input: List<Voucher>): List<PlayVoucherUiModel.Merchant> {
-        return input.map(merchantVoucherMapper::mapMerchantVoucher)
+    @OptIn(ExperimentalStdlibApi::class)
+    fun mapMerchantVouchers(input: List<Voucher>, partnerName: String): VoucherUiModel {
+        val vouchers = input.map(merchantVoucherMapper::mapMerchantVoucher)
+        val eligibleForShown = vouchers.find { it.type != MerchantVoucherType.Private}
+        val newVoucher = buildList {
+            if(eligibleForShown != null) add(PlayVoucherUiModel.InfoHeader(partnerName))
+            addAll(vouchers)
+        }
+        return VoucherUiModel(newVoucher)
     }
 
     fun mapChat(input: PlayChat): PlayChatUiModel {
