@@ -24,6 +24,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.product.share.ekstensions.getTextDescription
+import com.tokopedia.product.share.ekstensions.showImmediately
 import com.tokopedia.product.share.tracker.ProductShareTracking.onClickAccessPhotoMediaAndFiles
 import com.tokopedia.product.share.tracker.ProductShareTracking.onClickChannelWidgetClicked
 import com.tokopedia.product.share.tracker.ProductShareTracking.onCloseShareWidgetClicked
@@ -334,7 +335,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         universalShareBottomSheet?.dismiss()
     }
 
-    fun showUniversalShareBottomSheet(fragmentManager: FragmentManager?,
+    fun showUniversalShareBottomSheet(fragmentManager: FragmentManager,
                                       fragment: Fragment,
                                       data: ProductData,
                                       affiliateInput: AffiliatePDPInput,
@@ -354,33 +355,37 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         if (view != null) {
             parentView = view
         }
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            setupAffiliate(affiliateInput, this)
-            init(object : ShareBottomsheetListener {
-                override fun onShareOptionClicked(shareModel: ShareModel) {
-                    shareChannelClicked(shareModel)
-                }
 
-                override fun onCloseOptionClicked() {
-                    onCloseShareClicked()
-                }
+        showImmediately(
+            fragmentManager = fragmentManager,
+            parent = fragment,
+            screenshotDetector = screenshotDetector
+        ) {
+            UniversalShareBottomSheet.createInstance().apply {
+                setupAffiliate(affiliateInput, this)
+                init(object : ShareBottomsheetListener {
+                    override fun onShareOptionClicked(shareModel: ShareModel) {
+                        shareChannelClicked(shareModel)
+                    }
 
-            })
-            setUtmCampaignData("PDP", productData.userId, productData.productId, "share")
-            setMetaData(productData.productName ?: "",
+                    override fun onCloseOptionClicked() {
+                        onCloseShareClicked()
+                    }
+
+                })
+                setUtmCampaignData("PDP", productData.userId, productData.productId, "share")
+                setMetaData(productData.productName ?: "",
                     productData.productImageUrl ?: "",
                     "", productImgList)
+            }
         }
-        onImpressShareWidget(UniversalShareBottomSheet.getShareBottomSheetType(), productData.userId, productData.productId,
-            productData.campaignId, productData.bundleId)
-//        call this method here if the complete data needed for Affiliate request has not been received yet
-//        universalShareBottomSheet?.affiliateRequestDataAwaited()
-        universalShareBottomSheet?.show(fragmentManager, fragment, screenshotDetector)
-
-//        get affiliate PDPInput and set the data into the affiliate PDP input once the data is received
-//        universalShareBottomSheet?.getAffiliateRequestHolder()
-//        once the data is received and set call the below method
-//        universalShareBottomSheet?.affiliateRequestDataReceived()
+        onImpressShareWidget(
+            UniversalShareBottomSheet.getShareBottomSheetType(),
+            productData.userId,
+            productData.productId,
+            productData.campaignId,
+            productData.bundleId
+        )
     }
 
     fun updateAffiliate(shopStatus: Int) {
