@@ -571,7 +571,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         keywordsList.add(key)
     }
 
-    fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName) {
+    fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateNameV2) {
         if (data.errors.isEmpty()) {
             groupInput?.setError(false)
             validation1 = true

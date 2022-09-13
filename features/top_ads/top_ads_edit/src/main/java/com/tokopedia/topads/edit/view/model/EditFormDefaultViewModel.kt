@@ -44,7 +44,7 @@ class EditFormDefaultViewModel @Inject constructor(
 
     fun validateGroup(
         groupName: String,
-        onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit),
+        onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit),
     ) {
         validGroupUseCase.setParams(groupName)
         validGroupUseCase.execute(

@@ -215,7 +215,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         super.onActivityCreated(savedInstanceState)
         presenter.getWhiteListedUser(::onSuccessWhiteListing) {
             presenter.getShopAdsInfo {
-                val info = it.topadsGetShopInfoV2.data.ads.getOrNull(1)
+                val info = it.topadsGetShopInfoV2_1.data.ads.getOrNull(1)
                 if (info?.type == TopAdsDashboardConstant.HEADLINE) {
                     if (!info.isUsed) {
                         showEmptyView()

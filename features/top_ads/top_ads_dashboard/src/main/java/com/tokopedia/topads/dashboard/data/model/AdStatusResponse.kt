@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class AdStatusResponse(
 
-        @field:SerializedName("topAdsGetShopInfo")
+        @field:SerializedName("topAdsGetShopInfoV1_1")
         val topAdsGetShopInfo: TopAdsGetShopInfo = TopAdsGetShopInfo()
 ) {
     data class TopAdsGetShopInfo(

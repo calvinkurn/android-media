@@ -260,7 +260,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     @GqlQuery("ShopInfo", SHOP_AD_INFO)
     fun getShopAdsInfo(onSuccess: ((ShopAdInfo)) -> Unit) {
-        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId.toIntOrZero())
+        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId)
         shopAdInfoUseCase.setTypeClass(ShopAdInfo::class.java)
         shopAdInfoUseCase.setRequestParams(params)
         shopAdInfoUseCase.setGraphqlQuery(ShopInfo.GQL_QUERY)
@@ -301,7 +301,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     fun getAdsStatus(resources: Resources) {
         adsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_autoads_shop_info))
-        adsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId.toIntOrZero()))
+        adsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId))
         adsStatusUseCase.setTypeClass(AdStatusResponse::class.java)
         adsStatusUseCase.execute({
             view?.onSuccessAdStatus(it.topAdsGetShopInfo.data)
@@ -338,7 +338,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     @GqlQuery("BudgetRecommend", BUDGET_RECOMMENDATION)
     fun getDailyBudgetRecommendation(onSuccess: ((DailyBudgetRecommendationModel)) -> Unit) {
-        val params = mapOf(ParamObject.SHOP_Id to userSession.shopId.toIntOrZero())
+        val params = mapOf(ParamObject.SHOP_Id to userSession.shopId)
         budgetRecomUseCase.setTypeClass(DailyBudgetRecommendationModel::class.java)
         budgetRecomUseCase.setRequestParams(params)
         budgetRecomUseCase.setGraphqlQuery(BudgetRecommend.GQL_QUERY)
@@ -369,7 +369,7 @@ class TopAdsDashboardPresenter @Inject constructor(
         })
     }
 
-    fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
+    fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)) {
         validGroupUseCase.setParams(groupName)
         validGroupUseCase.execute(
                 {

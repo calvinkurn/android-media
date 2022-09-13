@@ -10,8 +10,8 @@ import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-const val GROUP_VALIDATE_NAME_QUERY: String = """query topAdsGroupValidateName(${'$'}shopID: Int!, ${'$'}groupName: String!){
-  topAdsGroupValidateName(shopID: ${'$'}shopID, groupName: ${'$'}groupName){
+const val GROUP_VALIDATE_NAME_QUERY: String = """query topAdsGroupValidateNameV2(${'$'}shopID: String!, ${'$'}groupName: String!){
+  topAdsGroupValidateNameV2(shopID: ${'$'}shopID, groupName: ${'$'}groupName){
       data {
         shopID
         groupName
@@ -38,7 +38,7 @@ class TopAdsGroupValidateNameUseCase @Inject constructor(graphqlRepository: Grap
     }
     fun setParams(groupName: String) {
         val params = mutableMapOf(
-                ParamObject.SHOP_ID to userSession.shopId.toInt(),
+                ParamObject.SHOP_ID to userSession.shopId,
                 ParamObject.GROUP_NAME to groupName
         )
         setRequestParams(params)

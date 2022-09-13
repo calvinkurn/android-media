@@ -1,22 +1,16 @@
 package com.tokopedia.topads.view.model
 
 import android.os.Bundle
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.PUBLISHED
 import com.tokopedia.topads.common.data.response.DepositAmount
-import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
-import rx.Subscriber
-import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
 
@@ -40,7 +34,7 @@ class SummaryViewModel @Inject constructor(
 
     fun validateGroup(
         groupName: String,
-        onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)
+        onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)
     ) {
         validGroupUseCase.setParams(groupName)
         validGroupUseCase.execute({
