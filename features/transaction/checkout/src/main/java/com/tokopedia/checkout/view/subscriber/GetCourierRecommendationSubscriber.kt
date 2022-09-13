@@ -163,6 +163,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
             courierItemData.freeShippingMetadata = it.freeShippingMetadata
             courierItemData.benefitClass = it.benefitClass
             courierItemData.shippingSubsidy = it.shippingSubsidy
+            courierItemData.boCampaignId = it.boCampaignId
         }
         return courierItemData
     }

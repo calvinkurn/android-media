@@ -24,6 +24,7 @@ data class OrdersItem(
         var productDetails: List<ProductDetailsItem> = listOf(),
         @SerializedName("free_shipping_metadata")
         var freeShippingMetadata: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("bo_campaign_id")
         var boCampaignId: Long = 0,
         @SerializedName("shipping_subsidy")

@@ -91,6 +91,7 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
             freeShippingMetadata = logisticPromoUiModel.freeShippingMetadata
             benefitClass = logisticPromoUiModel.benefitClass
             shippingSubsidy = logisticPromoUiModel.shippingSubsidy
+            boCampaignId = logisticPromoUiModel.boCampaignId
         }
         return courierItemData
     }

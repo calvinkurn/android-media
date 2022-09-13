@@ -146,7 +146,7 @@ class ShippingDurationConverter @Inject constructor() {
         shippingCourierUiModel.preOrderModel = preOrderModel
         shippingCourierUiModels.add(shippingCourierUiModel)
     }
-    
+
     private fun convertToPromoModel(promo: PromoStacking?, showPromoBadge: Boolean): LogisticPromoUiModel? {
         if (promo == null || promo.isPromo != 1) return null
         val applied = promo.isApplied == 1
@@ -161,7 +161,8 @@ class ShippingDurationConverter @Inject constructor() {
                 promo.cod, promo.eta, promo.texts.bottomSheet, promo.texts.chosenCourier,
                 promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription,
                 promo.texts.promoMessage, promo.texts.titlePromoMessage,
-                gson.toJson(promo.freeShippingMetadata), promo.freeShippingMetadata.benefitClass, promo.freeShippingMetadata.shippingSubsidy)
+                gson.toJson(promo.freeShippingMetadata), promo.freeShippingMetadata.benefitClass, promo.freeShippingMetadata.shippingSubsidy,
+                promo.boCampaignId)
     }
 
     private fun convertToPreOrderModel(preOrder: PreOrder?): PreOrderModel? {
