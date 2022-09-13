@@ -1,10 +1,10 @@
-package com.tokopedia.loginregister.redefine_register_email.di
+package com.tokopedia.loginregister.redefineregisteremail.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.loginregister.redefine_register_email.view.register_email.view.fragment.RedefineRegisterEmailFragment
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.fragment.RedefineRegisterInputPhoneFragment
-import com.tokopedia.loginregister.redefine_register_email.view.activity.RedefineRegisterEmailActivity
+import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.view.fragment.RedefineRegisterEmailFragment
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.fragment.RedefineRegisterInputPhoneFragment
+import com.tokopedia.loginregister.redefineregisteremail.view.activity.RedefineRegisterEmailActivity
 import dagger.Component
 
 @ActivityScope

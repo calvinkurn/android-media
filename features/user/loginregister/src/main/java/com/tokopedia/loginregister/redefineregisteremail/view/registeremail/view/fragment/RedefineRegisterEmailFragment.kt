@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.view.register_email.view.fragment
+package com.tokopedia.loginregister.redefineregisteremail.view.registeremail.view.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -19,15 +19,17 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler as KeyboardHandlerGlobal
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterEmailBinding
-import com.tokopedia.loginregister.redefine_register_email.common.RedefineRegisterEmailConstants
-import com.tokopedia.loginregister.redefine_register_email.common.intentGoToLoginWithEmail
-import com.tokopedia.loginregister.redefine_register_email.common.intentGoToVerification
-import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
-import com.tokopedia.loginregister.redefine_register_email.view.register_email.domain.data.ValidateUserData
-import com.tokopedia.loginregister.redefine_register_email.view.register_email.view.viewmodel.RedefineRegisterEmailViewModel
+import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
+import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToLoginWithEmail
+import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerification
+import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationParam
+import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
+import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.data.ValidateUserData
+import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.view.viewmodel.RedefineRegisterEmailViewModel
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.TextFieldUnify2
@@ -48,7 +50,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
     private var binding: FragmentRedefineRegisterEmailBinding? = null
 
-    private var paramSource: String = RedefineRegisterEmailConstants.Common.EMPTY_STRING
+    private var paramSource: String = RedefineRegisterEmailConstants.EMPTY_STRING
     private var paramIsRequiredInputPhone: Boolean = false
     private var isExtensionSelected = false
     private var emailExtensionList = mutableListOf<String>()
@@ -129,10 +131,10 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
                     } else {
                         binding?.fieldEmail?.editText?.setText(String.format(
                             STRING_FORMAT_EMAIL,  binding?.fieldEmail?.editText?.text.toString().replace(
-                            DELIMITER_EMAIL, RedefineRegisterEmailConstants.Common.EMPTY_STRING
+                            DELIMITER_EMAIL, RedefineRegisterEmailConstants.EMPTY_STRING
                             ), extension))
                     }
-                    binding?.fieldEmail?.editText?.setSelection( binding?.fieldEmail?.editText?.text.toString().trim { it <= RedefineRegisterEmailConstants.Common.CHAR_SPACE }.length)
+                    binding?.fieldEmail?.editText?.setSelection( binding?.fieldEmail?.editText?.text.toString().trim { it <= RedefineRegisterEmailConstants.CHAR_SPACE }.length)
                     isExtensionSelected = true
                     showEmailExtension(false)
                 }
@@ -263,7 +265,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             }
             binding?.btnSubmit?.isLoading = it
 
-            com.tokopedia.abstraction.common.utils.view.KeyboardHandler.hideSoftKeyboard(activity)
+            KeyboardHandlerGlobal.hideSoftKeyboard(activity)
         }
     }
 
@@ -292,7 +294,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             setMessage(getString(stringResource))
             true
         } else {
-            setMessage(RedefineRegisterEmailConstants.Common.SPACE)
+            setMessage(RedefineRegisterEmailConstants.SPACE)
             false
         }
     }
@@ -302,7 +304,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             setMessage(message)
             true
         } else {
-            setMessage(RedefineRegisterEmailConstants.Common.SPACE)
+            setMessage(RedefineRegisterEmailConstants.SPACE)
             false
         }
     }
@@ -327,7 +329,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
-            RedefineRegisterEmailConstants.Request.VERIFICATION_EMAIL -> {
+            RedefineRegisterEmailConstants.VERIFICATION_EMAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
 
                     paramToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
@@ -339,13 +341,14 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun goToVerificationEmail() {
-        val intent = intentGoToVerification(
-            email = viewModel.currentEmail,
-            otpType = RegisterConstants.OtpType.OTP_TYPE_REGISTER,
-            source = paramSource,
-            context = requireActivity()
+        val intent = requireActivity().intentGoToVerification(
+            GoToVerificationParam(
+                email = viewModel.currentEmail,
+                otpType = RegisterConstants.OtpType.OTP_TYPE_REGISTER,
+                source = paramSource
+            )
         )
-        startActivityForResult(intent, RedefineRegisterEmailConstants.Request.VERIFICATION_EMAIL)
+        startActivityForResult(intent, RedefineRegisterEmailConstants.VERIFICATION_EMAIL)
     }
 
     private fun goToInputPhone() {
@@ -362,7 +365,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun goToLoginEmailPage(email: String) {
-        val intent = intentGoToLoginWithEmail(email, paramSource, requireActivity())
+        val intent = requireActivity().intentGoToLoginWithEmail(email, paramSource)
         startActivity(intent)
         activity?.finish()
     }

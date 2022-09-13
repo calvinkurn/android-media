@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.view.register_email.domain.data
+package com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.data
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName

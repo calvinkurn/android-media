@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.di
+package com.tokopedia.loginregister.redefineregisteremail.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -9,7 +9,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class RedefineRegisterEmailModule {
+object RedefineRegisterEmailModule {
 
     @Provides
     @ActivityScope
