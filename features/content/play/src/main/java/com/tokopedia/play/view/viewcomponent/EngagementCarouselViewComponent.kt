@@ -22,6 +22,7 @@ import com.tokopedia.unifycomponents.PageControl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import java.util.concurrent.TimeUnit
 
 /**
@@ -74,7 +75,7 @@ class EngagementCarouselViewComponent(
         }
     }
 
-    private val size: Int
+    private val rvSize: Int
         get() = carouselAdapter.itemCount
 
     private val touchListener = View.OnTouchListener { v, event ->
@@ -101,28 +102,30 @@ class EngagementCarouselViewComponent(
     }
 
     private fun setupView() {
-        indicator.showWithCondition(size > 1)
-        indicator.setIndicator(size)
+        indicator.showWithCondition(rvSize > 1)
+        indicator.setIndicator(rvSize)
 
-        if (size == 1)
+        if (rvSize == 1)
             carousel.updateLayoutParams {
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
     }
 
     private fun handleAutoScroll() {
-        if (size <= 1) return
+        if (rvSize <= 1) return
         job?.cancel()
         job = scope.launchCatchError(block = {
-            var count = 0
-            repeat(Int.MAX_VALUE) {
-                delay(AUTO_SCROLL_DELAY)
-                when {
-                    count == size - 1 -> count = 0
-                    count >= 0 -> count++
-                    else -> count--
+            if(isActive) {
+                var count = 0
+                repeat(Int.MAX_VALUE) {
+                    delay(AUTO_SCROLL_DELAY)
+                    when {
+                        count == rvSize - 1 -> count = 0
+                        count >= 0 -> count++
+                        else -> count--
+                    }
+                    carousel.smoothScrollToPosition(count)
                 }
-                carousel.smoothScrollToPosition(count)
             }
         }, onError = {})
     }
