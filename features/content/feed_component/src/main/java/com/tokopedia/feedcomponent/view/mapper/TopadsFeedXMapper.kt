@@ -124,8 +124,8 @@ object TopadsFeedXMapper {
                 isImageImpressedFirst = true,
                 productName = name,
                 price = product.priceFormat,
-                slashedPrice = product.campaign?.originalPrice ?: "",
-                discountPercentage = if (product.campaign?.discountPercentage != 0) "${product.campaign?.discountPercentage}%" else "",
+                slashedPrice = product.campaign.originalPrice,
+                discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
                 isCashback = isProductCashback,
                 variant = variant,
                 cashBackFmt = cashback
@@ -145,32 +145,32 @@ object TopadsFeedXMapper {
         if (!merchantVoucher.isNullOrEmpty()){
             cashback=merchantVoucher[0]
         }
-        val isDiscount = product.campaign?.discountPercentage ?: 0 > 0
+        val isDiscount = product.campaign.discountPercentage > 0
 
         product.run {
             return FeedXProduct(
                 appLink = applinks,
-                discount = campaign?.discountPercentage ?: 0,
+                discount = campaign.discountPercentage,
                 cashbackFmt = cashback,
-                isBebasOngkir = freeOngkir?.isActive ?: false,
+                isBebasOngkir = freeOngkir.isActive,
                 isCashback = isProductCashback,
-                bebasOngkirURL = freeOngkir?.imageUrl ?: "",
+                bebasOngkirURL = freeOngkir.imageUrl,
                 name = name,
-                priceOriginalFmt = campaign?.originalPrice?.replace(" ", "") ?: "",
-                priceFmt = priceFormat.replace(" ", ""),
+                priceOriginalFmt = campaign.originalPrice.replace(" ",""),
+                priceFmt = priceFormat.replace(" ",""),
                 isDiscount = isDiscount,
-                coverURL = imageProduct?.imageUrl ?: "",
+                coverURL = imageProduct.imageUrl,
                 id = id,
                 webLink = uri,
                 authorName = authorName,
                 isTopads = true,
-                adClickUrl = imageProduct?.imageClickUrl ?: "",
+                adClickUrl = imageProduct.imageClickUrl,
                 star = productRating,
-                totalSold = countSold?.toIntOrNull() ?: 0,
-                discountFmt = if (product.campaign?.discountPercentage != 0) "${product.campaign?.discountPercentage}%" else "",
-                priceDiscountFmt = priceFormat.replace(" ", ""),
+                totalSold = countSold.toIntOrNull()?:0,
+                discountFmt = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
+                priceDiscountFmt = priceFormat.replace(" ",""),
                 shopName = shopName
-            )
+                )
         }
     }
 }

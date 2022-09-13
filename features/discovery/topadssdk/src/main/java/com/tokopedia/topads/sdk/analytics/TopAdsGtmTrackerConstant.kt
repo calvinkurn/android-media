@@ -1,7 +1,5 @@
 package com.tokopedia.topads.sdk.analytics
 
-import com.tokopedia.url.TokopediaUrl.Companion.getInstance
-
 internal object TopAdsGtmTrackerConstant {
 
     const val USER_ID = "userId"

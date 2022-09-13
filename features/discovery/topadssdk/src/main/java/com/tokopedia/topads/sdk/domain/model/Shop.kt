@@ -78,7 +78,7 @@ data class Shop(
 
     @SerializedName(KEY_IMAGE_PRODUCT)
     @Expose
-    var imageProduct: MutableList<ImageProduct>? = ArrayList(),
+    var imageProduct: MutableList<ImageProduct> = ArrayList(),
 
     @SerializedName(KEY_OWNER_ID)
     @Expose

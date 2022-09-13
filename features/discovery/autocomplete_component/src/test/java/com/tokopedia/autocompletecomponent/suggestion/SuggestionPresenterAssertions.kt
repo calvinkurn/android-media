@@ -86,7 +86,7 @@ internal fun BaseSuggestionDataView.assertShopAdsSuggestionData(
     this.applink shouldBe cpmData.applinks
     this.title shouldBe cpmData.cpm.name
     this.subtitle shouldBe cpmData.cpm.cpmShop.location
-    this.iconTitle shouldBe cpmData.cpm.badges?.firstOrNull()?.imageUrl
+    this.iconTitle shouldBe cpmData.cpm.badges.first().imageUrl
     this.iconSubtitle shouldBe item.iconSubtitle
     this.imageUrl shouldBe cpmData.cpm.cpmImage.fullEcs
     this.dimension90 shouldBe dimension90

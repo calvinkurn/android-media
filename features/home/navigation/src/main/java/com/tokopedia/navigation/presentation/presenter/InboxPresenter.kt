@@ -62,10 +62,6 @@ class InboxPresenter @Inject constructor(
         this.inboxView = inboxView
     }
 
-//    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel by lazy {
-//        ViewModelProvider(inboxView?.context as AppCompatActivity).get(TopAdsHeadlineViewModel::class.java)
-//    }
-
     fun getInboxData() {
         if (this.inboxView == null)
             return

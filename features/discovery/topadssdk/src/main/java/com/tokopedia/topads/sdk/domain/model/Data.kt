@@ -58,11 +58,11 @@ data class Data(
 
     @SerializedName(KEY_SHOP)
     @Expose
-    var shop: Shop? = Shop(),
+    var shop: Shop = Shop(),
 
     @SerializedName(KEY_PRODUCT)
     @Expose
-    var product: Product? = Product(),
+    var product: Product = Product(),
 
     @SerializedName(KEY_APPLINKS)
     @Expose
@@ -120,8 +120,8 @@ data class Data(
         productWishlistUrl = parcel.readString() ?: ""
         shopClickUrl = parcel.readString() ?: ""
         tag = parcel.readInt()
-        shop = parcel.readParcelable(Shop::class.java.classLoader)
-        product = parcel.readParcelable(Product::class.java.classLoader)
+        shop = parcel.readParcelable(Shop::class.java.classLoader) ?: Shop()
+        product = parcel.readParcelable(Product::class.java.classLoader) ?: Product()
         isFavorit = parcel.readByte().toInt() != 0
         applinks = parcel.readString() ?: ""
     }

@@ -64,20 +64,20 @@ fun SuggestionItem.convertToBaseSuggestionShopAds(
     BaseSuggestionDataView(
         template = template,
         type = TYPE_SHOP,
-        applink = cpmData.applinks ?: "",
-        title = cpmData.cpm?.name ?: "",
-        subtitle = cpmData.cpm?.cpmShop?.location ?: "",
-        iconTitle = cpmData.cpm?.badges?.firstOrNull()?.imageUrl ?: "",
+        applink = cpmData.applinks,
+        title = cpmData.cpm.name,
+        subtitle = cpmData.cpm.cpmShop.location,
+        iconTitle = cpmData.cpm.badges.firstOrNull()?.imageUrl ?: "",
         iconSubtitle = iconSubtitle,
-        imageUrl = cpmData.cpm?.cpmImage?.fullEcs ?: "",
+        imageUrl = cpmData.cpm.cpmImage.fullEcs,
         position = position,
         dimension90 = dimension90,
         searchTerm = searchTerm,
         componentId = componentId,
         trackingOption = trackingOption,
         shopAdsDataView = ShopAdsDataView(
-            clickUrl = cpmData.adClickUrl ?: "",
-            impressionUrl = cpmData.cpm?.cpmImage?.fullUrl ?: "",
-            imageUrl = cpmData.cpm?.cpmImage?.fullEcs ?: "",
+            clickUrl = cpmData.adClickUrl,
+            impressionUrl = cpmData.cpm.cpmImage.fullUrl,
+            imageUrl = cpmData.cpm.cpmImage.fullEcs,
         )
     )

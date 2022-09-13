@@ -25,15 +25,15 @@ class TopAdsHeadlineHelper  @Inject constructor() {
                 if (pageNumber == 2 && index >= 1) return
                 if (!shouldShowCpmShop(cpmData)) return@forEachIndexed
 
-                when (cpmData.cpm?.layout) {
+                when (cpmData.cpm.layout) {
                     LAYOUT_6 -> {
                         listLayoutSix.add(cpmData)
-                        if (cpmModel.data?.size ?: 0 - 1 != index) return@forEachIndexed
+                        if (cpmModel.data.size - 1 != index) return@forEachIndexed
                         process(index, listLayoutSix, false)
                     }
                     LAYOUT_5 -> {
                         listLayoutFive.add(cpmData)
-                        if (cpmModel.data?.size ?: 0 - 1 != index) return@forEachIndexed
+                        if (cpmModel.data.size - 1 != index) return@forEachIndexed
                         process(index, listLayoutFive, false)
                     }
                     LAYOUT_2 -> {
@@ -56,8 +56,8 @@ class TopAdsHeadlineHelper  @Inject constructor() {
         fun getCpmDataOfSameLayout(cpmModel: CpmModel, layoutId:Int): CpmModel {
             val cpmModelNew = CpmModel()
             val list = mutableListOf<CpmData>()
-            cpmModel.data?.forEach {
-                if (it.cpm?.layout == layoutId) {
+            cpmModel.data.forEach {
+                if(it.cpm.layout == layoutId){
                     list.add(it)
                 }
             }
@@ -77,8 +77,8 @@ class TopAdsHeadlineHelper  @Inject constructor() {
 
     private fun isViewWillRenderCpmShop(cpm: Cpm): Boolean {
         return cpm.cpmShop != null
-                && cpm.cta?.isNotEmpty() ?: false
-                && cpm.promotedText?.isNotEmpty() ?: false
+                && cpm.cta.isNotEmpty()
+                && cpm.promotedText.isNotEmpty()
     }
 
     var CPM_TEMPLATE_ID = 4

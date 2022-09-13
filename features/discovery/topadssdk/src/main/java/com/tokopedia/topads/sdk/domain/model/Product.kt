@@ -136,19 +136,19 @@ data class Product(
 
     @SerializedName(KEY_IMAGE_PRODUCT)
     @Expose
-    var imageProduct: ImageProduct? = ImageProduct(),
+    var imageProduct: ImageProduct = ImageProduct(),
 
     @SerializedName(KEY_CAMPAIGN)
     @Expose
-    var campaign: Campaign? = Campaign(),
+    var campaign: Campaign = Campaign(),
 
     @SerializedName(KEY_LABEL_GROUP)
     @Expose
-    var labelGroupList: MutableList<LabelGroup>? = ArrayList(),
+    var labelGroupList: MutableList<LabelGroup> = ArrayList(),
 
     @SerializedName(KEY_FREE_ONGKIR)
     @Expose
-    var freeOngkir: FreeOngkir? = FreeOngkir(),
+    var freeOngkir: FreeOngkir = FreeOngkir(),
 
     @SerializedName(KEY_CATEGORY_BREADCRUMB)
     @Expose
@@ -156,7 +156,7 @@ data class Product(
 
     @SerializedName(KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED)
     @Expose
-    var countSold: String? = "",
+    var countSold: String = "",
 
     @SerializedName(KEY_PRODUCT_MINIMUM_ORDER)
     @Expose
@@ -164,7 +164,7 @@ data class Product(
 
     @SerializedName(KEY_HEADLINE_PRODUCT_RATING_AVERAGE)
     @Expose
-    var headlineProductRatingAverage: String? = "",
+    var headlineProductRatingAverage: String = "",
 
     @SerializedName(KEY_CUSTOM_VIDEO_URL)
     @Expose
@@ -267,7 +267,7 @@ data class Product(
         if (!jSONObject.isNull(KEY_LABEL_GROUP)) {
             val arr = jSONObject.getJSONArray(KEY_LABEL_GROUP)
             for (i in 0 until arr.length()) {
-                labelGroupList!!.add(LabelGroup(arr.getJSONObject(i)))
+                labelGroupList.add(LabelGroup(arr.getJSONObject(i)))
             }
         }
         if (!jSONObject.isNull(KEY_FREE_ONGKIR)) {

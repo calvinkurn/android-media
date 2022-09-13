@@ -2730,7 +2730,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (hasFeed())
             updateFavorite()
         else
-            model.promotedShopViewModel.shop?.id?.let { updateFavoriteFromEmpty(it) }
+            updateFavoriteFromEmpty(model.promotedShopViewModel.shop.id)
     }
 
     private fun onErrorFavoriteUnfavoriteShop(e: Throwable) {

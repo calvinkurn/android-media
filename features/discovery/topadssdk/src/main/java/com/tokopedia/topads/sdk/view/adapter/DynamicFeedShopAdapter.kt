@@ -89,30 +89,23 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
         private fun initView(data: Data) {
             data.shop?.let { shop ->
                 if (shop.imageProduct != null) {
-                    val imageProductList = data.shop?.imageProduct
-                    if (imageProductList?.isNotEmpty() == true) {
-                        loadImageOrDefault(ivImageLeft, imageProductList[0].imageUrl ?: "")
+                    val imageProductList = data.shop.imageProduct
+                    if (imageProductList.size > 0) {
+                        loadImageOrDefault(ivImageLeft, imageProductList[0].imageUrl)
                     }
-                    if (imageProductList?.size ?: 0 > 1) {
-                        loadImageOrDefault(ivImageMiddle, imageProductList?.get(1)?.imageUrl ?: "")
+                    if (imageProductList.size > 1) {
+                        loadImageOrDefault(ivImageMiddle, imageProductList[1].imageUrl)
                     }
-                    if (imageProductList?.size ?: 0 > 2) {
-                        loadImageOrDefault(ivImageRight, imageProductList?.get(2)?.imageUrl ?: "")
+                    if (imageProductList.size > 2) {
+                        loadImageOrDefault(ivImageRight, imageProductList[2].imageUrl)
                     }
                     shop.isLoaded = true
                 }
-                shop.imageShop?.let {
-                    ivProfile.addOnImpressionListener(it, object : ViewHintListener {
-                        override fun onViewHint() {
-                            itemImpressionListener?.onImpressionShopAds(
-                                shop.imageShop?.sUrl ?: "",
-                                shop.id ?: "",
-                                shop.name ?: "",
-                                shop.imageShop?.xsEcs ?: ""
-                            )
-                        }
-                    })
-                }
+                ivProfile.addOnImpressionListener(shop.imageShop, object : ViewHintListener {
+                    override fun onViewHint() {
+                        itemImpressionListener?.onImpressionShopAds(shop.imageShop.sUrl, shop.id, shop.name, shop.imageShop.xsEcs)
+                    }
+                })
                 imageLoader.loadCircle(shop, ivProfile)
                 tvName.text = fromHtml(shop.name)
                 tvDescription.text = fromHtml(shop.tagline)

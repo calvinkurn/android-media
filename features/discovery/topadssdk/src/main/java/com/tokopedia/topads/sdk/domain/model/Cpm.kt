@@ -30,7 +30,7 @@ data class Cpm(
     var cpmImage: CpmImage = CpmImage(),
 
     @SerializedName(KEY_BADGES)
-    var badges: MutableList<Badge>? = ArrayList(),
+    var badges: MutableList<Badge> = ArrayList(),
 
     @SerializedName(KEY_PROMOTED_TEXT)
     var promotedText: String = "",
@@ -64,7 +64,7 @@ data class Cpm(
         parcel.readInt(),
         parcel.readString() ?: "",
         parcel.readParcelable(CpmImage::class.java.classLoader) ?: CpmImage(),
-        parcel.createTypedArrayList(Badge.CREATOR),
+        parcel.createTypedArrayList(Badge.CREATOR)?: mutableListOf(),
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
@@ -88,7 +88,7 @@ data class Cpm(
         if (!jSONObject.isNull(KEY_BADGES)) {
             val badgeArray = jSONObject.getJSONArray(KEY_BADGES)
             for (i in 0 until badgeArray.length()) {
-                badges!!.add(Badge(badgeArray.getJSONObject(i)))
+                badges.add(Badge(badgeArray.getJSONObject(i)))
             }
         }
         if (!jSONObject.isNull(KEY_PROMOTED_TEXT)) {
