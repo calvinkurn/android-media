@@ -161,20 +161,29 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
             override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                 val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
-                if (element.name == REMINDER) {
-                    shopHomeCarouselProductListener.onPersonalizationReminderCarouselProductItemClicked(
+                when (element.name) {
+                    REMINDER -> {
+                        shopHomeCarouselProductListener.onPersonalizationReminderCarouselProductItemClicked(
                             adapterPosition,
                             carouselProductCardPosition,
                             element,
                             productItem
-                    )
-                } else {
-                    shopHomeCarouselProductListener.onPersonalizationCarouselProductItemClicked(
+                        )
+                    }
+                    TRENDING -> {
+                        shopHomeCarouselProductListener.onPersonalizationTrendingCarouselProductItemClicked(
+                            adapterPosition,
+                            productItem
+                        )
+                    }
+                    else -> {
+                        shopHomeCarouselProductListener.onPersonalizationCarouselProductItemClicked(
                             adapterPosition,
                             carouselProductCardPosition,
                             element,
                             productItem
-                    )
+                        )
+                    }
                 }
             }
         }
@@ -183,20 +192,29 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
             override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                 val productItem = element.productList.getOrNull(carouselProductCardPosition)
                         ?: return
-                if (element.name == REMINDER) {
-                    shopHomeCarouselProductListener.onCarouselProductPersonalizationReminderItemImpression(
+                when (element.name) {
+                    REMINDER -> {
+                        shopHomeCarouselProductListener.onCarouselProductPersonalizationReminderItemImpression(
                             adapterPosition,
                             carouselProductCardPosition,
                             element,
                             productItem
-                    )
-                } else {
-                    shopHomeCarouselProductListener.onCarouselProductPersonalizationItemImpression(
+                        )
+                    }
+                    TRENDING -> {
+                        shopHomeCarouselProductListener.onCarouselProductPersonalizationTrendingItemImpression(
+                            adapterPosition,
+                            productItem
+                        )
+                    }
+                    else -> {
+                        shopHomeCarouselProductListener.onCarouselProductPersonalizationItemImpression(
                             adapterPosition,
                             carouselProductCardPosition,
                             element,
                             productItem
-                    )
+                        )
+                    }
                 }
                 if (element.name == RECENT_ACTIVITY || element.name == REMINDER) {
                     if (productCardModel.isButtonAtcShown()) {
@@ -271,7 +289,14 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
 
     private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {
         itemView.addOnImpressionListener(model.impressHolder) {
-            shopHomeCarouselProductListener.onCarouselProductWidgetImpression(adapterPosition, model)
+            if(model.name == TRENDING){
+                shopHomeCarouselProductListener.onCarouselProductPersonalizationTrendingWidgetImpression()
+            }else {
+                shopHomeCarouselProductListener.onCarouselProductWidgetImpression(
+                    adapterPosition,
+                    model
+                )
+            }
         }
     }
 
