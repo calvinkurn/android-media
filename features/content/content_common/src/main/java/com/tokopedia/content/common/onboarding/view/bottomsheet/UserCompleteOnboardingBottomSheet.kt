@@ -14,7 +14,8 @@ import com.tokopedia.content.common.databinding.BottomsheetUserCompleteOnboardin
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.onboarding.view.bottomsheet.base.BaseUserOnboardingBottomSheet
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ENTRY_POINT_FROM_USER_PROFILE
 import com.tokopedia.content.common.onboarding.view.strategy.factory.UGCOnboardingStrategyFactory
 import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
 import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
@@ -86,10 +87,13 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         binding.textFieldUsername.isClearable = false
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
         binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
-        if (entryPoint == UGCOnboardingParentFragment.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST) {
-            setTitle(getString(R.string.ugc_complete_onboarding_title))
-            binding.tvTitle.hide()
-        } else binding.tvTitle.show()
+        when(entryPoint) {
+            VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST -> {
+                setTitle(getString(R.string.ugc_complete_onboarding_title))
+                binding.tvTitle.hide()
+            }
+            VALUE_ENTRY_POINT_FROM_USER_PROFILE -> binding.tvTitle.show()
+        }
     }
 
     private fun setupListener() {

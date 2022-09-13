@@ -18,7 +18,8 @@ import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewM
 import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.databinding.BottomsheetUserTncOnboardingBinding
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ENTRY_POINT_FROM_USER_PROFILE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
@@ -83,10 +84,13 @@ class UserTnCOnboardingBottomSheet @Inject constructor(
     private fun setupView() {
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
         binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
-        if (entryPoint == UGCOnboardingParentFragment.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST) {
-            setTitle(getString(R.string.ugc_tnc_onboarding_title))
-            binding.tvTitle.hide()
-        } else binding.tvTitle.show()
+        when(entryPoint) {
+            VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST -> {
+                setTitle(getString(R.string.ugc_tnc_onboarding_title))
+                binding.tvTitle.hide()
+            }
+            VALUE_ENTRY_POINT_FROM_USER_PROFILE -> binding.tvTitle.show()
+        }
     }
 
     private fun setupListener() {

@@ -24,9 +24,9 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     override fun getScreenName() = TAG
 
     private val onboardingType: Int
-        get() = arguments?.getInt(KEY_ONBOARDING_TYPE, VALUE_ONBOARDING_TYPE_COMPLETE) ?: VALUE_ONBOARDING_TYPE_COMPLETE
+        get() = arguments?.getInt(KEY_ONBOARDING_TYPE, VALUE_UNKNOWN) ?: VALUE_UNKNOWN
     private val entryPoint: Int
-        get() = arguments?.getInt(KEY_ENTRY_POINT, VALUE_ENTRY_POINT_FROM_USER_PROFILE) ?: VALUE_ENTRY_POINT_FROM_USER_PROFILE
+        get() = arguments?.getInt(KEY_ENTRY_POINT, VALUE_UNKNOWN) ?: VALUE_UNKNOWN
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,23 +81,26 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     }
 
     private fun showBottomSheet() {
-        if(onboardingType == VALUE_ONBOARDING_TYPE_COMPLETE) {
-            mListener?.impressCompleteOnboarding()
-            UserCompleteOnboardingBottomSheet.getFragment(
-                childFragmentManager,
-                requireContext().classLoader
-            ).apply {
-                arguments = createArgument()
-            }.showNow(childFragmentManager)
-        }
-        else {
-            mListener?.impressTncOnboarding()
-            UserTnCOnboardingBottomSheet.getFragment(
-                childFragmentManager,
-                requireContext().classLoader
-            ).apply {
-                arguments = createArgument()
-            }.showNow(childFragmentManager)
+        when (onboardingType) {
+            VALUE_ONBOARDING_TYPE_COMPLETE -> {
+                mListener?.impressCompleteOnboarding()
+                UserCompleteOnboardingBottomSheet.getFragment(
+                    childFragmentManager,
+                    requireContext().classLoader
+                ).apply {
+                    arguments = createArgument()
+                }.showNow(childFragmentManager)
+            }
+            VALUE_ONBOARDING_TYPE_TNC -> {
+                mListener?.impressTncOnboarding()
+                UserTnCOnboardingBottomSheet.getFragment(
+                    childFragmentManager,
+                    requireContext().classLoader
+                ).apply {
+                    arguments = createArgument()
+                }.showNow(childFragmentManager)
+            }
+            VALUE_UNKNOWN -> return
         }
     }
 
@@ -123,6 +126,7 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
         const val KEY_ONBOARDING_TYPE = "onboarding_type"
         const val VALUE_ONBOARDING_TYPE_COMPLETE = 1
         const val VALUE_ONBOARDING_TYPE_TNC = 2
+        const val VALUE_UNKNOWN = 0
         const val KEY_ENTRY_POINT = "entry_point"
         const val VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST = 1
         const val VALUE_ENTRY_POINT_FROM_USER_PROFILE = 2

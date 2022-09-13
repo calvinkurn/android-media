@@ -15,7 +15,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.R
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.KEY_ENTRY_POINT
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.KEY_ONBOARDING_TYPE
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ENTRY_POINT_FROM_USER_PROFILE
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_UNKNOWN
 import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -28,9 +32,9 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
     protected var mListener: Listener? = null
 
     protected val onboardingType: Int
-        get() = arguments?.getInt(UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE, 0) ?: 0
+        get() = arguments?.getInt(KEY_ONBOARDING_TYPE, VALUE_UNKNOWN) ?: VALUE_UNKNOWN
     protected val entryPoint: Int
-        get() = arguments?.getInt(UGCOnboardingParentFragment.KEY_ENTRY_POINT, 0) ?: 0
+        get() = arguments?.getInt(KEY_ENTRY_POINT, VALUE_UNKNOWN) ?: VALUE_UNKNOWN
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {
@@ -75,13 +79,15 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        if (entryPoint == UGCOnboardingParentFragment.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST) {
-            showCloseIcon = true
-            showHeader = true
-        } else {
-            showCloseIcon = false
-            showHeader = false
+        when (entryPoint) {
+            VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST -> {
+                showCloseIcon = true
+                showHeader = true
+            }
+            VALUE_ENTRY_POINT_FROM_USER_PROFILE -> {
+                showCloseIcon = false
+                showHeader = false
+            }
         }
 
         showKnob = true

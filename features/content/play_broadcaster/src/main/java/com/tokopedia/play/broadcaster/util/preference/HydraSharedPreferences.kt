@@ -68,14 +68,14 @@ class HydraSharedPreferences @Inject constructor(
     fun setLastSelectedAccount(selectedAccount: String) {
         mSharedPrefs.edit()
             .putString(
-                String.format(KEY_LAST_SELECTED_ACCOUNT, userSession.userId, userSession.shopId),
+                String.format(KEY_LAST_SELECTED_ACCOUNT, userSession.userId),
                 selectedAccount
             ).apply()
     }
 
     fun getLastSelectedAccount(): String {
         return mSharedPrefs.getString(
-            String.format(KEY_LAST_SELECTED_ACCOUNT, userSession.userId, userSession.shopId),
+            String.format(KEY_LAST_SELECTED_ACCOUNT, userSession.userId),
             ""
         ) ?: ""
     }
