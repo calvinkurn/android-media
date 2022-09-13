@@ -10,15 +10,16 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
-class ComparisonDetailNewViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-    fun bind(baseCatalog: ComparisonNewModel?, comparisonCatalog: ComparisonNewModel?, catalogDetailListener: CatalogDetailListener?) {
-        baseCatalog?.run {
-            itemView.findViewById<LinearLayout>(R.id.base_catalog_card)?.apply {
-                findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_brand).displayTextOrHide(brand ?: "")
-                findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_name).displayTextOrHide(name ?: "")
-                findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_price).displayTextOrHide(price ?: "")
-                url?.let {imageUrl ->
+class ComparisonDetailNewViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    fun bind(featureLeftData: ComparisonNewModel?, featureRightData: ComparisonNewModel?, catalogDetailListener: CatalogDetailListener?) {
+        featureLeftData?.run {
+            view.findViewById<LinearLayout>(R.id.base_catalog_card)?.apply {
+                findViewById<Typography>(R.id.catalog_comparison_product_brand).displayTextOrHide(brand ?: "")
+                findViewById<Typography>(R.id.catalog_comparison_product_name).displayTextOrHide(name ?: "")
+                findViewById<Typography>(R.id.catalog_comparison_product_price).displayTextOrHide(price ?: "")
+                imageUrl?.let { imageUrl ->
                     findViewById<ImageUnify>(R.id.catalog_comparison_image).loadImageWithoutPlaceholder(imageUrl)
                 }
                 findViewById<UnifyButton>(R.id.catalog_comparison_bandingkan_button).invisible()
@@ -28,32 +29,32 @@ class ComparisonDetailNewViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT)
                     params.setMargins(0, 0, 0,
-                        itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt())
+                        view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt())
                     layoutParams = params
                 }
             }
 
         }
-        comparisonCatalog?.run {
-            itemView.findViewById<LinearLayout>(R.id.comparision_card)?.apply {
-                findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_brand).displayTextOrHide(brand ?: "")
-                findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_name).displayTextOrHide(name ?: "")
-                findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.catalog_comparison_product_price).displayTextOrHide(price ?: "")
-                url?.let {imageUrl ->
+        featureRightData?.run {
+            view.findViewById<LinearLayout>(R.id.comparision_card)?.apply {
+                findViewById<Typography>(R.id.catalog_comparison_product_brand).displayTextOrHide(brand ?: "")
+                findViewById<Typography>(R.id.catalog_comparison_product_name).displayTextOrHide(name ?: "")
+                findViewById<Typography>(R.id.catalog_comparison_product_price).displayTextOrHide(price ?: "")
+                imageUrl?.let { imageUrl ->
                     findViewById<ImageUnify>(R.id.catalog_comparison_image).loadImageWithoutPlaceholder(imageUrl)
                 }
                 findViewById<UnifyButton>(R.id.catalog_comparison_bandingkan_button)?.apply {
-                    text = itemView.context.getString(com.tokopedia.catalog.R.string.catalog_ganti_perbandingan)
+                    text = view.context.getString(R.string.catalog_ganti_perbandingan)
                     show()
                     setOnClickListener {
-                        catalogDetailListener?.openComparisonBottomSheet(comparisonCatalog)
+                        catalogDetailListener?.openComparisonBottomSheet(featureRightData)
                     }
                 }
             }
         }
 
-        itemView.findViewById<LinearLayout>(R.id.comparision_card).setOnClickListener {
-            comparisonCatalog?.id?.let { catalogId ->
+        view.findViewById<LinearLayout>(R.id.comparision_card).setOnClickListener {
+            featureRightData?.id?.let { catalogId ->
                 if(catalogId.isNotEmpty()){
                     catalogDetailListener?.comparisonCatalogClicked(catalogId)
                 }

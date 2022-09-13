@@ -52,7 +52,7 @@ class CatalogDetailAdapterFactoryImpl(private val catalogDetailListener: Catalog
         return CatalogForYouViewHolder.LAYOUT
     }
 
-    override fun type(data: CatalogComparisionNewDataModel): Int {
+    override fun type(data: CatalogComparisonNewDataModel): Int {
         return CatalogComparisonContainerNewViewHolder.LAYOUT
     }
 

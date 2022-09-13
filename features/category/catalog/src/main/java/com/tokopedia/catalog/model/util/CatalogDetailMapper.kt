@@ -135,7 +135,7 @@ object CatalogDetailMapper {
     }
 
     private fun getNewComparisonComponent(catalogGetDetailModular: CatalogResponseData.CatalogGetDetailModular,
-                                          comparisonComponentDataNew: ComponentData) : CatalogComparisionNewDataModel {
+                                          comparisonComponentDataNew: ComponentData) : CatalogComparisonNewDataModel {
 
         val specsListCombined = arrayListOf<ComponentData.SpecList>()
         specsListCombined.add(
@@ -146,14 +146,14 @@ object CatalogDetailMapper {
                         catalogGetDetailModular.basicInfo.brand,
                         catalogGetDetailModular.basicInfo.name,
                         "${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.minFmt} - ${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.maxFmt}",
-                        catalogGetDetailModular.basicInfo.url
+                        catalogGetDetailModular.basicInfo.catalogImage?.firstOrNull()?.imageURL
                 ),
                     ComparisonNewModel(
                         comparisonComponentDataNew.comparedData?.id ?: "",
                         comparisonComponentDataNew.comparedData?.brand ?: "",
                         comparisonComponentDataNew.comparedData?.name ?: "",
-                        "${comparisonComponentDataNew.marketPrice?.firstOrNull()?.minFmt} - ${comparisonComponentDataNew.marketPrice?.firstOrNull()?.maxFmt}",
-                        comparisonComponentDataNew.comparedData?.url ?: "",
+                        "${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.minFmt} - ${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.maxFmt}",
+                        comparisonComponentDataNew.comparedData?.catalogImage?.firstOrNull()?.imageURL ?: "",
                         )
             )))
         )
@@ -161,8 +161,8 @@ object CatalogDetailMapper {
         comparisonComponentDataNew.specList?.forEach {
             specsListCombined.add(it)
         }
-
-        return CatalogComparisionNewDataModel(CatalogConstant.COMPARISON_NEW, CatalogConstant.COMPARISON_NEW, comparisonComponentDataNew.specList)
+        comparisonComponentDataNew.specList = specsListCombined
+        return CatalogComparisonNewDataModel(CatalogConstant.COMPARISON_NEW, CatalogConstant.COMPARISON_NEW, comparisonComponentDataNew.specList)
     }
 
     private fun mapIntoReviewDataModel(catalogName : String, catalogId : String, componentName : String,

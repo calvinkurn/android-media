@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.core.content.ContextCompat
@@ -41,14 +40,10 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogComparisionNewDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogComparisonNewDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
-import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.catalog.model.raw.ComparisionModel
-import com.tokopedia.catalog.model.raw.TopSpecificationsComponentData
-import com.tokopedia.catalog.model.raw.VideoComponentData
+import com.tokopedia.catalog.model.raw.*
 import com.tokopedia.catalog.model.util.CatalogConstant
-import com.tokopedia.catalog.model.util.CatalogConstant.CATALOG_PRODUCT_BS_NEW_DESIGN
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
@@ -70,7 +65,6 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -300,7 +294,7 @@ class CatalogDetailPageFragment : Fragment(),
                         catalogUiUpdater.updateModel(component)
                         if(component is CatalogComparisionDataModel && comparisonCatalogId.isBlank()){
                             recommendedCatalogId = (component).comparisionCatalog[CatalogConstant.COMPARISION_DETAIL]?.id ?: ""
-                        }else if(component is CatalogComparisionNewDataModel && comparisonCatalogId.isBlank()){
+                        }else if(component is CatalogComparisonNewDataModel && comparisonCatalogId.isBlank()){
                             recommendedCatalogId = component.specsList?.firstOrNull()?.subcard?.firstOrNull()?.featureRightData?.id ?: ""
                         }
                     }
@@ -710,6 +704,19 @@ class CatalogDetailPageFragment : Fragment(),
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_GANTI_PERBANDINGAN,
             "catalog page: $catalogId | catalog comparison: ${comparisonCatalog?.id ?: ""}",userSession.userId,catalogId)
+
+        val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
+            catalogBrand, catalogDepartmentId, recommendedCatalogId,
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,this)
+        catalogComparisonBottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun openComparisonBottomSheet(comparisonNewModel: ComparisonNewModel?) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_GANTI_PERBANDINGAN,
+            "catalog page: $catalogId | catalog comparison: ${comparisonNewModel?.id ?: ""}",userSession.userId,catalogId)
 
         val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
             catalogBrand, catalogDepartmentId, recommendedCatalogId,

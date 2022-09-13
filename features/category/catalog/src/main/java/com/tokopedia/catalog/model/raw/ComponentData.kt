@@ -49,8 +49,8 @@ data class ComponentData(
         @Expose @SerializedName("totalHelpfulReview")
         val totalHelpfulReview: String?,
         @Expose @SerializedName("spec_list")
-        val specList: ArrayList<SpecList>? = arrayListOf(),
-        @Expose @SerializedName("comparedData")
+        var specList: ArrayList<SpecList>? = arrayListOf(),
+        @Expose @SerializedName("compared_data")
         val comparedData: ComparedData? = null
 
 ){
@@ -66,17 +66,17 @@ data class ComponentData(
     data class SpecList(
             @Expose @SerializedName("title")
             val comparisonTitle: String?,
-            @Expose @SerializedName("subcard")
+            @Expose @SerializedName("sub_card")
             val subcard: ArrayList<Subcard>? = arrayListOf(),
     ) : Parcelable
     {
             @Parcelize
             data class Subcard(
-                    @SerializedName("subTitle")
+                    @SerializedName("sub_title")
                     val subTitle: String?,
-                    @SerializedName("leftData")
+                    @SerializedName("left_data")
                     val leftData: String?,
-                    @SerializedName("rightData")
+                    @SerializedName("right_data")
                     val rightData: String?,
 
                     val featureLeftData: ComparisonNewModel?,
@@ -139,7 +139,7 @@ data class ComparisonNewModel(
         val brand: String?,
         val name: String?,
         val price: String?,
-        val url: String?,
+        val imageUrl: String?,
 ) : Parcelable
 
 @Parcelize

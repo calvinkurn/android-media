@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.components.CatalogComparisonNewAdapter
 import com.tokopedia.catalog.listener.CatalogDetailListener
-import com.tokopedia.catalog.model.datamodel.CatalogComparisionNewDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogComparisonNewDataModel
 
-class CatalogComparisonContainerNewViewHolder(private val view : View,
-                                              private val catalogDetailListener: CatalogDetailListener): AbstractViewHolder<CatalogComparisionNewDataModel>(view) {
+class CatalogComparisonContainerNewViewHolder(val view : View,
+                                              val catalogDetailListener: CatalogDetailListener): AbstractViewHolder<CatalogComparisonNewDataModel>(view) {
 
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
 
@@ -18,7 +18,7 @@ class CatalogComparisonContainerNewViewHolder(private val view : View,
         val LAYOUT = R.layout.item_catalog_comparision_new_container
     }
 
-    override fun bind(element: CatalogComparisionNewDataModel) {
+    override fun bind(element: CatalogComparisonNewDataModel) {
         if(element.specsList?.isNullOrEmpty() == false){
             val comparisonRV = view.findViewById<RecyclerView>(R.id.catalog_comparision_rv)
             comparisonRV.layoutManager = layoutManager
