@@ -445,9 +445,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataModel>) {
-        // TODO: [Misael] check ini
         favNumberList = data
-//        updateFavoriteNumberInputField()
     }
 
     override fun processSeamlessFavoriteNumbers(
