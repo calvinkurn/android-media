@@ -55,6 +55,7 @@ data class ProductPostTagViewModelNew(
         private const val ASGC_RILISAN_SPECIAL = "Rilisan Spesial"
         private const val Upcoming = "upcoming"
         private const val Ongoing = "ongoing"
+        const val PRODUCT_TYPE = "product"
 
     }
 }
