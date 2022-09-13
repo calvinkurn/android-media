@@ -18,20 +18,6 @@
     },
     {
       "clientId": ".+",
-      "businessUnit": "travel & entertainment",
-      "contactInfo": {
-        "afUniqueId": ".+",
-        "userSeller": ".+",
-        "shopID": ".+",
-        "userId": ".*"
-      },
-      "currentSite": "tokopediadigitaldeals",
-      "event": ".+",
-      "adsId": ".+",
-      "androidId": ".+"
-    },
-    {
-      "clientId": ".+",
       "eventCategory": "digital - deals",
       "item_list": "",
       "event": "view_item",
