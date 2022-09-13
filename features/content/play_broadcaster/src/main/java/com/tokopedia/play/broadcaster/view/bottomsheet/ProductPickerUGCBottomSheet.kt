@@ -14,6 +14,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArg
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayUgcProductPickerBinding
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
@@ -33,6 +34,7 @@ import javax.inject.Inject
  */
 class ProductPickerUGCBottomSheet @Inject constructor(
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
+    private val analytic: ProductPickerUGCAnalytic,
 ) : BaseProductSetupBottomSheet() {
 
     private var _binding: BottomSheetPlayUgcProductPickerBinding? = null
@@ -107,6 +109,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
             is ProductTagParentFragment -> {
                 childFragment.setListener(productTagListener)
                 childFragment.setDataSource(productTagDataSource)
+                childFragment.setAnalytic(analytic)
             }
         }
     }

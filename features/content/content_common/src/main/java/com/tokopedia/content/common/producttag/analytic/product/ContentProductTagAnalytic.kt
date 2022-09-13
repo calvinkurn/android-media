@@ -62,5 +62,13 @@ interface ContentProductTagAnalytic {
         position: Int,
     )
 
+    fun clickSaveProduct(source: ProductTagSource)
+
+    fun clickAdvancedProductFilter()
+
+    fun clickSaveAdvancedProductFilter()
+
+    fun clickProductFilterChips()
+
     fun sendAll()
 }

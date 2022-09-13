@@ -72,6 +72,7 @@ class GlobalSearchProductTabFragment @Inject constructor(
     private val sortFilterBottomSheet: SortFilterBottomSheet = SortFilterBottomSheet()
     private val sortFilterCallback = object : SortFilterBottomSheet.Callback {
         override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+            mAnalytic?.clickSaveAdvancedProductFilter()
             applySortFilterModel.apply {
                 viewModel.submitAction(
                     ProductTagAction.ApplyProductSortFilter(
@@ -239,12 +240,14 @@ class GlobalSearchProductTabFragment @Inject constructor(
             addItem(
                 curr.quickFilters.map {
                     it.toSortFilterItem(curr.param.isParamFound(it.key, it.value)) {
+                        mAnalytic?.clickProductFilterChips()
                         viewModel.submitAction(ProductTagAction.SelectProductQuickFilter(it))
                     }
                 } as ArrayList<SortFilterItem>
             )
             textView?.text = getString(R.string.cc_product_tag_filter_label)
             parentListener = {
+                mAnalytic?.clickAdvancedProductFilter()
                 viewModel.submitAction(ProductTagAction.OpenProductSortFilterBottomSheet)
             }
             indicatorCounter = curr.param.getFilterCount()
