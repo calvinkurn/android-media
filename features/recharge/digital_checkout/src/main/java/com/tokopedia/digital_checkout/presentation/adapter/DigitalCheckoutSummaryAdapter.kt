@@ -1,21 +1,23 @@
 package com.tokopedia.digital_checkout.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.data.PaymentSummary
 import com.tokopedia.digital_checkout.data.PaymentSummary.Payment
-import kotlinx.android.synthetic.main.item_digital_checkout_summary_detail.view.*
+import com.tokopedia.digital_checkout.databinding.ItemDigitalCheckoutSummaryDetailBinding
 
 class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummaryAdapter.DigitalCheckoutSummaryViewHolder>() {
 
     private var summaries: MutableList<Payment> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DigitalCheckoutSummaryViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(DigitalCheckoutSummaryViewHolder.LAYOUT, parent, false)
-        return DigitalCheckoutSummaryViewHolder(view)
+        val binding = ItemDigitalCheckoutSummaryDetailBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return DigitalCheckoutSummaryViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: DigitalCheckoutSummaryViewHolder, position: Int) {
@@ -29,12 +31,11 @@ class DigitalCheckoutSummaryAdapter: RecyclerView.Adapter<DigitalCheckoutSummary
         notifyDataSetChanged()
     }
 
-    class DigitalCheckoutSummaryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        companion object {
-            val LAYOUT = R.layout.item_digital_checkout_summary_detail
-        }
+    inner class DigitalCheckoutSummaryViewHolder(private val binding: ItemDigitalCheckoutSummaryDetailBinding)
+        : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: Payment) {
-            with(itemView) {
+            with(binding) {
                 tvCheckoutSummaryDetailLabel.text = item.title
                 tvCheckoutSummaryDetailValue.text = item.priceAmount
             }
