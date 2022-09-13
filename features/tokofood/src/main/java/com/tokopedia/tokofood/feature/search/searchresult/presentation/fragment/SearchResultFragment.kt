@@ -152,6 +152,18 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         viewModel.applyFilter(filter)
     }
 
+    override fun onImpressCompleteFilterChip() {
+        // TODO("Not yet implemented")
+    }
+
+    override fun onImpressSortChip() {
+        // TODO("Not yet implemented")
+    }
+
+    override fun onImpressFilterChip() {
+        // TODO("Not yet implemented")
+    }
+
     override fun onClickRetryError() {
         viewModel.getInitialMerchantSearchResult(searchParameter)
     }
