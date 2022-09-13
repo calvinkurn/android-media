@@ -1135,4 +1135,117 @@ class ShipmentPresenterBoUnstackTest {
         // Then
         verify(inverse = true) { presenter.doUnapplyBo(any(), any()) }
     }
+
+    // Test clearOrderPromoCodeFromLastValidateUseRequest()
+
+    @Test
+    fun `WHEN clearing last validate use with lastValidateUseRequest null THEN last validate use's should still be null`() {
+        // Given
+        val uniqueId = "111-111-111"
+        val promoCode = "BOCODE"
+        presenter.setLatValidateUseRequest(null)
+
+        // When
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+
+        // Then
+        assert(presenter.lastValidateUseRequest == null)
+    }
+
+    @Test
+    fun `WHEN clearing last validate use request with matching unique id and promo code THEN order with matching unique id should be cleared`() {
+        // Given
+        val uniqueId = "111-111-111"
+        val promoCode = "CODE1"
+        presenter.setLatValidateUseRequest(ValidateUsePromoRequest(
+            orders = listOf(
+                OrdersItem(
+                    uniqueId = "111-111-111",
+                    codes = mutableListOf("CODE1")
+                ),
+                OrdersItem(
+                    uniqueId = "222-222-222",
+                    codes = mutableListOf("CODE2")
+                ),
+                OrdersItem(
+                    uniqueId = "333-333-333",
+                    codes = mutableListOf("CODE3")
+                ),
+            )
+        ))
+
+        // When
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+
+        // Then
+        assert(presenter.lastValidateUseRequest.orders.size == 3)
+
+        val matchingOrder = presenter.lastValidateUseRequest.orders.find { it.uniqueId == uniqueId }
+        assert(matchingOrder != null)
+        assert(matchingOrder?.codes?.find { it == promoCode } == null)
+    }
+
+    @Test
+    fun `WHEN clearing last validate use request with matching unique id but not matching promo code THEN orders should not be changed`() {
+        // Given
+        val uniqueId = "111-111-111"
+        val promoCode = "CODE4"
+        presenter.setLatValidateUseRequest(ValidateUsePromoRequest(
+            orders = listOf(
+                OrdersItem(
+                    uniqueId = "111-111-111",
+                    codes = mutableListOf("CODE1")
+                ),
+                OrdersItem(
+                    uniqueId = "222-222-222",
+                    codes = mutableListOf("CODE2")
+                ),
+                OrdersItem(
+                    uniqueId = "333-333-333",
+                    codes = mutableListOf("CODE3")
+                ),
+            )
+        ))
+
+        // When
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+
+        // Then
+        assert(presenter.lastValidateUseRequest.orders.size == 3)
+        presenter.lastValidateUseRequest.orders.forEach {
+            assert(it.codes.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `WHEN clearing last validate use request with no matching unique id THEN orders should not be changed`() {
+        // Given
+        val uniqueId = "666-666-666"
+        val promoCode = "CODE1"
+        presenter.setLatValidateUseRequest(ValidateUsePromoRequest(
+            orders = listOf(
+                OrdersItem(
+                    uniqueId = "111-111-111",
+                    codes = mutableListOf("CODE1")
+                ),
+                OrdersItem(
+                    uniqueId = "222-222-222",
+                    codes = mutableListOf("CODE2")
+                ),
+                OrdersItem(
+                    uniqueId = "333-333-333",
+                    codes = mutableListOf("CODE3")
+                ),
+            )
+        ))
+
+        // When
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+
+        // Then
+        assert(presenter.lastValidateUseRequest.orders.size == 3)
+        presenter.lastValidateUseRequest.orders.forEach {
+            assert(it.codes.isNotEmpty())
+        }
+    }
 }
