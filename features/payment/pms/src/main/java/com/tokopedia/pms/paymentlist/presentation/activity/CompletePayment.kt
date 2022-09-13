@@ -67,7 +67,11 @@ class CompletePayment : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             webViewBackLogic()
         }
+        setWebViewProperties()
 
+    }
+
+    private fun setWebViewProperties() {
         binding.scroogeExtendedWebview.webViewClient = CompletePaymentPmsWebClient()
         binding.scroogeExtendedWebview.settings.apply {
             javaScriptEnabled = true
@@ -76,7 +80,6 @@ class CompletePayment : AppCompatActivity() {
             displayZoomControls = true
 
         }
-
 
     }
 

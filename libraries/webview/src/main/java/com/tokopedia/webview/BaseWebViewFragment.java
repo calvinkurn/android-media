@@ -31,7 +31,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,7 +127,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String FDL_HOST = "tkpd.page.link";
-    private static String ENABLE_FDL_HOST_WEBVIEW = "android_enable_fdl_host_webview";
+    private static final String ENABLE_FDL_HOST_WEBVIEW = "android_enable_fdl_host_webview";
     private static final String SCHEME_INTENT = "intent";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
@@ -273,7 +272,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webSettings.setMediaPlaybackRequiresUserGesture(false);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            webView.setWebContentsDebuggingEnabled(true);
+            WebView.setWebContentsDebuggingEnabled(true);
         }
         return view;
     }
@@ -322,7 +321,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private final class WebToastInterface {
 
-        private WeakReference<Activity> mContextRef;
+        private final WeakReference<Activity> mContextRef;
         private Toast toast;
 
         public WebToastInterface(Activity context) {

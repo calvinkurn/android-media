@@ -155,23 +155,8 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     }
 
     private fun openCalender() {
-        if (!BOTTOMSHEET_PRESSED) {
-            BOTTOMSHEET_PRESSED = true
-            DateRangePickerBottomSheet.getInstance(
-                selectedDateFrom,
-                selectedDateTo,
-                childFragmentManager
-            ).apply {
-                setCloseClickListener {
-                    BOTTOMSHEET_PRESSED = false
-                    dismiss()
-                }
-                setOnDismissListener {
-                    BOTTOMSHEET_PRESSED = false
-                }
-            }
-        }
-
+        DateRangePickerBottomSheet.getInstance(selectedDateFrom, selectedDateTo)
+            .show(childFragmentManager, "")
     }
 
     override fun onEmptyContentItemTextClicked() {}
@@ -216,6 +201,5 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
 
     companion object {
         const val DELAY_COACH_MARK_MILLIS = 400L
-        var BOTTOMSHEET_PRESSED = false
     }
 }
