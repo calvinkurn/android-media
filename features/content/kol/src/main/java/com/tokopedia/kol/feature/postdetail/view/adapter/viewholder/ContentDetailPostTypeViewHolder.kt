@@ -1,8 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.view.adapter.viewholder
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
@@ -35,7 +33,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselIm
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
 import com.tokopedia.feedcomponent.view.transition.BackgroundColorTransition
 import com.tokopedia.feedcomponent.view.widget.*
-import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kol.R
 import com.tokopedia.kotlin.extensions.view.*
@@ -236,20 +233,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                     lastPosition,
                 )
             }
-        },
-        listener = object : FeedCampaignListener {
-            override fun onTimerFinishUpcoming() {
-                listener?.changeUpcomingWidgetToOngoing(mData, positionInCdp)
-            }
-
-            override fun onTimerFinishOngoing() {
-                listener?.removeOngoingCampaignSaleWidget(mData, positionInCdp)
-
-            }
-            override fun onReminderBtnClick(isReminderSet: Boolean, positionInFeed: Int) {
-                listener?.onIngatkanSayaBtnClicked(mData, positionInFeed)
-            }
-
         }
     )
     private val snapHelper = PagerSnapHelper()
@@ -377,9 +360,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 ASGC_RESTOCK_PRODUCTS -> context.getString(
                     feedComponentR.string.feeds_asgc_restock_text)
                 ASGC_DISCOUNT_TOKO -> context.getString(feedComponentR.string.feed_asgc_diskon_toko)
-                ASGC_FLASH_SALE_TOKO ->  mData.campaign.name
-                ASGC_RILISAN_SPECIAL ->  mData.campaign.name
-                else -> String.EMPTY
+                else -> ""
             }
         } else {
             if (count >= FOLLOW_COUNT_THRESHOLD) {
@@ -787,9 +768,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         commentButton.invisible()
         seeAllCommentText.hide()
 
-        if (feedXCard.isTypeProductHighlight && feedXCard.isUpcoming)
-            listener?.onIngatkanSayaBtnImpressed(mData, positionInCdp)
-
         adapter.setItemsAndAnimateChanges(mediaList)
         rvCarousel.addOneTimeGlobalLayoutListener {
             rvCarousel.scrollToPosition(feedXCard.lastCarouselIndex)
@@ -966,23 +944,14 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     }
 
     private fun changeCTABtnColorAsPerWidget(card: FeedXCard, delayInMs: Long? = null) {
-        val colorGradient = card.cta.colorGradient
         topAdsJob?.cancel()
         topAdsJob = scope.launch {
             if (delayInMs != null) delay(delayInMs)
 
             card.isAsgcColorChangedAsPerWidgetColor = true
 
-            if (card.isTypeProductHighlight) {
-                if (card.isRilisanSpl || card.isFlashSaleToko) {
-                    changeCTABtnColorAsPerColorGradientFromBE(colorGradient.map { colorGradient ->
-                        colorGradient.color
-                    } as? ArrayList<String>)
-                } else {
-                    changeCTABtnColorAsPerColorCodeFromBE(card.cta.color)
-                }
-            } else
-                changeCTABtnColorToGreen()
+            if (card.isASGCDiscountToko) changeCTABtnColorToRed()
+            else changeCTABtnColorToGreen()
         }
     }
 
@@ -998,56 +967,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         topAdsProductName.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setBackgroundColor(primaryColor)
-    }
-
-    private fun changeCTABtnColorAsPerColorCodeFromBE(color: String) {
-        changeCTABtnColor(
-            primaryColor = Color.parseColor(color),
-            secondaryColor = MethodChecker.getColor(
-                context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
-            ),
-        )
-    }
-
-    private fun changeCTABtnColorAsPerColorGradientFromBE(colorArray: ArrayList<String>?) {
-        colorArray?.let {
-            changeCTABtnColorGradient(
-                colorArray = it,
-                secondaryColor = MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
-                ),
-            )
-        }
-    }
-
-
-    private fun changeCTABtnColorGradient(
-        colorArray: ArrayList<String>,
-        secondaryColor: Int,
-    ) {
-        topAdsProductName.setTextColor(secondaryColor)
-        topAdsChevron.setColorFilter(secondaryColor)
-        topAdsCard.setGradientBackground(colorArray)
-    }
-
-    private fun View.setGradientBackground(colorArray: ArrayList<String>) {
-        try {
-            if (colorArray.size > 1) {
-                val colors = IntArray(colorArray.size)
-                for (i in 0 until colorArray.size) {
-                    colors[i] = Color.parseColor(colorArray[i])
-                }
-                val gradient = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors)
-                gradient.cornerRadius = 0f
-                this.background = gradient
-            } else {
-                this.setBackgroundColor(Color.parseColor(colorArray[0]))
-            }
-        } catch (e: Exception) {
-            changeCTABtnColorToGreen()
-        }
     }
 
     private fun getCTAButtonText(card: FeedXCard) =
@@ -1071,10 +990,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         changeCTABtnColorAsPerWidget(feedXCard,
             FOCUS_CTA_DELAY
         )
-    }
-
-    fun onFSTReminderStatusUpdated() {
-        adapter.updateReminderStatusForAllButtonsInCarousel()
     }
 
     private fun changeCTABtnColorToRed() {
@@ -1161,8 +1076,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         private const val ASGC_NEW_PRODUCTS = "asgc_new_products"
         private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
         private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
-        private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
-        private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"
         private const val MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL = 5
         private const val TOPADS_TAGGING_CENTER_POS_X = 0.5f
         private const val TOPADS_TAGGING_CENTER_POS_Y = 0.44f

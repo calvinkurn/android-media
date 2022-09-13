@@ -25,17 +25,13 @@ import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.bottomsheets.*
 import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.di.DaggerContentDetailComponent
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
@@ -77,7 +73,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
@@ -225,9 +220,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         observeReportContent()
         observeVideoViewData()
         observeAddToCart()
-        observeReminderBtnInitialState()
-        observeReminderBtnSetState()
-        observeFeedWidgetUpdatedData()
     }
 
     private fun setupView(view: View) {
@@ -1083,28 +1075,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         )
     }
 
-    override fun onIngatkanSayaBtnImpressed(card: FeedXCard, positionInFeed: Int) {
-        viewModel.checkUpcomingCampaignInitialReminderStatus(card.campaign, positionInFeed)
-    }
-
-    override fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int) {
-        viewModel.setUnsetReminder(card.campaign, positionInFeed)
-    }
-
-    override fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int) {
-        if (::productTagBS.isInitialized)
-            productTagBS.dismiss()
-        viewModel.fetchLatestFeedPostWidgetData(card.id, positionInFeed)
-    }
-
-    override fun removeOngoingCampaignSaleWidget(card: FeedXCard, positionInFeed: Int) {
-        if (adapter.getList().size > positionInFeed) {
-            adapter.getList().removeAt(positionInFeed)
-            adapter.notifyItemRemoved(positionInFeed)
-        }
-    }
-
-
     override fun onLihatProdukClicked(
         feedXCard: FeedXCard,
         postPosition: Int,
@@ -1700,54 +1670,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         }
     }
 
-    private fun onSuccessFetchStatusCampaignReminderButton(
-        data: FeedAsgcCampaignResponseModel,
-        shouldShowToaster: Boolean = false
-    ) {
-        val newList = adapter.getList()
-        val rowNumber = data.rowNumber
-        if (rowNumber in 0 until newList.size) {
-            val card = newList[rowNumber]
-            val campaign = card.campaign
-            if (campaign.campaignId == data.campaignId)
-                campaign.reminder = data.reminderStatus
-            if (shouldShowToaster)
-                showToastOnSuccessReminderSetForFSTorRS(card)
-
-            val reminderBtnPayload = Bundle().apply {
-                putBoolean(ContentDetailPostViewHolder.PAYLOAD_REMINDER_BTN_STATUS_UPDATED, true)
-            }
-            adapter.notifyItemChanged(rowNumber, reminderBtnPayload)
-        }
-    }
-
-    private fun showToastOnSuccessReminderSetForFSTorRS(card: FeedXCard) {
-        when{
-            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.isFlashSaleToko -> showToast(
-                context?.getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_fst_message)
-                    ?: "",
-                Toaster.TYPE_NORMAL
-            )
-            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.isRilisanSpl -> showToast(
-                context?.getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_rs_message)
-                    ?: "",
-                Toaster.TYPE_NORMAL
-            )
-            card.campaign.reminder is FeedASGCUpcomingReminderStatus.Off -> showToast(
-                context?.getString(
-                    com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_deactivate_message
-                ) ?: "", Toaster.TYPE_NORMAL
-            )
-        }
-    }
-    private fun onSuccessFetchLatestFeedWidgetData(data: FeedXCard, rowNumber: Int) {
-        val newList = adapter.getList()
-        if (newList.size > rowNumber) {
-            newList[rowNumber] = data
-        }
-        adapter.setItemsAndAnimateChanges(newList)
-    }
-
     //region observer
     private fun observeWishlist() {
         viewModel.observableWishlist.observe(viewLifecycleOwner, Observer {
@@ -2105,38 +2027,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     ) {
                         onAddToCartSuccess()
                     }.show()
-                }
-            }
-        })
-    }
-    private fun observeReminderBtnInitialState() {
-        viewModel.asgcReminderButtonInitialStatus.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ContentDetailResult.Success -> {
-                    onSuccessFetchStatusCampaignReminderButton(it.data)
-                }
-            }
-        })
-    }
-
-    private fun observeReminderBtnSetState() {
-        viewModel.asgcReminderButtonStatus.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ContentDetailResult.Success -> {
-                    onSuccessFetchStatusCampaignReminderButton(it.data, true)
-                }
-                is ContentDetailResult.Failure -> {
-                    showToast(ErrorHandler.getErrorMessage(context, it.error), Toaster.TYPE_ERROR)
-                }
-            }
-        })
-    }
-
-    private fun observeFeedWidgetUpdatedData() {
-        viewModel.feedWidgetLatestData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
                 }
             }
         })

@@ -34,5 +34,4 @@ class ContentDetailMapperImpl : ContentDetailMapper {
 
     override fun mapWishlistData(rowNumber: Int, productId: String) =
         WishlistContentModel(rowNumber = rowNumber, productId = productId)
-
 }

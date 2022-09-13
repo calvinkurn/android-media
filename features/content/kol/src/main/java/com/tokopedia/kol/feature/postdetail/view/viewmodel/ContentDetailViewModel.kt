@@ -4,13 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
-import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
-import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
-import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
@@ -20,7 +13,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ContentDetailViewModel @Inject constructor(
@@ -38,10 +30,6 @@ class ContentDetailViewModel @Inject constructor(
     private val _atcResp = MutableLiveData<ContentDetailResult<Boolean>>()
     private val _reportResponse = MutableLiveData<ContentDetailResult<ReportContentModel>>()
     private val _deletePostResp = MutableLiveData<ContentDetailResult<DeleteContentModel>>()
-    private val _asgcReminderButtonInitialStatus = MutableLiveData<ContentDetailResult<FeedAsgcCampaignResponseModel>>()
-    private val _asgcReminderButtonStatus = MutableLiveData<ContentDetailResult<FeedAsgcCampaignResponseModel>>()
-    private val _feedWidgetLatestData = MutableLiveData<Result<FeedWidgetData>>()
-
 
     val cDPPostRecomData: LiveData<Result<ContentDetailUiModel>>
         get() = _getCDPPostRecomData
@@ -71,59 +59,12 @@ class ContentDetailViewModel @Inject constructor(
         get() = _observableWishlist
     private val _observableWishlist = MutableLiveData<ContentDetailResult<WishlistContentModel>>()
 
-    val asgcReminderButtonInitialStatus: LiveData<ContentDetailResult<FeedAsgcCampaignResponseModel>>
-        get() = _asgcReminderButtonInitialStatus
-
-    val asgcReminderButtonStatus: LiveData<ContentDetailResult<FeedAsgcCampaignResponseModel>>
-        get() = _asgcReminderButtonStatus
-
-    val feedWidgetLatestData: LiveData<Result<FeedWidgetData>>
-        get() = _feedWidgetLatestData
-
-
-    fun fetchLatestFeedPostWidgetData(detailId: String, rowNumber: Int) {
-        launchCatchError(block = {
-            val response = repository.getContentDetail(detailId)
-            if (response.postList.isNotEmpty()) {
-                val updatedData = FeedWidgetData(
-                    rowNumber = rowNumber,
-                    feedXCard = response.postList.first()
-                )
-                _feedWidgetLatestData.value = Success(updatedData)
-            }
-        }) {
-            _feedWidgetLatestData.value = Fail(it)
-        }
-    }
-
     fun getContentDetail(contentId: String){
         launchCatchError( block = {
             val results = repository.getContentDetail(contentId)
             _getCDPPostFirstPostData.value = Success(results)
         }) {
             _getCDPPostFirstPostData.value = Fail(it)
-        }
-    }
-
-    fun checkUpcomingCampaignInitialReminderStatus(campaign: FeedXCampaign, rowNumber: Int) {
-       launchCatchError(block = {
-            val data = repository.checkUpcomingCampaign(campaignId = campaign.campaignId)
-            val reminderStatusRes = if (data) FeedASGCUpcomingReminderStatus.On(campaign.campaignId) else FeedASGCUpcomingReminderStatus.Off(campaign.campaignId)
-            _asgcReminderButtonInitialStatus.value = ContentDetailResult.Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.campaignId, reminderStatus = reminderStatusRes))
-        }) {
-            _asgcReminderButtonInitialStatus.value = ContentDetailResult.Failure(it)
-        }
-    }
-    fun setUnsetReminder(campaign: FeedXCampaign, rowNumber: Int) {
-       launchCatchError(block = {
-            val data = repository.subscribeUpcomingCampaign(
-                campaignId = campaign.campaignId,
-                reminderType = campaign.reminder
-            )
-            val reminderStatusRes = if (data.first) FeedASGCUpcomingReminderStatus.On(campaign.campaignId) else FeedASGCUpcomingReminderStatus.Off(campaign.campaignId)
-            _asgcReminderButtonStatus.value = ContentDetailResult.Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.campaignId, reminderStatus = reminderStatusRes))
-        }) {
-            _asgcReminderButtonStatus.value = ContentDetailResult.Failure(it)
         }
     }
 
