@@ -185,4 +185,12 @@ class PaymentListViewModelTest {
         Assertions.assertThat((viewModel.cancelPaymentLiveData.value as Success).data.isSuccess)
             .isEqualTo(true)
     }
+
+    @Test
+    fun `clear usecase`()
+    {
+        viewModel.refreshPage()
+    }
+
+
 }
