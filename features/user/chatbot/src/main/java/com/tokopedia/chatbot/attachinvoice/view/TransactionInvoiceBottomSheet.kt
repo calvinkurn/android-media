@@ -34,8 +34,8 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
     private lateinit var context: FragmentActivity
     private var messageId: Long = 0
     private lateinit var listener: TransactionInvoiceBottomSheetListener
-    private var viewBinding: BottomsheetTransactionInvoiceBinding? = null
-    private fun getBindingView() = viewBinding!!
+    private var _viewBinding: BottomsheetTransactionInvoiceBinding? = null
+    private fun getBindingView() = _viewBinding!!
 
     init {
         isFullpage = true
@@ -62,7 +62,7 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewBinding = BottomsheetTransactionInvoiceBinding.inflate(LayoutInflater.from(context))
+        _viewBinding = BottomsheetTransactionInvoiceBinding.inflate(LayoutInflater.from(context))
         setChild(getBindingView().root)
         getBindingView().run {
             tabsUnify = this.transactionInvoiceTabLayout
@@ -70,6 +70,11 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
             transactionNotFoundButton = this.transactionNotFoundBtn
         }
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -45,8 +45,8 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     private lateinit var buttonTokopediaCare: UnifyButton
     private lateinit var contentListRV: RecyclerView
     private var isDismissedCalledDirectly: Boolean = false
-    private var viewBinding: ActivityChatbotInboxMigrationBinding? = null
-    private fun getBindingView() = viewBinding!!
+    private var _viewBinding: ActivityChatbotInboxMigrationBinding? = null
+    private fun getBindingView() = _viewBinding!!
 
     @Inject
     lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
@@ -55,7 +55,7 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityChatbotInboxMigrationBinding.inflate(layoutInflater)
+        _viewBinding = ActivityChatbotInboxMigrationBinding.inflate(layoutInflater)
         setContentView(getBindingView().root)
 
         initInjector()
@@ -183,4 +183,9 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? = null
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
+    }
 }

@@ -29,8 +29,8 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
     @Inject
     lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
 
-    private var viewBinding: ChatbotFragmentRatingProvideBinding? = null
-    private fun getBindingView() = viewBinding!!
+    private var _viewBinding: ChatbotFragmentRatingProvideBinding? = null
+    private fun getBindingView() = _viewBinding!!
 
     companion object {
         const val BOT_OTHER_REASON = "bot_other_reason"
@@ -52,7 +52,7 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewBinding = ChatbotFragmentRatingProvideBinding.inflate(inflater, container, false)
+        _viewBinding = ChatbotFragmentRatingProvideBinding.inflate(inflater, container, false)
         return getBindingView().root
     }
 
@@ -165,5 +165,10 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
 
             chatbotComponent.inject(this)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _viewBinding = null
     }
 }

@@ -206,8 +206,8 @@ class ChatbotFragment : BaseChatFragment(),
     @Inject
     lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
 
-    private var viewBinding: FragmentChatbotBinding? = null
-    private fun getBindingView() = viewBinding!!
+    private var _viewBinding: FragmentChatbotBinding? = null
+    private fun getBindingView() = _viewBinding!!
 
     lateinit var replyEditText: EditText
     lateinit var replyEditTextContainer: LinearLayout
@@ -360,7 +360,7 @@ class ChatbotFragment : BaseChatFragment(),
 
         }
 
-        viewBinding = FragmentChatbotBinding.inflate(inflater, container, false)
+        _viewBinding = FragmentChatbotBinding.inflate(inflater, container, false)
         return getBindingView().root
     }
 
@@ -1881,5 +1881,9 @@ class ChatbotFragment : BaseChatFragment(),
         showTopLoading()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _viewBinding = null
+    }
 }
 

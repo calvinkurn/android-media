@@ -19,15 +19,15 @@ class ChatBotCsatFragment : BaseFragmentProvideRating() {
         }
     }
 
-    private var viewBinding: ChatbotFragmentCsatBinding? = null
-    private fun getBindingView() = viewBinding!!
+    private var _viewBinding: ChatbotFragmentCsatBinding? = null
+    private fun getBindingView() = _viewBinding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewBinding = ChatbotFragmentCsatBinding.inflate(inflater, container, false)
+        _viewBinding = ChatbotFragmentCsatBinding.inflate(inflater, container, false)
         return getBindingView().root
     }
 
@@ -48,6 +48,11 @@ class ChatBotCsatFragment : BaseFragmentProvideRating() {
             arguments?.getString(ChatBotCsatActivity.CASE_ID)
         )
         super.onSuccessSubmit(intent)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _viewBinding = null
     }
 
 }
