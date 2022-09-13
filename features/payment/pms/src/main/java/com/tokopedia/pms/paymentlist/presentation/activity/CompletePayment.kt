@@ -20,13 +20,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
 class CompletePayment : AppCompatActivity() {
 
     private lateinit var binding: ActivityCompletePaymentBinding
     private var urlToLoad = ""
     private lateinit var timerJob: Job
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +49,6 @@ class CompletePayment : AppCompatActivity() {
         }
     }
 
-
     private fun initUrlLoad() {
         if (urlToLoad.isNotEmpty())
             binding.scroogeExtendedWebview.loadUrl(urlToLoad)
@@ -68,7 +65,6 @@ class CompletePayment : AppCompatActivity() {
             webViewBackLogic()
         }
         setWebViewProperties()
-
     }
 
     private fun setWebViewProperties() {
@@ -78,9 +74,7 @@ class CompletePayment : AppCompatActivity() {
             domStorageEnabled = true
             builtInZoomControls = false
             displayZoomControls = true
-
         }
-
     }
 
     private fun webViewBackLogic() {
@@ -106,7 +100,6 @@ class CompletePayment : AppCompatActivity() {
                 routeToSuccess(request?.url.toString())
                 return true
             }
-
             return false
         }
 
@@ -114,21 +107,14 @@ class CompletePayment : AppCompatActivity() {
             hideProgressBar()
             if (::timerJob.isInitialized)
                 timerJob.cancel()
-
             super.onPageFinished(view, url)
-
-
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             showProgressBar()
             startTimer()
             super.onPageStarted(view, url, favicon)
-
-
         }
-
-
     }
 
     override fun onPause() {
@@ -136,9 +122,7 @@ class CompletePayment : AppCompatActivity() {
         super.onPause()
     }
 
-
     private fun startTimer() {
-
         timerJob = CoroutineScope(Dispatchers.Main).launch {
             delay(90000)
             binding.scroogeExtendedWebview.stopLoading()
@@ -149,9 +133,7 @@ class CompletePayment : AppCompatActivity() {
                 Toaster.TYPE_ERROR
             ).show()
             finish()
-
         }
-
     }
 
     fun showProgressBar() {
