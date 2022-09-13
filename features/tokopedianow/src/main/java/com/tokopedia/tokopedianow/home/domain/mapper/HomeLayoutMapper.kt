@@ -209,7 +209,7 @@ object HomeLayoutMapper {
     ) {
         updateItemById(item.id) {
             if (!response.isNullOrEmpty()) {
-                val categoryList = mapToCategoryList(response, warehouseId)
+                val categoryList = mapToCategoryList(response, warehouseId, item.title)
                 val layout = item.copy(categoryListUiModel = categoryList, state = TokoNowLayoutState.SHOW)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             } else {
