@@ -64,7 +64,7 @@ class EngagementCarouselViewComponent(
         PagerSnapHelper()
     }
 
-    private val linearLayoutManager by lazy (LazyThreadSafetyMode.NONE){
+    private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         LinearLayoutManager(rootView.context, LinearLayoutManager.VERTICAL, false)
     }
 
@@ -115,15 +115,11 @@ class EngagementCarouselViewComponent(
         if (rvSize <= 1) return
         job?.cancel()
         job = scope.launchCatchError(block = {
-            if(isActive) {
-                var count = 0
-                repeat(Int.MAX_VALUE) {
+            var count = 0
+            repeat(Int.MAX_VALUE) {
+                if (isActive) {
                     delay(AUTO_SCROLL_DELAY)
-                    when {
-                        count == rvSize - 1 -> count = 0
-                        count >= 0 -> count++
-                        else -> count--
-                    }
+                    count = (count + 1) % rvSize
                     carousel.smoothScrollToPosition(count)
                 }
             }
