@@ -3267,8 +3267,13 @@ open class DynamicProductDetailFragment :
                 )
             )
             shouldRefreshShippingBottomSheet = false
-            val shippingBs = ProductDetailShippingBottomSheet()
-            shippingBs.show(getProductFragmentManager())
+
+            showImmediately(
+                fragmentManager = getProductFragmentManager(),
+                tag = ProductDetailShippingBottomSheet::class.java.simpleName
+            ) {
+                ProductDetailShippingBottomSheet()
+            }
         }
     }
 
