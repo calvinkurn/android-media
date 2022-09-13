@@ -17,7 +17,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -40,6 +39,7 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailBinding
+import com.tokopedia.deals.pdp.common.DealsPDPIdlingResource
 import com.tokopedia.deals.pdp.data.EventContentInnerData
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.di.DealsPDPComponent
@@ -222,6 +222,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                     }
 
                     is Fail -> {
+                        DealsPDPIdlingResource.decrement()
                         hideLoading()
                         showErrorState()
                     }
@@ -261,6 +262,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
             viewModel.flowRating.collect {
                 when (it) {
                     is Success -> {
+                        DealsPDPIdlingResource.decrement()
                         hideLoading()
                         if (it.data.data.isNullOrEmpty()){
                             setRating("0", Int.ZERO, false, isHideImageRating = true)
@@ -273,6 +275,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                     }
 
                     is Fail -> {
+                        DealsPDPIdlingResource.decrement()
                         hideLoading()
                         setRating("0", Int.ZERO, false, isHideImageRating = true)
                     }
@@ -308,6 +311,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private fun getPDP() {
         showLoading()
         productId?.let {
+            DealsPDPIdlingResource.increment()
             viewModel.setPDP(it)
         }
     }

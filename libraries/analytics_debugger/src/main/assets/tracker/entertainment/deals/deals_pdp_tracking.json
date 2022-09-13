@@ -26,6 +26,7 @@
         "userId": ".*"
       },
       "currentSite": "tokopediadigitaldeals",
+      "event": ".+",
       "adsId": ".+",
       "androidId": ".+"
     },
@@ -77,7 +78,7 @@
       "event": "digitalDealsClick",
       "eventAction": "check what you will get - product detail",
       "sessionIris": ".+",
-      "eventLabel": ".+ - .+ - .+"
+      "eventLabel": ".+ - .+"
     },
     {
       "clientId": ".+",
@@ -106,7 +107,7 @@
       "eventCategory": "digital - deals",
       "item_list": "/deals - .+ - .+ - .+",
       "event": "select_content",
-      "userId": ".+",
+      "userId": ".*",
       "eventAction": "click on deals recommendation",
       "sessionIris": ".+",
       "items": [
@@ -128,7 +129,7 @@
       "eventCategory": "digital - deals",
       "item_list": "",
       "event": "add_to_cart",
-      "userId": ".+",
+      "userId": ".*",
       "eventAction": "click beli",
       "sessionIris": ".+",
       "items": [

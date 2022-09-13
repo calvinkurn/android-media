@@ -119,6 +119,7 @@ dependencies {
     }
 
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore

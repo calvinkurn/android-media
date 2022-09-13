@@ -17,6 +17,6 @@ class DealsPDPRestMockResponse: MockModelConfig() {
     }
 
     companion object {
-        const val KEY_REST_RATING = "total_likes"
+        const val KEY_REST_RATING = "https://booking.tokopedia.com/v1/api/deal/rating/product/28603"
     }
 }

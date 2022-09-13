@@ -40,6 +40,8 @@ class DealsPDPActivity: BaseSimpleActivity(), HasComponent<DealsPDPComponent>, D
             productId = uri.query ?: ""
         } else if (savedInstanceState != null) {
             productId = savedInstanceState.getString(EXTRA_PRODUCT_ID, "")
+        } else if (intent.extras != null) {
+            productId = intent.getStringExtra(EXTRA_PRODUCT_ID)
         }
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
