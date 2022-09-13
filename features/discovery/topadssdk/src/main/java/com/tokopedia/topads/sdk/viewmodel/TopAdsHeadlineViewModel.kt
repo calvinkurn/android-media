@@ -12,16 +12,19 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 
-class TopAdsHeadlineViewModel @Inject constructor(private val topAdsAddressHelper: TopAdsAddressHelper) :
+class TopAdsHeadlineViewModel @Inject constructor(
+    private val topAdsAddressHelper: TopAdsAddressHelper,
+    private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase
+) :
     BaseViewModel(Dispatchers.Main) {
 
-    private val graphqlRepository: GraphqlRepository by lazy {
-        GraphqlInteractor.getInstance().graphqlRepository
-    }
-
-    private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase by lazy {
-        GetTopAdsHeadlineUseCase(graphqlRepository)
-    }
+//    private val graphqlRepository: GraphqlRepository by lazy {
+//        GraphqlInteractor.getInstance().graphqlRepository
+//    }
+//
+//    private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase by lazy {
+//        GetTopAdsHeadlineUseCase(graphqlRepository)
+//    }
 
     fun getTopAdsHeadlineData(
         params: String,

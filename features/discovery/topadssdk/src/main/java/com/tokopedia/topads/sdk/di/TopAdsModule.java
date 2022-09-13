@@ -3,6 +3,8 @@ package com.tokopedia.topads.sdk.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase;
 import com.tokopedia.topads.sdk.repository.TopAdsRepository;
@@ -52,5 +54,11 @@ public class TopAdsModule {
     @Provides
     TopAdsImageViewUseCase topAdsImageViewUseCase(@ApplicationContext Context context, UserSessionInterface userSession, TopAdsIrisSession topAdsIrisSession){
         return new TopAdsImageViewUseCase(userSession.getUserId(), new TopAdsRepository(), topAdsIrisSession.getSessionId());
+    }
+
+    @TopAdsScope
+    @Provides
+    GraphqlRepository provideGraphqlRepository(){
+        return  GraphqlInteractor.getInstance().getGraphqlRepository();
     }
 }

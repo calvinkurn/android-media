@@ -52,7 +52,8 @@ class InboxPresenter @Inject constructor(
     private val removeWishListUseCase: RemoveWishListUseCase,
     private val addToWishListV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-    private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase
+    private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
+    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel
 ) : BaseDaggerPresenter<CustomerView>() {
 
     private var inboxView: InboxView? = null
@@ -61,9 +62,9 @@ class InboxPresenter @Inject constructor(
         this.inboxView = inboxView
     }
 
-    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel by lazy {
-        ViewModelProvider(inboxView?.context as AppCompatActivity).get(TopAdsHeadlineViewModel::class.java)
-    }
+//    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel by lazy {
+//        ViewModelProvider(inboxView?.context as AppCompatActivity).get(TopAdsHeadlineViewModel::class.java)
+//    }
 
     fun getInboxData() {
         if (this.inboxView == null)

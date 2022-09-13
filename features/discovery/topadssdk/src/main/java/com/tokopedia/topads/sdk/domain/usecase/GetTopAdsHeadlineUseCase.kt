@@ -9,6 +9,7 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams.Companion.DEFAULT_KEY_SRC
 import com.tokopedia.topads.sdk.domain.TopAdsParams.Companion.KEY_SRC
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.utils.*
+import javax.inject.Inject
 
 const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${'$'}displayParams: String!) {
   displayAdsV3(displayParams: ${'$'}displayParams) {
@@ -101,7 +102,7 @@ private const val PARAMS_QUERY = "displayParams"
 private const val KEY_SEEN_ADS = "seen_ads"
 
 @GqlQuery("GetTopadsHeadlineQuery", GET_TOPADS_HEADLINE_QUERY)
-class GetTopAdsHeadlineUseCase constructor(graphqlRepository: GraphqlRepository)
+class GetTopAdsHeadlineUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<TopAdsHeadlineResponse>(graphqlRepository) {
 
     init {

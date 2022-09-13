@@ -27,10 +27,6 @@ import javax.inject.Inject
 class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : FrameLayout(context, attrs, defStyleAttr) {
 
-//    private val topAdsHeadlineViewModel: TopAdsHeadlineViewModel by lazy {
-//        ViewModelProvider(context as AppCompatActivity).get(TopAdsHeadlineViewModel::class.java)
-//    }
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProvider(context as AppCompatActivity, viewModelFactory) }
