@@ -96,6 +96,12 @@ class DetailEditorFragment @Inject constructor(
                     it
                 )?.path
 
+                // clear un related edit state since crop & rotate value is gather from previous state
+                data.cropRotateValue.apply {
+                    if (data.isToolRotate()) isCrop = false
+                    if (data.isToolCrop()) isRotate = false
+                }
+
                 finishPage()
             }
         } else {
