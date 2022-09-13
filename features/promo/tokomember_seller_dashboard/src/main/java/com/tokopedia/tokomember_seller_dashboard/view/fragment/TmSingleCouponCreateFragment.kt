@@ -227,14 +227,14 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             else{
                 noInternetUi{tokomemberDashCreateViewModel.getInitialCouponData(CREATE, "")}
             }
-        }
-        prefManager?.shopId?.let { it ->
-            prefManager?.cardId?.let { it1 ->
-                if (TmInternetCheck.isConnectedToInternet(context)) {
-                    tmProgramListViewModel?.getProgramList(it, it1)
-                }
-                else{
-                    noInternetUi{tmProgramListViewModel?.getProgramList(it, it1)}
+            prefManager?.shopId?.let { it ->
+                prefManager?.cardId?.let { it1 ->
+                    if (TmInternetCheck.isConnectedToInternet(context)) {
+                        tmProgramListViewModel?.getProgramList(it, it1)
+                    }
+                    else{
+                        noInternetUi{tmProgramListViewModel?.getProgramList(it, it1)}
+                    }
                 }
             }
         }
@@ -878,6 +878,20 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 }
             })
         }
+
+        data?.voucherStartTime?.let {
+            textFieldProgramStartDate.editText.setText(TmDateUtil.setDateFromDetails(it))
+            textFieldProgramStartTime.editText.setText(TmDateUtil.setTimeFromDetails(it))
+            tmCouponStartDateUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+            tmCouponStartTimeUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+        }
+        data?.voucherFinishTime?.let{
+            textFieldProgramEndDate.editText.setText(TmDateUtil.setDateFromDetails(it))
+            textFieldProgramEndTime.editText.setText(TmDateUtil.setTimeFromDetails(it))
+            tmCouponEndDateUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+            tmCouponEndTimeUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+        }
+
     }
 
     private fun openLoadingDialog(){
@@ -1504,8 +1518,14 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             // for both cases
             // user can select end date 1 year from start date
 
-            if(programStatus != ACTIVE) {
-                defaultCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+            if(fromEdit){
+                defaultCalendar.time = tmCouponStartDateUnix?.time
+            }
+            else {
+                if (programStatus != ACTIVE) {
+                    defaultCalendar.time =
+                        sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+                }
             }
             val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             if(tmCouponStartDateUnix != null && type == 0 && firstDateStart){
@@ -1523,11 +1543,23 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 calendarMax.time = tmCouponStartDateUnix?.time
                 minCalendar.time = tmCouponStartDateUnix?.time
             }
-            if(type == 0){
-                calendarMax.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
-                minCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
-            }
 
+            if(fromEdit){
+                if(type == 0) {
+                    calendarMax.time = tmCouponStartDateUnix?.time
+                    minCalendar.time = tmCouponStartDateUnix?.time
+                }
+                if(type == 1) {
+                    calendarMax.time = tmCouponEndDateUnix?.time
+                    minCalendar.time = tmCouponEndDateUnix?.time
+                }
+            }
+            else {
+                if(type == 0){
+                    calendarMax.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+                    minCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+                }
+            }
             calendarMax.add(Calendar.YEAR, 1)
 
             val datepickerObject = DateTimePickerUnify(it, minCalendar, defaultCalendar, calendarMax).apply {

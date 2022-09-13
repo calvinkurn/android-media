@@ -61,7 +61,7 @@ class TmCouponViewPreview @JvmOverloads constructor(
         // 1000000 to 999999999 - Jt
         var result = ""
         if(!couponValue.contains(".")){
-            return floor((couponValue.toInt()/1000.0)).toString()
+            return (couponValue.toInt()/1000).toString()
         }
         else {
             result = floor((couponValue.toDouble().toInt() / 1000.0)).toString()
