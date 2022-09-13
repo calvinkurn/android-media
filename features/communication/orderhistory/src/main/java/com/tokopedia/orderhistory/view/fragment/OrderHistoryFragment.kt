@@ -162,11 +162,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     override fun onClickAddToWishList(product: Product) {
         context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                viewModel.addToWishListV2(product.productId, session.userId,  this)
-            } else {
-                viewModel.addToWishList(product.productId, session.userId, this)
-            }
+            viewModel.addToWishListV2(product.productId, session.userId,  this)
         }
     }
 

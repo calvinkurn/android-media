@@ -92,16 +92,6 @@ class OrderHistoryViewModelTest {
     }
 
     @Test
-    fun addToWishList() {
-        val mockListener: WishListActionListener = mockk(relaxed = true)
-        every { addWishListUseCase.createObservable(Dummy.productId, Dummy.userId, any()) } just Runs
-
-        viewModel.addToWishList(Dummy.productId, Dummy.userId, mockListener)
-
-        verify { addWishListUseCase.createObservable(Dummy.productId, Dummy.userId, mockListener) }
-    }
-
-    @Test
     fun `addToWishListV2 returns Success`() {
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
         val productId = "1"
