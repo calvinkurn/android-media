@@ -34,7 +34,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
         _appliedOptions.flatMapConcat { options ->
             flow {
                 _currentAppliedOptions.value = options
-                val appliedCount = options.count { it.inputState == true.toString() }
+                val appliedCount = options.count { it.inputState.toBoolean() }
                 emit(appliedCount > Int.ZERO)
             }
         }.shareIn(

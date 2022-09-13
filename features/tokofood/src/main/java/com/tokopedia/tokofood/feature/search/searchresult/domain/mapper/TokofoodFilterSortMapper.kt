@@ -18,9 +18,9 @@ import javax.inject.Inject
 class TokofoodFilterSortMapper @Inject constructor() {
 
     fun getQuickSortFilterUiModels(dataValue: DataValue): List<TokofoodSortFilterItemUiModel> {
-        val sortItems = dataValue.sort.run(::convertToSortItemUiModel)
+        val sortItem = dataValue.sort.run(::convertToSortItemUiModel)
         val filterItems = dataValue.filter.map(::convertToFilterItemUiModel)
-        return listOf(sortItems) + filterItems
+        return listOf(sortItem) + filterItems
     }
 
     fun getAppliedSortFilterUiModels(searchParameters: SearchParameter,
@@ -49,7 +49,7 @@ class TokofoodFilterSortMapper @Inject constructor() {
     fun getQuickFilterPriceRangeUiModels(filter: Filter): List<PriceRangeFilterCheckboxItemUiModel> {
         return filter.options.map {
             PriceRangeFilterCheckboxItemUiModel(it).apply {
-                isSelected = it.inputState == true.toString()
+                isSelected = it.inputState.toBoolean()
             }
         }
     }
@@ -58,7 +58,7 @@ class TokofoodFilterSortMapper @Inject constructor() {
         return TokofoodFilterItemUiModel(
             sortFilterItem = filter.convertToSortFilterItem(),
             selectedKey = null,
-            totalSelectedOptions = filter.options.count { it.inputState == true.toString() },
+            totalSelectedOptions = filter.options.count { it.inputState.toBoolean() },
             filter = filter
         )
     }
@@ -131,7 +131,7 @@ class TokofoodFilterSortMapper @Inject constructor() {
 
     private fun Filter.getSelectedCountAndKey(): Pair<Int, String?> {
         val selectedCount =
-            options.count { it.inputState == true.toString() }
+            options.count { it.inputState.toBoolean() }
         val selectedKey =
             if (selectedCount > Int.ZERO) {
                 options.firstOrNull()?.key

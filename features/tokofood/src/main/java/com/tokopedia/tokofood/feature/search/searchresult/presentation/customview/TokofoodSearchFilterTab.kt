@@ -2,13 +2,13 @@ package com.tokopedia.tokofood.feature.search.searchresult.presentation.customvi
 
 import android.content.Context
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
-import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodFilterItemUiModel
@@ -22,11 +22,16 @@ class TokofoodSearchFilterTab(
     private val listener: Listener
 ) {
 
+    private val currentQuickFilter = mutableListOf<TokofoodSortFilterItemUiModel>()
+    private val prefixChipImpressHolder = ImpressHolder()
+
     init {
         initSortFilter()
     }
 
     fun setQuickFilter(items: List<TokofoodSortFilterItemUiModel>) {
+        currentQuickFilter.clear()
+        currentQuickFilter.addAll(items)
         with(sortFilter) {
             val sortFilterItemList = items.mapNotNull(::mapSortFilterUiModelToSortFilterItems)
             sortFilterItems.removeAllViews()
@@ -109,7 +114,7 @@ class TokofoodSearchFilterTab(
     }
 
     private fun SortFilterItem.setActive(filter: Filter) {
-        val isActive = filter.options.any { it.inputState == true.toString() }
+        val isActive = filter.options.any { it.inputState.toBoolean() }
         setSelected(isActive)
     }
 
@@ -139,12 +144,21 @@ class TokofoodSearchFilterTab(
             }
     }
 
+    private fun setOnImpressionListener() {
+        sortFilter.sortFilterPrefix.addOnImpressionListener(prefixChipImpressHolder) {
+
+        }
+    }
+
     interface Listener {
         fun onOpenFullFilterBottomSheet()
         fun onOpenQuickFilterBottomSheet(sortList: List<Sort>)
         fun onOpenQuickFilterBottomSheet(filter: Filter)
         fun onSelectSortChip(sort: Sort, isSelected: Boolean)
         fun onSelectFilterChip(filter: Filter)
+        fun onImpressCompleteFilterChip()
+        fun onImpressSortChip()
+        fun onImpressFilterChip()
     }
 
 }

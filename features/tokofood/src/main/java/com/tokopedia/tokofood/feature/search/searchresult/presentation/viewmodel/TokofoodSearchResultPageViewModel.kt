@@ -290,14 +290,14 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
     private fun getAppliedFilterMap(filter: Filter): Pair<String, String>? {
         val key = filter.options.firstOrNull()?.key ?: return null
-        val value = filter.options.filter { it.inputState == true.toString() }
+        val value = filter.options.filter { it.inputState.toBoolean() }
             .joinToString(TokofoodFilterSortMapper.OPTION_SEPARATOR) { it.value }
         return key to value
     }
 
     private fun getAppliedFilterMap(options: List<Option>): Map<String, String> {
         return options.groupBy { it.key }.mapValues {
-            it.value.filter { option -> option.inputState == true.toString() }
+            it.value.filter { option -> option.inputState.toBoolean() }
                 .joinToString(TokofoodFilterSortMapper.OPTION_SEPARATOR) { optionValue ->
                     optionValue.value
                 }
