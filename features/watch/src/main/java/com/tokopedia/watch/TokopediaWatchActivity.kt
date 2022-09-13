@@ -3,19 +3,26 @@ package com.tokopedia.watch
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.*
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.watch.databinding.ActivityTokopediaWatchBinding
+import com.tokopedia.watch.di.component.DaggerTokopediaWatchComponent
 import com.tokopedia.watch.util.CapabilityConstant.CAPABILITY_WEAR_APP
 import kotlinx.android.synthetic.main.activity_tokopedia_watch.*
 import kotlinx.coroutines.*
@@ -25,7 +32,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
+import javax.inject.Inject
 
 class TokopediaWatchActivity : AppCompatActivity(),
     DataClient.OnDataChangedListener {
@@ -58,6 +66,9 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var viewModel: TokopediaWatchViewModel
+
     override fun onResume() {
         super.onResume()
         dataClient.addListener(this)
@@ -72,6 +83,7 @@ class TokopediaWatchActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tokopedia_watch)
+        initInjector()
 
         userSession = UserSession(this)
 
@@ -86,6 +98,10 @@ class TokopediaWatchActivity : AppCompatActivity(),
 //            sendMessageToWatch()
 //        }
 
+        binding?.btnAcceptBulkOrder?.setOnClickListener {
+            viewModel.acceptBulkOrder()
+        }
+
         binding?.btnSendData?.setOnClickListener {
             sendDataToWatch()
         }
@@ -97,7 +113,9 @@ class TokopediaWatchActivity : AppCompatActivity(),
                 binding?.tvLog?.text = it.joinToString("\n\n")
             }
         }
+        observeData()
 
+        getOrderList()
         checkIfPhoneHasApp()
 
         showWearAppDialogIfMeetCondition()
@@ -189,6 +207,38 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
             }
         }
+    }
+
+    private fun getOrderList() {
+        if (!userSession.isLoggedIn) {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 123)
+        }
+
+        viewModel.getOrderList()
+    }
+
+    private fun observeData() {
+        observe(viewModel.bulkAcceptOrderResult) {
+            when (it) {
+                is Success -> {
+                    Toaster.build(view = binding!!.root, text = it.data.data.message).show()
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+
+//        observe(viewModel.orderListModel) {
+//            when (it) {
+//                is Success -> {
+//                    sendMessageToWatch(
+//                        DataLayerServiceListener.GET_ORDER_LIST_PATH,
+//                        Gson().toJson(it.data)
+//                    )
+//                }
+//            }
+//        }
     }
 
     private fun sendDataToWatch() {
@@ -308,5 +358,11 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
             }
         }
+    }
+    private fun initInjector() {
+        DaggerTokopediaWatchComponent.builder()
+            .baseAppComponent((this.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 }
