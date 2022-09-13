@@ -97,14 +97,14 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
             Color.WHITE
         }
 
-        val w: Int = source.width
-        val h: Int = source.height
-        val result = Bitmap.createBitmap(w, h, source.config)
+        val sourceWidth: Int = source.width
+        val sourceHeight: Int = source.height
+        val result = Bitmap.createBitmap(sourceWidth, sourceHeight, source.config)
 
         imageWidth = if (!isThumbnail)
-            (w / IMAGE_SIZE_DIVIDER).toFloat()
+            (sourceWidth / IMAGE_SIZE_DIVIDER).toFloat()
         else
-            min(w, h) / 3f
+            min(sourceWidth, sourceHeight) / 3f
 
         val canvas = Canvas(result)
         canvas.drawBitmap(source, 0f, 0f, null)
@@ -125,10 +125,10 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
 
         when (watermarkType) {
             WatermarkToolUiComponent.WATERMARK_TOKOPEDIA -> {
-                watermark1(w, h, canvas, paint)
+                watermark1(sourceWidth, sourceHeight, canvas, paint)
             }
             WatermarkToolUiComponent.WATERMARK_SHOP -> {
-                watermark2(w, h, canvas, paint)
+                watermark2(sourceWidth, sourceHeight, canvas, paint)
             }
         }
 
@@ -215,7 +215,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         var xLastPost: Float
         var yLastPost = imageHeight
 
-        val yLimit = height + (height / 2)
+        val yLimit = height * 2
         val xStart = -(textWidth + paddingHorizontal)
 
 

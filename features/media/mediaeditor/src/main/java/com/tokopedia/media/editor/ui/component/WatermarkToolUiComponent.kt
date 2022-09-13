@@ -37,7 +37,11 @@ class WatermarkToolUiComponent constructor(
         when(watermarkType){
             WATERMARK_TOKOPEDIA -> setButtonSelected(buttonType1)
             WATERMARK_SHOP -> setButtonSelected(buttonType2)
-            null -> buttonType1.performClick()
+            null -> {
+                listener.onWatermarkChanged(WATERMARK_TOKOPEDIA)
+                setButtonSelected(buttonType1)
+                releaseButtonSelected(buttonType2)
+            }
         }
     }
 
