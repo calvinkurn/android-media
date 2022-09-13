@@ -79,6 +79,8 @@
     <string name="sfs_forbidden_access_title">Yah, kamu belum bisa akses ke Flash Sale Toko</string>
     <string name="sfs_forbidden_access_description">Pelajari dulu agar tokomu bisa pakai Flash Sale Toko, yuk!</string>
     <string name="sfs_forbidden_access_learn_more">Pelajari Flash Sale Toko</string>
+    <string name="sfs_learn_pm_pro">Pelajari PM PRO</string>
+    <string name="sfs_understand">Oke, Mengerti</string>
 
     <!--Share Component-->
     <string name="sfs_share_description_upcoming">Segera hadir, Flash Sale dari %s di \@Tokopedia. Mulai %s pukul %s</string>

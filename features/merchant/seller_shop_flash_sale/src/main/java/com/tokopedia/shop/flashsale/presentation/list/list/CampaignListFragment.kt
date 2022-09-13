@@ -705,8 +705,8 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun onDraftClicked(draft: DraftItemModel) {
-        val remainingVpsPackageQuota = viewModel.findRemainingTotalVpsPackageQuota()
-        if (remainingVpsPackageQuota == 0) {
+        val activeVpsPackageCount = viewModel.findActiveVpsPackagesCount()
+        if (activeVpsPackageCount == 0) {
             showUpdateDraftNotAllowedError(activity ?: return)
             return
         }
@@ -773,9 +773,11 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(context.getString(R.string.sfs_cannot_create_campaign_title))
         dialog.setDescription(context.getString(R.string.sfs_cannot_create_campaign_description))
-        dialog.setPrimaryCTAText(context.getString(R.string.action_oke))
 
-        dialog.setPrimaryCTAClickListener { dialog.dismiss() }
+        dialog.setPrimaryCTAText(context.getString(R.string.sfs_learn_pm_pro))
+        dialog.setSecondaryCTAText(context.getString(R.string.sfs_understand))
+
+        dialog.setPrimaryCTAClickListener { routeToPmSubscribePage() }
         dialog.setSecondaryCTAClickListener { dialog.dismiss() }
         dialog.show()
     }
@@ -784,9 +786,11 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(context.getString(R.string.sfs_cannot_update_campaign_title))
         dialog.setDescription(context.getString(R.string.sfs_cannot_create_campaign_description))
-        dialog.setPrimaryCTAText(context.getString(R.string.action_oke))
 
-        dialog.setPrimaryCTAClickListener { dialog.dismiss() }
+        dialog.setPrimaryCTAText(context.getString(R.string.sfs_learn_pm_pro))
+        dialog.setSecondaryCTAText(context.getString(R.string.sfs_understand))
+
+        dialog.setPrimaryCTAClickListener { routeToPmSubscribePage() }
         dialog.setSecondaryCTAClickListener { dialog.dismiss() }
         dialog.show()
     }
@@ -928,5 +932,13 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private fun routeToYourShopFlashSaleQuotaPage() {
         QuotaMonitoringActivity.start(activity ?: return)
     }
+
+    private fun routeToPmSubscribePage() {
+        val intent = RouteManager.getIntent(context,
+            ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
+        )
+        startActivity(intent)
+    }
+
 }
 
