@@ -53,7 +53,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
         //when
-        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList())
+        viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList())
 
         //then
         assertNotNull(viewModel.clearPromoResponse.value)
@@ -72,7 +72,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), validateUseRequest, ArrayList())
+        viewModel.clearPromo(validateUseRequest, ArrayList())
 
         //then
         assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS)
@@ -90,7 +90,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList())
+        viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList())
 
         //then
         assertNotNull(viewModel.clearPromoResponse.value)
@@ -108,7 +108,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList())
+        viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList())
 
         //then
         assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_ERROR)
@@ -152,7 +152,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), validateUseRequest, bboAppliedFromPreviousPage, clearPromoRequest)
+        viewModel.clearPromo(validateUseRequest, bboAppliedFromPreviousPage, clearPromoRequest)
 
         //then
         assert(clearPromoRequest.orderData.orders[0].codes.contains(promoBo))
@@ -220,7 +220,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList(), clearPromoParam)
+        viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList(), clearPromoParam)
 
         //then
         assert(clearPromoParam.orderData.codes.isNotEmpty())
@@ -240,7 +240,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList(), clearPromoParam)
+        viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList(), clearPromoParam)
 
         //then
         assert(clearPromoParam.orderData.codes.isEmpty())
@@ -259,7 +259,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), applyPromoParam, ArrayList(), clearPromoParam)
+        viewModel.clearPromo(applyPromoParam, ArrayList(), clearPromoParam)
 
         //then
         assert(clearPromoParam.orderData.codes.isNotEmpty())
@@ -277,7 +277,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), applyPromoParam, ArrayList(), clearPromoParam)
+        viewModel.clearPromo(applyPromoParam, ArrayList(), clearPromoParam)
 
         //then
         assert(clearPromoParam.orderData.orders.isNotEmpty())
@@ -298,7 +298,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), applyPromoParam, ArrayList(), clearPromoParam)
+        viewModel.clearPromo(applyPromoParam, ArrayList(), clearPromoParam)
 
         //then
         assert(clearPromoParam.orderData.codes.isEmpty())
@@ -341,12 +341,12 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList(), clearPromoParam)
+        viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList(), clearPromoParam)
 
         //then
         assert(clearPromoParam.orderData.orders.isEmpty())
     }
-
+    
 //    @Test
 //    fun `WHEN clear promo and order not in promo list nor in apply promo param THEN should include order code in get promo param to clear promo param`() {
 //        // given
@@ -377,7 +377,7 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         }
 
         //when
-        viewModel.clearPromo(PromoRequest(), ValidateUsePromoRequest(), ArrayList())
+        viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList())
 
         //then
         assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_ERROR)

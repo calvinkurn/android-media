@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by fwidjaja on 09/03/20.
  */
-data class VoucherOrders (
+data class VoucherOrders(
         @SerializedName("code")
         var code: String = "",
 
@@ -29,4 +29,20 @@ data class VoucherOrders (
 
         @SerializedName("type")
         val type: String = "",
+
+        @SerializedName("shipping_price")
+        val shippingPrice: Double = 0.0,
+
+        @SerializedName("shipping_subsidy")
+        val shippingSubsidy: Long = 0,
+
+        @SerializedName("benefit_class")
+        val benefitClass: String = "",
+
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("bo_campaign_id")
+        val boCampaignId: Long = 0,
+
+        @SerializedName("eta_txt")
+        val etaText: String = "",
 )
