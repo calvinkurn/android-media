@@ -43,4 +43,8 @@
     <!-- Header text -->
     <string name="editor_main_header_title_text">Edit Media</string>
     <string name="editor_main_header_action_text">Upload</string>
+
+    <!-- Tools text -->
+    <string name="editor_rotate_text">Putar</string>
+    <string name="editor_rotate_miror_text">Balik</string>
 </resources>

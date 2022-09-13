@@ -3,7 +3,7 @@
     android:id="@+id/uc_tool_rotate"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:visibility="gone"
     tools:visibility="visible"
     xmlns:tools="http://schemas.android.com/tools"
@@ -23,26 +23,28 @@
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/flip_btn"
             app:icon_name="INFORMATION"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/flip_btn_text"
+            app:layout_constraintRight_toRightOf="@id/flip_btn_text"
             app:layout_constraintTop_toTopOf="@id/slider_rotate"
             app:layout_constraintBottom_toBottomOf="@id/slider_rotate"
             android:layout_width="24dp"
             android:layout_height="24dp"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:text="Balik"
+            android:text="@string/editor_rotate_miror_text"
+            android:id="@+id/flip_btn_text"
             app:typographyType="body_3"
             android:layout_marginTop="4dp"
             app:layout_constraintTop_toBottomOf="@id/flip_btn"
-            app:layout_constraintLeft_toLeftOf="@id/flip_btn"
-            app:layout_constraintRight_toRightOf="@id/flip_btn"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:minWidth="24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <com.tokopedia.media.editor.ui.widget.slider.EditorSliderView
             android:id="@+id/slider_rotate"
-            app:layout_constraintLeft_toRightOf="@id/flip_btn"
-            app:layout_constraintRight_toLeftOf="@id/rotate_btn"
+            app:layout_constraintLeft_toRightOf="@id/flip_btn_text"
+            app:layout_constraintRight_toLeftOf="@id/rotate_btn_text"
             app:layout_constraintBottom_toBottomOf="parent"
             android:padding="8dp"
             android:layout_width="0dp"
@@ -51,19 +53,21 @@
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/rotate_btn"
             app:icon_name="ROTATION"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toRightOf="@id/rotate_btn_text"
+            app:layout_constraintLeft_toLeftOf="@id/rotate_btn_text"
             app:layout_constraintTop_toTopOf="@id/slider_rotate"
             app:layout_constraintBottom_toBottomOf="@id/slider_rotate"
             android:layout_width="24dp"
             android:layout_height="24dp"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:text="Putar"
+            android:text="@string/editor_rotate_text"
+            android:id="@+id/rotate_btn_text"
             app:typographyType="body_3"
             android:layout_marginTop="4dp"
+            android:minWidth="24dp"
             app:layout_constraintTop_toBottomOf="@id/rotate_btn"
-            app:layout_constraintLeft_toLeftOf="@id/rotate_btn"
-            app:layout_constraintRight_toRightOf="@id/rotate_btn"
+            app:layout_constraintRight_toRightOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
