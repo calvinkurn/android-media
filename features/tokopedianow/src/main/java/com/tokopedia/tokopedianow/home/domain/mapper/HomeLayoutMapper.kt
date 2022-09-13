@@ -513,13 +513,13 @@ object HomeLayoutMapper {
             val index = layoutUiModel.productList.indexOf(productUiModel)
 
             (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.productCardModel?.run {
-                if (hasVariant()) {
-                    copy(variant = variant?.copy(quantity = quantity))
-                } else {
-                    copy(
+                when {
+                    hasVariant() -> copy(variant = variant?.copy(quantity = quantity))
+                    nonVariant != null -> copy(
                         hasAddToCartButton = quantity == DEFAULT_QUANTITY,
                         nonVariant = nonVariant?.copy(quantity = quantity)
                     )
+                    else -> return
                 }
             }?.let {
                 updateItemById(layout.getVisitableId()) {
