@@ -618,7 +618,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val drafts = viewModel.getCampaignDrafts()
 
         if (!data.isEligible) {
-            showIneligibleAccess(activity ?: return)
+            showCreateCampaignNotAllowedError(activity ?: return)
             return
         }
 
@@ -705,6 +705,12 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun onDraftClicked(draft: DraftItemModel) {
+        val remainingVpsPackageQuota = viewModel.findRemainingTotalVpsPackageQuota()
+        if (remainingVpsPackageQuota == 0) {
+            showUpdateDraftNotAllowedError(activity ?: return)
+            return
+        }
+
         launchCampaignInformationPageWitheEditDraftMode(draft.id)
     }
 
@@ -763,7 +769,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         bottomSheet.show(childFragmentManager)
     }
 
-    private fun showIneligibleAccess(context: Context) {
+    private fun showCreateCampaignNotAllowedError(context: Context) {
         val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(context.getString(R.string.sfs_cannot_create_campaign_title))
         dialog.setDescription(context.getString(R.string.sfs_cannot_create_campaign_description))
@@ -773,6 +779,18 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         dialog.setSecondaryCTAClickListener { dialog.dismiss() }
         dialog.show()
     }
+
+    private fun showUpdateDraftNotAllowedError(context: Context) {
+        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(context.getString(R.string.sfs_cannot_update_campaign_title))
+        dialog.setDescription(context.getString(R.string.sfs_cannot_create_campaign_description))
+        dialog.setPrimaryCTAText(context.getString(R.string.action_oke))
+
+        dialog.setPrimaryCTAClickListener { dialog.dismiss() }
+        dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
 
     private fun showDraftListBottomSheet(drafts: List<CampaignUiModel>) {
         DraftListBottomSheet.showUsingCampaignUiModel(

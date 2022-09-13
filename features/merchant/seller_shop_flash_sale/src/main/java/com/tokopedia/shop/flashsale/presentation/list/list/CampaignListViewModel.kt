@@ -264,4 +264,12 @@ class CampaignListViewModel @Inject constructor(
         tracker.sendClickEditPopupEvent(campaign)
     }
 
+    fun findRemainingTotalVpsPackageQuota(): Int {
+        val vpsPackages = if (_vpsPackages.value is Success) {
+            (_vpsPackages.value as Success<List<VpsPackage>>).data
+        } else {
+            emptyList()
+        }
+        return vpsPackages.sumOf { it.remainingQuota  }
+    }
 }
