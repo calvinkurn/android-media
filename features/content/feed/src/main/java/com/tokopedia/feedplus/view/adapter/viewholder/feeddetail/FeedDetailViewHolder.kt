@@ -45,6 +45,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
     private lateinit var btnAddToWishlist: FrameLayout
     private lateinit var progressBar: ProgressBarUnify
     private lateinit var stockProgressBarLayout: View
+    private lateinit var btnlayout: View
     private lateinit var stockText: Typography
 
 
@@ -60,8 +61,9 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             freeShipping = findViewById(R.id.free_shipping)
             rating = findViewById(R.id.rating)
             menuBtn = findViewById(R.id.menu)
-            btnAddToCart = findViewById(R.id.button_add_to_cart)
-            btnAddToWishlist = findViewById(R.id.button_add_to_wishlist)
+            btnlayout = findViewById(R.id.product_atc_wishlist_section)
+            btnAddToCart = findViewById(com.tokopedia.feedcomponent.R.id.button_add_to_cart)
+            btnAddToWishlist = findViewById(com.tokopedia.feedcomponent.R.id.button_add_to_wishlist)
             progressBar = findViewById(R.id.ongoing_progress_bar)
             stockText = findViewById(R.id.stock_text)
             stockProgressBarLayout = findViewById(R.id.product_stock_bar_layout)
