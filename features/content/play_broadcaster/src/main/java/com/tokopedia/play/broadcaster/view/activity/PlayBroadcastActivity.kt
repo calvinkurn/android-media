@@ -106,7 +106,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private var isRecreated = false
     private var isResultAfterAskPermission = false
-    var channelType = ChannelStatus.Unknown
+    private var channelType = ChannelStatus.Unknown
 
     private var toasterBottomMargin = 0
 

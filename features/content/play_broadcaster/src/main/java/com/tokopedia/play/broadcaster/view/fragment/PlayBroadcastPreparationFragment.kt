@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETION
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
@@ -42,7 +42,6 @@ import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
@@ -291,7 +290,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
                 setOnAccountClickListener {
                     hideCoachMarkSwitchAccount()
-                    openFeedAccountBottomSheet()
+                    showAccountBottomSheet()
                 }
             } else setOnAccountClickListener(null)
         }
@@ -604,9 +603,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             AccountStateInfoType.Live, AccountStateInfoType.Banned -> showWaringInfoBottomSheet()
             AccountStateInfoType.NotAcceptTNC -> {
                 if (state.selectedAccount.isShop) showTermsAndConditionBottomSheet(state.tnc)
-                else openUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_TNC)
+                else showUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_TNC)
             }
-            AccountStateInfoType.NoUsername -> openUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_COMPLETION)
+            AccountStateInfoType.NoUsername -> showUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_COMPLETE)
             AccountStateInfoType.Unknown -> return
         }
     }
@@ -661,7 +660,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         )
     }
 
-    private fun openFeedAccountBottomSheet() {
+    private fun showAccountBottomSheet() {
         try {
             ContentAccountTypeBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
@@ -864,7 +863,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         return switchAccountConfirmationDialog
     }
 
-    private fun openUGCOnboardingBottomSheet(onboardingType: Int) {
+    private fun showUGCOnboardingBottomSheet(onboardingType: Int) {
         try {
             val bundle = Bundle().apply {
                 putInt(UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE, onboardingType)

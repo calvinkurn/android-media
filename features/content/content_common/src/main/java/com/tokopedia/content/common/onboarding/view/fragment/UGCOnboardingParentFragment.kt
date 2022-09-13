@@ -24,9 +24,9 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     override fun getScreenName() = TAG
 
     private val onboardingType: Int
-        get() = arguments?.getInt(KEY_ONBOARDING_TYPE, 0) ?: 0
+        get() = arguments?.getInt(KEY_ONBOARDING_TYPE, VALUE_ONBOARDING_TYPE_COMPLETE) ?: VALUE_ONBOARDING_TYPE_COMPLETE
     private val entryPoint: Int
-        get() = arguments?.getInt(KEY_ENTRY_POINT, 0) ?: 0
+        get() = arguments?.getInt(KEY_ENTRY_POINT, VALUE_ENTRY_POINT_FROM_USER_PROFILE) ?: VALUE_ENTRY_POINT_FROM_USER_PROFILE
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,7 +81,7 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     }
 
     private fun showBottomSheet() {
-        if(onboardingType == VALUE_ONBOARDING_TYPE_COMPLETION) {
+        if(onboardingType == VALUE_ONBOARDING_TYPE_COMPLETE) {
             mListener?.impressCompleteOnboarding()
             UserCompleteOnboardingBottomSheet.getFragment(
                 childFragmentManager,
@@ -121,7 +121,7 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     companion object {
         const val TAG = "FeedUGCOnboardingParentFragment"
         const val KEY_ONBOARDING_TYPE = "onboarding_type"
-        const val VALUE_ONBOARDING_TYPE_COMPLETION = 1
+        const val VALUE_ONBOARDING_TYPE_COMPLETE = 1
         const val VALUE_ONBOARDING_TYPE_TNC = 2
         const val KEY_ENTRY_POINT = "entry_point"
         const val VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST = 1

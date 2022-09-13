@@ -20,7 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETION
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
@@ -293,7 +293,7 @@ class UserProfileFragment @Inject constructor(
                     val bundle = Bundle().apply {
                         putInt(
                             UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
-                            if (viewModel.profileUsername.isEmpty()) VALUE_ONBOARDING_TYPE_COMPLETION
+                            if (viewModel.profileUsername.isEmpty()) VALUE_ONBOARDING_TYPE_COMPLETE
                             else VALUE_ONBOARDING_TYPE_TNC
                         )
                         putInt(
