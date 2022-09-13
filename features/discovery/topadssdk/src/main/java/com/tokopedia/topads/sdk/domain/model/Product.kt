@@ -152,7 +152,7 @@ data class Product(
 
     @SerializedName(KEY_CATEGORY_BREADCRUMB)
     @Expose
-    var categoryBreadcrumb: String? = "",
+    var categoryBreadcrumb: String = "",
 
     @SerializedName(KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED)
     @Expose
