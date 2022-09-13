@@ -24,6 +24,7 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -138,7 +139,7 @@ class FlightHomepageActivityTest {
 
     private fun getBannerItemCount(): Int {
         val carousel = activityRule.activity.findViewById(R.id.flightHomepageBanner) as CarouselUnify
-        return carousel.indicatorCount.toInt()
+        return carousel.indicatorCount.toIntSafely()
     }
 
     @Test

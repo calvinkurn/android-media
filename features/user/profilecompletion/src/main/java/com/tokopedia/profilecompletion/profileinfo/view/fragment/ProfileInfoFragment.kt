@@ -320,7 +320,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     }
 
     private fun setProfileData(data: ProfileInfoUiModel) {
-        binding?.shimmerProfileInfo?.root?.visible()
+        binding?.shimmerProfileInfo?.root?.gone()
         if (binding?.containerProfileInfo?.visibility == View.GONE) binding?.containerProfileInfo?.visible()
 
         val listItem = listOf(

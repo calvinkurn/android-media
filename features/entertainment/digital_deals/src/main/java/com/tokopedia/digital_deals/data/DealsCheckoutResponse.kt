@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -151,9 +152,10 @@ data class Product(
         @SerializedName("name")
         @Expose
         val name: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
-        val price: Int,
+        val price: Long,
         @SerializedName("quantity")
         @Expose
         val quantity: Int

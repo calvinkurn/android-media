@@ -8,14 +8,25 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.clearText
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.ActivityResultMatchers
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.BoundedMatcher
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.supportsInputMethods
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withSubstring
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoItemViewHolder
 import com.tokopedia.unifycomponents.TextAreaUnify2
@@ -68,7 +79,7 @@ fun goToAnotherActivity(type: Type?, specifyClass: Boolean = true) {
 
 fun checkToasterShowing(message: String) {
     Thread.sleep(1000)
-    Espresso.onView(withSubstring(message)).perform().check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    Espresso.onView(withSubstring(message)).perform().check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
 }
 
 fun isViewsExists(resIds: List<Int>) {
