@@ -173,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:visibility="gone"
-                layout="@layout/item_stock_progress_view"
+                layout="@layout/item_stock_progress_product_detail_view"
                 android:scaleType="fitStart"
                 />
         </LinearLayout>
