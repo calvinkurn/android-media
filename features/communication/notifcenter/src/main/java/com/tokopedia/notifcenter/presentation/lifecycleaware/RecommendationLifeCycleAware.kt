@@ -170,17 +170,6 @@ class RecommendationLifeCycleAware constructor(
         topAdsAnalytic.addInboxTopAdsProductViewImpressions(item, item.position, item.isTopAds)
     }
 
-    override fun onWishlistClick(
-            item: RecommendationItem, isAddWishlist: Boolean,
-            callback: (Boolean, Throwable?) -> Unit
-    ) {
-        if (isAddWishlist) {
-            viewModel?.addWishlist(item, callback)
-        } else {
-            viewModel?.removeWishList(item, callback)
-        }
-    }
-
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
         if (isAddWishlist) {
             viewModel?.addWishlistV2(item, object: WishlistV2ActionListener{

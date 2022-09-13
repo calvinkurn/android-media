@@ -40,8 +40,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -69,9 +67,7 @@ class NotificationViewModelTest {
     private val markAsReadUseCase: MarkNotificationAsReadUseCase = mockk(relaxed = true)
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true)
     private val getRecommendationUseCase: GetRecommendationUseCase = mockk(relaxed = true)
-    private val addWishListUseCase: AddWishListUseCase = mockk(relaxed = true)
     private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase = mockk(relaxed = true)
-    private val removeWishListUseCase: RemoveWishListUseCase = mockk(relaxed = true)
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
     private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
     private val notifOrderListUseCase: NotifOrderListUseCase = mockk(relaxed = true)
@@ -98,8 +94,6 @@ class NotificationViewModelTest {
             markAsReadUseCase,
             topAdsImageViewUseCase,
             getRecommendationUseCase,
-            addWishListUseCase,
-            removeWishListUseCase,
             addToWishlistV2UseCase,
             deleteWishlistV2UseCase,
             topAdsWishlishedUseCase,
@@ -654,27 +648,6 @@ class NotificationViewModelTest {
     }
 
     @Test
-    fun `addWishList test if is topAds and should return called addWishListTopAds`() {
-        testAddWishList(true, "addWishListTopAds")
-    }
-
-    @Test
-    fun `addWishList test if is not topAds and should return called addWishListNormal`() {
-        // given
-        val viewModelSpyk = spyk(viewModel, recordPrivateCalls = true)
-        val recommItem = RecommendationItem(isTopAds = false)
-        val callback: (Boolean, Throwable?) -> Unit = { _, _ -> }
-
-        // when
-        viewModelSpyk.addWishlist(recommItem, callback)
-
-        // then
-        verify(exactly = 1) {
-            viewModelSpyk.addWishListNormal(recommItem.productId.toString(), any())
-        }
-    }
-
-    @Test
     fun `verify add to wishlistV2 returns success` () {
         val recommItem = RecommendationItem(isTopAds = false, productId = 12L)
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
@@ -1131,19 +1104,6 @@ class NotificationViewModelTest {
     @After
     fun tearDown() {
         viewModel.cancelAllUseCase()
-    }
-
-    private fun testAddWishList(isTopAds: Boolean, methodName: String) {
-        // given
-        val viewModelSpyk = spyk(viewModel, recordPrivateCalls = true)
-        val recommItem = RecommendationItem(isTopAds = isTopAds)
-        val callback: (Boolean, Throwable?) -> Unit = { _, _ -> }
-
-        // when
-        viewModelSpyk.addWishlist(recommItem, callback)
-
-        // then
-        verify(exactly = 1) { viewModelSpyk[methodName](recommItem, callback) }
     }
 
     companion object {
