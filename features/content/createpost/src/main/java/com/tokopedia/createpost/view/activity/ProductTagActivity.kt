@@ -134,6 +134,7 @@ class ProductTagActivity : BaseActivity() {
                 .setFullPageAutocomplete(true)
                 .setBackButton(ContentProductTagConfig.BackButton.Back)
                 .setIsShowActionBarDivider(true)
+                .setIsAutoHandleBackPressed(true)
         )
     }
 

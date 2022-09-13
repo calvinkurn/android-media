@@ -91,6 +91,8 @@ class ContentProductTagSampleActivity : BaseActivity() {
         binding.cbxGlobalSearch.isChecked = true
         binding.cbxLastPurchased.isChecked = true
         binding.cbxMyShop.isChecked = true
+
+        binding.cbxIsAutoHandleBackPressed.isChecked = true
     }
 
     private fun setupListener() {
@@ -133,6 +135,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
                 .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
                 .setBackButton(ContentProductTagConfig.BackButton.Close)
                 .setIsShowActionBarDivider(false)
+                .setIsAutoHandleBackPressed(getIsAutoHandleBackPressed())
         )
     }
 
@@ -180,6 +183,10 @@ class ContentProductTagSampleActivity : BaseActivity() {
         return if(isMultipleSelectionProduct())
             binding.textFieldMaxSelectedProduct.editText.text.toString().toIntOrZero()
         else 0
+    }
+
+    private fun getIsAutoHandleBackPressed(): Boolean {
+        return binding.cbxIsAutoHandleBackPressed.isChecked
     }
 
     private fun validate(): Boolean {

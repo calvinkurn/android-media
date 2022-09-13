@@ -60,6 +60,10 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun getScreenName(): String = "ProductTagParentFragment"
 
+    private val fragmentArgument: ContentProductTagArgument by lazy {
+        getProductTagArgument()
+    }
+
     private lateinit var viewModel: ProductTagViewModel
 
     private var mListener: Listener? = null
@@ -76,7 +80,7 @@ class ProductTagParentFragment @Inject constructor(
         super.onAttach(context)
         requireActivity().onBackPressedDispatcher.addCallback(
             this,
-            object : OnBackPressedCallback(true) {
+            object : OnBackPressedCallback(fragmentArgument.isAutoHandleBackPressed) {
                 override fun handleOnBackPressed() {
                     viewModel.submitAction(ProductTagAction.BackPressed)
                 }
@@ -460,6 +464,10 @@ class ProductTagParentFragment @Inject constructor(
 
     fun onNewIntent(source: ProductTagSource, query: String, shopId: String, componentId: String) {
         viewModel.submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId, componentId))
+    }
+
+    fun onBackPressed() {
+        viewModel.submitAction(ProductTagAction.BackPressed)
     }
 
     fun setListener(listener: Listener?) {
