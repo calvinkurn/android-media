@@ -780,10 +780,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             shopId = userSession.shopId
         )
         sellerHomeViewModel.submitWidgetDismissal(param)
+        SellerHomeTracking.sendClickWidgetAnnouncementDismissalPromptEvent(element.dataKey, true)
     }
 
     override fun setOnAnnouncementWidgetNoClicked(element: AnnouncementWidgetUiModel) {
         showFeedbackLoopOption(element)
+        SellerHomeTracking.sendClickWidgetAnnouncementDismissalPromptEvent(element.dataKey, false)
     }
 
     override fun setOnWidgetCancelDismissal(element: BaseDismissibleWidgetUiModel<*>) {
@@ -793,6 +795,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             shopId = userSession.shopId
         )
         sellerHomeViewModel.submitWidgetDismissal(param)
+        sendCancelDismissalTracker(element)
     }
 
     override fun showProgressBarCoachMark(dataKey: String, view: View) {
@@ -914,6 +917,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun setOnPostWidgetRemoveItemClicked(element: PostListWidgetUiModel) {
         showFeedbackLoopOption(element)
+        SellerHomeTracking.sendClickWidgetPostDeleteEvent(element.dataKey)
     }
 
     fun setNavigationOtherMenuView(view: View?) {
@@ -2443,18 +2447,34 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun showFeedbackLoopOption(element: BaseWidgetUiModel<*>) {
+        val bottomSheet = FeedbackLoopOptionsBottomSheet.createInstance()
+        bottomSheet.setOnSubmitClickedListener {
+            submitFeedback(element, it)
+            bottomSheet.dismiss()
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun submitFeedback(
+        element: BaseWidgetUiModel<*>,
+        reasons: List<FeedbackLoopOptionUiModel>
+    ) {
         val dismissObjectIDs: List<String>
         val dismissSign: String
         val dismissKey = when (element) {
             is AnnouncementWidgetUiModel -> {
                 dismissObjectIDs = listOf(element.id)
                 dismissSign = element.data?.widgetDataSign.orEmpty()
+                SellerHomeTracking.sendClickWidgetAnnouncementSubmitDismissalEvent(element.dataKey)
+
                 String.format(ANNOUNCEMENT_DISMISSAL_KEY, element.dataKey)
             }
             is PostListWidgetUiModel -> {
                 dismissObjectIDs = element.data?.postPagers?.flatMap { it.postList }
                     ?.filter { it.isChecked }?.map { it.postItemId }.orEmpty()
                 dismissSign = element.data?.widgetDataSign.orEmpty()
+                SellerHomeTracking.sendClickWidgetPostSubmitDismissalEvent(element.dataKey)
+
                 String.format(POST_LIST_DISMISSAL_KEY, element.dataKey)
             }
             else -> {
@@ -2464,25 +2484,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        val bottomSheet = FeedbackLoopOptionsBottomSheet.createInstance()
-        bottomSheet.setOnSubmitClickedListener {
-            val param = SubmitWidgetDismissUiModel(
-                action = SubmitWidgetDismissUiModel.Action.DISMISS,
-                dismissKey = dismissKey,
-                feedbackReason1 = it.getOrNull(FEEDBACK_OPTION_1)?.isSelected.orFalse(),
-                feedbackReason2 = it.getOrNull(FEEDBACK_OPTION_2)?.isSelected.orFalse(),
-                feedbackReason3 = it.getOrNull(FEEDBACK_OPTION_3)?.isSelected.orFalse(),
-                feedbackReasonOther = (it.getOrNull(FEEDBACK_OPTION_4) as? FeedbackLoopOptionUiModel.Other)
-                    ?.value.orEmpty(),
-                feedbackWidgetIDParent = element.id,
-                dismissObjectIDs = dismissObjectIDs,
-                dismissSign = dismissSign,
-                shopId = userSession.shopId
-            )
-            sellerHomeViewModel.submitWidgetDismissal(param)
-            bottomSheet.dismiss()
-        }
-        bottomSheet.show(childFragmentManager)
+        val param = SubmitWidgetDismissUiModel(
+            action = SubmitWidgetDismissUiModel.Action.DISMISS,
+            dismissKey = dismissKey,
+            feedbackReason1 = reasons.getOrNull(FEEDBACK_OPTION_1)?.isSelected.orFalse(),
+            feedbackReason2 = reasons.getOrNull(FEEDBACK_OPTION_2)?.isSelected.orFalse(),
+            feedbackReason3 = reasons.getOrNull(FEEDBACK_OPTION_3)?.isSelected.orFalse(),
+            feedbackReasonOther = (reasons.getOrNull(FEEDBACK_OPTION_4) as? FeedbackLoopOptionUiModel.Other)
+                ?.value.orEmpty(),
+            feedbackWidgetIDParent = element.id,
+            dismissObjectIDs = dismissObjectIDs,
+            dismissSign = dismissSign,
+            shopId = userSession.shopId
+        )
+        sellerHomeViewModel.submitWidgetDismissal(param)
     }
 
     private fun setSubmitDismissalSuccess(result: WidgetDismissalResultUiModel) {
@@ -2549,6 +2564,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             shouldShowDismissalTimer = isDismissAction,
             isDismissible = isKeepAction
         ).copyWidget()
+    }
+
+    private fun sendCancelDismissalTracker(element: BaseDismissibleWidgetUiModel<*>) {
+        when (element) {
+            is AnnouncementWidgetUiModel -> {
+                SellerHomeTracking.sendClickWidgetAnnouncementCancelDismissalEvent(element.dataKey)
+            }
+            is PostListWidgetUiModel -> {
+                SellerHomeTracking.sendClickWidgetPostCancelDismissalEvent(element.dataKey)
+            }
+        }
     }
 
     interface Listener {

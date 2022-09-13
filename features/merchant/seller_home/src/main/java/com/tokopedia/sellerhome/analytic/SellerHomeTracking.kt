@@ -999,30 +999,30 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-
     fun sendClickWidgetAnnouncementDismissalPromptEvent(dataKey: String, clickYes: Boolean) {
         val actionClick = if (clickYes) "Yes" else "No"
         val eventLabel = "$dataKey - $actionClick"
+        val trackerId = "35798"
         Tracker.Builder()
             .setEvent(TrackingConstant.CLICK_PG)
-            .setEventAction("click widget announcement - dismissal prompt")
+            .setEventAction(TrackingConstant.CLICK_ANNOUNCEMENT_WIDGET_DISMISSAL_PROMPT)
             .setEventCategory(TrackingConstant.SELLER_APP_HOME)
             .setEventLabel(eventLabel)
-            .setCustomProperty(TrackingConstant.TRACKER_ID, "35798")
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
             .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
             .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
             .build()
             .send()
     }
 
-
     fun sendClickWidgetAnnouncementSubmitDismissalEvent(dataKey: String) {
+        val trackerId = "35799"
         Tracker.Builder()
             .setEvent(TrackingConstant.CLICK_PG)
-            .setEventAction("click widget announcement - submit dismissal")
+            .setEventAction(TrackingConstant.CLICK_ANNOUNCEMENT_WIDGET_SUBMIT_DISMISSAL)
             .setEventCategory(TrackingConstant.SELLER_APP_HOME)
             .setEventLabel(dataKey)
-            .setCustomProperty(TrackingConstant.TRACKER_ID, "35799")
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
             .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
             .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
             .build()
@@ -1030,54 +1030,57 @@ object SellerHomeTracking {
     }
 
     fun sendClickWidgetAnnouncementCancelDismissalEvent(dataKey: String) {
+        val trackerId = "35800"
         Tracker.Builder()
             .setEvent(TrackingConstant.CLICK_PG)
-            .setEventAction("click widget announcement - cancel dismissal")
+            .setEventAction(TrackingConstant.CLICK_ANNOUNCEMENT_WIDGET_CANCEL_DISMISSAL)
             .setEventCategory(TrackingConstant.SELLER_APP_HOME)
             .setEventLabel(dataKey)
-            .setCustomProperty(TrackingConstant.TRACKER_ID, "35800")
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
             .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
             .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
             .build()
             .send()
     }
-
 
     fun sendClickWidgetPostDeleteEvent(dataKey: String) {
+        val trackerId = "35801"
         Tracker.Builder()
             .setEvent(TrackingConstant.CLICK_PG)
-            .setEventAction("click widget post - delete")
+            .setEventAction(TrackingConstant.CLICK_POST_WIDGET_DELETE)
             .setEventCategory(TrackingConstant.SELLER_APP_HOME)
             .setEventLabel(dataKey)
-            .setCustomProperty(TrackingConstant.TRACKER_ID, "35801")
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
             .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
             .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
             .build()
             .send()
     }
 
-
-    fun sendClickWidgetPostSubmitDismissalEvent(eventLabel: String) {
+    fun sendClickWidgetPostSubmitDismissalEvent(dataKey: String, numberOfPost: Int) {
+        val trackerId = "35802"
+        val eventLabel = arrayOf(dataKey, numberOfPost.toString()).joinDashSeparator()
         Tracker.Builder()
             .setEvent(TrackingConstant.CLICK_PG)
-            .setEventAction("click widget post - submit dismissal")
+            .setEventAction(TrackingConstant.CLICK_POST_WIDGET_SUBMIT_DISMISSAL)
             .setEventCategory(TrackingConstant.SELLER_APP_HOME)
-            .setEventLabel(eventLabel) //"eventLabel": "{DataKey} - {Dismissed Content}"
-            .setCustomProperty(TrackingConstant.TRACKER_ID, "35802")
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
             .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
             .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
             .build()
             .send()
     }
 
-
-    fun sendClickWidgetPostCancelDismissalEvent(eventLabel: String) {
+    fun sendClickWidgetPostCancelDismissalEvent(dataKey: String, numberOfPost: Int) {
+        val trackerId = "35803"
+        val eventLabel = arrayOf(dataKey, numberOfPost.toString()).joinDashSeparator()
         Tracker.Builder()
             .setEvent(TrackingConstant.CLICK_PG)
-            .setEventAction("click widget post - cancel dismissal")
+            .setEventAction(TrackingConstant.CLICK_POST_WIDGET_CANCEL_DISMISSAL)
             .setEventCategory(TrackingConstant.SELLER_APP_HOME)
-            .setEventLabel(eventLabel) //"eventLabel": "{DataKey} - {Dismissed Content}",
-            .setCustomProperty(TrackingConstant.TRACKER_ID, "35803")
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
             .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
             .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
             .build()
