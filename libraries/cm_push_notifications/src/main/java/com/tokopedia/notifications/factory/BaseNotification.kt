@@ -2,6 +2,7 @@ package com.tokopedia.notifications.factory
 
 import android.app.Notification
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -22,6 +23,7 @@ import com.tokopedia.notifications.common.CMNotificationCacheHandler
 import com.tokopedia.notifications.factory.helper.NotificationChannelController
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver
+import com.tokopedia.notifications.receiver.CMReceiverActivity
 import org.json.JSONObject
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
@@ -291,12 +293,17 @@ abstract class BaseNotification internal constructor(
 
     companion object {
         private const val CM_REQUEST_CODE = "cm_request_code"
-
+        private const val sdkLevel31 = 31
         fun getBaseBroadcastIntent(
             context: Context,
             baseNotificationModel: BaseNotificationModel
         ): Intent {
-            val intent = Intent(context, CMBroadcastReceiver::class.java)
+
+            val intent = if (Build.VERSION.SDK_INT >= sdkLevel31) {
+               Intent(context, CMReceiverActivity::class.java)
+            } else {
+                Intent(context, CMBroadcastReceiver::class.java)
+            }
             intent.putExtra(CMConstant.EXTRA_BASE_MODEL, baseNotificationModel)
             intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
             intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
@@ -304,12 +311,25 @@ abstract class BaseNotification internal constructor(
         }
 
         fun getPendingIntent(context: Context, intent: Intent, reqCode: Int): PendingIntent =
-            PendingIntent.getBroadcast(
-                context,
-                reqCode,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
+            if (Build.VERSION.SDK_INT >= sdkLevel31) {
+                TaskStackBuilder.create(context)
+                    .addNextIntentWithParentStack(intent)
+                    .getPendingIntent(reqCode, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+
+                PendingIntent.getActivity(
+                    context,
+                    reqCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            } else {
+                PendingIntent.getBroadcast(
+                    context,
+                    reqCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
 
         fun updateIntentWithCouponCode(
             baseNotificationModel: BaseNotificationModel,
