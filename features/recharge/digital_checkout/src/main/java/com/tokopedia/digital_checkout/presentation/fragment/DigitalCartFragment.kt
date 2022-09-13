@@ -746,9 +746,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             moreInfoBottomSheet.setCloseClickListener {
                 moreInfoBottomSheet.dismiss()
             }
-            activity?.supportFragmentManager?.let {
-                moreInfoBottomSheet.show(it, MORE_INFO_BOTTOM_SHEET_TAG)
-            }
+            moreInfoBottomSheet.show(childFragmentManager, MORE_INFO_BOTTOM_SHEET_TAG)
         }
     }
 
