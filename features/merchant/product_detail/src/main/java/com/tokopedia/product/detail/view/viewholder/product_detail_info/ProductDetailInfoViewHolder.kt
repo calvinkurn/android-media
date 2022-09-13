@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.extensions.fromHtml
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
@@ -122,9 +123,7 @@ class ProductDetailInfoViewHolder(
 
         productDetailInfoDescription.apply {
             if (descFormatted.isNotEmpty()) {
-                text = descFormatted.parseAsHtml()
-                    .toString()
-                    .replace("(\r\n|\n)".toRegex(), " ")
+                text = descFormatted.fromHtml()
 
                 setOnClickListener {
                     listener.onSeeMoreDescriptionClicked(

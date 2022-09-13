@@ -3,10 +3,11 @@ package com.tokopedia.product.detail.view.viewholder.product_detail_info.nested_
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.extensions.fromHtml
+import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
@@ -36,15 +37,10 @@ class ItemProductDetailInfoViewHolder(
         infoDetailTitle.text = data.title
 
         infoDetailValue.apply {
-            text = data.subtitle
+            text = data.subtitle.fromHtml()
 
             if (data.applink.isNotEmpty()) {
-                setTextColor(
-                    MethodChecker.getColor(
-                        root.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                    )
-                )
+                setTextColor(root.context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 setWeight(com.tokopedia.unifyprinciples.Typography.BOLD)
             }
 

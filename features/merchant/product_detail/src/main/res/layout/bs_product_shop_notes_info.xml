@@ -6,45 +6,17 @@
     android:layout_height="match_parent"
     android:scrollbars="none">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginBottom="16dp">
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/pdp_header_img"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:contentDescription="@null"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/pdp_header_product_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            app:layout_constraintBottom_toBottomOf="@+id/pdp_header_img"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/pdp_header_img"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_5"
-            tools:text="UNIQLO Jacket Women Jaket Parka UV CUT Saku Wanita Blue" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_shop_notes_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:textColor="@color/Unify_N700_68"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pdp_header_img"
             app:typographyType="display_3"
             tools:text="03 Mar 2019, pukul 11:33" />
 
@@ -54,13 +26,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/product_shop_notes_date"
             app:typographyType="display_2"
             tools:text="@tools:sample/lorem/random" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </ScrollView>

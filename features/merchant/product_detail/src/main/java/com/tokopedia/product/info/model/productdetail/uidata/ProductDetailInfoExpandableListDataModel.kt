@@ -10,9 +10,7 @@ data class ProductDetailInfoExpandableListDataModel(
         var componentName: Int = 0,
         var title: String = "",
         var shopNotes: List<ShopNotesData> = listOf(),
-        var isShowable: Boolean = false,
-        val productName: String,
-        val productImage: String
+        var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
     override fun uniqueIdentifier(): Int = componentName
 

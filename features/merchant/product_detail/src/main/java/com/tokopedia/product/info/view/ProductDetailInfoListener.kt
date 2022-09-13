@@ -2,7 +2,6 @@ package com.tokopedia.product.info.view
 
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
 
 /**
  * Created by Yehezkiel on 12/10/20
@@ -11,10 +10,7 @@ interface ProductDetailInfoListener {
     fun closeAllExpand(uniqueIdentifier: Int, toggle: Boolean)
     fun onBranchLinkClicked(url: String)
     fun goToVideoPlayer(url: List<String>, index: Int)
-    fun goToShopNotes(
-        element: ProductDetailInfoExpandableListDataModel,
-        shopNotesData: ShopNotesData
-    )
+    fun goToShopNotes(shopNotesData: ShopNotesData)
     fun goToSpecification(annotation: List<ProductDetailInfoContent>)
     fun goToImagePreview(url: String)
     fun goToApplink(url: String)

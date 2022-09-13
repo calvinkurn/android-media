@@ -38,7 +38,7 @@ class ProductDetailInfoExpandableListViewHolder(private val view: View, private 
 
         element.shopNotes.forEach {
             val layoutValuePoint = inflater.inflate(R.layout.partial_item_value_point, null)
-            setupPartialView(layoutValuePoint, element, it)
+            setupPartialView(layoutValuePoint, it)
             expandableContainer.addView(layoutValuePoint)
         }
 
@@ -53,13 +53,12 @@ class ProductDetailInfoExpandableListViewHolder(private val view: View, private 
 
     private fun setupPartialView(
         rootView: View,
-        element: ProductDetailInfoExpandableListDataModel,
         shopNotesData: ShopNotesData
     ) = with(view) {
         val title: Typography = rootView.findViewById(R.id.point_title)
         val action: Typography = rootView.findViewById(R.id.point_action)
         action.setOnClickListener {
-            listener.goToShopNotes(element = element, shopNotesData = shopNotesData)
+            listener.goToShopNotes(shopNotesData = shopNotesData)
         }
         title.text = shopNotesData.title
     }

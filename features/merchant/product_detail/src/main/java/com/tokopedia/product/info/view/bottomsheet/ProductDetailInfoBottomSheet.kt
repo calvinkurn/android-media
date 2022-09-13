@@ -302,10 +302,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         }
     }
 
-    override fun goToShopNotes(
-        element: ProductDetailInfoExpandableListDataModel,
-        shopNotesData: ShopNotesData
-    ) {
+    override fun goToShopNotes(shopNotesData: ShopNotesData) {
         context?.let {
             DynamicProductDetailTracking.ProductDetailSheet.onShopNotesClicked(
                 listener?.getPdpDataSource(),
@@ -313,7 +310,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                 shopNotesData.title
             )
             val bsShopNotes = ProductDetailBottomSheetBuilder.getShopNotesBottomSheet(
-                context = it, element = element, shopNotesData = shopNotesData
+                context = it, shopNotesData = shopNotesData
             )
             bsShopNotes.show(childFragmentManager, "shopNotes")
         }

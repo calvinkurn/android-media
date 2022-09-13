@@ -51,7 +51,7 @@ class ProductDetailInfoCatalogViewHolder(
             false
         ).apply {
             infoDetailTitle.text = catalog.key
-            infoDetailValue.text = catalog.value.fromHtml(root.context)
+            infoDetailValue.text = catalog.value.fromHtml()
             infoDetailValue.maxLines = Int.MAX_VALUE
         }.root
     }

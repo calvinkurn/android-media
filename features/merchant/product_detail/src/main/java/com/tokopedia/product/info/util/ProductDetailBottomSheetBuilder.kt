@@ -4,14 +4,12 @@ import android.content.Context
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.extensions.fromHtml
 import com.tokopedia.product.detail.databinding.BsProductShopNotesInfoBinding
 import com.tokopedia.product.detail.view.util.toDateId
 import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 /**
  * Created by Yehezkiel on 21/10/20
@@ -25,7 +23,6 @@ object ProductDetailBottomSheetBuilder {
 
     fun getShopNotesBottomSheet(
         context: Context,
-        element: ProductDetailInfoExpandableListDataModel,
         shopNotesData: ShopNotesData
     ): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
@@ -38,13 +35,8 @@ object ProductDetailBottomSheetBuilder {
         }
 
         binding.apply {
-            pdpHeaderImg.loadImage(element.productImage)
-            pdpHeaderProductTitle.text = element.productName
             productShopNotesDate.text = shopNotesData.updateTime toDateId DATE_FORMATTER
-            productShopNotesDesc.text = HtmlLinkHelper(
-                context,
-                shopNotesData.content.replace(DESC_REPLACE_CHAR_REGEX, DESC_REPLACE_TO)
-            ).spannedString
+            productShopNotesDesc.text = shopNotesData.content.fromHtml()
         }
 
         return bottomSheetUnify
