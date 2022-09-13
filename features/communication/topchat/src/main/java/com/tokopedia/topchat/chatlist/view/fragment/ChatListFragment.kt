@@ -110,8 +110,6 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private var chatTabListContract: ChatListContract.TabFragment? = null
-    private var mUserSeen = false
-    private var mViewCreated = false
 
     private var sightTag = ""
     private var itemPositionLongClicked: Int = -1
@@ -191,8 +189,6 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Timber.d("$sightTag onViewCreated")
-        mViewCreated = true
-        tryViewCreatedFirstSight()
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView(view)
         initView(view)
@@ -200,6 +196,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         setupSellerBroadcast()
         setupChatSellerBannedStatus()
         setupEmptyModel()
+        notifyAndGetChatListMessage(view)
     }
 
     private fun setupChatSellerBannedStatus() {
@@ -281,12 +278,6 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 }
             }
         })
-    }
-
-    private fun tryViewCreatedFirstSight() {
-        if (mUserSeen && mViewCreated) {
-            onViewCreatedFirstSight(view)
-        }
     }
 
     private fun initView(view: View) {
@@ -637,16 +628,6 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         chatItemListViewModel.isChatAdminEligible.removeObservers(this)
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (!mUserSeen && isVisibleToUser) {
-            mUserSeen = true
-            onUserFirstSight()
-            tryViewCreatedFirstSight()
-        }
-        onUserVisibleChanged(isVisibleToUser)
-    }
-
     override fun onScrollToTop() {
         rv?.post {
             rv?.smoothScrollToPosition(RV_TOP_POSITION)
@@ -682,19 +663,9 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         }
     }
 
-    private fun onViewCreatedFirstSight(view: View?) {
-        Timber.d("$sightTag onViewCreatedFirstSight")
+    private fun notifyAndGetChatListMessage(view: View?) {
         chatTabListContract?.notifyViewCreated()
         chatItemListViewModel.getChatListMessage(1, filterChecked, sightTag)
-    }
-
-    private fun onUserFirstSight() {
-        Timber.d("$sightTag onUserFirstSight")
-    }
-
-
-    private fun onUserVisibleChanged(visible: Boolean) {
-        Timber.d("$sightTag onUserVisibleChanged $visible")
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
