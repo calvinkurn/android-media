@@ -1,8 +1,6 @@
 package com.tokopedia.navigation.presentation.presenter
 
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.navigation.data.entity.NotificationEntity
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
 import com.tokopedia.navigation.domain.subscriber.InboxSubscriber
@@ -12,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -23,7 +22,6 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.*
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
@@ -31,7 +29,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Subscriber
-import java.util.ArrayList
 
 @ExperimentalCoroutinesApi
 class InboxPresenterTest {
@@ -61,18 +58,23 @@ class InboxPresenterTest {
     lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
 
     @RelaxedMockK
+    lateinit var topAdsHeadlineViewModel: TopAdsHeadlineViewModel
+
+
+    @RelaxedMockK
     lateinit var inboxView: InboxView
 
     private val inboxPresenter by lazy {
         InboxPresenter(
-                getDrawerNotificationUseCase,
-                getRecommendationUseCase,
-                userSessionInterface,
-                addWishListUseCase,
-                removeWishListUseCase,
-                addToWishlistV2UseCase,
-                deleteWishlistV2UseCase,
-                topAdsWishListedUseCase
+            getDrawerNotificationUseCase,
+            getRecommendationUseCase,
+            userSessionInterface,
+            addWishListUseCase,
+            removeWishListUseCase,
+            addToWishlistV2UseCase,
+            deleteWishlistV2UseCase,
+            topAdsWishListedUseCase,
+            topAdsHeadlineViewModel
         )
     }
 
