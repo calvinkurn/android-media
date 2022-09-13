@@ -116,15 +116,18 @@ class CampaignDetailViewModel @Inject constructor(
 
     private fun getTimelineData(flashSale: FlashSale): MutableList<TimelineStepModel> {
         val timelineData: MutableList<TimelineStepModel> = mutableListOf()
-        val submissionDatePeriod = "${flashSale.submissionStartDateUnix.formatTo("dd")}-${
-            flashSale.submissionEndDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
-        }"
-        val selectionProcessDatePeriod = "${flashSale.reviewStartDateUnix.formatTo("dd")}-${
-            flashSale.reviewEndDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
-        }"
-        val activePromotionDatePeriod = "${flashSale.startDateUnix.formatTo("dd")}-${
-            flashSale.endDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
-        }"
+        val submissionDatePeriod =
+            "${flashSale.submissionStartDateUnix.formatTo(DateConstant.DATE_ONLY)}-${
+                flashSale.submissionEndDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            }"
+        val selectionProcessDatePeriod =
+            "${flashSale.reviewStartDateUnix.formatTo(DateConstant.DATE_ONLY)}-${
+                flashSale.reviewEndDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            }"
+        val activePromotionDatePeriod =
+            "${flashSale.startDateUnix.formatTo(DateConstant.DATE_ONLY)}-${
+                flashSale.endDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            }"
         val registerPeriodTimelineData = TimelineStepModel(
             TimelineTitle.REGISTER_PERIOD.title,
             submissionDatePeriod,
