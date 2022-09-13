@@ -255,6 +255,11 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         }
     }
 
+    fun showQuickFilterBottomSheet(filter: Filter) {
+        val uiEvent = getQuickFilterBottomSheetUiEvent(filter)
+        _uiEventFlow.tryEmit(uiEvent)
+    }
+
     private fun setIndicatorCount() {
         currentSearchParameter.value?.let { searchParameter ->
             _appliedFilterCount.tryEmit(searchParameter.getActiveCount())
@@ -479,6 +484,20 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                 data = tokofoodFilterSortMapper.getQuickSortUiModels(sortList, selectedSortValue)
             )
         )
+    }
+
+    private fun getQuickFilterBottomSheetUiEvent(filter: Filter): TokofoodSearchUiEvent {
+        return if (filter.isPriceRangeCbFilter) {
+            TokofoodSearchUiEvent(
+                state = TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_PRICE_RANGE_BOTTOMSHEET,
+                data = tokofoodFilterSortMapper.getQuickFilterPriceRangeUiModels(filter)
+            )
+        } else {
+            TokofoodSearchUiEvent(
+                state = TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_NORMAL_BOTTOMSHEET,
+                data = filter
+            )
+        }
     }
 
     companion object {

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.filter.R
 import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeCbItemAdapter
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxListener
 import com.tokopedia.filter.databinding.FilterPriceRangeLayoutBinding
 
 internal class PriceRangeFilterCheckboxViewHolder(

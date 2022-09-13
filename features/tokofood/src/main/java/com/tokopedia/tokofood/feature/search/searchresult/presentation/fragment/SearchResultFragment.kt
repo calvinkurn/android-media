@@ -20,6 +20,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -41,6 +42,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.T
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchEmptyWithFilterViewHolder
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchEmptyWithoutFilterViewHolder
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchResultViewHolder
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.bottomsheet.TokofoodQuickPriceRangeBottomsheet
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.bottomsheet.TokofoodQuickSortBottomSheet
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.customview.TokofoodSearchFilterTab
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
@@ -62,7 +64,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     SortFilterBottomSheet.Callback,
     FilterGeneralDetailBottomSheet.Callback,
     TokofoodQuickSortBottomSheet.Listener,
-    ChooseAddressWidget.ChooseAddressWidgetListener {
+    ChooseAddressWidget.ChooseAddressWidgetListener,
+    TokofoodQuickPriceRangeBottomsheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -209,6 +212,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun onLocalizingAddressLoginSuccess() {}
 
+    override fun onApplyPriceRange(checkedOptions: List<Option>) {
+        viewModel.applyOptions(checkedOptions)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         tokofoodSearchFilterTab = null
@@ -311,6 +318,12 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                     }
                     TokofoodSearchUiEvent.EVENT_OPEN_QUICK_SORT_BOTTOMSHEET -> {
                         onOpenQuickSortBottomSheet(event.data)
+                    }
+                    TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_PRICE_RANGE_BOTTOMSHEET -> {
+                        onOpenQuickFilterPriceRangeBottomSheet(event.data)
+                    }
+                    TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_NORMAL_BOTTOMSHEET -> {
+                        onOpenQuickFilterNormalBottomSheet(event.data)
                     }
                 }
             }
@@ -426,6 +439,23 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         }
     }
 
+    private fun onOpenQuickFilterPriceRangeBottomSheet(data: Any?) {
+        (data as? List<*>)?.filterIsInstance(PriceRangeFilterCheckboxItemUiModel::class.java)?.let { uiModels ->
+            TokofoodQuickPriceRangeBottomsheet.createInstance(uiModels, this)
+                .show(parentFragmentManager)
+        }
+    }
+
+    private fun onOpenQuickFilterNormalBottomSheet(data: Any?) {
+        (data as? Filter)?.let { filter ->
+            FilterGeneralDetailBottomSheet().show(
+                parentFragmentManager,
+                filter,
+                this
+            )
+        }
+    }
+
     private fun showDetailFilterBottomSheet(dynamicFilterModel: DynamicFilterModel?) {
         if (!isAdded) return
         if (sortFilterBottomSheet == null) {
@@ -444,11 +474,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun showQuickFilterBottomSheet(filter: Filter) {
-        FilterGeneralDetailBottomSheet().show(
-            parentFragmentManager,
-            filter,
-            this
-        )
+        viewModel.showQuickFilterBottomSheet(filter)
     }
 
     private fun showDetailFilterApplyButton() {

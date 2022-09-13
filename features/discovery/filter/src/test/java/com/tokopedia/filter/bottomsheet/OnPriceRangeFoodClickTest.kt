@@ -1,7 +1,7 @@
 package com.tokopedia.filter.bottomsheet
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxItemUiModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxUiModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper

@@ -3,8 +3,6 @@ package com.tokopedia.filter.bottomsheet.pricerangecheckbox.item
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxItemUiModel
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxListener
 import com.tokopedia.filter.databinding.FilterPriceRangeItemBinding
 
 class PriceRangeCbItemAdapter(
