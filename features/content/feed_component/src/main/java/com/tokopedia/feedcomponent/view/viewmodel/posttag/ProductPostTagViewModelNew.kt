@@ -59,6 +59,7 @@ data class ProductPostTagViewModelNew(
         private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
         private const val Upcoming = "upcoming"
         private const val Ongoing = "ongoing"
+        const val PRODUCT_TYPE = "product"
 
     }
 }

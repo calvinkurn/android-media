@@ -117,7 +117,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 postTagItem.priceFmt,
                 postTagItem.isDiscount,
                 postTagItem.discountFmt,
-                "product",
+                ProductPostTagViewModelNew.PRODUCT_TYPE,
                 postTagItem.appLink,
                 postTagItem.webLink,
                 postTagItem,
@@ -139,7 +139,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 saleType = saleType,
                 saleStatus = saleStatus
             )
-            item.feedType = "product"
+            item.feedType = ProductPostTagViewModelNew.PRODUCT_TYPE
             item.postId = postId
             item.positionInFeed = positionInFeed
             item.postType = postType

@@ -18,7 +18,6 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     private lateinit var shopName: String
     private lateinit var saleType: String
     private lateinit var saleStatus: String
-    private lateinit var productList: List<FeedXProduct>
     private lateinit var postType: String
     private var isFollowed: Boolean = false
 
@@ -27,13 +26,11 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         const val EXTRA_ANALYTICS_PAGE_ROW_NUMBER = "EXTRA_ANALYTICS_PAGE_ROW_NUMBER"
         const val PARAM_SHOP_ID = "shop_id"
         const val PARAM_ACTIVITY_ID = "activity_id"
-        const val PARAM_PRODUCT_LIST = "product_list"
         const val PARAM_IS_FOLLOWED = "is_followed"
         const val PARAM_POST_TYPE = "post_type"
         const val PARAM_SHOP_NAME = "shop_name"
         const val PARAM_SALE_TYPE = "sale_type"
         const val PARAM_SALE_STATUS = "sale_status"
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,40 +49,13 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
             val uri = it.pathSegments
             detailId = uri[uri.lastIndex]
         }
-        shopId = if(intent.hasExtra(PARAM_SHOP_ID))
-            intent.getStringExtra(PARAM_SHOP_ID) ?: ""
-        else ""
-        postType = if(intent.hasExtra(PARAM_POST_TYPE))
-            intent.getStringExtra(PARAM_POST_TYPE) ?: ""
-        else ""
-
-        isFollowed = if(intent.hasExtra(PARAM_IS_FOLLOWED))
-            intent.getBooleanExtra(PARAM_IS_FOLLOWED, false)
-        else false
-
-        productList = if (intent.hasExtra(PARAM_PRODUCT_LIST))
-            intent.extras?.getParcelableArrayList<FeedXProduct>(PARAM_PRODUCT_LIST)?:mutableListOf<FeedXProduct>()
-        else
-            mutableListOf<FeedXProduct>()
-
-        activityId = if(intent.hasExtra(PARAM_ACTIVITY_ID))
-            intent.getStringExtra(PARAM_ACTIVITY_ID) ?: ""
-        else ""
-
-        shopName = if(intent.hasExtra(PARAM_SHOP_NAME))
-            intent.getStringExtra(PARAM_SHOP_NAME) ?: ""
-        else ""
-
-        saleType = if(intent.hasExtra(PARAM_SALE_TYPE))
-            intent.getStringExtra(PARAM_SALE_TYPE) ?: ""
-        else ""
-
-        saleStatus = if(intent.hasExtra(PARAM_SALE_STATUS))
-            intent.getStringExtra(PARAM_SALE_STATUS) ?: ""
-        else ""
-
-
-
+        shopId = intent.getStringExtra(PARAM_SHOP_ID).orEmpty()
+        postType = intent.getStringExtra(PARAM_POST_TYPE).orEmpty()
+        isFollowed = intent.getBooleanExtra(PARAM_IS_FOLLOWED, false)
+        activityId = intent.getStringExtra(PARAM_ACTIVITY_ID).orEmpty()
+        shopName = intent.getStringExtra(PARAM_SHOP_NAME).orEmpty()
+        saleType = intent.getStringExtra(PARAM_SALE_TYPE).orEmpty()
+        saleStatus = intent.getStringExtra(PARAM_SALE_STATUS).orEmpty()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -98,7 +68,6 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         bundle.putString(PARAM_SALE_STATUS, saleStatus)
         bundle.putString(PARAM_SALE_TYPE, saleType)
         bundle.putBoolean(PARAM_IS_FOLLOWED, isFollowed)
-        bundle.putParcelableArrayList(PARAM_PRODUCT_LIST, ArrayList(productList))
         return FeedPlusDetailFragment.createInstance(bundle)
     }
 
