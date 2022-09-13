@@ -12,9 +12,12 @@ import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
+import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignOngoingView
+import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignUpcomingView
 import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
@@ -27,12 +30,15 @@ class CarouselImageViewHolder(
     itemView: View,
     private val dataSource: FeedPostCarouselAdapter.DataSource,
     private val listener: Listener,
+    private val fstListener: FlashSaleRilisanCampaignUpcomingView.Listener?
 ) : BaseViewHolder(itemView) {
 
     private val postImage = itemView.findViewById<ImageUnify>(R.id.post_image)
     private val postImageLayout = itemView.findViewById<ConstraintLayout>(R.id.post_image_layout)
     private val llLihatProduct = itemView.findViewById<LinearLayout>(R.id.ll_lihat_product)
     private val tvLihatProduct = itemView.findViewById<TextView>(R.id.tv_lihat_product)
+    private val flashSaleViewCardUpcoming = itemView.findViewById<FlashSaleRilisanCampaignUpcomingView>(R.id.feed_fst_upcoming)
+    private val flashSaleViewCardOngoing = itemView.findViewById<FlashSaleRilisanCampaignOngoingView>(R.id.feed_fst_ongoing)
     private val likeAnim = itemView.findViewById<ImageUnify>(R.id.like_anim)
 
     private val animationLike = AnimationUtils.loadAnimation(
@@ -154,6 +160,12 @@ class CarouselImageViewHolder(
 
         postImage.setImageUrl(item.mediaUrl)
         llLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
+        if (card.isUpcoming) {
+            updateAsgcButton()
+            showHideFlashSaleRsUpcomingCampaignCard(card)
+        } else if (card.isOngoing) {
+            showHideFlashSaleRsOngoingCampaignCard(card, item)
+        }
 
         itemView.doOnLayout {
             removeExistingPostTags()
@@ -180,6 +192,39 @@ class CarouselImageViewHolder(
         itemView.addOnImpressionListener(item.impressHolder) {
             listener.onImpressed(this)
         }
+    }
+
+    private fun showHideFlashSaleRsUpcomingCampaignCard(feedXCard: FeedXCard){
+        flashSaleViewCardUpcoming.setupTimer(feedXCard.campaign.endTime) {
+          // TODO implement ontimer ends
+        }
+        flashSaleViewCardUpcoming.setData(
+            feedXCard = feedXCard,
+            positionInFeed = dataSource.getPositionInFeed()
+        )
+        fstListener?.let {
+            flashSaleViewCardUpcoming.setListener(fstListener)
+        }
+        flashSaleViewCardUpcoming.showWithCondition(feedXCard.isTypeProductHighlight)
+        flashSaleViewCardOngoing.hide()
+    }
+
+    private fun showHideFlashSaleRsOngoingCampaignCard(feedXCard: FeedXCard,  media: FeedXMedia){
+        flashSaleViewCardOngoing.setupTimer(feedXCard.campaign.endTime) {
+            // TODO implement ontimer ends
+        }
+        flashSaleViewCardOngoing.setData(
+            feedXCard = feedXCard,
+            positionInFeed = dataSource.getPositionInFeed(),
+            media = media
+        )
+        flashSaleViewCardOngoing.showWithCondition(feedXCard.isTypeProductHighlight)
+        flashSaleViewCardUpcoming.hide()
+
+    }
+
+    private fun updateAsgcButton(){
+        flashSaleViewCardUpcoming.setReminderBtnState(dataSource.getFeedXCard().campaign.reminder, dataSource.getPositionInFeed())
     }
 
     private fun removeExistingPostTags() {
@@ -236,6 +281,7 @@ class CarouselImageViewHolder(
             parent: ViewGroup,
             dataSource: FeedPostCarouselAdapter.DataSource,
             listener: Listener,
+            fstListener: FlashSaleRilisanCampaignUpcomingView.Listener?
         ) = CarouselImageViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(
@@ -245,6 +291,7 @@ class CarouselImageViewHolder(
                 ),
             dataSource,
             listener,
+            fstListener
         )
     }
 
