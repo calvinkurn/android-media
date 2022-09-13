@@ -1,0 +1,14 @@
+{
+  "data": [
+    {
+      "category_id": 15,
+      "product_id": 28603,
+      "average_rating": 0,
+      "total_likes": 609,
+      "is_liked": true
+    }
+  ],
+  "status": "OK",
+  "config": null,
+  "server_process_time": "4.909662ms"
+}
