@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import java.lang.StringBuilder
 
-class PriceRangeCbItemViewHolder(
+class PriceRangeFilterCheckboxItemViewHolder(
     private val binding: FilterPriceRangeItemBinding,
     private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
 ) : RecyclerView.ViewHolder(binding.root) {
