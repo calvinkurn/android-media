@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.DimenRes
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -103,20 +104,19 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelFragmentProvider.get(DigitalCartViewModel::class.java) }
-    private val addToCartViewModel by lazy { viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java) }
+    private lateinit var cartDetailInfoAdapter: DigitalCartDetailInfoAdapter
+    private lateinit var myBillsAdapter: DigitalMyBillsAdapter
+
+    private val viewModel by viewModels<DigitalCartViewModel> { viewModelFactory }
+    private val addToCartViewModel by viewModels<DigitalAddToCartViewModel> { viewModelFactory }
+    private val remoteConfig: RemoteConfig by lazy(LazyThreadSafetyMode.NONE) {
+        FirebaseRemoteConfigImpl(context)
+    }
+    private var binding by autoClearedNullable<FragmentDigitalCheckoutPageBinding>()
 
     private var cartPassData: DigitalCheckoutPassData? = null
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
-    lateinit var cartDetailInfoAdapter: DigitalCartDetailInfoAdapter
-    lateinit var myBillsAdapter: DigitalMyBillsAdapter
 
-    private val remoteConfig: RemoteConfig by lazy {
-        FirebaseRemoteConfigImpl(context)
-    }
-
-    private var binding by autoClearedNullable<FragmentDigitalCheckoutPageBinding>()
 
     override fun getScreenName(): String = ""
 
