@@ -668,7 +668,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(
                     channel,
                     verticalPosition
-                ), isCache
+                ), isCache,
+                dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
+                dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design
             )
         )
     }

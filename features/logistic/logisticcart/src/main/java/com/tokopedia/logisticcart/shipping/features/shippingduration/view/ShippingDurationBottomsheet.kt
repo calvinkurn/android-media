@@ -343,6 +343,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         courierData.freeShippingMetadata = data.freeShippingMetadata
         courierData.benefitClass = data.benefitClass
         courierData.shippingSubsidy = data.shippingSubsidy
+        courierData.boCampaignId = data.boCampaignId
         try {
             shippingDurationBottomsheetListener?.onLogisticPromoChosen(
                     serviceData.shippingCourierViewModelList, courierData,

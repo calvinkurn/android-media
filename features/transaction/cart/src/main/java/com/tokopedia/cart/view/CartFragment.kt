@@ -1343,7 +1343,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val clearBoPromo = generateParamClearBo()
         if (clearBoPromo != null) {
             dPresenter.clearAllBo(clearBoPromo)
-            dPresenter.setLastApplyValid()
         }
         refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
     }
