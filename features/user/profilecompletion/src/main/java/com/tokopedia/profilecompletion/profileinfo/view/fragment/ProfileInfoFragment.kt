@@ -65,12 +65,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.UserSessionDataStore
+import com.tokopedia.user.session.datastore.toBlocking
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import com.tokopedia.utils.phonenumber.PhoneNumberUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import dagger.Lazy
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.File
 import java.net.ConnectException
@@ -166,16 +165,19 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
     private fun setProfilePicture() {
         lifecycleScope.launch {
-            userSessionDataStore.get().getProfilePicture()
-                .catch {
-                    logDataStoreError("profilePicture", it)
-                    binding?.profileInfoImageUnify?.setImageUrl(userSession.profilePicture)
-                }.collect {
-                    val profilePicture = it.ifEmpty { userSession.profilePicture }
-                    binding?.profileInfoImageUnify?.setImageUrl(profilePicture)
+            try {
+                var profilePicture = userSessionDataStore.get().getProfilePicture().toBlocking().ifEmpty { userSession.profilePicture  }
+                if(profilePicture != userSession.profilePicture) {
+                    profilePicture = userSession.profilePicture
+                    logDataStoreError("profilePicture", DIFFERENT_EXCEPTION)
                 }
+                binding?.profileInfoImageUnify?.setImageUrl(profilePicture)
+            } catch (e: Exception) {
+                binding?.profileInfoImageUnify?.setImageUrl(userSession.phoneNumber)
+                logDataStoreError("profilePicture", e)
+            }
         }
-    }
+}
 
     private fun logDataStoreError(field: String, e: Throwable) {
         ServerLogger.log(
@@ -804,6 +806,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         private const val TOKOPEDIA_CLOSE_ACCOUNT_PATH = "user/close-account"
         private const val ROLLENCE_KEY_CLOSE_ACCOUNT = "close_account"
         private const val LIMIT_STACKTRACE = 1000
+        private val DIFFERENT_EXCEPTION = Throwable(message = "Value is different from User Session")
 
         fun createInstance(): ProfileInfoFragment {
             return ProfileInfoFragment()

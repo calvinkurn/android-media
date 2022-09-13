@@ -46,7 +46,12 @@ class DataViewMapper @Inject constructor(
 
     private fun getEmailFromDataStore(): String {
         return try {
-            userSessionDataStore.get().getEmail().toBlocking().ifEmpty { userSession.email }
+            var email = userSessionDataStore.get().getEmail().toBlocking().ifEmpty { userSession.email }
+            if(email != userSession.email) {
+                email = userSession.email
+                logDataStoreError("email", DIFFERENT_EXCEPTION)
+            }
+            email
         } catch (e: Exception) {
             logDataStoreError("email", e)
             userSession.email
@@ -55,7 +60,12 @@ class DataViewMapper @Inject constructor(
 
     private fun getPhoneNumberFromDataStore(): String {
         return try {
-            userSessionDataStore.get().getPhoneNumber().toBlocking().ifEmpty { userSession.phoneNumber  }
+            var phone = userSessionDataStore.get().getPhoneNumber().toBlocking().ifEmpty { userSession.phoneNumber  }
+            if(phone != userSession.phoneNumber) {
+                phone = userSession.phoneNumber
+                logDataStoreError("phoneNumber", DIFFERENT_EXCEPTION)
+            }
+            phone
         } catch (e: Exception) {
             logDataStoreError("phoneNumber", e)
             userSession.phoneNumber
@@ -106,7 +116,8 @@ class DataViewMapper @Inject constructor(
         private val TOKOMEMBER = "TokoMember"
         private val TOPQUEST = "TopQuest"
         private val KUPON_SAYA = "Kupon Saya"
-
         const val LIMIT_STACKTRACE = 1000
+
+        private val DIFFERENT_EXCEPTION = Throwable(message = "Value is different from User Session")
     }
 }
