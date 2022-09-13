@@ -105,7 +105,11 @@ class EngagementCarouselViewComponent(
                 var count = 0
                 repeat(Int.MAX_VALUE) {
                     delay(AUTO_SCROLL_DELAY)
-                    count = (count + 1) % (rvSize - 1)
+                    when {
+                        count == rvSize - 1 -> count = 0
+                        count >= 0 -> count++
+                        else -> count--
+                    }
                     carousel.smoothScrollToPosition(count)
                 }
             }
