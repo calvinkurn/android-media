@@ -100,7 +100,6 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
                     arguments = createArgument()
                 }.showNow(childFragmentManager)
             }
-            VALUE_UNKNOWN -> return
         }
     }
 
