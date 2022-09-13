@@ -121,8 +121,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         //semua tab
         saldoTabItems.add(SaldoHistoryTabItem().apply {
             title = TransactionTitle.ALL_TAB
-            fragment =
-                FilteredSaldoTransactionListFragment.getInstance(TransactionTitle.ALL_TRANSACTION)
+            fragment = FilteredSaldoTransactionListFragment.getInstance(TransactionTitle.ALL_TRANSACTION)
         })
 
         //penjualan tab
@@ -177,7 +176,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         super.onResume()
         // tabs are visible now start, coachMark
         if (!isCoachMarkStarted)
-            handler.postDelayed(delayStartCoachMarkRunnable, DELAY_COACH_MARK_MILLIS)
+          handler.postDelayed(delayStartCoachMarkRunnable, DELAY_COACH_MARK_MILLIS)
     }
 
     override fun onPause() {
