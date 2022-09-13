@@ -67,7 +67,6 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
     }
 
     fun setReminderBtnState(reminderStatus: FeedASGCUpcomingReminderStatus, positionInFeed: Int) {
-        mListener?.setInitialStateOfReminderBtn(isReminderSet, positionInFeed)
         fstReminderBtn.apply {
             if (reminderStatus == FeedASGCUpcomingReminderStatus.On(
                     mFeedXCard?.campaign?.campaignId ?: 0
