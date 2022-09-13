@@ -22,6 +22,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
+import java.lang.Exception
 import javax.inject.Inject
 
 class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterCheckboxListener,
@@ -65,6 +66,11 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        listener = null
     }
 
     override fun getComponent(): SearchResultComponent {
@@ -163,7 +169,11 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     }
 
     private fun getResetMessage(): String {
-        return context?.getString(com.tokopedia.tokofood.R.string.search_srp_quick_price_reset).orEmpty()
+        return try {
+            context?.getString(com.tokopedia.tokofood.R.string.search_srp_quick_price_reset).orEmpty()
+        } catch (ex: Exception) {
+            RESET_MESSAGE
+        }
     }
 
     interface Listener {
@@ -173,6 +183,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     companion object {
 
         private const val TAG = "TokofoodQuickPriceRangeBottomsheet"
+        private const val RESET_MESSAGE = "Reset"
 
         private const val KEY_PRICE_RANGE_ITEMS = "key_price_range_items"
 
