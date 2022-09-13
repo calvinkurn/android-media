@@ -19,7 +19,7 @@ object DeeplinkMapperTokopediaNow {
 
     fun getRegisteredNavigationFromHttp(uri: Uri): String {
         val query = uri.encodedQuery
-        val queryString = if (query.isNullOrEmpty()) "" else "?" + uri.encodedQuery
+        val queryString = if (query.isNullOrEmpty()) "" else "&" + uri.encodedQuery
 
         val uriSegments = uri.pathSegments
         val urlPath = uriSegments[INDEX_URL_PATH]
