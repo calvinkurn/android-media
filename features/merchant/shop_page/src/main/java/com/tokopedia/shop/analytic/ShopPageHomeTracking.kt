@@ -2760,7 +2760,7 @@ class ShopPageHomeTracking(
             putString(ITEM_ID, shopHomeProductUiModel.id)
             putString(ITEM_NAME, shopHomeProductUiModel.name)
             putString(ITEM_VARIANT, "")
-            putLong(PRICE, shopHomeProductUiModel.displayedPrice.toLongOrZero())
+            putLong(PRICE, shopHomeProductUiModel.displayedPrice.digitsOnly())
         }
     }
 
