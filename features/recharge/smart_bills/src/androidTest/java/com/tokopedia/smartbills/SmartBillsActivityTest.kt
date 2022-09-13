@@ -107,7 +107,6 @@ class SmartBillsActivityTest {
 
     @Test
     fun validateSmartBillsAddBills() {
-        Thread.sleep(3000)
         click_add_bills()
         click_delete_cancel()
         click_delete_success()
