@@ -2,6 +2,7 @@ package com.tokopedia.media.editor.ui.component
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.R
@@ -36,8 +37,13 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
 
         rotateSlider.listener = this
 
-        flipBtn.setOnClickListener {
-            listener.onImageMirror()
+        flipBtn.apply {
+            setImageDrawable(
+                ContextCompat.getDrawable(context, R.drawable.editor_icon_rotate_flip)
+            )
+            setOnClickListener {
+                listener.onImageMirror()
+            }
         }
 
         rotateBtn.setOnClickListener {

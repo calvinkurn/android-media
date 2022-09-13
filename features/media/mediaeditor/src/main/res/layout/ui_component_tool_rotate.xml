@@ -22,7 +22,6 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/flip_btn"
-            app:icon_name="INFORMATION"
             app:layout_constraintLeft_toLeftOf="@id/flip_btn_text"
             app:layout_constraintRight_toRightOf="@id/flip_btn_text"
             app:layout_constraintTop_toTopOf="@id/slider_rotate"
