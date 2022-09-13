@@ -22,8 +22,8 @@ class ChooseProductViewHolder(
     init {
         binding.root.setOnClickListener {
             binding.checkboxItem.apply {
-                callOnClick()
                 isChecked = !isChecked
+                callOnClick()
             }
         }
     }
@@ -46,7 +46,7 @@ class ChooseProductViewHolder(
                 listener?.onDetailClicked(adapterPosition, item)
             }
             checkboxItem.setOnClickListener {
-                item.isSelected = !checkboxItem.isChecked
+                item.isSelected = checkboxItem.isChecked
                 listener?.onChooseProductClicked(adapterPosition, item)
             }
 
