@@ -121,6 +121,7 @@ import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
 import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
@@ -136,7 +137,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -498,8 +499,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun onResultFromPromoPage(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
+            data?.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)?.let {
+                dPresenter.setLastValidateUseRequest(it)
+            }
+
             val validateUseUiModel = data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)
             if (validateUseUiModel != null) {
+                dPresenter.validateBoPromo(validateUseUiModel)
                 dPresenter.setValidateUseLastResponse(validateUseUiModel)
                 dPresenter.setUpdateCartAndValidateUseLastResponse(null)
                 dPresenter.setLastApplyNotValid()
@@ -1101,12 +1107,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         if (voucher.message.state == "red") {
                             val clearOrder = clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
                             if (clearOrder == null) {
-                                val boType = cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }?.boMetadata?.boType
-                                if (boType != null) {
+                                val availableGroup = cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
+                                availableGroup?.let { availableGroup ->
                                     clearOrders.add(ClearPromoOrder(
-                                            uniqueId = voucher.uniqueId,
-                                            boType = boType,
-                                            codes = arrayListOf(voucher.code)
+                                        uniqueId = voucher.uniqueId,
+                                        boType = availableGroup.boMetadata.boType,
+                                        codes = arrayListOf(voucher.code),
+                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
+                                        isPo = availableGroup.shipmentInformation.preorder.isPreorder,
+                                        poDuration = availableGroup.cartDetails[0].products[0].productPreorder.durationDay.toString(),
                                     ))
                                     hasRedStatePromo = true
                                 }
@@ -1133,12 +1143,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         if (it.messageUiModel.state == "red" && voucher.code.isNotBlank()) {
                             val clearOrder = clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
                             if (clearOrder == null) {
-                                val boType = cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }?.boMetadata?.boType
-                                if (boType != null) {
+                                val availableGroup = cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
+                                availableGroup?.let { availableGroup ->
                                     clearOrders.add(ClearPromoOrder(
-                                            uniqueId = voucher.uniqueId,
-                                            boType = boType,
-                                            codes = arrayListOf(voucher.code)
+                                        uniqueId = voucher.uniqueId,
+                                        boType = availableGroup.boMetadata.boType,
+                                        codes = arrayListOf(voucher.code),
+                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
+                                        isPo = availableGroup.shipmentInformation.preorder.isPreorder,
+                                        poDuration = availableGroup.cartDetails[0].products[0].productPreorder.durationDay.toString(),
                                     ))
                                     hasRedStatePromo = true
                                 }
@@ -1167,12 +1181,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         if (it.messageUiModel.state == "red" && voucher.code.isNotBlank()) {
                             val clearOrder = clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
                             if (clearOrder == null) {
-                                val boType = cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }?.boMetadata?.boType
-                                if (boType != null) {
+                                val availableGroup = cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
+                                availableGroup?.let { availableGroup ->
                                     clearOrders.add(ClearPromoOrder(
-                                            uniqueId = voucher.uniqueId,
-                                            boType = boType,
-                                            codes = arrayListOf(voucher.code)
+                                        uniqueId = voucher.uniqueId,
+                                        boType = availableGroup.boMetadata.boType,
+                                        codes = arrayListOf(voucher.code),
+                                        shopId = availableGroup.shop.shopId.toLongOrZero(),
+                                        warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
+                                        isPo = availableGroup.shipmentInformation.preorder.isPreorder,
+                                        poDuration = availableGroup.cartDetails[0].products[0].productPreorder.durationDay.toString(),
                                     ))
                                     hasRedStatePromo = true
                                 }
@@ -1185,7 +1203,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
 
-            val clearPromo = ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+            val clearPromo = ClearPromoRequest(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                     orderData = ClearPromoOrderData(redStateGlobalPromo, clearOrders))
             if (hasRedStatePromo) {
                 dPresenter.doClearRedPromosBeforeGoToCheckout(clearPromo)
@@ -1325,7 +1343,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val clearBoPromo = generateParamClearBo()
         if (clearBoPromo != null) {
             dPresenter.clearAllBo(clearBoPromo)
-            dPresenter.setLastApplyValid()
         }
         refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
     }
@@ -2654,15 +2671,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dPresenter.isLastApplyValid() -> {
                 val lastApplyPromo = dPresenter.getCartListData()?.promo?.lastApplyPromo
                         ?: LastApplyPromo()
-                PromoRequestMapper.generateValidateUseRequestParams(lastApplyPromo, cartAdapter.selectedCartShopHolderData)
+                PromoRequestMapper.generateValidateUseRequestParams(lastApplyPromo, cartAdapter.selectedCartShopHolderData, null)
             }
             dPresenter.getValidateUseLastResponse() != null -> {
                 val promoUiModel = dPresenter.getValidateUseLastResponse()?.promoUiModel
                         ?: PromoUiModel()
-                PromoRequestMapper.generateValidateUseRequestParams(promoUiModel, cartAdapter.selectedCartShopHolderData)
+                PromoRequestMapper.generateValidateUseRequestParams(promoUiModel, cartAdapter.selectedCartShopHolderData, dPresenter.getLastValidateUseRequest())
             }
             else -> {
-                PromoRequestMapper.generateValidateUseRequestParams(null, cartAdapter.selectedCartShopHolderData)
+                PromoRequestMapper.generateValidateUseRequestParams(null, cartAdapter.selectedCartShopHolderData, null)
             }
         }
     }

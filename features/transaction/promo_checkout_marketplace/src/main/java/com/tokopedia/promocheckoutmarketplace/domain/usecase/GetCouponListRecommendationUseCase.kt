@@ -120,6 +120,11 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                         sp_id
                                         benefit_amount
                                         promo_id
+                                        shipping_subsidy
+                                        shipping_price
+                                        benefit_class
+                                        bo_campaign_id
+                                        eta_txt
                                     }
                                     currency_details_str
                                     coachmark {

@@ -761,20 +761,20 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun setApplyPromoRequestDataFromSelectedPromo(promoListItemUiModel: PromoListItemUiModel,
-                                                          order: OrdersItem?,
+                                                          order: OrdersItem,
                                                           validateUsePromoRequest: ValidateUsePromoRequest) {
         if (promoListItemUiModel.uiState.isSelected && !promoListItemUiModel.uiState.isDisabled &&
-                promoListItemUiModel.uiData.currentClashingPromo.isNullOrEmpty()) {
+                promoListItemUiModel.uiData.currentClashingPromo.isEmpty()) {
             // If coupon is selected, not disabled, and not clashing, add to request param
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
-            if (promoListItemUiModel.uiData.uniqueId == order?.uniqueId &&
+            if (promoListItemUiModel.uiData.uniqueId == order.uniqueId &&
                     !order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.add(promoListItemUiModel.uiData.promoCode)
             } else if (promoListItemUiModel.uiState.isBebasOngkir) {
                 // if coupon is bebas ongkir promo, then set shipping id and sp id
                 val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
                 if (boData != null) {
-                    order?.let {
+                    order.let {
                         if (!it.codes.contains(boData.code)) {
                             // if code is not already in request param, then add bo additional data
                             it.shippingId = boData.shippingId
@@ -786,6 +786,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             it.shippingId = boData.shippingId
                             it.spId = boData.shipperProductId
                         }
+                        it.benefitClass = boData.benefitClass
+                        it.boCampaignId = boData.boCampaignId
+                        it.shippingPrice = boData.shippingPrice
+                        it.shippingSubsidy = boData.shippingSubsidy
+                        it.etaText = boData.etaText
                     }
                 }
             } else if (promoListItemUiModel.uiData.shopId == 0 &&
@@ -797,16 +802,21 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
             // Remove BO code only if not disabled and not selected and has no clashing,
             // because if bo code disabled/clashing, bo code still needed in param to get red state to perform unapply logic
-            if (promoListItemUiModel.uiData.uniqueId == order?.uniqueId &&
+            if (promoListItemUiModel.uiData.uniqueId == order.uniqueId &&
                     order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.remove(promoListItemUiModel.uiData.promoCode)
             } else if (!promoListItemUiModel.uiState.isSelected && promoListItemUiModel.uiState.isBebasOngkir && !promoListItemUiModel.uiState.isDisabled
                     && promoListItemUiModel.uiData.currentClashingPromo.isEmpty() && promoListItemUiModel.uiState.isParentEnabled) {
                 val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
                 if (boData != null) {
-                    order?.let {
+                    order.let {
                         if (it.codes.contains(boData.code)) {
                             it.codes.remove(boData.code)
+                            it.benefitClass = ""
+                            it.boCampaignId = 0
+                            it.shippingPrice = 0.0
+                            it.shippingSubsidy = 0
+                            it.etaText = ""
                         }
                     }
                 }
@@ -974,22 +984,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     //------------------------------------//
 
     fun clearPromo(
-        promoRequest: PromoRequest,
         validateUsePromoRequest: ValidateUsePromoRequest,
         bboPromoCodes: ArrayList<String>,
         clearPromoParam: ClearPromoRequest = ClearPromoRequest()
     ) {
-        val toBeRemovedPromoCodes = getToBeClearedPromoCodes(validateUsePromoRequest, bboPromoCodes)
+        val toBeRemovedPromoCodes = arrayListOf<String>()
 
         val globalPromo = arrayListOf<String>()
-        promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiData.shopId == 0 && !visitable.uiState.isBebasOngkir && !globalPromo.contains(visitable.uiData.promoCode)) {
-                globalPromo.add(visitable.uiData.promoCode)
-            }
-        }
         validateUsePromoRequest.codes.forEach { promoGlobalCode ->
             if (!bboPromoCodes.contains(promoGlobalCode) && !globalPromo.contains(promoGlobalCode)) {
                 globalPromo.add(promoGlobalCode)
+                toBeRemovedPromoCodes.add(promoGlobalCode)
             }
         }
 
@@ -1000,12 +1005,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 clearOrder = ClearPromoOrder(
                         uniqueId = order.uniqueId,
                         boType = order.boType,
+                        shopId = order.shopId,
+                        isPo = order.isPo,
+                        poDuration = order.poDuration.toString(),
+                        warehouseId = order.warehouseId
                 )
                 orders.add(clearOrder)
             }
             order.codes.forEach {
                 if (!bboPromoCodes.contains(it) && !clearOrder.codes.contains(it)) {
                     clearOrder.codes.add(it)
+                    toBeRemovedPromoCodes.add(it)
                 }
             }
         }
@@ -1019,44 +1029,28 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         // for each eligible order, get bo additional data
                         val boData = visitable.uiData.boAdditionalData.find { boAdditionalData -> order.uniqueId == boAdditionalData.uniqueId }
                         if (boData != null) {
-                            // if code is not in clear orders code, then add bo code
-                            if (!order.codes.contains(boData.code)) {
+                            // if code is not in clear orders code & is applied in previous page, then add bo code
+                            if (!order.codes.contains(boData.code) && bboPromoCodes.contains(boData.code)) {
                                 order.codes.add(boData.code)
+                                toBeRemovedPromoCodes.add(boData.code)
                             }
                         }
                     }
-                    // if there are unique ids which eligible for bo promo
-                    // but that unique id not present in clear promo param,
-                    if (boPromoUniqueIds.size != eligibleClearPromoParamForBoPromo.size) {
-                        val boUniqueIdNotInClearPromo = boPromoUniqueIds.subtract(orders.map { it.uniqueId })
-                        boUniqueIdNotInClearPromo.forEach { uniqueId ->
-                            // then find that unique id in promo request param
-                            val promoOrder = promoRequest.orders.find { it.uniqueId == uniqueId }
-                            if (promoOrder != null) {
-                                val boData = visitable.uiData.boAdditionalData.find { boAdditionalData -> promoOrder.uniqueId == boAdditionalData.uniqueId }
-                                boData?.let {
-                                    orders.add(ClearPromoOrder(
-                                        uniqueId = uniqueId,
-                                        boType = promoOrder.boType,
-                                        codes = arrayListOf(boData.code)
-                                    ))
-                                }
-                            }
+                }
+            }
+        }
+
+        if (toBeRemovedPromoCodes.isEmpty()) {
+            // if there are no promo to be removed, try removing attempted codes
+            promoListUiModel.value?.forEach { visitable ->
+                if (visitable is PromoListItemUiModel && !visitable.uiState.isBebasOngkir && visitable.uiState.isParentEnabled && visitable.uiState.isAttempted) {
+                    if (visitable.uiData.shopId > 0) {
+                        val order = orders.firstOrNull { it.uniqueId == visitable.uiData.uniqueId }
+                        if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
+                            order.codes.add(visitable.uiData.promoCode)
                         }
-                    }
-                } else if (visitable.uiData.shopId > 0) {
-                    val order = orders.find { it.uniqueId == visitable.uiData.uniqueId }
-                    if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
-                        order.codes.add(visitable.uiData.promoCode)
-                    } else if (order == null) {
-                        val promoOrder = promoRequest.orders.find { it.uniqueId == visitable.uiData.uniqueId }
-                        if (promoOrder != null) {
-                            orders.add(ClearPromoOrder(
-                                uniqueId = visitable.uiData.uniqueId,
-                                boType = promoOrder.boType,
-                                codes = arrayListOf(visitable.uiData.promoCode)
-                            ))
-                        }
+                    } else if (!globalPromo.contains(visitable.uiData.promoCode)) {
+                        globalPromo.add(visitable.uiData.promoCode)
                     }
                 }
             }
@@ -1107,46 +1101,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         } else {
             val exception = PromoErrorException()
             setClearPromoStateFailed(exception)
-        }
-    }
-
-    private fun getToBeClearedPromoCodes(validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>): ArrayList<String> {
-        val toBeRemovedPromoCodes = ArrayList<String>()
-
-        // Add unselected promo
-        addUnSelectedPromoCodes(toBeRemovedPromoCodes)
-
-        // Add invalid promo
-        // Invalid promo code is promo code from outside promo page (cart/checkout) which previously selected,
-        // but become invalid or not selected on promo page, except promo BBO
-        addInvalidPromo(validateUsePromoRequest, bboPromoCodes, toBeRemovedPromoCodes)
-
-        return toBeRemovedPromoCodes
-    }
-
-    private fun addInvalidPromo(validateUsePromoRequest: ValidateUsePromoRequest,
-                                bboPromoCodes: ArrayList<String>,
-                                toBeRemovedPromoCodes: ArrayList<String>) {
-        validateUsePromoRequest.codes.forEach { promoGlobalCode ->
-            if (!bboPromoCodes.contains(promoGlobalCode) && !toBeRemovedPromoCodes.contains(promoGlobalCode)) {
-                toBeRemovedPromoCodes.add(promoGlobalCode)
-            }
-        }
-
-        validateUsePromoRequest.orders.forEach { order ->
-            order.codes.forEach {
-                if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
-                    toBeRemovedPromoCodes.add(it)
-                }
-            }
-        }
-    }
-
-    private fun addUnSelectedPromoCodes(toBeRemovedPromoCodes: ArrayList<String>) {
-        promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && !toBeRemovedPromoCodes.containsPromoCode(visitable)) {
-                toBeRemovedPromoCodes.addPromo(visitable)
-            }
         }
     }
 

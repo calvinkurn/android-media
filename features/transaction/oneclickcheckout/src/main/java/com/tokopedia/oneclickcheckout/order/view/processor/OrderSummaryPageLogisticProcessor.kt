@@ -618,7 +618,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
 
     private fun constructBboTickerTitle(logisticPromoUiModel: LogisticPromoUiModel): String {
         if (logisticPromoUiModel.tickerDescriptionPromoAdjusted.isNotEmpty()) {
-            return "${logisticPromoUiModel.tickerAvailableFreeShippingCourierTitle}\n${logisticPromoUiModel.tickerDescriptionPromoAdjusted}"
+            return "${logisticPromoUiModel.tickerAvailableFreeShippingCourierTitle}<br />${logisticPromoUiModel.tickerDescriptionPromoAdjusted}"
         }
         return logisticPromoUiModel.tickerAvailableFreeShippingCourierTitle
     }

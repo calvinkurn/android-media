@@ -11,6 +11,8 @@ data class Texts(
         val tickerCourier: String = "",
         @SerializedName("bottom_sheet_description")
         val bottomSheetDescription: String = "",
+        @SerializedName("promo_message")
+        val promoMessage: String = "",
         @SerializedName("title_promo_message")
         val titlePromoMessage: String = ""
 )

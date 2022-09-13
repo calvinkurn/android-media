@@ -888,6 +888,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         activityId: String,
         productId: String,
         shopId: String,
+        isFollowed: Boolean,
         productList: List<FeedXProduct>
     ) {
     }

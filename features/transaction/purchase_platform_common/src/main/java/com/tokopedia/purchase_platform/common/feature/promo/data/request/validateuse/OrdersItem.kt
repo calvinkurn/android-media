@@ -24,6 +24,23 @@ data class OrdersItem(
         var productDetails: List<ProductDetailsItem> = listOf(),
         @SerializedName("free_shipping_metadata")
         var freeShippingMetadata: String = "",
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("bo_campaign_id")
+        var boCampaignId: Long = 0,
+        @SerializedName("shipping_subsidy")
+        var shippingSubsidy: Long = 0,
+        @SerializedName("benefit_class")
+        var benefitClass: String = "",
+        @SerializedName("shipping_price")
+        var shippingPrice: Double = 0.0,
+        @SerializedName("eta_txt")
+        var etaText: String = "",
         @Transient
         var boType: Int = 0,
+        @Transient
+        var isPo: Boolean = false,
+        @Transient
+        var poDuration: Int = 0,
+        @Transient
+        var warehouseId: Long = 0,
 ) : Parcelable

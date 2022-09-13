@@ -991,6 +991,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(serviceErrorMessage = "")
 
@@ -1014,6 +1015,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo From List of Promo Success`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(serviceErrorMessage = "")
         val promoSelected = helper.logisticPromoEko
@@ -1044,6 +1046,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success With Service Picker Enabled`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isServicePickerEnable = true)
 
@@ -1067,6 +1070,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success With Previous Shipping In Error State`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(serviceErrorMessage = "error")
 
@@ -1090,6 +1094,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success With Pinpoint Error`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingRecommendationData = helper.shippingRecommendationData
         shippingRecommendationData.shippingDurationUiModels[1].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
@@ -1118,6 +1123,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success With Courier Error`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingRecommendationData = helper.shippingRecommendationData
         val errorMessage = "error"
@@ -1147,6 +1153,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Success With Multiple Voucher`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
@@ -1743,6 +1750,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Clear Bbo If Exist Success`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any()).executeOnBackground() } returns ClearPromoUiModel()

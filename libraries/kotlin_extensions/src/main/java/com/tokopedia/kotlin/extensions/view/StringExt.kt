@@ -139,6 +139,8 @@ fun String.digitsOnly(): Long {
     }
 }
 
+private const val IS_NUMERIC_REGEX = """-?[0-9]+(\\.[0-9]+)?"""
+fun String.isNumeric(): Boolean = this.matches(Regex(IS_NUMERIC_REGEX))
 
 
 const val INTEGER_OUT_RANGE_MAX_LENGTH = 1000

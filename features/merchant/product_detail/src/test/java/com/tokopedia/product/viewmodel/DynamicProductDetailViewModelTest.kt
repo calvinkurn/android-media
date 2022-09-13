@@ -90,6 +90,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -646,6 +647,31 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
+
+        viewModel.addToCart(addToCartOcsRequestParams)
+
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOcsUseCase.createObservable(any()).toBlocking()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+    }
+
+    @Test
+    fun `on error normal atc cause result null`() = runBlockingTest {
+        val addToCartOcsRequestParams = AddToCartRequestParams()
+
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns null
 
         viewModel.addToCart(addToCartOcsRequestParams)
 
@@ -2311,6 +2337,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `verify toolbar state should be solid when rollence is empty`() {
         every {
+            GlobalConfig.isSellerApp()
+        } returns false
+
+        every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
         } returns ""
 
@@ -2321,11 +2351,35 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `verify toolbar state should be transparent when rollence is transparent`() {
         every {
+            GlobalConfig.isSellerApp()
+        } returns false
+
+        every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
         } returns RollenceKey.PdpToolbar.transparent
 
         val vm = createViewModel()
         Assert.assertTrue(vm.toolbarTransparentState.getOrAwaitValue())
+    }
+
+    @Test
+    fun `verify if seller app then toolbar state should be solid always`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns true
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
+        } returns RollenceKey.PdpToolbar.transparent
+
+        val vm = createViewModel()
+        val isTimeoutException = try {
+            vm.toolbarTransparentState.getOrAwaitValue()
+        } catch (_: TimeoutException) {
+            true
+        }
+
+        Assert.assertTrue(isTimeoutException)
     }
 
     //======================================END OF PDP SECTION=======================================//

@@ -332,11 +332,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         viewBinding?.buttonApplyNoPromo?.let { buttonApplyNoPromo ->
             buttonApplyNoPromo.setOnClickListener {
                 setButtonLoading(buttonApplyNoPromo, true)
-                val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
                 val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
                         ?: ValidateUsePromoRequest()
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                viewModel.clearPromo(promoRequest, validateUsePromoRequest, bboPromoCodes ?: ArrayList())
+                viewModel.clearPromo(validateUsePromoRequest, bboPromoCodes ?: ArrayList())
                 analytics.eventClickBeliTanpaPromo(viewModel.getPageSource())
             }
         }
@@ -844,6 +843,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun reloadData() {
         viewModel.resetPromoInput()
+        viewBinding?.containerTickerBoClashing?.gone()
         viewBinding?.containerActionBottom?.gone()
         adapter.clearAllElements()
         viewBinding?.layoutMainContainer?.show()
@@ -943,11 +943,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                         viewModel.applyPromo(validateUsePromoRequest, bboPromoCodes ?: ArrayList())
                     } else {
-                        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
                                 ?: ValidateUsePromoRequest()
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                        viewModel.clearPromo(promoRequest, validateUsePromoRequest, bboPromoCodes ?: ArrayList())
+                        viewModel.clearPromo(validateUsePromoRequest, bboPromoCodes ?: ArrayList())
                     }
                 }
                 setSecondaryCTAClickListener {

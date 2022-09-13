@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -14,6 +15,7 @@ import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
@@ -139,7 +141,7 @@ class ShipmentPresenterClearPromoTest {
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, "code", ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
+        presenter.cancelAutoApplyPromoStackLogistic(0, "code", ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)), cartItemModels = listOf(CartItemModel())))
 
         // Then
         verify {
@@ -163,7 +165,7 @@ class ShipmentPresenterClearPromoTest {
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, "code", ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
+        presenter.cancelAutoApplyPromoStackLogistic(0, "code", ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)), cartItemModels = listOf(CartItemModel())))
 
         // Then
         verifySequence {
@@ -196,7 +198,7 @@ class ShipmentPresenterClearPromoTest {
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
+        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)), cartItemModels = listOf(CartItemModel())))
 
         // Then
         verifySequence {
@@ -228,7 +230,7 @@ class ShipmentPresenterClearPromoTest {
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
+        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)), cartItemModels = listOf(CartItemModel())))
 
         // Then
         verifySequence {
@@ -258,7 +260,7 @@ class ShipmentPresenterClearPromoTest {
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
+        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)), cartItemModels = listOf(CartItemModel())))
 
         // Then
         verifySequence {
@@ -289,7 +291,7 @@ class ShipmentPresenterClearPromoTest {
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
 
         // When
-        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1))))
+        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode, ShipmentCartItemModel(cartString = "", shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)), cartItemModels = listOf(CartItemModel())))
 
         // Then
         verifySequence {
