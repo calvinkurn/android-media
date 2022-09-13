@@ -112,6 +112,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         videoURLAndroid
                         isAutoplay
                         variantOptionID
+                        URLMaxRes
                       }
                       videos {
                         source
