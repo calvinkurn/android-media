@@ -14,7 +14,6 @@ class TokofoodSearchUiState(
         const val STATE_EMPTY_WITHOUT_FILTER = 4
         const val STATE_EMPTY_WITH_FILTER = 5
         const val STATE_ERROR_INITIAL = 6
-        const val STATE_ERROR_LOAD_MORE = 7
     }
 
 }

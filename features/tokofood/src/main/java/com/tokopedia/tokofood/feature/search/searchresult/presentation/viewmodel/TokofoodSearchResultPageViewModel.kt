@@ -255,6 +255,11 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         }
     }
 
+    fun showQuickFilterBottomSheet(filter: Filter) {
+        val uiEvent = getQuickFilterBottomSheetUiEvent(filter)
+        _uiEventFlow.tryEmit(uiEvent)
+    }
+
     private fun setIndicatorCount() {
         currentSearchParameter.value?.let { searchParameter ->
             _appliedFilterCount.tryEmit(searchParameter.getActiveCount())
@@ -285,14 +290,14 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
     private fun getAppliedFilterMap(filter: Filter): Pair<String, String>? {
         val key = filter.options.firstOrNull()?.key ?: return null
-        val value = filter.options.filter { it.inputState == true.toString() }
+        val value = filter.options.filter { it.inputState.toBoolean() }
             .joinToString(TokofoodFilterSortMapper.OPTION_SEPARATOR) { it.value }
         return key to value
     }
 
     private fun getAppliedFilterMap(options: List<Option>): Map<String, String> {
         return options.groupBy { it.key }.mapValues {
-            it.value.filter { option -> option.inputState == true.toString() }
+            it.value.filter { option -> option.inputState.toBoolean() }
                 .joinToString(TokofoodFilterSortMapper.OPTION_SEPARATOR) { optionValue ->
                     optionValue.value
                 }
@@ -333,9 +338,9 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                 _uiState.emit(getMoreSearchResultSuccessState(searchResult))
             },
             onError = {
-                _uiState.emit(
-                    TokofoodSearchUiState(
-                        state = TokofoodSearchUiState.STATE_ERROR_LOAD_MORE,
+                _uiEventFlow.emit(
+                    TokofoodSearchUiEvent(
+                        state = TokofoodSearchUiEvent.EVENT_FAILED_LOAD_MORE,
                         throwable = it
                     )
                 )
@@ -434,6 +439,9 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                     TokofoodSearchUiState.STATE_SUCCESS_LOAD_MORE -> {
                         getSuccessLoadSearchResultMore(uiState)
                     }
+                    TokofoodSearchUiState.STATE_ERROR_INITIAL -> {
+                        getErrorSearchResultInitial(uiState)
+                    }
                     else -> {
                         listOf()
                     }
@@ -471,6 +479,12 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         }.orEmpty()
     }
 
+    private fun getErrorSearchResultInitial(uiState: TokofoodSearchUiState): List<Visitable<*>> {
+        return uiState.throwable?.let {
+            listOf(TokoFoodErrorStateUiModel(String.EMPTY, it))
+        }.orEmpty()
+    }
+
     private fun showQuickSortBottomSheet(sortList: List<Sort>,
                                          selectedSortValue: String) {
         _uiEventFlow.tryEmit(
@@ -479,6 +493,20 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                 data = tokofoodFilterSortMapper.getQuickSortUiModels(sortList, selectedSortValue)
             )
         )
+    }
+
+    private fun getQuickFilterBottomSheetUiEvent(filter: Filter): TokofoodSearchUiEvent {
+        return if (filter.isPriceRangeCbFilter) {
+            TokofoodSearchUiEvent(
+                state = TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_PRICE_RANGE_BOTTOMSHEET,
+                data = tokofoodFilterSortMapper.getQuickFilterPriceRangeUiModels(filter)
+            )
+        } else {
+            TokofoodSearchUiEvent(
+                state = TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_NORMAL_BOTTOMSHEET,
+                data = filter
+            )
+        }
     }
 
     companion object {

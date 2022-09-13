@@ -13,7 +13,7 @@ import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterViewHolder
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewHolder
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxListener
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxListener
 import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxUiModel
 import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxViewHolder
 import com.tokopedia.filter.bottomsheet.sort.SortViewHolder
