@@ -60,7 +60,7 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun getScreenName(): String = "ProductTagParentFragment"
 
-    private val fragmentArgument: ContentProductTagArgument by lazy {
+    private val fragmentArgument: ContentProductTagArgument by lazy(LazyThreadSafetyMode.NONE) {
         getProductTagArgument()
     }
 
@@ -82,7 +82,7 @@ class ProductTagParentFragment @Inject constructor(
             this,
             object : OnBackPressedCallback(fragmentArgument.isAutoHandleBackPressed) {
                 override fun handleOnBackPressed() {
-                    viewModel.submitAction(ProductTagAction.BackPressed)
+                    onBackPressed()
                 }
             }
         )
