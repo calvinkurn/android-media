@@ -2592,7 +2592,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return reloadedUniqueIds;
     }
 
-    private void doUnapplyBo(String uniqueId, String promoCode) {
+    @Override
+    public void doUnapplyBo(String uniqueId, String promoCode) {
         final int itemAdapterPosition = getView().getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId);
         final ShipmentCartItemModel shipmentCartItemModel = getView().getShipmentCartItemModel(itemAdapterPosition);
         if (itemAdapterPosition != -1) {
@@ -2634,7 +2635,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    private void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel) {
+    @Override
+    public void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel) {
         final int itemAdapterPosition = getView().getShipmentCartItemModelAdapterPositionByUniqueId(voucherOrdersItemUiModel.getUniqueId());
         final ShipmentCartItemModel shipmentCartItemModel = getView().getShipmentCartItemModel(itemAdapterPosition);
         if (shipmentCartItemModel != null && itemAdapterPosition != -1) {
