@@ -163,6 +163,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
         private const val DEFAULT_CACHE_DURATION = 7L
 
+        const val PARAM_POST_ID = "post_id"
+        const val PARAM_TYPE = "author_type"
+
         var isEditState: Boolean = false
         var isOpenedFromPreview: Boolean = false
         fun createIntent(

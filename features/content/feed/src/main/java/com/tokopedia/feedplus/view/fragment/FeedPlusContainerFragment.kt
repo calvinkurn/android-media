@@ -513,12 +513,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    private fun enableContentCreationNewFlow(): Boolean {
-        val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
-        return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
-    }
-
-
     private fun setViewPager() {
         view_pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
@@ -624,18 +618,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                         try {
                             fabFeed.menuOpen = false
                             entryPointAnalytic.clickCreatePostEntryPoint()
-                            val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
-                            if (shouldShowNewContentCreationFlow) {
-                                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                                intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
-                                intent.putExtra(BundleData.TITLE, getString(feedComponentR.string.feed_post_sebagai))
-                                intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                startActivity(intent)
-                                TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
-                            } else {
-                                openBottomSheetToFollowOldFlow()
-                            }
+
+                            val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                            intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                            intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
+                            intent.putExtra(BundleData.TITLE, getString(feedComponentR.string.feed_post_sebagai))
+                            intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                            startActivity(intent)
+                            TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+
                         } catch (e: Exception) {
                             Timber.e(e)
                         }
@@ -883,22 +874,4 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             postProgressUpdateView?.hide()
         }
     }
-
-    private fun openBottomSheetToFollowOldFlow() {
-        when {
-            isSellerMigrationEnabled(context) -> {
-                val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
-                val createPostAppLink = ApplinkConst.CONTENT_CREATE_POST
-                val intent = SellerMigrationActivity.createIntent(
-                        context = requireContext(),
-                        featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                        screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
-                        appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
-                setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
-
-            }
-        }
-    }
-
-
 }
