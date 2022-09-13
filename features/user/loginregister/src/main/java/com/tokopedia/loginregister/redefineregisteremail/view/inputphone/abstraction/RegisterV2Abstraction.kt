@@ -1,8 +1,8 @@
-package com.tokopedia.loginregister.redefine_register_email.view.input_phone.abstraction
+package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.abstraction
 
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.RegisterV2UseCase
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.data.Register
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.data.RegisterV2Param
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetRegisterV2UseCase
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.Register
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.RegisterV2Param
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,7 +18,7 @@ abstract class RegisterV2Abstraction(
     private val encryptedPassword: String,
     private val validateToken: String,
     private val hash: String,
-    private val registerV2UseCase: RegisterV2UseCase,
+    private val getRegisterV2UseCase: GetRegisterV2UseCase,
     private val userSession: UserSessionInterface
 ) {
     private suspend fun result(): Result<Register> {
@@ -36,7 +36,7 @@ abstract class RegisterV2Abstraction(
             h = hash
         )
 
-        val responseRegisterV2 = registerV2UseCase(registerV2Param)
+        val responseRegisterV2 = getRegisterV2UseCase(registerV2Param)
 
         val result = onSuccessRegisterV2Request(responseRegisterV2.register)
 

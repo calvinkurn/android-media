@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.viewmodel
+package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,17 +7,17 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.abstraction.GetProfileInfoAbstraction
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.abstraction.RegisterV2Abstraction
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.GetUserInfoUseCase
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.RegisterV2UseCase
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.data.GetUserInfoModel
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.data.Register
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.RegisterCheckUseCase
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.UserProfileUpdateUseCase
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.UserProfileValidateUseCase
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.data.UserProfileUpdateParam
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.data.UserProfileValidateParam
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.abstraction.GetProfileInfoAbstraction
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.abstraction.RegisterV2Abstraction
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserInfoUseCase
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetRegisterV2UseCase
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.GetUserInfoModel
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.Register
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetRegisterCheckUseCase
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileUpdateUseCase
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileValidateUseCase
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateParam
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileValidateParam
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -27,35 +27,42 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 
 class RedefineRegisterInputPhoneViewModel @Inject constructor(
-    private val registerCheckUseCase: RegisterCheckUseCase,
+    private val getRegisterCheckUseCase: GetRegisterCheckUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
-    private val registerV2UseCase: RegisterV2UseCase,
-    private val userProfileUpdateUseCase: UserProfileUpdateUseCase,
-    private val userProfileValidateUseCase: UserProfileValidateUseCase,
+    private val getRegisterV2UseCase: GetRegisterV2UseCase,
+    private val getUserProfileUpdateUseCase: GetUserProfileUpdateUseCase,
+    private val getUserProfileValidateUseCase: GetUserProfileValidateUseCase,
     private val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private var phoneError = RESOURCE_NOT_CHANGED
+
     private val _formState = SingleLiveEvent<Int>()
     val formState: LiveData<Int> get() = _formState
+
     private val _isRegisteredPhone = SingleLiveEvent<RegistrationPhoneState>()
     val isRegisteredPhone: LiveData<RegistrationPhoneState> get() = _isRegisteredPhone
+
     private val _registerV2 = MutableLiveData<Result<Register>>()
     val registerV2: LiveData<Result<Register>> get() = _registerV2
+
     private val _getUserInfo = MutableLiveData<Result<GetUserInfoModel>>()
     val getUserInfo: LiveData<Result<GetUserInfoModel>> get() = _getUserInfo
+
     private val _submitRegisterLoading = SingleLiveEvent<Boolean>()
     val submitRegisterLoading: LiveData<Boolean> get() = _submitRegisterLoading
+
     private val _userPhoneUpdate = MutableLiveData<Result<Unit>>()
     val userPhoneUpdate: LiveData<Result<Unit>> get() = _userPhoneUpdate
+
     private val _userProfileValidate = MutableLiveData<Result<String>>()
     val userProfileValidate: LiveData<Result<String>> get() = _userProfileValidate
 
     fun validatePhone(phone: String) {
         phoneError = when {
             phone.isEmpty() -> {
-                R.string.error_field_required
+                R.string.register_email_message_must_be_filled
             }
             RegisterUtil.isPhoneTooShortLength(phone) -> {
                 R.string.register_email_input_phone_min_length_error
@@ -86,7 +93,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private fun registerCheck(phone: String) {
         _isRegisteredPhone.value = RegistrationPhoneState.Loading()
         launchCatchError(coroutineContext, {
-            val response = registerCheckUseCase(phone)
+            val response = getRegisterCheckUseCase(phone)
 
             _isRegisteredPhone.value = when {
                 response.data.errors.isNotEmpty() -> {
@@ -136,7 +143,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
                 password,
                 validateToken,
                 hash,
-                registerV2UseCase,
+                getRegisterV2UseCase,
                 userSession
             ) {
                 override suspend fun loadUserInfo() {
@@ -159,7 +166,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
                 phone = phone
             )
 
-            val response = userProfileValidateUseCase(param)
+            val response = getUserProfileValidateUseCase(param)
 
             if (response.data.isValid) {
                 _userProfileValidate.value = Success(phone)
@@ -179,10 +186,10 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
 
             val param = UserProfileUpdateParam(
                 phone = phone,
-                currValidateToken = token
+                currentValidateToken = token
             )
 
-            val response = userProfileUpdateUseCase(param)
+            val response = getUserProfileUpdateUseCase(param)
 
             if (response.data.errors.isEmpty()) {
                 _userPhoneUpdate.value = Success(Unit)

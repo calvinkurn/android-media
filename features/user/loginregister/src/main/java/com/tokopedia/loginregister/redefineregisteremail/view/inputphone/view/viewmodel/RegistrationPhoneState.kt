@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.viewmodel
+package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel
 
 sealed class RegistrationPhoneState(val message: String = "", val throwable: Throwable? = null) {
     class Unregistered(phoneNumber: String) : RegistrationPhoneState(message = phoneNumber)

@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.fragment
+package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.fragment
 
 import android.app.Activity
 import android.content.Context
@@ -16,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -32,14 +33,15 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterInputPhoneBinding
 import com.tokopedia.loginregister.login.const.LoginConstants
-import com.tokopedia.loginregister.redefine_register_email.common.RedefineRegisterEmailConstants
-import com.tokopedia.loginregister.redefine_register_email.common.intentGoToHome
-import com.tokopedia.loginregister.redefine_register_email.common.intentGoToLoginWithPhone
-import com.tokopedia.loginregister.redefine_register_email.common.intentGoToVerification
-import com.tokopedia.loginregister.redefine_register_email.di.RedefineRegisterEmailComponent
-import com.tokopedia.loginregister.redefine_register_email.view.activity.RedefineRegisterViewModel
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.viewmodel.RedefineRegisterInputPhoneViewModel
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.viewmodel.RegistrationPhoneState
+import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
+import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToHome
+import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToLoginWithPhone
+import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerification
+import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationParam
+import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
+import com.tokopedia.loginregister.redefineregisteremail.view.activity.RedefineRegisterViewModel
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RedefineRegisterInputPhoneViewModel
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RegistrationPhoneState
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.network.utils.ErrorHandler
@@ -71,19 +73,20 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private var _binding: FragmentRedefineRegisterInputPhoneBinding? = null
     private val binding get() = _binding
 
-    private var paramSource: String = RedefineRegisterEmailConstants.Common.EMPTY_STRING
-    private var paramEmail: String = RedefineRegisterEmailConstants.Common.EMPTY_STRING
-    private var paramPassword: String = RedefineRegisterEmailConstants.Common.EMPTY_STRING
-    private var paramName: String = RedefineRegisterEmailConstants.Common.EMPTY_STRING
+    private var paramSource: String = RedefineRegisterEmailConstants.EMPTY_STRING
+    private var paramEmail: String = RedefineRegisterEmailConstants.EMPTY_STRING
+    private var paramPassword: String = RedefineRegisterEmailConstants.EMPTY_STRING
+    private var paramName: String = RedefineRegisterEmailConstants.EMPTY_STRING
     private var paramIsRequiredInputPhone: Boolean = false
-    private var paramToken = RedefineRegisterEmailConstants.Common.EMPTY_STRING
-    private var paramHash = RedefineRegisterEmailConstants.Common.EMPTY_STRING
+    private var paramToken = RedefineRegisterEmailConstants.EMPTY_STRING
+    private var paramHash = RedefineRegisterEmailConstants.EMPTY_STRING
     private var sharedPrefs: SharedPreferences? = null
+
+    private val args: RedefineRegisterInputPhoneFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args: RedefineRegisterInputPhoneFragmentArgs by navArgs()
         args.apply {
             paramSource = source
             paramEmail = email
@@ -112,7 +115,9 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
         if (!paramIsRequiredInputPhone) onEntireScreenLoading()
         initListener()
-        initObserver()
+        registrationProsesObserver()
+        formValidateObserver()
+        dataValidationObserver()
         editorChangesListener()
         initRegisterRequest()
     }
@@ -128,7 +133,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             isShowBackButton = isShow
             viewModelActivity.isAllowBackPressed(isShow)
             if (isShow) {
-                actionText = RedefineRegisterEmailConstants.Common.EMPTY_STRING
+                actionText = RedefineRegisterEmailConstants.EMPTY_STRING
                 setNavigationOnClickListener {
                     requireActivity().onBackPressed()
                 }
@@ -209,44 +214,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun initObserver() {
-        viewModel.formState.observe(viewLifecycleOwner) {
-            binding?.btnSubmit?.isEnabled = true
-            binding?.fieldInputPhone?.setMessageField(it)
-        }
-
-        viewModel.isRegisteredPhone.observe(viewLifecycleOwner) {
-            when (it) {
-                is RegistrationPhoneState.Loading -> {
-                    showRegisteredPhoneCheckLoading(true)
-                }
-                is RegistrationPhoneState.Registration -> {
-                    showRegisteredPhoneCheckLoading(false)
-                    showDialogOfferLogin()
-                }
-                is RegistrationPhoneState.Unregistered -> {
-                    showRegisteredPhoneCheckLoading(false)
-                    showDialogConfirmPhone(phone = it.message)
-                }
-                is RegistrationPhoneState.Ineligible -> {
-                    showRegisteredPhoneCheckLoading(false)
-                    binding?.fieldInputPhone?.setMessageField(it.message)
-                }
-                is RegistrationPhoneState.Failed -> {
-                    showRegisteredPhoneCheckLoading(false)
-
-                    when (it.throwable) {
-                        is AkamaiErrorException -> {
-                            showDialogFailed()
-                        }
-                        else -> {
-                            it.throwable?.let { throwable -> showToasterError(throwable) }
-                        }
-                    }
-                }
-            }
-        }
-
+    private fun registrationProsesObserver() {
         viewModel.getUserInfo.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
@@ -278,11 +246,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel.submitRegisterLoading.observe(viewLifecycleOwner) {
-            if (it) {
-                onEntireScreenLoading()
-            }
-        }
+
 
         viewModel.userPhoneUpdate.observe(viewLifecycleOwner) {
             when (it) {
@@ -292,6 +256,53 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 is Fail -> {
                     handleGlobalError(it.throwable)
                     onEntireLoadingFailed()
+                }
+            }
+        }
+    }
+
+    private fun formValidateObserver() {
+        viewModel.formState.observe(viewLifecycleOwner) {
+            binding?.btnSubmit?.isEnabled = true
+            binding?.fieldInputPhone?.setMessageField(it)
+        }
+
+        viewModel.submitRegisterLoading.observe(viewLifecycleOwner) {
+            if (it) {
+                onEntireScreenLoading()
+            }
+        }
+    }
+
+    private fun dataValidationObserver() {
+        viewModel.isRegisteredPhone.observe(viewLifecycleOwner) {
+            when (it) {
+                is RegistrationPhoneState.Loading -> {
+                    showRegisteredPhoneCheckLoading(true)
+                }
+                is RegistrationPhoneState.Registration -> {
+                    showRegisteredPhoneCheckLoading(false)
+                    showDialogOfferLogin()
+                }
+                is RegistrationPhoneState.Unregistered -> {
+                    showRegisteredPhoneCheckLoading(false)
+                    showDialogConfirmPhone(phone = it.message)
+                }
+                is RegistrationPhoneState.Ineligible -> {
+                    showRegisteredPhoneCheckLoading(false)
+                    binding?.fieldInputPhone?.setMessageField(it.message)
+                }
+                is RegistrationPhoneState.Failed -> {
+                    showRegisteredPhoneCheckLoading(false)
+
+                    when (it.throwable) {
+                        is AkamaiErrorException -> {
+                            showDialogFailed()
+                        }
+                        else -> {
+                            it.throwable?.let { throwable -> showToasterError(throwable) }
+                        }
+                    }
                 }
             }
         }
@@ -430,7 +441,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun showRegisteredPhoneCheckLoading(isLoading: Boolean) {
-        com.tokopedia.abstraction.common.utils.view.KeyboardHandler.hideSoftKeyboard(activity)
+        KeyboardHandler.hideSoftKeyboard(activity)
         binding?.btnSubmit?.isLoading = isLoading
         binding?.fieldInputPhone?.editText?.isEnabled = !isLoading
     }
@@ -491,12 +502,12 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
-            RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_REGISTER -> {
+            RedefineRegisterEmailConstants.VERIFICATION_PHONE_REGISTER -> {
                 if (resultCode == Activity.RESULT_OK) {
                     submitRegisterV2()
                 }
             }
-            RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_UPDATE_PROFILE -> {
+            RedefineRegisterEmailConstants.VERIFICATION_PHONE_UPDATE_PROFILE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     paramToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
                     submitUpdatePhone()
@@ -508,39 +519,39 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private fun goToVerification(phone: String, context: Context) {
 
         val otpType = if (paramIsRequiredInputPhone) {
-            RedefineRegisterEmailConstants.OtpType.OTP_REDEFINE_REGISTER_EMAIL
+            RedefineRegisterEmailConstants.OTP_REDEFINE_REGISTER_EMAIL
         } else {
-            RedefineRegisterEmailConstants.OtpType.OTP_VERIFICATION_PHONE
+            RedefineRegisterEmailConstants.OTP_VERIFICATION_PHONE
         }
 
-        val intent = intentGoToVerification(
-            email = paramEmail,
-            phone = phone,
-            otpType = otpType,
-            source = paramSource,
-            token = paramToken,
-            context = context
+        val intent = context.intentGoToVerification(
+            GoToVerificationParam(
+                email = paramEmail,
+                phone = phone,
+                otpType = otpType,
+                source = paramSource,
+                token = paramToken
+            )
         )
 
         val otpResultCode = if (paramIsRequiredInputPhone) {
-            RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_REGISTER
+            RedefineRegisterEmailConstants.VERIFICATION_PHONE_REGISTER
         } else {
-            RedefineRegisterEmailConstants.Request.VERIFICATION_PHONE_UPDATE_PROFILE
+            RedefineRegisterEmailConstants.VERIFICATION_PHONE_UPDATE_PROFILE
         }
         startActivityForResult(intent, otpResultCode)
     }
 
     private fun goToPhoneLogin() {
-        val intent = intentGoToLoginWithPhone(
+        val intent = requireActivity().intentGoToLoginWithPhone(
             binding?.fieldInputPhone?.editText?.text.toString(),
-            paramSource,
-            requireActivity()
+            paramSource
         )
         startActivity(intent)
     }
 
     private fun goToHome() {
-        val intent = intentGoToHome(requireActivity())
+        val intent = requireActivity().intentGoToHome()
         startActivity(intent)
     }
 
@@ -564,7 +575,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 setMessage(getString(stringResource))
                 true
             } else {
-                setMessage(RedefineRegisterEmailConstants.Common.SPACE)
+                setMessage(RedefineRegisterEmailConstants.SPACE)
                 false
             }
     }

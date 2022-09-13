@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.data
+package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
@@ -9,6 +9,6 @@ data class UserProfileUpdateParam(
     val phone: String = "",
 
     @SerializedName("currValidateToken")
-    val currValidateToken: String = ""
+    val currentValidateToken: String = ""
 
 ) : GqlParam

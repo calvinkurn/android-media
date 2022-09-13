@@ -1,7 +1,7 @@
-package com.tokopedia.loginregister.redefine_register_email.view.input_phone.abstraction
+package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.abstraction
 
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.GetUserInfoUseCase
-import com.tokopedia.loginregister.redefine_register_email.view.input_phone.domain.data.GetUserInfoModel
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserInfoUseCase
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.GetUserInfoModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
