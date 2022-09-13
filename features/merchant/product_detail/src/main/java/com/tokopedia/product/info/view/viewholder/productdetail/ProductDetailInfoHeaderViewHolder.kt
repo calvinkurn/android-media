@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -102,7 +103,7 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
                 }
             }
 
-            listener.onImpressInfo(data.title, data.subtitle, adapterPosition + 1)
+            listener.onImpressInfo(data.title, data.subtitle, adapterPosition + Int.ONE)
         }
     }
 }

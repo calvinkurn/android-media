@@ -1009,7 +1009,7 @@ open class DynamicProductDetailFragment :
         componentTrackDataModel: ComponentTrackDataModel
     ) {
         activity?.let {
-            DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(
+            DynamicProductDetailTracking.Click.eventClickProductSpecificationReadMore(
                 viewModel.getDynamicProductInfoP1,
                 componentTrackDataModel
             )

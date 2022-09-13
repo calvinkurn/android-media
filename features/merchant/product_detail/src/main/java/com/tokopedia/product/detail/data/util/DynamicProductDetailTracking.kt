@@ -668,6 +668,20 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_READ_MORE)
         }
 
+        fun eventClickProductSpecificationReadMore(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
+            val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_SPECIFICATION_READ_MORE,
+                ""
+            ).apply {
+                ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE to ProductTrackingConstant.Tracking.CURRENT_SITE
+                ProductTrackingConstant.Tracking.KEY_TRACKER_ID to ProductTrackingConstant.TrackerId.TRACKER_ID_CLICK_SPECIFICATION
+            }
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_READ_MORE)
+        }
+
         fun eventClickPdpShare(productId: String, userId: String, campaignId: String, bundleId: String) {
 
             val mapEvent = TrackAppUtils.gtmData(
