@@ -12,10 +12,13 @@ import com.tokopedia.play.domain.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
 import com.tokopedia.play.domain.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
+import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.ModelBuilder
-import com.tokopedia.play.util.assertEqualTo
-import com.tokopedia.play.util.assertTrue
+import com.tokopedia.play.model.UiModelBuilder
+import com.tokopedia.play.util.*
+import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -24,11 +27,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.test.runBlockingTest
+import net.bytebuddy.matcher.ElementMatchers.any
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,7 +52,7 @@ class PlayViewerTagItemsRepositoryTest {
 
     private val testDispatcher = coroutineTestRule.dispatchers
 
-    private val mockMapper: PlayUiModelMapper = mockk(relaxed = true)
+//    private val mockMapper: PlayUiModelMapper = mockk(relaxed = true)
 
     private val mockGetProductTagUseCase: GetProductTagItemSectionUseCase = mockk(relaxed = true)
     private val mockGetProductVariantUseCase: GetProductVariantUseCase = mockk(relaxed = true)
@@ -56,8 +61,13 @@ class PlayViewerTagItemsRepositoryTest {
     private val mockPostUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase = mockk(relaxed = true)
 
     private val modelBuilder = ModelBuilder()
+    private val uiBuilder = UiModelBuilder.get()
 
     private val campaignId: Long = 105L
+
+    private val classBuilder = ClassBuilder()
+    private val mockMapper = classBuilder.getPlayUiModelMapper()
+
 
     @Before
     fun setUp(){
@@ -212,5 +222,47 @@ class PlayViewerTagItemsRepositoryTest {
             result.first.assertEqualTo(mockResponse.response.success)
         }
     }
+    @Test
+    fun `given voucher from gql when there is public voucher show ticker`() {
+        testDispatcher.coroutineDispatcher.runBlockingTest {
+            val mockResponse = modelBuilder.buildProductTagging()
+            coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
 
+            val partnerName = "PLAY"
+
+            val response = tagItemRepo.getTagItem(
+                "12669", "0", partnerName
+            )
+
+            coVerify { mockGetProductTagUseCase.executeOnBackground() }
+            response.resultState.assertEqualTo(ResultState.Success)
+            response.voucher.voucherList.isNotEmpty().assertTrue()
+            response.voucher.voucherList.first().assertInstanceOf<PlayVoucherUiModel.InfoHeader>()
+            response.voucher.voucherList.first().assertType<PlayVoucherUiModel.InfoHeader> {
+                it.shopName.assertEqualTo(partnerName)
+            }
+            response.voucher.voucherList.size.assertEqualTo(mockResponse.playGetTagsItem.voucherList.size + 1)
+        }
+    }
+
+    @Test
+    fun `given voucher from gql when there is no public voucher hide ticker`() {
+        testDispatcher.coroutineDispatcher.runBlockingTest {
+            val mockResponse = modelBuilder.buildNonPublic()
+            coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
+
+            val partnerName = "PLAY"
+
+            val response = tagItemRepo.getTagItem(
+                "12669", "0", partnerName
+            )
+
+            coVerify { mockGetProductTagUseCase.executeOnBackground() }
+            response.resultState.assertEqualTo(ResultState.Success)
+            response.voucher.voucherList.isNotEmpty().assertTrue()
+            response.voucher.voucherList.first().assertInstanceOf<PlayVoucherUiModel.Merchant>()
+            response.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.InfoHeader>().assertEmpty()
+            response.voucher.voucherList.size.assertEqualTo(mockResponse.playGetTagsItem.voucherList.size)
+        }
+    }
 }
