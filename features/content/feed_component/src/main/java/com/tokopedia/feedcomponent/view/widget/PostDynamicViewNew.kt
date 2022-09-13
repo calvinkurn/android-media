@@ -410,11 +410,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 listener?.removeOngoingCampaignSaleWidget(mData, positionInFeed)
 
             }
-
-            override fun setInitialStateOfReminderBtn(isReminderSet: Boolean, positionInFeed: Int) {
-
-            }
-
             override fun onReminderBtnClick(isReminderSet: Boolean, positionInFeed: Int) {
                 listener?.onIngatkanSayaBtnClicked(mData, positionInFeed)
             }
