@@ -164,38 +164,37 @@ class CampaignDetailViewModel @Inject constructor(
     private fun getCriteriaData(flashSale: FlashSale): MutableList<ProductCriteriaModel> {
         val productCriteriaData: MutableList<ProductCriteriaModel> = mutableListOf()
         flashSale.productCriteria.forEach { productCriteria ->
-            productCriteriaData.add(
-                ProductCriteriaModel(
-                    "",
-                    "",
-                    ProductCriteriaModel.ValueRange(
-                        productCriteria.minPrice.toLong(),
-                        productCriteria.maxPrice.toLong()
-                    ),
-                    ProductCriteriaModel.ValueRange(
-                        productCriteria.minFinalPrice.toLong(),
-                        productCriteria.maxFinalPrice.toLong()
-                    ),
-                    productCriteria.minDiscount.toDouble(),
-                    ProductCriteriaModel.ValueRange(
-                        productCriteria.minCustomStock.toLong(),
-                        productCriteria.maxCustomStock.toLong()
-                    ),
-                    productCriteria.minRating.toDouble(),
-                    productCriteria.minProductScore.toLong(),
-                    ProductCriteriaModel.ValueRange(
+            productCriteria.categories.forEach { category ->
+                productCriteriaData.add(
+                    ProductCriteriaModel(
+                        category.categoryName,
+                        "",
+                        ProductCriteriaModel.ValueRange(
+                            productCriteria.minPrice.toLong(),
+                            productCriteria.maxPrice.toLong()
+                        ),
+                        ProductCriteriaModel.ValueRange(
+                            productCriteria.minFinalPrice.toLong(),
+                            productCriteria.maxFinalPrice.toLong()
+                        ),
+                        productCriteria.minDiscount.toDouble(),
+                        ProductCriteriaModel.ValueRange(
+                            productCriteria.minCustomStock.toLong(),
+                            productCriteria.maxCustomStock.toLong()
+                        ),
+                        productCriteria.minRating.toDouble(),
+                        productCriteria.minProductScore.toLong(),
+                        ProductCriteriaModel.ValueRange(
+                            productCriteria.minQuantitySold.toLong(),
+                            productCriteria.maxQuantitySold.toLong()
+                        ),
                         productCriteria.minQuantitySold.toLong(),
-                        productCriteria.maxQuantitySold.toLong()
-                    ),
-                    productCriteria.minQuantitySold.toLong(),
-                    productCriteria.maxSubmission.toLong(),
-                    productCriteria.maxProductAppear.toLong(),
-                    productCriteria.dayPeriodTimeAppear.toLong(),
-                    categories = productCriteria.categories.map { category ->
-                        category.categoryName
-                    }
+                        productCriteria.maxSubmission.toLong(),
+                        productCriteria.maxProductAppear.toLong(),
+                        productCriteria.dayPeriodTimeAppear.toLong()
+                    )
                 )
-            )
+            }
         }
 
         return productCriteriaData
