@@ -263,12 +263,13 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         val imageUrls = recipeInfo.imageUrls
         val shareUrl = recipeInfo.shareUrl
         val shareTitle = getString(R.string.tokopedianow_share_recipe_title, title, portion, duration)
-        val shareText = getString(R.string.tokopedianow_share_recipe_text, title, shareUrl)
+        val shareText = getString(R.string.tokopedianow_share_recipe_text, title)
 
         val shareData = ShareTokonow(
             sharingText = shareText,
             thumbNailImage = thumbnailImageUrl,
             ogImageUrl = thumbnailImageUrl,
+            sharingUrl = shareUrl
         )
 
         shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
