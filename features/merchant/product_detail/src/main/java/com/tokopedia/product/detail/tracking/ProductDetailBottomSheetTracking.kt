@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.tracking.TrackingConstant.Hit
 import com.tokopedia.product.detail.tracking.TrackingConstant.Value
 import com.tokopedia.track.TrackApp
@@ -61,7 +60,9 @@ object ProductDetailBottomSheetTracking {
 
     fun impressSpecification(
         p1Data: DynamicProductInfoP1,
-        dataModel: ProductDetailInfoDataModel,
+        key: String,
+        value: String,
+        position: Int,
         userId: String,
         trackingQueue: TrackingQueue
     ) {
@@ -74,17 +75,17 @@ object ProductDetailBottomSheetTracking {
             Hit.EVENT_LABEL to "",
             Hit.TRACKER_ID to ProductTrackingConstant.TrackerId.TRACKER_ID_IMPRESS_SPECIFICATION,
             Hit.BUSINESS_UNIT to Value.PRODUCT_DETAIL_PAGE,
-            Hit.COMPONENT to "comp:${dataModel.name};temp:${dataModel.type};elem:;cpos:1;",
+            Hit.COMPONENT to "",
             Hit.CURRENT_SITE to Value.TOKOPEDIA_MARKETPLACE,
             Hit.LAYOUT to "layout:${common.layoutName};catName:${common.categoryName};catId:${common.categoryId};",
             Hit.PRODUCT_ID to productId,
             Hit.USER_ID to common.userId,
             Hit.PROMOTIONS to listOf(
                 mapOf(
-                    TrackingConstant.Item.CREATIVE_NAME to "infoValue",
-                    TrackingConstant.Item.CREATIVE_SLOT to "position",
+                    TrackingConstant.Item.CREATIVE_NAME to value,
+                    TrackingConstant.Item.CREATIVE_SLOT to position,
                     TrackingConstant.Item.ITEM_ID to productId,
-                    TrackingConstant.Item.ITEM_NAME to "infoTitle"
+                    TrackingConstant.Item.ITEM_NAME to key
                 )
             )
         )

@@ -93,7 +93,7 @@ class BsProductDetailInfoViewModel @Inject constructor(
 
         return getProductDetailBottomSheetUseCase.executeOnBackground(
             requestParams = requestParams,
-            forceRefresh = true//it.forceRefresh
+            forceRefresh = productInfoParcel.forceRefresh
         )
     }
 

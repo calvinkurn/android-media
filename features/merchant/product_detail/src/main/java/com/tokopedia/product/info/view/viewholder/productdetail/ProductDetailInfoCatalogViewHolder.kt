@@ -1,11 +1,15 @@
 package com.tokopedia.product.info.view.viewholder.productdetail
 
+import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.extensions.fromHtml
 import com.tokopedia.product.detail.databinding.BsItemProductDetailCatalogTitleBinding
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
+import com.tokopedia.product.info.model.productdetail.response.ItemCatalog
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCatalogDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
@@ -33,16 +37,30 @@ class ProductDetailInfoCatalogViewHolder(
             removeAllViews()
 
             element.items.forEach { catalog ->
-                val view = ItemInfoProductDetailBinding.inflate(inflater, binding.root, false)
-                view.infoDetailTitle.text = catalog.key
-                view.infoDetailValue.text = catalog.value
-                view.infoDetailValue.maxLines = Int.MAX_VALUE
-                addView(view.root)
+                val itemView = createSubView(inflater = inflater, catalog = catalog)
+                onImpressView(catalog = catalog)
+                addView(itemView)
             }
         }
     }
 
-    private fun onImpressView() {
-        listener.onImpressCatalog()
+    private fun createSubView(inflater: LayoutInflater, catalog: ItemCatalog): View {
+        return ItemInfoProductDetailBinding.inflate(
+            inflater,
+            binding.root,
+            false
+        ).apply {
+            infoDetailTitle.text = catalog.key
+            infoDetailValue.text = catalog.value.fromHtml(root.context)
+            infoDetailValue.maxLines = Int.MAX_VALUE
+        }.root
+    }
+
+    private fun onImpressView(catalog: ItemCatalog) {
+        listener.onImpressCatalog(
+            key = catalog.key,
+            value = catalog.value,
+            position = adapterPosition + Int.ONE
+        )
     }
 }

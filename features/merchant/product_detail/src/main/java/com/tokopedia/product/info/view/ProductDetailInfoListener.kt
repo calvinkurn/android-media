@@ -25,5 +25,5 @@ interface ProductDetailInfoListener {
     fun onCustomInfoClicked(url: String)
     fun goToEducational(url: String, infoTitle: String, infoValue: String, position: Int)
     fun onImpressInfo(infoTitle: String, infoValue: String, position: Int)
-    fun onImpressCatalog()
+    fun onImpressCatalog(key: String, value: String, position: Int)
 }
