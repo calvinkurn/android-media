@@ -84,13 +84,14 @@ ext {
     sliceCoreVersion = '1.0.0'
     transitionVersion = '1.3.1'
     robolectricVersion = "4.4"
-    orchestratorVersion = '1.3.0'
+    orchestratorVersion = '1.4.1'
     leakCanaryVersion = '2.2'
     embraceVersion = '4.15.0'
     newRelicVersion = '6.6.0'
     windowVersion = '1.0.0-alpha07'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
+    playIntegrityVersion = '1.0.1'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
@@ -115,7 +116,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.23.2'
     unifyPrinciplesVersion = '1.4.1.2'
-    unifyComponentsVersion = '1.2.13'
+    unifyComponentsVersion = '1.2.15.1'
     unifyCoachMarkVersion = '1.2.17.2'
     unifyCalendarVersion = '1.2.1.2'
     unifyBannerVersion = '1.0.6.2'
@@ -126,7 +127,7 @@ ext {
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.13.2'
     unifyGlobalErrorVersion = '1.0.18.2'
-    unifyHeaderVersion = '1.1.11.2'
+    unifyHeaderVersion = '1.1.12'
     unifySortFilterVersion = '1.1.4.2'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.10.2'
@@ -308,11 +309,12 @@ ext {
             jjwtImpl              : "io.jsonwebtoken:jjwt-impl:0.11.2",
             jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2",
             gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
-            dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0"
+            dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
+            playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion"
     ]
 
     testDependencies = [
-            androidxTest          : 'androidx.test.ext:junit:1.1.1',
+            androidxTest          : 'androidx.test.ext:junit:1.1.3',
             junit                 : "junit:junit:4.12",
             junitJupiterApi       : "org.junit.jupiter:junit-jupiter-api:$JunitJupiterVersion",
             junitJupiterEngine    : "org.junit.jupiter:junit-jupiter-engine:$JunitJupiterVersion",
@@ -351,6 +353,7 @@ ext {
             fragmentTest          : "androidx.fragment:fragment-testing:$fragmentTest",
             robolectric           : "org.robolectric:robolectric:$robolectricVersion",
             orchestrator          : "androidx.test:orchestrator:$orchestratorVersion",
+            workManagerTest       : "androidx.work:work-testing:$workManagerVersion",
             leakCanaryInstrument  : "com.squareup.leakcanary:leakcanary-android-instrumentation:$leakCanaryVersion"
     ]
 

@@ -12,7 +12,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
@@ -49,7 +48,6 @@ internal class SearchProductTrackingTest {
     private val recyclerViewId = R.id.recyclerview
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val blockAllIntentsMonitor = Instrumentation.ActivityMonitor(
         null as String?,
         null,
@@ -58,8 +56,6 @@ internal class SearchProductTrackingTest {
 
     @Before
     fun setUp() {
-        gtmLogDBSource.deleteAll().subscribe()
-
         setupGraphqlMockResponse(SearchMockModelConfig())
 
         disableOnBoarding(context)
@@ -104,9 +100,6 @@ internal class SearchProductTrackingTest {
     @After
     fun tearDown() {
         InstrumentationRegistry.getInstrumentation().removeMonitor(blockAllIntentsMonitor)
-
-        gtmLogDBSource.deleteAll().subscribe()
-
         IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
     }
 }
