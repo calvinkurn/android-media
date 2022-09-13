@@ -101,7 +101,6 @@ class PaymentListViewModel @Inject constructor(
         )
     }
 
-
     private fun onPaymentListSuccess(paymentList: PaymentList?) {
         paymentList?.let {
             if (it.paymentList.isNullOrEmpty().not())

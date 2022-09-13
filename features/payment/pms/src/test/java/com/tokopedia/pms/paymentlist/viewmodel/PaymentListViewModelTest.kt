@@ -187,10 +187,7 @@ class PaymentListViewModelTest {
     }
 
     @Test
-    fun `clear usecase`()
-    {
+    fun `clear usecase`() {
         viewModel.refreshPage()
     }
-
-
 }
