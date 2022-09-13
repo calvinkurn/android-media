@@ -12,7 +12,9 @@ import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.tokofood.databinding.WidgetGlobalSearchTokofoodBinding
 
 class GlobalSearchBarWidget: ConstraintLayout {
@@ -83,6 +85,9 @@ class GlobalSearchBarWidget: ConstraintLayout {
 
                 isClearable = true
 
+                showIcon = true
+                iconDrawable = null
+
                 searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
                         showKeyboard(searchBarTextField)
@@ -90,9 +95,7 @@ class GlobalSearchBarWidget: ConstraintLayout {
                 }
 
                 searchBarTextField.addTextChangedListener(object : TextWatcher {
-                    override fun afterTextChanged(s: Editable) {
-
-                    }
+                    override fun afterTextChanged(s: Editable) {}
 
                     override fun beforeTextChanged(
                         s: CharSequence,
@@ -107,6 +110,7 @@ class GlobalSearchBarWidget: ConstraintLayout {
                         before: Int,
                         count: Int
                     ) {
+                        searchBarIcon.isVisible = s.toString().isNotBlank()
                         searchKeyword = s.toString().trim()
                         searchTextBoxListener?.onQueryTextChangeListener(searchKeyword)
                     }
