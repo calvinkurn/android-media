@@ -83,6 +83,18 @@ class DetailEditorFragment @Inject constructor(
     }
 
     fun saveAndExit() {
+        // clear un related edit state since crop & rotate value is gather from previous state
+        data.cropRotateValue.apply {
+            when {
+                data.isToolRotate() -> isCrop = false
+                data.isToolCrop() -> isRotate = false
+                else -> {
+                    isCrop = false
+                    isRotate = false
+                }
+            }
+        }
+
         if (data.isToolRotate() || data.isToolCrop()) {
             // if current tools editor not rotate then skip crop data set by sent empty object on data
             viewBinding?.imgUcropPreview?.cropRotate(
@@ -95,12 +107,6 @@ class DetailEditorFragment @Inject constructor(
                     requireContext(),
                     it
                 )?.path
-
-                // clear un related edit state since crop & rotate value is gather from previous state
-                data.cropRotateValue.apply {
-                    if (data.isToolRotate()) isCrop = false
-                    if (data.isToolCrop()) isRotate = false
-                }
 
                 finishPage()
             }

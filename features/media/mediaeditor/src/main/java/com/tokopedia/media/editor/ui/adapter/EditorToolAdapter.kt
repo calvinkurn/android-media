@@ -58,7 +58,7 @@ class EditorToolAdapter constructor(
                 }
 
                 // if found related edit state then stop loop, only need 1 state
-                if (isActive) return@forEachIndexed
+                if (isActive) return@let
             }
         }
 
