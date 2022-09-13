@@ -1518,9 +1518,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         configUiModel: ConfigurationUiModel,
         selectedAccount: ContentAccountUiModel,
     ): Boolean {
-        _accountStateInfo.update { AccountStateInfo() }
         return when {
             !configUiModel.streamAllowed -> {
+                _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
                         type = AccountStateInfoType.Banned,
@@ -1531,6 +1531,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 false
             }
             configUiModel.channelStatus == ChannelStatus.Live -> {
+                _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
                         type = AccountStateInfoType.Live,
@@ -1541,6 +1542,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 false
             }
             !selectedAccount.hasAcceptTnc -> {
+                _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
                         type = AccountStateInfoType.NotAcceptTNC,
@@ -1551,6 +1553,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 false
             }
             selectedAccount.isUser && !selectedAccount.hasUsername -> {
+                _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
                         type = AccountStateInfoType.NoUsername,
@@ -1598,7 +1601,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     ): ContentAccountUiModel {
         val sellerAccount = accountList.first { it.type == TYPE_SHOP }
         return when {
-            sellerAccount.hasAcceptTnc -> sellerAccount
+            !sellerAccount.hasAcceptTnc -> sellerAccount
             isHasNonSeller -> nonSellerAccountCheck(accountList, sellerAccount)
             else -> sellerAccount
         }
@@ -1609,8 +1612,29 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         sellerAccount: ContentAccountUiModel? = null
     ): ContentAccountUiModel {
         val nonSellerAccount = accountList.first { it.type == TYPE_USER }
-        return if (nonSellerAccount.hasUsername) nonSellerAccount
-        else sellerAccount ?: nonSellerAccount
+        return when {
+            !nonSellerAccount.hasUsername -> {
+                _accountStateInfo.update { AccountStateInfo() }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.NoUsername,
+                        selectedAccount = sellerAccount ?: nonSellerAccount,
+                    )
+                }
+                sellerAccount ?: nonSellerAccount
+            }
+            !nonSellerAccount.hasAcceptTnc -> {
+                _accountStateInfo.update { AccountStateInfo() }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.NotAcceptTNC,
+                        selectedAccount = sellerAccount ?: nonSellerAccount,
+                    )
+                }
+                sellerAccount ?: nonSellerAccount
+            }
+            else -> nonSellerAccount
+        }
     }
 
     /**
