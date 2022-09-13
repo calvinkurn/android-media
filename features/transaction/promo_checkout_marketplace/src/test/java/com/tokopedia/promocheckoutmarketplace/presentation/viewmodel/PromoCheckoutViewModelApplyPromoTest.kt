@@ -390,12 +390,13 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
-    fun `WHEN apply promo BO from promo page THEN validate use request should contain shipping id, sp id, and promo code from bo additional data`() {
+    fun `WHEN apply promo BO from promo page THEN validate use request should contain bo datas`() {
         //given
         val request = provideApplyPromoEmptyRequest()
         val response = provideApplyPromoMerchantResponseSuccess()
         val promoList = providePromoListWithBoPlusAsRecommendedPromo()
         val selectedBo = promoList[1] as PromoListItemUiModel
+        val selectedBoData = selectedBo.uiData.boAdditionalData.first()
         selectedBo.uiState.isSelected = true
         viewModel.setPromoListValue(promoList)
 
@@ -411,8 +412,12 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         //then
         assert(request.orders.first().codes.intersect(selectedBo.uiData.boAdditionalData.map { it.code }).size == 1)
         assert(!request.orders.first().codes.contains(selectedBo.uiData.promoCode))
-        assert(request.orders.first().shippingId > 0)
-        assert(request.orders.first().spId > 0)
+        assert(request.orders.first().shippingId == selectedBoData.shippingId)
+        assert(request.orders.first().spId == selectedBoData.shipperProductId)
+        assert(request.orders.first().boCampaignId  == selectedBoData.boCampaignId)
+        assert(request.orders.first().shippingSubsidy == selectedBoData.shippingSubsidy)
+        assert(request.orders.first().benefitClass == selectedBoData.benefitClass)
+        assert(request.orders.first().shippingPrice == selectedBoData.shippingPrice)
     }
     
     @Test
@@ -441,6 +446,10 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         assert(!request.orders.first().codes.contains(selectedBo.uiData.promoCode))
         assert(request.orders.first().shippingId == boAdditionalDataForCurrentUniqueId.shippingId)
         assert(request.orders.first().spId == boAdditionalDataForCurrentUniqueId.shipperProductId)
+        assert(request.orders.first().boCampaignId  == boAdditionalDataForCurrentUniqueId.boCampaignId)
+        assert(request.orders.first().shippingSubsidy == boAdditionalDataForCurrentUniqueId.shippingSubsidy)
+        assert(request.orders.first().benefitClass == boAdditionalDataForCurrentUniqueId.benefitClass)
+        assert(request.orders.first().shippingPrice == boAdditionalDataForCurrentUniqueId.shippingPrice)
     }
 
     @Test
