@@ -10,4 +10,5 @@ class PlayEngagementWidgetTest {
     //check if voucher list for coupon not empty
     //click voucher open coupon sheet
     //close voucher
+    //visibility check
 }
