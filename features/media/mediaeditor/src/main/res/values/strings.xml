@@ -15,7 +15,7 @@
     <string name="editor_button_title_save">Simpan</string>
 
     <!-- Other -->
-    <string name="editor_tool_watermark_label">Logo Tokopedia dan Nama Toko</string>
+    <string name="editor_tool_watermark_label">Logo Tokopedia &amp; Nama Toko</string>
     <string name="editor_tool_remove_background_failed_normal">Yah, koneksi internetmu terputus saat gunakan fitur ini. Coba lagi, ya.</string>
     <string name="editor_tool_remove_background_failed_cta">Coba Lagi</string>
 
