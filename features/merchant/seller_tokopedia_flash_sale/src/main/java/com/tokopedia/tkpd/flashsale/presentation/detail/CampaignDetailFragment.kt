@@ -212,7 +212,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 setNavigationOnClickListener { activity.finish() }
                 addCustomRightContent(infoIcon)
                 setOnClickListener {
-                    showGeneralBottomSheet(flashSale)
+                    showBottomSheet(flashSale, DetailBottomSheetType.GENERAL)
                 }
             }
         }
@@ -300,10 +300,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 endSubmissionDate
             )
             iconRegisterPeriodInfo.setOnClickListener {
-                showTimelineBottomSheet(flashSale)
+                showBottomSheet(flashSale, DetailBottomSheetType.TIMELINE)
             }
             btnSeeCriteria.setOnClickListener {
-                showProductCriteriaBottomSheet(flashSale)
+                showBottomSheet(flashSale, DetailBottomSheetType.PRODUCT_CRITERIA)
             }
         }
     }
@@ -1193,31 +1193,11 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showTimelineBottomSheet(flashSale: FlashSale) {
+    private fun showBottomSheet(flashSale: FlashSale, type: DetailBottomSheetType) {
         val activity = activity ?: return
         CampaignDetailBottomSheet.newInstance(
             viewModel.getBottomSheetData(
-                DetailBottomSheetType.TIMELINE,
-                flashSale
-            )
-        ).show(activity.supportFragmentManager, "")
-    }
-
-    private fun showProductCriteriaBottomSheet(flashSale: FlashSale) {
-        val activity = activity ?: return
-        CampaignDetailBottomSheet.newInstance(
-            viewModel.getBottomSheetData(
-                DetailBottomSheetType.PRODUCT_CRITERIA,
-                flashSale
-            )
-        ).show(activity.supportFragmentManager, "")
-    }
-
-    private fun showGeneralBottomSheet(flashSale: FlashSale) {
-        val activity = activity ?: return
-        CampaignDetailBottomSheet.newInstance(
-            viewModel.getBottomSheetData(
-                DetailBottomSheetType.GENERAL,
+                type,
                 flashSale
             )
         ).show(activity.supportFragmentManager, "")
