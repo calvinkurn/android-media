@@ -12,7 +12,7 @@
         android:id="@+id/img_main_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#D3D3D3"
+        android:background="@color/Unify_NN50"
         android:contentDescription="@string/cd_img_preview"
         android:scaleType="fitCenter"/>
 
@@ -22,7 +22,7 @@
         android:id="@+id/vid_main_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#D3D3D3"
+        android:background="@color/Unify_NN50"
         android:contentDescription="@string/cd_img_preview"
         android:scaleType="fitCenter"/>
 
