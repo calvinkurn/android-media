@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/redefineRegisterEmailFragment"
-        android:name="com.tokopedia.loginregister.redefine_register_email.view.register_email.view.fragment.RedefineRegisterEmailFragment"
+        android:name="com.tokopedia.loginregister.redefineregisteremail.view.registeremail.view.fragment.RedefineRegisterEmailFragment"
         android:label="RedefineRegisterEmailFragment"
         tools:layout="@layout/fragment_redefine_register_email">
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/redefineRegisterInputPhoneFragment"
-        android:name="com.tokopedia.loginregister.redefine_register_email.view.input_phone.view.fragment.RedefineRegisterInputPhoneFragment"
+        android:name="com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.fragment.RedefineRegisterInputPhoneFragment"
         android:label="RedefineRegisterInputPhoneFragment"
         tools:layout="@layout/fragment_redefine_register_input_phone" >
         <argument

@@ -47,7 +47,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.loginregister.redefine_register_email.view.activity.RedefineRegisterEmailActivity"
+            android:name="com.tokopedia.loginregister.redefineregisteremail.view.activity.RedefineRegisterEmailActivity"
             android:label="@string/register_email_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
