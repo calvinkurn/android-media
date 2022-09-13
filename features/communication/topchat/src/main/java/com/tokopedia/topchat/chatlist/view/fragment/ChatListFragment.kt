@@ -89,7 +89,7 @@ import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
-open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
     ChatListItemListener, LifecycleOwner {
 
     @Inject
