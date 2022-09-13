@@ -396,23 +396,21 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun createViewModelProvider(): ViewModelProvider {
-        val productTagArgument = getProductTagArgument()
-
         return ViewModelProvider(
             this,
             viewModelFactoryCreator.create(
                 this,
-                productTagSourceRaw = productTagArgument.productTagSource,
-                shopBadge = productTagArgument.shopBadge,
-                authorId = productTagArgument.authorId,
-                authorType = productTagArgument.authorType,
+                productTagSourceRaw = fragmentArgument.productTagSource,
+                shopBadge = fragmentArgument.shopBadge,
+                authorId = fragmentArgument.authorId,
+                authorType = fragmentArgument.authorType,
                 initialSelectedProduct = mDataSource?.getInitialSelectedProduct() ?: emptyList(),
                 productTagConfig = ContentProductTagConfig(
-                    isMultipleSelectionProduct = productTagArgument.isMultipleSelectionProduct,
-                    isFullPageAutocomplete = productTagArgument.isFullPageAutocomplete,
-                    maxSelectedProduct = productTagArgument.maxSelectedProduct,
-                    backButton = productTagArgument.backButton,
-                    isShowActionBarDivider = productTagArgument.isShowActionBarDivider,
+                    isMultipleSelectionProduct = fragmentArgument.isMultipleSelectionProduct,
+                    isFullPageAutocomplete = fragmentArgument.isFullPageAutocomplete,
+                    maxSelectedProduct = fragmentArgument.maxSelectedProduct,
+                    backButton = fragmentArgument.backButton,
+                    isShowActionBarDivider = fragmentArgument.isShowActionBarDivider,
                 )
             )
         )
