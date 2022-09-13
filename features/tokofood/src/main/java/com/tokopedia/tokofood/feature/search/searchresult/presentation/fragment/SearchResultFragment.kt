@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -54,6 +55,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 import javax.inject.Inject
 
 class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Listener,
@@ -436,6 +438,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun onOpenQuickSortBottomSheet(data: Any?) {
+        hideKeyboard()
         (data as? List<*>)?.filterIsInstance(TokofoodQuickSortUiModel::class.java)?.let { uiModels ->
             TokofoodQuickSortBottomSheet.createInstance(ArrayList(uiModels), this)
                 .show(parentFragmentManager)
@@ -443,6 +446,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun onOpenQuickFilterPriceRangeBottomSheet(data: Any?) {
+        hideKeyboard()
         (data as? List<*>)?.filterIsInstance(PriceRangeFilterCheckboxItemUiModel::class.java)?.let { uiModels ->
             TokofoodQuickPriceRangeBottomsheet.createInstance(uiModels, this)
                 .show(parentFragmentManager)
@@ -450,6 +454,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun onOpenQuickFilterNormalBottomSheet(data: Any?) {
+        hideKeyboard()
         (data as? Filter)?.let { filter ->
             FilterGeneralDetailBottomSheet().show(
                 parentFragmentManager,
@@ -469,6 +474,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         if (sortFilterBottomSheet == null) {
             sortFilterBottomSheet = SortFilterBottomSheet()
         }
+        hideKeyboard()
         sortFilterBottomSheet?.show(
             parentFragmentManager,
             searchParameter?.getSearchParameterHashMap(),
@@ -506,6 +512,14 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                     mapOf(SearchApiConst.Q to keyword)
                 )
             RouteManager.route(it, discoveryApplink)
+        }
+    }
+
+    private fun hideKeyboard() {
+        try {
+            KeyboardHandler.hideSoftKeyboard(activity)
+        } catch (ex: Exception) {
+            Timber.e(ex)
         }
     }
 
