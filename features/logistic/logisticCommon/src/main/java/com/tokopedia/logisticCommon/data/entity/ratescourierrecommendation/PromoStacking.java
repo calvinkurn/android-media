@@ -84,6 +84,7 @@ public class PromoStacking {
     private Texts texts = new Texts();
     @SerializedName("free_shipping_metadata")
     private FreeShippingMetadata freeShippingMetadata = new FreeShippingMetadata();
+    @SuppressLint("Invalid Data Type")
     @SerializedName("bo_campaign_id")
     private long boCampaignId;
 
