@@ -7,10 +7,12 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.BsItemProductDetailCatalogTitleBinding
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCatalogDataModel
+import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
 
 class ProductDetailInfoCatalogViewHolder(
-    view: View
+    view: View,
+    private val listener: ProductDetailInfoListener
 ) : AbstractViewHolder<ProductDetailInfoCatalogDataModel>(view) {
 
     companion object {
@@ -38,5 +40,9 @@ class ProductDetailInfoCatalogViewHolder(
                 addView(view.root)
             }
         }
+    }
+
+    private fun onImpressView() {
+        listener.onImpressCatalog()
     }
 }

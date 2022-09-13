@@ -99,7 +99,8 @@ class ProductDetailInfoAdapterFactoryImpl(
             listener = listener
         )
         ProductDetailInfoCatalogViewHolder.LAYOUT -> ProductDetailInfoCatalogViewHolder(
-            view = view
+            view = view,
+            listener = listener
         )
         ProductDetailInfoLoadingSpecificationViewHolder.LAYOUT -> ProductDetailInfoLoadingSpecificationViewHolder(
             view = view

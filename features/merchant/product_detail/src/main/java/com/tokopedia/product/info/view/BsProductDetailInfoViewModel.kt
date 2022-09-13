@@ -7,9 +7,7 @@ import androidx.lifecycle.switchMap
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
-import com.tokopedia.product.detail.tracking.ProductDetailBottomSheetTracking
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
@@ -20,7 +18,6 @@ import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoLo
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
 import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
 import com.tokopedia.product.info.util.ProductDetailInfoMapper
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -114,23 +111,6 @@ class BsProductDetailInfoViewModel @Inject constructor(
             errorType = ERROR_TYPE_DESCRIPTION_INFO,
             productId = parcelData.value?.productId.orEmpty(),
             deviceId = userSession.deviceId
-        )
-    }
-
-    fun onImpressionInfo(
-        data: DynamicProductInfoP1,
-        infoTitle: String,
-        infoValue: String,
-        position: Int,
-        trackingQueue: TrackingQueue
-    ) {
-        ProductDetailBottomSheetTracking.impressInfoItem(
-            data,
-            userSession.userId,
-            infoTitle,
-            infoValue,
-            position,
-            trackingQueue
         )
     }
 }

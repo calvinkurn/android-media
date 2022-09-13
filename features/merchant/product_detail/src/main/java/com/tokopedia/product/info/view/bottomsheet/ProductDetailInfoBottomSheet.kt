@@ -353,13 +353,19 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun onImpressInfo(infoTitle: String, infoValue: String, position: Int) {
         val data = listener?.getPdpDataSource() ?: return
-        viewModel.onImpressionInfo(
-            data,
-            infoTitle,
-            infoValue,
-            position,
-            trackingQueue
+
+        ProductDetailBottomSheetTracking.impressInfoItem(
+            p1Data = data,
+            userId = userSession.userId,
+            infoTitle = infoTitle,
+            infoValue = infoValue,
+            position = position,
+            trackingQueue = trackingQueue
         )
+    }
+
+    override fun onImpressCatalog() {
+
     }
 
     override fun onPause() {
