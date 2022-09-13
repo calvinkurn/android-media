@@ -42,7 +42,6 @@ import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailB
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.common.helper.isSortHasDefaultValue
@@ -99,12 +98,11 @@ import com.tokopedia.search.result.product.cpm.BannerAdsListenerDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
+import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListenerDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
-import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
-import com.tokopedia.search.result.product.lastfilter.LastFilterListener
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
@@ -151,7 +149,6 @@ class ProductListFragment: BaseDaggerFragment(),
     SearchNavigationClickListener,
     TopAdsImageViewListener,
     ChooseAddressListener,
-    LastFilterListener,
     ProductListParameterListener,
     QueryKeyProvider,
     SearchParameterProvider,
@@ -200,7 +197,11 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var recyclerViewUpdater: RecyclerViewUpdater
 
-    lateinit var lastFilterListener: LastFilterListener
+    @Inject
+    lateinit var lastFilterListenerDelegate: LastFilterListenerDelegate
+
+    @Inject
+    lateinit var filterController: FilterController
 
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
@@ -209,7 +210,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private var performanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var redirectionListener: RedirectionListener? = null
     private var searchParameter: SearchParameter? = null
-    private val filterController = FilterController()
     private var irisSession: IrisSession? = null
     private var searchSortFilter: SortFilter? = null
     private var shimmeringView: LinearLayout? = null
@@ -243,7 +243,6 @@ class ProductListFragment: BaseDaggerFragment(),
         loadDataFromArguments()
         initProductCardLifecycleObserver()
         initNetworkMonitor()
-        initLastFilterListenerDelegate()
     }
 
     private fun loadDataFromArguments() {
@@ -278,12 +277,9 @@ class ProductListFragment: BaseDaggerFragment(),
             .baseAppComponent(getComponent(BaseAppComponent::class.java))
             .searchContextModule(SearchContextModule(activity))
             .performanceMonitoringModule(PerformanceMonitoringModule(performanceMonitoring))
+            .productListFragmentModule(ProductListFragmentModule(this))
             .build()
             .inject(this)
-    }
-
-    private fun initLastFilterListenerDelegate() {
-        lastFilterListener = LastFilterListenerDelegate(iris, this)
     }
     //endregion
 
@@ -451,11 +447,18 @@ class ProductListFragment: BaseDaggerFragment(),
             topAdsImageViewListener = this,
             chooseAddressListener = this,
             bannerListener = BannerListenerDelegate(iris, activity),
-            lastFilterListener = this,
+            lastFilterListener = lastFilterListenerDelegate,
             inspirationSizeListener = inspirationWidgetListenerDelegate,
             violationListener = ViolationListenerDelegate(activity),
             videoCarouselListener = videoCarouselListenerDelegate,
             videoCarouselWidgetCoordinator = videoCarouselWidgetCoordinator,
+            inspirationBundleListener = InspirationBundleListenerDelegate(
+                activity,
+                inspirationCarouselTrackingUnification,
+                iris,
+                trackingQueue,
+                this,
+            ),
             networkMonitor = networkMonitor,
             isUsingViewStub = remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB),
         )
@@ -1040,7 +1043,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val queryParams = filterController.getParameter().addFilterOrigin()
         refreshSearchParameter(queryParams)
 
-        updateLastFilter()
+        lastFilterListenerDelegate.updateLastFilter()
 
         reloadData()
 
@@ -1780,7 +1783,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         refreshSearchParameter(applySortFilterModel.mapParameter)
 
-        updateLastFilter()
+        lastFilterListenerDelegate.updateLastFilter()
 
         reloadData()
     }
@@ -1795,20 +1798,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun applyFilter(applySortFilterModel: ApplySortFilterModel) {
         FilterTracking
                 .eventApplyFilter(filterTrackingData, screenName, applySortFilterModel.selectedFilterMapParameter)
-    }
-
-    private fun updateLastFilter() {
-        val mapParameter = searchParameter?.getSearchParameterMap() ?: mapOf()
-        val appliedSort = presenter?.dynamicFilterModel?.getAppliedSort(mapParameter)
-
-        val savedOptionFromFilter = filterController.getActiveSavedOptionList()
-        val savedOptionFromSort = appliedSort?.let { listOf(SavedOption.create(it)) } ?: listOf()
-        val savedOptionList = savedOptionFromFilter + savedOptionFromSort
-
-        presenter?.updateLastFilter(
-            mapParameter,
-            savedOptionList,
-        )
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
@@ -1857,33 +1846,6 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.onLocalizingAddressSelected()
     }
 
-    //region Last Filter Widget
-    override fun onImpressedLastFilter(lastFilterDataView: LastFilterDataView) {
-        lastFilterListener.onImpressedLastFilter(lastFilterDataView)
-    }
-
-    override fun applyLastFilter(lastFilterDataView: LastFilterDataView) {
-        lastFilterListener.applyLastFilter(lastFilterDataView)
-
-        filterController.setFilter(lastFilterDataView.filterOptions())
-
-        val queryParams = filterController.getParameter() + lastFilterDataView.sortParameter()
-        refreshSearchParameter(queryParams)
-
-        reloadData()
-    }
-
-    override fun closeLastFilter(lastFilterDataView: LastFilterDataView) {
-        lastFilterListener.closeLastFilter(lastFilterDataView)
-
-        val searchParameterMap = searchParameter?.getSearchParameterMap() ?: mapOf()
-
-        recyclerViewUpdater.productListAdapter?.removeLastFilterWidget()
-
-        presenter?.closeLastFilter(searchParameterMap)
-    }
-    //endregion
-
     //region dropdown quick filter
     override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
         val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
@@ -1914,7 +1876,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val queryParams = filterController.getParameter().addFilterOrigin()
         refreshSearchParameter(queryParams)
 
-        updateLastFilter()
+        lastFilterListenerDelegate.updateLastFilter()
 
         reloadData()
     }

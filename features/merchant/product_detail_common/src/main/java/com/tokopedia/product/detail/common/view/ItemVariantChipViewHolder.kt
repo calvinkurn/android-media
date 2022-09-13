@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.common.view
 
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
-import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.R
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -29,7 +29,9 @@ class ItemVariantChipViewHolder(val view: View,
     override fun bind(element: VariantOptionWithAttribute) = with(chipVariant) {
         val image100 = element.image100
         chip_image_icon.showIfWithBlock(image100.isNotEmpty()) {
-            loadImageFitCenter(image100)
+            loadImage(image100, properties = {
+                centerCrop()
+            })
         }
 
         chipText = ellipsize(element.variantName, ELLIPSIZE_VARIANT_NAME)

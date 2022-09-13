@@ -30,7 +30,7 @@ class HomeLeftCarouselAtcProductCardViewHolder(
             setProductModel(element.productCardModel)
             setOnClickListener {
                 listener?.onProductCardClicked(
-                    position = adapterPosition,
+                    position = element.position,
                     product = element
                 )
             }
@@ -48,7 +48,7 @@ class HomeLeftCarouselAtcProductCardViewHolder(
             setImageProductViewHintListener(element, object : ViewHintListener{
                 override fun onViewHint() {
                     listener?.onProductCardImpressed(
-                        position = adapterPosition,
+                        position = element.position,
                         product = element
                     )
                 }

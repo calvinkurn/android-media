@@ -18,7 +18,7 @@ import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentGalleryBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
-import com.tokopedia.media.picker.data.repository.AlbumRepository
+import com.tokopedia.media.picker.data.repository.AlbumRepository.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivity
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
@@ -147,11 +147,10 @@ open class GalleryFragment @Inject constructor(
     }
 
     private fun initView() {
-        setupRecyclerView()
+        // for first time
+        viewModel.loadLocalGalleryBy(RECENT_ALBUM_ID)
 
-        viewModel.loadLocalGalleryBy(
-            AlbumRepository.RECENT_ALBUM_ID
-        )
+        setupRecyclerView()
     }
 
     private fun hasMediaList(isShown: Boolean) {

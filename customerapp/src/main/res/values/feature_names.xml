@@ -345,6 +345,10 @@
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
     <string name="title_wishlist_v2">Wishlist</string>
+    <string name="page_name_wishlist_collection">Wishlist Collection</string>
+    <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
+    <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
+
     <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
     <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>
 
@@ -412,6 +416,7 @@
 
     <string name="title_image_picker_insta_df">Media Picker</string>
 
+    <string name="title_feed_content_creation">Feed Content Creation</string>
     <string name="title_feed_create_post">Create Post</string>
     <string name="title_feed_people">People</string>
     <string name="swd_activity_withdraw">Penarikan Saldo</string>

@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.DaggerRechargeGeneralComponent
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
@@ -29,10 +31,10 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
-        val categoryId = bundle?.getString(PARAM_CATEGORY_ID)?.toIntOrNull() ?: 0
-        val menuId = bundle?.getString(PARAM_MENU_ID)?.toIntOrNull() ?: 0
-        val operatorId = bundle?.getString(PARAM_OPERATOR_ID)?.toIntOrNull() ?: 0
-        val productId = bundle?.getString(PARAM_PRODUCT_ID)?.toIntOrNull() ?: 0
+        val categoryId = bundle?.getString(PARAM_CATEGORY_ID)?.toIntSafely().toZeroIfNull()
+        val menuId = bundle?.getString(PARAM_MENU_ID)?.toIntSafely().toZeroIfNull()
+        val operatorId = bundle?.getString(PARAM_OPERATOR_ID)?.toIntSafely().toZeroIfNull()
+        val productId = bundle?.getString(PARAM_PRODUCT_ID)?.toIntSafely().toZeroIfNull()
         val isAddSBM = bundle?.getString(PARAM_ADD_BILLS)?.toBoolean() ?: false
         val isFromSBM = bundle?.getBoolean(EXTRA_ADD_BILLS_IS_FROM_SBM) ?: false
         val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA,"") ?: ""

@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.*
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
@@ -53,9 +52,7 @@ class RecommendationViewHolder(
         val view = binding.stubShcRecommendationError.inflate()
         ShcRecommendationWidgetErrorBinding.bind(view)
     }
-    private val commonErrorStateBinding by lazy {
-        errorStateBinding.shcRecommendationCommonErrorView
-    }
+
     private val successStateBinding by lazy {
         val view = binding.stubShcRecommendationSuccess.inflate()
         ShcRecommendationWidgetSuccessBinding.bind(view)
@@ -74,9 +71,11 @@ class RecommendationViewHolder(
         successStateBinding.containerShcRecommendationSuccess.gone()
         loadingStateBinding.containerShcRecommendationLoading.gone()
         containerShcRecommendationError.visible()
+        shcRecommendationCommonErrorView.setOnReloadClicked {
+            listener.onReloadWidget(element)
+        }
 
         tvShcRecommendationErrorStateTitle.text = element.title
-        commonErrorStateBinding.imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
 
         setupTooltip(tvShcRecommendationErrorStateTitle, element)
     }
@@ -218,7 +217,7 @@ class RecommendationViewHolder(
             if (isCtaVisible) {
                 tvShcRecommendationCta.text = element.ctaText
                 tvShcRecommendationCta.setOnClickListener {
-                    openApplink(element)
+                    openAppLink(element)
                 }
                 val iconColor = root.context.getResColor(
                     com.tokopedia.unifyprinciples.R.color.Unify_G400
@@ -239,7 +238,7 @@ class RecommendationViewHolder(
         }
     }
 
-    private fun openApplink(element: RecommendationWidgetUiModel) {
+    private fun openAppLink(element: RecommendationWidgetUiModel) {
         if (RouteManager.route(itemView.context, element.appLink)) {
             listener.sendRecommendationCtaClickEvent(element)
         }
