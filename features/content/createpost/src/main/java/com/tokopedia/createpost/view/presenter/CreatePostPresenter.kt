@@ -4,9 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.createpost.domain.usecase.GetContentFormUseCase
 import com.tokopedia.createpost.common.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.subscriber.GetContentFormSubscriber
-import com.tokopedia.createpost.common.view.type.ShareType
 import com.tokopedia.createpost.domain.entity.GetContentFormDomain
-import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.usecase.UseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
