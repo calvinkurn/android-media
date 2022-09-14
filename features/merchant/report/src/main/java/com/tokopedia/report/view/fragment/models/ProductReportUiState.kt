@@ -13,40 +13,13 @@ import com.tokopedia.report.view.fragment.unify_components.UiText
 
 @Stable
 data class ProductReportUiState(
+    val title: UiText = UiText.ResourceText(R.string.product_report_header),
+    val allData: List<ProductReportReason> = emptyList(),
     val data: List<ProductReportReason> = emptyList(),
     val baseParent: ProductReportReason? = null,
     val filterId: List<Int> = emptyList(),
     val error: String? = null
 ) {
-
-    val title: UiText
-        get() = if (filterId.isEmpty()) UiText.ResourceText(R.string.product_report_header)
-        else {
-            val id = filterId.lastOrNull() ?: -1
-            val reason = data.firstOrNull {
-                it.categoryId.toIntOrZero() == id
-            }
-            UiText.StringText(reason?.value.orEmpty())
-        }
-
-    private val filterReason = mutableListOf<ProductReportReason>()
-
-    fun getFilterReason(): List<ProductReportReason> {
-        filterReason.clear()
-        val id = filterId.lastOrNull() ?: -1
-
-        val reason = if (id <= 0) {
-            data
-        } else {
-            val reason = data.firstOrNull {
-                it.categoryId.toIntOrZero() == id
-            }
-            reason?.children.orEmpty()
-        }
-        filterReason.addAll(reason)
-
-        return filterReason
-    }
 
     fun isSubtitleVisible(reason: ProductReportReason): Boolean {
         return reason.detail.isNotBlank() && filterId.isNotEmpty()

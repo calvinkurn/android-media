@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
+import com.tokopedia.report.view.fragment.unify_components.UiText
 import com.tokopedia.usecase.coroutines.Result
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -89,7 +90,11 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
             val graphqlRequest = GraphqlRequest(query, ProductReportReason.Response::class.java)
             val data = graphqlRepository.response(listOf(graphqlRequest))
             val list = data.getSuccessData<ProductReportReason.Response>().data
-            _uiState.update { it.copy(data = list) }
+            val state = _uiState.value
+
+            updateState(
+                state.copy(data = list, allData = list)
+            )
         }){ throwable ->
             _uiState.update { it.copy(error = throwable.message) }
         }
@@ -111,13 +116,7 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
         val filterId = _uiState.value.filterId.toMutableList()
 
         if (reason.children.isNotEmpty()) {
-            val baseParent = if (filterId.isEmpty()) reason else _uiState.value.baseParent
-            filterId.add(reason.categoryId.toIntOrZero())
-
-            _uiState.update {
-                it.copy(baseParent = baseParent, filterId = filterId)
-            }
-            _uiEvent.emit(ProductReportUiEvent.OnScrollTop(reason = reason))
+            setChildrenIsNotEmpty(reason = reason)
         } else {
             val baseParent = _uiState.value.baseParent
             val fieldReason = if (baseParent != null && filterId.isNotEmpty()) {
@@ -133,16 +132,58 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
+    private suspend fun setChildrenIsNotEmpty(
+        reason: ProductReportReason
+    ) {
+        val state = _uiState.value
+        val filterId = state.filterId.toMutableList()
+        filterId.add(reason.categoryId.toIntOrZero())
+
+        val baseParent = if (filterId.isEmpty()) {
+            reason
+        } else {
+            state.baseParent
+        }
+
+        updateState(
+            state.copy(baseParent = baseParent, filterId = filterId)
+        )
+        _uiEvent.emit(ProductReportUiEvent.OnScrollTop(reason = reason))
+    }
+
     private fun onBackPressed() = viewModelScope.launch {
-        var baseParent = _uiState.value.baseParent
-        val filterId = _uiState.value.filterId.toMutableList()
+        val state = _uiState.value
+        var baseParent = state.baseParent
+        val filterId = state.filterId.toMutableList()
 
         filterId.removeLast()
         baseParent = if (filterId.isEmpty()) null else baseParent
 
-        _uiState.update {
-            it.copy(baseParent = baseParent, filterId = filterId)
-        }
+        updateState(
+            state.copy(baseParent = baseParent, filterId = filterId)
+        )
         _uiEvent.emit(ProductReportUiEvent.OnBackPressed)
+    }
+
+    private fun updateState(state: ProductReportUiState) {
+        val allData = state.allData
+        val data = state.data.toMutableList()
+        val filterId = state.filterId
+        val id = filterId.lastOrNull() ?: -1
+        val title: UiText
+        data.clear()
+
+        if (id <= 0) {
+            title = UiText.ResourceText(com.tokopedia.report.R.string.product_report_header)
+            data.addAll(allData)
+        } else {
+            val reason = allData.firstOrNull {
+                it.categoryId.toIntOrZero() == id
+            }
+            title = UiText.StringText(reason?.value.orEmpty())
+            data.addAll(reason?.children.orEmpty())
+        }
+
+        _uiState.update { it.copy(title = title, data = data) }
     }
 }

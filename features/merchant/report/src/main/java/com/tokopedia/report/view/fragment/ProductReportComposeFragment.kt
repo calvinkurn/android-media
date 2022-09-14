@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.collectAsState
@@ -49,8 +50,6 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
             )
         }
     }
-
-    var isInRoot: Boolean = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -108,9 +107,7 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
                     is ProductReportUiEvent.OnFooterClicked -> onFooterClicked()
                     is ProductReportUiEvent.OnScrollTop -> onScrollTop(it.reason)
                     is ProductReportUiEvent.OnGoToForm -> gotoForm(it.reason)
-                    is ProductReportUiEvent.OnBackPressed -> {
-                        isInRoot = viewModel.uiState.value.filterId.isEmpty()
-                    }
+                    is ProductReportUiEvent.OnBackPressed -> onBackPressed()
                     else -> {
                     }
                 }
@@ -140,7 +137,7 @@ class ProductReportComposeFragment : BaseDaggerFragment(), ReportReasonAdapter.O
     }
 
     fun onBackPressed() {
-        viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
+        Toast.makeText(requireContext(), "hahaha", Toast.LENGTH_SHORT).show()
     }
 
     companion object {

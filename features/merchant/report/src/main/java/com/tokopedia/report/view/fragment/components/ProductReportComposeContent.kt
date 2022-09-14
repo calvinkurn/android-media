@@ -12,6 +12,7 @@ import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
 import com.tokopedia.report.view.fragment.unify_components.getString
+import timber.log.Timber
 
 /**
  * Created by yovi.putra on 07/09/22"
@@ -37,7 +38,11 @@ fun ProductReportComposeContent(
             )
         }
 
-        items(uiState.getFilterReason()) { item ->
+        items(
+            items = uiState.data,
+            key = { it.value }
+        ) { item ->
+            Timber.d(item.value)
             ProductReportReasonItem(
                 reason = item,
                 subtitleVisible = uiState.isSubtitleVisible(reason = item),

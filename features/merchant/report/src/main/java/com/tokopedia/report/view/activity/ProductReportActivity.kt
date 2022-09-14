@@ -31,7 +31,7 @@ class ProductReportActivity: BaseSimpleActivity(), HasComponent<MerchantReportCo
     }
 
     override fun onBackPressed() {
-        if(::fragment.isInitialized && !fragment.isInRoot){
+        if(::fragment.isInitialized){
             fragment.onBackPressed()
         } else
             super.onBackPressed()
