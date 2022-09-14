@@ -31,7 +31,7 @@ class PlayGameViewHolder {
             }
 
             binding.tvLeaderboardTitle.text = item.title
-            binding.ivLeaderboard.setImage(newIconId = if (item.leaderBoardType == LeadeboardType.Giveaway) IconUnify.GIFT else IconUnify.GAME)
+            binding.ivLeaderboard.setImage(newIconId = if (item.leaderBoardType == LeadeboardType.Giveaway) IconUnify.GIFT else IconUnify.QUIZ)
             binding.tvReward.showWithCondition(item.reward.isNotEmpty())
             binding.ivReward.showWithCondition(item.reward.isNotEmpty())
             binding.tvReward.text = getString(R.string.play_leaderboard_reward_name, item.reward)
