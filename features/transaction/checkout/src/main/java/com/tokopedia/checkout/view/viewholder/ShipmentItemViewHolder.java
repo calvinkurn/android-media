@@ -861,23 +861,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderNormalShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
         shippingWidget.showNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
-
-        String courierName = selectedCourierItemData.getName() + " (" +
-                Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
-                        selectedCourierItemData.getShipperPrice(), false
-                )) + ")";
-        String labelPriceOrDuration;
-        if (selectedCourierItemData.getEtaErrorCode() == 0 && !selectedCourierItemData.getEtaText().isEmpty()) {
-            labelPriceOrDuration = selectedCourierItemData.getEtaText();
-        } else if (selectedCourierItemData.getEtaErrorCode() == 0 && selectedCourierItemData.getEtaText().isEmpty()) {
-            labelPriceOrDuration = itemView.getContext().getString(R.string.estimasi_tidak_tersedia);
-        } else {
-            courierName = selectedCourierItemData.getName();
-            labelPriceOrDuration = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
-                    selectedCourierItemData.getShipperPrice(), false
-            ));
-        }
-        shippingWidget.setLabelSelectedShippingCourier(courierName, labelPriceOrDuration);
+        shippingWidget.setLabelSelectedShippingCourier(selectedCourierItemData);
 
         OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
         CashOnDeliveryProduct codProductData = selectedCourierItemData.getCodProductData();
@@ -907,23 +891,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     getAdapterPosition());
         }
 
-        shippingWidget.hideShipperName(selectedCourierItemData.isHideShipperName());
-        shippingWidget.renderFreeShippingTitle(selectedCourierItemData);
-        renderFreeShippingEta(selectedCourierItemData);
-    }
-
-    private void renderFreeShippingEta(CourierItemData selectedCourierItemData) {
-        if (selectedCourierItemData.getEtaErrorCode() == 0) {
-            String labelFreeShippingEtaText;
-            if (selectedCourierItemData.getEtaText() != null && !selectedCourierItemData.getEtaText().isEmpty()) {
-                labelFreeShippingEtaText = selectedCourierItemData.getEtaText();
-            } else {
-                labelFreeShippingEtaText = itemView.getContext().getString(R.string.estimasi_tidak_tersedia);
-            }
-            shippingWidget.showLabelFreeShippingEtaText(labelFreeShippingEtaText);
-        } else {
-            shippingWidget.hideLabelFreeShippingEtaText();
-        }
+        shippingWidget.renderFreeShippingCourier(selectedCourierItemData);
     }
 
     @SuppressLint("SetTextI18n")
@@ -942,13 +910,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
         }
 
-        String labelSingleShippingEta;
-        if (selectedCourierItemData.getEtaErrorCode() == 0 && !selectedCourierItemData.getEtaText().isEmpty()) {
-            labelSingleShippingEta = selectedCourierItemData.getEtaText();
-        } else {
-            labelSingleShippingEta = itemView.getContext().getString(R.string.estimasi_tidak_tersedia);
-        }
-        shippingWidget.showLabelSingleShippingEta(labelSingleShippingEta);
+        shippingWidget.showLabelSingleShippingEta(selectedCourierItemData);
 
         if (selectedCourierItemData.getLogPromoDesc() != null && !selectedCourierItemData.getLogPromoDesc().isEmpty()) {
             shippingWidget.showLabelSingleShippingMessage(MethodChecker.fromHtml(selectedCourierItemData.getLogPromoDesc()));

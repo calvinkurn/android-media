@@ -13,12 +13,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentShippingExperienceBinding
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
@@ -38,20 +38,30 @@ class ShippingWidget : ConstraintLayout {
     private var mListener: ShippingWidgetListener? = null
 
     init {
-        binding = ItemShipmentShippingExperienceBinding.inflate(LayoutInflater.from(context), this, true)
+        binding =
+            ItemShipmentShippingExperienceBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     interface ShippingWidgetListener {
 
-        fun onChangeDurationClickListener(shipmentCartItemModel: ShipmentCartItemModel, currentAddress: RecipientAddressModel)
+        fun onChangeDurationClickListener(
+            shipmentCartItemModel: ShipmentCartItemModel,
+            currentAddress: RecipientAddressModel
+        )
 
-        fun onChangeCourierClickListener(shipmentCartItemModel: ShipmentCartItemModel, currentAddress: RecipientAddressModel)
+        fun onChangeCourierClickListener(
+            shipmentCartItemModel: ShipmentCartItemModel,
+            currentAddress: RecipientAddressModel
+        )
 
         fun onOnTimeDeliveryClicked(url: String)
 
         fun onClickSetPinpoint()
 
-        fun onClickLayoutFailedShipping(shipmentCartItemModel: ShipmentCartItemModel, recipientAddressModel: RecipientAddressModel)
+        fun onClickLayoutFailedShipping(
+            shipmentCartItemModel: ShipmentCartItemModel,
+            recipientAddressModel: RecipientAddressModel
+        )
     }
 
     fun setupListener(shippingWidgetListener: ShippingWidgetListener) {
@@ -98,7 +108,8 @@ class ShippingWidget : ConstraintLayout {
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
             labelErrorShippingTitle.text = shipmentCartItemModel.courierSelectionErrorTitle
-            labelErrorShippingDescription.text = shipmentCartItemModel.courierSelectionErrorDescription
+            labelErrorShippingDescription.text =
+                shipmentCartItemModel.courierSelectionErrorDescription
             layoutStateHasErrorShipping.visible()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
@@ -130,10 +141,15 @@ class ShippingWidget : ConstraintLayout {
         return binding?.labelSelectedSingleShippingTitle
     }
 
-    fun showLabelSingleShippingEta(text: String) {
+    fun showLabelSingleShippingEta(selectedCourierItemData: CourierItemData) {
         binding?.apply {
             labelSingleShippingEta.visibility = VISIBLE
-            labelSingleShippingEta.text = text
+            labelSingleShippingEta.text =
+                if (selectedCourierItemData.etaErrorCode == 0 && selectedCourierItemData.etaText?.isNotEmpty() == true) {
+                    selectedCourierItemData.etaText
+                } else {
+                    context.getString(R.string.estimasi_tidak_tersedia)
+                }
         }
     }
 
@@ -148,7 +164,10 @@ class ShippingWidget : ConstraintLayout {
         binding?.labelSingleShippingMessage?.gone()
     }
 
-    fun showLayoutFreeShippingCourier(shipmentCartItemModel: ShipmentCartItemModel, currentAddress: RecipientAddressModel) {
+    fun showLayoutFreeShippingCourier(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        currentAddress: RecipientAddressModel
+    ) {
         binding?.apply {
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
@@ -161,11 +180,17 @@ class ShippingWidget : ConstraintLayout {
         }
     }
 
-    fun hideShipperName(isHideShipperName: Boolean) {
+    fun renderFreeShippingCourier(selectedCourierItemData: CourierItemData) {
+        hideShipperName(selectedCourierItemData.isHideShipperName)
+        renderFreeShippingTitle(selectedCourierItemData)
+        renderFreeShippingEta(selectedCourierItemData)
+    }
+
+    private fun hideShipperName(isHideShipperName: Boolean) {
         binding?.labelFreeShippingCourierName?.visibility = if (isHideShipperName) GONE else VISIBLE
     }
 
-    fun renderFreeShippingTitle(selectedCourierItemData: CourierItemData) {
+    private fun renderFreeShippingTitle(selectedCourierItemData: CourierItemData) {
         binding?.apply {
             // Change duration to promo title after promo is applied
             val htmlLinkHelper = HtmlLinkHelper(
@@ -176,14 +201,28 @@ class ShippingWidget : ConstraintLayout {
         }
     }
 
-    fun showLabelFreeShippingEtaText(text: String) {
+    private fun renderFreeShippingEta(selectedCourierItemData: CourierItemData) {
+        if (selectedCourierItemData.etaErrorCode == 0) {
+            val labelFreeShippingEtaText =
+                if (selectedCourierItemData.etaText != null && selectedCourierItemData.etaText?.isNotEmpty() == true) {
+                    selectedCourierItemData.etaText
+                } else {
+                    context.getString(R.string.estimasi_tidak_tersedia)
+                }
+            showLabelFreeShippingEtaText(labelFreeShippingEtaText ?: "")
+        } else {
+            hideLabelFreeShippingEtaText()
+        }
+    }
+
+    private fun showLabelFreeShippingEtaText(text: String) {
         binding?.apply {
             labelFreeShippingEta.visible()
             labelFreeShippingEta.text = text
         }
     }
 
-    fun hideLabelFreeShippingEtaText() {
+    private fun hideLabelFreeShippingEtaText() {
         binding?.labelFreeShippingEta?.gone()
     }
 
@@ -234,14 +273,48 @@ class ShippingWidget : ConstraintLayout {
         }
     }
 
-    fun setLabelSelectedShippingCourier(courierName: String?, labelPriceOrDuartion: String?) {
+    fun setLabelSelectedShippingCourier(selectedCourierItemData: CourierItemData) {
+        binding?.apply {
+            val courierName = "${selectedCourierItemData.name} (${
+                removeDecimalSuffix(
+                    convertPriceValueToIdrFormat(
+                        selectedCourierItemData.shipperPrice,
+                        false
+                    )
+                )
+            })"
+
+            if (selectedCourierItemData.etaErrorCode == 0 && selectedCourierItemData.etaText?.isNotEmpty() == true) {
+                renderLabelAndCourierName(
+                    courierName = courierName,
+                    labelPriceOrDuration = selectedCourierItemData.etaText ?: ""
+                )
+            } else if (selectedCourierItemData.etaErrorCode == 0 && selectedCourierItemData.etaText.isNullOrEmpty()) {
+                renderLabelAndCourierName(
+                    courierName = courierName,
+                    labelPriceOrDuration = context.getString(R.string.estimasi_tidak_tersedia)
+                )
+            } else {
+                renderLabelAndCourierName(
+                    courierName = selectedCourierItemData.name ?: "",
+                    labelPriceOrDuration = removeDecimalSuffix(
+                        convertPriceValueToIdrFormat(
+                            selectedCourierItemData.shipperPrice, false
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    private fun renderLabelAndCourierName(courierName: String, labelPriceOrDuration: String) {
         binding?.apply {
             TextAndContentDescriptionUtil.setTextAndContentDescription(
                 labelSelectedShippingCourier,
-                courierName ?: "",
+                courierName,
                 context.getString(R.string.content_desc_label_selected_shipping_courier)
             )
-            labelSelectedShippingPriceOrDuration.text = labelPriceOrDuartion
+            labelSelectedShippingPriceOrDuration.text = labelPriceOrDuration
         }
     }
 
@@ -330,7 +403,14 @@ class ShippingWidget : ConstraintLayout {
             }
             labelFreeShippingCourierName.gone()
             if (selectedCourierItemData.estimatedTimeDelivery != null) {
-                val titleText = "${selectedCourierItemData.estimatedTimeDelivery} (${removeDecimalSuffix(convertPriceValueToIdrFormat(selectedCourierItemData.shipperPrice, false))})"
+                val titleText = "${selectedCourierItemData.estimatedTimeDelivery} (${
+                    removeDecimalSuffix(
+                        convertPriceValueToIdrFormat(
+                            selectedCourierItemData.shipperPrice,
+                            false
+                        )
+                    )
+                })"
                 val htmlLinkHelper = HtmlLinkHelper(labelSelectedFreeShipping.context, titleText)
                 labelSelectedFreeShipping.text = htmlLinkHelper.spannedString
                 labelSelectedFreeShipping.setWeight(BOLD)
@@ -395,7 +475,8 @@ class ShippingWidget : ConstraintLayout {
             labelSelectedSingleShippingTitle.setText(R.string.checkout_label_set_pinpoint_title)
             labelSingleShippingEta.gone()
             context?.apply {
-                val pinpointErrorMessage = getString(R.string.checkout_label_set_pinpoint_description) + " "
+                val pinpointErrorMessage =
+                    getString(R.string.checkout_label_set_pinpoint_description) + " "
                 val pinpointErrorAction = getString(R.string.checkout_label_set_pinpoint_action)
                 val spannableString = SpannableString(pinpointErrorMessage + pinpointErrorAction)
                 spannableString.setSpan(
