@@ -195,4 +195,9 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
         super.attachBaseContext(newBase)
         SplitCompat.installActivity(this)
     }
+
+    override fun onStop() {
+        super.onStop()
+        NotificationSettingsUtils(applicationContext).checkNotificationPermission()
+    }
 }

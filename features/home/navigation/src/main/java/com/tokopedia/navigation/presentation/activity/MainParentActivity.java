@@ -281,7 +281,6 @@ public class MainParentActivity extends BaseActivity implements
 
         super.onCreate(savedInstanceState);
         initInjector();
-        sendNotificationPermissionData();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -577,11 +576,6 @@ public class MainParentActivity extends BaseActivity implements
                     getString(com.tokopedia.home.R.string.general_label_ok), (v) -> {
                     });
         }
-    }
-
-     private void sendNotificationPermissionData() {
-        new NotificationSettingsUtils(getApplicationContext())
-                .checkNotificationPermission();
     }
 
     private void setupStatusBar() {

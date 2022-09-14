@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.NotificationSettingsGtmEvents
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 
 class NotificationSettingsUtils(private val context: Context) {
@@ -17,7 +18,7 @@ class NotificationSettingsUtils(private val context: Context) {
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     private val postNotificationPermission = "android.permission.POST_NOTIFICATIONS"
-    private val userSession = UserSession(context)
+    private val userSession: UserSessionInterface = UserSession(context)
 
     fun checkNotificationsModeForSpecificChannel(channel: String?): NotificationMode {
         return if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {

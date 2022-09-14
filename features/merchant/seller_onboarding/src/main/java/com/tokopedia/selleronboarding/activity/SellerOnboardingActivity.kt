@@ -267,4 +267,9 @@ class SellerOnboardingActivity : BaseActivity() {
     private fun getPositionViewPager(): Int {
         return binding?.sobViewPager?.currentItem.orZero() + ADDITIONAL_INDEX
     }
+
+    override fun onStop() {
+        super.onStop()
+        NotificationSettingsUtils(applicationContext).checkNotificationPermission()
+    }
 }

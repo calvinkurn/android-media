@@ -145,7 +145,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         observeIsRoleEligible()
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
-        sendNotificationPermissionData()
     }
 
     override fun getComponent(): HomeDashboardComponent {
@@ -269,11 +268,6 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
-    }
-
-    private fun sendNotificationPermissionData() {
-        NotificationSettingsUtils(applicationContext)
-            .checkNotificationPermission()
     }
 
     fun attachSellerHomeFragmentChangeCallback(callback: FragmentChangeCallback) {

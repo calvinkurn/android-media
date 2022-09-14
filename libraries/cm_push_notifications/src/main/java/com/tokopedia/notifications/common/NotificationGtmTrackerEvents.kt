@@ -7,36 +7,37 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 
 class NotificationSettingsGtmEvents constructor(
-    private val userSession: UserSession
+    private val userSession: UserSessionInterface
 ) {
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
     fun sendPromptImpressionEvent(context: Context) {
-        createMap(GtmTrackerEvents.VALUE_ACTION_IMPRESSION,
+        createMapAndSendEvent(GtmTrackerEvents.VALUE_ACTION_IMPRESSION,
             GtmTrackerEvents.VALUE_TRACKER_ID_IMPRESSION, context)
     }
 
     fun sendActionNotAllowEvent(context: Context) {
-        createMap(GtmTrackerEvents.VALUE_ACTION_NOT_ALLOW,
+        createMapAndSendEvent(GtmTrackerEvents.VALUE_ACTION_NOT_ALLOW,
             GtmTrackerEvents.VALUE_TRACKER_ID_NOT_ALLOW, context)
     }
 
     fun sendActionAllowEvent(context: Context) {
-        createMap(GtmTrackerEvents.VALUE_ACTION_ALLOW,
+        createMapAndSendEvent(GtmTrackerEvents.VALUE_ACTION_ALLOW,
             GtmTrackerEvents.VALUE_TRACKER_ID_ALLOW, context)
     }
 
-    private fun createMap(eventAction: String, trackerId: String, context: Context) {
+    private fun createMapAndSendEvent(eventAction: String, trackerId: String, context: Context) {
         val userId = if (userSession.userId.isEmpty() || userSession.userId.isBlank()) {
             "0"
         } else {
             userSession.userId
         }
-        val label = "$userId - ${userSession.deviceId} - ${IrisSession(context).getSessionId()}"
+        val label = "$userId - ${userSession.adsId} - ${IrisSession(context).getSessionId()}"
         val map = TrackAppUtils.gtmData(
             GtmTrackerEvents.VALUE_EVENT,
             GtmTrackerEvents.VALUE_CATEGORY,
@@ -49,5 +50,4 @@ class NotificationSettingsGtmEvents constructor(
         map[GtmTrackerEvents.KEY_USER_ID] = userId
         analyticTracker.sendGeneralEvent(map)
     }
-
 }
