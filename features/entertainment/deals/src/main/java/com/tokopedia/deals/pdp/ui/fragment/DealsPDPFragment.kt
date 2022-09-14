@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -51,7 +52,6 @@ import com.tokopedia.deals.pdp.ui.callback.DealsPDPCallbacks
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPViewModel
 import com.tokopedia.deals.pdp.widget.WidgetDealsPDPCarousel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -95,7 +95,8 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private var progressBar: LoaderUnify? = null
     private var secondaryBarLayout: FrameLayout? = null
     private var appBarLayout: AppBarLayout? = null
-    private var toolbar: HeaderUnify? = null
+    private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
+    private var toolbar: Toolbar? = null
     private var menuPDP: Menu? = null
     private var clHeader: ConstraintLayout? = null
     private var imageCarousel: WidgetDealsPDPCarousel? = null
@@ -174,6 +175,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
             progressBar = binding?.progressBar
             secondaryBarLayout = binding?.secondaryLayout
             appBarLayout = binding?.appBarLayout
+            collapsingToolbarLayout = binding?.collapsingToolbar
             toolbar = binding?.toolbar
             tgDealsDetail = binding?.subView?.tgDealDetails
             clHeader = binding?.clHeader
@@ -205,6 +207,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
             tgRecommendation = binding?.subView?.tgRecommendedDeals
             rvRecommendation = binding?.subView?.recyclerView
             globalError = binding?.globalError
+            updateCollapsingToolbar()
         }
     }
 
@@ -386,7 +389,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
         trackPDP(data)
         showShareButton()
         showPDPOptionsMenu(data.displayName)
-        showHeader()
+        showHeader(data.displayName)
         showImageCarousel(data)
         showContent(data)
         showBrand(data)
@@ -403,8 +406,9 @@ class DealsPDPFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun showHeader() {
+    private fun showHeader(displayName: String) {
         clHeader?.show()
+        collapsingToolbarLayout?.title = displayName
     }
 
     private fun showContent(data: ProductDetailData) {
@@ -621,54 +625,59 @@ class DealsPDPFragment: BaseDaggerFragment() {
         imageCarousel?.buildView()
     }
 
-    private fun showPDPOptionsMenu(displayName: String) {
-        appBarLayout?.let { mainAppBarLayout ->
-            setHasOptionsMenu(true)
-            setToolbar()
-            mainAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-                context?.let { context ->
-                    val menuSize = toolbar?.menu?.size() ?: Int.ZERO
-                    if(menuSize > Int.ZERO) {
-                        var colorInt = Int.ZERO
-                        val appVerticalOffset = Math.abs(verticalOffset)
-                        val difference =
-                            mainAppBarLayout.totalScrollRange - (toolbar?.height ?: Int.ZERO)
-                        if (appVerticalOffset >= difference) {
-                            if (displayName.isNotEmpty()) {
-                                toolbar?.headerTitle = displayName
-                                toolbar?.transparentMode = false
-                            }
-                            colorInt = ContextCompat.getColor(
-                                context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N400
-                            )
-                        } else {
-                            toolbar?.headerTitle = ""
-                            toolbar?.transparentMode = true
-                            colorInt = ContextCompat.getColor(
-                                context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N0
-                            )
-                        }
-
-                        toolbar?.let { toolbar ->
-                            setDrawableColorFilter(toolbar.navigationIcon, colorInt)
-                            setDrawableColorFilter(toolbar.menu.getItem(Int.ZERO)?.icon, colorInt)
-                        }
-                    }
-                }
-            })
+    private fun updateCollapsingToolbar() {
+        context?.let {
+            collapsingToolbarLayout?.setCollapsedTitleTypeface(Typography.getFontType(it, true, Typography.HEADING_3))
+            collapsingToolbarLayout?.setExpandedTitleColor(it.resources.getColor(android.R.color.transparent))
+            collapsingToolbarLayout?.title = ""
         }
     }
 
-    private fun setToolbar() {
-        toolbar?.let { toolbar ->
-            (activity as DealsPDPActivity).setSupportActionBar(toolbar)
-            (activity as DealsPDPActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            (activity as DealsPDPActivity).supportActionBar?.title = ""
-            context?.let {
-               toolbar.navigationIcon = ContextCompat.getDrawable(it, com.tokopedia.abstraction.R.drawable.ic_action_back)
+    private fun showPDPOptionsMenu(displayName: String) {
+        appBarLayout?.let { mainAppBarLayout ->
+            setHasOptionsMenu(true)
+            toolbar?.let { toolbar ->
+                (activity as DealsPDPActivity).setSupportActionBar(toolbar)
+                (activity as DealsPDPActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                (activity as DealsPDPActivity).supportActionBar?.title = ""
+                context?.let {
+                    toolbar.navigationIcon = ContextCompat.getDrawable(it, com.tokopedia.abstraction.R.drawable.ic_action_back)
+                }
             }
+            mainAppBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+                override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+                    context?.let { context ->
+                        val menuSize = toolbar?.menu?.size() ?: Int.ZERO
+                        if(menuSize > Int.ZERO) {
+                            var colorInt = Int.ZERO
+                            var headerTitle = ""
+                            val appVerticalOffset = Math.abs(verticalOffset)
+                            val difference = mainAppBarLayout.totalScrollRange - (toolbar?.height ?: Int.ZERO)
+                            if (appVerticalOffset >= difference) {
+                                if (displayName.isNotEmpty()) {
+                                    headerTitle = displayName
+                                }
+                                colorInt = ContextCompat.getColor(
+                                    context,
+                                    com.tokopedia.unifyprinciples.R.color.Unify_N400
+                                )
+                            } else {
+                                headerTitle = ""
+                                colorInt = ContextCompat.getColor(
+                                    context,
+                                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                                )
+                            }
+
+                            toolbar?.let { toolbar ->
+                                collapsingToolbarLayout?.title = headerTitle
+                                setDrawableColorFilter(toolbar.navigationIcon, colorInt)
+                                setDrawableColorFilter(toolbar.menu.getItem(Int.ZERO)?.icon, colorInt)
+                            }
+                        }
+                   }
+                }
+            })
         }
     }
 
