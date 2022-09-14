@@ -37,7 +37,7 @@ class ProductSheetSectionViewHolder(
         binding.tvHeaderTitle.text = item.section.config.title
 
         when (item.section.config.reminder) {
-            is PlayUpcomingBellStatus.On -> {
+            PlayUpcomingBellStatus.On -> {
                 binding.btnSectionReminder.show()
                 binding.btnSectionReminder.setImage(
                     newIconId = IconUnify.BELL_FILLED,
@@ -45,7 +45,7 @@ class ProductSheetSectionViewHolder(
                     newLightEnable = bellColor,
                 )
             }
-            is PlayUpcomingBellStatus.Off ->{
+            PlayUpcomingBellStatus.Off ->{
                 binding.btnSectionReminder.show()
                 binding.btnSectionReminder.setImage(
                     newIconId = IconUnify.BELL,

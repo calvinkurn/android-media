@@ -655,6 +655,24 @@ class PlayBottomSheetFragment @Inject constructor(
                                 )
                             }
                         }
+                        is ChangeCampaignReminderSuccess -> {
+                            doShowToaster(
+                                bottomSheetType = BottomInsetsType.ProductSheet,
+                                toasterType = Toaster.TYPE_NORMAL,
+                                message = event.message.ifBlank {
+                                    getString(R.string.play_product_upcoming_reminder_success)
+                                },
+                            )
+                        }
+                        is ChangeCampaignReminderFailed -> {
+                            doShowToaster(
+                                bottomSheetType = BottomInsetsType.ProductSheet,
+                                toasterType = Toaster.TYPE_ERROR,
+                                message = event.error.localizedMessage.ifBlank {
+                                    getString(R.string.play_product_upcoming_reminder_error)
+                                },
+                            )
+                        }
                         else -> {}
                     }
                 }
@@ -672,6 +690,7 @@ class PlayBottomSheetFragment @Inject constructor(
         view: ProductSheetViewComponent,
         productSectionUiModel: ProductSectionUiModel.Section
     ) {
+        newAnalytic.clickUpcomingReminder(productSectionUiModel, playViewModel.channelId, playViewModel.channelType)
         playViewModel.submitAction(SendUpcomingReminder(productSectionUiModel))
     }
 

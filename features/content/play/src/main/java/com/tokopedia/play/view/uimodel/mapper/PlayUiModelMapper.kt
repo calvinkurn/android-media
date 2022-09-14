@@ -42,7 +42,7 @@ class PlayUiModelMapper @Inject constructor(
     private val cartMapper: PlayCartMapper,
 ) {
 
-    fun mapProductSection(input: List<Section>): List<ProductSectionUiModel> {
+    fun mapProductSection(input: List<Section>): List<ProductSectionUiModel.Section> {
         return input.map(productTagMapper::mapSection)
     }
 

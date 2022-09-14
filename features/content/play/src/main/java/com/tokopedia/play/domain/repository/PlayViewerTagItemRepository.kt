@@ -28,7 +28,15 @@ interface PlayViewerTagItemRepository {
         price: Double,
     ): String
 
-    suspend fun checkUpcomingCampaign(campaignId: Long): Boolean
+    suspend fun checkUpcomingCampaign(campaignId: String): Boolean
 
-    suspend fun subscribeUpcomingCampaign(campaignId: Long, reminderType: PlayUpcomingBellStatus): Pair<Boolean, String>
+    suspend fun subscribeUpcomingCampaign(
+        campaignId: String,
+        shouldRemind: Boolean,
+    ): CampaignReminder
+
+    data class CampaignReminder(
+        val isReminded: Boolean,
+        val message: String,
+    )
 }

@@ -34,10 +34,10 @@ class PlayProductTagUiMapper @Inject constructor() {
             gradients = input.background.gradientList ?: emptyList(),
             imageUrl = input.background.imageUrl
         ),
-        reminder = mapReminder(hasReminder = input.id.toLongOrZero() != 0L && (ProductSectionType.getSectionValue(sectionType = input.sectionType) == ProductSectionType.Upcoming), campaignId = input.id.toLongOrZero())
+        reminder = mapReminder(hasReminder = input.id.toLongOrZero() != 0L && (ProductSectionType.getSectionValue(sectionType = input.sectionType) == ProductSectionType.Upcoming))
     )
 
-    private fun mapReminder(hasReminder: Boolean, campaignId: Long) : PlayUpcomingBellStatus = if(hasReminder) PlayUpcomingBellStatus.Off(campaignId) else PlayUpcomingBellStatus.Unknown
+    private fun mapReminder(hasReminder: Boolean) : PlayUpcomingBellStatus = if(hasReminder) PlayUpcomingBellStatus.Off else PlayUpcomingBellStatus.Unknown
 
     private fun mapProduct(
         input: Product,
