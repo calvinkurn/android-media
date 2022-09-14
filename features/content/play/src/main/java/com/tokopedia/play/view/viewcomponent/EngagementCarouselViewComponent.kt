@@ -64,8 +64,11 @@ class EngagementCarouselViewComponent(
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                indicator.setCurrentIndicator(linearLayoutManager.findFirstCompletelyVisibleItemPosition())
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                val view = snapHelper.findSnapView(linearLayoutManager) ?: return
+                val position = linearLayoutManager.getPosition(view)
+                indicator.setCurrentIndicator(position)
+            }
         }
     }
 
