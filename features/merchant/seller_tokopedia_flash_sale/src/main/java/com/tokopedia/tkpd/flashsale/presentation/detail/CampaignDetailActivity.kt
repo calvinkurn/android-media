@@ -39,9 +39,5 @@ class CampaignDetailActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.stfs_activity_campaign_detail)
-        val header = findViewById<HeaderUnify>(R.id.header)
-        header.apply {
-            setNavigationOnClickListener { finish() }
-        }
     }
 }

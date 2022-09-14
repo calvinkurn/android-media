@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context="com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailFragment">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:unify_header_title="@string/stfs_campaign_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_shadow="false"/>
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_content"
         android:layout_width="match_parent"
@@ -13,7 +23,7 @@
         app:layout_constraintBottom_toTopOf="@+id/card_bottom_button_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/header">
 
         <LinearLayout
             android:id="@+id/ll_content"
