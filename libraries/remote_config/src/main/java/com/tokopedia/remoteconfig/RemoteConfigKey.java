@@ -295,5 +295,4 @@ public class RemoteConfigKey {
 
     public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
 
-    public static final String ENABLE_OLD_IKLAN_PROMOSI_PAGE = "android_enable_old_iklan_promosi_page";
 }
