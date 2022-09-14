@@ -98,11 +98,11 @@ import com.tokopedia.search.result.product.cpm.BannerAdsListenerDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
+import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListenerDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
-import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
 import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
@@ -448,6 +448,13 @@ class ProductListFragment: BaseDaggerFragment(),
             violationListener = ViolationListenerDelegate(activity),
             videoCarouselListener = videoCarouselListenerDelegate,
             videoCarouselWidgetCoordinator = videoCarouselWidgetCoordinator,
+            inspirationBundleListener = InspirationBundleListenerDelegate(
+                activity,
+                inspirationCarouselTrackingUnification,
+                iris,
+                trackingQueue,
+                this,
+            ),
             networkMonitor = networkMonitor,
             isUsingViewStub = remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB),
         )

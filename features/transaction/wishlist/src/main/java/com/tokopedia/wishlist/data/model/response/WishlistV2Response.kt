@@ -317,15 +317,15 @@ data class WishlistV2Response(
 			data class EmptyState(
 
 					@SerializedName("button")
-					val button: Button = Button(),
+					val button: ButtonEmptyState = ButtonEmptyState(),
 
 					@SerializedName("messages")
-					val messages: List<Any> = emptyList(),
+					val messages: List<MessageEmptyState> = emptyList(),
 
 					@SerializedName("type")
 					val type: String = ""
 			) {
-				data class Button(
+				data class ButtonEmptyState(
 
 						@SerializedName("action")
 						val action: String = "",
@@ -335,6 +335,17 @@ data class WishlistV2Response(
 
 						@SerializedName("url")
 						val url: String = ""
+				)
+
+				data class MessageEmptyState(
+					@SerializedName("title")
+					val title: String = "",
+
+					@SerializedName("description")
+					val desc: String = "",
+
+					@SerializedName("image_url")
+					val imageUrl: String = ""
 				)
 			}
 

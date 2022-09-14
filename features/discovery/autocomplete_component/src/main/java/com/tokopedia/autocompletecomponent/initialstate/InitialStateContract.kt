@@ -93,6 +93,8 @@ interface InitialStateContract {
             type: String,
             pageSource: String
         )
+
+        fun trackEventClickSearchBarEducation(item: BaseItemInitialStateSearch)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -127,5 +129,7 @@ interface InitialStateContract {
         fun onProductLineClicked(item: BaseItemInitialStateSearch)
 
         fun onChipClicked(item: BaseItemInitialStateSearch)
+
+        fun onSearchBarEducationClick(item: BaseItemInitialStateSearch)
     }
 }
