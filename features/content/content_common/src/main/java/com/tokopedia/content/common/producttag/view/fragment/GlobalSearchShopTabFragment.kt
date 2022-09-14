@@ -2,12 +2,15 @@ package com.tokopedia.content.common.producttag.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.bottomsheet.updateScrollingChild
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.databinding.FragmentGlobalSearchShopTabBinding
 import com.tokopedia.content.common.producttag.analytic.coordinator.ShopImpressionCoordinator
@@ -22,9 +25,11 @@ import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAct
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.producttag.view.uimodel.state.GlobalSearchShopUiState
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
+import com.tokopedia.content.common.util.getParentFragmentByInstance
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.collect
@@ -135,6 +140,16 @@ class GlobalSearchShopTabFragment @Inject constructor(
                 impressShop()
             }
         }
+
+        binding.rvGlobalSearchShop.addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                getParentFragmentByInstance<BottomSheetUnify>()
+                    ?.bottomSheet
+                    ?.updateScrollingChild(rv)
+
+                return false
+            }
+        })
 
         binding.rvGlobalSearchShop.addOnScrollListener(scrollListener)
         binding.rvGlobalSearchShop.layoutManager = layoutManager
