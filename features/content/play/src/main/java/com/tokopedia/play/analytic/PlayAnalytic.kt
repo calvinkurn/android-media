@@ -201,14 +201,13 @@ class PlayAnalytic(
                                 }
                         )
                 ),
-                customDimension = if(sectionInfo.config.type != ProductSectionType.Other){
+                customDimension =
                     hashMapOf(
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
                     )
-                } else null
         )
     }
 
