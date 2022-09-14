@@ -34,6 +34,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
+import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingRejectedDelegateAdapter
@@ -163,6 +164,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeCampaignDetail()
         loadCampaignDetailData()
+        setupChooseProductRedirection()
     }
 
     private fun observeCampaignDetail() {
@@ -532,6 +534,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 )
                 else -> setDefaultRegisteredMidSection(flashSale)
             }
+        }
+    }
+
+    private fun setupChooseProductRedirection() {
+        binding?.btnRegister?.setOnClickListener {
+            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId)
+        }
+        upcomingCdpMidBinding?.btnCheckReason?.setOnClickListener {
+            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId)
         }
     }
 
