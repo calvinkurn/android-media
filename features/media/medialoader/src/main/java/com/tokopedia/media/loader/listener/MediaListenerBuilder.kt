@@ -28,6 +28,13 @@ object MediaListenerBuilder {
                 isFirstResource: Boolean
         ): Boolean {
             listener?.onFailed(e)
+
+            val loadTime = (System.currentTimeMillis() - startTime).toString()
+            MediaLoaderTracker.trackCdnDown(
+                context = context.applicationContext,
+                url = properties.data.toString(),
+                loadTime = loadTime
+            )
             return false
         }
 

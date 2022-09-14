@@ -2,11 +2,18 @@ package com.tokopedia.media.loader.tracker
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.media.common.util.NetworkManager
+import com.tokopedia.media.loader.utils.ServerIpAddressLocator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.net.InetAddress
 
 data class MediaLoaderTrackerParam(
     val url: String,
@@ -19,6 +26,7 @@ object MediaLoaderTracker {
 
     private const val CDN_URL = "https://images.tokopedia.net/img/"
     private const val TAG = "MEDIALOADER_ANALYTIC"
+    private const val TAG_CDN_MONITORING = "MEDIALOADER_ANALYTIC"
 
     private const val PAGE_NAME_NOT_FOUND = "None"
 
@@ -67,6 +75,49 @@ object MediaLoaderTracker {
         )
     }
 
+    fun trackCdnDown(
+        context: Context,
+        url: String,
+        loadTime: String = ""
+    ) {
+
+        val pageName = try {
+            context.javaClass.name.split(".").last()
+        } catch (e: Throwable) {
+            PAGE_NAME_NOT_FOUND
+        }
+
+        val data = MediaLoaderTrackerParam(
+            url = url,
+            pageName = pageName,
+            loadTime = loadTime,
+            fileSize = "n/a" // as this is for failed case, then size will not available.
+        )
+
+        if (!data.url.contains(CDN_URL)) return
+
+        val map = data.toMap(context.applicationContext).toMutableMap()
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val ipInfo: String = try {
+                ServerIpAddressLocator.fetchServerInfo(url).hostAddress
+            } catch (exp: Exception) {
+                "not available"
+            }
+
+            map["remote_server_ip"] = ipInfo
+
+            Log.d("Lavekush", "test " + ipInfo)
+
+            ServerLogger.log(
+                priority = priority(),
+                tag = TAG_CDN_MONITORING,
+                message = map
+            )
+        }
+    }
+
+
     private fun MediaLoaderTrackerParam.toMap(context: Context): Map<String, String> {
         val mediaSetting = MediaSettingPreferences(context)
         val mediaSettingIndex = mediaSetting.qualitySettings()
@@ -85,7 +136,7 @@ object MediaLoaderTracker {
     }
 
     private fun getQualitySetting(index: Int): String {
-        return when(index) {
+        return when (index) {
             0 -> "Automatic"
             1 -> "Low"
             2 -> "High"
