@@ -29,27 +29,25 @@ private const val RATING_FORMAT = 20.0
 
 class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDetailListener) : AbstractViewHolder<FeedDetailProductModel>(itemView) {
 
-    private lateinit var discountLayout: LinearLayout
-    private lateinit var productImage: ImageUnify
-    private lateinit var discountLabel: Label
-    private lateinit var productPrice: Typography
-    private lateinit var productName: Typography
-    private lateinit var productTag: Typography
-    private lateinit var rating: Typography
-    private lateinit var soldInfo: Typography
-    private lateinit var freeShipping: ImageView
-    private lateinit var divider: View
-    private lateinit var star: IconUnify
-    private lateinit var menuBtn: IconUnify
-    private lateinit var btnAddToCart: UnifyButton
-    private lateinit var btnAddToWishlist: FrameLayout
-    private lateinit var progressBar: ProgressBarUnify
-    private lateinit var stockProgressBarLayout: View
-    private lateinit var stockText: Typography
+    private var discountLayout: LinearLayout
+    private var productImage: ImageUnify
+    private var discountLabel: Label
+    private var productPrice: Typography
+    private var productName: Typography
+    private var productTag: Typography
+    private var rating: Typography
+    private var soldInfo: Typography
+    private var freeShipping: ImageView
+    private var divider: View
+    private var star: IconUnify
+    private var menuBtn: IconUnify
+    private var btnAddToCart: UnifyButton
+    private var btnAddToWishlist: FrameLayout
+    private var progressBar: ProgressBarUnify
+    private var stockProgressBarLayout: View
+    private var stockText: Typography
 
-
-
-    override fun bind(feedDetailProductModel: FeedDetailProductModel) {
+    init {
         itemView.run {
             productImage = findViewById(R.id.product_image)
             productName = findViewById(R.id.product_name)
@@ -68,7 +66,11 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             soldInfo = findViewById(R.id.soldInfo)
             divider = findViewById(R.id.divider)
             star = findViewById(R.id.star)
+        }
+    }
 
+    override fun bind(feedDetailProductModel: FeedDetailProductModel) {
+        itemView.run {
             productImage.setImageUrl(feedDetailProductModel.imgUrl)
             productName.text = MethodChecker.fromHtml(feedDetailProductModel.text)
 
