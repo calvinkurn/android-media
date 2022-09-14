@@ -89,11 +89,13 @@ class GlobalSearchProductTabFragment @Inject constructor(
         }
     }
 
+    private val bottomSheetContainer by lazy {
+        getParentFragmentByInstance<BottomSheetUnify>()
+    }
+
     private val onRecyclerviewTouchCallback = object : RecyclerView.SimpleOnItemTouchListener() {
         override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-            getParentFragmentByInstance<BottomSheetUnify>()
-                ?.bottomSheet
-                ?.updateScrollingChild(rv)
+            bottomSheetContainer?.bottomSheet?.updateScrollingChild(rv)
 
             return false
         }
