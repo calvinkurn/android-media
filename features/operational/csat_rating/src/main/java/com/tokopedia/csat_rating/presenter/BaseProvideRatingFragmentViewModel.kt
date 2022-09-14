@@ -24,8 +24,11 @@ class BaseProvideRatingFragmentViewModel @Inject constructor(
     private var captionsList = ArrayList<String>()
     private var questionList = ArrayList<String>()
     var emojiState : Int = 0
+    private set
     var screenState = MutableLiveData<ScreenState>()
+    private set
     var reasonList : ArrayList<BadCsatReasonListItem> = arrayListOf()
+    private set
 
     fun setCaption(caption : ArrayList<String>){
         captionsList = caption
@@ -40,31 +43,32 @@ class BaseProvideRatingFragmentViewModel @Inject constructor(
         screenState.value = determineScreenSate(selectedEmoji)
     }
 
-    fun setFilterList(itemsReasonList : ArrayList<BadCsatReasonListItem>){
+    fun setReasonList(itemsReasonList : ArrayList<BadCsatReasonListItem>){
         reasonList = itemsReasonList
     }
 
-    private fun determineScreenSate(emoji: Int): ScreenState? {
-        var screenState: ScreenState? = null
+    private fun determineScreenSate(emoji: Int): ScreenState {
         when (emoji) {
-            NO_EMOJI -> screenState = ZeroScreenState()
+            NO_EMOJI -> return ZeroScreenState()
             FIRST_EMOJI -> {
-                screenState = FirstScreenState(captionsList[FIRST_EMOJI - 1], questionList[FIRST_EMOJI - 1])
+                return FirstScreenState(captionsList[FIRST_EMOJI - 1], questionList[FIRST_EMOJI - 1])
             }
             SECOND_EMOJI -> {
-                screenState = SecondScreenState(captionsList[SECOND_EMOJI - 1], questionList[SECOND_EMOJI - 1])
+                return SecondScreenState(captionsList[SECOND_EMOJI - 1], questionList[SECOND_EMOJI - 1])
             }
             THIRD_EMOJI -> {
-                screenState = ThirdScreenState(captionsList[THIRD_EMOJI - 1], questionList[THIRD_EMOJI - 1])
+                return ThirdScreenState(captionsList[THIRD_EMOJI - 1], questionList[THIRD_EMOJI - 1])
             }
             FOURTH_EMOJI -> {
-                screenState = FourthScreenState(captionsList[FOURTH_EMOJI - 1], questionList[FOURTH_EMOJI - 1])
+                return FourthScreenState(captionsList[FOURTH_EMOJI - 1], questionList[FOURTH_EMOJI - 1])
             }
             FIFTH_EMOJI -> {
-                screenState = FifthScreenState(captionsList[FIFTH_EMOJI - 1], questionList[FIFTH_EMOJI - 1])
+                return FifthScreenState(captionsList[FIFTH_EMOJI - 1], questionList[FIFTH_EMOJI - 1])
+            }
+            else -> {
+                return ZeroScreenState()
             }
         }
-        return screenState
     }
 
 }

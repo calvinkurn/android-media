@@ -107,7 +107,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
         val question = arguments?.getStringArrayList(QUESTION_LIST).orEmpty()
         viewModel?.setQuestion(question as ArrayList<String>)
         val reasonItemList : ArrayList<BadCsatReasonListItem> = arguments?.getParcelableArrayList(PARAM_OPTIONS_CSAT) ?: ArrayList()
-        viewModel?.setFilterList(reasonItemList)
+        viewModel?.setReasonList(reasonItemList)
         val emojiState =  arguments?.getInt(CLICKED_EMOJI) ?: NO_EMOJI
         viewModel?.setSelectedEmoji(emojiState)
 
