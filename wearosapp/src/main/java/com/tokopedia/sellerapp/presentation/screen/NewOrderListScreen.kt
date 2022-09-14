@@ -38,8 +38,6 @@ import com.tokopedia.unifyprinciples.Typography
 @Composable
 fun NewOrderListScreen(
     sharedViewModel: SharedViewModel,
-    messageClient: MessageClient,
-    nodeClient: NodeClient
 ) {
     getNewOrderListData(sharedViewModel)
     CreateScreenScaffold(sharedViewModel)

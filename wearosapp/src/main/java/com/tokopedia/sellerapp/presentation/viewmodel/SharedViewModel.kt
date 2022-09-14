@@ -1,82 +1,67 @@
 package com.tokopedia.sellerapp.presentation.viewmodel
 
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.MessageEvent
-import com.google.android.gms.wearable.NodeClient
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.sellerapp.data.uimodel.OrderListItemUiModel
-import com.tokopedia.sellerapp.domain.GetNewOrderListUseCase
-import com.tokopedia.sellerapp.util.Action
-import com.tokopedia.sellerapp.util.MessageConstant.ACCEPT_BULK_ORDER_PATH
-import com.tokopedia.sellerapp.util.MessageConstant.GET_ORDER_LIST_PATH
+import com.tokopedia.sellerapp.domain.model.OrderModel
+import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
+import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCase
+import com.tokopedia.sellerapp.presentation.model.MenuItem
+import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
-    private val getNewOrderListUseCase: GetNewOrderListUseCase
-) : BaseViewModel(dispatchers.io),
-    MessageClient.OnMessageReceivedListener
-{
-    private val _orderList: MutableStateFlow<UiState<List<String>>> = MutableStateFlow(UiState.Idle())
-    val orderList: StateFlow<UiState<List<String>>>
-        get() = _orderList
+    dispatchers: CoroutineDispatchers,
+    private val newOrderUseCase: NewOrderUseCase,
+    private val readyToDeliverOrderUseCase: ReadyToDeliverOrderUseCase
+) : BaseViewModel(dispatchers.io) {
+
+    companion object {
+        private const val FLOW_STOP_TIMEOUT = 3000L
+        private const val INDEX_NOT_FOUND = -1
+    }
+
+    val homeMenu: StateFlow<List<MenuItem>> = merge(
+        newOrderUseCase.getCount(),
+        readyToDeliverOrderUseCase.getCount()
+    ).map {
+        getUpdatedMenuCounter(it.first, it.second)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = generateInitialMenu()
+    )
+
+    val newOrderList: StateFlow<UiState<List<OrderModel>>> = newOrderUseCase.getOrderList().map {
+        UiState.Success(data = it)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
+
+    val readyToDeliverOrderList: StateFlow<UiState<List<OrderModel>>> = readyToDeliverOrderUseCase.getOrderList().map {
+        UiState.Success(data = it)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
 
     private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
     val action: StateFlow<UiState<Boolean>>
         get() = _action
 
-    private val _newOrderListData: MutableStateFlow<UiState<List<OrderListItemUiModel>>> = MutableStateFlow(UiState.Idle())
-    val newOrderListData: StateFlow<UiState<List<OrderListItemUiModel>>>
-        get() = _newOrderListData
-
-    override fun onMessageReceived(messageEvent: MessageEvent) {
-        when(messageEvent.path) {
-            GET_ORDER_LIST_PATH -> {
-                _orderList.value = UiState.Success(
-                    data = listOf(messageEvent.data.decodeToString())
-                )
-            }
-            ACCEPT_BULK_ORDER_PATH -> {
-                /* nothing */
-            }
-        }
-    }
-
-    private suspend fun sendMessagesToNodes(
-        action: Action,
-        nodeClient: NodeClient,
-        messageClient: MessageClient
-    ) {
-        val nodes = nodeClient.connectedNodes.await()
-        nodes.map { node ->
-            async {
-                val message = action.getPath()
-                messageClient.sendMessage(node.id, message, byteArrayOf()).await()
-            }
-        }.awaitAll()
-    }
-
-    fun sendAction(action: Action, messageClient: MessageClient, nodeClient: NodeClient) {
+    fun sendRequest() {
         launchCatchError(block = {
             _action.value = UiState.Loading()
 
-            sendMessagesToNodes(
-                action = action,
-                messageClient = messageClient,
-                nodeClient = nodeClient
-            )
+            // call usecase method
 
             _action.value = UiState.Success()
         }, onError = { throwable ->
@@ -86,13 +71,12 @@ class SharedViewModel @Inject constructor(
         })
     }
 
-    fun getNewOrderListData() {
-        launchCatchError(dispatchers.io, block = {
-            _newOrderListData.value = UiState.Loading()
-            val newOrderList = getNewOrderListUseCase.execute()
-            _newOrderListData.value = UiState.Success(newOrderList)
-        }) {
-            _newOrderListData.value = UiState.Fail(throwable = it)
+    private fun getUpdatedMenuCounter(title: String, count: Int) : List<MenuItem> {
+        return homeMenu.value.toMutableList().apply {
+            val index = indexOfFirst { it.title == title }
+            if(index != INDEX_NOT_FOUND){
+                this[index] = this[index].copy(unreadCount = count)
+            }
         }
     }
 }
