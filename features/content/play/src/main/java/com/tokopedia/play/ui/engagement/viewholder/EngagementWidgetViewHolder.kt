@@ -25,7 +25,7 @@ class EngagementWidgetViewHolder(
     private fun getPromoDescription(item: EngagementUiModel.Promo): String {
         return when {
             item.info.voucherStock <= 20 -> {
-                getString(playR.string.play_voucher_widget_low_quantity, item.info.voucherStock - 1)
+                getString(playR.string.play_voucher_widget_low_quantity, item.info.voucherStock,"!")
             }
             item.size == 0 -> {
                 getString(playR.string.play_voucher_widget_single)
