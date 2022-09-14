@@ -9,7 +9,7 @@
     android:background="@drawable/bg_play_bottom_sheet"
     android:clickable="true"
     android:focusable="true"
-    android:paddingTop="@dimen/spacing_lvl4"
+    android:padding="@dimen/unify_space_8"
     app:behavior_hideable="true"
     app:behavior_skipCollapsed="true"
     app:layout_behavior="com.tokopedia.play_common.util.behavior.LockableBottomSheetBehavior"
