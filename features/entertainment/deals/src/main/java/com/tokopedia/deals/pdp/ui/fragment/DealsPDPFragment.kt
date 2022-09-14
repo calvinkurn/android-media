@@ -268,7 +268,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                             setRating("0", Int.ZERO, false, isHideImageRating = true)
                         } else {
                             it.data.data?.first()?.let {
-                                setRating(productId.toString(), it.totalLikes, it.isLiked)
+                                setRating(it.productId.toString(), it.totalLikes, it.isLiked)
                             }
                         }
 
@@ -287,8 +287,8 @@ class DealsPDPFragment: BaseDaggerFragment() {
             viewModel.flowUpdateRating.collect {
                 when (it) {
                     is Success -> {
-                        it.data.data.apply {
-                            setRating(productId.toString(), getTotalLikes(), isLiked)
+                        it.data.data.let {
+                            setRating(it.productId.toString(), getTotalLikes(), it.isLiked)
                         }
                     }
 
