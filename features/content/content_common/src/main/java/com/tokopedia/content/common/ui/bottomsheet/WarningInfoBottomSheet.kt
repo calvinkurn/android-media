@@ -22,6 +22,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
     private val binding: BottomsheetWarningInfoBinding
         get() = _binding!!
 
+    private var mListener: Listener? = null
     private lateinit var mWarningType: WarningType
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +38,11 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        mListener = null
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
     }
 
     private fun setupBottomSheet() {
@@ -44,6 +50,14 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
             LayoutInflater.from(requireContext())
         )
         setChild(binding.root)
+
+        isDragable = false
+        isSkipCollapseState = true
+        isHideable = false
+        isCancelable = false
+        overlayClickDismiss = false
+
+        setCloseClickListener { mListener?.clickCloseIcon() }
     }
 
     private fun setupView() = with(binding) {
@@ -108,5 +122,9 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
 
     enum class WarningType {
         BOTH_BANNED, BOTH_LIVE, BANNED, LIVE
+    }
+
+    interface Listener {
+        fun clickCloseIcon()
     }
 }

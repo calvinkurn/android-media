@@ -269,7 +269,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                 })
             }
-            is WarningInfoBottomSheet -> { childFragment.setData(parentViewModel.warningInfoType) }
+            is WarningInfoBottomSheet -> {
+                childFragment.setData(parentViewModel.warningInfoType)
+                childFragment.setListener(object : WarningInfoBottomSheet.Listener {
+                    override fun clickCloseIcon() {
+                        activity?.finish()
+                    }
+                })
+            }
         }
     }
 
