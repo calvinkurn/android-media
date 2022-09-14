@@ -14,7 +14,7 @@ import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
-import com.tokopedia.otp.verification.domain.pojo.ParamGetModeList168
+import com.tokopedia.otp.verification.domain.pojo.GetVerificationMethodPhoneRegisterMandatoryParam
 import com.tokopedia.otp.verification.domain.pojo.ParamOtpRequest168
 import com.tokopedia.otp.verification.domain.pojo.ParamOtpValidate168
 import com.tokopedia.otp.verification.domain.usecase.*
@@ -39,15 +39,15 @@ open class VerificationViewModel @Inject constructor(
     private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
     private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
     private val getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase,
-    private val getModeList168UseCase: GetModeList168UseCase,
+    private val getVerificationMethodPhoneRegisterMandatoryUseCase: GetVerificationMethodPhoneRegisterMandatoryUseCase,
     private val checkPinHashV2UseCase: CheckPinHashV2UseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val otpValidateUseCase: OtpValidateUseCase,
     private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
-    private val otpValidate168UseCase: OtpValidate168UseCase,
+    private val otpValidatePhoneRegisterMandatoryUseCase: OtpValidatePhoneRegisterMandatoryUseCase,
     private val sendOtpUseCase: SendOtpUseCase,
     private val sendOtpUseCase2FA: SendOtp2FAUseCase,
-    private val sendOtpRequest168UseCase: SendOtpRequest168UseCase,
+    private val sendOtpPhoneRegisterMandatoryUseCase: SendOtpPhoneRegisterMandatoryUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: RemoteConfig,
     dispatcherProvider: CoroutineDispatchers
@@ -68,7 +68,7 @@ open class VerificationViewModel @Inject constructor(
     var done = false
     var isLoginRegisterFlow = false
 
-    fun getVerificationMethod168(
+    fun getVerificationMethodPhoneRegisterMandatory(
         otpType: String,
         validateToken: String,
         email: String,
@@ -76,8 +76,8 @@ open class VerificationViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             TkpdIdlingResource.increment()
-            val response = getModeList168UseCase(
-                ParamGetModeList168(
+            val response = getVerificationMethodPhoneRegisterMandatoryUseCase(
+                GetVerificationMethodPhoneRegisterMandatoryParam(
                     otpType = otpType,
                     msisdn = msisdn,
                     email = email,
@@ -218,7 +218,7 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
-    fun sendOtp168(
+    fun sendOtpPhoneRegisterMandatory(
         otpType: String,
         mode: String,
         msisdn: String,
@@ -228,7 +228,7 @@ open class VerificationViewModel @Inject constructor(
     ) {
         launchCatchError(coroutineContext, {
             TkpdIdlingResource.increment()
-            val response = sendOtpRequest168UseCase(
+            val response = sendOtpPhoneRegisterMandatoryUseCase(
                 ParamOtpRequest168(
                     otpType = otpType,
                     mode = mode,
@@ -293,7 +293,7 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
-    fun otpValidate168(
+    fun otpValidatePhoneRegisterMandatory(
         code: String,
         otpType: String,
         mode: String,
@@ -311,7 +311,7 @@ open class VerificationViewModel @Inject constructor(
                 validateToken
             )
 
-            val data = otpValidate168UseCase(params).data
+            val data = otpValidatePhoneRegisterMandatoryUseCase(params).data
 
             when {
                 data.success -> {

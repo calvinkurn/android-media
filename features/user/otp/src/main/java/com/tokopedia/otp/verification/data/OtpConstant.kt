@@ -59,6 +59,6 @@ object OtpConstant {
         * this OTP type used when user register with email, and need OTP phone
         * this OTP type was implemented in Redefine Register Email
         * */
-        const val OTP_TYPE_168 = 168
+        const val PHONE_REGISTER_MANDATORY = 168
     }
 }

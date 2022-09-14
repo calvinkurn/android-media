@@ -8,7 +8,7 @@ import com.tokopedia.otp.verification.domain.data.OtpValidatePojo
 import com.tokopedia.otp.verification.domain.pojo.ParamOtpValidate168
 import javax.inject.Inject
 
-class OtpValidate168UseCase @Inject constructor(
+class OtpValidatePhoneRegisterMandatoryUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<ParamOtpValidate168, OtpValidatePojo>(dispatcher.io)  {

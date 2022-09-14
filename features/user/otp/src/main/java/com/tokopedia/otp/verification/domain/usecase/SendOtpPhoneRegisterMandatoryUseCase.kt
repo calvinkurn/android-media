@@ -5,11 +5,10 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
-import com.tokopedia.otp.verification.domain.pojo.ParamGetModeList168
 import com.tokopedia.otp.verification.domain.pojo.ParamOtpRequest168
 import javax.inject.Inject
 
-class SendOtpRequest168UseCase @Inject constructor(
+class SendOtpPhoneRegisterMandatoryUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<ParamOtpRequest168, OtpRequestPojo>(dispatcher.io) {
