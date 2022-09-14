@@ -16,7 +16,7 @@ class LongSafeTypeAdapter: TypeAdapter<Long?>() {
         return try {
             numberStr.toLong()
         } catch (e: NumberFormatException) {
-            0 // in case of invalid long, it will return zero
+            0 // in case of invalid int, it will return zero
         }
     }
 }

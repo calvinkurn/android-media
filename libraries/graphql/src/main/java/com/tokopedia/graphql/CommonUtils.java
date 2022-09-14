@@ -88,12 +88,6 @@ public class CommonUtils {
 
     public static Gson getGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
-
-        /* Adding type safe adapter for handling
-          invalid number in place of Number data type
-          e.g Int, Float, Double & long
-          Added two to support primitive data types as well.
-         */
         gsonBuilder.registerTypeAdapter(int.class, new IntSafeTypeAdapter());
         gsonBuilder.registerTypeAdapter(Integer.class, new IntSafeTypeAdapter());
         gsonBuilder.registerTypeAdapter(long.class, new IntSafeTypeAdapter());

@@ -16,7 +16,7 @@ class DoubleSafeTypeAdapter: TypeAdapter<Double?>() {
         return try {
             numberStr.toDouble()
         } catch (e: NumberFormatException) {
-            0.0 // in case of invalid double, it will return zero
+            0.0 // in case of invalid int, it will return zero
         }
     }
 }

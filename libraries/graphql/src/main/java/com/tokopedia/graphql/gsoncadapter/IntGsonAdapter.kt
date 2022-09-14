@@ -16,7 +16,7 @@ class IntSafeTypeAdapter: TypeAdapter<Int?>() {
         return try {
             numberStr.toInt()
         } catch (e: NumberFormatException) {
-            0 // in case of invalid int, it will return zero
+            0
         }
     }
 }

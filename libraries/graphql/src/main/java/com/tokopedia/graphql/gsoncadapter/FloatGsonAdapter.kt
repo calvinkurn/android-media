@@ -16,7 +16,7 @@ class FloatSafeTypeAdapter: TypeAdapter<Float?>() {
         return try {
             numberStr.toFloat()
         } catch (e: NumberFormatException) {
-            0f // in case of invalid float, it will return zero
+            0f // in case of invalid int, it will return zero
         }
     }
 }
