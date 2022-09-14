@@ -3,7 +3,6 @@ package com.tokopedia.graphql;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -11,10 +10,6 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.bind.JsonTreeReader;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.gsoncadapter.DoubleSafeTypeAdapter;
-import com.tokopedia.graphql.gsoncadapter.FloatSafeTypeAdapter;
-import com.tokopedia.graphql.gsoncadapter.IntSafeTypeAdapter;
-import com.tokopedia.graphql.gsoncadapter.LongSafeTypeAdapter;
 import com.tokopedia.graphql.util.CacheHelper;
 
 import java.io.StringReader;
@@ -27,9 +22,8 @@ public class CommonUtils {
         if (json == null) {
             return null;
         }
-
         StringReader reader = new StringReader(json);
-        T target = (T) getGson().fromJson(reader, typeOfT);
+        T target = (T) new Gson().fromJson(reader, typeOfT);
         return target;
     }
 
@@ -37,7 +31,7 @@ public class CommonUtils {
         if (json == null) {
             return null;
         }
-        return (T) getGson().fromJson(new JsonTreeReader(json), typeOfT);
+        return (T) new Gson().fromJson(new JsonTreeReader(json), typeOfT);
     }
 
     public static <T> T fromJson(JsonElement json, Class<T> classOfT) throws JsonSyntaxException {
@@ -45,12 +39,12 @@ public class CommonUtils {
             return null;
         }
 
-        T t = (T) getGson().fromJson(new JsonTreeReader(json), classOfT);
+        T t = (T) new Gson().fromJson(new JsonTreeReader(json), classOfT);
         return t;
     }
 
     public static String toJson(Object src) {
-        Gson gson = getGson();
+        Gson gson = new Gson();
         if (src == null) {
             return gson.toJson(JsonNull.INSTANCE);
         }
@@ -62,9 +56,8 @@ public class CommonUtils {
         if (response.errorBody() != null) {
             try {
                 String rawError = response.errorBody().string();
-                return getGson().fromJson(rawError, JsonArray.class);
-            } catch (Exception ignored) {
-            }
+                return new Gson().fromJson(rawError, JsonArray.class);
+            } catch (Exception ignored) {}
         }
         return new JsonArray();
     }
@@ -85,17 +78,5 @@ public class CommonUtils {
         fullOperationName.append(operationName);
         return fullOperationName.toString();
     }
-
-    public static Gson getGson() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(int.class, new IntSafeTypeAdapter());
-        gsonBuilder.registerTypeAdapter(Integer.class, new IntSafeTypeAdapter());
-        gsonBuilder.registerTypeAdapter(long.class, new IntSafeTypeAdapter());
-        gsonBuilder.registerTypeAdapter(Long.class, new LongSafeTypeAdapter());
-        gsonBuilder.registerTypeAdapter(double.class, new DoubleSafeTypeAdapter());
-        gsonBuilder.registerTypeAdapter(Double.class, new DoubleSafeTypeAdapter());
-        gsonBuilder.registerTypeAdapter(float.class, new FloatSafeTypeAdapter());
-        gsonBuilder.registerTypeAdapter(Float.class, new FloatSafeTypeAdapter());
-        return gsonBuilder.create();
-    }
 }
+
