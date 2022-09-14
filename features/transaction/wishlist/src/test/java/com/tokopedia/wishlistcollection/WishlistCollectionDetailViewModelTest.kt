@@ -343,7 +343,7 @@ class WishlistCollectionDetailViewModelTest {
         } returns recommendationWidget
 
         //when
-        wishlistCollectionDetailViewModel.loadRecommendation(0, false)
+        wishlistCollectionDetailViewModel.loadRecommendation(0)
 
         //then
         assert(wishlistCollectionDetailViewModel.collectionData.value is Success<List<WishlistV2TypeLayoutData>>)
@@ -359,7 +359,7 @@ class WishlistCollectionDetailViewModelTest {
         } throws Exception()
 
         //when
-        wishlistCollectionDetailViewModel.loadRecommendation(0, true)
+        wishlistCollectionDetailViewModel.loadRecommendation(0)
 
         //then
         assertSoftly {

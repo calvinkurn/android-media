@@ -118,7 +118,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var searchQuery = ""
     private var activityWishlistV2 = ""
     private var isBulkDeleteShow = false
-    private var isEmptyWishlist = false
     private var listBulkDelete = arrayListOf<String>()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private lateinit var firebaseRemoteConfig : FirebaseRemoteConfigImpl
@@ -279,7 +278,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         }
 
                         if (wishlistV2.totalData <= 0) {
-                            isEmptyWishlist = true
                             if (wishlistV2.sortFilters.isEmpty() && wishlistV2.items.isEmpty()) {
                                 onFailedGetWishlistV2(ResponseErrorException())
                             } else {
@@ -289,7 +287,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                                 hideSortFilter(wishlistV2.sortFilters)
                             }
                         } else {
-                            isEmptyWishlist = false
                             showRvWishlist()
                             if (!wishlistV2.showDeleteProgress) updateTotalLabel(wishlistV2.totalData)
                         }
@@ -590,7 +587,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun loadRecommendationList() {
         currRecommendationListPage += 1
-        wishlistViewModel.loadRecommendation(currRecommendationListPage, isEmptyWishlist)
+        wishlistViewModel.loadRecommendation(currRecommendationListPage)
     }
 
     private fun checkLogin() {

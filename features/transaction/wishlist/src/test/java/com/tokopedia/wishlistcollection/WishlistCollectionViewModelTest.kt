@@ -288,7 +288,7 @@ class WishlistCollectionViewModelTest {
 
 
         //when
-        wishlistCollectionViewModel.loadRecommendation(0, false)
+        wishlistCollectionViewModel.loadRecommendation(0)
 
         //then
         assert(wishlistCollectionViewModel.collectionData.value is Success<List<WishlistCollectionTypeLayoutData>>)
@@ -305,7 +305,7 @@ class WishlistCollectionViewModelTest {
         } throws Exception()
 
         //when
-        wishlistCollectionViewModel.loadRecommendation(0, true)
+        wishlistCollectionViewModel.loadRecommendation(0)
 
         //then
         SoftAssertions.assertSoftly {

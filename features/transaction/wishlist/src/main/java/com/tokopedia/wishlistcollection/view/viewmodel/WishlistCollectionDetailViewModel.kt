@@ -58,6 +58,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val atcUseCase: AddToCartUseCase,
     private val addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase
 ) : BaseViewModel(dispatcher.main) {
+    private var recommSrc = ""
 
     private val _collectionItems =
         MutableLiveData<Result<GetWishlistCollectionItemsResponse>>()
@@ -107,7 +108,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val result = getWishlistCollectionItemsUseCase(params)
-            val recommSrc = if (result.getWishlistCollectionItems.totalData == 0) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
+            recommSrc = if (result.getWishlistCollectionItems.totalData == 0) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
             _collectionItems.value = Success(result)
             _collectionData.value = Success(
                 organizeWishlistV2Data(
@@ -124,11 +125,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         })
     }
 
-    fun loadRecommendation(page: Int, isEmptyWishlist: Boolean) {
+    fun loadRecommendation(page: Int) {
         val listData = arrayListOf<WishlistV2TypeLayoutData>()
         launch {
             try {
-                val recommSrc = if (isEmptyWishlist) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
                 val recommItems = getRecommendationWishlistV2(
                     page, listOf(), recommSrc)
                 recommItems.recommendationProductCardModelData.forEach { item ->

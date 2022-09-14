@@ -34,6 +34,7 @@ class WishlistCollectionViewModel @Inject constructor(
     private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
     private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase
 ) : BaseViewModel(dispatcher.main) {
+    private var recommSrc = ""
 
     private val _collections =
         MutableLiveData<Result<GetWishlistCollectionResponse.GetWishlistCollections>>()
@@ -61,7 +62,7 @@ class WishlistCollectionViewModel @Inject constructor(
         launchCatchError(block = {
             val result = getWishlistCollectionUseCase(Unit)
             if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
-                val recommSrc = if (result.getWishlistCollections.data.isEmptyState) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
+                recommSrc = if (result.getWishlistCollections.data.isEmptyState) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
                 _collections.value = Success(result.getWishlistCollections)
                 _collectionData.value =
                     Success(
@@ -111,11 +112,10 @@ class WishlistCollectionViewModel @Inject constructor(
         )
     }
 
-    fun loadRecommendation(page: Int, isEmptyWishlist: Boolean) {
+    fun loadRecommendation(page: Int) {
         val listData = arrayListOf<WishlistCollectionTypeLayoutData>()
         launch {
             try {
-                val recommSrc = if (isEmptyWishlist) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
                 val recommItems = getRecommendationWishlistV2(
                     page, listOf(), recommSrc)
                 recommItems.recommendationProductCardModelData.forEach { item ->
