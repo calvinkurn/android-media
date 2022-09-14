@@ -143,7 +143,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun onOpenQuickFilterBottomSheet(sortList: List<Sort>) {
         val sortValue = viewModel.getCurrentSortValue()
-        analytics.sendSortClickTracking(keyword, sortValue)
+        val destinationId = getDestinationId()
+        analytics.sendSortClickTracking(keyword, sortValue, destinationId)
         showQuickSortBottomSheet(sortList)
     }
 
@@ -153,7 +154,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onSelectSortChip(sort: Sort, isSelected: Boolean) {
-        analytics.sendSortClickTracking(keyword, sort.value)
+        val destinationId = getDestinationId()
+        analytics.sendSortClickTracking(keyword, sort.value, destinationId)
         viewModel.applySort(sort, isSelected)
     }
 
@@ -163,15 +165,17 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onImpressCompleteFilterChip() {
-        analytics.sendCompleteFilterImpressionTracking(keyword)
+        analytics.sendCompleteFilterImpressionTracking(keyword, getDestinationId())
     }
 
     override fun onImpressSortChip(sorts: List<Sort>) {
-        analytics.sendSortImpressionTracking(keyword, sorts)
+        val sortValue = viewModel.getCurrentSortValue()
+        val destinationId = getDestinationId()
+        analytics.sendSortImpressionTracking(keyword, destinationId, sorts, sortValue)
     }
 
     override fun onImpressFilterChip(options: List<Option>) {
-        analytics.sendMiniFilterImpressionTracking(keyword, options)
+        analytics.sendMiniFilterImpressionTracking(keyword, options, getDestinationId())
     }
 
     override fun onClickRetryError() {
@@ -180,17 +184,18 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun onClickMerchant(merchant: Merchant, position: Int) {
         analytics.sendMerchantCardClickTracking(
-            destinationId = localCacheModel?.district_id.orEmpty(),
+            destinationId = getDestinationId(),
             keyword = keyword,
             merchant = merchant,
-            sortValue = viewModel.getCurrentSortValue()
+            sortValue = viewModel.getCurrentSortValue(),
+            index = position
         )
         goToMerchantPage(merchant)
     }
 
     override fun onBranchButtonClicked(merchant: Merchant) {
         analytics.sendOtherBranchesClickTracking(
-            destinationId = localCacheModel?.district_id.orEmpty(),
+            destinationId = getDestinationId(),
             keyword = keyword,
             merchant = merchant
         )
@@ -245,7 +250,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     override fun onLocalizingAddressLoginSuccess() {}
 
     override fun onClickChooseAddressTokoNowTracker() {
-        analytics.sendAddressWidgetClickTracking(localCacheModel?.district_id.orEmpty())
+        analytics.sendAddressWidgetClickTracking(getDestinationId())
     }
 
     override fun onApplyPriceRange(checkedOptions: List<Option>) {
@@ -555,6 +560,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         } catch (ex: Exception) {
             Timber.e(ex)
         }
+    }
+
+    private fun getDestinationId(): String {
+        return localCacheModel?.district_id.orEmpty()
     }
 
     companion object {
