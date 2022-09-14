@@ -9,8 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.di.RechargeHomepageComponentInstance
 import com.tokopedia.digital.home.presentation.fragment.RechargeHomepageFragment
-import com.tokopedia.graphql.data.GraphqlClient
-import timber.log.Timber
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 /**
  * applink
@@ -30,7 +29,7 @@ class RechargeHomepageActivity : BaseSimpleActivity(), HasComponent<RechargeHome
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
-        val platformId = bundle?.getString(PARAM_PLATFORM_ID)?.toIntOrNull() ?: 0
+        val platformId = bundle?.getString(PARAM_PLATFORM_ID).toIntSafely()
         val enablePersonalize = (bundle?.getString(PARAM_ENABLE_PERSONALIZE) ?: "true").toBoolean()
         val sliceOpenApp = bundle?.getBoolean(RECHARGE_HOME_PAGE_EXTRA) ?: false
         return RechargeHomepageFragment.newInstance(platformId, enablePersonalize, sliceOpenApp)
