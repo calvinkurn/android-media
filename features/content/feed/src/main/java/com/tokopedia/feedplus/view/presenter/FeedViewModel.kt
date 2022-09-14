@@ -9,11 +9,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.*
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
@@ -32,6 +30,8 @@ import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -47,6 +47,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -64,7 +65,7 @@ class FeedViewModel @Inject constructor(
     private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
     private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
     private val likeKolPostUseCase: LikeKolPostUseCase,
-    private val atcUseCase: AddToCartUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
     private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
     private val deletePostUseCase: DeletePostUseCase,
     private val sendTopAdsUseCase: SendTopAdsUseCase,
@@ -79,7 +80,7 @@ class FeedViewModel @Inject constructor(
     private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
     private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase
 
-) : BaseViewModel(baseDispatcher.main) {
+    ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
         private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
@@ -114,9 +115,14 @@ class FeedViewModel @Inject constructor(
     private val _asgcReminderButtonInitialStatus = MutableLiveData<Result<FeedAsgcCampaignResponseModel>>()
     val asgcReminderButtonInitialStatus: LiveData<Result<FeedAsgcCampaignResponseModel>>
         get() = _asgcReminderButtonInitialStatus
+
     private val _asgcReminderButtonStatus = MutableLiveData<Result<FeedAsgcCampaignResponseModel>>()
     val asgcReminderButtonStatus: LiveData<Result<FeedAsgcCampaignResponseModel>>
         get() = _asgcReminderButtonStatus
+
+    private val _feedWidgetLatestData = MutableLiveData<Result<FeedWidgetData>>()
+    val feedWidgetLatestData: LiveData<Result<FeedWidgetData>>
+        get() = _feedWidgetLatestData
 
     private var currentCursor = ""
     private val pagingHandler: PagingHandler = PagingHandler()
@@ -147,6 +153,33 @@ class FeedViewModel @Inject constructor(
                 reportResponse.value = Fail(it)
             }
         )
+    }
+
+    fun fetchLatestFeedPostWidgetData(detailId: String, rowNumber: Int) {
+        viewModelScope.launchCatchError( block = {
+            val response = getFeedWidgetUpdatedData(detailId)
+
+             if (response?.feedXHome?.items?.isNotEmpty() == true) {
+                val updatedData = FeedWidgetData(
+                    rowNumber = rowNumber,
+                    feedXCard = response.feedXHome.items.first()
+                )
+                _feedWidgetLatestData.value = Success(updatedData)
+            } else {
+                _feedWidgetLatestData.value = Fail(CustomUiMessageThrowable(com.tokopedia.feedplus.R.string.feed_result_empty))
+            }
+        }) {
+            _feedWidgetLatestData.value = Fail(it)
+        }
+    }
+
+    private suspend fun getFeedWidgetUpdatedData(detailId: String): FeedXData? {
+        try {
+            return getDynamicFeedNewUseCase.executeForCDP(cursor = currentCursor, detailId = detailId)
+        } catch (e: Throwable) {
+            Timber.e(e)
+        }
+        return null
     }
 
     fun trackVisitChannel(channelId: String,rowNumber: Int) {
@@ -353,10 +386,10 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doAtc(postTagItem: FeedXProduct, shopId: String, type: String, isFollowed: Boolean, activityId: String) {
+    fun addtoCartProduct(postTagItem: FeedXProduct, shopId: String, type: String, isFollowed: Boolean, activityId: String) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                atc(postTagItem, shopId, type, isFollowed, activityId)
+                addToCart(postTagItem, shopId, type, isFollowed, activityId)
             }
             atcResp.value = Success(results)
         }) {
@@ -657,38 +690,43 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun atc(
+    private suspend fun addToCart(
         postTagItem: FeedXProduct,
         shopId: String,
         type: String,
         isFollowed: Boolean,
         activityId: String
-    ): AtcViewModel {
-        try {
-            val data = AtcViewModel()
-            data.applink = postTagItem.appLink
-            data.activityId = activityId
-            data.postType = type
-            data.isFollowed = isFollowed
-            data.shopId = shopId
-
+    ): AtcViewModel =
+        withContext(baseDispatcher.io) {
             val params = AddToCartUseCase.getMinimumParams(
                 postTagItem.id,
                 shopId,
-                productName = postTagItem.name,
+                productName = postTagItem.productName,
                 price = postTagItem.price.toString(),
-                userId = userId
+                userId = userSession.userId
             )
-            val result = atcUseCase.createObservable(params).toBlocking().single()
-            data.isSuccess = result.data.success == 1
-            if (result.isStatusError()) {
-                data.errorMsg = result.errorMessage.firstOrNull() ?: ""
+            try {
+                val data = AtcViewModel()
+                data.applink = postTagItem.appLink
+                data.activityId = activityId
+                data.postType = type
+                data.isFollowed = isFollowed
+                data.shopId = shopId
+
+                addToCartUseCase.setParams(params)
+                val response = addToCartUseCase.executeOnBackground()
+                if (response.isDataError()) throw MessageErrorException(response.getAtcErrorMessage())
+                data.isSuccess = !response.isStatusError()
+                if (response.isStatusError()) {
+                    data.errorMsg = response.errorMessage.firstOrNull() ?: ""
+                }
+                return@withContext data
+            } catch (e: Throwable) {
+                if (e is ResponseErrorException) throw MessageErrorException(e.localizedMessage)
+                else throw e
             }
-            return data
-        } catch (e: Throwable) {
-            throw e
         }
-    }
+
 
     private fun toggleFavoriteShop(
         rowNumber: Int,

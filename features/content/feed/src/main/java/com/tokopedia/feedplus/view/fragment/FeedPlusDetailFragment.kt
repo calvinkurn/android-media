@@ -87,6 +87,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private var shopId: String = ""
     private var shopName: String = ""
     private var postType: String = ""
+    private var saleType: String = ""
+    private var saleStatus: String = ""
     private var isFollowed: Boolean = false
     private var productList = mutableListOf<FeedXProduct>()
     private var activityId: String = ""
@@ -211,6 +213,20 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             arguments?.run {
                 getString(FeedPlusDetailActivity.PARAM_SHOP_NAME)?.let {
                     shopName = it
+                }
+            }
+        }
+        if (saleType.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_SALE_TYPE)?.let {
+                    saleType = it
+                }
+            }
+        }
+        if (saleStatus.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_SALE_STATUS)?.let {
+                    saleStatus = it
                 }
             }
         }
@@ -347,7 +363,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         productList.addAll(products)
         val ret = mapPostTag(products)
         adapter.addList(ret)
-      pagingHandler.setHasNext(ret.size > 1 && cursor.isNotEmpty())
+        pagingHandler.setHasNext(ret.size > 1 && cursor.isNotEmpty())
         adapter.notifyDataSetChanged()
     }
     private fun onErrorGetFeedDetail(error: Throwable) {
@@ -465,6 +481,33 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             addToWishList(finalID, item.id, item.postType, item.isFollowed, item.shopId, item.playChannelId)
         }
     }
+
+    override fun onAddToWishlistButtonClicked(item: FeedDetailProductModel) {
+        val finalID =
+            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+        addToWishList(
+            finalID,
+            item.id,
+            item.postType,
+            item.isFollowed,
+            item.shopId,
+            item.playChannelId
+        )
+    }
+
+    override fun onAddToCartButtonClicked(item: FeedDetailProductModel) {
+        onTagSheetItemBuy(
+            item.postId.toString(),
+            item.positionInFeed,
+            item.product,
+            item.shopId,
+            item.postType,
+            item.isFollowed,
+            item.shopName,
+            item.playChannelId
+        )
+    }
+
     private fun onShareProduct(
             id: Int,
             title: String,
@@ -523,11 +566,33 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             playChannelId: String
     ) {
         if (type == TYPE_FEED_X_CARD_PLAY)
-            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.name, postTagItem.price.toString(), 1, shopId, postTagItem.authorName, type, isFollowed,"")
+            feedAnalytics.eventAddToCartFeedVOD(
+                playChannelId,
+                postTagItem.id,
+                postTagItem.name,
+                postTagItem.price.toString(),
+                1,
+                shopId,
+                postTagItem.authorName,
+                type,
+                isFollowed,
+                ""
+            )
         else
-            feedAnalytics.eventAddToCartFeedVOD(activityId, postTagItem.id, postTagItem.name, postTagItem.price.toString(), 1, shopId, shopName, type, isFollowed,"")
+            feedAnalytics.eventAddToCartFeedVOD(
+                activityId,
+                postTagItem.id,
+                postTagItem.name,
+                postTagItem.price.toString(),
+                1,
+                shopId,
+                shopName,
+                type,
+                isFollowed,
+                ""
+            )
         if (userSession.isLoggedIn) {
-            feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId)
+            feedViewModel.addtoCartProduct(postTagItem, shopId, type, isFollowed, activityId)
         } else {
             onGoToLogin()
         }
@@ -662,19 +727,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             show()
         }
     }
-
-    private fun onGoToShopDetailFromButton(shopId: Int): View.OnClickListener? {
-        return View.OnClickListener {
-            arguments?.run {
-                goToShopDetail(shopId)
-                analytics.eventFeedClickShop(
-                        screenName, shopId.toString(), getString(
-                        FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
-                        + FeedTrackingEventLabel.Click.VISIT_SHOP)
-            }
-        }
-    }
-
 
     private fun goToShopDetail(shopId: Int) {
         if (activity != null && activity?.applicationContext != null) {
@@ -840,7 +892,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     isFollowed = isFollowed,
                     description = postDescription,
                     isTopads = postTagItem.isTopads,
-                    adClickUrl = adClickUrl
+                    adClickUrl = adClickUrl,
+                    saleStatus = saleStatus,
+                    saleType = saleType
             )
             item.feedType = "product"
             item.postId = activityId.toIntOrZero()

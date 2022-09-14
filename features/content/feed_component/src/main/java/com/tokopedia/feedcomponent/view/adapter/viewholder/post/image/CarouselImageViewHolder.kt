@@ -19,6 +19,7 @@ import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
 import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignOngoingView
 import com.tokopedia.feedcomponent.view.widget.FlashSaleRilisanCampaignUpcomingView
 import com.tokopedia.feedcomponent.view.widget.PostTagView
+import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 
@@ -30,7 +31,7 @@ class CarouselImageViewHolder(
     itemView: View,
     private val dataSource: FeedPostCarouselAdapter.DataSource,
     private val listener: Listener,
-    private val fstListener: FlashSaleRilisanCampaignUpcomingView.Listener?
+    private val fstListener: FeedCampaignListener?
 ) : BaseViewHolder(itemView) {
 
     private val postImage = itemView.findViewById<ImageUnify>(R.id.post_image)
@@ -180,6 +181,7 @@ class CarouselImageViewHolder(
                     height = it.height,
                     positionInFeed = dataSource.getPositionInFeed(),
                     bitmap = postImage?.drawable?.toBitmap(),
+                    campaign = dataSource.getFeedXCard().campaign
                 )
                 postImageLayout.addView(tagView)
             }
@@ -196,7 +198,7 @@ class CarouselImageViewHolder(
 
     private fun showHideFlashSaleRsUpcomingCampaignCard(feedXCard: FeedXCard){
         flashSaleViewCardUpcoming.setupTimer(feedXCard.campaign.endTime) {
-          // TODO implement ontimer ends
+            fstListener?.onTimerFinishUpcoming()
         }
         flashSaleViewCardUpcoming.setData(
             feedXCard = feedXCard,
@@ -211,7 +213,7 @@ class CarouselImageViewHolder(
 
     private fun showHideFlashSaleRsOngoingCampaignCard(feedXCard: FeedXCard,  media: FeedXMedia){
         flashSaleViewCardOngoing.setupTimer(feedXCard.campaign.endTime) {
-            // TODO implement ontimer ends
+            fstListener?.onTimerFinishOngoing()
         }
         flashSaleViewCardOngoing.setData(
             feedXCard = feedXCard,
@@ -281,7 +283,7 @@ class CarouselImageViewHolder(
             parent: ViewGroup,
             dataSource: FeedPostCarouselAdapter.DataSource,
             listener: Listener,
-            fstListener: FlashSaleRilisanCampaignUpcomingView.Listener?
+            fstListener: FeedCampaignListener?
         ) = CarouselImageViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(

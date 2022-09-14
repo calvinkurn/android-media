@@ -15,6 +15,7 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -33,7 +34,7 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
     private val postImageLayout : ConstraintLayout
     private val fstSaleProductTitle : Typography
     private val fstReminderBtn : UnifyButton
-    private var mListener : Listener? = null
+    private var mListener : FeedCampaignListener? = null
     var isReminderSet = false
     private var mPostionInFeed: Int = 0
     private var mFeedXCard: FeedXCard? = null
@@ -61,7 +62,7 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
         fstSaleProductTitle.text = feedXCard.campaign.shortName
     }
 
-    fun  setListener(listener : Listener){
+    fun  setListener(listener : FeedCampaignListener){
         this.mListener = listener
     }
 
@@ -93,7 +94,6 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
                     show()
                 }
         }?: fstTimer.hide()
-//        fstTimer.onFinish = { mListener?.onTimerFinish() }
     }
 
     private fun setUpReminderButtonListener(){
@@ -111,10 +111,4 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
             }
         })
     }
-    interface Listener {
-        fun onTimerFinish()
-        fun setInitialStateOfReminderBtn(isReminderSet: Boolean, positionInFeed: Int)
-        fun onReminderBtnClick(isReminderSet: Boolean, positionInFeed: Int)
-    }
-
 }

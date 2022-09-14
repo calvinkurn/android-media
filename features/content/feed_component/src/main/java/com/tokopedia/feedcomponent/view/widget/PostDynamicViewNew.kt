@@ -58,6 +58,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
+import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -341,16 +342,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 val listener = this@PostDynamicViewNew.listener ?: return
 
                 listener.onTagClicked(
-                    mData.id.toIntOrZero(),
+                    mData,
                     media.tagProducts,
                     listener,
-                    mData.author.id,
-                    mData.typename,
-                    mData.followers.isFollowed,
                     media.type,
                     positionInFeed,
-                    mData.playChannelID,
-                    shopName = mData.author.name
                 )
             }
         },
@@ -362,16 +358,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 val listener = this@PostDynamicViewNew.listener ?: return
 
                 listener.onTagClicked(
-                    mData.id.toIntOrZero(),
+                    mData,
                     media.tagProducts,
                     listener,
-                    mData.author.id,
-                    mData.typename,
-                    mData.followers.isFollowed,
                     media.type,
                     positionInFeed,
-                    mData.playChannelID,
-                    shopName = mData.author.name
                 )
             }
 
@@ -413,8 +404,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
             }
         },
-        listener = object : FlashSaleRilisanCampaignUpcomingView.Listener {
-            override fun onTimerFinish() {
+        listener = object : FeedCampaignListener {
+            override fun onTimerFinishUpcoming() {
+              listener?.changeUpcomingWidgetToOngoing(mData, positionInFeed)
+            }
+
+            override fun onTimerFinishOngoing() {
+                listener?.removeOngoingCampaignSaleWidget(mData, positionInFeed)
 
             }
 
@@ -1285,19 +1281,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     positionInFeed: Int,
                     products: List<FeedXProduct>
                 ) {
-                    val finalPostId =
-                        if (feedXCard.isTypeVOD) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
                     it.onTagClicked(
-                        finalPostId,
+                        feedXCard,
                         products,
                         it,
-                        feedXCard.author.id,
-                        feedXCard.typename,
-                        feedXCard.followers.isFollowed,
-                        feedXCard.type,
-                        positionInFeed,
-                        playChannelId = feedXCard.playChannelID,
-                        shopName = feedXCard.author.name
+                        feedMedia.type,
+                        positionInFeed
                     )
                 }
 

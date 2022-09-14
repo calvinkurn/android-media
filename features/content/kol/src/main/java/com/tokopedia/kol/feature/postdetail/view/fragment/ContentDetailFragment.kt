@@ -24,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.bottomsheets.*
+import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.mapper.*
@@ -1096,16 +1097,20 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
             productTagBS = ProductItemInfoBottomSheet()
             productTagBS.show(
                 childFragmentManager,
-                products,
                 this,
-                feedXCard.id.toIntOrZero(),
-                feedXCard.author.id,
-                feedXCard.typename,
-                feedXCard.followers.isFollowed,
-                postPosition,
-                feedXCard.playChannelID,
-                shopName = feedXCard.author.name,
-                mediaType = media?.type?:""
+                ProductBottomSheetData(
+                    products = products,
+                    postId = feedXCard.id.toIntOrZero(),
+                    shopId = feedXCard.author.id,
+                    postType = feedXCard.typename,
+                    isFollowed = feedXCard.followers.isFollowed,
+                    positionInFeed = postPosition,
+                    playChannelId = feedXCard.playChannelID,
+                    shopName = feedXCard.author.name,
+                    mediaType = media?.type?:"",
+                    saleStatus = feedXCard.campaign.status,
+                    saleType = feedXCard.campaign.name
+                )
             )
             productTagBS.closeClicked = {
                 analyticsTracker.sendClickXSgcImageEvent(
@@ -1503,6 +1508,40 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
         onGoToLink(redirectUrl)
     }
+
+    override fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew) {
+        val finalID =
+            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+
+        addToWishList(
+            finalID,
+            item.id,
+            item.postType,
+            item.isFollowed,
+            item.shopId,
+            item.playChannelId,
+            item.mediaType,
+            item.positionInFeed
+        )
+    }
+
+    override fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew) {
+        val finalID =
+            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+
+        onTagSheetItemBuy(
+            finalID,
+            item.positionInFeed,
+            item.product,
+            item.shopId,
+            item.postType,
+            item.isFollowed,
+            item.playChannelId,
+            item.shopName,
+            item.mediaType
+        )
+    }
+
     private fun onTagSheetItemBuy(
         activityId: String,
         positionInFeed: Int,

@@ -17,6 +17,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -40,7 +41,7 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
     private val fstSaleProductTitle : Typography
     private val stockText : Typography
     private val stockProgressBar : ProgressBarUnify
-    private var mListener : Listener? = null
+    private var mListener : FeedCampaignListener? = null
     private var mPostionInFeed: Int = 0
     private var mFeedXCard: FeedXCard? = null
     private var mFeedXProduct: FeedXProduct? = null
@@ -71,7 +72,7 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
         fstSaleProductTitle.text = feedXCard.campaign.shortName
     }
 
-    fun  setListener(listener : Listener){
+    fun  setListener(listener : FeedCampaignListener){
         this.mListener = listener
     }
 
@@ -112,10 +113,4 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
             }
         })
     }
-    interface Listener {
-        fun onTimerFinish()
-        fun setInitialStateOfReminderBtn(isReminderSet: Boolean, positionInFeed: Int)
-        fun onReminderBtnClick(isReminderSet: Boolean, positionInFeed: Int)
-    }
-
 }

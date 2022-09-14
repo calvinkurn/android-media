@@ -20,6 +20,13 @@ data class FeedXCampaign(
 ) {
     val campaignId: Long
         get() = id.toLongOrZero()
+
+    val isUpcoming: Boolean
+        get() = status == Upcoming
+
+    companion object {
+        private const val Upcoming = "upcoming"
+    }
 }
 
 sealed class FeedASGCUpcomingReminderStatus {
@@ -27,4 +34,6 @@ sealed class FeedASGCUpcomingReminderStatus {
     data class Off(val campaignId: Long) : FeedASGCUpcomingReminderStatus()
     object Unknown : FeedASGCUpcomingReminderStatus()
 }
+
+
 
