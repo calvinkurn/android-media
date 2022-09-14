@@ -135,9 +135,11 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun afterTextChanged(p0: Editable?) {
-                    newCollectionName = p0.toString()
+                    newCollectionName = p0.toString().trimStart().trimEnd()
                     if (newCollectionName.isNotEmpty()) {
                         handler.postDelayed(checkNameRunnable, DELAY_CHECK_NAME)
+                    } else {
+                        disableSaveButton()
                     }
                 }
 
@@ -231,7 +233,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
             if (listCollections.isNotEmpty()) {
                 run check@{
                     listCollections.forEach { item ->
-                        if (checkName == item.name) {
+                        if (checkName.lowercase() == item.name.lowercase()) {
                             binding?.run {
                                 collectionCreateNameInputTextField.isInputError = _productIds.isEmpty()
 
