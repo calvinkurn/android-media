@@ -14,8 +14,8 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentInitialStateFoodBinding
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.InitialStateViewUpdateListener
+import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
 import com.tokopedia.tokofood.feature.search.initialstate.analytics.TokoFoodInitSearchStateAnalytics
-import com.tokopedia.tokofood.feature.search.initialstate.di.component.DaggerInitialStateComponent
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.InitialStateTypeFactoryImpl
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.TokoFoodInitStateAdapter
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.listener.InitialStateListener
@@ -90,7 +90,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener {
 
     override fun initInjector() {
         activity?.let {
-            DaggerInitialStateComponent
+            DaggerTokoFoodSearchComponent
                 .builder()
                 .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
                 .build()

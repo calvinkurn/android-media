@@ -19,11 +19,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.databinding.FragmentSearchContainerBinding
-import com.tokopedia.tokofood.feature.search.container.di.component.DaggerSearchContainerComponent
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.InitialStateViewUpdateListener
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
 import com.tokopedia.tokofood.feature.search.container.presentation.viewmodel.SearchContainerViewModel
 import com.tokopedia.tokofood.feature.search.container.presentation.widget.GlobalSearchBarWidget
+import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.fragment.InitialSearchStateFragment
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.fragment.SearchResultFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -88,7 +88,7 @@ class SearchContainerFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         activity?.let {
-            DaggerSearchContainerComponent
+            DaggerTokoFoodSearchComponent
                 .builder()
                 .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
@@ -160,7 +160,6 @@ class SearchContainerFragment : BaseDaggerFragment(),
     }
 
     override fun onQueryTextChangeListener(keyword: String) {
-        //viewmodel typing
         viewModel.setKeyword(keyword)
     }
 
