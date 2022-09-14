@@ -50,28 +50,9 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
             response.playGetTagsItem.voucherList
         )
 
-        val completeProductList = if (userSession.isLoggedIn) {
-            val reminderMap = productList.filter {
-                it.config.type == ProductSectionType.Upcoming
-            }.associate {
-                it.id to async {
-                    checkUpcomingCampaign(it.id)
-                }
-            }
-
-            productList.map {
-                it.copy(
-                    config = it.config.copy(
-                        reminder = if (reminderMap[it.id]?.await() == true) PlayUpcomingBellStatus.On
-                        else it.config.reminder
-                    )
-                )
-            }
-        } else productList
-
         return@withContext TagItemUiModel(
             product = ProductUiModel(
-                productSectionList = completeProductList,
+                productSectionList = updateCampaignReminderStatus(productList),
                 canShow = true
             ),
             voucher = VoucherUiModel(
@@ -81,6 +62,29 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
             resultState = ResultState.Success,
             bottomSheetTitle = response.playGetTagsItem.config.bottomSheetTitle
         )
+    }
+
+    override suspend fun updateCampaignReminderStatus(
+        productSections: List<ProductSectionUiModel.Section>
+    ): List<ProductSectionUiModel.Section> = withContext(dispatchers.io) {
+        if (userSession.isLoggedIn) {
+            val reminderMap = productSections.filter {
+                it.config.type == ProductSectionType.Upcoming
+            }.associate {
+                it.id to async {
+                    checkUpcomingCampaign(it.id)
+                }
+            }
+
+            productSections.map {
+                it.copy(
+                    config = it.config.copy(
+                        reminder = if (reminderMap[it.id]?.await() == true) PlayUpcomingBellStatus.On
+                        else it.config.reminder
+                    )
+                )
+            }
+        } else productSections
     }
 
     override suspend fun getVariant(

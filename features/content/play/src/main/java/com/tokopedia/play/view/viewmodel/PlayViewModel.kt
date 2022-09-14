@@ -1649,10 +1649,16 @@ class PlayViewModel @AssistedInject constructor(
             }
             is ProductSection -> {
                 val mappedData = playSocketToModelMapper.mapProductSection(result)
+                val updatedSections = repo.updateCampaignReminderStatus(
+                    mappedData.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>()
+                )
+                val newProduct = mappedData.product.copy(
+                    productSectionList = updatedSections
+                )
 
                 _tagItems.update {
                     it.copy(
-                        product = mappedData.product,
+                        product = newProduct,
                         bottomSheetTitle = mappedData.bottomSheetTitle,
                         maxFeatured = mappedData.maxFeatured,
                         resultState = mappedData.resultState,

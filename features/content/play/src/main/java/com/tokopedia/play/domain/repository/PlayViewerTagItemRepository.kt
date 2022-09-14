@@ -1,7 +1,7 @@
 package com.tokopedia.play.domain.repository
 
-import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -9,6 +9,10 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 interface PlayViewerTagItemRepository {
 
     suspend fun getTagItem(channelId: String, warehouseId: String): TagItemUiModel
+
+    suspend fun updateCampaignReminderStatus(
+        productSections: List<ProductSectionUiModel.Section>,
+    ): List<ProductSectionUiModel.Section>
 
     suspend fun getVariant(
         product: PlayProductUiModel.Product,
