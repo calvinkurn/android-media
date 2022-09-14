@@ -174,20 +174,20 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
                     thanksPageData.amountStr
                 )
         }
-        setClickToCopyAmount(paymentType, thanksPageData)
+       // setClickToCopyAmount(paymentType, thanksPageData)
     }
 
-    private fun setClickToCopyAmount(paymentType: PaymentType, thanksPageData: ThanksPageData){
-        icCopyAmount.setOnClickListener {
-            val amountStr = if (paymentType == VirtualAccount
-                && (thanksPageData.combinedAmount > thanksPageData.amount)) {
-                thanksPageData.combinedAmount.toString()
-            } else {
-                thanksPageData.amount.toString()
-            }
-            copyTotalAmountToClipboard(amountStr)
-        }
-    }
+//    private fun setClickToCopyAmount(paymentType: PaymentType, thanksPageData: ThanksPageData){
+//        icCopyAmount.setOnClickListener {
+//            val amountStr = if (paymentType == VirtualAccount
+//                && (thanksPageData.combinedAmount > thanksPageData.amount)) {
+//                thanksPageData.combinedAmount.toString()
+//            } else {
+//                thanksPageData.amount.toString()
+//            }
+//            copyTotalAmountToClipboard(amountStr)
+//        }
+//    }
 
 
     private fun setCombinedAmount(thanksPageData: ThanksPageData) {
