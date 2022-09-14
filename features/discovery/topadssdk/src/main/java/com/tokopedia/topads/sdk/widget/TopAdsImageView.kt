@@ -36,7 +36,6 @@ class TopAdsImageView : AppCompatImageView {
         private var noOfObject = 0
     }
 
-//    private lateinit var topAdsImageViewViewModel: TopAdsImageViewViewModel
     private var topAdsImageViewClickListener: TopAdsImageViewClickListener? = null
     private var topAdsImageViewImpressionListener: TopAdsImageViewImpressionListener? = null
     private var topAdsImageVieWApiResponseListener: TopAdsImageVieWApiResponseListener? = null

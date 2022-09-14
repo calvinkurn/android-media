@@ -46,7 +46,7 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
         initDagger()
         topadsBannerView.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
             override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-                RouteManager.route(context, applink)
+                applink?.let { RouteManager.route(context, it) }
             }
         })
         topadsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener(){

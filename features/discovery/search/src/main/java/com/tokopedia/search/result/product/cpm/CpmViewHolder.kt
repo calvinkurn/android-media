@@ -5,12 +5,12 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutBinding
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
+import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
+import com.tokopedia.utils.view.binding.viewBinding
 
 class CpmViewHolder(
     itemView: View,
@@ -27,7 +27,7 @@ class CpmViewHolder(
 
     init {
         binding?.adsBanner?.let {
-            it.setTopAdsBannerClickListener(object :TopAdsBannerClickListener{
+            it.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
                 override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
                     bannerAdsListener?.onBannerAdsClicked(position, applink, data)
                 }

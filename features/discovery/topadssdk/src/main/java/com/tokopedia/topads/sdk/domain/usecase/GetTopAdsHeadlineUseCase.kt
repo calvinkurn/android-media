@@ -102,8 +102,8 @@ private const val PARAMS_QUERY = "displayParams"
 private const val KEY_SEEN_ADS = "seen_ads"
 
 @GqlQuery("GetTopadsHeadlineQuery", GET_TOPADS_HEADLINE_QUERY)
-class GetTopAdsHeadlineUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<TopAdsHeadlineResponse>(graphqlRepository) {
+class GetTopAdsHeadlineUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+    GraphqlUseCase<TopAdsHeadlineResponse>(graphqlRepository) {
 
     init {
         setTypeClass(TopAdsHeadlineResponse::class.java)
