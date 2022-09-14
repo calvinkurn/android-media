@@ -29,8 +29,8 @@ import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
 import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
-import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.EMOJI_STATE
-import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.SELECTED_ITEM
+import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating.Companion.EMOJI_STATE
+import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating.Companion.SELECTED_ITEM
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
