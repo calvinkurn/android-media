@@ -172,12 +172,12 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                             shop_badge.hide()
                         }
                     }
-                    shop_name?.text = MethodChecker.fromHtml(cpmData.cpm?.cpmShop?.name)
-                    description?.text = cpmData.cpm?.cpmShop?.slogan
-                    if (cpmData.cpm?.cpmShop?.isFollowed != null && topAdsShopFollowBtnClickListener != null) {
+                    shop_name?.text = MethodChecker.fromHtml(cpmData.cpm.cpmShop.name)
+                    description?.text = cpmData.cpm.cpmShop.slogan
+                    if (cpmData.cpm.cpmShop.isFollowed != null && topAdsShopFollowBtnClickListener != null) {
                         bindFavorite(cpmData.cpm.cpmShop.isFollowed)
                         btnFollow.setOnClickListener {
-                            cpmData.cpm?.cpmShop?.id?.let { it1 -> topAdsShopFollowBtnClickListener?.onFollowClick(it1, cpmData.id) }
+                            cpmData.cpm.cpmShop.id.let { it1 -> topAdsShopFollowBtnClickListener?.onFollowClick(it1, cpmData.id) }
                             if (!cpmData.cpm.cpmShop.isFollowed) {
                                 topAdsUrlHitter.hitClickUrl(className, cpmData.adClickUrl, "", "", "")
                             }
@@ -196,12 +196,12 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                     val shop_image = findViewById<ImageView>(R.id.shop_image)
                     shop_image?.let {
-                        Glide.with(context).load(cpmData.cpm?.cpmImage?.fullEcs).into(shop_image)
-                        cpmData.cpm?.cpmShop?.imageShop?.let { it1 ->
+                        Glide.with(context).load(cpmData.cpm.cpmImage.fullEcs).into(shop_image)
+                        cpmData.cpm.cpmShop.imageShop?.let { it1 ->
                             shop_image.addOnImpressionListener(it1) {
                                 impressionListener?.let {
                                     it.onImpressionHeadlineAdsItem(0, cpmData)
-                                    topAdsUrlHitter.hitImpressionUrl(className, cpmData.cpm?.cpmImage?.fullUrl, "", "", "")
+                                    topAdsUrlHitter.hitImpressionUrl(className, cpmData.cpm.cpmImage.fullUrl, "", "", "")
                                 }
                             }
                         }
@@ -218,7 +218,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                             isShowCta
                         )
                     )
-                    if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
+                    if (cpmData.cpm.cpmShop.products.isNotEmpty()) {
                         val productCardModelList: ArrayList<ProductCardModel> = getProductCardModels(cpmData.cpm.cpmShop.products)
                         for (i in 0 until productCardModelList.size) {
                             if (i < ITEM_3) {
@@ -289,11 +289,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 isOfficial = cpmData.cpm.cpmShop.isPowerMerchant,
                 isPMPro = cpmData.cpm.cpmShop.isPMPro,
                 isPowerMerchant = cpmData.cpm.cpmShop.isPowerMerchant,
-                shopBadge = cpmData.cpm.badges?.firstOrNull()?.imageUrl?:"",
-                shopName = cpmData.cpm?.cpmShop?.name?:"",
-                shopImageUrl = cpmData.cpm?.cpmImage?.fullEcs?:"",
-                shopWidgetImageUrl = cpmData.cpm?.widgetImageUrl?:"",
-                merchantVouchers = cpmData.cpm?.cpmShop?.merchantVouchers?: mutableListOf(),
+                shopBadge = cpmData.cpm.badges.firstOrNull()?.imageUrl?:"",
+                shopName = cpmData.cpm.cpmShop.name,
+                shopImageUrl = cpmData.cpm.cpmImage.fullEcs,
+                shopWidgetImageUrl = cpmData.cpm.widgetImageUrl,
+                merchantVouchers = cpmData.cpm.cpmShop.merchantVouchers,
                 listItems = getItems(cpmData,appLink,adsClickUrl),
                 items = cpmData,
                 shopApplink = appLink,
@@ -317,7 +317,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 isShowCta
             )
         )
-        if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
+        if (cpmData.cpm.cpmShop.products.isNotEmpty()) {
             val productCardModelList: ArrayList<ProductCardModel> =
                 getProductCardModels(cpmData.cpm.cpmShop.products)
             for (i in 0 until productCardModelList.size) {
@@ -401,10 +401,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 ratingCount = it.cpm.cpmShop.products.firstOrNull()?.countReviewFormat ?: "",
                 ratingAverage = it.cpm.cpmShop.products.firstOrNull()?.headlineProductRatingAverage
                     ?: "",
-                isOfficial = it.cpm?.cpmShop?.isOfficial ?: false,
-                isPMPro = it.cpm?.cpmShop?.isPMPro ?: false,
-                goldShop = if (it.cpm?.cpmShop?.isPowerMerchant == true) 1 else 0,
-                impressHolder = it.cpm?.cpmShop?.imageShop,
+                isOfficial = it.cpm.cpmShop.isOfficial,
+                isPMPro = it.cpm.cpmShop.isPMPro,
+                goldShop = if (it.cpm.cpmShop.isPowerMerchant) 1 else 0,
+                impressHolder = it.cpm.cpmShop.imageShop,
                 location = it.cpm.cpmShop.location,
                 position = index
             )
@@ -450,7 +450,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                 override fun onProductItemClicked(productIndex: Int, shopIndex: Int) {
                     val cpmData = cpmModel?.data?.getOrNull(shopIndex) ?: return
-                    val cpmDataProducts = cpmData.cpm?.cpmShop?.products
+                    val cpmDataProducts = cpmData.cpm.cpmShop.products
 
                     if (!cpmDataProducts.isNullOrEmpty()) {
                         val product = cpmDataProducts[productIndex]
@@ -481,10 +481,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     imageUrlTwo = it.cpm.cpmShop.products.getOrNull(1)?.imageProduct?.imageUrl ?: "",
                     brandIcon = it.cpm.cpmImage.fullEcs,
                     brandName = it.cpm.cpmShop.name,
-                    isOfficial = it.cpm?.cpmShop?.isOfficial ?: false,
-                    isPMPro = it.cpm?.cpmShop?.isPMPro ?: false,
-                    goldShop = if (it.cpm?.cpmShop?.isPowerMerchant == true) 1 else 0,
-                    impressHolder = it.cpm?.cpmShop?.imageShop,
+                    isOfficial = it.cpm.cpmShop.isOfficial,
+                    isPMPro = it.cpm.cpmShop.isPMPro,
+                    goldShop = if (it.cpm.cpmShop.isPowerMerchant) 1 else 0,
+                    impressHolder = it.cpm.cpmShop.imageShop,
                     position = index
             )
             list.add(item)
@@ -622,26 +622,26 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     private fun setHeadlineShopDataCardWidget(cpmData: CpmData, adsBannerShopCardView: ShopCardView?, appLink: String, adsClickUrl: String) {
-        val productList = cpmData.cpm?.cpmShop?.products ?: listOf()
+        val productList = cpmData.cpm.cpmShop.products
 
         adsBannerShopCardView?.setShopCardModel(
                 ShopCardModel(
-                        id = cpmData.cpm?.cpmShop?.id ?: "",
-                        name = cpmData.cpm?.cpmShop?.name ?: "",
-                        image = cpmData.cpm?.cpmImage?.fullEcs ?: "",
+                        id = cpmData.cpm.cpmShop.id,
+                        name = cpmData.cpm.cpmShop.name,
+                        image = cpmData.cpm.cpmImage.fullEcs,
                         location = context.getString(R.string.title_promote_by),
-                        goldShop = if (cpmData.cpm?.cpmShop?.isPowerMerchant == true) 1 else 0,
+                        goldShop = if (cpmData.cpm.cpmShop.isPowerMerchant) 1 else 0,
                         productList = productList.map {
                             ShopCardModel.ShopItemProduct(
                                     id = it.id.toIntOrZero(),
                                     name = it.name,
                                     priceFormat = it.priceFormat,
-                                    imageUrl = it.imageProduct?.imageUrl ?: ""
+                                    imageUrl = it.imageProduct.imageUrl
                             )
                         },
-                        isOfficial = cpmData.cpm?.cpmShop?.isOfficial ?: false,
-                        isPMPro = cpmData.cpm?.cpmShop?.isPMPro ?: false,
-                        impressHolder = cpmData.cpm?.cpmShop?.imageShop
+                        isOfficial = cpmData.cpm.cpmShop.isOfficial,
+                        isPMPro = cpmData.cpm.cpmShop.isPMPro,
+                        impressHolder = cpmData.cpm.cpmShop.imageShop
                 ),
                 object : ShopCardListener {
                     override fun onItemImpressed() {
