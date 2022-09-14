@@ -214,8 +214,8 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
             listener?.onProductAnchorClickWishlist(productInfoDataModel, !fabDetailActivated) { state, throwable ->
                 if (state) {
                     binding?.fabDetail?.isActivated = !fabDetailActivated
-                    updateWishlist(fabDetailActivated)
                 }
+                updateWishlist(state)
             }
         }
     }
