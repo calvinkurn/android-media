@@ -248,10 +248,10 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _addressUiState = combine(_partnerInfo, _warehouseInfo) { partnerInfo, warehouseInfo ->
+    private val _addressUiState = combine(_partnerInfo, _warehouseInfo, _bottomInsets) { partnerInfo, warehouseInfo, bottomInset ->
         AddressWidgetUiState(
             warehouseInfo = warehouseInfo,
-            shouldShow = partnerInfo.type == PartnerType.TokoNow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned
+            shouldShow = partnerInfo.type == PartnerType.TokoNow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned && !bottomInset.isAnyShown
         )
     }
 
@@ -1842,8 +1842,10 @@ class PlayViewModel @AssistedInject constructor(
 
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
+            val winnerStatus = _winnerStatus.value
+            val interactiveType = _interactive.value.interactive
+
             suspend fun checkWinnerStatus(): Boolean {
-                val winnerStatus = _winnerStatus.value
                 return if (winnerStatus != null) {
                     processWinnerStatus(winnerStatus, interactive.interactive)
                     true
@@ -1854,7 +1856,7 @@ class PlayViewModel @AssistedInject constructor(
                 delayTapJob?.cancel()
                 delayTapJob = viewModelScope.launch(dispatchers.computation) {
                     delay(interactive.interactive.waitingDuration)
-                    checkWinnerStatus()
+                    if(!checkWinnerStatus()) showLeaderBoard(interactiveId = interactiveType.id)
                 }
             }
 

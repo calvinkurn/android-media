@@ -10,7 +10,8 @@ fun createRepurchaseProductUiModel(
     categoryId: String = "",
     category: String = "",
     isStockEmpty: Boolean = false,
-    productCard: ProductCardModel = ProductCardModel()
+    productCard: ProductCardModel = ProductCardModel(),
+    position: Int
 ): RepurchaseProductUiModel  {
-    return RepurchaseProductUiModel(id, parentId, shopId, categoryId, category, isStockEmpty, productCard)
+    return RepurchaseProductUiModel(id, parentId, shopId, categoryId, category, isStockEmpty, productCard, position)
 }

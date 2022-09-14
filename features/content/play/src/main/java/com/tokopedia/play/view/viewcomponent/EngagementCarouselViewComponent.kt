@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
+import com.tokopedia.play.ui.engagement.adapter.EngagementItemDecoration
 import com.tokopedia.play.ui.engagement.adapter.EngagementWidgetAdapter
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
@@ -70,8 +71,11 @@ class EngagementCarouselViewComponent(
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                indicator.setCurrentIndicator(linearLayoutManager.findFirstCompletelyVisibleItemPosition())
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                val view = snapHelper.findSnapView(linearLayoutManager) ?: return
+                val position = linearLayoutManager.getPosition(view)
+                indicator.setCurrentIndicator(position)
+            }
         }
     }
 
@@ -90,6 +94,7 @@ class EngagementCarouselViewComponent(
             adapter = carouselAdapter
             layoutManager = linearLayoutManager
             setOnTouchListener(touchListener)
+            addItemDecoration(EngagementItemDecoration(this.context))
             addOnScrollListener(scrollListener)
         }
         snapHelper.attachToRecyclerView(carousel)

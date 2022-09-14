@@ -101,6 +101,7 @@
     <dimen name="play_voucher_info_translationY">-2dp</dimen>
     <dimen name="play_product_empty_illustration_width">240dp</dimen>
     <dimen name="play_product_empty_illustration_height">180dp</dimen>
+    <dimen name="play_upcoming_description_top">80dp</dimen>
 
     <!--Product Carousel-->
     <dimen name="play_product_carousel_width">80dp</dimen>
