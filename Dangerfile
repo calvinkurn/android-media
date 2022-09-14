@@ -13,12 +13,13 @@ warn("This PR is quite a big one! Try splitting this into separate tasks next ti
 
 # AndroidLint
 android_lint.report_file = "report-result.xml"
+android_lint.correction_file = "lint-correction.json"
 android_lint.skip_gradle_task = true
 android_lint.severity = "Warning"
 android_lint.filtering = true
 android_lint.filtering_lines = true
 android_lint.lint(inline_mode: true)
-
+#
 # Kotlin Detekt
 kotlin_detekt.filtering = true
 kotlin_detekt.filtering_lines = true
@@ -30,5 +31,6 @@ kotlin_detekt.detekt(inline_mode: true)
 ktlint.skip_lint = true
 ktlint.filtering = true
 ktlint.filtering_lines = true
+ktlint.correction = true
 ktlint.report_file = 'ktlint-report.json'
 ktlint.lint(inline_mode: true)
