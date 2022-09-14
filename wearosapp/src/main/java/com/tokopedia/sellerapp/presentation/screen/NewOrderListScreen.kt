@@ -22,10 +22,8 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.ScalingLazyListScope
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.NodeClient
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.sellerapp.data.uimodel.OrderListItemUiModel
+import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.presentation.theme.ChipGrayColor
 import com.tokopedia.sellerapp.presentation.theme.TextGrayColor
 import com.tokopedia.sellerapp.presentation.theme.TextYellowColor
@@ -44,13 +42,13 @@ fun NewOrderListScreen(
 }
 
 fun getNewOrderListData(sharedViewModel: SharedViewModel) {
-    sharedViewModel.getNewOrderListData()
+    sharedViewModel.readyToDeliverOrderList
 }
 
 @Composable
 fun CreateScreenScaffold(sharedViewModel: SharedViewModel) {
     Scaffold {
-        val orderList by sharedViewModel.newOrderListData.collectAsState()
+        val orderList by sharedViewModel.readyToDeliverOrderList.collectAsState()
         when (orderList) {
             is UiState.Success -> {
                 CreateListNewOrder(orderList)
@@ -61,7 +59,7 @@ fun CreateScreenScaffold(sharedViewModel: SharedViewModel) {
 }
 
 @Composable
-fun CreateListNewOrder(orderList: UiState<List<OrderListItemUiModel>>) {
+fun CreateListNewOrder(orderList: UiState<List<OrderModel>>) {
     ScalingLazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -106,7 +104,7 @@ fun createItemOpenOnPhone(scalingLazyListScope: ScalingLazyListScope) {
 
 fun createItemButtonAcceptAllOrder(
     scalingLazyListScope: ScalingLazyListScope,
-    orderList: UiState<List<OrderListItemUiModel>>
+    orderList: UiState<List<OrderModel>>
 ) {
     scalingLazyListScope.item {
         Box(
@@ -172,7 +170,7 @@ private fun createItemTotalNewOrder(
 
 fun createItemsNewOrderList(
     scalingLazyListScope: ScalingLazyListScope,
-    listNewOrder: List<OrderListItemUiModel>?
+    listNewOrder: List<OrderModel>?
 ) {
     listNewOrder?.let {
         scalingLazyListScope.items(it.size) { position ->
@@ -191,14 +189,14 @@ fun createItemsNewOrderList(
                 ) {
                     val newOrderData = listNewOrder[position]
                     UnifyImageCompose(imageUnifyConfig = { imageUnify, _ ->
-                        imageUnify.setImageUrl(newOrderData.productImage)
+                        imageUnify.setImageUrl("")
                         imageUnify.type = ImageUnify.TYPE_CIRCLE
                     }, modifier = Modifier.size(32.dp))
                     Column(
                         modifier = Modifier.padding(start = 8.dp)
                     ) {
                         UnifyTypographyCompose(
-                            text = newOrderData.productName,
+                            text = newOrderData.products.firstOrNull()?.productName.orEmpty(),
                             typographyConfig = { typography, context ->
                                 typography.setType(Typography.DISPLAY_2)
                                 typography.setWeight(Typography.BOLD)
@@ -223,7 +221,7 @@ fun createItemsNewOrderList(
                                 contentDescription = "",
                             )
                             UnifyTypographyCompose(
-                                text = newOrderData.deadlineResponse,
+                                text = newOrderData.deadLineText,
                                 typographyConfig = { typography, _ ->
                                     typography.setType(Typography.DISPLAY_3)
                                     typography.setTextColor(TextYellowColor.toArgb())
