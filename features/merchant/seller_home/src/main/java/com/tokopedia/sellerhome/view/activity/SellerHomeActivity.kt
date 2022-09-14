@@ -29,8 +29,6 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.notifications.utils.NotificationSettingsUtils
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity

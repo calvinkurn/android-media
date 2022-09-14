@@ -95,8 +95,6 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
-import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.notifications.utils.NotificationSettingsUtils;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
