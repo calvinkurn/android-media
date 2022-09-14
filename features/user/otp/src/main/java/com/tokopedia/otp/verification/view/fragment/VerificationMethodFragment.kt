@@ -255,8 +255,8 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     open fun getVerificationMethod() {
         showLoading()
         val otpType = otpData.otpType.toString()
-        if (otpType == OtpConstant.OtpType.OTP_TYPE_168.toString()) {
-            viewmodel.getVerificationMethod168(
+        if (otpType == OtpConstant.OtpType.PHONE_REGISTER_MANDATORY.toString()) {
+            viewmodel.getVerificationMethodPhoneRegisterMandatory(
                 otpType = otpType,
                 msisdn = otpData.msisdn,
                 email = otpData.email,

@@ -3,7 +3,7 @@ package com.tokopedia.otp.verification.domain.pojo
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
 
-data class ParamGetModeList168(
+data class GetVerificationMethodPhoneRegisterMandatoryParam(
 
     @SerializedName("otpType")
     var otpType: String = "",

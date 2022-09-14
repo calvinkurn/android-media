@@ -5,13 +5,13 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
-import com.tokopedia.otp.verification.domain.pojo.ParamGetModeList168
+import com.tokopedia.otp.verification.domain.pojo.GetVerificationMethodPhoneRegisterMandatoryParam
 import javax.inject.Inject
 
-class GetModeList168UseCase @Inject constructor(
+class GetVerificationMethodPhoneRegisterMandatoryUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<ParamGetModeList168, OtpModeListPojo>(dispatcher.io) {
+) : CoroutineUseCase<GetVerificationMethodPhoneRegisterMandatoryParam, OtpModeListPojo>(dispatcher.io) {
     override fun graphqlQuery(): String =
         """
             query otp_mode_list(${'$'}otpType: String!, ${'$'}msisdn: String, ${'$'}email: String, ${'$'}ValidateToken: String){
@@ -40,7 +40,7 @@ class GetModeList168UseCase @Inject constructor(
             }
         """.trimIndent()
 
-    override suspend fun execute(params: ParamGetModeList168): OtpModeListPojo {
+    override suspend fun execute(params: GetVerificationMethodPhoneRegisterMandatoryParam): OtpModeListPojo {
         return graphqlRepository.request(graphqlQuery(), params)
     }
 }

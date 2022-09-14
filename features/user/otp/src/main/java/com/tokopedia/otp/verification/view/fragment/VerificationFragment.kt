@@ -200,8 +200,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
 
         if (isCountdownFinished()) {
-            if (otpData.otpType == OtpConstant.OtpType.OTP_TYPE_168) {
-                viewModel.sendOtp168(
+            if (otpData.otpType == OtpConstant.OtpType.PHONE_REGISTER_MANDATORY) {
+                viewModel.sendOtpPhoneRegisterMandatory(
                     otpType = otpData.otpType.toString(),
                     mode = modeListData.modeText,
                     msisdn = otpData.msisdn,
@@ -249,8 +249,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 analytics.trackClickVerificationButton(otpData.otpType)
             }
         }
-        if (otpData.otpType == OtpConstant.OtpType.OTP_TYPE_168) {
-            viewModel.otpValidate168(
+        if (otpData.otpType == OtpConstant.OtpType.PHONE_REGISTER_MANDATORY) {
+            viewModel.otpValidatePhoneRegisterMandatory(
                 code = code,
                 otpType = otpData.otpType.toString(),
                 mode = modeListData.modeText,
