@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.notifications.utils.NotificationSettingsUtils
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
@@ -103,6 +104,7 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
             viewModel.getData()
             fetchAbTesting()
         }
+        NotificationSettingsUtils(applicationContext).sendNotificationPromptEvent()
     }
 
     override fun onBackPressed() {

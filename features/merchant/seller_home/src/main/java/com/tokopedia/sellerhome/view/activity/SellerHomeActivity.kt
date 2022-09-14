@@ -30,6 +30,7 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.notifications.CMPushNotificationManager
+import com.tokopedia.notifications.utils.NotificationSettingsUtils
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
@@ -271,7 +272,8 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun sendNotificationPermissionData() {
-        CMPushNotificationManager.instance.checkNotificationPermission()
+        NotificationSettingsUtils(applicationContext)
+            .checkNotificationPermission()
     }
 
     fun attachSellerHomeFragmentChangeCallback(callback: FragmentChangeCallback) {

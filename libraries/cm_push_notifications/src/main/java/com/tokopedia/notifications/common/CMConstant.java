@@ -262,11 +262,13 @@ public interface CMConstant {
         String KEY_BUSINESS_UNIT = "businessUnit";
         String KEY_TRACKER_ID = "trackerId";
         String VALUE_BUSINESS_UNIT = "cm";
+        String VALUE_TRACKER_ID_IMPRESSION = "35363";
         String VALUE_TRACKER_ID_NOT_ALLOW = "35365";
         String VALUE_TRACKER_ID_ALLOW = "35364";
         String VALUE_CURRENT_SITE = "tokopediamarketplace";
         String VALUE_EVENT = "clickContent";
         String VALUE_CATEGORY = "native android push prompt";
+        String VALUE_ACTION_IMPRESSION = "impression";
         String VALUE_ACTION_NOT_ALLOW = "click not allow";
         String VALUE_ACTION_ALLOW = "click allow";
     }

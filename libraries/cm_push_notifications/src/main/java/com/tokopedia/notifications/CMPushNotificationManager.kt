@@ -76,8 +76,6 @@ class CMPushNotificationManager : CoroutineScope {
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED,
                 false)
 
-    private val postNotificationPermission = "android.permission.POST_NOTIFICATIONS"
-
     /**
      * initialization of push notification library
      * Push Worker is initialisation & scheduled periodic
@@ -296,29 +294,6 @@ class CMPushNotificationManager : CoroutineScope {
             })
     }
     /*Handle InAPP payload from FCM and GQL End*/
-
-     fun checkNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                applicationContext,
-                postNotificationPermission) == PackageManager.PERMISSION_GRANTED) {
-            try {
-                val userSession = UserSession(applicationContext)
-                NotificationSettingsGtmEvents(userSession).sendActionAllowEvent(applicationContext)
-            } catch (e: Exception){
-            }
-
-        } else if (ContextCompat.checkSelfPermission(
-                applicationContext,
-                postNotificationPermission) == PackageManager.PERMISSION_DENIED) {
-            try {
-                val userSession = UserSession(applicationContext)
-                NotificationSettingsGtmEvents(userSession).sendActionNotAllowEvent(
-                    applicationContext
-                )
-            } catch (e: Exception) {
-            }
-        }
-    }
 
     companion object {
 
