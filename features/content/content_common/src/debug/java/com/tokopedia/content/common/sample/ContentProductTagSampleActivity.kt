@@ -55,6 +55,13 @@ class ContentProductTagSampleActivity : BaseActivity() {
         super.onAttachFragment(fragment)
 
         when(fragment) {
+            is ContentProductTagSampleBottomSheet -> {
+                fragment.setDataSource(object : ContentProductTagSampleBottomSheet.DataSource {
+                    override fun getProductTagArgumentBuilder(): ContentProductTagArgument.Builder {
+                        return getArgumentBuilder()
+                    }
+                })
+            }
             is ProductTagParentFragment -> {
                 fragment.setListener(object : ProductTagParentFragment.Listener {
                     override fun onCloseProductTag() {
@@ -92,6 +99,8 @@ class ContentProductTagSampleActivity : BaseActivity() {
         binding.cbxLastPurchased.isChecked = true
         binding.cbxMyShop.isChecked = true
 
+        binding.cbxUseBottomSheet.isChecked = true
+
         binding.cbxIsAutoHandleBackPressed.isChecked = true
     }
 
@@ -101,7 +110,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
             binding.textFieldMaxSelectedProduct.clearFocus()
 
             if(validate()) {
-                setupFragment()
+                setupProductPicker()
             }
         }
 
@@ -112,31 +121,43 @@ class ContentProductTagSampleActivity : BaseActivity() {
         }
     }
 
-    private fun setupFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(
-                binding.fragmentContainer.id,
-                getFragment(),
-                ProductTagParentFragment.TAG
-            )
-            .commit()
+    private fun setupProductPicker() {
+        if(isUseBottomSheet()) {
+            ContentProductTagSampleBottomSheet.getFragment(
+                supportFragmentManager,
+                classLoader,
+            ).showNow(supportFragmentManager)
+        }
+        else {
+            supportFragmentManager.beginTransaction()
+                .replace(
+                    binding.fragmentContainer.id,
+                    getFragment(),
+                    ProductTagParentFragment.TAG,
+                )
+                .commit()
+        }
     }
 
     private fun getFragment(): Fragment {
         return ProductTagParentFragment.getFragment(
             supportFragmentManager,
             classLoader,
-            ContentProductTagArgument.Builder()
-                .setShopBadge("")
-                .setAuthorId(getAuthorId())
-                .setAuthorType(getAuthorType())
-                .setProductTagSource(getProductTagSource())
-                .setMultipleSelectionProduct(isMultipleSelectionProduct(), getMaxSelectedProduct())
-                .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
-                .setBackButton(ContentProductTagConfig.BackButton.Close)
-                .setIsShowActionBarDivider(false)
-                .setIsAutoHandleBackPressed(getIsAutoHandleBackPressed())
+            getArgumentBuilder()
         )
+    }
+
+    private fun getArgumentBuilder(): ContentProductTagArgument.Builder {
+        return ContentProductTagArgument.Builder()
+            .setShopBadge("")
+            .setAuthorId(getAuthorId())
+            .setAuthorType(getAuthorType())
+            .setProductTagSource(getProductTagSource())
+            .setMultipleSelectionProduct(isMultipleSelectionProduct(), getMaxSelectedProduct())
+            .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
+            .setBackButton(ContentProductTagConfig.BackButton.Close)
+            .setIsShowActionBarDivider(false)
+            .setIsAutoHandleBackPressed(getIsAutoHandleBackPressed())
     }
 
     private fun closeFragment() {
@@ -183,6 +204,10 @@ class ContentProductTagSampleActivity : BaseActivity() {
         return if(isMultipleSelectionProduct())
             binding.textFieldMaxSelectedProduct.editText.text.toString().toIntOrZero()
         else 0
+    }
+
+    private fun isUseBottomSheet(): Boolean {
+        return binding.cbxUseBottomSheet.isChecked
     }
 
     private fun getIsAutoHandleBackPressed(): Boolean {

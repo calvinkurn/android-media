@@ -187,6 +187,14 @@
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 />
 
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cbx_use_bottom_sheet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Use Bottom Sheet"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                />
+
         </LinearLayout>
 
     </ScrollView>
