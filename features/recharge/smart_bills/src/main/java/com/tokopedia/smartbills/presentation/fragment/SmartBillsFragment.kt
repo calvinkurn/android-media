@@ -115,8 +115,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     private var source: String = ""
 
     private var autoTick = false
-    private var totalPrice = 0
-    private var maximumPrice = 0
+    private var totalPrice = 0L
+    private var maximumPrice = 0L
     private var ongoingMonth: RechargeStatementMonths? = RechargeStatementMonths()
     private var listAccordion: List<Section> = listOf()
     private var listBills: List<RechargeBills> = listOf()
@@ -207,9 +207,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         showOnboarding()
 
                         // Save maximum price
-                        maximumPrice = 0
+                        maximumPrice = 0L
                         for (bill in bills) {
-                            maximumPrice += bill.amount.toInt()
+                            maximumPrice += bill.amount
                         }
                     } else {
                         hideLoading()
@@ -570,10 +570,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         if (isChecked) {
             // Do not trigger event if bill is auto-ticked
             if (!autoTick) smartBillsAnalytics.clickTickBill(item, listBills.indexOf(item))
-            totalPrice += item.amount.toInt()
+            totalPrice += item.amount
         } else {
             smartBillsAnalytics.clickUntickBill(item, listBills.indexOf(item))
-            totalPrice -= item.amount.toInt()
+            totalPrice -= item.amount
         }
         updateCheckoutView()
         updateCheckAll()

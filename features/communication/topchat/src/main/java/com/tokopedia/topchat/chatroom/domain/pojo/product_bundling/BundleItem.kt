@@ -14,5 +14,7 @@ data class BundleItem (
     @SerializedName("quantity")
     var quantity: String = "",
     @SerializedName("android_url")
-    var androidUrl: String = ""
+    var androidUrl: String = "",
+    @SerializedName("bundle_price_float")
+    var price : Float = 0F
 )

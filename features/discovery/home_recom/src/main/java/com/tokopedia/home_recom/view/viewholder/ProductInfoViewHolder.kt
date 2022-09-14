@@ -172,7 +172,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
     }
 
     private fun impressWithoutViewportValidation(productInfoDataModel: ProductInfoDataModel) {
-        if (!productInfoDataModel.isInvoke) {
+        if (!productInfoDataModel.isInvoke && productInfoDataModel.isGetTopAds) {
             if (productInfoDataModel.productDetailData?.isTopads == true) {
                 listener?.onProductAnchorImpression(productInfoDataModel)
             } else {
