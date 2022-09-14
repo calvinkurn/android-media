@@ -840,7 +840,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tickerErrorMessage?.gone()
     }
 
-    //region Lapsed taser ticker
     private fun showLapsedTeaserTicker() {
         binding?.tickerLapsedTeaser?.visible()
     }
@@ -848,7 +847,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun hideLapsedTeaserTicker() {
         binding?.tickerLapsedTeaser?.gone()
     }
-    //endregion
 
     private fun displayCampaignDetail(campaignWithSelectedVpsPackage: CampaignWithVpsPackages) {
         val now = Date()
@@ -857,28 +855,43 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             campaign.packageInfo.packageId,
             campaignWithSelectedVpsPackage.vpsPackages
         )
-        val updatedVpsPackage = viewModel.findSuggestedVpsPackage(now, selectedVpsPackage,campaignWithSelectedVpsPackage.vpsPackages)
+
+        val updatedVpsPackage = viewModel.findSuggestedVpsPackage(now, selectedVpsPackage, campaignWithSelectedVpsPackage.vpsPackages) ?: return
+        val isSelectedVpsPackageExpired = now.after(selectedVpsPackage?.packageEndTime)
+
+        val campaignStartDate = if (isSelectedVpsPackageExpired) {
+            now.advanceHourBy(TWO_HOURS)
+        } else {
+            campaign.startDate.removeTimeZone()
+        }
+
+        val campaignEndDate = if (isSelectedVpsPackageExpired) {
+            campaignStartDate.advanceMinuteBy(THIRTY_MINUTE)
+        } else {
+            campaign.endDate.removeTimeZone()
+        }
+
+        val campaignUpcomingDate = if (isSelectedVpsPackageExpired) {
+            campaignStartDate.decreaseHourBy(ONE_HOUR)
+        } else {
+            campaign.upcomingDate.removeTimeZone()
+        }
+
+        if (isSelectedVpsPackageExpired) showVpsPackageAutomaticallyAdjustedTicker()
 
         binding?.run {
             tauCampaignName.editText.setText(campaign.campaignName)
 
-            handleVpsPackageAutoSwitchTicker(now, selectedVpsPackage)
             displaySelectedVpsPackage(updatedVpsPackage)
 
             val isEditDateEnabled = campaign.status == CampaignStatus.DRAFT
-            tauStartDate.editText.setText(campaign.startDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
-            tauEndDate.editText.setText(campaign.endDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            tauStartDate.editText.setText(campaignStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            tauEndDate.editText.setText(campaignEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
             tauStartDate.isEnabled = isEditDateEnabled
             tauEndDate.isEnabled = isEditDateEnabled
 
-            val upcomingTimeInHours = viewModel.findUpcomingTimeDifferenceInHour(
-                campaign.startDate.removeTimeZone(),
-                campaign.upcomingDate.removeTimeZone()
-            )
-            val maxValue = viewModel.getTeaserQuantityEditorMaxValue(
-                campaign.startDate.removeTimeZone(),
-                Date()
-            )
+            val upcomingTimeInHours = viewModel.findUpcomingTimeDifferenceInHour(campaignStartDate, campaignUpcomingDate)
+            val maxValue = viewModel.getTeaserQuantityEditorMaxValue(campaignStartDate, Date())
             binding?.quantityEditor?.maxValue = maxValue
             binding?.quantityEditor?.setValue(upcomingTimeInHours)
             binding?.quantityEditor?.addButton?.isEnabled = upcomingTimeInHours != QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
@@ -889,21 +902,21 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             renderSelectedColor(campaign)
         }
 
-        viewModel.setSelectedStartDate(campaign.startDate.removeTimeZone())
-        viewModel.setSelectedEndDate(campaign.endDate.removeTimeZone())
+        viewModel.setSelectedStartDate(campaignStartDate)
+        viewModel.setSelectedEndDate(campaignEndDate)
         viewModel.setShowTeaser(campaign.useUpcomingWidget)
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
         viewModel.storeVpsPackage(campaignWithSelectedVpsPackage.vpsPackages)
-        viewModel.setSelectedVpsPackage(updatedVpsPackage ?: return)
+        viewModel.setSelectedVpsPackage(updatedVpsPackage)
 
         viewModel.storeAsDefaultSelection(
             CampaignInformationViewModel.Selection(
                 campaign.campaignName,
-                campaign.startDate.removeTimeZone(),
-                campaign.endDate.removeTimeZone(),
+                campaignStartDate,
+                campaignEndDate,
                 campaign.useUpcomingWidget,
-                campaign.upcomingDate.removeTimeZone(),
+                campaignUpcomingDate,
                 campaign.gradientColor.first,
                 campaign.gradientColor.second,
                 campaign.paymentType,
@@ -911,12 +924,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 campaign.packageInfo.packageId
             )
         )
-    }
-
-    private fun handleVpsPackageAutoSwitchTicker(now: Date, selectedVpsPackage: VpsPackageUiModel?) {
-        if (now.after(selectedVpsPackage?.packageEndTime)) {
-            showVpsPackageAutomaticallyAdjustedTicker()
-        }
     }
 
     private fun renderSelectedColor(campaign: CampaignUiModel) {

@@ -56,7 +56,6 @@ class CampaignInformationViewModel @Inject constructor(
         private const val MIN_CAMPAIGN_NAME_LENGTH = 5
         private const val ONE_HOUR = 1
         private const val SHOP_TIER_BENEFIT_PACKAGE_ID: Long= -1
-        private const val EMPTY_QUOTA = 0
         private const val VPS_PACKAGE_ID_NOT_SELECTED: Long = 0
         private const val THIRTY_MINUTE = 30
     }
