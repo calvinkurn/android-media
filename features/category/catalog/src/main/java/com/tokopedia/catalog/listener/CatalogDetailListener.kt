@@ -40,10 +40,15 @@ interface CatalogDetailListener {
 
     fun openComparisonBottomSheet(comparisonCatalog: ComparisionModel?){}
 
-    fun openComparisonBottomSheet(comparisonNewModel: ComparisonNewModel?){}
+    fun openComparisonNewBottomSheet(comparisonNewModel: ComparisonNewModel?){}
+
+    fun comparisonNewCatalogClicked(comparisonCatalogId : String){}
 
     fun changeComparison(comparedCatalogId: String){}
 
+    fun accordionDropUp(tabName: String?){}
+
+    fun accordionDropDown(tabName: String?){}
     /**
      * CatalogReviewContainerViewHolder
      */

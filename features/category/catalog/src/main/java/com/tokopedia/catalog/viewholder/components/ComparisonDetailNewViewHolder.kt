@@ -47,7 +47,7 @@ class ComparisonDetailNewViewHolder(val view: View) : RecyclerView.ViewHolder(vi
                     text = view.context.getString(R.string.catalog_ganti_perbandingan)
                     show()
                     setOnClickListener {
-                        catalogDetailListener?.openComparisonBottomSheet(featureRightData)
+                        catalogDetailListener?.openComparisonNewBottomSheet(featureRightData)
                     }
                 }
             }
@@ -56,7 +56,7 @@ class ComparisonDetailNewViewHolder(val view: View) : RecyclerView.ViewHolder(vi
         view.findViewById<LinearLayout>(R.id.comparision_card).setOnClickListener {
             featureRightData?.id?.let { catalogId ->
                 if(catalogId.isNotEmpty()){
-                    catalogDetailListener?.comparisonCatalogClicked(catalogId)
+                    catalogDetailListener?.comparisonNewCatalogClicked(catalogId)
                 }
             }
         }

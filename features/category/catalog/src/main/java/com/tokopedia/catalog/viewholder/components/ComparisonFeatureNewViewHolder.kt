@@ -25,6 +25,9 @@ class ComparisonFeatureNewViewHolder(val view: View) : RecyclerView.ViewHolder(v
 
                 if(isExpanded){
                     catalogComparisonAccordionAdapter?.setData(specList.subcard)
+                    catalogDetailListener.accordionDropDown(specList.comparisonTitle)
+                } else{
+                    catalogDetailListener.accordionDropUp(specList.comparisonTitle)
                 }
             }
         }

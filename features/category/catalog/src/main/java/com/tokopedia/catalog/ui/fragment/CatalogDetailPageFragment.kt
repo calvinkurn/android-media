@@ -711,17 +711,48 @@ class CatalogDetailPageFragment : Fragment(),
         catalogComparisonBottomSheet.show(childFragmentManager, "")
     }
 
-    override fun openComparisonBottomSheet(comparisonNewModel: ComparisonNewModel?) {
+    override fun openComparisonNewBottomSheet(comparisonNewModel: ComparisonNewModel?) {
         CatalogDetailAnalytics.sendEvent(
             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             CatalogDetailAnalytics.ActionKeys.CLICK_GANTI_PERBANDINGAN,
-            "catalog page: $catalogId | catalog comparison: ${comparisonNewModel?.id ?: ""}",userSession.userId,catalogId)
+            "catalog page: $catalogId | catalog comparison: ${comparisonNewModel?.id ?: ""}",userSession.userId,catalogId,
+            CatalogDetailAnalytics.TrackerId.OPEN_BOTTOMSHEET)
 
         val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
             catalogBrand, catalogDepartmentId, recommendedCatalogId,
             CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,this)
         catalogComparisonBottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun comparisonNewCatalogClicked(comparisonCatalogId: String) {
+        context.let {
+            CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_NEXT_CATALOG_PAGE_PERBANDINGAN_PRODUK,
+                "catalog page: $catalogId | next catalog page: $comparisonCatalogId", userSession.userId, catalogId,
+                CatalogDetailAnalytics.TrackerId.CLICK_NEXT_CATALOG_PAGE)
+            RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisonCatalogId}")
+        }
+    }
+
+    override fun accordionDropUp(tabName: String?) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_DROP_UP_BUTTON_PERBANDINGAN_PRODUK,
+            "$catalogName - $catalogId - tabName: $tabName", userSession.userId, catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_DROP_UP_BUTTON)
+    }
+
+    override fun accordionDropDown(tabName: String?) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_DROP_DOWN_BUTTON_PERBANDINGAN_PRODUK,
+            "$catalogName - $catalogId - tabName: $tabName", userSession.userId, catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_DROP_DOWN_BUTTON)
     }
 
     override fun changeComparison(comparedCatalogId: String) {
