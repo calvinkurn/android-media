@@ -7,6 +7,7 @@ import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.chatlist.model.PlayChat
+import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
@@ -68,8 +69,15 @@ class PlaySocketToModelMapper @Inject constructor(
         )
     }
 
-    fun mapMerchantVoucher(input: MerchantVoucher): List<MerchantVoucherUiModel> {
-        return input.listOfVouchers.map(merchantVoucherMapper::mapMerchantVoucher)
+    @OptIn(ExperimentalStdlibApi::class)
+    fun mapMerchantVoucher(input: MerchantVoucher, partnerName: String): VoucherUiModel {
+        val vouchers = input.listOfVouchers.map(merchantVoucherMapper::mapMerchantVoucher)
+        val eligibleForShown = vouchers.find { it.type != MerchantVoucherType.Private}
+        val newVoucher = buildList {
+            if(eligibleForShown != null) add(PlayVoucherUiModel.InfoHeader(partnerName))
+            addAll(vouchers)
+        }
+        return VoucherUiModel(newVoucher)
     }
 
     fun mapChat(input: PlayChat): PlayChatUiModel {

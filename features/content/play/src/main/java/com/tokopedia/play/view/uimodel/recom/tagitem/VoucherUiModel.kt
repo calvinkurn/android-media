@@ -1,9 +1,9 @@
 package com.tokopedia.play.view.uimodel.recom.tagitem
 
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 
 data class VoucherUiModel(
-    val voucherList: List<MerchantVoucherUiModel>,
+    val voucherList: List<PlayVoucherUiModel>,
 ) {
     companion object {
         val Empty: VoucherUiModel

@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -33,9 +32,9 @@ import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.action.AtcProductAction
 import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
 import com.tokopedia.play.view.uimodel.action.BuyProductAction
@@ -271,19 +270,33 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.hideCouponSheet()
     }
 
-    override fun onVouchersImpressed(view: ShopCouponSheetViewComponent, vouchers: List<MerchantVoucherUiModel>) {
+    override fun onVouchersImpressed(view: ShopCouponSheetViewComponent, vouchers: List<PlayVoucherUiModel.Merchant>) {
         trackImpressedVoucher(vouchers)
     }
 
-    override fun onCopyVoucherCodeClicked(view: ShopCouponSheetViewComponent, voucher: MerchantVoucherUiModel) {
+    override fun onCopyVoucherCodeClicked(view: ShopCouponSheetViewComponent, voucher: PlayVoucherUiModel.Merchant) {
         copyToClipboard(content = voucher.code)
         doShowToaster(
             bottomSheetType = BottomInsetsType.CouponSheet,
             toasterType = Toaster.TYPE_NORMAL,
             message = getString(R.string.play_voucher_code_copied),
-            actionText = getString(R.string.play_action_ok),
+            actionText = getString(R.string.play_action_lihat),
+            actionClickListener = {
+                RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+            }
         )
         analytic.clickCopyVoucher(voucher)
+    }
+
+    override fun onVoucherItemClicked(
+        view: ShopCouponSheetViewComponent,
+        voucher: PlayVoucherUiModel.Merchant
+    ) {
+        doShowToaster(
+            bottomSheetType = BottomInsetsType.CouponSheet,
+            toasterType = Toaster.TYPE_NORMAL,
+            message = getString(R.string.play_voucher_public),
+        )
     }
 
     override fun onVoucherScrolled(view: ShopCouponSheetViewComponent, lastPositionViewed: Int) {
@@ -672,7 +685,7 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(SendUpcomingReminder(productSectionUiModel))
     }
 
-    private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
+    private fun trackImpressedVoucher(vouchers: List<PlayVoucherUiModel.Merchant> = couponSheetView.getVisibleVouchers()) {
         if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
     }
 

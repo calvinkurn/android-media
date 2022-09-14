@@ -6,7 +6,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.MerchantVoucherType
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -29,7 +29,7 @@ class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) : 
         tvVoucherDescription.setOnClickListener(childClickListener)
     }
 
-    fun bind(item: MerchantVoucherUiModel) {
+    fun bind(item: PlayVoucherUiModel.Merchant) {
         itemView.addOnImpressionListener(item.impressHolder) {
             listener.onVoucherImpressed(item, adapterPosition)
         }
@@ -51,7 +51,7 @@ class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) : 
     }
 
     interface Listener {
-        fun onVoucherImpressed(voucher: MerchantVoucherUiModel, position: Int)
-        fun onVoucherClicked(voucher: MerchantVoucherUiModel)
+        fun onVoucherImpressed(voucher: PlayVoucherUiModel.Merchant, position: Int)
+        fun onVoucherClicked(voucher: PlayVoucherUiModel.Merchant)
     }
 }

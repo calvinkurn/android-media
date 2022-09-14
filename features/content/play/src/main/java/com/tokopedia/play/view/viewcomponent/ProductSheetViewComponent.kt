@@ -2,7 +2,6 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
@@ -14,29 +13,26 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.adapter.ProductSectionAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
+import com.tokopedia.play.view.custom.PlayVoucherView
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-import com.tokopedia.play_common.delegate.reusableJob
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * Created by jegul on 31/07/20
@@ -47,14 +43,10 @@ class ProductSheetViewComponent(
 ) : ViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
-    private val clProductVoucher: FrameLayout = findViewById(R.id.cl_product_voucher_info)
     private val clVoucherContent: ConstraintLayout = findViewById(R.id.cl_product_voucher_content)
     private val tvSheetTitle: TextView = findViewById(commonR.id.tv_sheet_title)
     private val rvProductList: RecyclerView = findViewById(R.id.rv_product_list)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
-
-    private val tvVoucherHeaderTitle: TextView = findViewById(R.id.tv_first_voucher_title)
-    private val tvVoucherHeaderDesc: TextView = findViewById(R.id.tv_voucher_count)
 
     private val globalError: GlobalError = findViewById(R.id.global_error_product)
 
@@ -63,6 +55,8 @@ class ProductSheetViewComponent(
     private val tvHeaderProductEmpty: TextView = findViewById(R.id.tv_title_product_empty)
     private val tvBodyProductEmpty: TextView = findViewById(R.id.tv_desc_product_empty)
     private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
+
+    private val voucherInfo: PlayVoucherView = findViewById(R.id.voucher_view)
 
     private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
         override fun onBuyProduct(
@@ -116,6 +110,12 @@ class ProductSheetViewComponent(
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
+    private val voucherListener = object : PlayVoucherView.Listener{
+        override fun onVoucherInfoClicked(view: PlayVoucherView) {
+            listener.onInfoVoucherClicked(this@ProductSheetViewComponent)
+        }
+    }
+
     init {
         findViewById<ImageView>(commonR.id.iv_sheet_close)
                 .setOnClickListener {
@@ -141,6 +141,7 @@ class ProductSheetViewComponent(
 
         clVoucherContent.outlineProvider = RectangleShadowOutlineProvider()
         clVoucherContent.clipToOutline = true
+        voucherInfo.setupListener(voucherListener)
     }
 
     override fun show() {
@@ -163,7 +164,7 @@ class ProductSheetViewComponent(
 
     fun setProductSheet(
         sectionList: List<ProductSectionUiModel>,
-        voucherList: List<MerchantVoucherUiModel>,
+        voucherList: List<PlayVoucherUiModel>,
         title: String,
     ) {
         showContent(true)
@@ -171,19 +172,10 @@ class ProductSheetViewComponent(
 
         productSectionAdapter.setItemsAndAnimateChanges(sectionList)
 
-        if (voucherList.isEmpty()) {
-            clProductVoucher.hide()
-        } else {
-            clProductVoucher.setOnClickListener {
-                listener.onInfoVoucherClicked(this@ProductSheetViewComponent)
-            }
-
-            voucherList.let {
-                tvVoucherHeaderTitle.text = it.getOrNull(0)?.title ?: ""
-                tvVoucherHeaderDesc.text = getString(R.string.play_product_voucher_header_desc, it.size.toString())
-            }
-            clProductVoucher.show()
-        }
+        val merchantVoucher = voucherList.filterIsInstance<PlayVoucherUiModel.Merchant>()
+        voucherInfo.showWithCondition(merchantVoucher.isNotEmpty())
+        if (merchantVoucher.isEmpty()) return
+        voucherInfo.setupView(merchantVoucher.first(), merchantVoucher.size)
     }
 
     fun showPlaceholder() {
@@ -224,14 +216,14 @@ class ProductSheetViewComponent(
         if (shouldShow) {
             tvSheetTitle.show()
             rvProductList.show()
-            clProductVoucher.show()
+            voucherInfo.show()
 
             globalError.hide()
             clProductEmpty.hide()
         } else {
             tvSheetTitle.hide()
             rvProductList.hide()
-            clProductVoucher.hide()
+            voucherInfo.hide()
 
             globalError.show()
             clProductEmpty.show()

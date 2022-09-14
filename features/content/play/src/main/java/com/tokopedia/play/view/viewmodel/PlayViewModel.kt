@@ -52,6 +52,7 @@ import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
@@ -1142,8 +1143,11 @@ class PlayViewModel @AssistedInject constructor(
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val warehouseId = _warehouseInfo.value.warehouseId
-            val tagItem = repo.getTagItem(channelId, warehouseId)
-            _tagItems.value = tagItem
+            val tagItem = repo.getTagItem(channelId, warehouseId, _partnerInfo.value.name)
+
+            _tagItems.update {
+               tagItem
+            }
 
             checkReminderStatus()
 
@@ -1670,13 +1674,10 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is MerchantVoucher -> {
-                val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)
-
+                val mappedVoucher = playSocketToModelMapper.mapMerchantVoucher(result, _partnerInfo.value.name)
                 _tagItems.update {
                     it.copy(
-                        voucher = it.voucher.copy(
-                            voucherList = mappedVouchers,
-                        ),
+                        voucher = mappedVoucher
                     )
                 }
             }
