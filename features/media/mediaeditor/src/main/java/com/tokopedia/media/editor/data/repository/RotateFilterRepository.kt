@@ -20,6 +20,7 @@ interface RotateFilterRepository {
     var previousDegree: Float
     var rotateNumber: Int
     var sliderValue: Float
+    var initialScale: Float
 }
 
 class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository {
@@ -34,7 +35,7 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
     private var rotatedRatioZoom = 0f
 
     // used by rotated via slider & be used as source of truth anchor of zooming 
-    private var startZoomPoint = 0f
+    override var initialScale = 0f
     private var latestZoomPoint = 0f
 
     private var originalTargetWidth: RectF = RectF()
@@ -52,7 +53,7 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
 
         val normalizeDegree = degree * editorDetailPreview.scaleNormalizeValue
 
-        if(startZoomPoint == 0f) startZoomPoint = cropImageView.currentScale
+        if(initialScale == 0f) initialScale = cropImageView.currentScale
         if(originalTargetWidth.width() == 0f) {
             originalTargetWidth.set(editorDetailPreview.overlayView.cropViewRect)
         }
@@ -73,18 +74,18 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
 
                 if (rotatedRatioZoom == 0f) {
                     val newTargetWidth = cropOverlay.cropViewRect
-                    rotatedRatioZoom = (newTargetWidth.height() / originalTargetWidth.width()) * startZoomPoint
+                    rotatedRatioZoom = (newTargetWidth.height() / originalTargetWidth.width()) * initialScale
                 }
                 newScale = rotatedRatioZoom
             }
 
-            if(newScale > startZoomPoint){
+            if(newScale > initialScale){
                 cropImageView.zoomInImage(newScale)
             } else {
                 cropImageView.zoomOutImage(newScale)
             }
 
-            startZoomPoint = cropImageView.currentScale
+            initialScale = cropImageView.currentScale
             isRatioRotated = !isRatioRotated
             rotateNumber++
         } else {
@@ -94,7 +95,7 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
             val absNormalize = abs(normalizeDegree)
             var zoomPointDiff = 0f
             if(absPrev > absNormalize){
-                zoomPointDiff = abs((latestZoomPoint - startZoomPoint) / normalizeDegree)
+                zoomPointDiff = abs((latestZoomPoint - initialScale) / normalizeDegree)
             }
 
             cropImageView.postRotate(rotateDegree)

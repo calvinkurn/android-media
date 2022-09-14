@@ -426,6 +426,8 @@ class DetailEditorFragment @Inject constructor(
                     val deltaX = (cropImageMatrix[2] * -1) + cropRotateData.translateX
                     val deltaY = (cropImageMatrix[5] * -1) + cropRotateData.translateY
                     cropView.postTranslate(deltaX, deltaY)
+
+                    cropView.setImageToWrapCropBounds(false)
                 }, DELAY_IMPLEMENT_CROP)
             }
         }
@@ -434,10 +436,7 @@ class DetailEditorFragment @Inject constructor(
     private fun implementPreviousStateRotate(cropRotateData: EditorCropRotateModel) {
         if (cropRotateData.imageWidth == 0 && cropRotateData.imageHeight == 0) return
         viewBinding?.imgUcropPreview?.let {
-            val originalAsset = it.getBitmap()
-
             val cropView = it.cropImageView
-            val overlayView = it.overlayView
 
             val rotateDegree =
                 (cropRotateData.rotateDegree + (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE))
@@ -445,21 +444,14 @@ class DetailEditorFragment @Inject constructor(
             // need to check if previous value is rotate / not, if rotated then ratio is changed
             val isRotate = cropRotateData.orientationChangeNumber % 2 == 1
 
-            val originalWidth = originalAsset.width.toFloat()
-            val originalHeight = originalAsset.height.toFloat()
-
-            val ratio =
-                if (isRotate) originalHeight / originalWidth else originalWidth / originalHeight
-
             cropView.scaleX = cropRotateData.scaleX
             cropView.scaleY = cropRotateData.scaleY
             viewModel.setRotate(it, rotateDegree, isRotate)
             viewModel.rotateNumber = cropRotateData.orientationChangeNumber
             viewModel.rotateSliderValue = cropRotateData.rotateDegree
+            viewModel.rotateInitialScale = cropRotateData.scale
 
-            overlayView.setTargetAspectRatio(ratio)
-
-            cropView.setImageToWrapCropBounds()
+            cropView.setImageToWrapCropBounds(false)
         }
     }
 
@@ -495,6 +487,11 @@ class DetailEditorFragment @Inject constructor(
             readPreviousDetailState(editorDetailUi)
         }
 
+        if(data.isToolRotate() || data.isToolCrop()) {
+            implementPreviousStateRotate(data.cropRotateValue)
+            implementPreviousStateCrop(data.cropRotateValue)
+        }
+
         implementedBaseBitmap = getBitmap()
         readPreviousDetailState(data)
     }
@@ -504,20 +501,6 @@ class DetailEditorFragment @Inject constructor(
             when (editorToolType) {
                 EditorToolType.BRIGHTNESS -> implementPreviousStateBrightness(brightnessValue)
                 EditorToolType.CONTRAST -> implementPreviousStateContrast(contrastValue)
-                EditorToolType.CROP -> {
-                    if (viewBinding?.imgUcropPreview?.isVisible == true && previousState.cropRotateValue.isCrop) {
-                        viewBinding?.imgUcropPreview?.cropImageView?.post {
-                            implementPreviousStateCrop(cropRotateValue)
-                        }
-                    }
-                }
-                EditorToolType.ROTATE -> {
-                    if (viewBinding?.imgUcropPreview?.isVisible == true && previousState.cropRotateValue.isRotate) {
-                        viewBinding?.imgUcropPreview?.cropImageView?.post {
-                            implementPreviousStateRotate(cropRotateValue)
-                        }
-                    }
-                }
                 EditorToolType.WATERMARK -> implementPreviousWatermark(this)
             }
         }

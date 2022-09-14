@@ -171,6 +171,12 @@ class DetailEditorViewModel @Inject constructor(
 
     val rotateRotationFinalDegree: Float get() = rotateFilterRepository.getFinalRotationDegree()
 
+    var rotateInitialScale: Float
+        get() = rotateFilterRepository.initialScale
+        set(value) {
+            rotateFilterRepository.initialScale = value
+        }
+
     fun saveImageCache(
         context: Context,
         bitmapParam: Bitmap,
