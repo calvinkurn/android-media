@@ -517,6 +517,7 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
         adapter.notifyItemRangeRemoved(PARTIAL_RESET_LENGTH, listSize - PARTIAL_RESET_LENGTH)
         loadMoreTriggerListener?.resetState()
         listSize = affiliateHomeViewModel.staticSize
+        isNoMoreData = false
     }
 
 }
