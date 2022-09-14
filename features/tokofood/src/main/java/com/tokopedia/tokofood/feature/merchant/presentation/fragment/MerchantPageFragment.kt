@@ -282,7 +282,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         setToolbarBackIconUnify()
         setBackgroundDefaultColor()
         setHeaderBackground()
-        setupAppBarLayoutListener()
         setupMerchantLogo()
         setupMerchantProfileCarousel()
         setupProductList()
@@ -472,11 +471,13 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun showLoader() {
         binding?.merchantInfoViewGroup?.hide()
+        binding?.geMerchantPageErrorView?.hide()
         binding?.shimmeringMerchantPage?.root?.show()
     }
 
     private fun hideLoader() {
         binding?.shimmeringMerchantPage?.root?.hide()
+        binding?.geMerchantPageErrorView?.hide()
         binding?.merchantInfoViewGroup?.show()
     }
 
@@ -599,6 +600,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     val isDeliverable = merchantData.merchantProfile.deliverable
                     if (isDeliverable) {
                         hideLoader()
+                        setupAppBarLayoutListener()
                         // hide global error
                         binding?.geMerchantPageErrorView?.hide()
                         // render ticker data if not empty
