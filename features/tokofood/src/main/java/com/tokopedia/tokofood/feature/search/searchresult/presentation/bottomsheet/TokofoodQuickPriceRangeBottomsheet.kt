@@ -16,8 +16,8 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.databinding.BottomsheetTokofoodSearchQuickPriceRangeBinding
-import com.tokopedia.tokofood.feature.search.searchresult.di.component.DaggerSearchResultComponent
-import com.tokopedia.tokofood.feature.search.searchresult.di.component.SearchResultComponent
+import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
+import com.tokopedia.tokofood.feature.search.di.component.TokoFoodSearchComponent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel.TokofoodQuickPriceRangeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -26,7 +26,7 @@ import java.lang.Exception
 import javax.inject.Inject
 
 class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterCheckboxListener,
-    HasComponent<SearchResultComponent> {
+    HasComponent<TokoFoodSearchComponent> {
 
     @Inject
     lateinit var viewModel: TokofoodQuickPriceRangeViewModel
@@ -73,8 +73,8 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
         listener = null
     }
 
-    override fun getComponent(): SearchResultComponent {
-        return DaggerSearchResultComponent.builder()
+    override fun getComponent(): TokoFoodSearchComponent {
+        return DaggerTokoFoodSearchComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build()
     }

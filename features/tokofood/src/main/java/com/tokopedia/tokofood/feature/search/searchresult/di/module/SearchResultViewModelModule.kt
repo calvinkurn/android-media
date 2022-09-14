@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.tokofood.common.di.TokoFoodScope
+import com.tokopedia.tokofood.feature.search.di.scope.TokoFoodSearchScope
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel.TokofoodQuickPriceRangeViewModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel.TokofoodSearchResultPageViewModel
 import dagger.Binds
@@ -15,18 +15,14 @@ import dagger.multibindings.IntoMap
 internal abstract class SearchResultViewModelModule {
 
     @Binds
-    @TokoFoodScope
-    internal abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
-
-    @Binds
     @IntoMap
-    @TokoFoodScope
+    @TokoFoodSearchScope
     @ViewModelKey(TokofoodSearchResultPageViewModel::class)
     internal abstract fun provideTokofoodSearchResultPageViewModel(viewModel: TokofoodSearchResultPageViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @TokoFoodScope
+    @TokoFoodSearchScope
     @ViewModelKey(TokofoodQuickPriceRangeViewModel::class)
     internal abstract fun provideTokofoodQuickPriceRangeViewModel(viewModel: TokofoodQuickPriceRangeViewModel): ViewModel
 

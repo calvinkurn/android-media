@@ -36,7 +36,7 @@ import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErr
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentSearchResultBinding
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
-import com.tokopedia.tokofood.feature.search.searchresult.di.component.DaggerSearchResultComponent
+import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultAdapterTypeFactory
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultDiffer
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultPageAdapter
@@ -124,7 +124,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun initInjector() {
         activity?.let {
-            DaggerSearchResultComponent
+            DaggerTokoFoodSearchComponent
                 .builder()
                 .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
