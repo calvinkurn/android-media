@@ -82,6 +82,7 @@
     <string name="commonbs_sort_title">Urutkan</string>
     <string name="commonbs_status_filter_title">Mau cari status apa?</string>
     <string name="commonbs_category_filter_title">Mau cari kategori apa?</string>
+    <string name="commonbs_criteria_filter_title">Mau cari produk apa?</string>
     <string name="commonbs_category_criteria_check_title">Kriteria campaign</string>
     <string name="commonbs_location_criteria_check_title">Kriteria lokasi</string>
     <string name="commonbs_product_check_title">Detail produk</string>
@@ -101,6 +102,13 @@
     <string name="commonbs_product_check_location_count_format">Detail di %d Lokasi</string>
     <string name="commonbs_field_required">Diwajibkan</string>
     <string name="commonbs_field_limited">Dibatasi</string>
+
+    <!--    CDP-->
+    <string name="stfs_bottom_sheet_register_period_label">Periode Pendaftaran</string>
+    <string name="stfs_bottom_sheet_add_product_label">Tambah Produk</string>
+    <string name="stfs_bottom_sheet_selection_process_label">Proses Seleksi</string>
+    <string name="stfs_bottom_sheet_active_promotion_label">Promosi Aktif</string>
+    <string name="stfs_bottom_sheet_done_label">Selesai</string>
 
     <!--    Upcoming CDP-->
     <string name="stfs_deskripsi_label">Deskripsi</string>
@@ -167,4 +175,19 @@
     <string name="stfst_canceled_card_description_placeholder">Campaign dibatalkan karena [%s].</string>
     <string name="stfs_missed_card_title_label">Yah, campaign ini sudah lewat!</string>
     <string name="stfs_missed_card_desc_label">Kamu tidak mengajukan produk untuk campaign ini.</string>
+
+    <!--Choose Product-->
+    <string name="chooseproduct_fs_tokopedia_page_title">Tambah Produk Campaign</string>
+    <string name="chooseproduct_category_criteria_title">Batas pengajuan kategori promo</string>
+    <string name="chooseproduct_product_count_suffix">Produk</string>
+    <string name="chooseproduct_add_button_text">Tambah Produk</string>
+    <string name="chooseproduct_nodata_title">Data tidak ditemukan</string>
+    <string name="choose_product_category_title_format">%s , +%d lainnya</string>
+    <string name="chooseproduct_total_stock_format">Total Stok</string>
+    <string name="choose_product_location_format">"di %d lokasi"</string>
+    <string name="choose_product_variant_count_format">%d Varian Produk</string>
+    <string name="chooseproduct_criteria_variant_format">%d varian sesuai kriteria</string>
+    <string name="chooseproduct_filter_criteria_text">Memenuhi Kriteria</string>
+    <string name="chooseproduct_filter_category_text">Semua Kategori</string>
+
 </resources>

@@ -7,7 +7,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
-class GetFlashSaleDetailForSellerUseCase @Inject constructor(
+class  GetFlashSaleDetailForSellerUseCase @Inject constructor(
     repository: GraphqlRepository,
     private val getFlashSaleListForSellerUseCase: GetFlashSaleListForSellerUseCase,
 ) : GraphqlUseCase<FlashSale>(repository)  {

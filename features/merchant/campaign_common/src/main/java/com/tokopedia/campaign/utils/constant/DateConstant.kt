@@ -12,5 +12,6 @@ object DateConstant {
     //region Date
     const val DATE_YEAR_PRECISION = "dd MMM yyyy"
     const val DATE_MONTH_ONLY = "dd MMM"
+    const val DATE_ONLY = "dd"
     //endregion
 }

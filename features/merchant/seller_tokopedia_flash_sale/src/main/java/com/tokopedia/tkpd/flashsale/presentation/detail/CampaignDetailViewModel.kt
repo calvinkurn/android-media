@@ -5,11 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProduct
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleDetailForSellerUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSubmittedProductListUseCase
@@ -18,8 +20,9 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.Ong
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.OnSelectionProcessItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
-import com.tokopedia.tkpd.flashsale.util.extension.hoursDifference
-import com.tokopedia.tkpd.flashsale.util.extension.minutesDifference
+import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
+import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.ProductCriteriaModel
+import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -51,6 +54,10 @@ class CampaignDetailViewModel @Inject constructor(
 
     companion object {
         private const val PAGE_SIZE = 10
+        private const val REGISTER_PERIOD_TITLE = "Periode Pendaftaran"
+        private const val ADD_PRODUCT_TITLE = "Tambah Produk"
+        private const val SELECTION_PROCESS_TITLE = "Proses Seleksi"
+        private const val ACTIVE_PROMOTION_TITLE = "Promosi Aktif"
     }
 
     fun getCampaignDetail(campaignId: Long) {
@@ -103,6 +110,125 @@ class CampaignDetailViewModel @Inject constructor(
                 FlashSaleStatus.REJECTED -> submittedProduct.toOngoingRejectedItem()
                 FlashSaleStatus.FINISHED -> submittedProduct.toOngoingAndFinishedItem()
                 else -> submittedProduct.toWaitingForSelectionItem()
+            }
+        }
+    }
+
+    private fun getTimelineData(flashSale: FlashSale): MutableList<TimelineStepModel> {
+        val timelineData: MutableList<TimelineStepModel> = mutableListOf()
+        val submissionDatePeriod =
+            "${flashSale.submissionStartDateUnix.formatTo(DateConstant.DATE_ONLY)}-${
+                flashSale.submissionEndDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            }"
+        val selectionProcessDatePeriod =
+            "${flashSale.reviewStartDateUnix.formatTo(DateConstant.DATE_ONLY)}-${
+                flashSale.reviewEndDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            }"
+        val activePromotionDatePeriod =
+            "${flashSale.startDateUnix.formatTo(DateConstant.DATE_ONLY)}-${
+                flashSale.endDateUnix.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            }"
+        val registerPeriodTimelineData = TimelineStepModel(
+            REGISTER_PERIOD_TITLE,
+            submissionDatePeriod,
+            isEnded = Date() > flashSale.submissionEndDateUnix,
+            isActive = Date() >= flashSale.submissionStartDateUnix && Date() <= flashSale.submissionEndDateUnix || Date() > flashSale.submissionEndDateUnix
+        )
+        val addProductTimelineData = TimelineStepModel(
+            ADD_PRODUCT_TITLE,
+            submissionDatePeriod,
+            isEnded = Date() > flashSale.submissionEndDateUnix,
+            isActive = Date() >= flashSale.submissionStartDateUnix && Date() <= flashSale.submissionEndDateUnix || Date() > flashSale.submissionEndDateUnix
+        )
+        val selectionProcessTimelineData = TimelineStepModel(
+            SELECTION_PROCESS_TITLE,
+            selectionProcessDatePeriod,
+            isEnded = Date() > flashSale.reviewEndDateUnix,
+            isActive = Date() >= flashSale.reviewStartDateUnix && Date() <= flashSale.reviewEndDateUnix || Date() > flashSale.reviewEndDateUnix
+        )
+        val activePromotionTimelineData = TimelineStepModel(
+            ACTIVE_PROMOTION_TITLE,
+            activePromotionDatePeriod,
+            isEnded = Date() > flashSale.endDateUnix,
+            isActive = Date() >= flashSale.startDateUnix && Date() <= flashSale.endDateUnix || Date() > flashSale.endDateUnix
+        )
+        val finishTimelineData = TimelineStepModel(
+            isEnded = true,
+            isActive = Date() > flashSale.endDateUnix
+        )
+        timelineData.add(registerPeriodTimelineData)
+        timelineData.add(addProductTimelineData)
+        timelineData.add(selectionProcessTimelineData)
+        timelineData.add(activePromotionTimelineData)
+        timelineData.add(finishTimelineData)
+        return timelineData
+    }
+
+    private fun getCriteriaData(flashSale: FlashSale): MutableList<ProductCriteriaModel> {
+        val productCriteriaData: MutableList<ProductCriteriaModel> = mutableListOf()
+        flashSale.productCriteria.forEach { productCriteria ->
+            productCriteria.categories.forEach { category ->
+                productCriteriaData.add(
+                    ProductCriteriaModel(
+                        category.categoryName,
+                        "",
+                        ProductCriteriaModel.ValueRange(
+                            productCriteria.minPrice.toLong(),
+                            productCriteria.maxPrice.toLong()
+                        ),
+                        ProductCriteriaModel.ValueRange(
+                            productCriteria.minFinalPrice.toLong(),
+                            productCriteria.maxFinalPrice.toLong()
+                        ),
+                        productCriteria.minDiscount.toDouble(),
+                        ProductCriteriaModel.ValueRange(
+                            productCriteria.minCustomStock.toLong(),
+                            productCriteria.maxCustomStock.toLong()
+                        ),
+                        productCriteria.minRating.toDouble(),
+                        productCriteria.minProductScore.toLong(),
+                        ProductCriteriaModel.ValueRange(
+                            productCriteria.minQuantitySold.toLong(),
+                            productCriteria.maxQuantitySold.toLong()
+                        ),
+                        productCriteria.minQuantitySold.toLong(),
+                        productCriteria.maxSubmission.toLong(),
+                        productCriteria.maxProductAppear.toLong(),
+                        productCriteria.dayPeriodTimeAppear.toLong()
+                    )
+                )
+            }
+        }
+
+        return productCriteriaData
+    }
+
+    fun getBottomSheetData(
+        type: DetailBottomSheetType,
+        flashSale: FlashSale
+    ): CampaignDetailBottomSheetModel {
+        return when (type) {
+            DetailBottomSheetType.TIMELINE -> {
+                CampaignDetailBottomSheetModel(
+                    timelineSteps = getTimelineData(flashSale),
+                    showTimeline = true
+                )
+            }
+            DetailBottomSheetType.PRODUCT_CRITERIA -> {
+                CampaignDetailBottomSheetModel(
+                    productCriterias = getCriteriaData(flashSale),
+                    showCriteria = true,
+                    showProductCriteria = true
+                )
+            }
+            else -> {
+                CampaignDetailBottomSheetModel(
+                    timelineSteps = getTimelineData(flashSale),
+                    productCriterias = getCriteriaData(flashSale),
+                    showTimeline = true,
+                    showCriteria = true,
+                    showProductCriteria = true
+                )
             }
         }
     }

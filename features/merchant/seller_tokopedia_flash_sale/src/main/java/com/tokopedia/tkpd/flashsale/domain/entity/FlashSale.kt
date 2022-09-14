@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.domain.entity
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import java.util.Date
 
@@ -24,7 +25,8 @@ data class FlashSale(
     val submissionStartDateUnix: Date,
     val useMultiLocation: Boolean,
     val formattedDate: FormattedDate,
-    val status: FlashSaleStatus
+    val status: FlashSaleStatus,
+    val productCriteria: List<ProductCriteria>
 ) {
     data class ProductMeta(
         val acceptedProduct: Int,
@@ -39,5 +41,29 @@ data class FlashSale(
     data class FormattedDate(
         val startDate: String,
         val endDate: String
+    )
+
+    data class ProductCriteria(
+        val criteriaId: Long,
+        val minPrice: Double,
+        val maxPrice: Double,
+        val minFinalPrice: Double,
+        val maxFinalPrice: Double,
+        val minDiscount: Int,
+        val minCustomStock: Int,
+        val maxCustomStock: Int,
+        val minRating: Int,
+        val minProductScore: Int,
+        val minQuantitySold: Int,
+        val maxQuantitySold: Int,
+        val maxSubmission: Int,
+        val maxProductAppear: Int,
+        val dayPeriodTimeAppear: Int,
+        val categories: List<ProductCategories>,
+    )
+
+    data class ProductCategories(
+        val categoryId: Long,
+        val categoryName: String
     )
 }
