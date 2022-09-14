@@ -233,9 +233,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 prefManager?.cardId?.let { it1 ->
                     if (TmInternetCheck.isConnectedToInternet(context)) {
                         tmProgramListViewModel?.getProgramList(it, it1)
-                    }
-                    else{
-                        noInternetUi{tmProgramListViewModel?.getProgramList(it, it1)}
+                    } else {
+                        noInternetUi { tmProgramListViewModel?.getProgramList(it, it1) }
                     }
                 }
             }
@@ -887,7 +886,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             tmCouponStartDateUnix = TmDateUtil.getCalendarFromDetailsTime(it)
             tmCouponStartTimeUnix = TmDateUtil.getCalendarFromDetailsTime(it)
         }
-        data?.voucherFinishTime?.let{
+        data?.voucherFinishTime?.let {
             textFieldProgramEndDate.editText.setText(TmDateUtil.setDateFromDetails(it))
             textFieldProgramEndTime.editText.setText(TmDateUtil.setTimeFromDetails(it))
             tmCouponEndDateUnix = TmDateUtil.getCalendarFromDetailsTime(it)
@@ -1520,23 +1519,22 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             // for both cases
             // user can select end date 1 year from start date
 
-            if(fromEdit){
+            if (fromEdit) {
                 defaultCalendar.time = tmCouponStartDateUnix?.time
-            }
-            else {
+            } else {
                 if (programStatus != ACTIVE) {
                     defaultCalendar.time =
                         sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
                 }
             }
             val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
-            if(tmCouponStartDateUnix != null && type == CALENDAR_TYPE_START && firstDateStart){
+            if (tmCouponStartDateUnix != null && type == CALENDAR_TYPE_START && firstDateStart) {
                 defaultCalendar.time = tmCouponStartDateUnix?.time
             }
-            if(tmCouponEndDateUnix != null && type == CALENDAR_TYPE_END && firstDateEnd){
+            if (tmCouponEndDateUnix != null && type == CALENDAR_TYPE_END && firstDateEnd) {
                 defaultCalendar.time = tmCouponEndDateUnix?.time
             }
-            if(tmCouponStartDateUnix != null && type == CALENDAR_TYPE_END && !firstDateEnd && firstDateStart){
+            if (tmCouponStartDateUnix != null && type == CALENDAR_TYPE_END && !firstDateEnd && firstDateStart) {
                 defaultCalendar.time = tmCouponStartDateUnix?.time
             }
             calendarMax.time = defaultCalendar.time
@@ -1546,18 +1544,17 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 minCalendar.time = tmCouponStartDateUnix?.time
             }
 
-            if(fromEdit){
-                if(type == CALENDAR_TYPE_START) {
+            if (fromEdit) {
+                if (type == CALENDAR_TYPE_START) {
                     calendarMax.time = tmCouponStartDateUnix?.time
                     minCalendar.time = tmCouponStartDateUnix?.time
                 }
-                if(type == CALENDAR_TYPE_END) {
+                if (type == CALENDAR_TYPE_END) {
                     calendarMax.time = tmCouponEndDateUnix?.time
                     minCalendar.time = tmCouponEndDateUnix?.time
                 }
-            }
-            else {
-                if(type == CALENDAR_TYPE_START){
+            } else {
+                if (type == CALENDAR_TYPE_START) {
                     calendarMax.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
                     minCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
                 }
@@ -1663,7 +1660,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     set(Calendar.MINUTE, 59)
                 }
 
-            if(tmCouponStartTimeUnix != null && type == CALENDAR_TYPE_START && firstTimeStart){
+            if (tmCouponStartTimeUnix != null && type == CALENDAR_TYPE_START && firstTimeStart) {
                 tmCouponStartTimeUnix?.get(Calendar.HOUR_OF_DAY)?.let {
                     defaultTime.set(Calendar.HOUR_OF_DAY,
                         it
@@ -1675,7 +1672,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     )
                 }
             }
-            if(tmCouponEndTimeUnix != null && type == CALENDAR_TYPE_END && firstTimeEnd){
+            if (tmCouponEndTimeUnix != null && type == CALENDAR_TYPE_END && firstTimeEnd) {
                 tmCouponEndTimeUnix?.get(Calendar.HOUR_OF_DAY)?.let {
                     defaultTime.set(Calendar.HOUR_OF_DAY,
                         it
@@ -1701,7 +1698,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         setTitle(TIME_TITLE)
                         setInfo(TIME_DESC)
                     }
-                    CALENDAR_TYPE_END ->{
+                    CALENDAR_TYPE_END -> {
                         setTitle(TIME_TITLE_END)
                         setInfo(TIME_DESC_END)
                     }
