@@ -88,21 +88,17 @@ open class VerificationViewModel @Inject constructor(
             when {
                 response.data.success -> {
                     _getVerificationMethodResult.value = Success(response.data)
-                    TkpdIdlingResource.decrement()
                 }
                 response.data.errorMessage.isNotEmpty() -> {
                     _getVerificationMethodResult.value =
                         Fail(MessageErrorException(response.data.errorMessage))
-                    TkpdIdlingResource.decrement()
                 }
                 else -> {
                     _getVerificationMethodResult.value = Fail(Throwable())
-                    TkpdIdlingResource.decrement()
                 }
             }
         }, onError = {
             _getVerificationMethodResult.value = Fail(it)
-            TkpdIdlingResource.decrement()
         })
     }
 
@@ -227,7 +223,6 @@ open class VerificationViewModel @Inject constructor(
         validateToken: String
     ) {
         launchCatchError(coroutineContext, {
-            TkpdIdlingResource.increment()
             val response = sendOtpPhoneRegisterMandatoryUseCase(
                 ParamOtpRequest168(
                     otpType = otpType,
