@@ -1627,7 +1627,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 _accountStateInfo.update {
                     AccountStateInfo(
                         type = AccountStateInfoType.NoUsername,
-                        selectedAccount = sellerAccount ?: nonSellerAccount,
+                        selectedAccount = nonSellerAccount,
                     )
                 }
                 sellerAccount ?: nonSellerAccount
@@ -1637,7 +1637,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 _accountStateInfo.update {
                     AccountStateInfo(
                         type = AccountStateInfoType.NotAcceptTNC,
-                        selectedAccount = sellerAccount ?: nonSellerAccount,
+                        selectedAccount = nonSellerAccount,
                     )
                 }
                 sellerAccount ?: nonSellerAccount
