@@ -539,18 +539,20 @@ class CampaignInformationViewModel @Inject constructor(
         return this.storedVpsPackages
     }
 
-    fun findDefaultQuotaSourceOnEditMode(selectedVpsPackageId: Long, vpsPackages: List<VpsPackageUiModel>): VpsPackageUiModel? {
-        val selectedVpsPackage: VpsPackageUiModel? = vpsPackages.find { vpsPackage ->  vpsPackage.packageId == selectedVpsPackageId}
-        val shouldUseShopTierBenefit = shouldUseShopTierBenefit(selectedVpsPackage)
-        return if (shouldUseShopTierBenefit) {
-             vpsPackages.firstOrNull()
+    fun findSelectedVpsPackage(selectedVpsPackageId: Long, vpsPackages: List<VpsPackageUiModel>): VpsPackageUiModel? {
+        return vpsPackages.find { vpsPackage ->  vpsPackage.packageId == selectedVpsPackageId }
+    }
+
+    fun findSuggestedVpsPackage(
+        currentDate: Date,
+        selectedVpsPackage: VpsPackageUiModel?,
+        vpsPackages: List<VpsPackageUiModel>
+    ): VpsPackageUiModel? {
+        return if (currentDate.after(selectedVpsPackage?.packageEndTime)) {
+            vpsPackages.firstOrNull()
         } else {
             selectedVpsPackage
         }
-    }
-
-    private fun shouldUseShopTierBenefit(vpsPackage : VpsPackageUiModel?): Boolean {
-        return vpsPackage == null
     }
 
     fun findCampaignMaxEndDateByVpsRule(selectedVpsPackage : VpsPackageUiModel, endDate: Date): Date {
