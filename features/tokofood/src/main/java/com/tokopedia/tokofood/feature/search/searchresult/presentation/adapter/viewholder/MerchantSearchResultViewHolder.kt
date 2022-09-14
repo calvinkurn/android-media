@@ -20,6 +20,7 @@ import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.PriceLevel
 import com.tokopedia.tokofood.databinding.ItemTokofoodSearchSrpCardBinding
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchResultUiModel
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.lang.StringBuilder
 
@@ -137,46 +138,62 @@ class MerchantSearchResultViewHolder(
             binding?.tgTokofoodItemSrpMerchantCategory?.text = category
 
             binding?.tgTokofoodItemSrpMerchantCategory?.run {
-                val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
-
-                if (priceLevel.fareCount <= 0) {
-
-                    setMargin(
-                        getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
-                        getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
-                        getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                        getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                    )
-
-                    labelParams.topToTop = ConstraintLayout.LayoutParams.UNSET
-                    labelParams.startToEnd = ConstraintLayout.LayoutParams.UNSET
-                    labelParams.bottomToBottom = ConstraintLayout.LayoutParams.UNSET
-                    labelParams.startToEnd =
-                        binding?.imgTokofoodItemSrpMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
-                    labelParams.topToBottom =
-                        binding?.tgTokofoodItemSrpMerchantTitle?.id ?: ConstraintLayout.LayoutParams.UNSET
+                if (priceLevel.fareCount <= Int.ZERO) {
+                    setNoPriceLevel()
                 } else {
-
-                    setMargin(
-                        getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
-                        getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                        getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
-                        getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
-                    )
-
-                    labelParams.startToEnd = ConstraintLayout.LayoutParams.UNSET
-                    labelParams.topToBottom = ConstraintLayout.LayoutParams.UNSET
-                    labelParams.topToTop =
-                        binding?.viewDividerTokofoodItemSrpMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
-                    labelParams.startToEnd =
-                        binding?.viewDividerTokofoodItemSrpMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
-                    labelParams.bottomToBottom =
-                        binding?.viewDividerTokofoodItemSrpMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
+                    setExistedPriceLevel()
                 }
-
-                layoutParams = labelParams
             }
         }
+    }
+
+    private fun Typography.setNoPriceLevel() {
+        setMargin(
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+        )
+        setNoPriceLevelLayoutParams()
+    }
+
+    private fun Typography.setExistedPriceLevel() {
+        setMargin(
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0),
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+        )
+        setExistedPriceLevelLayoutParams()
+    }
+
+    private fun Typography.setNoPriceLevelLayoutParams() {
+        val labelParams = this.layoutParams as? ConstraintLayout.LayoutParams
+
+        labelParams?.topToTop = ConstraintLayout.LayoutParams.UNSET
+        labelParams?.startToEnd = ConstraintLayout.LayoutParams.UNSET
+        labelParams?.bottomToBottom = ConstraintLayout.LayoutParams.UNSET
+        labelParams?.startToEnd =
+            binding?.imgTokofoodItemSrpMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
+        labelParams?.topToBottom =
+            binding?.tgTokofoodItemSrpMerchantTitle?.id ?: ConstraintLayout.LayoutParams.UNSET
+
+        layoutParams = labelParams
+    }
+
+    private fun Typography.setExistedPriceLevelLayoutParams() {
+        val labelParams = this.layoutParams as? ConstraintLayout.LayoutParams
+
+        labelParams?.startToEnd = ConstraintLayout.LayoutParams.UNSET
+        labelParams?.topToBottom = ConstraintLayout.LayoutParams.UNSET
+        labelParams?.topToTop =
+            binding?.viewDividerTokofoodItemSrpMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
+        labelParams?.startToEnd =
+            binding?.viewDividerTokofoodItemSrpMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
+        labelParams?.bottomToBottom =
+            binding?.viewDividerTokofoodItemSrpMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
+
+        layoutParams = labelParams
     }
 
     private fun setPriceLevel(priceLevel: PriceLevel) {

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -20,6 +21,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -41,6 +43,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.T
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchEmptyWithFilterViewHolder
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchEmptyWithoutFilterViewHolder
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder.MerchantSearchResultViewHolder
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.bottomsheet.TokofoodQuickPriceRangeBottomsheet
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.bottomsheet.TokofoodQuickSortBottomSheet
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.customview.TokofoodSearchFilterTab
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
@@ -52,6 +55,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 import javax.inject.Inject
 
 class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Listener,
@@ -62,7 +66,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     SortFilterBottomSheet.Callback,
     FilterGeneralDetailBottomSheet.Callback,
     TokofoodQuickSortBottomSheet.Listener,
-    ChooseAddressWidget.ChooseAddressWidgetListener {
+    ChooseAddressWidget.ChooseAddressWidgetListener,
+    TokofoodQuickPriceRangeBottomsheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -147,6 +152,18 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         viewModel.applyFilter(filter)
     }
 
+    override fun onImpressCompleteFilterChip() {
+        // TODO("Not yet implemented")
+    }
+
+    override fun onImpressSortChip() {
+        // TODO("Not yet implemented")
+    }
+
+    override fun onImpressFilterChip() {
+        // TODO("Not yet implemented")
+    }
+
     override fun onClickRetryError() {
         viewModel.getInitialMerchantSearchResult(searchParameter)
     }
@@ -208,6 +225,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     override fun getLocalizingAddressHostSourceData(): String = SOURCE
 
     override fun onLocalizingAddressLoginSuccess() {}
+
+    override fun onApplyPriceRange(checkedOptions: List<Option>) {
+        viewModel.applyOptions(checkedOptions)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -311,6 +332,15 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                     }
                     TokofoodSearchUiEvent.EVENT_OPEN_QUICK_SORT_BOTTOMSHEET -> {
                         onOpenQuickSortBottomSheet(event.data)
+                    }
+                    TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_PRICE_RANGE_BOTTOMSHEET -> {
+                        onOpenQuickFilterPriceRangeBottomSheet(event.data)
+                    }
+                    TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_NORMAL_BOTTOMSHEET -> {
+                        onOpenQuickFilterNormalBottomSheet(event.data)
+                    }
+                    TokofoodSearchUiEvent.EVENT_FAILED_LOAD_MORE -> {
+                        onShowLoadMoreErrorToaster(event.throwable)
                     }
                 }
             }
@@ -420,10 +450,35 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun onOpenQuickSortBottomSheet(data: Any?) {
+        hideKeyboard()
         (data as? List<*>)?.filterIsInstance(TokofoodQuickSortUiModel::class.java)?.let { uiModels ->
             TokofoodQuickSortBottomSheet.createInstance(ArrayList(uiModels), this)
                 .show(parentFragmentManager)
         }
+    }
+
+    private fun onOpenQuickFilterPriceRangeBottomSheet(data: Any?) {
+        hideKeyboard()
+        (data as? List<*>)?.filterIsInstance(PriceRangeFilterCheckboxItemUiModel::class.java)?.let { uiModels ->
+            TokofoodQuickPriceRangeBottomsheet.createInstance(uiModels, this)
+                .show(parentFragmentManager)
+        }
+    }
+
+    private fun onOpenQuickFilterNormalBottomSheet(data: Any?) {
+        hideKeyboard()
+        (data as? Filter)?.let { filter ->
+            FilterGeneralDetailBottomSheet().show(
+                parentFragmentManager,
+                filter,
+                this
+            )
+        }
+    }
+
+    private fun onShowLoadMoreErrorToaster(throwable: Throwable?) {
+        val errorMessage = throwable?.message.orEmpty()
+        showToasterError(errorMessage)
     }
 
     private fun showDetailFilterBottomSheet(dynamicFilterModel: DynamicFilterModel?) {
@@ -431,6 +486,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         if (sortFilterBottomSheet == null) {
             sortFilterBottomSheet = SortFilterBottomSheet()
         }
+        hideKeyboard()
         sortFilterBottomSheet?.show(
             parentFragmentManager,
             searchParameter?.getSearchParameterHashMap(),
@@ -444,11 +500,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun showQuickFilterBottomSheet(filter: Filter) {
-        FilterGeneralDetailBottomSheet().show(
-            parentFragmentManager,
-            filter,
-            this
-        )
+        viewModel.showQuickFilterBottomSheet(filter)
     }
 
     private fun showDetailFilterApplyButton() {
@@ -472,6 +524,14 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                     mapOf(SearchApiConst.Q to keyword)
                 )
             RouteManager.route(it, discoveryApplink)
+        }
+    }
+
+    private fun hideKeyboard() {
+        try {
+            KeyboardHandler.hideSoftKeyboard(activity)
+        } catch (ex: Exception) {
+            Timber.e(ex)
         }
     }
 

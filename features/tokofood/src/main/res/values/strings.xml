@@ -171,6 +171,9 @@
     <string name="search_srp_check_keyword">Periksa Kata Kunci</string>
     <string name="search_srp_filter_apply">Terapkan</string>
     <string name="search_srp_quick_sort_title">Urutkan restoran</string>
+    <string name="search_srp_quick_price_range_title">Rentang harga restoran</string>
+    <string name="search_srp_quick_price_range_button">Tampilkan</string>
+    <string name="search_srp_quick_price_reset">Reset</string>
 
     <!-- id -->
     <item name="product_ui_model" type="id" />

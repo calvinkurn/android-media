@@ -11,6 +11,9 @@ class TokofoodSearchUiEvent(
         const val EVENT_SUCCESS_LOAD_DETAIL_FILTER = 1
         const val EVENT_FAILED_LOAD_DETAIL_FILTER = 2
         const val EVENT_OPEN_QUICK_SORT_BOTTOMSHEET = 3
+        const val EVENT_OPEN_QUICK_FILTER_PRICE_RANGE_BOTTOMSHEET = 4
+        const val EVENT_OPEN_QUICK_FILTER_NORMAL_BOTTOMSHEET = 5
+        const val EVENT_FAILED_LOAD_MORE = 6
     }
 
 }

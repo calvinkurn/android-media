@@ -87,7 +87,25 @@ object TokoFoodAnalyticsConstants {
     const val TRACKER_ID_35771 = "35771"
     const val CLICK_CUISINE_LIST_TOKOFOOD = "click cuisine list tokofood"
     const val TRACKER_ID_35772 = "35772"
-
-
+    const val VIEW_COMPLETE_FILTER_TOKOFOOD = "view complete filter tokofood"
+    const val TRACKER_ID_35773 = "35773"
+    const val CLICK_COMPLETE_FILTER_TOKOFOOD = "click complete filter tokofood"
+    const val TRACKER_ID_35774 = "35774"
+    const val VIEW_SORT_FILTER_TOKOFOOD = "view sort filter tokofood"
+    const val TRACKER_ID_35775 = "35775"
+    const val CLICK_SORT_FILTER_TOKOFOOD = "click sort filter tokofood"
+    const val TRACKER_ID_35776 = "35776"
+    const val VIEW_MINI_FILTER_TOKOFOOD = "view mini filter tokofood"
+    const val TRACKER_ID_35777 = "35777"
+    const val CLICK_MINI_FILTER_TOKOFOOD = "click mini filter tokofood"
+    const val TRACKER_ID_35778 = "35778"
+    const val CLICK_ON_SUBMIT_FILTER_TOKOFOOD = "click on submit filter tokofood"
+    const val TRACKER_ID_35785 = "35785"
+    const val CLICK_ADDRESS_WIDGET_TOKOFOOD = "click address widget tokofood"
+    const val TRACKER_ID_35786 = "35786"
+    const val CLICK_MERCHANT_CARD_TOKOFOOD = "click merchant card tokofood"
+    const val TRACKER_ID_35787 = "35787"
+    const val CLICK_OTHER_BRANCHES = "click cabang lain"
+    const val TRACKER_ID_35788 = "35788"
 
 }
