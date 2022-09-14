@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.search.searchresult.presentation.customvi
 
 import android.content.Context
 import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -45,6 +46,7 @@ class TokofoodSearchFilterTab(
                 textView?.text = context.getString(com.tokopedia.tokofood.R.string.search_srp_filter_chip_title)
             }
         }
+        setOnImpressionListeners()
     }
 
     private fun initSortFilter() {
@@ -94,10 +96,16 @@ class TokofoodSearchFilterTab(
         return sortFilterItem.takeIf { filter.options.isNotEmpty() }?.also { item ->
             if (filter.options.size > Int.ONE) {
                 item.listener = {
-                    listener.onOpenQuickFilterBottomSheet(filter)
+                    listener.onOpenQuickFilterBottomSheet(
+                        filter,
+                        item.type == ChipsUnify.TYPE_SELECTED
+                    )
                 }
                 item.chevronListener = {
-                    listener.onOpenQuickFilterBottomSheet(filter)
+                    listener.onOpenQuickFilterBottomSheet(
+                        filter,
+                        item.type == ChipsUnify.TYPE_SELECTED
+                    )
                 }
             } else {
                 val filterOption = filter.options.firstOrNull()
@@ -132,7 +140,7 @@ class TokofoodSearchFilterTab(
         filter.run {
             options.firstOrNull()?.inputState = isSelected.toString()
         }
-        listener.onSelectFilterChip(filter)
+        listener.onSelectFilterChip(filter, isSelected)
     }
 
     private fun SortFilterItem.setSelected(isSelected: Boolean) {
@@ -144,21 +152,47 @@ class TokofoodSearchFilterTab(
             }
     }
 
-    private fun setOnImpressionListener() {
-        sortFilter.sortFilterPrefix.addOnImpressionListener(prefixChipImpressHolder) {
+    private fun setOnImpressionListeners() {
+        setFullOnImpressionListener()
+        setSortOnImpressionListener()
+        setMiniChipsOnImpressionListener()
+    }
 
+    private fun setFullOnImpressionListener() {
+        sortFilter.sortFilterPrefix.addOnImpressionListener(prefixChipImpressHolder) {
+            listener.onImpressCompleteFilterChip()
+        }
+    }
+
+    private fun setSortOnImpressionListener() {
+        (currentQuickFilter.getOrNull(Int.ZERO) as? TokofoodSortItemUiModel)?.let { sortUiModel ->
+            sortFilter.sortFilterItems.getChildAt(Int.ONE)?.let { sortChip ->
+                sortChip.addOnImpressionListener(sortUiModel) {
+                    listener.onImpressSortChip(sortUiModel.sortList)
+                }
+            }
+        }
+    }
+
+    private fun setMiniChipsOnImpressionListener() {
+        currentQuickFilter.forEachIndexed { index, uiModel ->
+            (uiModel as? TokofoodFilterItemUiModel)?.let { filterUiModel ->
+                sortFilter.sortFilterItems.getChildAt(index + Int.ONE)?.addOnImpressionListener(filterUiModel) {
+                    listener.onImpressFilterChip(filterUiModel.filter.options)
+                }
+            }
         }
     }
 
     interface Listener {
         fun onOpenFullFilterBottomSheet()
         fun onOpenQuickFilterBottomSheet(sortList: List<Sort>)
-        fun onOpenQuickFilterBottomSheet(filter: Filter)
+        fun onOpenQuickFilterBottomSheet(filter: Filter, isSelected: Boolean)
         fun onSelectSortChip(sort: Sort, isSelected: Boolean)
-        fun onSelectFilterChip(filter: Filter)
+        fun onSelectFilterChip(filter: Filter, isSelected: Boolean)
         fun onImpressCompleteFilterChip()
-        fun onImpressSortChip()
-        fun onImpressFilterChip()
+        fun onImpressSortChip(sorts: List<Sort>)
+        fun onImpressFilterChip(options: List<Option>)
     }
 
 }
