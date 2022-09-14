@@ -47,7 +47,9 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
             if (productDetailData.badges.isNotEmpty()) {
                 binding?.badge?.show()
                 itemView.context?.let{
-                    ImageHandler.loadImageFitCenter(it, binding?.badge, productDetailData.badges[0].imageUrl)
+                    if (productDetailData.badges.isNotEmpty()) {
+                        binding?.badge?.setImageUrl(productDetailData.badges[0].imageUrl)
+                    }
                 }
             } else {
                 binding?.badge?.hide()
@@ -58,7 +60,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
             }
             setRatingReviewCount(productDetailData.rating, productDetailData.countReview)
             itemView.context?.let{
-                ImageHandler.loadImageRounded2(it, binding?.productImage, productDetailData.imageUrl)
+                binding?.productImage?.setImageUrl(productDetailData.imageUrl)
             }
             setStatusStock(productDetailData)
             handleDiscount(productDetailData.discountPercentage, productDetailData.slashedPrice)
