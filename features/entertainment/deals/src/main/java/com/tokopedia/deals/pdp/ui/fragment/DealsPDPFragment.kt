@@ -95,7 +95,6 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private var progressBar: LoaderUnify? = null
     private var secondaryBarLayout: FrameLayout? = null
     private var appBarLayout: AppBarLayout? = null
-    private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
     private var toolbar: HeaderUnify? = null
     private var menuPDP: Menu? = null
     private var clHeader: ConstraintLayout? = null
@@ -175,7 +174,6 @@ class DealsPDPFragment: BaseDaggerFragment() {
             progressBar = binding?.progressBar
             secondaryBarLayout = binding?.secondaryLayout
             appBarLayout = binding?.appBarLayout
-            collapsingToolbarLayout = binding?.collapsingToolbar
             toolbar = binding?.toolbar
             tgDealsDetail = binding?.subView?.tgDealDetails
             clHeader = binding?.clHeader
@@ -207,7 +205,6 @@ class DealsPDPFragment: BaseDaggerFragment() {
             tgRecommendation = binding?.subView?.tgRecommendedDeals
             rvRecommendation = binding?.subView?.recyclerView
             globalError = binding?.globalError
-            updateCollapsingToolbar()
         }
     }
 
@@ -389,7 +386,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
         trackPDP(data)
         showShareButton()
         showPDPOptionsMenu(data.displayName)
-        showHeader(data.displayName)
+        showHeader()
         showImageCarousel(data)
         showContent(data)
         showBrand(data)
@@ -406,9 +403,8 @@ class DealsPDPFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun showHeader(displayName: String) {
+    private fun showHeader() {
         clHeader?.show()
-        collapsingToolbarLayout?.title = displayName
     }
 
     private fun showContent(data: ProductDetailData) {
@@ -673,13 +669,6 @@ class DealsPDPFragment: BaseDaggerFragment() {
             context?.let {
                toolbar.navigationIcon = ContextCompat.getDrawable(it, com.tokopedia.abstraction.R.drawable.ic_action_back)
             }
-        }
-    }
-
-    private fun updateCollapsingToolbar() {
-        context?.let {
-            collapsingToolbarLayout?.setExpandedTitleColor(it.resources.getColor(android.R.color.transparent))
-            collapsingToolbarLayout?.title = ""
         }
     }
 

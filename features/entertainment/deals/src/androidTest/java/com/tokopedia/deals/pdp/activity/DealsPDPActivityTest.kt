@@ -65,7 +65,7 @@ class DealsPDPActivityTest {
         IdlingRegistry.getInstance().register(idlingResource)
 
         val intent = Intent(context, DealsPDPActivity::class.java).apply {
-            putExtra(DealsPDPActivity.EXTRA_PRODUCT_ID, "lalalala")
+            putExtra(DealsPDPActivity.EXTRA_PRODUCT_ID, "test-id")
         }
 
         activityRule.launchActivity(intent)
