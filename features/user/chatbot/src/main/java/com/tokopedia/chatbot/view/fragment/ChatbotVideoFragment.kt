@@ -159,6 +159,11 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
         chatbotExoPlayer.destroy()
     }
 
+    override fun onResume() {
+        super.onResume()
+        chatbotExoPlayer.resume()
+    }
+
     override fun onStop() {
         super.onStop()
         chatbotExoPlayer.stop()

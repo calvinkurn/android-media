@@ -94,7 +94,6 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
 
     fun stop() {
         exoPlayer.playWhenReady = false
-        exoPlayer.stop()
     }
 
     fun pause() {
