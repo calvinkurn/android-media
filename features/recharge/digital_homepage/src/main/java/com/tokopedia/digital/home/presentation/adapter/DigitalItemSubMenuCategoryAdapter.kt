@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.databinding.LayoutDigitalHomeCategoryItemSubmenuBinding
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.model.DigitalHomePageCategoryModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.loadImage
 
 class DigitalItemSubMenuCategoryAdapter(
@@ -30,7 +32,7 @@ class DigitalItemSubMenuCategoryAdapter(
     }
 
     override fun getItemCount(): Int {
-        return submenu?.size ?: 0
+        return submenu?.size ?: Int.ZERO
     }
 
     class DigitalItemSubmenuCategoryViewHolder(val binding: LayoutDigitalHomeCategoryItemSubmenuBinding) :
@@ -42,7 +44,7 @@ class DigitalItemSubMenuCategoryAdapter(
             binding.categoryImage.loadImage(element?.icon ?: "")
             binding.categoryName.text = element?.label
             itemView.setOnClickListener {
-                onItemBindListener.onCategoryItemClicked(element, adapterPosition + 1)
+                onItemBindListener.onCategoryItemClicked(element, adapterPosition + Int.ONE)
             }
         }
 
