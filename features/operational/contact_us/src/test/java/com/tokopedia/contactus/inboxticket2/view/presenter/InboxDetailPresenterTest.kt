@@ -29,6 +29,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.Assert.*
+import com.tokopedia.contactus.R
 
 
 @ExperimentalCoroutinesApi
@@ -1648,7 +1649,7 @@ class InboxDetailPresenterTest {
     fun `run on Options Item Selected is action search`() {
         presenter.attachView(view)
         val menu = mockk<MenuItem>(relaxed = true)
-        every { menu.itemId } returns 2131296681
+        every { menu.itemId } returns R.id.action_search
 
         val actualResult = presenter.onOptionsItemSelected(menu)
         assertTrue(actualResult)
@@ -1658,7 +1659,7 @@ class InboxDetailPresenterTest {
     @Test
     fun `run on Options Item Selected is action search but view empty`() {
         val menu = mockk<MenuItem>(relaxed = true)
-        every { menu.itemId } returns 2131296681
+        every { menu.itemId } returns R.id.action_search
 
         val actualResult = presenter.onOptionsItemSelected(menu)
         assertTrue(actualResult)
