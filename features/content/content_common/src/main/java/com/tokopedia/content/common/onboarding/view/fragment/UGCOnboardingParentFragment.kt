@@ -25,8 +25,6 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     private val onboardingType: Int
         get() = arguments?.getInt(KEY_ONBOARDING_TYPE, VALUE_UNKNOWN) ?: VALUE_UNKNOWN
-    private val entryPoint: Int
-        get() = arguments?.getInt(KEY_ENTRY_POINT, VALUE_UNKNOWN) ?: VALUE_UNKNOWN
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,19 +61,27 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
                     override fun onSuccess() {
                         mListener?.onSuccess()
                     }
+
+                    override fun clickCloseIcon() {
+                        mListener?.clickCloseIcon()
+                    }
                 })
             }
             is UserTnCOnboardingBottomSheet -> {
                 childFragment.setListener(object : UserTnCOnboardingBottomSheet.Listener,
                         BaseUserOnboardingBottomSheet.Listener {
-                        override fun clickNextOnTncOnboarding() {
-                            mListener?.clickNextOnTncOnboarding()
-                        }
+                    override fun clickNextOnTncOnboarding() {
+                        mListener?.clickNextOnTncOnboarding()
+                    }
 
-                        override fun onSuccess() {
-                            mListener?.onSuccess()
-                        }
-                    })
+                    override fun onSuccess() {
+                        mListener?.onSuccess()
+                    }
+
+                    override fun clickCloseIcon() {
+                        mListener?.clickCloseIcon()
+                    }
+                })
             }
         }
     }
@@ -105,7 +111,6 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     private fun createArgument() = Bundle().apply {
         putInt(KEY_ONBOARDING_TYPE, onboardingType)
-        putInt(KEY_ENTRY_POINT, entryPoint)
     }
 
     fun setListener(listener: Listener?) {
@@ -118,6 +123,7 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
         fun impressCompleteOnboarding()
         fun clickNextOnTncOnboarding()
         fun clickNextOnCompleteOnboarding()
+        fun clickCloseIcon()
     }
 
     companion object {
@@ -126,8 +132,5 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
         const val VALUE_ONBOARDING_TYPE_COMPLETE = 1
         const val VALUE_ONBOARDING_TYPE_TNC = 2
         const val VALUE_UNKNOWN = 0
-        const val KEY_ENTRY_POINT = "entry_point"
-        const val VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST = 1
-        const val VALUE_ENTRY_POINT_FROM_USER_PROFILE = 2
     }
 }

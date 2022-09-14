@@ -249,6 +249,9 @@ class UserProfileFragment @Inject constructor(
                             viewModel.profileUserID
                         )
                     }
+
+                    override fun clickCloseIcon() {}
+
                 })
             }
         }
@@ -295,10 +298,6 @@ class UserProfileFragment @Inject constructor(
                             UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
                             if (viewModel.profileUsername.isEmpty()) VALUE_ONBOARDING_TYPE_COMPLETE
                             else VALUE_ONBOARDING_TYPE_TNC
-                        )
-                        putInt(
-                            UGCOnboardingParentFragment.KEY_ENTRY_POINT,
-                            UGCOnboardingParentFragment.VALUE_ENTRY_POINT_FROM_USER_PROFILE
                         )
                     }
                     childFragmentManager.beginTransaction()

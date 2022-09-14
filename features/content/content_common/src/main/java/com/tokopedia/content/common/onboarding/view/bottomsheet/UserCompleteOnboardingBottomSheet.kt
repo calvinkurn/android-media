@@ -14,8 +14,6 @@ import com.tokopedia.content.common.databinding.BottomsheetUserCompleteOnboardin
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.onboarding.view.bottomsheet.base.BaseUserOnboardingBottomSheet
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ENTRY_POINT_FROM_USER_PROFILE
 import com.tokopedia.content.common.onboarding.view.strategy.factory.UGCOnboardingStrategyFactory
 import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
 import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
@@ -24,7 +22,6 @@ import com.tokopedia.content.common.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
 import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -87,16 +84,16 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         binding.textFieldUsername.isClearable = false
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
         binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
-        when(entryPoint) {
-            VALUE_ENTRY_POINT_FROM_PLAY_BROADCAST -> {
-                setTitle(getString(R.string.ugc_complete_onboarding_title))
-                binding.tvTitle.hide()
-            }
-            VALUE_ENTRY_POINT_FROM_USER_PROFILE -> binding.tvTitle.show()
-        }
+        setTitle(getString(R.string.ugc_complete_onboarding_title))
+        binding.tvTitle.hide()
     }
 
     private fun setupListener() {
+        setCloseClickListener {
+            dismiss()
+            mListener?.clickCloseIcon()
+        }
+
         binding.textFieldUsername.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
