@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
+import com.tokopedia.play.ui.engagement.adapter.EngagementItemDecoration
 import com.tokopedia.play.ui.engagement.adapter.EngagementWidgetAdapter
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.engagement.viewholder.EngagementWidgetViewHolder
@@ -75,6 +76,7 @@ class EngagementCarouselViewComponent(
         carousel.apply {
             adapter = carouselAdapter
             layoutManager = linearLayoutManager
+            addItemDecoration(EngagementItemDecoration(this.context))
             addOnScrollListener(scrollListener)
         }
 
