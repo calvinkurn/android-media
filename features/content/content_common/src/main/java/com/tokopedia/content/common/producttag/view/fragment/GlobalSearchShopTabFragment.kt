@@ -84,6 +84,16 @@ class GlobalSearchShopTabFragment @Inject constructor(
         }
     }
 
+    private val onRecyclerViewTouchCallback = object : RecyclerView.SimpleOnItemTouchListener() {
+        override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+            getParentFragmentByInstance<BottomSheetUnify>()
+                ?.bottomSheet
+                ?.updateScrollingChild(rv)
+
+            return false
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = viewModelProvider[ProductTagViewModel::class.java]
@@ -122,6 +132,7 @@ class GlobalSearchShopTabFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvGlobalSearchShop.removeOnItemTouchListener(onRecyclerViewTouchCallback)
         binding.rvGlobalSearchShop.removeOnScrollListener(scrollListener)
         _binding = null
     }
@@ -141,16 +152,7 @@ class GlobalSearchShopTabFragment @Inject constructor(
             }
         }
 
-        binding.rvGlobalSearchShop.addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
-            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                getParentFragmentByInstance<BottomSheetUnify>()
-                    ?.bottomSheet
-                    ?.updateScrollingChild(rv)
-
-                return false
-            }
-        })
-
+        binding.rvGlobalSearchShop.addOnItemTouchListener(onRecyclerViewTouchCallback)
         binding.rvGlobalSearchShop.addOnScrollListener(scrollListener)
         binding.rvGlobalSearchShop.layoutManager = layoutManager
         binding.rvGlobalSearchShop.adapter = adapter
