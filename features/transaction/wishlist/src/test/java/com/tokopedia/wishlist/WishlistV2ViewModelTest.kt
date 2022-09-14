@@ -256,7 +256,7 @@ class WishlistV2ViewModelTest {
 
 
         //when
-        wishlistV2ViewModel.loadRecommendation(0, false)
+        wishlistV2ViewModel.loadRecommendation(0)
 
         //then
         assert(wishlistV2ViewModel.wishlistV2Data.value is Success<List<WishlistV2TypeLayoutData>>)
@@ -273,7 +273,7 @@ class WishlistV2ViewModelTest {
         } throws Exception()
 
         //when
-        wishlistV2ViewModel.loadRecommendation(0, true)
+        wishlistV2ViewModel.loadRecommendation(0)
 
         //then
         SoftAssertions.assertSoftly {
