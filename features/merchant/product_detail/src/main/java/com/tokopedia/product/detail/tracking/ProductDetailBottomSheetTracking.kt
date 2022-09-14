@@ -27,7 +27,6 @@ object ProductDetailBottomSheetTracking {
     ) {
         val common = CommonTracker(p1Data, userId)
         val productId = common.productId
-
         val mapEvent = hashMapOf<String, Any>(
             Hit.EVENT to Value.PROMO_VIEW,
             Hit.EVENT_ACTION to ACTION_IMPRESSION_INFO_ITEM,
@@ -68,8 +67,8 @@ object ProductDetailBottomSheetTracking {
     ) {
         val common = CommonTracker(p1Data, userId)
         val productId = common.productId
-        val mapEvent = hashMapOf(
-            Hit.EVENT to Value.VIEW_ITEM,
+        val mapEvent = hashMapOf<String, Any>(
+            Hit.EVENT to Value.PROMO_VIEW,
             Hit.EVENT_ACTION to ACTION_IMPRESSION_SPECIFICATION,
             Hit.EVENT_CATEGORY to ProductTrackingConstant.Category.PDP,
             Hit.EVENT_LABEL to "",
@@ -80,12 +79,16 @@ object ProductDetailBottomSheetTracking {
             Hit.LAYOUT to "layout:${common.layoutName};catName:${common.categoryName};catId:${common.categoryId};",
             Hit.PRODUCT_ID to productId,
             Hit.USER_ID to common.userId,
-            Hit.PROMOTIONS to listOf(
-                mapOf(
-                    TrackingConstant.Item.CREATIVE_NAME to value,
-                    TrackingConstant.Item.CREATIVE_SLOT to position,
-                    TrackingConstant.Item.ITEM_ID to productId,
-                    TrackingConstant.Item.ITEM_NAME to key
+            Hit.ECOMMERCE to hashMapOf(
+                Hit.PROMO_VIEW to hashMapOf(
+                    Hit.PROMOTIONS to arrayListOf(
+                        hashMapOf(
+                            TrackingConstant.Item.CREATIVE_NAME to value,
+                            TrackingConstant.Item.CREATIVE_SLOT to position,
+                            TrackingConstant.Item.ITEM_ID to productId,
+                            TrackingConstant.Item.ITEM_NAME to key
+                        )
+                    )
                 )
             )
         )
