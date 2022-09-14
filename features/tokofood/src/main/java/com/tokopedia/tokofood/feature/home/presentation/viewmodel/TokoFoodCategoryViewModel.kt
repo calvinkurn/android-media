@@ -1,12 +1,10 @@
 package com.tokopedia.tokofood.feature.home.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -19,65 +17,173 @@ import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodCategoryMapper.
 import com.tokopedia.tokofood.feature.home.domain.usecase.TokoFoodMerchantListUseCase
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListParams
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodUiState
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_ERROR
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_LOAD_MORE
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_MERCHANT_LIST_DATA
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.shareIn
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class TokoFoodCategoryViewModel @Inject constructor(
     private val tokoFoodMerchantListUseCase: TokoFoodMerchantListUseCase,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
-    val layoutList: LiveData<Result<TokoFoodListUiModel>>
-        get() = _categoryLayoutList
-    val loadMore: LiveData<Result<TokoFoodListUiModel>>
-        get() = _categoryLoadMore
+    private val _inputState = MutableSharedFlow<TokoFoodUiState>(Int.ONE)
 
-    private val _categoryLayoutList = MutableLiveData<Result<TokoFoodListUiModel>>()
-    private val _categoryLoadMore = MutableLiveData<Result<TokoFoodListUiModel>>()
+    init {
+        _inputState.tryEmit(TokoFoodUiState())
+    }
+
+    val flowLayoutList: SharedFlow<Pair<Result<TokoFoodListUiModel>, Boolean>> =
+        _inputState.flatMapConcat { inputState ->
+            getFlowCategory(inputState).catch {
+                if (inputState.uiState == STATE_FETCH_MERCHANT_LIST_DATA) emit(Pair(Fail(it), true))
+                else {
+                    emit(getRemovalProgressBar())
+                    emit(Pair(Fail(it), false))
+                }
+            }
+        }.shareIn(
+            scope = this,
+            started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
+            replay = Int.ONE
+        )
 
     val categoryLayoutItemList :MutableList<Visitable<*>> = mutableListOf()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
 
     companion object {
         private const val INITIAL_PAGE_KEY_MERCHANT = "0"
+        private const val SHARED_FLOW_STOP_TIMEOUT_MILLIS = 5000L
     }
 
-    fun showLoadingState() {
+    private fun getFlowCategory(inputState: TokoFoodUiState): Flow<Pair<Result<TokoFoodListUiModel>, Boolean>> {
+        return flow {
+                when (inputState.uiState) {
+                    STATE_ERROR -> emit(getErrorState(inputState.throwable))
+                    STATE_FETCH_MERCHANT_LIST_DATA -> {
+                        emit(getLoadingState())
+                        emit(getCategoryLayout(inputState.localCacheModel, inputState.merchantListParamsModel))
+                    }
+                    STATE_FETCH_LOAD_MORE -> {
+                        emit(getProgressBar())
+                        emit(getLoadMoreMerchant(inputState.localCacheModel, inputState.merchantListParamsModel))
+                    }
+                }
+            }
+    }
+
+    fun setErrorState(throwable: Throwable) {
+        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_ERROR, throwable = throwable))
+    }
+
+    fun setCategoryLayout(
+        localCacheModel: LocalCacheModel, option: Int = Int.ZERO,
+        sortBy: Int = Int.ZERO, cuisine: String = "", brandUId: String = ""
+    ){
+        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_FETCH_MERCHANT_LIST_DATA,
+            localCacheModel = localCacheModel,
+            merchantListParamsModel = TokoFoodMerchantListParams(
+                option, sortBy, cuisine, brandUId
+            )
+        ))
+    }
+
+    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = Int.ZERO,
+                            sortBy: Int = Int.ZERO, cuisine: String = "", brandUId: String = "") {
+        if(shouldLoadMore(containsLastItemIndex, itemCount)) {
+            setLoadMoreMerchant(localCacheModel = localCacheModel,
+                option = option,
+                sortBy = sortBy,
+                cuisine = cuisine,
+                brandUId = brandUId
+            )
+        }
+    }
+
+    fun isShownEmptyState(): Boolean {
+        val layoutList = categoryLayoutItemList.toMutableList()
+        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
+        return isError
+    }
+
+    fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
+        val lastItemIndex = itemCount - Int.ONE
+        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
+                && containsLastItemIndex.isMoreThanZero())
+        val hasNextPage = pageKey.isNotEmpty()
+        val layoutList = categoryLayoutItemList.toMutableList()
+        val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
+        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
+
+        return scrolledToLastItem && hasNextPage && !isLoading && !isError
+    }
+
+    private fun setLoadMoreMerchant(
+        localCacheModel: LocalCacheModel,
+        option: Int,
+        sortBy: Int,
+        cuisine: String,
+        brandUId: String
+    ){
+        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_FETCH_LOAD_MORE,
+            localCacheModel = localCacheModel,
+            merchantListParamsModel = TokoFoodMerchantListParams(
+                option, sortBy, cuisine, brandUId
+            )
+        ))
+    }
+
+    private fun getLoadingState(): Pair<Result<TokoFoodListUiModel>, Boolean> {
         setPageKey(INITIAL_PAGE_KEY_MERCHANT)
         categoryLayoutItemList.clear()
         categoryLayoutItemList.addLoadingCategoryIntoList()
-        val data = TokoFoodListUiModel(
+        val data = Success(TokoFoodListUiModel(
             items = categoryLayoutItemList,
             state = TokoFoodLayoutState.LOADING
-        )
-        _categoryLayoutList.postValue(Success(data))
+        ))
+        return Pair(data, false)
     }
 
-    fun showErrorState(throwable: Throwable) {
+    private fun getErrorState(throwable: Throwable): Pair<Result<TokoFoodListUiModel>, Boolean> {
         categoryLayoutItemList.clear()
         categoryLayoutItemList.addErrorState(throwable)
-        val data = TokoFoodListUiModel(
+        val data = Success(TokoFoodListUiModel(
             items = categoryLayoutItemList,
             state = TokoFoodLayoutState.HIDE
-        )
-        _categoryLayoutList.postValue(Success(data))
+        ))
+        return Pair(data, false)
     }
 
-    fun getCategoryLayout(localCacheModel: LocalCacheModel, option: Int = 0,
-                          sortBy: Int = 0, cuisine: String = "", brandUId: String = "") {
-        launchCatchError(block = {
+    private suspend fun getCategoryLayout(localCacheModel: LocalCacheModel,
+                                  merchantListParamsModel: TokoFoodMerchantListParams):
+            Pair<Result<TokoFoodListUiModel>, Boolean> {
             categoryLayoutItemList.clear()
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
                     localCacheModel = localCacheModel,
-                    option = option,
-                    sortBy = sortBy,
-                    cuisine = cuisine,
-                    brandUId = brandUId,
+                    option = merchantListParamsModel.option,
+                    sortBy = merchantListParamsModel.sortBy,
+                    cuisine = merchantListParamsModel.cuisine,
+                    brandUId = merchantListParamsModel.brandUId,
                     pageKey = pageKey)
             }
 
@@ -92,51 +198,29 @@ class TokoFoodCategoryViewModel @Inject constructor(
                 state = TokoFoodLayoutState.SHOW
             )
 
-            _categoryLayoutList.postValue(Success(data))
-        }){
-            _categoryLayoutList.postValue(Fail(it))
-        }
+           return  Pair(Success(data), true)
     }
 
-    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
-                            sortBy: Int = 0, cuisine: String = "", brandUId: String = "") {
-        if(shouldLoadMore(containsLastItemIndex, itemCount)) {
-            showProgressBar()
-            loadMoreMerchant(localCacheModel = localCacheModel,
-                option = option,
-                sortBy = sortBy,
-                cuisine = cuisine,
-                brandUId = brandUId
-            )
-        }
-    }
-
-    fun showProgressBar(){
+    private fun getProgressBar(): Pair<Result<TokoFoodListUiModel>, Boolean> {
         categoryLayoutItemList.addProgressBar()
         val data = TokoFoodListUiModel(
             items = categoryLayoutItemList,
             state = TokoFoodLayoutState.UPDATE
         )
-        _categoryLayoutList.postValue(Success(data))
+        return Pair(Success(data), false)
     }
 
-    fun isShownEmptyState(): Boolean {
-        val layoutList = categoryLayoutItemList.toMutableList()
-        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
-        return isError
-    }
-
-    private fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int,
-                                 sortBy: Int, cuisine: String, brandUId: String) {
-        launchCatchError(block = {
+    private suspend fun getLoadMoreMerchant(localCacheModel: LocalCacheModel,
+                                         merchantListParamsModel: TokoFoodMerchantListParams):
+            Pair<Result<TokoFoodListUiModel>, Boolean>   {
             val categoryResponse = withContext(dispatchers.io) {
                 tokoFoodMerchantListUseCase.execute(
                     localCacheModel = localCacheModel,
-                    option = option,
-                    sortBy = sortBy,
-                    cuisine = cuisine,
+                    option = merchantListParamsModel.option,
+                    sortBy = merchantListParamsModel.sortBy,
+                    cuisine = merchantListParamsModel.cuisine,
                     pageKey = pageKey,
-                    brandUId = brandUId
+                    brandUId = merchantListParamsModel.brandUId
                 )
             }
 
@@ -148,26 +232,19 @@ class TokoFoodCategoryViewModel @Inject constructor(
                 state = TokoFoodLayoutState.LOAD_MORE
             )
 
-            _categoryLoadMore.postValue(Success(data))
-        }){
-            _categoryLoadMore.postValue(Fail(it))
-        }
+            return Pair(Success(data), false)
+    }
+
+    private fun getRemovalProgressBar(): Pair<Result<TokoFoodListUiModel>, Boolean> {
+        categoryLayoutItemList.removeProgressBar()
+        val data = TokoFoodListUiModel(
+            items = categoryLayoutItemList,
+            state = TokoFoodLayoutState.LOAD_MORE
+        )
+        return Pair(Success(data), false)
     }
 
     private fun setPageKey(pageNew:String) {
         pageKey = pageNew
     }
-
-    private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
-        val lastItemIndex = itemCount - Int.ONE
-        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
-                && containsLastItemIndex.isMoreThanZero())
-        val hasNextPage = pageKey.isNotEmpty()
-        val layoutList = categoryLayoutItemList.toMutableList()
-        val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
-        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
-
-        return scrolledToLastItem && hasNextPage && !isLoading && !isError
-    }
-
 }

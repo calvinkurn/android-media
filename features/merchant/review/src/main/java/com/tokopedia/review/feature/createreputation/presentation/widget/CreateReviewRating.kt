@@ -13,12 +13,14 @@ import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.databinding.WidgetCreateReviewRatingBinding
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewRating @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewRatingBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewRatingBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val TRANSITION_DURATION = 300L
@@ -50,16 +52,20 @@ class CreateReviewRating @JvmOverloads constructor(
         layoutRating.reviewFormRating.setRating(rating)
     }
 
-    fun updateUi(uiState: CreateReviewRatingUiState) {
+    fun updateUi(uiState: CreateReviewRatingUiState, continuation: Continuation<Unit>) {
         when (uiState) {
             is CreateReviewRatingUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewRatingUiState.Showing -> {
                 trackingHandler.trackerData = uiState.trackerData
                 binding.showData(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }

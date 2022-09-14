@@ -51,4 +51,5 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ShowApplinkOnToastUiModel): Int
     fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int
     fun type(uiModel: TypographySwitchUiModel): Int
+    fun type(uiModel: ConvertResourceIdUiModel): Int
 }

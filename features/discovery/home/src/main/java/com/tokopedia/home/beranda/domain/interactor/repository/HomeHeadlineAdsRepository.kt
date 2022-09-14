@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import dagger.Lazy
 import javax.inject.Inject
 
@@ -12,7 +13,8 @@ import javax.inject.Inject
  */
 
 class HomeHeadlineAdsRepository @Inject constructor(
-        private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>
+        private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
+        private val topAdsAddressHelper: Lazy<TopAdsAddressHelper>
         )
     : HomeRepository<List<DisplayHeadlineAdsEntity.DisplayHeadlineAds>> {
 
@@ -21,7 +23,7 @@ class HomeHeadlineAdsRepository @Inject constructor(
     }
 
     override suspend fun getRemoteData(bundle: Bundle): List<DisplayHeadlineAdsEntity.DisplayHeadlineAds> {
-        getDisplayHeadlineAds.get().createParams(bundle.getString(WIDGET_PARAM, ""))
+        getDisplayHeadlineAds.get().createParams(bundle.getString(WIDGET_PARAM, ""), topAdsAddressHelper.get().getAddressData())
         return getDisplayHeadlineAds.get().executeOnBackground()
     }
 

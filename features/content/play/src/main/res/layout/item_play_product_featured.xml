@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/play_product_featured_width"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/play_product_carousel_width"
+    android:layout_height="@dimen/play_product_carousel_height"
     android:background="@drawable/bg_play_product_featured"
     app:rcl_cornerRadius="@dimen/play_featured_product_radius"
     >
@@ -12,13 +12,14 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_product_image"
         android:layout_width="0dp"
-        android:layout_height="@dimen/play_product_featured_image_height"
+        android:layout_height="0dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@id/ll_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="0"
+        app:layout_constraintDimensionRatio="H, 1:1"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -60,22 +61,24 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl1"
             android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="@color/Unify_N700_96"
             app:typographyType="small"
             app:typographyWeight="bold"
-            tools:text="Rp150.000"
+            tools:text="Rp150.000.000.00"
             />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_slashed_price"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_32"
             app:typographyType="small"
-            tools:text="Rp1.500.000"
+            tools:text="Rp1.500.000.000.000"
             />
 
     </LinearLayout>

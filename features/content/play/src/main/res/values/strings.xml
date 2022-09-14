@@ -18,10 +18,13 @@
     <string name="play_product_updated">Produk telah diupdate</string>
     <string name="play_link_copied">Link berhasil disalin</string>
     <string name="play_product_atc">Keranjang</string>
+
+    <!--Upcoming-->
     <string name="play_product_upcoming_reminder_success">Oke, kami akan ingatkan!</string>
     <string name="play_product_upcoming_reminder_error">Pengingat telah dihapus.</string>
     <string name="play_add_to_cart_message_success_mixed">1 barang berhasil ditambahkan ke keranjang Tokopedia NOW!</string>
     <string name="play_add_to_cart_message_success_tokonow">1 barang berhasil ditambahkan ke keranjang.</string>
+    <string name="play_upcoming_description_read_more">Selengkapnya</string>
 
     <!--Floating Window / PiP-->
     <string name="play_pip_permission_rationale_title">Mau perkecil layar Live?</string>
@@ -68,6 +71,8 @@
     <string name="play_will_start_on">Akan mulai dalam</string>
     <string name="play_failed_remind_me">Oops, gagal tersambung</string>
     <string name="play_try_again">Coba Lagi</string>
+    <string name="play_remind_me_cancel">Batalkan Pengingat</string>
+    <string name="play_cancel_remind_me_success">Yaah, pengingat batal dikirim.</string>
 
     <!--Chromecast-->
     <string name="play_connecting_chromecast">Connecting to Chromecast</string>
@@ -101,13 +106,19 @@
     <!-- Sharing Experience -->
     <string name="play_sharing_error_generate_link">Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti.</string>
     <string name="play_sharing_refresh">Refresh</string>
-    <string name="play_change_address_widget_wording">Ganti Alamat</string>
 
     <!--TokoNow-->
+    <string name="play_change_address_widget_wording">Ganti Alamat</string>
     <string name="play_address_widget_info">Lokasimu belum tersedia di NOW! <![CDATA[<strong><span style="color:#03AC0E">Cek Jangkauan</span></strong>]]></string>
     <string name="play_tokonow_info_weblink">help/article/apa-itu-tokopedia-now</string>
     <string name="play_toaster_global_wording">Lihat Keranjang</string>
     <string name="play_toaster_tokonow_wording">Lihat</string>
     <string name="play_tokonow_minicart_applink">\?isMiniCartOpen=true</string>
     <string name="play_tokopedia_now_wording">Tokopedia NOW!</string>
+    <string name="play_upcoming_description_less">Tampilkan sedikit</string>
+
+    <!--Pinned Product-->
+    <string name="play_product_pinned">Pin Dipasang</string>
+    <string name="play_product_pinned_atc">+</string>
+    <string name="play_product_pinned_info_separator">\u00b7</string>
 </resources>

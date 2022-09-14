@@ -9,12 +9,12 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.talk.R
 import com.tokopedia.talk.analytics.util.*
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.PRODUCT_ID_VALUE
@@ -35,7 +35,6 @@ import org.junit.runner.RunWith
 class TalkWriteActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
     @get:Rule
     var activityRule: IntentsTestRule<TalkWriteActivity> = object : IntentsTestRule<TalkWriteActivity>(TalkWriteActivity::class.java) {
@@ -54,6 +53,9 @@ class TalkWriteActivityTest {
             waitForData()
         }
     }
+
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     private val idlingResource = object : IdlingResource {
         private var resourceCallback: IdlingResource.ResourceCallback? = null
@@ -78,7 +80,6 @@ class TalkWriteActivityTest {
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(TalkMockResponse())
     }
 
@@ -97,8 +98,7 @@ class TalkWriteActivityTest {
             if (!idlingResource.isIdleNow) {
                 performClose(activityRule)
                 waitForTrackerSent()
-                validate(gtmLogDBSource, targetContext, TALK_CLICK_SENT_NEW_QUESTION_PATH)
-                gtmLogDBSource.finishTest()
+                validate(cassavaRule, TALK_CLICK_SENT_NEW_QUESTION_PATH)
             }
         }
     }

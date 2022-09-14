@@ -18,13 +18,21 @@ import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
+import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationTitleDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -32,9 +40,12 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestS
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,11 +57,24 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.verify
+import io.mockk.just
+import io.mockk.Runs
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.spyk
+import io.mockk.mockk
+import io.mockk.CapturingSlot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -106,6 +130,9 @@ class OfficialStoreHomeViewModelTest {
     @RelaxedMockK
     lateinit var bestSellerMapper: BestSellerMapper
 
+    @RelaxedMockK
+    lateinit var topAdsAddressHelper: TopAdsAddressHelper
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -131,7 +158,8 @@ class OfficialStoreHomeViewModelTest {
             getRecommendationUseCaseCoroutine,
             bestSellerMapper,
             getTopAdsHeadlineUseCase,
-            CoroutineTestDispatchersProvider
+            CoroutineTestDispatchersProvider,
+            topAdsAddressHelper
         ))
     }
 
@@ -142,7 +170,7 @@ class OfficialStoreHomeViewModelTest {
             val slug = "slug"
             val category = createCategory(prefixUrl, slug)
             val channelType = "$prefixUrl$slug"
-            val osBanners = OfficialStoreBanners()
+            val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
             val osBenefits = OfficialStoreBenefits()
             val osFeatured = OfficialStoreFeaturedShop()
             val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
@@ -155,23 +183,16 @@ class OfficialStoreHomeViewModelTest {
 
             viewModel.loadFirstData(category)
 
-            val expectedOSBanners = Success(osBanners)
-            val expectedOSBenefits = Success(osBenefits)
-            val expectedOSFeaturedShop = Success(osFeatured)
-            val expectedOSDynamicChannel = Success(osDynamicChannel)
-
-            verifyOfficialStoreBannersEquals(expectedOSBanners)
-            verifyOfficialStoreBenefitsEquals(expectedOSBenefits)
-            verifyOfficialStoreFeaturedShopEquals(expectedOSFeaturedShop)
-            verifyOfficialStoreDynamicChannelEquals(expectedOSDynamicChannel)
-            verifyDynamicChannelParamsEquals(channelType)
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBannerDataModel && it.banner == osBanners.banners })
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBenefitDataModel && it.benefit == osBenefits.benefits })
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialFeaturedShopDataModel && it.featuredShop == osFeatured.featuredShops })
         }
     }
 
     @Test
     fun given_get_data_error__when_load_first_data__should_set_error_value() {
         runBlocking {
-            val error = NullPointerException()
+            val error = MessageErrorException()
             val prefixUrl = "prefix"
             val slug = "slug"
             val category = createCategory(prefixUrl, slug)
@@ -181,19 +202,18 @@ class OfficialStoreHomeViewModelTest {
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
             viewModel.loadFirstData(category)
-            val expectedError = Fail(NullPointerException())
 
-            verifyLiveDataValueError(expectedError)
-            verifyDynamicChannelParamsEquals(channelType)
+            assertEquals(viewModel.officialStoreError.value, error)
         }
     }
 
     @Test
     fun given_get_data_success__when_load_more__should_set_value_with_first_product_recommendation() {
         val page = 1
-        val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
-        val listOfRecom = mutableListOf(RecommendationWidget())
-        val productRecommendationWithTopAdsHeadline = ProductRecommendationWithTopAdsHeadline(listOfRecom.first(), null)
+        val categoryId = "0"
+        val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(
+            RecommendationItem()
+        )))
 
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
@@ -204,17 +224,24 @@ class OfficialStoreHomeViewModelTest {
         coVerify {
             getRecommendationUseCase.createObservable(any())
         }
-        print(viewModel.productRecommendation.value)
-        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, productRecommendationWithTopAdsHeadline)
+
+        val resultProductRecommendationDataModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<ProductRecommendationDataModel>()
+        assertFalse(resultProductRecommendationDataModel.isNullOrEmpty())
+        assertNotNull(resultProductRecommendationDataModel?.find { it.productItem in listOfRecom.first().recommendationItemList })
     }
 
     @Test
     fun given_get_data_success__when_load_more__should_set_value_with_first_product_recommendation_with_topads_headline_ads() {
         val page = 1
-        val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
-        val listOfRecom = mutableListOf(RecommendationWidget())
-        val topAdsHeadlineAd = OfficialTopAdsHeadlineDataModel()
-        val productRecommendationWithTopAdsHeadline = ProductRecommendationWithTopAdsHeadline(listOfRecom.first(), topAdsHeadlineAd)
+        val categoryId = "0"
+        val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
+        val topAdsHeadlineAd = OfficialTopAdsHeadlineDataModel(TopAdsHeadlineResponse(CpmModel().apply {
+            data = listOf(CpmData().apply {
+                cpm = Cpm().apply {
+                    position = 0
+                }
+            })
+        }))
 
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
@@ -231,8 +258,11 @@ class OfficialStoreHomeViewModelTest {
         coVerify {
             getRecommendationUseCase.createObservable(any())
         }
-        print(viewModel.productRecommendation.value)
-        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, productRecommendationWithTopAdsHeadline)
+
+        val productRecommendationDataModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<ProductRecommendationDataModel>()
+        assertFalse(productRecommendationDataModel.isNullOrEmpty())
+        assertNotNull(productRecommendationDataModel?.find { it.productItem in listOfRecom.first().recommendationItemList })
+        assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find{ it is OfficialTopAdsHeadlineDataModel && it == topAdsHeadlineAd })
     }
 
     @Test
@@ -286,13 +316,12 @@ class OfficialStoreHomeViewModelTest {
                 )
             } returns "parmas"
 
-            every { getTopAdsHeadlineUseCase.setParams(any()) } just Runs
+            every { getTopAdsHeadlineUseCase.setParams(any(), any()) } just Runs
             coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } returns topAdsHeadlineAdResponse
 
             val topAdsData = viewModel.getTopAdsHeadlineData(page)
 
-
-            Assert.assertEquals(topAdsData, topAdsHeadlineAd)
+            assertEquals(topAdsData, topAdsHeadlineAd)
         }
 
     }
@@ -318,16 +347,15 @@ class OfficialStoreHomeViewModelTest {
                 )
             } returns "parmas"
 
-            every { getTopAdsHeadlineUseCase.setParams(any()) } just Runs
+            every { getTopAdsHeadlineUseCase.setParams(any(), any()) } just Runs
             coEvery { getTopAdsHeadlineUseCase.executeOnBackground() } throws Throwable("error")
 
             val topAdsData = viewModel.getTopAdsHeadlineData(page)
 
-            Assert.assertEquals(topAdsData, null)
+            assertEquals(topAdsData, null)
         }
 
     }
-
 
     @Test
     fun test_record_shop_widget_impression_when_map_is_empty() {
@@ -337,7 +365,7 @@ class OfficialStoreHomeViewModelTest {
         viewModel.recordShopWidgetImpression(channelId, shopId)
 
         val expected = viewModel.impressedShop[channelId]?.size
-        Assert.assertEquals(expected, 1)
+        assertEquals(expected, 1)
     }
 
     @Test
@@ -359,32 +387,32 @@ class OfficialStoreHomeViewModelTest {
         viewModel.impressedShop[channelId] = mutableSetOf(shopId)
 
         viewModel.resetShopWidgetImpressionCount()
-        Assert.assertTrue(viewModel.impressedShop.isEmpty())
+        assertTrue(viewModel.impressedShop.isEmpty())
     }
 
     @Test
     fun test_reset_is_feature_shop_allowed() {
 
         viewModel.resetIsFeatureShopAllowed()
-        Assert.assertFalse(viewModel.isFeaturedShopAllowed)
+        assertFalse(viewModel.isFeaturedShopAllowed)
     }
 
     @Test
-    fun given_get_data_error__when_load_more__should_set_product_recommendation_error_value() {
+    fun given_get_data_error__when_load_more__should_set_official_store_error_value() {
         val page = 1
-        val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
+        val categoryId = "0"
+        val error = MessageErrorException()
 
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking()
-        } throws Throwable()
+        } throws error
 
         viewModel.loadMoreProducts(categoryId, page)
 
         coVerify {
             getRecommendationUseCase.createObservable(any())
         }
-        print(viewModel.productRecommendation.value)
-        Assert.assertTrue(viewModel.productRecommendation.value is Fail)
+        Assert.assertTrue(viewModel.officialStoreError.value == error)
     }
 
     @Test
@@ -531,7 +559,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_get_headlineAds_success_when_get_osDynamicChannel_featured_shop_then_pass_to_view() {
+    fun given_get_headlineAds_success_when_get_osDynamicChannel_featured_shop_then_update_list() {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
@@ -552,7 +580,7 @@ class OfficialStoreHomeViewModelTest {
                         DisplayHeadlineAdsEntity.DisplayHeadlineAds(id = "3"),
                 ))
 
-        val featureShopResult = FeaturedShopDataModel(
+        val expectedFeatureShopResult = FeaturedShopDataModel(
                 channelModel = ChannelModel(
                         id = channelId,
                         groupId = "",
@@ -566,8 +594,10 @@ class OfficialStoreHomeViewModelTest {
 
         viewModel.loadFirstData(category)
 
-        Assert.assertEquals((viewModel.featuredShopResult.value as Success).data.channelModel.id, featureShopResult.channelModel.id)
-        Assert.assertEquals((viewModel.featuredShopResult.value as Success).data.channelModel.channelGrids.size, featureShopResult.channelModel.channelGrids.size)
+        val resultFeaturedShopDataModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<FeaturedShopDataModel>()
+        assertFalse(resultFeaturedShopDataModel.isNullOrEmpty())
+        assertNotNull(resultFeaturedShopDataModel?.find { it.channelModel.id == expectedFeatureShopResult.channelModel.id })
+        assertNotNull(resultFeaturedShopDataModel?.find { it.channelModel.channelGrids == expectedFeatureShopResult.channelModel.channelGrids })
     }
 
     @Test
@@ -579,10 +609,9 @@ class OfficialStoreHomeViewModelTest {
         val sizeZero = 0
 
         val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        val dcResponseFeaturedShop = OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_FEATURED_SHOP, id = channelId))
         dynamicChannelResponse.addAll(
-                listOf(
-                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_FEATURED_SHOP, id = channelId))
-                )
+                listOf(dcResponseFeaturedShop)
         )
 
         val headlineAdsResponse: MutableList<DisplayHeadlineAdsEntity.DisplayHeadlineAds> = mutableListOf()
@@ -592,11 +621,13 @@ class OfficialStoreHomeViewModelTest {
 
         viewModel.loadFirstData(category)
 
-        Assert.assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelGrids?.size ?: sizeZero, sizeZero)
+        val resultFeaturedShopDataModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<FeaturedShopDataModel>()
+        assertFalse(resultFeaturedShopDataModel.isNullOrEmpty())
+        assertNotNull(resultFeaturedShopDataModel?.find { it.channelModel.channelGrids == dcResponseFeaturedShop.channel.grids })
     }
 
     @Test
-    fun given_get_headlineAds_error_when_get_osDynamicChannel_featured_shop_then_pass_error_to_view() {
+    fun given_get_headlineAds_error_when_get_osDynamicChannel_featured_shop_then_remove_from_list() {
         val prefixUrl = "prefix"
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
@@ -609,7 +640,7 @@ class OfficialStoreHomeViewModelTest {
             )
         )
 
-        val featuredShopDataModel = FeaturedShopDataModel(
+        val expectedFeaturedShopDataModel = FeaturedShopDataModel(
             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
                 dynamicChannelResponse.first().channel, 0
             )
@@ -622,9 +653,7 @@ class OfficialStoreHomeViewModelTest {
 
         viewModel.loadFirstData(category)
 
-        assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelHeader, featuredShopDataModel.channelModel.channelHeader)
-        assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelBanner, featuredShopDataModel.channelModel.channelBanner)
-        assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelGrids, featuredShopDataModel.channelModel.channelGrids)
+        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is FeaturedShopDataModel && it.channelModel.id == expectedFeaturedShopDataModel.channelModel.id })
     }
 
 
@@ -654,7 +683,7 @@ class OfficialStoreHomeViewModelTest {
         return Category(prefixUrl = prefixUrl, slug = slug)
     }
 
-    private fun onGetOfficialStoreData_thenReturn(error: NullPointerException) {
+    private fun onGetOfficialStoreData_thenReturn(error: Throwable) {
         onGetOfficialStoreBanners_thenReturn(error)
         onGetOfficialStoreBenefits_thenReturn(error)
         onGetOfficialStoreFeaturedShop_thenReturn(error)
@@ -680,105 +709,6 @@ class OfficialStoreHomeViewModelTest {
     private fun onSetupDynamicChannelParams_thenCompleteWith(channelType: String) {
         coEvery { getOfficialStoreDynamicChannelUseCase.setupParams(channelType, "") } returns Unit
     }
-
-    private fun verifyOfficialStoreBannersEquals(
-            expectedOSBanners: Success<OfficialStoreBanners>
-    ) {
-        verifyGetOfficialStoreBannersUseCaseCalled()
-
-        viewModel.officialStoreBannersResult
-                .assertPairSuccess(expectedOSBanners)
-    }
-
-    private fun verifyOfficialStoreBenefitsEquals(
-            expectedOSBenefits: Success<OfficialStoreBenefits>
-    ) {
-        verifyGetOfficialStoreBenefitsUseCaseCalled()
-
-        viewModel.officialStoreBenefitsResult
-                .assertSuccess(expectedOSBenefits)
-    }
-
-    private fun verifyOfficialStoreFeaturedShopEquals(
-            expectedFeaturedOS: Success<OfficialStoreFeaturedShop>
-    ) {
-        verifyGetOfficialStoreFeaturedShopUseCaseCalled()
-
-        viewModel.officialStoreFeaturedShopResult
-                .assertSuccess(expectedFeaturedOS)
-    }
-
-    private fun verifyOfficialStoreDynamicChannelEquals(
-            expectedDynamicChannel: Success<List<OfficialStoreChannel>>
-    ) {
-        verifyGetOfficialDynamicChannelCalled()
-
-        viewModel.officialStoreDynamicChannelResult
-                .assertSuccess(expectedDynamicChannel)
-    }
-
-    private fun verifyGetOfficialStoreBannersUseCaseCalled() {
-        coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
-    }
-
-    private fun verifyGetOfficialStoreBenefitsUseCaseCalled() {
-        coVerify { getOfficialStoreBenefitUseCase.executeOnBackground() }
-    }
-
-    private fun verifyGetOfficialStoreFeaturedShopUseCaseCalled() {
-        coVerify { getOfficialStoreFeaturedShopUseCase.executeOnBackground() }
-    }
-
-    private fun verifyGetOfficialDynamicChannelCalled() {
-        coVerify {
-            getOfficialStoreDynamicChannelUseCase.executeOnBackground()
-        }
-    }
-
-    private fun verifyLiveDataValueError(expectedError: Fail) {
-        verifyOfficialStoreBannersError(expectedError)
-        verifyOfficialStoreBenefitsError(expectedError)
-        verifyOfficialStoreFeaturedShopError(expectedError)
-        verifyOfficialStoreDynamicChannelError(expectedError)
-    }
-
-    private fun verifyOfficialStoreBannersError(expectedError: Fail) {
-        coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
-
-        viewModel.officialStoreBannersResult
-                .assertPairError(expectedError)
-    }
-
-    private fun verifyOfficialStoreBenefitsError(expectedError: Fail) {
-        coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
-
-        viewModel.officialStoreBenefitsResult
-                .assertError(expectedError)
-    }
-
-    private fun verifyOfficialStoreFeaturedShopError(expectedError: Fail) {
-        coVerify { getOfficialStoreFeaturedShopUseCase.executeOnBackground() }
-
-        viewModel.officialStoreFeaturedShopResult
-                .assertError(expectedError)
-    }
-
-    private fun verifyOfficialStoreDynamicChannelError(expectedError: Fail) {
-        val error = expectedError.throwable
-        verifyGetOfficialDynamicChannelCalled(error)
-
-        viewModel.officialStoreDynamicChannelResult
-                .assertError(expectedError)
-    }
-
-    private fun verifyGetOfficialDynamicChannelCalled(error: Throwable) {
-        coVerify { getOfficialStoreDynamicChannelUseCase.executeOnBackground() }
-    }
-
-    private fun verifyDynamicChannelParamsEquals(channelType: String) {
-        coVerify { getOfficialStoreDynamicChannelUseCase.setupParams(channelType, "") }
-    }
-
 
     private fun createRecommendation(productId: String, isTopAds: Boolean): RecommendationItem {
         return RecommendationItem(productId = productId.toLongOrZero(), isTopAds = isTopAds)
@@ -900,6 +830,7 @@ class OfficialStoreHomeViewModelTest {
         val slug = "slug"
         val category = createCategory(prefixUrl, slug)
         val channelId = "123"
+        val recomWidgetTitle = "Rekomendasi Untukmu"
 
         val dynamicChannelResponse = mutableListOf(
             OfficialStoreChannel(channel = Channel(
@@ -912,10 +843,11 @@ class OfficialStoreHomeViewModelTest {
         )
 
         val recommendationResponse: List<RecommendationWidget> = listOf(
-            RecommendationWidget(recommendationItemList)
+            RecommendationWidget(recommendationItemList, title = recomWidgetTitle)
         )
 
         val bestSellerDataModel = BestSellerDataModel(
+            title = recomWidgetTitle,
             recommendationItemList = recommendationItemList,
             channelId = channelId
         )
@@ -926,7 +858,11 @@ class OfficialStoreHomeViewModelTest {
 
         viewModel.loadFirstData(category)
 
-        assertEquals((viewModel.recomWidget.value as Success).data, bestSellerDataModel)
+        val resultBestSellerDataModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<BestSellerDataModel>()
+        assertFalse(resultBestSellerDataModel.isNullOrEmpty())
+        assertNotNull(resultBestSellerDataModel?.find { it.channelId == channelId })
+        assertNotNull(resultBestSellerDataModel?.find { it.recommendationItemList == recommendationItemList })
+        assertNotNull(resultBestSellerDataModel?.find { it.title == recomWidgetTitle })
     }
 
     @Test
@@ -949,8 +885,7 @@ class OfficialStoreHomeViewModelTest {
 
         viewModel.loadFirstData(category)
 
-        assert(viewModel.recomWidget.value is Fail)
-        assertEquals((viewModel.recomWidget.value as Fail).throwable, error)
+        assertTrue(viewModel.officialStoreError.value == error)
     }
 
     @Test
@@ -977,10 +912,210 @@ class OfficialStoreHomeViewModelTest {
             onBannerCloudStartLoad = { throw error },
             onBannerCloudStopLoad = { throw error }
         )
-        val expectedError = Fail(error)
 
-        assert(viewModel.officialStoreBannersResult.value?.second == expectedError)
-        assert(viewModel.officialStoreBenefitsResult.value == expectedError)
-        assert(viewModel.officialStoreFeaturedShopResult.value == expectedError)
+        assertTrue(viewModel.officialStoreError.value == error)
+    }
+
+    @Test
+    fun given_load_more__when_scrolling__then_add_loading_more_state() {
+        viewModel.addLoadingMore()
+        assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialLoadingMoreDataModel })
+    }
+
+    @Test
+    fun given_refresh__when_swipe_layout__then_remove_recom_and_topads_headline_widget() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelType = "$prefixUrl$slug"
+        val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
+        val osBenefits = OfficialStoreBenefits()
+        val osFeatured = OfficialStoreFeaturedShop()
+        val osDynamicChannel = mutableListOf(
+            OfficialStoreChannel(channel = Channel(
+                layout = DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL)
+            )
+        )
+        val page = 1
+        val title = "Rekomendasi Untukmu"
+
+        onGetOfficialStoreBanners_thenReturn(osBanners)
+        onGetOfficialStoreBenefits_thenReturn(osBenefits)
+        onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+        onGetDynamicChannel_thenReturn(osDynamicChannel)
+        onSetupDynamicChannelParams_thenCompleteWith(channelType)
+
+        val listOfRecom = mutableListOf(
+            RecommendationWidget(
+                title = title,
+                recommendationItemList = listOf(
+                    RecommendationItem()
+                )
+            )
+        )
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.loadFirstData(category)
+        viewModel.counterTitleShouldBeRendered += 1
+        viewModel.loadMoreProducts(category.categoryId, page)
+
+        viewModel.removeRecomWidget()
+        viewModel.removeRecommendation()
+        viewModel.removeTopAdsHeadlineWidget()
+        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is BestSellerDataModel })
+        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationDataModel })
+        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationTitleDataModel })
+        assertEquals(viewModel.productRecommendationTitleSection, title)
+    }
+
+    @Test
+    fun given_countdown_finished__when_dynamic_channel_flashsale__then_remove_widget() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelType = "$prefixUrl$slug"
+        val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
+        val osBenefits = OfficialStoreBenefits()
+        val osFeatured = OfficialStoreFeaturedShop()
+        val osDynamicChannel = mutableListOf(
+            OfficialStoreChannel(channel = Channel(
+                layout = DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL)
+            )
+        )
+        val page = 1
+        val title = "Rekomendasi Untukmu"
+
+        onGetOfficialStoreBanners_thenReturn(osBanners)
+        onGetOfficialStoreBenefits_thenReturn(osBenefits)
+        onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+        onGetDynamicChannel_thenReturn(osDynamicChannel)
+        onSetupDynamicChannelParams_thenCompleteWith(channelType)
+
+        val listOfRecom = mutableListOf(
+            RecommendationWidget(
+                title = title,
+                recommendationItemList = listOf(
+                    RecommendationItem()
+                )
+            )
+        )
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.loadFirstData(category)
+        viewModel.loadMoreProducts(category.categoryId, page)
+
+        viewModel.removeFlashSale()
+        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is DynamicChannelDataModel })
+        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationDataModel })
+        assertEquals(viewModel.productRecommendationTitleSection, title)
+    }
+
+    @Test
+    fun given_reset_state__when_open_page_or_change_address__then_clear_list_and_add_banner_shimmering() {
+        viewModel.resetState()
+        assertTrue(viewModel.officialStoreLiveData.value?.dataList?.size == 1)
+        assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialLoadingDataModel })
+    }
+
+    @Test
+    fun given_success__when_recom_wishlist_action__then_update_wishlist_status() {
+        val page = 1
+        val categoryId = "0"
+        val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(
+            RecommendationItem()
+        )))
+        val newWishlistStatus = true
+        val position = 0
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.loadMoreProducts(categoryId, page)
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any())
+        }
+
+        viewModel.updateWishlist(newWishlistStatus, position)
+
+        val resultProductRecom = viewModel.officialStoreLiveData.value?.dataList?.get(position)
+        assertTrue(resultProductRecom is ProductRecommendationDataModel && resultProductRecom.productItem.isWishlist == newWishlistStatus)
+    }
+
+    @Test
+    fun given_get_data_success__when_first_load_more__should_add_recommendation_title() {
+        val page = 1
+        val categoryId = "0"
+        val title = "Rekomendasi Untukmu"
+        val listOfRecom = mutableListOf(RecommendationWidget(title = title, recommendationItemList = listOf(
+            RecommendationItem()
+        )))
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.counterTitleShouldBeRendered += 1
+        viewModel.loadMoreProducts(categoryId, page)
+
+        val resultRecomTitle = viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationTitleDataModel } as? ProductRecommendationTitleDataModel
+        assertNotNull(resultRecomTitle)
+        assertEquals(resultRecomTitle?.title, title)
+        assertEquals(viewModel.productRecommendationTitleSection, title)
+    }
+
+    @Test
+    fun given_banner_empty__when_load_first_data__should_not_have_banners() {
+        runBlocking {
+            val prefixUrl = "prefix"
+            val slug = "slug"
+            val category = createCategory(prefixUrl, slug)
+            val channelType = "$prefixUrl$slug"
+            val osBanners = OfficialStoreBanners(banners = mutableListOf())
+            val osBenefits = OfficialStoreBenefits()
+            val osFeatured = OfficialStoreFeaturedShop()
+            val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
+
+            onGetOfficialStoreBanners_thenReturn(osBanners)
+            onGetOfficialStoreBenefits_thenReturn(osBenefits)
+            onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+            onGetDynamicChannel_thenReturn(osDynamicChannel)
+            onSetupDynamicChannelParams_thenCompleteWith(channelType)
+
+            viewModel.loadFirstData(category)
+
+            assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBannerDataModel && it.banner == osBanners.banners })
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBenefitDataModel && it.benefit == osBenefits.benefits })
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialFeaturedShopDataModel && it.featuredShop == osFeatured.featuredShops })
+        }
+    }
+
+    @Test
+    fun given_get_data_success__when_load_more__should_update_recom_updated_value() {
+        val page = 1
+        val categoryId = "0"
+        val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(
+            RecommendationItem()
+        )))
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.loadMoreProducts(categoryId, page)
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any())
+        }
+
+        val recomUpdated = viewModel.recomUpdated
+        assertTrue(recomUpdated.value?.getContentIfNotHandled() == true)
     }
 }

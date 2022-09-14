@@ -33,6 +33,7 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
@@ -103,6 +104,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var distrcitId: Long? = null
 
     private var isEdit: Boolean = false
+    private var source: String = ""
     private var isAccessAppPermissionFromSettings: Boolean = false
 
 
@@ -133,6 +135,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             isPolygon = it.getBoolean(EXTRA_IS_POLYGON)
             distrcitId = it.getLong(EXTRA_DISTRICT_ID)
             isEdit = it.getBoolean(EXTRA_IS_EDIT, false)
+            source = it.getString(PARAM_SOURCE, "")
         }
         if (saveDataModel != null) {
             saveDataModel?.let {
@@ -264,6 +267,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 putExtra(EXTRA_IS_POSITIVE_FLOW, false)
                 putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
                 putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+                putExtra(PARAM_SOURCE, source)
                 startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
             }
         }
@@ -550,6 +554,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
+        bundle.putString(PARAM_SOURCE, source)
         distrcitId?.let { bundle.putLong(EXTRA_DISTRICT_ID, it) }
         if (!isEdit) {
             startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPOINT_PAGE)
@@ -593,6 +598,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
                     putLong(EXTRA_DISTRICT_ID, bundle.getLong(EXTRA_DISTRICT_ID))
                     putBoolean(EXTRA_IS_EDIT, bundle.getBoolean(EXTRA_IS_EDIT))
+                    putString(PARAM_SOURCE, bundle.getString(PARAM_SOURCE, ""))
                 }
             }
         }
