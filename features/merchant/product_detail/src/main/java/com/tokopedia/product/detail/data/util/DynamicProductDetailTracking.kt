@@ -1684,7 +1684,8 @@ object DynamicProductDetailTracking {
                                               ratesEstimateData: P2RatesEstimateData?,
                                               buyerDistrictId: String,
                                               sellerDistrictId: String,
-                                              lcaWarehouseId: String ->
+                                              lcaWarehouseId: String, campaignId: String,
+                                              variantId: String ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1753,7 +1754,9 @@ object DynamicProductDetailTracking {
                         productInfo?.getFinalStock(),
                         trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
                         lcaWarehouseId,
-                        shopInfo?.shopCore?.ownerId
+                        shopInfo?.shopCore?.ownerId,
+                        campaignId,
+                        variantId
                 )
     }
 
@@ -1773,14 +1776,17 @@ object DynamicProductDetailTracking {
                          ratesEstimateData: P2RatesEstimateData?,
                          buyerDistrictId: String,
                          sellerDistrictId: String,
-                         lcaWarehouseId: String) {
+                         lcaWarehouseId: String,
+                         campaignId: String,
+                         variantId: String
+    ) {
         productInfo?.let {
             if (shopInfo?.isShopInfoNotEmpty() == true) {
                 val sentBundle = generateProductViewBundle(
                         irisSessionId, trackerListName, it, shopInfo,
                         trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
                         isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData,
-                        buyerDistrictId, sellerDistrictId, lcaWarehouseId
+                        buyerDistrictId, sellerDistrictId, lcaWarehouseId, campaignId, variantId
                 )
                 sendTrackingBundle(
                         ProductDetailViewsBundler.KEY,
