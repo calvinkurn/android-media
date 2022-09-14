@@ -84,7 +84,7 @@ class GlobalSearchShopTabFragment @Inject constructor(
         }
     }
 
-    private val bottomSheetContainer by lazy {
+    private val bottomSheetContainer by lazy(LazyThreadSafetyMode.NONE) {
         getParentFragmentByInstance<BottomSheetUnify>()
     }
 
