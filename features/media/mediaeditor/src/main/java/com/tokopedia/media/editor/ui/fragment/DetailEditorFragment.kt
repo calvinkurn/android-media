@@ -582,13 +582,22 @@ class DetailEditorFragment @Inject constructor(
         }
 
         viewBinding?.btnSave?.setOnClickListener { _ ->
-            // check if user move crop area via image matrix translation
+            // check if user move crop area via image matrix translation, works for crop
             initialImageMatrix?.values()?.let { initialMatrixValue ->
                 val currentMatrix =
                     viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix?.values()
                 currentMatrix?.let {
                     initialMatrixValue.forEachIndexed { index, value ->
                         if (value != currentMatrix[index]) isEdited = true
+                    }
+                }
+            }
+
+            // check if current ratio is same as source, works for crop
+            (data.cropRotateValue.getRatio() ?: data.originalRatio).let {
+                viewBinding?.imgUcropPreview?.overlayView?.let { overlayView ->
+                    if (it != (overlayView.cropViewRect.width() / overlayView.cropViewRect.height())){
+                        isEdited = true
                     }
                 }
             }
