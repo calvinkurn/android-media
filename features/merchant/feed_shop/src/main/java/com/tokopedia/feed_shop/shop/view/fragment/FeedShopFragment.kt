@@ -30,6 +30,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed_shop.R
 import com.tokopedia.feed_shop.analytics.ShopAnalytics
@@ -185,6 +186,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         //endregion
 
         private const val PDP_APP_LINK_HOST = "product"
+
+        // Edit Post
+        private const val KEY_AUTHOR_TYPE = "author_type"
+        private const val VALUE_AUTHOR_TYPE = "content-preview-page"
 
         fun createInstance(shopId: String, createPostUrl: String): FeedShopFragment {
             val fragment = FeedShopFragment()
@@ -636,15 +641,23 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                         }
 
                         override fun onEditClick() {
-                            goToEditPostShop(postId)
+                            goToEditPost(caption, postId.toString(), id)
                         }
                     })
             menus.show()
         }
     }
 
-    private fun goToEditPostShop(postId: Int) {
-        context?.let { RouteManager.route(it, ApplinkConstInternalContent.SHOP_POST_EDIT, postId.toString()) }
+    private fun goToEditPost(caption: String, postId: String, authorId: String) {
+        val createPostViewModel = CreatePostViewModel()
+        createPostViewModel.caption = caption
+        createPostViewModel.postId = postId
+        createPostViewModel.editAuthorId = authorId
+
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2)
+        intent.putExtra(KEY_AUTHOR_TYPE, VALUE_AUTHOR_TYPE)
+        intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
+        startActivity(intent)
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
