@@ -12,6 +12,7 @@ import com.tokopedia.productcard.R as RProductCard
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2ListItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
+import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils.clickWithDebounce
 
 class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
     fun bind(
@@ -79,7 +80,7 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         binding.wishlistCheckbox.gone()
         buttonSecondary.visible()
         rlPrimaryButton.visible()
-        binding.pcListItem.setOnClickListener {
+        binding.pcListItem.clickWithDebounce {
             actionListener?.onProductItemClicked(item.wishlistItem, position)
         }
     }

@@ -382,7 +382,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         if (isPausedFragment) {
-            resumeBroadcast()
+            resumeBroadcast(false)
             isPausedFragment = false
         }
     }
@@ -393,11 +393,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         pauseBroadcast()
         productTagAnalyticHelper.sendTrackingProduct()
         parentViewModel.sendLogs()
-    }
-
-    override fun onDestroy() {
-        try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
-        super.onDestroy()
     }
 
     /**
@@ -503,6 +498,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (!forceStopDialog.isShowing) {
             analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
             forceStopDialog.show()
+            dismissPauseDialog()
         }
     }
 
@@ -519,7 +515,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         parentViewModel.channelId,
                         parentViewModel.channelTitle
                     )
-                    broadcaster.resume(shouldContinue = true)
+                    resumeBroadcast(shouldContinue = true)
                 },
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
@@ -534,6 +530,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             pauseLiveDialog?.show()
             analytic.viewDialogContinueBroadcastOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
+    }
+
+    private fun dismissPauseDialog() {
+        if (pauseLiveDialog?.isShowing == true) pauseLiveDialog?.dismiss()
     }
 
     private fun showErrorToaster(
@@ -773,7 +773,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         else showErrorToaster(event.throwable)
                     }
                     PlayBroadcastEvent.ShowLoading -> showLoading(true)
-                    PlayBroadcastEvent.ShowLiveEndedDialog -> showForceStopDialog()
+                    PlayBroadcastEvent.ShowLiveEndedDialog -> {
+                        stopBroadcast()
+                        showForceStopDialog()
+                    }
                     PlayBroadcastEvent.ShowResumeLiveDialog -> showDialogContinueLive()
                     is PlayBroadcastEvent.ShowError -> {
                         if (event.onRetry == null) showErrorToaster(event.error)
@@ -1151,8 +1154,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         broadcaster.pause()
     }
 
-    private fun resumeBroadcast() {
-        broadcaster.resume(shouldContinue = false)
+    private fun resumeBroadcast(shouldContinue: Boolean) {
+        if (parentViewModel.isBroadcastStopped) return
+        broadcaster.resume(shouldContinue)
     }
 
     private fun reconnectLiveStreaming() {
