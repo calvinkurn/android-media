@@ -52,12 +52,14 @@ class EditorUiModel(
     }
 
     fun getFilteredStateList(): List<EditorDetailUiModel>{
-        val maxStateLimit = (editList.size) - backValue
+        val maxStateLimit = (editList.size - 1) - backValue
         val minStateLimit = removeBackgroundStartState?.let {
             if(maxStateLimit < it) 0 else removeBackgroundStartState
         } ?: 0
 
-        return editList.subList(minStateLimit, maxStateLimit)
+        return editList.filterIndexed { index, _ ->
+            index in minStateLimit..maxStateLimit
+        }
     }
 
     companion object {

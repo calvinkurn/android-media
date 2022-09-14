@@ -43,10 +43,6 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             setCropGridColor(Color.TRANSPARENT)
         }
 
-        cropImageView.post {
-            overlayView.setTargetAspectRatio(ratio)
-        }
-
         disabledTouchEvent()
         initListener(listener)
     }
@@ -159,7 +155,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
 
         // if rotated image is overflow from the original ratio then we can use ucrop crop feature
         cropImageView.cropAndSaveImage(
-            Bitmap.CompressFormat.PNG,
+            Bitmap.CompressFormat.JPEG,
             100,
             object : BitmapCropCallback {
                 override fun onBitmapCropped(
