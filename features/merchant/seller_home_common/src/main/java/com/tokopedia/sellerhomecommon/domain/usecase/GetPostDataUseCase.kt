@@ -70,6 +70,7 @@ class GetPostDataUseCase(
                     stateMediaURL
                     stateText
                     pinned
+                    countdownDate
                   }
                   cta{
                     text
