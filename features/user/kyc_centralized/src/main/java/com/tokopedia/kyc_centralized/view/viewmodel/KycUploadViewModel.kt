@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
 import com.tokopedia.kyc_centralized.util.CipherProvider
@@ -21,7 +22,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.kyc_centralized.common.KYCConstant.Companion.LIVENESS_TAG
 import com.tokopedia.utils.file.FileUtil
 import kotlinx.coroutines.withContext
 import timber.log.Timber
