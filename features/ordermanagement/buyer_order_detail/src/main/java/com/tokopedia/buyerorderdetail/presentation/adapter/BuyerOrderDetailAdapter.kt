@@ -9,7 +9,6 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BaseVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
@@ -18,6 +17,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThinDashedDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThinDividerUiModel
@@ -232,7 +232,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addReceiverAddressInfoSection(
         context: Context?,
-        receiverAddressInfoUiModel: CopyableKeyValueUiModel
+        receiverAddressInfoUiModel: SimpleCopyableKeyValueUiModel
     ) {
         if (receiverAddressInfoUiModel.shouldShow(context)) {
             add(receiverAddressInfoUiModel)
@@ -241,7 +241,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addDropShipperInfoSection(
         context: Context?,
-        dropShipperInfoUiModel: CopyableKeyValueUiModel
+        dropShipperInfoUiModel: SimpleCopyableKeyValueUiModel
     ) {
         if (dropShipperInfoUiModel.shouldShow(context)) {
             add(dropShipperInfoUiModel)

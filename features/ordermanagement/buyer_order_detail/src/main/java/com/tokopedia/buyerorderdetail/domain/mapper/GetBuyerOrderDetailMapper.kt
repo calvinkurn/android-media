@@ -10,7 +10,6 @@ import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusRes
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
@@ -18,6 +17,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import javax.inject.Inject
@@ -491,8 +491,8 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         }.orEmpty()
     }
 
-    private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): CopyableKeyValueUiModel {
-        return CopyableKeyValueUiModel(
+    private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): SimpleCopyableKeyValueUiModel {
+        return SimpleCopyableKeyValueUiModel(
             copyableText = formatDropshipperValue(dropship),
             copyLabel = mapStringRes(resourceProvider.getCopyLabelDropshipper()),
             copyMessage = mapStringRes(resourceProvider.getCopyMessageDropshipper()),
@@ -546,8 +546,8 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapReceiverAddressInfoUiModel(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver): CopyableKeyValueUiModel {
-        return CopyableKeyValueUiModel(
+    private fun mapReceiverAddressInfoUiModel(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver): SimpleCopyableKeyValueUiModel {
+        return SimpleCopyableKeyValueUiModel(
             copyableText = formatReceiverAddressValue(receiver),
             copyLabel = mapStringRes(resourceProvider.getCopyLabelReceiverAddress()),
             copyMessage = mapStringRes(resourceProvider.getCopyMessageReceiverAddress()),

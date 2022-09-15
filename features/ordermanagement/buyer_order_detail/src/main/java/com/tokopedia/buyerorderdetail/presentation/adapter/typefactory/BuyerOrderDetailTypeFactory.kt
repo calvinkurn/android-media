@@ -28,7 +28,6 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThinDashed
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThinDividerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
@@ -37,6 +36,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThinDashedDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThinDividerUiModel
@@ -156,7 +156,7 @@ open class BuyerOrderDetailTypeFactory(
         return TickerViewHolder.LAYOUT
     }
 
-    fun type(copyableKeyValueUiModel: CopyableKeyValueUiModel): Int {
+    fun type(simpleCopyableKeyValueUiModel: SimpleCopyableKeyValueUiModel): Int {
         return CopyableKeyValueViewHolder.LAYOUT
     }
 
