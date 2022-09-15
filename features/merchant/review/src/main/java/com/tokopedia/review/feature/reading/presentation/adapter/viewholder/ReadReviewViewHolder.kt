@@ -173,7 +173,11 @@ class ReadReviewViewHolder(
             setOnClickListener {
                 if (expanded) {
                     setupReviewMessageSeeMore(message, feedbackId, productId, false)
-                    setReviewText(message, MAX_LINES_REVIEW_COLLAPSED)
+                    setReviewText(
+                        message = message,
+                        maxLines = MAX_LINES_REVIEW_COLLAPSED,
+                        enable = true
+                    )
                 } else {
                     if(isProductReview) {
                         ReadReviewTracking.trackOnSeeFullReviewClicked(feedbackId, productId)
@@ -181,7 +185,11 @@ class ReadReviewViewHolder(
                         ReadReviewTracking.trackOnShopReviewSeeFullReviewClicked(feedbackId, shopId)
                     }
                     setupReviewMessageSeeMore(message, feedbackId, productId, true)
-                    setReviewText(message, MAX_LINES_REVIEW_EXPANDED)
+                    setReviewText(
+                        message = message,
+                        maxLines = MAX_LINES_REVIEW_EXPANDED,
+                        enable = true
+                    )
                 }
             }
         }
@@ -244,18 +252,19 @@ class ReadReviewViewHolder(
     private fun setReview(message: String, feedbackId: String, productId: String) {
         setupReviewMessageSeeMore(message, feedbackId, productId, false)
         if (message.isEmpty()) {
-            reviewMessage?.apply {
-                text = getString(R.string.review_reading_empty_review)
-                isEnabled = false
-            }
+            setReviewText(
+                message = getString(R.string.review_reading_empty_review),
+                maxLines = MAX_LINES_REVIEW_COLLAPSED,
+                enable = false
+            )
             return
         }
-        setReviewText(message, MAX_LINES_REVIEW_COLLAPSED)
+        setReviewText(message = message, maxLines = MAX_LINES_REVIEW_COLLAPSED, enable = true)
     }
 
-    private fun setReviewText(message: String, maxLines: Int) {
+    private fun setReviewText(message: String, maxLines: Int, enable: Boolean) {
         reviewMessage?.apply {
-            isEnabled = true
+            isEnabled = enable
             this.maxLines = maxLines
             text = message
             show()
