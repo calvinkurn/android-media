@@ -44,7 +44,7 @@ class UserIdentificationViewModelTest {
         val testProjectId = 0
 
         coEvery {
-            getUserProjectInfoUseCase.executeOnBackground()
+            getUserProjectInfoUseCase(mapOf())
         } returns expectedReturn
 
         viewModel.getUserProjectInfo(testProjectId)
@@ -60,20 +60,12 @@ class UserIdentificationViewModelTest {
         val testProjectId = 0
 
         coEvery {
-            getUserProjectInfoUseCase.executeOnBackground()
+            getUserProjectInfoUseCase(mapOf())
         } throws expectedReturn
 
         viewModel.getUserProjectInfo(testProjectId)
 
         verify { userProjectInfoObservable.onChanged(expectedValue) }
         viewModel.userProjectInfo isEqualsTo expectedValue
-    }
-
-    @Test
-    fun `it should cancel all jobs`() = runBlockingTest {
-        viewModel.onCleared()
-        verify {
-            getUserProjectInfoUseCase.cancelJobs()
-        }
     }
 }
