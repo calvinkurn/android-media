@@ -34,7 +34,7 @@ class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecorat
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        for (index in 1 until parent.childCount) {
+        for (index in 1 until parent.childCount - 1) {
             val child = parent.adapter as PlayGameAdapter
             when (child.getItem(index)
             ) {
