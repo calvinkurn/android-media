@@ -1814,10 +1814,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             val boUniqueIds = mutableSetOf<String>()
             for (voucherOrderUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
                 if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0 && voucherOrderUiModel.type == "logistic") {
-                    if (voucherOrderUiModel.messageUiModel.state == "red") {
-                        clearRedBo(voucherOrderUiModel, shopDataList)
-                        boUniqueIds.add(voucherOrderUiModel.uniqueId)
-                    } else if (voucherOrderUiModel.messageUiModel.state == "green") {
+                    if (voucherOrderUiModel.messageUiModel.state == "green") {
                         shopDataList.firstOrNull { it.cartString == voucherOrderUiModel.uniqueId }?.boCode = voucherOrderUiModel.uniqueId
                         boUniqueIds.add(voucherOrderUiModel.uniqueId)
                     }
@@ -1829,29 +1826,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 }
             }
         }
-    }
-
-    private fun clearRedBo(voucherOrderUiModel: PromoCheckoutVoucherOrdersItemUiModel, shopDataList: List<CartShopHolderData>) {
-        val shop = shopDataList.firstOrNull { it.cartString == voucherOrderUiModel.uniqueId } ?: return
-        clearCacheAutoApplyStackUseCase.setParams(ClearPromoRequest(
-                serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                orderData = ClearPromoOrderData(
-                        orders = listOf(
-                                ClearPromoOrder(
-                                        uniqueId = shop.cartString,
-                                        boType = shop.boMetadata.boType,
-                                        codes = mutableListOf(voucherOrderUiModel.code),
-                                        shopId = shop.shopId.toLongOrZero(),
-                                        isPo = shop.isPo,
-                                        poDuration = shop.poDuration,
-                                        warehouseId = shop.warehouseId
-                                )
-                        )
-                )
-        ))
-        compositeSubscription.add(clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe())
-        lastValidateUseRequest?.orders?.firstOrNull { it.uniqueId == voucherOrderUiModel.uniqueId }?.codes?.remove(voucherOrderUiModel.code)
-        shop.boCode = ""
     }
 
     private fun clearBo(shop: CartShopHolderData) {
