@@ -8,15 +8,11 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.getFileFormatByMimeType
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScope
@@ -46,14 +42,15 @@ class PreviewViewModelTest {
 
         viewModel = PreviewViewModel(
             imageCompressorRepository,
-            saveToGalleryRepository
+            saveToGalleryRepository,
+            coroutineScopeRule.dispatchers
         )
     }
 
     @Test
     fun `check isLoading not empty`() {
         // When
-        every { imageCompressorRepository.compress(any()) } returns flow { }
+        coEvery { imageCompressorRepository.compress(any()) } returns listOf()
         viewModel.files(mockMediaUiModel)
 
         // Then
@@ -70,11 +67,7 @@ class PreviewViewModelTest {
         // When
         every { getFileFormatByMimeType(any(), any(), any()) } returns false
         every { saveToGalleryRepository.dispatch(any()) } returns null
-        every { imageCompressorRepository.compress(any()) } returns flow {
-            emit(
-                listOf("")
-            )
-        }
+        coEvery { imageCompressorRepository.compress(any()) } returns listOf()
 
         // Then
         testCoroutineScope.launch {
@@ -100,10 +93,8 @@ class PreviewViewModelTest {
         // When
         every { getFileFormatByMimeType(any(), any(), any()) } returns true
         every { saveToGalleryRepository.dispatch(any()) } returns null
-        every { imageCompressorRepository.compress(any()) } answers {
-            flow {
-                emit(firstArg())
-            }
+        coEvery { imageCompressorRepository.compress(any()) } answers {
+            firstArg()
         }
 
         // Then

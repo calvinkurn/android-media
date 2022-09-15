@@ -2,10 +2,11 @@ package com.tokopedia.analyticsdebugger.cassava
 
 import android.content.Context
 import android.text.TextUtils
+import com.tokopedia.analyticsdebugger.cassava.core.NameInference
+import com.tokopedia.analyticsdebugger.cassava.core.TkpdNameInference
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSharedPreference
 import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
-import com.tokopedia.analyticsdebugger.database.CassavaDatabase
-import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
+import com.tokopedia.analyticsdebugger.cassava.data.CassavaDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
 import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
@@ -22,6 +23,7 @@ class GtmLogger private constructor(
     private val parser: AnalyticsParser,
     private val dbSource: GtmRepo,
     private val pref: CassavaSharedPreference,
+    private val nameInference: NameInference? = null,
 ) : AnalyticsLogger, CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -29,16 +31,16 @@ class GtmLogger private constructor(
             Timber.e(t, "gtm_logger")
         }
 
-    override fun save(data: Map<String, Any>, name: String?, @AnalyticsSource source: String) {
+    override fun save(data: Map<String, Any>, name: String?, source: String) {
         launch {
-            val nameNotNull = name ?: parser.inferName(data, source)
+            val nameNotNull = name ?: nameInference?.infer(data, source).orEmpty()
             val logData = AnalyticsLogData(
                 name = nameNotNull,
                 data = parser.parse(data),
                 source = source
             )
             if (!TextUtils.isEmpty(logData.name) && logData.name != "null") {
-                dbSource.insert(logData)
+                dbSource.insert(logData.data, logData.name, logData.source)
             } else {
                 Timber.w("analytics data was not logged because of empty name")
             }
@@ -72,7 +74,8 @@ class GtmLogger private constructor(
                         appContext,
                         AnalyticsParser(),
                         GtmRepo(dao),
-                        CassavaSharedPreference(appContext)
+                        CassavaSharedPreference(appContext),
+                        TkpdNameInference()
                     )
                 } else {
                     instance = emptyInstance()
@@ -88,7 +91,7 @@ class GtmLogger private constructor(
                 override fun save(
                     data: Map<String, Any>,
                     name: String?,
-                    @AnalyticsSource source: String
+                    source: String
                 ) {
 
                 }
