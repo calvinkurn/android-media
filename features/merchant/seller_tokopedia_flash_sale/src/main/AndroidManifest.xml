@@ -4,9 +4,6 @@
 
     <application>
         <activity
-            android:name=".ManageProductVariantActivity"
-            android:exported="false" />
-        <activity
             android:name="com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleListActivity"
             android:configChanges="orientation"
             android:exported="false"
@@ -27,6 +24,9 @@
         </activity>
         <activity
             android:name="com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.tokopedia.tkpd.flashsale.presentation.avp.ManageProductVariantActivity"
             android:exported="false" />
     </application>
 

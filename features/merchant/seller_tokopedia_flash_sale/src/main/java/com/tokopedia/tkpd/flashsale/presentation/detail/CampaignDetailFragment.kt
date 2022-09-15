@@ -30,10 +30,12 @@ import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
+import com.tokopedia.tkpd.flashsale.presentation.avp.ManageProductVariantActivity
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingRejectedDelegateAdapter
@@ -370,6 +372,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 getString(R.string.stfs_title_ticker_upcoming_cdp_registration_close_state)
             tickerHeader.setTextDescription(getString(R.string.stfs_description_ticker_upcoming_cdp_registration_close_state))
             tgCampaignStatus.text = getString(R.string.registration_closed_in_label)
+            timer.gone()
         }
     }
 
@@ -1193,17 +1196,74 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun showBottomSheet(flashSale: FlashSale, type: DetailBottomSheetType) {
         val activity = activity ?: return
-        CampaignDetailBottomSheet.newInstance(
-            viewModel.getBottomSheetData(
-                type,
-                flashSale
-            )
-        ).show(activity.supportFragmentManager, "")
+//        CampaignDetailBottomSheet.newInstance(
+//            viewModel.getBottomSheetData(
+//                type,
+//                flashSale
+//            )
+//        ).show(activity.supportFragmentManager, "")
+
+        ManageProductVariantActivity.start(activity, createDummyProduct())
     }
 
     private fun onProductClicked(itemPosition: Int) {
         val selectedProduct = productAdapter.getItems()[itemPosition]
         val selectedProductId = selectedProduct.id()
         //TODO: Open detail product bottom sheet
+    }
+
+    private fun createDummyProduct(): ReservedProduct.Product {
+        return ReservedProduct.Product(
+            childProducts = createDummyChildsProduct(),
+            isMultiWarehouse = false,
+            isParentProduct = true,
+            name = "Dummy Product",
+            picture = "",
+            price = ReservedProduct.Product.Price(
+                price = 5000,
+                lowerPrice = 4000,
+                upperPrice = 6000
+            ),
+            productCriteria = ReservedProduct.Product.ProductCriteria(
+                criteriaId = 0,
+                maxCustomStock = 10,
+                maxDiscount = 99,
+                maxFinalPrice = 6000,
+                minCustomStock = 10,
+                minDiscount = 1,
+                minFinalPrice = 0
+            ),
+            productId = 0,
+            sku = "SK-0918",
+            stock = 100,
+            url = "",
+            warehouses = listOf()
+        )
+    }
+
+    private fun createDummyChildsProduct(): List<ReservedProduct.Product.ChildProduct> {
+        val childsProduct: MutableList<ReservedProduct.Product.ChildProduct> = mutableListOf()
+        for (child in 1 until 6) {
+            val childProduct = ReservedProduct.Product.ChildProduct(
+                disabledReason = "i don't know",
+                isDisabled = false,
+                isMultiwarehouse = false,
+                isToggleOn = false,
+                name = "product child $child",
+                picture = "",
+                price = ReservedProduct.Product.ChildProduct.Price(
+                    "${child*1000}",
+                    "${child*2000}",
+                    "${child*3000}"
+                ),
+                productId = child.toLong(),
+                sku = "SKU-$child",
+                stock = 80,
+                url = "",
+                warehouses = listOf()
+            )
+            childsProduct.add(childProduct)
+        }
+        return childsProduct
     }
 }

@@ -2,26 +2,35 @@ package com.tokopedia.tkpd.flashsale.presentation.avp
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
-import com.tokopedia.seller_tokopedia_flash_sale.R
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentManageProductVariantBinding
+import com.tokopedia.campaign.components.adapter.CompositeAdapter
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
-import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailFragment
-import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailViewModel
-import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.presentation.avp.adapter.ManageProductVariantDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.avp.adapter.item.ManageProductVariantItem
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import javax.inject.Inject
 
-class ManageProductVariantFragment : BaseDaggerFragment() {
+class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<CompositeAdapter>() {
 
     companion object {
-        fun newInstance() = ManageProductVariantFragment()
+        fun newInstance(product: ReservedProduct.Product?): ManageProductVariantFragment {
+            val fragment = ManageProductVariantFragment()
+            val bundle = Bundle()
+            bundle.putParcelable(BundleConstant.BUNDLE_KEY_PRODUCT, product)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
+    //argument
+    private val product by lazy {
+        arguments?.getParcelable<ReservedProduct.Product>(BundleConstant.BUNDLE_KEY_PRODUCT)
     }
 
     //viewModel
@@ -42,18 +51,94 @@ class ManageProductVariantFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        product?.let {
+            setupProductHeaderData(
+                productImageUrl = it.picture,
+                productName = it.name,
+                productOriginalPriceFormatted = it.price.price.getCurrencyFormatted(),
+                productTotalVariantFormatted = it.childProducts.count().toString(),
+                productStockTextFormatted = it.stock.toString(),
+                isShowWidgetBulkApply = true
+            )
+        }
+        setupWidgetBulkApply("Aktifkan varian untuk Atur Sekaligus", false)
+        toItem()?.let { adapter?.submit(it) }
+    }
+
+    private fun setupWidgetBulkApply(title: String, isReadyToBulkApply: Boolean) {
+        if (isReadyToBulkApply) {
+            enableWidgetBulkApply()
+        } else {
+            disableWidgetBulkApply()
+        }
+        setWidgetBulkApplyText(title)
+    }
+
+    override fun onBackArrowClicked() {
+        activity?.finish()
+    }
+
+    override fun getHeaderUnifyTitle(): String {
+        return "Atur Variant Produk"
+    }
+
+    override fun onSubmitButtonClicked() {
 
     }
 
-//    override fun onBackArrowClicked() {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun getHeaderUnifyTitle(): String {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun onSubmitButtonClicked() {
-//        TODO("Not yet implemented")
-//    }
+    override fun createAdapterInstance(): CompositeAdapter {
+        return CompositeAdapter.Builder()
+            .add(ManageProductVariantDelegateAdapter(
+                onToggleSwitched = { position, isChecked ->
+                    onToggleSwitched(position, isChecked)
+                }
+            ))
+            .build()
+    }
+
+    private fun onToggleSwitched(itemPosition: Int, isChecked: Boolean) {
+        val selectedProduct = adapter?.getItems()?.get(itemPosition)
+        val selectedProductId = selectedProduct?.id()
+
+        val adapter = adapter ?: return
+        val oldItems = adapter.getItems().filterIsInstance<ManageProductVariantItem>()
+        val newItems = oldItems.map {
+            if (it.productId == selectedProductId) {
+                it.copy(isToggleOn = isChecked)
+            } else {
+                it.copy()
+            }
+        }
+        adapter.submit(newItems)
+
+        var itemWithToggleOn = Int.ZERO
+        newItems.filter { it.isToggleOn }.map {
+            itemWithToggleOn++
+        }
+
+        if (itemWithToggleOn >= 2) {
+            setupWidgetBulkApply("Atur Sekaligus $itemWithToggleOn varian", true)
+        } else {
+            setupWidgetBulkApply("Aktifkan varian untuk Atur Sekaligus", false)
+        }
+    }
+
+    private fun toItem(): List<ManageProductVariantItem>? {
+        return product?.childProducts?.map { child ->
+            ManageProductVariantItem(
+                disabledReason = child.disabledReason,
+                isDisabled = child.isDisabled,
+                isMultiwarehouse = child.isMultiwarehouse,
+                isToggleOn = child.isToggleOn,
+                name = child.name,
+                picture = child.picture,
+                price = child.price,
+                productId = child.productId,
+                sku = child.sku,
+                stock = child.stock,
+                url = child.url,
+                warehouses = child.warehouses,
+            )
+        }
+    }
 }
