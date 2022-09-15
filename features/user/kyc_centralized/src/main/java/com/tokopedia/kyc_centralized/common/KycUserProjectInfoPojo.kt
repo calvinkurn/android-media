@@ -10,7 +10,7 @@ data class KycUserProjectInfoPojo(
 
 data class KycProjectInfo(
     @SerializedName("Status")
-    var status: Int? = KYCConstant.STATUS_DEFAULT,
+    var status: Int? = KycStatus.DEFAULT.ordinal,
     @SerializedName("StatusName")
     var statusName: String? = "",
     @SerializedName("Message")
