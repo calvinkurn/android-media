@@ -80,6 +80,8 @@
                 android:layout_height="13dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_warning"
+                app:unify_image_type="rect"
+                app:unify_image_corner_radius="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
