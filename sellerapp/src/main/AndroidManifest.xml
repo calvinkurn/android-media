@@ -655,6 +655,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:theme="@style/Theme.Tokopedia3.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -715,6 +716,7 @@
             android:name=".deeplink.DeepLinkActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link_topseller"
+            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -819,6 +821,7 @@
 
         <activity
             android:name=".deeplink.DeepLinkHandlerActivity"
+            android:exported="false"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -839,7 +842,9 @@
                     android:sspPattern="//.*?.*redirect_to_sellerapp=true.*" />
             </intent-filter>
         </activity>
-        <receiver android:name=".receiver.SellerAppMediaButtonReceiver">
+        <receiver android:name=".receiver.SellerAppMediaButtonReceiver"
+            android:exported="false"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
