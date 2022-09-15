@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.ui.engagement.adapter.EngagementItemDecoration
 import com.tokopedia.play.ui.engagement.adapter.EngagementWidgetAdapter
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
@@ -85,7 +86,7 @@ class EngagementCarouselViewComponent(
     private val touchListener = View.OnTouchListener { v, event ->
         if (event?.action == MotionEvent.ACTION_UP || event?.action == MotionEvent.ACTION_UP)
             v.performClick()
-            listener.onWidgetSwipe(this@EngagementCarouselViewComponent, v?.findViewById<ConstraintLayout>(R.id.cl_vh_engagement)?.tag.toString())
+            listener.onWidgetSwipe(this@EngagementCarouselViewComponent, v?.findViewById<ConstraintLayout>(commonR.id.cl_vh_engagement)?.tag.toString())
         false
     }
 
