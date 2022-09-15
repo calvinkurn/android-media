@@ -17,8 +17,8 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -42,14 +42,17 @@ object Utils {
     }
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
-        val color = parseColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        val drawable =
-            MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
+        val unifyColor = try {
+            stringToUnifyColor(context, colorHex).run { unifyColor ?: defaultColor }
+        } catch (t: Throwable) {
+            com.tokopedia.unifyprinciples.R.color.Unify_N0
+        }
+        val drawable = MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
         val filter: ColorFilter = LightingColorFilter(
             ContextCompat.getColor(
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
-            ), color
+            ), unifyColor
         )
         drawable.colorFilter = filter
         return drawable
@@ -104,14 +107,13 @@ object Utils {
     }
 
     fun getColoredResoDeadlineBackground(context: Context, colorHex: String, defaultColor: Int): Drawable? {
-        val color = try {
-            Color.parseColor(colorHex)
+        val unifyColor = try {
+            stringToUnifyColor(context, colorHex).run { unifyColor ?: defaultColor }
         } catch (t: Throwable) {
-            Timber.e(t)
             defaultColor
         }
         val drawable = MethodChecker.getDrawable(context, R.drawable.bg_due_response)
-        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
+        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), unifyColor)
         drawable.colorFilter = filter
         return drawable
     }

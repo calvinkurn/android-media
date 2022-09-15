@@ -48,7 +48,9 @@ data class GetResolutionTicketStatusResponse(
                 @SerializedName("status")
                 val status: Int? = -1,
                 @SerializedName("text")
-                val text: String? = ""
+                val text: String? = "",
+                @SerializedName("font_color")
+                val fontColor: String? = ""
             )
         }
     }

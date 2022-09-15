@@ -39,6 +39,7 @@ class GetOrderResolutionUseCase @Inject constructor(
                   resolution_status {
                     status
                     text
+                    font_color
                   }
                   deadline {
                     datetime

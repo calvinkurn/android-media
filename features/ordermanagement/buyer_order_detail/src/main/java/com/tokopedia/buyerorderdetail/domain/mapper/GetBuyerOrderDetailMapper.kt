@@ -559,14 +559,15 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         resolutionData: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
     ): OrderResolutionUIModel {
         return OrderResolutionUIModel(
-            title = resolutionData?.cardTitle,
-            status = resolutionData?.resolutionStatus?.text,
-            description = resolutionData?.description,
-            picture = resolutionData?.profilePicture,
-            showDeadline = resolutionData?.deadline?.showDeadline,
-            deadlineDateTime = resolutionData?.deadline?.datetime,
-            backgroundColor = resolutionData?.deadline?.backgroundColor,
-            redirectPath = resolutionData?.redirectPath?.android
+            title = resolutionData?.cardTitle.orEmpty(),
+            status = resolutionData?.resolutionStatus?.text.orEmpty(),
+            description = resolutionData?.description.orEmpty(),
+            picture = resolutionData?.profilePicture.orEmpty(),
+            showDeadline = resolutionData?.deadline?.showDeadline.orFalse(),
+            deadlineDateTime = resolutionData?.deadline?.datetime.orEmpty(),
+            backgroundColor = resolutionData?.deadline?.backgroundColor.orEmpty(),
+            redirectPath = resolutionData?.redirectPath?.android.orEmpty(),
+            resolutionStatusFontColor = resolutionData?.resolutionStatus?.fontColor.orEmpty()
         )
     }
 
