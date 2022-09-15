@@ -33,8 +33,9 @@ import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.KYCConstant.Companion.LIVENESS_TAG
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
+import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.utils.file.FileUtil
 import timber.log.Timber
 
@@ -55,7 +56,9 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         intent?.data?.let {
-            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toIntOrNull() ?: KYCConstant.STATUS_DEFAULT
+            projectId = it.getQueryParameter(
+                ApplinkConstInternalGlobal.PARAM_PROJECT_ID
+            )?.toIntOrNull() ?: KycStatus.DEFAULT.ordinal
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         }
@@ -90,7 +93,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     }
 
     override fun getListFragment(): List<Fragment> {
-        return if (projectId == KYCConstant.STATUS_DEFAULT) {
+        return if (projectId == KycStatus.DEFAULT.ordinal) {
             val notFoundList = ArrayList<Fragment>()
             notFoundList.add(NotFoundFragment.createInstance())
             notFoundList
