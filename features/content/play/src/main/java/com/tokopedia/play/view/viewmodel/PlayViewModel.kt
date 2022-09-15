@@ -256,7 +256,7 @@ class PlayViewModel @AssistedInject constructor(
     @OptIn(ExperimentalStdlibApi::class)
     private val _engagementUiState = combine(_tagItems, _interactive, _bottomInsets){
             voucher, game, bottomInsets-> EngagementUiState(
-        shouldShow = (voucher.voucher.voucherList.isNotEmpty() || game.interactive !is InteractiveUiModel.Unknown) && !game.isPlaying && !bottomInsets.isAnyShown && !videoPlayer.isYouTube,
+        shouldShow = (voucher.voucher.voucherList.isNotEmpty() || game.interactive !is InteractiveUiModel.Unknown) && !game.isPlaying && !bottomInsets.isAnyShown && videoOrientation.isVertical && videoPlayer.isGeneral(),
         data = buildList {
             val vouchers = voucher.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.Merchant>()
             if(game.interactive !is InteractiveUiModel.Unknown && isInteractiveAllowed)
