@@ -166,9 +166,8 @@ class WishlistV2ViewModel @Inject constructor(
     }
 
     suspend fun getTopAdsData(): TopAdsImageViewModel? {
-        var result: TopAdsImageViewModel? = null
-        launchCatchError(dispatcher.io, {
-            result = topAdsImageViewUseCase.getImageData(
+        return try {
+            val queryParams =
                 topAdsImageViewUseCase.getQueryMap(
                     "",
                     WISHLIST_TOPADS_SOURCE,
@@ -177,11 +176,10 @@ class WishlistV2ViewModel @Inject constructor(
                     WISHLIST_TOPADS_DIMENS,
                     ""
                 )
-            ).firstOrNull()
-        }, {
-            result = null
-        })
-        return result
+            topAdsImageViewUseCase.getImageData(queryParams).firstOrNull()
+        } catch (t: Throwable) {
+            null
+        }
     }
 
     companion object {
