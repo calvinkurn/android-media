@@ -28,7 +28,8 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "view_item_list",
@@ -57,7 +58,7 @@
       "eventAction": "click - now product carousel",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "businessUnit": "content",
+      "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "item_list": "/groupchat - featured product",
       "items": [
@@ -176,7 +177,8 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "clickContent",
@@ -184,7 +186,8 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "viewContentIris",
@@ -192,7 +195,8 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "clickContent",
@@ -200,7 +204,8 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "viewContentIris",
@@ -216,7 +221,8 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "clickContent",
@@ -234,7 +240,8 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "clickContent",
@@ -242,7 +249,8 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     }
   ]
 }

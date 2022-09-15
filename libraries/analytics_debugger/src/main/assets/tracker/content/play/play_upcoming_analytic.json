@@ -38,7 +38,8 @@
       "eventCategory": "upcoming page",
       "eventLabel": "\\d+",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopAds",
@@ -46,7 +47,8 @@
       "eventCategory": "upcoming page",
       "eventLabel": "\\d+",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopAds",
@@ -54,7 +56,8 @@
       "eventCategory": "upcoming page",
       "eventLabel": "\\d+",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "viewTopAdsIris",
@@ -62,7 +65,8 @@
       "eventCategory": "upcoming page",
       "eventLabel": "\\d+",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopAds",
@@ -70,7 +74,8 @@
       "eventCategory": "upcoming page",
       "eventLabel": "\\d+",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopAds",
@@ -78,7 +83,8 @@
       "eventCategory": "upcoming page",
       "eventLabel": "\\d+",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopAds",
@@ -86,7 +92,8 @@
       "eventCategory": "upcoming page",
       "eventLabel": "\\d+",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "viewTopAdsIris",
@@ -94,7 +101,8 @@
       "eventCategory": "upcoming page",
       "eventLabel": "\\d+",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "viewTopAdsIris",
@@ -102,7 +110,8 @@
       "eventCategory": "upcoming page",
       "eventLabel": "\\d+",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     }
   ]
 }
