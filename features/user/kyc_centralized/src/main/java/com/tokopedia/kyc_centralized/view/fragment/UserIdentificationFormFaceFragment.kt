@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -18,6 +17,8 @@ import com.tokopedia.kyc_centralized.KycConstant.PADDING_0_5F
 import com.tokopedia.kyc_centralized.KycConstant.PADDING_16
 import com.tokopedia.kyc_centralized.KycConstant.PADDING_ZERO
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
@@ -29,8 +30,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.utils.file.FileUtil
 import javax.inject.Inject
 
@@ -43,7 +42,7 @@ class UserIdentificationFormFaceFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val kycUploadViewModel by lazy { viewModelFragmentProvider.get(KycUploadViewModel::class.java) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,7 +57,7 @@ class UserIdentificationFormFaceFragment :
             androidx.lifecycle.Observer {
                 when (it) {
                     is Success -> {
-                        button?.isEnabled = true
+                        viewBinding?.button?.isEnabled = true
                     }
                     is Fail -> {
                         ErrorHandler.getErrorMessage(
@@ -82,7 +81,7 @@ class UserIdentificationFormFaceFragment :
     override fun encryptImage() {
         context?.let {
             if (ImageEncryptionUtil.isUsingEncrypt(it)) {
-                button?.isEnabled = false
+                viewBinding?.button?.isEnabled = false
                 kycUploadViewModel.encryptImage(
                     stepperModel?.ktpFile.toEmptyStringIfNull(),
                     KYC_IV_KTP_CACHE
@@ -100,15 +99,15 @@ class UserIdentificationFormFaceFragment :
     }
 
     private fun setKycSelfieViews() {
-        title?.setText(R.string.face_title_kyc)
-        subtitle?.setText(R.string.face_subtitle_kyc)
-        button?.setText(R.string.face_button_kyc)
-        button?.setOnClickListener { v: View? ->
+        viewBinding?.title?.setText(R.string.face_title_kyc)
+        viewBinding?.subtitle?.setText(R.string.face_subtitle_kyc)
+        viewBinding?.button?.setText(R.string.face_button_kyc)
+        viewBinding?.button?.setOnClickListener { v: View? ->
             analytics?.eventClickNextSelfiePage(false)
             goToKycSelfie()
         }
         setExampleImages()
-        layoutSecurity?.hide()
+        viewBinding?.securityLayout?.hide()
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
                 .updateToolbarTitle(getString(R.string.title_kyc_form_selfie))
@@ -116,18 +115,18 @@ class UserIdentificationFormFaceFragment :
     }
 
     private fun setLivenessViews() {
-        title?.setText(R.string.face_title)
-        subtitle?.setText(R.string.face_subtitle)
-        bulletTextLayout?.apply {
+        viewBinding?.title?.setText(R.string.face_title)
+        viewBinding?.subtitle?.setText(R.string.face_subtitle)
+        viewBinding?.layoutInfoBullet?.apply {
             addView(addTextWithBullet(getString(R.string.face_subtitle_body_1)))
             addView(addTextWithBullet(getString(R.string.face_subtitle_body_2)))
         }?.show()
-        button?.setText(R.string.face_button)
-        button?.setOnClickListener { v: View? ->
+        viewBinding?.button?.setText(R.string.face_button)
+        viewBinding?.button?.setOnClickListener { v: View? ->
             analytics?.eventClickNextSelfiePage(true)
             goToKycLiveness()
         }
-        layoutSecurity?.show()
+        viewBinding?.securityLayout?.show()
 
         setLottieAnimation()
     }
@@ -136,14 +135,14 @@ class UserIdentificationFormFaceFragment :
         val lottieCompositionLottieTask =
             LottieCompositionFactory.fromUrl(requireContext(), KycUrl.SCAN_FACE)
         lottieCompositionLottieTask.addListener { result: LottieComposition? ->
-            result?.let { onboardingImage?.setComposition(it) }
-            onboardingImage?.repeatCount = ValueAnimator.INFINITE
-            onboardingImage?.playAnimation()
+            result?.let { viewBinding?.formOnboardingImage?.setComposition(it) }
+            viewBinding?.formOnboardingImage?.repeatCount = ValueAnimator.INFINITE
+            viewBinding?.formOnboardingImage?.playAnimation()
         }
     }
 
     private fun setExampleImages() {
-        onboardingImage?.apply {
+        viewBinding?.formOnboardingImage?.apply {
             val scale = resources.displayMetrics.density
             setPadding(
                 PADDING_ZERO,
