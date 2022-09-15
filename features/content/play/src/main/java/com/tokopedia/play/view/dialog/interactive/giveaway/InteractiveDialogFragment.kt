@@ -115,7 +115,7 @@ class InteractiveDialogFragment @Inject constructor(
 
         val window = dialog?.window ?: return
         window.setLayout(
-            (WIDTH_PERCENTAGE * getScreenWidth()).toInt(),
+            WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -313,7 +313,7 @@ class InteractiveDialogFragment @Inject constructor(
             parent.removeAllViews()
             val view = viewCreator(parent.context)
             val lParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
+                (WIDTH_PERCENTAGE * getScreenWidth()).toInt(),
                 FrameLayout.LayoutParams.WRAP_CONTENT
             )
             lParams.gravity = Gravity.CENTER
