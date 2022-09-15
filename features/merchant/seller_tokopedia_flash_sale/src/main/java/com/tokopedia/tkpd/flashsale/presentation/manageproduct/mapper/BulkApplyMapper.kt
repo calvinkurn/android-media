@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper
 
+import android.content.Context
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.ProductBulkApplyResult
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.data.uimodel.ProductBulkApplyUiModel
+import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ChildProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse
@@ -65,14 +67,15 @@ object BulkApplyMapper {
     )
 
     fun mapProductToBulkParam(
+        context: Context,
         product: Product
     ): ProductBulkApplyUiModel {
         return ProductBulkApplyUiModel(
-            // TODO("Migrate Constant Value to Separate Object")
-            "Atur Sekaligus",
+            bottomSheetTitle = context.getString(R.string.bulk_apply_title),
             isShowTextFieldProductDiscountBottomMessage = true,
-            textStock = "Stok Campaign",
-            textStockDescription = "Stok wajib ${product.productCriteria.minCustomStock} - ${product.productCriteria.maxCustomStock}",
+            textStock = context.getString(R.string.bulk_apply_text_stock),
+            textStockDescription = context.getString(R.string.bulk_apply_text_stock_description,
+                product.productCriteria.minCustomStock, product.productCriteria.maxCustomStock),
             minimumStock = product.productCriteria.minCustomStock,
             maximumStock = product.productCriteria.maxCustomStock,
             minimumDiscountPrice = product.productCriteria.minFinalPrice.toInt(),
