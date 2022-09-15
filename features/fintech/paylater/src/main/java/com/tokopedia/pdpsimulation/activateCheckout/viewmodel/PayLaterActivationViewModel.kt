@@ -16,6 +16,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActiv
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.domain.model.Variant
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -88,16 +89,18 @@ class PayLaterActivationViewModel @Inject constructor(
             if (it.pictures?.size == 0 || it.productName.isNullOrEmpty() || ((it.campaingnDetail?.discountedPrice?.equals(
                     0.0
                 ) == true) && it.price?.equals(0.0) == true)
-            )
+            ) {
                 onFailProductDetail(IllegalStateException("Data invalid"))
-            it.campaingnDetail?.discountedPrice?.let { campaignPrice ->
-                setProductPrice(campaignPrice, it)
+            } else {
+                it.campaingnDetail?.discountedPrice?.let { campaignPrice ->
+                    setProductPrice(campaignPrice, it)
+                }
+                it.shopDetail?.shopId?.let { shopID ->
+                    shopId = shopID
+                }
+                setVariantName(it.variant)
+                _productDetailLiveData.value = Success(it)
             }
-            it.shopDetail?.shopId?.let { shopID ->
-                shopId = shopID
-            }
-            setVariantName(it.variant)
-            _productDetailLiveData.value = Success(it)
         }
     }
 
@@ -206,10 +209,12 @@ class PayLaterActivationViewModel @Inject constructor(
             )
         else {
             occRedirectionUrl =
-                UriUtil.buildUri(ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
+                UriUtil.buildUri(
+                    ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
                     gatewayToChipMap[selectedGatewayId]?.paymentGatewayCode ?: "",
                     selectedTenureSelected,
-                    "fintech")
+                    "fintech"
+                )
             _addToCartLiveData.value = Success(addToCartOcc)
 
         }

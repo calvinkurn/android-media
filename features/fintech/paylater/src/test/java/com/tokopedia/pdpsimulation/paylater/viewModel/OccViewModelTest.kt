@@ -7,6 +7,7 @@ import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
+import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
 import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.common.domain.model.CampaignDetail
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
@@ -15,6 +16,7 @@ import com.tokopedia.pdpsimulation.common.domain.model.Products
 import com.tokopedia.pdpsimulation.common.domain.model.Selections
 import com.tokopedia.pdpsimulation.common.domain.model.Variant
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -75,6 +77,30 @@ class OccViewModelTest {
         )
 
     }
+
+
+    @Test
+    fun productDetailSuccessTestFailedCondition() {
+        val baseProductDetail = BaseProductDetailClass(GetProductV3(null,"a",null,30.0,null,
+            Variant(
+                listOf(Selections(listOf(Options(value = "a"))),Selections(listOf(Options(value = "a")))),
+                listOf(Products("a", listOf(1)))),9, CampaignDetail(40.0,0.0)
+        ))
+
+
+        coEvery {
+            productDetailUseCase.getProductDetail(any(), any(), "")
+        } coAnswers {
+            firstArg<(BaseProductDetailClass) -> Unit>().invoke(baseProductDetail)
+        }
+        viewModel.getProductDetail("")
+        Assert.assertEquals(
+            (viewModel.productDetailLiveData.value as Fail).throwable.message,
+            "Data invalid"
+        )
+
+    }
+
 
     @Test
     fun productDetailFail() {
@@ -141,6 +167,25 @@ class OccViewModelTest {
         Assert.assertEquals(
             (viewModel.addToCartLiveData.value as Success).data,
             addToCartMultiDataModel
+        )
+    }
+
+
+    @Test
+    fun successAddToCartStatusError() {
+        val addToCartMultiDataModel = AddToCartOccMultiDataModel(emptyList(),"ERROR", mockk(relaxed = true))
+
+        coEvery {
+            addToCartUseCase.execute(captureLambda(), any())
+        } coAnswers {
+            val onSuccess = lambda<(AddToCartOccMultiDataModel) -> Unit>()
+            onSuccess.invoke(addToCartMultiDataModel)
+        }
+        viewModel.shopId = ""
+        viewModel.addProductToCart("", 0)
+        Assert.assertEquals(
+            (viewModel.addToCartLiveData.value as Fail).throwable.message,
+            ShowToasterException("").message
         )
     }
 
