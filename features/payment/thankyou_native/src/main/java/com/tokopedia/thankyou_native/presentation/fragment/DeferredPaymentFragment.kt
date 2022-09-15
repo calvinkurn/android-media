@@ -29,7 +29,7 @@ import java.util.Calendar
 import java.util.Date
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 
-class DeferredPaymentFragment : ThankYouBaseFragment(){
+class DeferredPaymentFragment : ThankYouBaseFragment() {
 
     var paymentType: PaymentType? = null
 
@@ -253,7 +253,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(){
         }
     }
 
-    private fun setDeadlineTimer(expireOnTimeUnix: Long){
+    private fun setDeadlineTimer(expireOnTimeUnix: Long) {
         tvDeadlineTimer?.let { timerView ->
             val calendar = Calendar.getInstance()
             calendar.time = Date(expireOnTimeUnix * ONE_SECOND_TO_MILLIS)

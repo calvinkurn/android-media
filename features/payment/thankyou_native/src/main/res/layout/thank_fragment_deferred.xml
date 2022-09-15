@@ -16,14 +16,14 @@
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/topTicker"
-                app:closeButtonVisibility="gone"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
-                tools:visibility="visible"
+                app:closeButtonVisibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"/>
+                tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvDeadlineHeading"
@@ -56,15 +56,14 @@
                 android:id="@+id/tvDeadlineTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:timer_unify_single_variant="main"
-                app:timer_unify_single_type="hour"
-                app:timer_unify_single_showClockIcon="true"
                 android:layout_marginTop="@dimen/thank_dp_6"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:layout_marginRight="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvDeadlineHeading"
-                />
+                app:timer_unify_single_showClockIcon="true"
+                app:timer_unify_single_type="hour"
+                app:timer_unify_single_variant="main" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/view_divider_1"
@@ -98,10 +97,10 @@
                 android:layout_marginRight="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/unify_space_12"
                 android:paddingBottom="@dimen/unify_space_12"
-                app:unify_image_corner_radius="0"
-                app:unify_image_type="rect"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_divider_1" />
+                app:layout_constraintTop_toBottomOf="@+id/view_divider_1"
+                app:unify_image_corner_radius="0"
+                app:unify_image_type="rect" />
 
 
             <com.tokopedia.unifycomponents.DividerUnify
@@ -160,24 +159,24 @@
                 android:id="@+id/tvAccountNumberCopy"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/thank_copy"
                 android:layout_marginEnd="@dimen/unify_space_8"
+                android:text="@string/thank_copy"
                 android:textColor="@color/Unify_GN500"
                 app:layout_constraintBottom_toBottomOf="@+id/tvAccountNumber"
                 app:layout_constraintEnd_toStartOf="@+id/icCopyAccountNumber"
                 app:layout_constraintTop_toTopOf="@+id/tvAccountNumber"
                 app:typographyType="paragraph_3"
                 app:typographyWeight="bold" />
-            
+
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/icCopyAccountNumber"
-                app:icon_name="COPY"
+                android:layout_width="@dimen/unify_font_16"
+                android:layout_height="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_font_16"
+                app:icon_name="COPY"
                 app:layout_constraintBottom_toBottomOf="@+id/tvAccountNumber"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvAccountNumber"
-                android:layout_width="@dimen/unify_font_16"
-                android:layout_height="@dimen/unify_space_16"/>
+                app:layout_constraintTop_toTopOf="@+id/tvAccountNumber" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTotalAmountLabel"
@@ -196,9 +195,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                app:layout_constraintHorizontal_bias="0"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintEnd_toStartOf="@+id/tvSeeDetail"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="@+id/tvTotalAmountLabel"
                 app:layout_constraintTop_toBottomOf="@+id/tvTotalAmountLabel"
                 app:typographyType="paragraph_2"
@@ -206,17 +205,17 @@
                 tools:text="RP 43.434.434.434" />
 
 
-<!--            <com.tokopedia.iconunify.IconUnify-->
-<!--                android:id="@+id/icCopyAmount"-->
-<!--                app:icon_name="COPY"-->
-<!--                android:layout_marginStart="@dimen/unify_space_8"-->
-<!--                app:layout_constraintBottom_toBottomOf="@id/tvTotalAmount"-->
-<!--                app:layout_constraintTop_toTopOf="@id/tvTotalAmount"-->
-<!--                app:layout_constraintStart_toEndOf="@id/tvTotalAmount"-->
-<!--                android:layout_marginEnd="@dimen/unify_font_16"-->
-<!--                app:icon_color_light_enable="@color/Unify_G500"-->
-<!--                android:layout_width="@dimen/unify_font_16"-->
-<!--                android:layout_height="@dimen/unify_space_16"/>-->
+            <!--            <com.tokopedia.iconunify.IconUnify-->
+            <!--                android:id="@+id/icCopyAmount"-->
+            <!--                app:icon_name="COPY"-->
+            <!--                android:layout_marginStart="@dimen/unify_space_8"-->
+            <!--                app:layout_constraintBottom_toBottomOf="@id/tvTotalAmount"-->
+            <!--                app:layout_constraintTop_toTopOf="@id/tvTotalAmount"-->
+            <!--                app:layout_constraintStart_toEndOf="@id/tvTotalAmount"-->
+            <!--                android:layout_marginEnd="@dimen/unify_font_16"-->
+            <!--                app:icon_color_light_enable="@color/Unify_G500"-->
+            <!--                android:layout_width="@dimen/unify_font_16"-->
+            <!--                android:layout_height="@dimen/unify_space_16"/>-->
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -372,8 +371,8 @@
         android:id="@+id/loadingLayout"
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl7"
-        android:padding="@dimen/thank_dp_10"
         android:layout_gravity="center"
+        android:padding="@dimen/thank_dp_10"
         android:visibility="gone" />
 
 </FrameLayout>
