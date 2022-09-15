@@ -975,7 +975,7 @@ class PlayViewModel @AssistedInject constructor(
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
-            is OpenPageWithLogin -> openPage(action.appLink)
+            is OpenPageWithLogin -> openWithLogin(action.appLink)
         }
     }
 
@@ -2067,6 +2067,12 @@ class PlayViewModel @AssistedInject constructor(
     fun openPage(appLink: String) {
         viewModelScope.launch {
             _uiEvent.emit(OpenPageEvent(applink = appLink, pipMode = true))
+        }
+    }
+
+    private fun openWithLogin(appLink: String){
+        needLogin {
+            openPage(appLink)
         }
     }
 
