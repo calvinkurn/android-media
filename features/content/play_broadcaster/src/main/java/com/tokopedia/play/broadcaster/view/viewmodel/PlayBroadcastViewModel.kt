@@ -1436,10 +1436,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 } else {
                     _uiEvent.emit(PlayBroadcastEvent.BroadcastReady(channelInfo.ingestUrl))
                 }
-            } else {
-                stopTimer()
-                _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
-            }
+            } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
         }) {
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 doResumeBroadcaster(shouldContinue)
@@ -1450,15 +1447,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleBroadcasterRecovered() {
         viewModelScope.launchCatchError(block = {
             val channelInfo = getChannelInfo()
-            if (channelInfo.status == ChannelStatus.Pause
-                || channelInfo.status == ChannelStatus.Live) {
-                updateChannelStatus(PlayChannelStatusType.Live)
+            if (channelInfo.status.isPause || channelInfo.status.isLive) {
+                    if (channelInfo.status.isPause) updateChannelStatus(PlayChannelStatusType.Live)
                 _uiEvent.emit(PlayBroadcastEvent.BroadcastRecovered)
                 updateCurrentInteractiveStatus()
-            } else {
-                stopTimer()
-                _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
-            }
+            } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
         }) {
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 handleBroadcasterRecovered()
