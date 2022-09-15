@@ -40,6 +40,9 @@ class ContentProductTagArgument private constructor(
     val isShowActionBarDivider: Boolean
         get() = query[KEY_IS_SHOW_ACTION_BAR_DIVIDER].toBoolean()
 
+    val isAutoHandleBackPressed: Boolean
+        get() = query[KEY_IS_AUTO_HANDLE_BACK_PRESSED].toBoolean()
+
     companion object {
         const val KEY_SHOP_BADGE = "shopBadge"
         const val KEY_AUTHOR_ID = "authorId"
@@ -50,6 +53,7 @@ class ContentProductTagArgument private constructor(
         const val KEY_MAX_SELECTED_PRODUCT = "maxSelectedProduct"
         const val KEY_BACK_BUTTON = "backButton"
         const val KEY_IS_SHOW_ACTION_BAR_DIVIDER = "isShowActionBarDivider"
+        const val KEY_IS_AUTO_HANDLE_BACK_PRESSED = "isAutoHandleBackPressed"
 
         const val QUERY_SEPARATOR = "&"
 
@@ -75,6 +79,7 @@ class ContentProductTagArgument private constructor(
             KEY_MAX_SELECTED_PRODUCT to 0,
             KEY_BACK_BUTTON to ContentProductTagConfig.BackButton.Back,
             KEY_IS_SHOW_ACTION_BAR_DIVIDER to true,
+            KEY_IS_AUTO_HANDLE_BACK_PRESSED to false,
         )
 
         fun setShopBadge(shopBadge: String): Builder {
@@ -122,6 +127,11 @@ class ContentProductTagArgument private constructor(
 
         fun setIsShowActionBarDivider(isShowActionBarDivider: Boolean): Builder {
             argumentMap[KEY_IS_SHOW_ACTION_BAR_DIVIDER] = isShowActionBarDivider
+            return this
+        }
+
+        fun setIsAutoHandleBackPressed(isAutoHandleBackPressed: Boolean): Builder {
+            argumentMap[KEY_IS_AUTO_HANDLE_BACK_PRESSED] = isAutoHandleBackPressed
             return this
         }
 

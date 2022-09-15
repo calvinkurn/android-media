@@ -100,6 +100,8 @@ class ContentProductTagSampleActivity : BaseActivity() {
         binding.cbxMyShop.isChecked = true
 
         binding.cbxUseBottomSheet.isChecked = true
+
+        binding.cbxIsAutoHandleBackPressed.isChecked = true
     }
 
     private fun setupListener() {
@@ -155,6 +157,7 @@ class ContentProductTagSampleActivity : BaseActivity() {
             .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
             .setBackButton(ContentProductTagConfig.BackButton.Close)
             .setIsShowActionBarDivider(false)
+            .setIsAutoHandleBackPressed(getIsAutoHandleBackPressed())
     }
 
     private fun closeFragment() {
@@ -207,6 +210,10 @@ class ContentProductTagSampleActivity : BaseActivity() {
         return binding.cbxUseBottomSheet.isChecked
     }
 
+    private fun getIsAutoHandleBackPressed(): Boolean {
+        return binding.cbxIsAutoHandleBackPressed.isChecked
+    }
+
     private fun validate(): Boolean {
         return if(binding.rbMultipleSelectionProductYes.isChecked && binding.textFieldMaxSelectedProduct.editText.text.isEmpty()) {
             Toast.makeText(this, "Please input Max Selected Product", Toast.LENGTH_SHORT).show()
@@ -220,11 +227,5 @@ class ContentProductTagSampleActivity : BaseActivity() {
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
-    }
-
-    override fun onBackPressed() {
-        ProductTagParentFragment.findFragment(supportFragmentManager)?.let {
-            it.onBackPressed()
-        } ?: super.onBackPressed()
     }
 }

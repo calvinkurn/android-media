@@ -134,13 +134,8 @@ class ProductTagActivity : BaseActivity() {
                 .setFullPageAutocomplete(true)
                 .setBackButton(ContentProductTagConfig.BackButton.Back)
                 .setIsShowActionBarDivider(true)
+                .setIsAutoHandleBackPressed(true)
         )
-    }
-
-    override fun onBackPressed() {
-        ProductTagParentFragment.findFragment(supportFragmentManager)?.let {
-            it.onBackPressed()
-        } ?: super.onBackPressed()
     }
 
     companion object {
