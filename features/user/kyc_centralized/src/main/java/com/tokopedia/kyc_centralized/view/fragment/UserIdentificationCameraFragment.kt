@@ -3,32 +3,29 @@ package com.tokopedia.kyc_centralized.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.CameraListener
-import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.size.Size
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
+import com.tokopedia.kyc_centralized.databinding.FragmentCameraFocusViewBinding
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.UnifyImageButton
-import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.KYCConstant.Companion.LIVENESS_TAG
-import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
 import timber.log.Timber
@@ -37,22 +34,8 @@ import java.io.File
 /**
  * @author by alvinatin on 12/11/18.
  */
-class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
-    private var container: View? = null
-    private var cameraView: CameraView? = null
-    private var closeButton: UnifyImageButton? = null
-    private var title: TextView? = null
-    private var subtitle: TextView? = null
-    private var focusedFaceView: View? = null
-    private var focusedKtpView: View? = null
-    private var shutterButton: View? = null
-    private var loading: View? = null
-    private var switchCamera: View? = null
-    private var imagePreviewKtp: ImageUnify? = null
-    private var imagePreviewFace: ImageUnify? = null
-    private var buttonLayout: View? = null
-    private var reCaptureButton: View? = null
-    private var nextButton: UnifyButton? = null
+class UserIdentificationCameraFragment : BaseDaggerFragment() {
+    private var viewBinding by autoClearedNullable<FragmentCameraFocusViewBinding>()
     private var imagePath: String = ""
     private var mCaptureNativeSize: Size? = null
     private var analytics: UserIdentificationCommonAnalytics? = null
@@ -61,12 +44,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     private var cameraListener: CameraListener? = null
 
     override fun getScreenName(): String = ""
+    override fun initInjector() {
 
-    override fun onAttach(activity: Activity) {
-        super.onAttach(activity)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            onAttachActivity(activity)
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,29 +57,9 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
                 ?: 1)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_camera_focus_view, container, false)
-        initView(view)
-        return view
-    }
-
-    private fun initView(view: View) {
-        container = view.findViewById(R.id.container)
-        cameraView = view.findViewById(R.id.full_camera_view)
-        closeButton = view.findViewById(R.id.close_button)
-        title = view.findViewById(R.id.title)
-        subtitle = view.findViewById(R.id.subtitle)
-        imagePreviewKtp = view.findViewById(R.id.imagePreviewKtp)
-        imagePreviewFace = view.findViewById(R.id.imagePreviewFace)
-        focusedFaceView = view.findViewById(R.id.focused_view_face)
-        focusedKtpView = view.findViewById(R.id.focused_view_ktp)
-        shutterButton = view.findViewById(R.id.image_button_shutter)
-        switchCamera = view.findViewById(R.id.image_button_flip)
-        buttonLayout = view.findViewById(R.id.button_layout)
-        reCaptureButton = view.findViewById(R.id.recapture_button)
-        nextButton = view.findViewById(R.id.next_button)
-        loading = view.findViewById(R.id.progress_bar)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewBinding = FragmentCameraFocusViewBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -110,18 +69,18 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     }
 
     private fun populateView() {
-        shutterButton?.setOnClickListener {
+        viewBinding?.imageButtonShutter?.setOnClickListener {
             sendAnalyticClickShutter()
             checkPermission {
                 hideCameraButtonAndShowLoading()
-                cameraView?.takePicture()
+                viewBinding?.fullCameraView?.takePicture()
             }
         }
-        switchCamera?.setOnClickListener {
+        viewBinding?.imageButtonFlip?.setOnClickListener {
             sendAnalyticClickFlipCamera()
             toggleCamera()
         }
-        reCaptureButton?.setOnClickListener {
+        viewBinding?.recaptureButton?.setOnClickListener {
             sendAnalyticClickRecapture()
             showCameraView()
         }
@@ -132,8 +91,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
                 }
             }
         }
-        cameraListener?.let { cameraView?.addCameraListener(it) }
-        closeButton?.setOnClickListener { v: View? ->
+        cameraListener?.let { viewBinding?.fullCameraView?.addCameraListener(it) }
+        viewBinding?.closeButton?.setOnClickListener { v: View? ->
             if (activity != null) {
                 activity?.setResult(Activity.RESULT_CANCELED)
             }
@@ -144,7 +103,7 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
             }
             activity?.finish()
         }
-        nextButton?.setOnClickListener {
+        viewBinding?.nextButton?.setOnClickListener {
             if (activity != null) {
                 if (isFileExists(imagePath)) {
                     if (isFileSizeQualified(imagePath)) {
@@ -266,9 +225,9 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
 
     private fun startCamera() {
         try {
-            cameraView?.clearCameraListeners()
-            cameraListener?.let { cameraView?.addCameraListener(it) }
-            cameraView?.open()
+            viewBinding?.fullCameraView?.clearCameraListeners()
+            cameraListener?.let { viewBinding?.fullCameraView?.addCameraListener(it) }
+            viewBinding?.fullCameraView?.open()
         } catch (e: Throwable) {
             // no-op
         }
@@ -276,14 +235,14 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
 
     private fun destroyCamera() {
         try {
-            cameraView?.close()
+            viewBinding?.fullCameraView?.close()
         } catch (e: Throwable) {
             // no-op
         }
     }
 
     fun saveToFile(result: PictureResult) {
-        mCaptureNativeSize = cameraView?.pictureSize
+        mCaptureNativeSize = viewBinding?.fullCameraView?.pictureSize
         val cameraResultFile = ImageProcessingUtil.getTokopediaPhotoPath(Bitmap.CompressFormat.JPEG, FILE_NAME_KYC)
         result.toFile(cameraResultFile) {
             if (it != null && it.exists()) {
@@ -295,11 +254,11 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     private fun onSuccessImageTakenFromCamera(cameraResultFile: File) {
         if (cameraResultFile.exists()) {
             if (viewMode == PARAM_VIEW_MODE_KTP) {
-                imagePreviewKtp?.loadImage(cameraResultFile.absolutePath)
-                imagePreviewFace?.hide()
+                viewBinding?.imagePreviewKtp?.loadImage(cameraResultFile.absolutePath)
+                viewBinding?.imagePreviewFace?.hide()
             } else if (viewMode == PARAM_VIEW_MODE_FACE) {
-                imagePreviewFace?.loadImage(cameraResultFile.absolutePath)
-                imagePreviewKtp?.hide()
+                viewBinding?.imagePreviewFace?.loadImage(cameraResultFile.absolutePath)
+                viewBinding?.imagePreviewKtp?.hide()
             }
             imagePath = cameraResultFile.absolutePath
             Timber.d(
@@ -316,16 +275,16 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     private fun populateViewByViewMode() {
         when (viewMode) {
             PARAM_VIEW_MODE_KTP -> {
-                focusedKtpView?.visibility = View.VISIBLE
-                focusedFaceView?.visibility = View.GONE
-                title?.setText(R.string.camera_ktp_title)
-                subtitle?.setText(R.string.camera_ktp_subtitle)
+                viewBinding?.focusedViewKtp?.visibility = View.VISIBLE
+                viewBinding?.focusedViewFace?.visibility = View.GONE
+                viewBinding?.title?.setText(R.string.camera_ktp_title)
+                viewBinding?.subtitle?.setText(R.string.camera_ktp_subtitle)
             }
             PARAM_VIEW_MODE_FACE -> {
-                focusedKtpView?.visibility = View.GONE
-                focusedFaceView?.visibility = View.VISIBLE
-                title?.setText(R.string.camera_face_title)
-                subtitle?.setText(R.string.camera_face_subtitle)
+                viewBinding?.focusedViewKtp?.visibility = View.GONE
+                viewBinding?.focusedViewFace?.visibility = View.VISIBLE
+                viewBinding?.title?.setText(R.string.camera_face_title)
+                viewBinding?.subtitle?.setText(R.string.camera_face_subtitle)
                 toggleCamera()
             }
         }
@@ -334,58 +293,58 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     private fun showCameraView() {
         populateViewByViewMode()
 
-        cameraView?.visibility = View.VISIBLE
-        shutterButton?.visibility = View.VISIBLE
-        switchCamera?.visibility = View.VISIBLE
+        viewBinding?.fullCameraView?.visibility = View.VISIBLE
+        viewBinding?.imageButtonShutter?.visibility = View.VISIBLE
+        viewBinding?.imageButtonFlip?.visibility = View.VISIBLE
         startCamera()
-        loading?.visibility = View.GONE
-        imagePreviewKtp?.visibility = View.GONE
-        imagePreviewFace?.visibility = View.GONE
-        buttonLayout?.visibility = View.GONE
+        viewBinding?.loader?.visibility = View.GONE
+        viewBinding?.imagePreviewKtp?.visibility = View.GONE
+        viewBinding?.imagePreviewFace?.visibility = View.GONE
+        viewBinding?.buttonLayout?.visibility = View.GONE
     }
 
     private fun showImagePreview() {
         when(viewMode) {
             PARAM_VIEW_MODE_KTP -> {
-                subtitle?.setText(R.string.camera_ktp_subtitle_preview)
-                imagePreviewKtp?.visibility = View.VISIBLE
-                imagePreviewFace?.visibility = View.GONE
+                viewBinding?.subtitle?.setText(R.string.camera_ktp_subtitle_preview)
+                viewBinding?.imagePreviewKtp?.visibility = View.VISIBLE
+                viewBinding?.imagePreviewFace?.visibility = View.GONE
             }
             PARAM_VIEW_MODE_FACE -> {
-                subtitle?.setText(R.string.camera_face_subtitle_preview)
-                imagePreviewKtp?.visibility = View.GONE
-                imagePreviewFace?.visibility = View.VISIBLE
+                viewBinding?.subtitle?.setText(R.string.camera_face_subtitle_preview)
+                viewBinding?.imagePreviewKtp?.visibility = View.GONE
+                viewBinding?.imagePreviewFace?.visibility = View.VISIBLE
             }
         }
-        cameraView?.visibility = View.GONE
-        shutterButton?.visibility = View.GONE
-        switchCamera?.visibility = View.GONE
-        loading?.visibility = View.GONE
-        focusedKtpView?.visibility = View.GONE
-        focusedFaceView?.visibility = View.GONE
+        viewBinding?.fullCameraView?.visibility = View.GONE
+        viewBinding?.imageButtonShutter?.visibility = View.GONE
+        viewBinding?.imageButtonFlip?.visibility = View.GONE
+        viewBinding?.loader?.visibility = View.GONE
+        viewBinding?.focusedViewKtp?.visibility = View.GONE
+        viewBinding?.focusedViewFace?.visibility = View.GONE
         destroyCamera()
-        buttonLayout?.visibility = View.VISIBLE
+        viewBinding?.buttonLayout?.visibility = View.VISIBLE
         sendAnalyticViewImagePreview()
     }
 
     private fun hideCameraButtonAndShowLoading() {
-        shutterButton?.visibility = View.GONE
-        switchCamera?.visibility = View.GONE
-        imagePreviewKtp?.visibility = View.GONE
-        imagePreviewFace?.visibility = View.GONE
-        buttonLayout?.visibility = View.GONE
-        loading?.visibility = View.VISIBLE
+        viewBinding?.imageButtonShutter?.visibility = View.GONE
+        viewBinding?.imageButtonFlip?.visibility = View.GONE
+        viewBinding?.imagePreviewKtp?.visibility = View.GONE
+        viewBinding?.imagePreviewFace?.visibility = View.GONE
+        viewBinding?.buttonLayout?.visibility = View.GONE
+        viewBinding?.loader?.visibility = View.VISIBLE
     }
 
     private fun toggleCamera() {
         if (isCameraVisible) {
-            cameraView?.toggleFacing()
+            viewBinding?.fullCameraView?.toggleFacing()
         }
     }
 
     private fun isFileSizeQualified(filePath: String): Boolean {
         val file = File(filePath)
-        val fileSize = (file.length() / DEFAULT_ONE_MEGABYTE).toString().toInt()
+        val fileSize = (file.length() / DEFAULT_ONE_MEGABYTE).toString().toIntOrZero()
         return fileSize <= MAX_FILE_SIZE
     }
 
@@ -395,14 +354,13 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     }
 
     private val isCameraVisible: Boolean
-        get() = cameraView != null &&
-                cameraView?.visibility == View.VISIBLE
+        get() = viewBinding?.fullCameraView != null &&
+            viewBinding?.fullCameraView?.visibility == View.VISIBLE
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (context != null) {
-            permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions,
-                    grantResults)
+            permissionCheckerHelper.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
         }
     }
 
