@@ -11,13 +11,14 @@
         android:id="@+id/subcategory_title"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:gravity="center_vertical"
         android:layout_marginBottom="12dp"
-        android:background="@drawable/catalog_subtitle_background"
-        android:padding="@dimen/spacing_lvl3"
-        android:textSize="@dimen/sp_12"
+        android:background="@drawable/catalog_subtitle_bg_default"
+        android:padding="4dp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@id/comparison_content_layout"
         app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="Kamera Belakang" />
 
@@ -32,28 +33,28 @@
         android:id="@+id/comparison_content_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/catalog_content_border"
+        android:background="@drawable/catalog_content_bg_default"
         android:orientation="horizontal"
-        android:padding="@dimen/spacing_lvl3"
+        android:padding="4dp"
         app:layout_constraintEnd_toStartOf="@id/diff_guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/subcategory_title">
 
         <LinearLayout
-            android:layout_width="200dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="4dp"
             android:orientation="vertical"
-            android:paddingTop="@dimen/spacing_lvl3"
-            android:paddingBottom="@dimen/spacing_lvl3">
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/first_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/unify_space_8"
-                android:textSize="@dimen/sp_12"
-                app:typographyType="body_3"
+                android:layout_marginEnd="8dp"
+                android:textSize="12sp"
+                app:typographyType="paragraph_3"
                 tools:text="Dua kamera 12MP Ultra Wide dan Wide" />
 
         </LinearLayout>
@@ -61,17 +62,16 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="4dp"
             android:orientation="vertical"
-            android:paddingTop="@dimen/spacing_lvl3"
-            android:paddingBottom="@dimen/spacing_lvl3">
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/second_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/unify_space_8"
-                app:typographyType="body_3"
+                app:typographyType="paragraph_3"
                 tools:text="Belakang 12MP (Ultra Wide, Wide and Tele) Depan 12MP, 8MP (Ultra Wide, Wide and Tele)" />
 
 
