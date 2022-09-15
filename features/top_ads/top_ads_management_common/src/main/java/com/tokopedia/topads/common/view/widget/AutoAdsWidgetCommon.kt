@@ -36,7 +36,7 @@ import com.tokopedia.topads.common.di.TopAdsCommonComponent
 import com.tokopedia.topads.common.di.module.TopAdsCommonModule
 import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
 import com.tokopedia.topads.common.utils.TopadsCommonUtil.showErrorAutoAds
-import com.tokopedia.topads.common.view.AutoAdsWidgetViewModelCommon
+import com.tokopedia.topads.common.view.AutoAdsWidgetViewModel
 import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -74,7 +74,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         ViewModelProvider(context as BaseActivity, viewModelFactory)
     }
     private val widgetViewModel by lazy {
-        viewModelProvider.get(AutoAdsWidgetViewModelCommon::class.java)
+        viewModelProvider.get(AutoAdsWidgetViewModel::class.java)
     }
 
     init {

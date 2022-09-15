@@ -254,12 +254,14 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
 
     private fun mapDataCollectionsBottomSheet(data: com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data): ArrayList<BottomSheetWishlistCollectionTypeLayoutData> {
         val listData = arrayListOf<BottomSheetWishlistCollectionTypeLayoutData>()
-        listData.add(
-            BottomSheetWishlistCollectionTypeLayoutData(
-                data.mainSection.text,
-                TYPE_COLLECTION_MAIN_SECTION
+        if (data.mainSection.text.isNotEmpty()) {
+            listData.add(
+                BottomSheetWishlistCollectionTypeLayoutData(
+                    data.mainSection.text,
+                    TYPE_COLLECTION_MAIN_SECTION
+                )
             )
-        )
+        }
 
         data.mainSection.collections.forEach { mainSectionItem ->
             listData.add(
