@@ -127,7 +127,7 @@ ext {
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.13.2'
     unifyGlobalErrorVersion = '1.0.18.2'
-    unifyHeaderVersion = '1.1.12'
+    unifyHeaderVersion = '1.1.13'
     unifySortFilterVersion = '1.1.4.2'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.10.2'
