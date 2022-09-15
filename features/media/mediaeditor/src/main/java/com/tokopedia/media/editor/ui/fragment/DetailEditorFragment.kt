@@ -41,6 +41,7 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.R as principleR
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.util.FastBitmapDrawable
@@ -296,8 +297,8 @@ class DetailEditorFragment @Inject constructor(
                     mediaTarget = MediaBitmapEmptyTarget(
                         onReady = { resultBitmap ->
                             when (removeBackgroundType) {
-                                RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_GRAY -> editorR.color.Unify_NN200
-                                RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_WHITE -> editorR.color.Unify_Static_White
+                                RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_GRAY -> principleR.color.Unify_NN200
+                                RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_WHITE -> principleR.color.Unify_Static_White
                                 else -> null
                             }?.let {
                                 val color = ContextCompat.getColor(requireContext(), it)
