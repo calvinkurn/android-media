@@ -18,6 +18,7 @@ sealed interface PlayVoucherUiModel {
                 val highlighted: Boolean,
                 val voucherStock: Int,
                 val expiredDate: String,
+                val isPrivate: Boolean,
                 @TrackingField val impressHolder: ImpressHolder = ImpressHolder()
         ) : PlayVoucherUiModel
 
