@@ -11,9 +11,11 @@
         android:id="@+id/iv_display"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="@+id/tv_status"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_title" />
+        app:layout_constraintTop_toTopOf="@+id/tv_title"
+        app:unify_image_corner_radius="0" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
@@ -68,7 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Batas respons"
+        android:text="@string/order_resolution_deadline_label"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_description"
