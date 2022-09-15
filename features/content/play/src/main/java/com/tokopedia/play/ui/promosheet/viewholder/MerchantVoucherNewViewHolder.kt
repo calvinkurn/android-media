@@ -38,7 +38,6 @@ class MerchantVoucherNewViewHolder(
     }
 
     fun bind(item: PlayVoucherUiModel.Merchant) {
-        val isPrivate = item.type == MerchantVoucherType.Private
         binding.tvCouponTitle.text = item.title
         binding.tvMinTransaction.text = item.description
 
@@ -71,11 +70,11 @@ class MerchantVoucherNewViewHolder(
         binding.viewVoucherCopyable.tvPlayVoucherCode.text = item.code
 
         binding.viewVoucherCopyable.ivPlayVoucherCopy.setOnClickListener {
-            if (!isPrivate) return@setOnClickListener
+            if (!item.isPrivate) return@setOnClickListener
             listener.onCopyItemVoucherClicked(item)
         }
         binding.root.setOnClickListener {
-            if (isPrivate) return@setOnClickListener
+            if (item.isPrivate) return@setOnClickListener
             listener.onVoucherItemClicked(item)
         }
     }
