@@ -40,6 +40,7 @@
         <activity
             android:name=".silentverification.view.activity.SilentVerificationActivity"
             android:label=""
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize">
