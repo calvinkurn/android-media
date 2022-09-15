@@ -1915,6 +1915,20 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             )
             startActivityForResult(intent, REQUEST_CODE_GO_TO_PDP)
         }
+
+        activity?.let {
+            val intent = if (wishlistItem.url.isNotEmpty()) {
+                RouteManager.route(it, wishlistItem.url)
+                RouteManager.getIntent(it, wishlistItem.url)
+            } else {
+                RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    wishlistItem.id
+                )
+            }
+            startActivityForResult(intent, REQUEST_CODE_GO_TO_PDP)
+        }
     }
 
     override fun onViewProductCard(wishlistItem: WishlistV2UiModel.Item, position: Int) {
