@@ -3,7 +3,8 @@
     package="com.tokopedia.tokomember_seller_dashboard">
 
     <application>
-        <activity  android:name=".view.activity.TokomemberMainActivity">
+        <activity  android:name=".view.activity.TokomemberMainActivity"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
