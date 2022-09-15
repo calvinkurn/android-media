@@ -44,7 +44,7 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
         intent?.data?.let {
             projectId = it.getQueryParameter(
                 ApplinkConstInternalGlobal.PARAM_PROJECT_ID
-            )?.toIntOrZero() ?: KycStatus.DEFAULT.ordinal
+            )?.toIntOrZero() ?: KycStatus.DEFAULT.code
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
             callback = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CALL_BACK).orEmpty()
             redirectUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()

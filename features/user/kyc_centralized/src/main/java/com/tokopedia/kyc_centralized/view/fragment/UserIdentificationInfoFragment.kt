@@ -90,7 +90,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         super.onViewCreated(view, savedInstanceState)
         initObserver(view)
 
-        if (projectId != KycStatus.DEFAULT.ordinal) {
+        if (projectId != KycStatus.DEFAULT.code) {
             getStatusInfo()
         } else {
             toggleNotFoundView(true)
@@ -102,7 +102,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             when(it) {
                 is Success -> {
                     allowedSelfie = it.data.kycProjectInfo?.isSelfie == true
-                    if( it.data.kycProjectInfo?.status == KycStatus.BLACKLISTED.ordinal ||
+                    if( it.data.kycProjectInfo?.status == KycStatus.BLACKLISTED.code ||
                         it.data.kycProjectInfo?.statusName?.isEmpty() == true
                     ) {
                         onUserBlacklist()

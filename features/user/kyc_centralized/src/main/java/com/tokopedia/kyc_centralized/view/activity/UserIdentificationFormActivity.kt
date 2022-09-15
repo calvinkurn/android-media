@@ -58,7 +58,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
         intent?.data?.let {
             projectId = it.getQueryParameter(
                 ApplinkConstInternalGlobal.PARAM_PROJECT_ID
-            )?.toIntOrNull() ?: KycStatus.DEFAULT.ordinal
+            )?.toIntOrNull() ?: KycStatus.DEFAULT.code
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         }
@@ -93,7 +93,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     }
 
     override fun getListFragment(): List<Fragment> {
-        return if (projectId == KycStatus.DEFAULT.ordinal) {
+        return if (projectId == KycStatus.DEFAULT.code) {
             val notFoundList = ArrayList<Fragment>()
             notFoundList.add(NotFoundFragment.createInstance())
             notFoundList

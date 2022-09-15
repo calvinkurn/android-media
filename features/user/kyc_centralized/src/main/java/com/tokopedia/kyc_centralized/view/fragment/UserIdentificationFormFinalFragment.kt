@@ -388,9 +388,9 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         if (colorFace != null) {
             viewBinding?.resultTextFace?.setTextColor(colorFace)
         }
-        viewBinding?.textSubtitle?.gravity = Gravity.LEFT
+        viewBinding?.textSubtitle?.gravity = Gravity.START
         viewBinding?.textSubtitle?.text = subtitleText
-        viewBinding?.textInfo?.gravity = Gravity.LEFT
+        viewBinding?.textInfo?.gravity = Gravity.START
         viewBinding?.textInfo?.text = infoText
         viewBinding?.uploadButton?.text = buttonText
         viewBinding?.layoutInfoBullet?.removeAllViewsInLayout()
