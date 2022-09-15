@@ -52,15 +52,19 @@
                 app:typographyWeight="bold"
                 tools:text="Minggu, 25 Des 2019, 23:59 WIB" />
 
-            <com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
+            <com.tokopedia.unifycomponents.timer.TimerUnifySingle
                 android:id="@+id/tvDeadlineTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4"
+                app:timer_unify_single_variant="main"
+                app:timer_unify_single_type="hour"
+                app:timer_unify_single_showClockIcon="true"
+                android:layout_marginTop="@dimen/thank_dp_6"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginRight="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvDeadlineHeading"
-               />
+                />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/view_divider_1"
