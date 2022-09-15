@@ -8,9 +8,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerorder.detail.data.model.GetResolutionTicketStatusResponse
 import com.tokopedia.sellerorder.detail.di.SomDetailScope
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 @SomDetailScope
@@ -51,6 +48,7 @@ class SomResolutionGetTicketStatusUseCase @Inject constructor(
                   resolution_status {
                     status
                     text
+                    font_color
                   }
                   deadline {
                     datetime

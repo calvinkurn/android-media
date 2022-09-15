@@ -6,7 +6,7 @@
     android:id="@+id/reso_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:paddingHorizontal="16dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_display"

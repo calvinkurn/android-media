@@ -30,8 +30,16 @@ data class GetResolutionTicketStatusResponse(
         ) {
 
             fun shouldShow(): Boolean {
-                return !cardTitle.isNullOrEmpty() && !resolutionStatus?.text.isNullOrEmpty()
-                        && !description.isNullOrEmpty()
+                val hasValidDeadlineData = (deadline?.showDeadline == true
+                        && !deadline.datetime.isNullOrBlank()
+                        && !deadline.backgroundColor.isNullOrBlank())
+                return !cardTitle.isNullOrBlank()
+                        && !description.isNullOrBlank()
+                        && !profilePicture.isNullOrBlank()
+                        && !redirectPath?.android.isNullOrBlank()
+                        && !resolutionStatus?.text.isNullOrBlank()
+                        && !resolutionStatus?.fontColor.isNullOrBlank()
+                        && (deadline?.showDeadline != true || hasValidDeadlineData)
             }
 
             data class Deadline(
@@ -54,7 +62,9 @@ data class GetResolutionTicketStatusResponse(
                 @SerializedName("status")
                 val status: Int? = -1,
                 @SerializedName("text")
-                val text: String? = ""
+                val text: String? = "",
+                @SerializedName("font_color")
+                val fontColor: String? = ""
             )
         }
     }

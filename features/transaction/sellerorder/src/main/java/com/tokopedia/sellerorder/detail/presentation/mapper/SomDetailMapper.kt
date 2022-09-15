@@ -1,7 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerorder.detail.data.model.GetResolutionTicketStatusResponse
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
@@ -19,6 +18,19 @@ object SomDetailMapper {
     ) {
         SomGetOrderDetailResponseMapper.mapResponseToHeaderUiModel(somGetOrderDetailResponse)?.let {
             add(it)
+        }
+    }
+
+    private fun ArrayList<Visitable<SomDetailAdapterFactory>>.includeReso(
+        getResolutionTicketStatusResponse: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
+    ) {
+        if (getResolutionTicketStatusResponse?.shouldShow() == true) {
+            SomResolutionResponseMapper.mapResponseToResolutionUIModel(
+                getResolutionTicketStatusResponse
+            )?.let {
+                add(it)
+                includeDivider()
+            }
         }
     }
 
@@ -85,14 +97,6 @@ object SomDetailMapper {
             includeDivider()
             includePayment(somGetSomDynamicPrice)
             includeMvc(somGetSomDynamicPrice)
-        }
-    }
-
-    private fun ArrayList<Visitable<SomDetailAdapterFactory>>
-            .includeReso(getResolutionTicketStatusResponse: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?) {
-        if (getResolutionTicketStatusResponse?.shouldShow().orFalse()) {
-            add(SomResolutionResponseMapper.mapResponseToResolutionUIModel(getResolutionTicketStatusResponse))
-            includeDivider()
         }
     }
 }
