@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.extensions.fromHtml
 import com.tokopedia.product.detail.common.extensions.getColorChecker
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
@@ -37,7 +37,7 @@ class ItemProductDetailInfoViewHolder(
         infoDetailTitle.text = data.title
 
         infoDetailValue.apply {
-            text = data.subtitle.fromHtml()
+            text = data.subtitle.parseAsHtmlLink(root.context)
 
             if (data.applink.isNotEmpty()) {
                 setTextColor(root.context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_GN500))

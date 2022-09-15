@@ -19,16 +19,20 @@ data class ProductDetailInfoDataModel(
 ) : DynamicPdpDataModel {
 
     val isCatalog
-        get() = catalogBottomSheet != null
+        get() = catalogBottomSheet?.let {
+            it.actionTitle.isNotBlank() && it.bottomSheetTitle.isNotBlank()
+        } ?: run {
+            false
+        }
 
     fun getShowableData(): List<ProductDetailInfoContent> {
         return dataContent.filter { it.showAtFront }
-            .filterNot { it.title.toLowerCase() == DESCRIPTION_DETAIL_KEY }
+            .filterNot { it.title.lowercase() == DESCRIPTION_DETAIL_KEY }
     }
 
     fun getDescription(): String {
         return dataContent.find {
-            it.title.toLowerCase() == DESCRIPTION_DETAIL_KEY
+            it.title.lowercase() == DESCRIPTION_DETAIL_KEY
         }?.subtitle ?: ""
     }
 

@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.data.util.thumbnailUrl
 import com.tokopedia.product.detail.databinding.BsItemProductDetailExpandableBinding
@@ -19,7 +20,6 @@ import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil.Companion.DIFFUTIL_PAYLOAD_TOGGLE
 import com.tokopedia.product.info.widget.ExpandableAnimation
 import com.tokopedia.product.share.ekstensions.layoutInflater
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import java.util.regex.Pattern
 
 
@@ -62,11 +62,9 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
 
         expandableTitleChevron.setOnClickListener {
             expandableTitleChevron.isExpand = expandableTitleChevron.isExpand != true
-            listener.closeAllExpand(element.uniqueIdentifier(), expandableTitleChevron.isExpand
-                    ?: false)
+            listener.closeAllExpand(element.uniqueIdentifier(), expandableTitleChevron.isExpand)
         }
-        binding.productDetailValue.text = HtmlLinkHelper(view.context,
-                element.textValue.replace("(\r\n|\n)".toRegex(), "<br />")).spannedString
+        binding.productDetailValue.text = element.textValue.parseAsHtmlLink(root.context)
         setSelectableText()
         setSelectClickableTextView()
     }

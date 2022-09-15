@@ -6,12 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.extensions.fromHtml
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
@@ -53,14 +52,14 @@ class ProductDetailInfoViewHolder(
     }
 
     private fun renderSeeMoreCatalog(element: ProductDetailInfoDataModel) = with(binding) {
-        val isCatalog = element.catalogBottomSheet != null
+        val isCatalog = element.isCatalog
 
         groupCatalog.showWithCondition(shouldShow = isCatalog)
 
         productDetailInfoSeemoreSpecification.apply {
             text = element.catalogBottomSheet?.actionTitle
 
-            shouldShowWithAction(shouldShow = isCatalog) {
+            shouldShowWithAction(shouldShow = element.isCatalog) {
                 setOnClickListener {
                     listener.onSeeMoreSpecificationClicked(
                         infoData = element,
@@ -123,7 +122,7 @@ class ProductDetailInfoViewHolder(
 
         productDetailInfoDescription.apply {
             if (descFormatted.isNotEmpty()) {
-                text = descFormatted.fromHtml()
+                text = descFormatted.parseAsHtmlLink(root.context)
 
                 setOnClickListener {
                     listener.onSeeMoreDescriptionClicked(

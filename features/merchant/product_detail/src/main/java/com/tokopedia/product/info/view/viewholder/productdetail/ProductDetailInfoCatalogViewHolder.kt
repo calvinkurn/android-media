@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.extensions.fromHtml
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.databinding.BsItemProductDetailCatalogTitleBinding
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
 import com.tokopedia.product.info.model.productdetail.response.ItemCatalog
@@ -20,6 +20,7 @@ class ProductDetailInfoCatalogViewHolder(
 ) : AbstractViewHolder<ProductDetailInfoCatalogDataModel>(view) {
 
     companion object {
+
         val LAYOUT = R.layout.bs_item_product_detail_catalog_title
     }
 
@@ -51,7 +52,7 @@ class ProductDetailInfoCatalogViewHolder(
             false
         ).apply {
             infoDetailTitle.text = catalog.key
-            infoDetailValue.text = catalog.value.fromHtml()
+            infoDetailValue.text = catalog.value.parseAsHtmlLink(root.context)
             infoDetailValue.maxLines = Int.MAX_VALUE
         }.root
     }

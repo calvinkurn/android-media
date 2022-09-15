@@ -5,7 +5,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.extensions.fromHtml
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.databinding.BsProductShopNotesInfoBinding
 import com.tokopedia.product.detail.view.util.toDateId
 import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
@@ -18,8 +18,6 @@ object ProductDetailBottomSheetBuilder {
     private const val PDP_TIME_PUKUL = "pukul"
     private const val SHIPPING_CHOOSE_ADDRESS_TAG = "SHIPPING_CHOOSE_ADDRESS_TAG"
     private const val DATE_FORMATTER = "dd MMM yyyy, '${PDP_TIME_PUKUL}' HH:mm"
-    private val DESC_REPLACE_CHAR_REGEX = "(\r\n|\n)".toRegex()
-    private const val DESC_REPLACE_TO = "<br />"
 
     fun getShopNotesBottomSheet(
         context: Context,
@@ -36,7 +34,7 @@ object ProductDetailBottomSheetBuilder {
 
         binding.apply {
             productShopNotesDate.text = shopNotesData.updateTime toDateId DATE_FORMATTER
-            productShopNotesDesc.text = shopNotesData.content.fromHtml()
+            productShopNotesDesc.text = shopNotesData.content.parseAsHtmlLink(context)
         }
 
         return bottomSheetUnify
