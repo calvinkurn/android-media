@@ -628,7 +628,7 @@ class ChatbotPresenter @Inject constructor(
             createdTime = SendableUiModel.generateStartTime(),
             description = hashMap[DESCRIPTION] ?: "",
             url = hashMap[IMAGE_URL] ?: "",
-            id = hashMap.get(ID)!!.toLongOrZero(),
+            id = hashMap.get(ID).toLongOrZero(),
             imageUrl = hashMap[IMAGE_URL] ?: "",
             status = hashMap[STATUS] ?: "",
             statusId = hashMap[STATUS_ID]!!.toIntOrZero(),

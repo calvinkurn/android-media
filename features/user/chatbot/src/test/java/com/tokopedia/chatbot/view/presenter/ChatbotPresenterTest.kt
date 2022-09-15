@@ -2,13 +2,18 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
@@ -44,6 +49,8 @@ import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -1188,5 +1195,118 @@ class ChatbotPresenterTest {
 
     }
 
+    @Test
+    fun `mapToVisitable success` () {
+
+        val mockkVisitable = mockk<Visitable<*>>(relaxed = true)
+
+        every {
+            chatBotWebSocketMessageMapper.map(any())
+        }  returns mockkVisitable
+
+        presenter.mapToVisitable(ChatSocketPojo())
+
+        assertNotNull(mockkVisitable)
+    }
+
+    @Test
+    fun `getActionBubbleforNoTrasaction success`() {
+        val actionBubbleUiModel = createActionBubble()
+
+        presenter.getActionBubbleforNoTrasaction()
+
+        assertNotNull(actionBubbleUiModel)
+    }
+
+
+    @Test
+    fun `clearText success`() {
+
+        every {
+            view.clearChatText()
+        } just runs
+
+        presenter.clearText()
+
+        verify {
+            view.clearChatText()
+        }
+    }
+
+    @Test
+    fun `showErrorSnackbar success`() {
+
+        every {
+            view.showSnackbarError(any())
+        } just runs
+
+        presenter.showErrorSnackbar(1)
+
+        verify {
+            view.showSnackbarError(any())
+        }
+    }
+
+    @Test
+    fun `createAttachInvoiceSingleViewModel success`() {
+        val map = getMapForArticleEntry()
+        val attachInvoiceSingleUiModel = getAttachSingleInvoiceUiModel(map)
+        presenter.createAttachInvoiceSingleViewModel(map)
+        assertNotNull(attachInvoiceSingleUiModel)
+    }
+
+    @Test
+    fun `updateMappedPojo ratingList success`() {
+
+    }
+
+
+
+
+
+    private fun createActionBubble(): ChatActionBubbleViewModel {
+        return ChatActionBubbleViewModel(
+            "Text",
+            "Value",
+            "Action"
+        )
+    }
+
+    private fun getAttachSingleInvoiceUiModel(hashMap : Map<String, String>) : AttachInvoiceSingleViewModel {
+        return AttachInvoiceSingleViewModel(
+            typeString = "",
+            type = 0,
+            code = hashMap[ChatbotConstant.ChatbotUnification.CODE] ?: "",
+            createdTime = SendableUiModel.generateStartTime(),
+            description = hashMap[ChatbotConstant.ChatbotUnification.DESCRIPTION] ?: "",
+            url = hashMap[ChatbotConstant.ChatbotUnification.IMAGE_URL] ?: "",
+            id = hashMap.get(ChatbotConstant.ChatbotUnification.ID)!!.toLongOrZero(),
+            imageUrl = hashMap[ChatbotConstant.ChatbotUnification.IMAGE_URL] ?: "",
+            status = hashMap[ChatbotConstant.ChatbotUnification.STATUS] ?: "",
+            statusId = hashMap[ChatbotConstant.ChatbotUnification.STATUS_ID]!!.toIntOrZero(),
+            title = hashMap[ChatbotConstant.ChatbotUnification.TITLE] ?: "",
+            amount = hashMap[ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT] ?: ""
+        )
+    }
+
+    private fun getMapForArticleEntry() :  Map<String, String> {
+        return mapOf(
+            ChatbotConstant.ChatbotUnification.ARTICLE_ID to "1",
+            ChatbotConstant.ChatbotUnification.ARTICLE_TITLE to "2",
+            ChatbotConstant.ChatbotUnification.CODE to "3",
+            ChatbotConstant.ChatbotUnification.CREATE_TIME to "time",
+            ChatbotConstant.ChatbotUnification.DESCRIPTION to "description",
+            ChatbotConstant.ChatbotUnification.EVENT to "event",
+            ChatbotConstant.ChatbotUnification.ID to "0",
+            ChatbotConstant.ChatbotUnification.IMAGE_URL to "url",
+            ChatbotConstant.ChatbotUnification.IS_ATTACHED to "true",
+            ChatbotConstant.ChatbotUnification.STATUS to "status",
+            ChatbotConstant.ChatbotUnification.STATUS_COLOR to "status_color",
+            ChatbotConstant.ChatbotUnification.STATUS_ID to "0",
+            ChatbotConstant.ChatbotUnification.TITLE to "title",
+            ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT to "123",
+            ChatbotConstant.ChatbotUnification.USED_BY to "Article"
+        )
+    }
 
 }
