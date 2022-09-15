@@ -32,7 +32,6 @@ android {
                     pathSources + 'credibility',
                     pathSources + 'reading',
                     pathSources + 'gallery',
-                    pathSources + 'imagepreview',
                     pathSources + 'common',
                     pathSources + 'media'
             ]
