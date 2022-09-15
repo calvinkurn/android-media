@@ -238,14 +238,6 @@
     },
     {
       "event": "clickContent",
-      "eventAction": "click - lihat keranjang",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod)",
-      "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
-    },
-    {
-      "event": "clickContent",
       "eventAction": "click - jam operasional",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
