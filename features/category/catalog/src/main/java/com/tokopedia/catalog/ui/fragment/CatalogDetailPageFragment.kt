@@ -65,6 +65,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -149,6 +150,8 @@ class CatalogDetailPageFragment : Fragment(),
     private var lastAttachItemPosition : Int = 0
     private var isScrollDownButtonClicked = false
 
+    private var isNewComparison = false
+
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
@@ -172,6 +175,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRollence()
         injectComponents()
         initViews(view)
         if (arguments != null) {
@@ -230,6 +234,17 @@ class CatalogDetailPageFragment : Fragment(),
                 slideUpMoreProductsView()
             }
         }
+    }
+
+    private fun initRollence() {
+        isNewComparison =
+            when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                CatalogConstant.CATALOG_COMPARISON,
+                ""
+            )) {
+                CatalogConstant.CATALOG_COMPARISON -> true
+                else -> false
+            }
     }
 
     private fun initViews(parentView : View) {
@@ -297,6 +312,12 @@ class CatalogDetailPageFragment : Fragment(),
                         }else if(component is CatalogComparisonNewDataModel && comparisonCatalogId.isBlank()){
                             recommendedCatalogId = component.specsList?.firstOrNull()?.subcard?.firstOrNull()?.featureRightData?.id ?: ""
                         }
+
+                    }
+                    if (!isNewComparison) {
+                        catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON)
+                    } else {
+                        catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON_NEW)
                     }
                     catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
