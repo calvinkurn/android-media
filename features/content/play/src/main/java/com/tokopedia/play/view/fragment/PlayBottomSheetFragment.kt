@@ -35,15 +35,7 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
-import com.tokopedia.play.view.uimodel.action.AtcProductAction
-import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
-import com.tokopedia.play.view.uimodel.action.BuyProductAction
-import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
-import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
-import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
-import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
-import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
-import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.event.*
@@ -282,7 +274,7 @@ class PlayBottomSheetFragment @Inject constructor(
             message = getString(R.string.play_voucher_code_copied),
             actionText = getString(R.string.play_action_lihat),
             actionClickListener = {
-                RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                playViewModel.submitAction(OpenPageWithLogin(ApplinkConstInternalMarketplace.CART))
             }
         )
         analytic.clickCopyVoucher(voucher)
@@ -671,6 +663,14 @@ class PlayBottomSheetFragment @Inject constructor(
                                     sectionInfo = sectionInfo,
                                 )
                             }
+                        }
+                        is OpenPageEvent -> {
+                            openPageByApplink(
+                                applink = event.applink,
+                                params = event.params.toTypedArray(),
+                                requestCode = event.requestCode,
+                                pipMode = event.pipMode
+                            )
                         }
                         else -> {}
                     }
