@@ -111,5 +111,5 @@
     <dimen name="play_product_carousel_pinned_width">280dp</dimen>
     <dimen name="play_product_carousel_pinned_icon_size">12dp</dimen>
 
-    <dimen name="play_engagement_carousel_size">110dp</dimen>
+    <dimen name="play_engagement_carousel_size">104dp</dimen>
 </resources>
