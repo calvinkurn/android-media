@@ -10,5 +10,11 @@ data class EgoldMessage(
     @SerializedName("ticker_text")
     var tickerText: String? = null,
     @SerializedName("tooltip_text")
-    var tooltipText: String? = null
+    var tooltipText: String? = null,
+    @SerializedName("hyperlink_text")
+    var hyperlinkText: String? = null,
+    @SerializedName("hyperlink_url")
+    var hyperlinkUrl: String? = null,
+    @SerializedName("is_show_hyperlink")
+    var isShowHyperlink: Boolean = false
 )
