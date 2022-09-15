@@ -2,24 +2,17 @@ package com.tokopedia.kyc_centralized.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -28,65 +21,47 @@ import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics.Companion.createInstance
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycCommonUrl
+import com.tokopedia.kyc_centralized.common.KycStatus
+import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoBinding
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationInfoActivity
 import com.tokopedia.kyc_centralized.view.customview.KycOnBoardingViewInflater
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
 import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.KycCommonUrl
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
  * @author by alvinatin on 02/11/18.
  */
 class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationInfoActivity.Listener {
-    private var globalErrorView: GlobalError? = null
-    private var image: ImageView? = null
-    private var title: TextView? = null
-    private var text: TextView? = null
-    private var progressBar: View? = null
-    private var containerMainView: View? = null
-    private var mainView: View? = null
-    private var button: UnifyButton? = null
-    private var clReason: ConstraintLayout? = null
-    private var reasonOne: Typography? = null
-    private var reasonTwo: Typography? = null
-    private var reasonThree: Typography? = null
-    private var reasonFour: Typography? = null
-    private var iconOne: ImageUnify? = null
-    private var iconTwo: ImageUnify? = null
-    private var iconThree: ImageUnify? = null
-    private var iconFour: ImageUnify? = null
+
+    private var viewBinding by autoClearedNullable<FragmentUserIdentificationInfoBinding>()
     private var isSourceSeller = false
     private var analytics: UserIdentificationAnalytics? = null
-    private var statusCode = 0
+    private var statusCode: KycStatus = KycStatus.PENDING
     private var projectId = -1
     private var kycType = ""
     private var redirectUrl: String? = null
-    private var kycBenefitLayout: View? = null
     private var defaultStatusBarColor = 0
     private var allowedSelfie = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(UserIdentificationViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val parentView = inflater.inflate(R.layout.fragment_user_identification_info, container, false)
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) defaultStatusBarColor = activity?.window?.statusBarColor ?: 0
-        initView(parentView)
-        return parentView
+        viewBinding = FragmentUserIdentificationInfoBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,33 +86,11 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             .inject(this)
     }
 
-    private fun initView(parentView: View) {
-        globalErrorView = parentView.findViewById(R.id.fragment_user_identification_global_error)
-        containerMainView = parentView.findViewById(R.id.container_main_view)
-        mainView = parentView.findViewById(R.id.main_view)
-        image = parentView.findViewById(R.id.main_image)
-        title = parentView.findViewById(R.id.title)
-        text = parentView.findViewById(R.id.text)
-        button = parentView.findViewById(R.id.button)
-        progressBar = parentView.findViewById(R.id.progress_bar)
-        clReason = parentView.findViewById(R.id.cl_reason)
-        reasonOne = parentView.findViewById(R.id.txt_reason_1)
-        reasonTwo = parentView.findViewById(R.id.txt_reason_2)
-        reasonThree = parentView.findViewById(R.id.txt_reason_3)
-        reasonFour = parentView.findViewById(R.id.txt_reason_4)
-        iconOne = parentView.findViewById(R.id.ic_x_1)
-        iconTwo = parentView.findViewById(R.id.ic_x_2)
-        iconThree = parentView.findViewById(R.id.ic_x_3)
-        iconFour = parentView.findViewById(R.id.ic_x_4)
-        kycBenefitLayout = parentView.findViewById(R.id.layout_kyc_benefit)
-        containerMainView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_Background)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObserver(view)
 
-        if (projectId != KYCConstant.STATUS_DEFAULT) {
+        if (projectId != KycStatus.DEFAULT.ordinal) {
             getStatusInfo()
         } else {
             toggleNotFoundView(true)
@@ -149,7 +102,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             when(it) {
                 is Success -> {
                     allowedSelfie = it.data.kycProjectInfo?.isSelfie == true
-                    if( it.data.kycProjectInfo?.status == KYCConstant.STATUS_BLACKLISTED ||
+                    if( it.data.kycProjectInfo?.status == KycStatus.BLACKLISTED.ordinal ||
                         it.data.kycProjectInfo?.statusName?.isEmpty() == true
                     ) {
                         onUserBlacklist()
@@ -179,17 +132,21 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         hideLoading()
         hideKycBenefit()
         hideRejectedReason()
-        statusCode = status
-        when (status) {
-            KYCConstant.STATUS_REJECTED -> showStatusRejected(reasons)
-            KYCConstant.STATUS_APPROVED -> showStatusPending()
-            KYCConstant.STATUS_PENDING -> showStatusPending()
-            KYCConstant.STATUS_VERIFIED -> showStatusVerified()
-            KYCConstant.STATUS_EXPIRED -> showStatusNotVerified(view)
-            KYCConstant.STATUS_NOT_VERIFIED -> showStatusNotVerified(view)
-            KYCConstant.STATUS_DEFAULT -> toggleNotFoundView(true)
+
+        KycStatus.map(status)?.let {
+            statusCode = it
+        }
+
+        when (statusCode) {
+            KycStatus.REJECTED -> showStatusRejected(reasons)
+            KycStatus.APPROVED -> showStatusPending()
+            KycStatus.PENDING -> showStatusPending()
+            KycStatus.VERIFIED -> showStatusVerified()
+            KycStatus.EXPIRED -> showStatusNotVerified(view)
+            KycStatus.NOT_VERIFIED -> showStatusNotVerified(view)
+            KycStatus.DEFAULT -> toggleNotFoundView(true)
             else -> onErrorGetUserProjectInfo(
-                    MessageErrorException(String.format("%s (%s)",
+                    Throwable(String.format("%s (%s)",
                             getString(R.string.user_identification_default_request_error_unknown),
                             KYCConstant.ERROR_STATUS_UNKNOWN)))
         }
@@ -199,7 +156,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         if (context != null) {
             hideLoading()
             val error = ErrorHandler.getErrorMessage(context, throwable)
-            NetworkErrorHelper.showEmptyState(context, mainView, error) {
+            NetworkErrorHelper.showEmptyState(context, viewBinding?.mainView, error) {
                 getStatusInfo()
             }
         }
@@ -207,24 +164,24 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     private fun toggleNotFoundView(isVisible: Boolean) {
         if (isVisible) {
-            mainView?.visibility = View.GONE
-            globalErrorView?.setType(PAGE_NOT_FOUND)
-            globalErrorView?.visibility = View.VISIBLE
-            globalErrorView?.setActionClickListener { view: View? ->
+            viewBinding?.mainView?.visibility = View.GONE
+            viewBinding?.fragmentUserIdentificationGlobalError?.setType(PAGE_NOT_FOUND)
+            viewBinding?.fragmentUserIdentificationGlobalError?.visibility = View.VISIBLE
+            viewBinding?.fragmentUserIdentificationGlobalError?.setActionClickListener { view: View? ->
                 if (activity != null) {
                     RouteManager.route(context, ApplinkConst.HOME)
                 }
             }
         } else {
-            mainView?.visibility = View.VISIBLE
-            globalErrorView?.visibility = View.GONE
+            viewBinding?.mainView?.visibility = View.VISIBLE
+            viewBinding?.fragmentUserIdentificationGlobalError?.visibility = View.GONE
         }
     }
 
     private fun showStatusNotVerified(view: View) {
         KycOnBoardingViewInflater.setupKycBenefitToolbar(activity)
-        mainView?.hide()
-        kycBenefitLayout?.show()
+        viewBinding?.mainView?.hide()
+        viewBinding?.layoutKycBenefit?.root?.show()
         KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, mainAction = {
             analytics?.eventClickOnNextOnBoarding()
             goToFormActivity()
@@ -239,166 +196,167 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showStatusVerified() {
-        image?.loadImage(KycUrl.ICON_SUCCESS_VERIFY)
-        title?.setText(R.string.kyc_verified_title)
-        text?.setText(R.string.kyc_verified_text)
+        viewBinding?.mainImage?.loadImage(KycUrl.ICON_SUCCESS_VERIFY)
+        viewBinding?.title?.setText(R.string.kyc_verified_title)
+        viewBinding?.text?.setText(R.string.kyc_verified_text)
         if (redirectUrl == null) {
-            button?.setText(R.string.kyc_verified_button)
-            button?.setOnClickListener(onGoToTermsButton())
+            viewBinding?.button?.setText(R.string.kyc_verified_button)
+            viewBinding?.button?.setOnClickListener(onGoToTermsButton())
         } else {
-            button?.setText(R.string.camera_next_button)
-            button?.setOnClickListener(goToCallBackUrl(redirectUrl))
+            viewBinding?.button?.setText(R.string.camera_next_button)
+            viewBinding?.button?.setOnClickListener(goToCallBackUrl(redirectUrl))
         }
-        button?.buttonVariant = FILLED
-        button?.buttonType = MAIN
-        button?.visibility = View.VISIBLE
+        viewBinding?.button?.buttonVariant = FILLED
+        viewBinding?.button?.buttonType = MAIN
+        viewBinding?.button?.visibility = View.VISIBLE
         analytics?.eventViewSuccessPage()
     }
 
     private fun showStatusPending() {
-        image?.loadImage(KycUrl.ICON_WAITING)
-        title?.setText(R.string.kyc_pending_title)
-        text?.setText(R.string.kyc_pending_text)
+        viewBinding?.mainImage?.loadImage(KycUrl.ICON_WAITING)
+        viewBinding?.title?.setText(R.string.kyc_pending_title)
+        viewBinding?.text?.setText(R.string.kyc_pending_text)
         if (redirectUrl == null) {
-            button?.setText(R.string.kyc_pending_button)
-            button?.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_PENDING))
+            viewBinding?.button?.setText(R.string.kyc_pending_button)
+            viewBinding?.button?.setOnClickListener(onGoToAccountSettingButton(KycStatus.PENDING))
         } else {
-            button?.setText(R.string.camera_next_button)
-            button?.setOnClickListener(goToCallBackUrl(redirectUrl))
+            viewBinding?.button?.setText(R.string.camera_next_button)
+            viewBinding?.button?.setOnClickListener(goToCallBackUrl(redirectUrl))
         }
-        button?.buttonVariant = GHOST
-        button?.visibility = View.VISIBLE
-        button?.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_PENDING))
+        viewBinding?.button?.buttonVariant = GHOST
+        viewBinding?.button?.visibility = View.VISIBLE
+        viewBinding?.button?.setOnClickListener(onGoToAccountSettingButton(KycStatus.PENDING))
         analytics?.eventViewPendingPage()
     }
 
     private fun showStatusRejected(reasons: List<String>) {
-        image?.loadImage(KycUrl.ICON_FAIL_VERIFY)
-        title?.setText(R.string.kyc_failed_title)
+        viewBinding?.mainImage?.loadImage(KycUrl.ICON_FAIL_VERIFY)
+        viewBinding?.title?.setText(R.string.kyc_failed_title)
         if (reasons.isNotEmpty()) {
-            text?.setText(R.string.kyc_failed_text_with_reason)
+            viewBinding?.text?.setText(R.string.kyc_failed_text_with_reason)
             showRejectedReason(reasons)
         } else {
-            text?.setText(R.string.kyc_failed_text)
+            viewBinding?.text?.setText(R.string.kyc_failed_text)
         }
-        button?.setText(R.string.kyc_failed_button)
-        button?.visibility = View.VISIBLE
-        button?.setOnClickListener(onGoToFormActivityButton())
+        viewBinding?.button?.setText(R.string.kyc_failed_button)
+        viewBinding?.button?.visibility = View.VISIBLE
+        viewBinding?.button?.setOnClickListener(onGoToFormActivityButton())
         analytics?.eventViewRejectedPage()
     }
 
     private fun showRejectedReason(reasons: List<String>) {
         when(reasons.size) {
             REJECTED_REASON_SIZE_ONE -> {
-                iconOne?.show()
-                reasonOne?.apply {
+                viewBinding?.icX1?.show()
+                viewBinding?.txtReason1?.apply {
                     text = reasons[REJECTED_REASON_ONE]
                 }?.show()
 
-                clReason?.show()
+                viewBinding?.clReason?.show()
             }
             REJECTED_REASON_SIZE_TWO -> {
-                iconOne?.show()
-                reasonOne?.apply {
+                viewBinding?.icX1?.show()
+                viewBinding?.txtReason1?.apply {
                     text = reasons[REJECTED_REASON_ONE]
                 }?.show()
 
-                iconTwo?.show()
-                reasonTwo?.apply {
+                viewBinding?.icX2?.show()
+                viewBinding?.txtReason2?.apply {
                     text = reasons[REJECTED_REASON_TWO]
                 }?.show()
 
-                clReason?.show()
+                viewBinding?.clReason?.show()
             }
             REJECTED_REASON_SIZE_THREE -> {
-                iconOne?.show()
-                reasonOne?.apply {
+                viewBinding?.icX1?.show()
+                viewBinding?.txtReason1?.apply {
                     text = reasons[REJECTED_REASON_ONE]
                 }?.show()
 
-                iconTwo?.show()
-                reasonTwo?.apply {
+                viewBinding?.icX2?.show()
+                viewBinding?.txtReason2?.apply {
                     text = reasons[REJECTED_REASON_TWO]
                 }?.show()
 
-                iconThree?.show()
-                reasonThree?.apply {
+                viewBinding?.icX3?.show()
+                viewBinding?.txtReason3?.apply {
                     text = reasons[REJECTED_REASON_THREE]
                 }?.show()
 
-                clReason?.show()
+                viewBinding?.clReason?.show()
             }
             REJECTED_REASON_SIZE_FOUR -> {
-                iconOne?.show()
-                reasonOne?.apply {
+                viewBinding?.icX1?.show()
+                viewBinding?.txtReason1?.apply {
                     text = reasons[REJECTED_REASON_ONE]
                 }?.show()
 
-                iconTwo?.show()
-                reasonTwo?.apply {
+                viewBinding?.icX2?.show()
+                viewBinding?.txtReason2?.apply {
                     text = reasons[REJECTED_REASON_TWO]
                 }?.show()
 
-                iconThree?.show()
-                reasonThree?.apply {
+                viewBinding?.icX3?.show()
+                viewBinding?.txtReason3?.apply {
                     text = reasons[REJECTED_REASON_THREE]
                 }?.show()
 
-                iconFour?.show()
-                reasonFour?.apply {
+                viewBinding?.icX4?.show()
+                viewBinding?.txtReason4?.apply {
                     text = reasons[REJECTED_REASON_FOUR]
                 }?.show()
 
-                clReason?.show()
+                viewBinding?.clReason?.show()
             }
             else -> {
-                clReason?.hide()
+                viewBinding?.clReason?.hide()
             }
         }
     }
 
     private fun hideRejectedReason() {
-        clReason?.visibility = View.GONE
-        reasonOne?.visibility = View.GONE
-        iconOne?.visibility = View.GONE
-        reasonTwo?.visibility = View.GONE
-        iconTwo?.visibility = View.GONE
+        viewBinding?.clReason?.visibility = View.GONE
+        viewBinding?.txtReason1?.visibility = View.GONE
+        viewBinding?.icX1?.visibility = View.GONE
+        viewBinding?.txtReason2?.visibility = View.GONE
+        viewBinding?.icX2?.visibility = View.GONE
     }
 
     private fun hideKycBenefit() {
         activity?.actionBar?.show()
         KycOnBoardingViewInflater.restoreStatusBar(activity, defaultStatusBarColor)
-        mainView?.show()
-        kycBenefitLayout?.hide()
+        viewBinding?.mainView?.show()
+        viewBinding?.layoutKycBenefit?.root?.hide()
     }
 
     private fun showStatusBlacklist() {
-        image?.loadImage(KycUrl.ICON_FAIL_VERIFY)
-        title?.setText(R.string.kyc_failed_title)
-        text?.setText(R.string.kyc_blacklist_text)
-        button?.setText(R.string.kyc_blacklist_button)
-        button?.visibility = View.VISIBLE
-        button?.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_BLACKLISTED))
+        viewBinding?.mainImage?.loadImage(KycUrl.ICON_FAIL_VERIFY)
+        viewBinding?.title?.setText(R.string.kyc_failed_title)
+        viewBinding?.text?.setText(R.string.kyc_blacklist_text)
+        viewBinding?.button?.setText(R.string.kyc_blacklist_button)
+        viewBinding?.button?.visibility = View.VISIBLE
+        viewBinding?.button?.setOnClickListener(onGoToAccountSettingButton(KycStatus.BLACKLISTED))
     }
 
     private fun showLoading() {
-        mainView?.visibility = View.GONE
-        progressBar?.visibility = View.VISIBLE
+        viewBinding?.mainView?.visibility = View.GONE
+        viewBinding?.layoutKycBenefit?.root?.visibility = View.GONE
+        viewBinding?.progressBar?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        mainView?.visibility = View.VISIBLE
-        progressBar?.visibility = View.GONE
+        viewBinding?.mainView?.visibility = View.VISIBLE
+        viewBinding?.progressBar?.visibility = View.GONE
     }
 
     override fun onTrackBackPressed() {
         when (statusCode) {
-            KYCConstant.STATUS_REJECTED -> analytics?.eventClickBackRejectedPage()
-            KYCConstant.STATUS_PENDING -> analytics?.eventClickBackPendingPage()
-            KYCConstant.STATUS_VERIFIED -> analytics?.eventClickBackSuccessPage()
-            KYCConstant.STATUS_EXPIRED -> analytics?.eventClickOnBackOnBoarding()
-            KYCConstant.STATUS_NOT_VERIFIED -> analytics?.eventClickOnBackOnBoarding()
-            KYCConstant.STATUS_BLACKLISTED -> analytics?.eventClickBackBlacklistPage()
+            KycStatus.REJECTED -> analytics?.eventClickBackRejectedPage()
+            KycStatus.PENDING -> analytics?.eventClickBackPendingPage()
+            KycStatus.VERIFIED -> analytics?.eventClickBackSuccessPage()
+            KycStatus.EXPIRED -> analytics?.eventClickOnBackOnBoarding()
+            KycStatus.NOT_VERIFIED -> analytics?.eventClickOnBackOnBoarding()
+            KycStatus.BLACKLISTED -> analytics?.eventClickBackBlacklistPage()
             else -> {
             }
         }
@@ -411,11 +369,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         }
     }
 
-    private fun onGoToAccountSettingButton(status: Int): View.OnClickListener {
+    private fun onGoToAccountSettingButton(status: KycStatus): View.OnClickListener {
         return View.OnClickListener { v: View? ->
             when (status) {
-                KYCConstant.STATUS_PENDING -> analytics?.eventClickOnButtonPendingPage()
-                KYCConstant.STATUS_BLACKLISTED -> analytics?.eventClickOnButtonBlacklistPage()
+                KycStatus.PENDING -> analytics?.eventClickOnButtonPendingPage()
+                KycStatus.BLACKLISTED -> analytics?.eventClickOnButtonBlacklistPage()
+                else -> { }
             }
             activity?.finish()
         }
@@ -437,8 +396,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == Activity.RESULT_OK) {
-            getStatusInfo()
-            NetworkErrorHelper.showGreenSnackbar(activity, getString(R.string.text_notification_success_upload))
+            hideKycBenefit()
+            showStatusPending()
             analytics?.eventViewSuccessSnackbarPendingPage()
         } else if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == KYCConstant.USER_EXIT) {
             activity?.finish()
