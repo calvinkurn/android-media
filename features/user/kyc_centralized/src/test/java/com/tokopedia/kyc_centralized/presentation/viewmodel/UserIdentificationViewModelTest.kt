@@ -44,7 +44,7 @@ class UserIdentificationViewModelTest {
         val testProjectId = 0
 
         coEvery {
-            getUserProjectInfoUseCase(mapOf())
+            getUserProjectInfoUseCase(any())
         } returns expectedReturn
 
         viewModel.getUserProjectInfo(testProjectId)
@@ -60,7 +60,7 @@ class UserIdentificationViewModelTest {
         val testProjectId = 0
 
         coEvery {
-            getUserProjectInfoUseCase(mapOf())
+            getUserProjectInfoUseCase(any())
         } throws expectedReturn
 
         viewModel.getUserProjectInfo(testProjectId)
