@@ -56,8 +56,6 @@ class PlayGameLeaderBoardViewComponent(
 
     private val impressHolder = ImpressHolder()
 
-    private val layoutManager = LinearLayoutManager(rvLeaderboard.context)
-
     private val leaderboardAdapter = PlayGameAdapter(object : QuizChoiceViewHolder.Listener {
         override fun onClicked(item: QuizChoicesUiModel) {
             listener.onChoiceItemClicked(item)
