@@ -16,7 +16,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.util.withCache
@@ -115,7 +114,7 @@ class InteractiveDialogFragment @Inject constructor(
 
         val window = dialog?.window ?: return
         window.setLayout(
-            (WIDTH_PERCENTAGE * getScreenWidth()).toInt(),
+            WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -296,6 +295,7 @@ class InteractiveDialogFragment @Inject constructor(
         actionText: String = "",
         message: String,
     ) {
+
         Toaster.build(
             view = requireView(),
             message,
@@ -339,8 +339,6 @@ class InteractiveDialogFragment @Inject constructor(
         private const val TAG = "InteractiveDialogFragment"
 
         private const val FADE_TRANSITION_DELAY = 3000L
-
-        private const val WIDTH_PERCENTAGE = 0.6
 
         fun get(fragmentManager: FragmentManager): InteractiveDialogFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? InteractiveDialogFragment
