@@ -181,5 +181,6 @@
     <string name="shop_page_product_bundle_failed_oos_cta_text_with_alt">Lihat Paket Lain</string>
     <string name="store_problem_question">Toko bermasalah?</string>
     <string name="label_report">Laporkan</string>
+    <string name="label_report_success">Laporan berhasil terkirim.</string>
 
 </resources>

@@ -501,14 +501,12 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
 
     private fun onReturnFromReportUser(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != Activity.RESULT_OK) return
-        val payload =
-            data.getStringExtra(RESULT_KEY_PAYLOAD_REPORT_USER)
-        payload?.let { showToasterConfirmation(payload) }
+        showToasterConfirmation(getString(R.string.label_report_success))
     }
 
     private fun showToasterConfirmation(message: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(R.string.shop_page_label_oke))
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                 .show()
         }
     }
