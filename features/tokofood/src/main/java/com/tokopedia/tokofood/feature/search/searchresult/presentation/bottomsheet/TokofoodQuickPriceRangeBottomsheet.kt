@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeCbItemAdapter
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemAdapter
 import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxListener
 import com.tokopedia.filter.common.data.Option
@@ -150,7 +150,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     }
 
     private fun setupAdapter(uiModels: List<PriceRangeFilterCheckboxItemUiModel>) {
-        val quickPriceRangeAdapter = PriceRangeCbItemAdapter(uiModels, this)
+        val quickPriceRangeAdapter = PriceRangeFilterCheckboxItemAdapter(uiModels, this)
         binding?.rvTokofoodSearchQuickPriceRange?.swapAdapter(quickPriceRangeAdapter, false)
     }
 
