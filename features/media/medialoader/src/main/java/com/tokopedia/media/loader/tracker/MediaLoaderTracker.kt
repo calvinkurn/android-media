@@ -3,6 +3,7 @@ package com.tokopedia.media.loader.tracker
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
+import android.widget.Toast
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -12,8 +13,6 @@ import com.tokopedia.media.loader.utils.ServerIpAddressLocator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.net.InetAddress
 
 data class MediaLoaderTrackerParam(
     val url: String,
@@ -26,7 +25,7 @@ object MediaLoaderTracker {
 
     private const val CDN_URL = "https://images.tokopedia.net/img/"
     private const val TAG = "MEDIALOADER_ANALYTIC"
-    private const val TAG_CDN_MONITORING = "MEDIALOADER_ANALYTIC"
+    private const val TAG_CDN_MONITORING = "DEV_CDN_MONITORING"
 
     private const val PAGE_NAME_NOT_FOUND = "None"
 
@@ -108,6 +107,7 @@ object MediaLoaderTracker {
             map["remote_server_ip"] = ipInfo
 
             Log.d("Lavekush", "test " + ipInfo)
+            Toast.makeText(context, "$ipInfo URL is $url", Toast.LENGTH_LONG).show()
 
             ServerLogger.log(
                 priority = priority(),
