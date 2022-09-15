@@ -46,7 +46,7 @@ interface TagItemBuilder {
 
     fun buildMerchantVoucher(
         id: String = "",
-        type: MerchantVoucherType = MerchantVoucherType.Private,
+        type: MerchantVoucherType = MerchantVoucherType.Discount,
         title: String = "",
         description: String = "",
         code: String = "",
@@ -54,6 +54,7 @@ interface TagItemBuilder {
         highlighted: Boolean = false,
         voucherStock: Int = 1,
         expiredDate: String = "",
+        isPrivate: Boolean = false,
     ): PlayVoucherUiModel.Merchant
 
     fun buildProductSection(

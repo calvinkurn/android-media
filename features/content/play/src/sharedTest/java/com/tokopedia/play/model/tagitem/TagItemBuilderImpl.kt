@@ -78,7 +78,8 @@ class TagItemBuilderImpl : TagItemBuilder {
         copyable: Boolean,
         highlighted: Boolean,
         voucherStock: Int,
-        expiredDate: String
+        expiredDate: String,
+        isPrivate: Boolean,
     ) = PlayVoucherUiModel.Merchant(
         id = id,
         type = type,
@@ -89,6 +90,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         highlighted = highlighted,
         voucherStock = voucherStock,
         expiredDate = expiredDate,
+        isPrivate = isPrivate,
     )
 
     override fun buildProductSection(
