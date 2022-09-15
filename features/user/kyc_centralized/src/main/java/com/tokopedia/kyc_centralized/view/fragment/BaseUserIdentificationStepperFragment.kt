@@ -10,8 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
-import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
@@ -22,30 +20,28 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.KycUrl.KYC_TYPE_KTP_WITH_SELFIE
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationFormBinding
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * @author by alvinatin on 12/11/18.
  */
 abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepperModel> : BaseDaggerFragment() {
-    protected var onboardingImage: LottieAnimationView? = null
-    protected var title: TextView? = null
-    protected var subtitle: TextView? = null
-    protected var bulletTextLayout: LinearLayout? = null
-    protected var button: UnifyButton? = null
-    protected var layoutSecurity: LinearLayout? = null
+
+    protected var viewBinding by autoClearedNullable<FragmentUserIdentificationFormBinding>()
     protected var analytics: UserIdentificationCommonAnalytics? = null
     protected var projectId = 0
     protected var stepperModel: T? = null
+
     private var kycType = ""
     private var stepperListener: StepperListener? = null
     private var allowedSelfie = false
@@ -80,24 +76,15 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_user_identification_form, container, false)
-        initView(view)
-        encryptImage()
-        setContentView()
-        return view
+        viewBinding = FragmentUserIdentificationFormBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-    }
 
-    protected open fun initView(view: View) {
-        onboardingImage = view.findViewById(R.id.form_onboarding_image)
-        title = view.findViewById(R.id.title)
-        subtitle = view.findViewById(R.id.subtitle)
-        button = view.findViewById(R.id.button)
-        bulletTextLayout = view.findViewById(R.id.layout_info_bullet)
-        layoutSecurity = view.findViewById(R.id.security_layout)
+        encryptImage()
+        setContentView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
