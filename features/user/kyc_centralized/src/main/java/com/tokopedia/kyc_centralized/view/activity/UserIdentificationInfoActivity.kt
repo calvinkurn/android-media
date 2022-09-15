@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoFragment
 import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycStatus
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -40,7 +42,9 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         intent?.data?.let {
-            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toInt() ?: KYCConstant.STATUS_DEFAULT
+            projectId = it.getQueryParameter(
+                ApplinkConstInternalGlobal.PARAM_PROJECT_ID
+            )?.toIntOrZero() ?: KycStatus.DEFAULT.ordinal
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
             callback = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CALL_BACK).orEmpty()
             redirectUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
