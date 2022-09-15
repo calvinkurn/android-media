@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.home.data
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class EventFavoriteResponse(
@@ -22,8 +23,9 @@ data class EventFavoriteResponse(
         var isLiked: Boolean = false,
         @SerializedName("product_id")
         val productId: String = "0",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("sales_price")
-        val salesPrice: Int = 0,
+        val salesPrice: Long = 0,
         @SerializedName("start_date")
         val startDate: Int = 0,
         @SerializedName("url")
