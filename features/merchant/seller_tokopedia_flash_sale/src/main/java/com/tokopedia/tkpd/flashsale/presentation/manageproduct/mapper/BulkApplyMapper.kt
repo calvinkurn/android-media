@@ -17,19 +17,19 @@ object BulkApplyMapper {
     ): List<Warehouse> =
         warehouses.filter { it.isToggleOn }.map {
             Warehouse(
-                it.warehouseId,
-                it.name,
-                it.stock,
-                it.price,
-                DiscountSetup(
-                    it.discountSetup.discount,
-                    result.discountAmount,
-                    result.stock.toLong()
+                warehouseId = it.warehouseId,
+                name = it.name,
+                stock = it.stock,
+                price = it.price,
+                discountSetup = DiscountSetup(
+                    discount = it.discountSetup.discount,
+                    price = result.discountAmount,
+                    stock = result.stock.toLong()
                 ),
-                it.isDilayaniTokopedia,
-                it.isToggleOn,
-                it.isDisabled,
-                it.disabledReason
+                isDilayaniTokopedia = it.isDilayaniTokopedia,
+                isToggleOn = it.isToggleOn,
+                isDisabled = it.isDisabled,
+                disabledReason = it.disabledReason
             )
         }
 
@@ -37,33 +37,33 @@ object BulkApplyMapper {
         product: Product,
         result: ProductBulkApplyResult
     ): Product = Product(
-        product.childProducts.map { cp ->
+        childProducts = product.childProducts.map { cp ->
             ChildProduct(
-                cp.disabledReason,
-                cp.isDisabled,
-                cp.isMultiwarehouse,
-                cp.isToggleOn,
-                cp.name,
-                cp.picture,
-                cp.price,
-                cp.productId,
-                cp.sku,
-                cp.stock,
-                cp.url,
-                mapResultToWarehouse(cp.warehouses, result)
+                disabledReason = cp.disabledReason,
+                isDisabled = cp.isDisabled,
+                isMultiwarehouse = cp.isMultiwarehouse,
+                isToggleOn = cp.isToggleOn,
+                name = cp.name,
+                picture = cp.picture,
+                price = cp.price,
+                productId = cp.productId,
+                sku = cp.sku,
+                stock = cp.stock,
+                url = cp.url,
+                warehouses = mapResultToWarehouse(cp.warehouses, result)
             )
         },
-        product.isMultiWarehouse,
-        product.isParentProduct,
-        product.name,
-        product.picture,
-        product.price,
-        product.productCriteria,
-        product.productId,
-        product.sku,
-        product.stock,
-        product.url,
-        mapResultToWarehouse(product.warehouses, result)
+        isMultiWarehouse = product.isMultiWarehouse,
+        isParentProduct = product.isParentProduct,
+        name = product.name,
+        picture = product.picture,
+        price = product.price,
+        productCriteria = product.productCriteria,
+        productId = product.productId,
+        sku = product.sku,
+        stock = product.stock,
+        url = product.url,
+        warehouses = mapResultToWarehouse(product.warehouses, result)
     )
 
     fun mapProductToBulkParam(
@@ -74,8 +74,10 @@ object BulkApplyMapper {
             bottomSheetTitle = context.getString(R.string.bulk_apply_title),
             isShowTextFieldProductDiscountBottomMessage = true,
             textStock = context.getString(R.string.bulk_apply_text_stock),
-            textStockDescription = context.getString(R.string.bulk_apply_text_stock_description,
-                product.productCriteria.minCustomStock, product.productCriteria.maxCustomStock),
+            textStockDescription = context.getString(
+                R.string.bulk_apply_text_stock_description,
+                product.productCriteria.minCustomStock, product.productCriteria.maxCustomStock
+            ),
             minimumStock = product.productCriteria.minCustomStock,
             maximumStock = product.productCriteria.maxCustomStock,
             minimumDiscountPrice = product.productCriteria.minFinalPrice.toInt(),
