@@ -9,8 +9,6 @@
     app:container_color="GREEN"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp"
@@ -32,7 +30,6 @@
                 android:layout_height="100dp"
                 app:unify_image_corner_radius="6"
                 app:unify_image_type="rect"
-                android:src="@drawable/bg_button_green"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 />
@@ -75,9 +72,9 @@
             app:layout_constraintStart_toEndOf="@+id/coupon_detail_image_container"
             android:layout_marginTop="16dp"
             android:layout_marginStart="20dp"
-            app:timer_unify_single_remainingDays="2"
-            app:timer_unify_single_variant="informative"
-
+            app:timer_unify_single_showClockIcon="false"
+            app:timer_unify_single_variant="main"
+            app:timer_unify_single_type="day"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -88,7 +85,6 @@
             app:layout_constraintStart_toEndOf="@+id/coupon_detail_image_container"
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
-            android:text="Kupon Aktif"
             android:textColor="@color/Unify_GN500"
             app:typographyType="display_2"
             app:typographyWeight="bold"
@@ -111,7 +107,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
-                android:text="17 Jan 2020\n08:30 WIB"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -134,7 +129,6 @@
                 app:layout_constraintStart_toEndOf="@+id/date_delimiter"
                 app:typographyWeight="bold"
                 android:layout_marginStart="11dp"
-                android:text="17 Jan 2020\n08:30 WIB"
                 />
 
 
@@ -147,7 +141,6 @@
             app:typographyType="small"
             android:padding="4dp"
             android:background="@drawable/tm_bg_coupon_membership"
-            android:text="Premium"
             android:textColor="@color/Unify_YN500"
             app:typographyWeight="bold"
             app:layout_constraintTop_toBottomOf="@+id/coupon_detail_period_container"

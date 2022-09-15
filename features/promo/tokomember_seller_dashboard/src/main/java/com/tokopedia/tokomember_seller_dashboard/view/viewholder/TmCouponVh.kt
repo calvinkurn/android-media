@@ -357,7 +357,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
         }
 
         itemView.setOnClickListener {
-//            callback?.openCouponDetailFragment(item.voucherId.toIntOrZero())
+            callback?.openCouponDetailFragment(item.voucherId.toIntOrZero())
         }
     }
 }

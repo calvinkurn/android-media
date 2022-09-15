@@ -62,6 +62,7 @@ import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.getDynamicDeeplinkForTokomember
+import com.tokopedia.applink.promo.getRegisteredNavigationPromoFromHttp
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
@@ -263,6 +264,11 @@ object DeeplinkMapper {
         val applinkRecommendation = getRegisteredNavigationRecommendationFromHttp(uri)
         if (applinkRecommendation.isNotBlank()) {
             return applinkRecommendation
+        }
+
+        val applinkPromo = getRegisteredNavigationPromoFromHttp(uri)
+        if(applinkPromo.isNotBlank()){
+            return applinkPromo
         }
 
         if (pathSize >= 1 && uri.pathSegments[0] == "qrcode-login") {

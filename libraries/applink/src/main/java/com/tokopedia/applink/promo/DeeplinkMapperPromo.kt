@@ -94,6 +94,7 @@ fun getDestinationDeeplink(deeplink: String): String {
     return deepLinkInternal
 }
 
+// To handle Tokomember applinks with params
 fun getDynamicDeeplinkForTokomember(deeplink: String) : String{
     val uri = Uri.parse(deeplink)
     return when {
@@ -109,3 +110,32 @@ fun getDeeplinkForProgramExtension(deeplink: Uri):String{
     }
     return ""
 }
+
+fun getRegisteredNavigationPromoFromHttp(deeplink:Uri) : String{
+   val query = deeplink.encodedQuery
+    val queryString = if(query.isNullOrEmpty()) "" else "?${query}"
+    val path = deeplink.encodedPath ?: ""
+    val regexMap = getPromoRegexMap()
+    when{
+       isMatchPattern(regexMap[ApplinkConst.Tokomember.COUPON_DETAIL],path) -> {
+           val applink = ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_DETAIL
+           val couponId = deeplink.lastPathSegment
+           return UriUtil.buildUri(applink,couponId) + queryString
+       }
+        else -> ""
+    }
+    return ""
+}
+
+fun getPromoRegexMap() : MutableMap<String,Regex> {
+    val couponDetailRegex = "^(/.*/voucher/[0-9]+)"
+    return mutableMapOf(
+      ApplinkConst.Tokomember.COUPON_DETAIL to  Regex(couponDetailRegex)
+    )
+}
+
+
+fun isMatchPattern(pattern:Regex?,link:String) : Boolean{
+    return pattern?.matches(link) ?: false
+}
+

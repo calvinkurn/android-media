@@ -632,6 +632,7 @@ public interface ApplinkConst {
     interface Tokomember{
         String MAIN_PATH = "sellerapp://tokomember";
         String PROGRAM_EXTENSION = "/tokomember/program-extension";
+        String COUPON_DETAIL = "/tokomember/coupon-detail";
     }
 
     interface AttachInvoice {

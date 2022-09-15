@@ -69,4 +69,9 @@
     <string name="tm_home_desc">Toped lagi rapi-rapi halaman statistik versi mobile, nih. Kamu masih bisa cek statistik lengkap di versi desktop.</string>
     <string name="tm_vip_kupon">VIP</string>
     <string name="tm_premium_kupon">Premium</string>
+    <string name="tm_share_bottomsheet_title">Bagikan ke pembeli kamu</string>
+    <string name="tm_share_coupon_string">%1$s. Yuk, pakai kuponnya di aplikasi Tokopedia, sekarang!  %2$s</string>
+    <string name="tm_coupon_cashback_idr">Rupiah (RP)</string>
+    <string name="tm_coupon_cashback_percent">Persentase </string>
+    <string name="tm_currency">Rp%1$s</string>
 </resources>

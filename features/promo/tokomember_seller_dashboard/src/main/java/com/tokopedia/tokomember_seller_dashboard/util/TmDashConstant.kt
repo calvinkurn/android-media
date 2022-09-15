@@ -88,6 +88,8 @@ const val COUPON_CASHBACK = "cashback"
 const val COUPON_CASHBACK_PREVIEW = "Cashback"
 const val COUPON_SHIPPING = "shipping"
 const val COUPON_SHIPPING_PREVIEW = "Gratis Ongkir"
+const val COUPON_DISCOUNT_PREVIEW = "Discount"
+
 
 const val CASHBACK_IDR = "idr"
 const val CASHBACK_PERCENTAGE = "percent"
@@ -220,4 +222,5 @@ const val PATH_TOKOMEMBER_COUPON_LIST = "coupon-list"
 const val PATH_TOKOMEMBER_PROGRAM_CREATION = "program-creation"
 const val PATH_TOKOMEMBER_COUPON_CREATION = "coupon-creation"
 const val PATH_TOKOMEMBER_PROGRAM_EXTENSION = "program-extension"
+const val PATH_TOKOMEMBER_COUPON_DETAIL = "coupon-detail"
 
