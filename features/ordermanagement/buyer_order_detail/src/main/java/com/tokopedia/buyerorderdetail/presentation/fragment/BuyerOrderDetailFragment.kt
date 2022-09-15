@@ -83,7 +83,6 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     TickerViewHolder.TickerViewHolderListener,
     DigitalRecommendationViewHolder.ActionListener,
     CourierInfoViewHolder.CourierInfoViewHolderListener,
-    OrderResolutionViewHolder.OrderResolutionListener,
     PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener {
 
     companion object {
@@ -135,7 +134,6 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             this,
             this,
             digitalRecommendationData,
-            this,
             this,
             this,
             this,
@@ -735,9 +733,5 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
     override fun hidePgRecommendation() {
         rvBuyerOrderDetail?.post { adapter.removePgRecommendation() }
-    }
-
-    override fun onResolutionWidgetClicked(redirectPath: String?) {
-        RouteManager.route(context, redirectPath)
     }
 }

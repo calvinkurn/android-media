@@ -4,6 +4,7 @@ import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailResolutionBinding
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
@@ -16,7 +17,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class OrderResolutionViewHolder(
     itemView: View?,
-    private val orderResolutionListener: OrderResolutionListener
+    private val navigator: BuyerOrderDetailNavigator
 ) : AbstractViewHolder<OrderResolutionUIModel>(itemView) {
 
     companion object {
@@ -125,10 +126,10 @@ class OrderResolutionViewHolder(
     }
 
     private fun ItemBuyerOrderDetailResolutionBinding.bindListener(redirectPath: String) {
-        root.setOnClickListener { orderResolutionListener.onResolutionWidgetClicked(redirectPath) }
+        root.setOnClickListener { navigator.openAppLink(redirectPath, true) }
     }
 
     interface OrderResolutionListener {
-        fun onResolutionWidgetClicked(redirectPath: String?)
+        fun onResolutionWidgetClicked(redirectPath: String)
     }
 }

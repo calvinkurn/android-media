@@ -51,7 +51,6 @@ open class BuyerOrderDetailTypeFactory(
     private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
-    private val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
 ) : BaseAdapterTypeFactory() {
@@ -92,10 +91,7 @@ open class BuyerOrderDetailTypeFactory(
             )
             DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
             AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent)
-            OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(
-                parent,
-                orderResolutionListener
-            )
+            OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, navigator)
             else -> super.createViewHolder(parent, type)
         }
     }
