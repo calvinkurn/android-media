@@ -215,8 +215,7 @@ class KycUploadViewModel @Inject constructor(
         return deleteAndRenameResult(originalFilePath, decryptedFilePath)
     }
 
-    @ExcludeFromJacocoGeneratedReport
-    private fun sendLoadTimeUploadLog(
+    fun sendLoadTimeUploadLog(
         type: String,
         uploadTime: Long,
         encryptionTimeFileKtp: Long = 0L,
