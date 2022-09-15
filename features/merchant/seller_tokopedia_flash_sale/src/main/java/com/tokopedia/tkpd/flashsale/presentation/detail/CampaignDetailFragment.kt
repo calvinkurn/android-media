@@ -55,6 +55,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import javax.inject.Inject
 
 class CampaignDetailFragment : BaseDaggerFragment() {
@@ -1223,5 +1224,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val uiModel = BulkApplyMapper.mapProductToBulkParam(ProductProvider.generateProduct())
         val bottomSheet = ProductBulkApplyBottomSheet.newInstance(uiModel)
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        bottomSheet.setOnApplyClickListener { Timber.d(it.toString()) }
     }
 }

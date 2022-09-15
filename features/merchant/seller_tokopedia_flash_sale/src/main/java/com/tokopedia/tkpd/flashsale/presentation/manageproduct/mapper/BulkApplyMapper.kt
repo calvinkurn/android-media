@@ -68,7 +68,11 @@ object BulkApplyMapper {
         product: Product
     ): ProductBulkApplyUiModel {
         return ProductBulkApplyUiModel(
+            // TODO("Migrate Constant Value to Separate Object")
             "Atur Sekaligus",
+            isShowTextFieldProductDiscountBottomMessage = true,
+            textStock = "Stok Campaign",
+            textStockDescription = "Stok wajib ${product.productCriteria.minCustomStock} - ${product.productCriteria.maxCustomStock}",
             minimumStock = product.productCriteria.minCustomStock,
             maximumStock = product.productCriteria.maxCustomStock,
             minimumDiscountPrice = product.productCriteria.minFinalPrice.toInt(),
