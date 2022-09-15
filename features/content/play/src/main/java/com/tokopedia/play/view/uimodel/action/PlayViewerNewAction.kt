@@ -96,3 +96,5 @@ data class OpenFooterUserReport(val appLink: String): PlayViewerNewAction()
 data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): PlayViewerNewAction()
 
 data class SendWarehouseId(val id: String, val isOOC: Boolean) : PlayViewerNewAction()
+
+data class OpenPageWithLogin(val appLink: String): PlayViewerNewAction()

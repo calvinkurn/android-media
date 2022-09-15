@@ -12,7 +12,7 @@ import com.tokopedia.unifyprinciples.R.dimen as unifyR
 class EngagementItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
     private val dividerHeight =
-        context.resources.getDimensionPixelOffset(unifyR.unify_space_8)
+        context.resources.getDimensionPixelOffset(unifyR.unify_space_4)
 
     override fun getItemOffsets(
         outRect: Rect,

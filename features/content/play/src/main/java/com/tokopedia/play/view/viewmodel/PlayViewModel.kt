@@ -53,7 +53,6 @@ import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
@@ -79,7 +78,6 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.date.DateUtil
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -258,7 +256,7 @@ class PlayViewModel @AssistedInject constructor(
     @OptIn(ExperimentalStdlibApi::class)
     private val _engagementUiState = combine(_tagItems, _interactive, _bottomInsets){
             voucher, game, bottomInsets-> EngagementUiState(
-        shouldShow = (voucher.voucher.voucherList.isNotEmpty() || game.interactive !is InteractiveUiModel.Unknown) && !game.isPlaying && !bottomInsets.isAnyShown && !videoPlayer.isYouTube,
+        shouldShow = (voucher.voucher.voucherList.isNotEmpty() || game.interactive !is InteractiveUiModel.Unknown) && !game.isPlaying && !bottomInsets.isAnyShown && videoOrientation.isVertical && videoPlayer.isGeneral(),
         data = buildList {
             val vouchers = voucher.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.Merchant>()
             if(game.interactive !is InteractiveUiModel.Unknown && isInteractiveAllowed)
@@ -977,6 +975,7 @@ class PlayViewModel @AssistedInject constructor(
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
+            is OpenPageWithLogin -> openPage(action.appLink)
         }
     }
 
