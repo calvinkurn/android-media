@@ -8,6 +8,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play_common.R
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
+import com.tokopedia.play_common.ui.leaderboard.adapter.PlayGameAdapter
 import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayGameViewHolder
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -33,10 +35,11 @@ class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecorat
         state: RecyclerView.State
     ) {
         for (index in 1 until parent.childCount) {
-            val child = parent.getChildAt(index)
-            when (parent.getChildViewHolder(child)) {
-                is PlayGameViewHolder.Quiz -> outRect.top = topOffset
-                is PlayGameViewHolder.Winner -> outRect.top = topOffset
+            val child = parent.adapter as PlayGameAdapter
+            when (child.getItem(index)
+            ) {
+                is LeaderboardGameUiModel.QuizOption -> outRect.top = topOffset
+                is LeaderboardGameUiModel.Winner -> outRect.top = topOffset
                 else -> super.getItemOffsets(outRect, view, parent, state)
             }
         }

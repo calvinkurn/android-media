@@ -9,7 +9,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -27,6 +26,7 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
+import java.lang.Exception
 
 /**
  * @author by astidhiyaa on 16/08/22
@@ -107,10 +107,19 @@ class PlayGameLeaderBoardViewComponent(
         )
     }
 
+    private fun invalidateItemDecoration(){
+        try {
+            rvLeaderboard.post {
+                rvLeaderboard.invalidateItemDecorations()
+            }
+        } catch (e: Exception) {}
+    }
+
     fun setData(leaderboards: List<LeaderboardGameUiModel>) {
         errorView.hide()
         llPlaceholder.hide()
         rvLeaderboard.show()
+        invalidateItemDecoration()
         leaderboardAdapter.setItemsAndAnimateChanges(leaderboards)
     }
 
