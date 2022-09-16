@@ -38,7 +38,7 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent
 import com.tokopedia.kol.feature.comment.di.KolCommentModule
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
 import com.tokopedia.kol.feature.comment.view.adapter.KolCommentAdapter
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory
 import com.tokopedia.kol.feature.comment.view.listener.KolComment
@@ -86,6 +86,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     private var postType: String = ""
     private var contentDetailSource: String = ""
     private var isFromContentDetailPage: Boolean = false
+    public var ARGS_TOTAL_COMMENT:String = "ARGS_TOTAL_COMMENT"
 
     @Inject
     internal lateinit var feedAnalytics: FeedAnalyticTracker
@@ -445,7 +446,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         val intent = Intent()
         val arguments = arguments
         if (arguments != null && arguments.size() > 0) intent.putExtras(arguments)
-        intent.putExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, totalNewComment)
+        intent.putExtra(ARGS_TOTAL_COMMENT, totalNewComment)
         return intent
     }
 
@@ -551,7 +552,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         header?.isLoading = true
         adapter?.notifyItemChanged(0)
 
-        arguments?.getInt(KolCommentActivity.ARGS_ID)?.let { presenter.loadMoreComments(it)}
+        arguments?.getInt(KolCommentNewActivity.ARGS_ID)?.let { presenter.loadMoreComments(it)}
 
     }
 

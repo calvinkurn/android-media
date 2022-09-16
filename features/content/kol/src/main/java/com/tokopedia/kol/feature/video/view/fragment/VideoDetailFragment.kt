@@ -30,9 +30,8 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.getCallingIntent
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentNewFragment
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
@@ -59,6 +58,7 @@ const val PARAM_START_TIME = "START_TIME"
 
 const val PARAM_COMMENT_COUNT = "comment_count"
 const val PARAM_LIKE_COUNT = "like_count"
+const val ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT"
 
 class VideoDetailFragment :
     BaseDaggerFragment(),
@@ -157,7 +157,7 @@ class VideoDetailFragment :
                         if (::dynamicPostViewModel.isInitialized)
                             calculateTotalComment(
                                 it.getIntExtra(
-                                    KolCommentFragment.ARGS_TOTAL_COMMENT,
+                                    ARGS_TOTAL_COMMENT,
                                     0
                                 )
                             )
@@ -336,7 +336,7 @@ class VideoDetailFragment :
 
         return View.OnClickListener {
             if (userSession.isLoggedIn) {
-                if (callSource == PARAM_FEED) {
+//                if (callSource == PARAM_FEED) {
                     val intent = getCallingIntent(
                         requireContext(),
                         id.toInt(),
@@ -347,15 +347,16 @@ class VideoDetailFragment :
                     )
                     startActivityForResult(intent, INTENT_COMMENT)
 
-                } else {
-                    startActivityForResult(
-                        KolCommentActivity.getCallingIntent(
-                            requireActivity(),
-                            id.toInt(),
-                            0
-                        ), INTENT_COMMENT
-                    )
-                }
+//                } else {
+//                    startActivityForResult(
+//                        KolCommentActivity.getCallingIntent(
+//                            requireActivity(),
+//                            id.toInt(),
+//                            0,
+//                            authorId
+//                        ), INTENT_COMMENT
+//                    )
+//                }
             } else {
                 goToLogin()
             }
