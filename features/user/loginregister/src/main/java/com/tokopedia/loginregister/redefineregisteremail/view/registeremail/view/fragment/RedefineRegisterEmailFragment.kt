@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler as KeyboardHandlerGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterEmailBinding
@@ -352,6 +353,9 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun goToInputPhone() {
+
+        handleNakamaRegistration()
+
         val toRedefineRegisterInputPhoneNumber = RedefineRegisterEmailFragmentDirections.actionRedefineRegisterEmailFragmentToRedefineRegisterInputPhoneFragment(
             source = paramSource,
             email = viewModel.currentEmail,
@@ -362,6 +366,15 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             hash = viewModel.currentHash
         )
         view?.findNavController()?.navigate(toRedefineRegisterInputPhoneNumber)
+    }
+
+    private fun handleNakamaRegistration() {
+        if (GlobalConfig.DEBUG) {
+            val partsEmail = viewModel.currentEmail.split(DELIMITER_EMAIL)
+            if (partsEmail.size == SPLIT_EMAIL_SIZE && !partsEmail.first().contains(STRING_TESTING_REGISTER) && partsEmail[1] == DOMAIN_TOKOPEDIA_EMAIL) {
+                paramIsRequiredInputPhone = false
+            }
+        }
     }
 
     private fun goToLoginEmailPage(email: String) {
@@ -379,6 +392,11 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         private const val STRING_FORMAT_EMAIL = "%s@%s"
         private const val DELIMITER_EMAIL = "@"
         private val SCREEN_NAME = RedefineRegisterEmailFragment::class.java.simpleName
+
+        private const val SPLIT_EMAIL_SIZE = 2
+        private const val STRING_TESTING_REGISTER = "testreg"
+        private const val DOMAIN_TOKOPEDIA_EMAIL = "tokopedia.com"
+
 
         @JvmStatic
         fun newInstance(bundle: Bundle): Fragment {

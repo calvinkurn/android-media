@@ -16,7 +16,6 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface RedefineRegisterEmailComponent {
-    fun inject(activity: RedefineRegisterEmailActivity)
     fun inject(fragment: RedefineRegisterEmailFragment)
     fun inject(fragment: RedefineRegisterInputPhoneFragment)
 }

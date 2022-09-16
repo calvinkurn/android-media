@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -39,7 +38,6 @@ import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToLoginW
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerification
 import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationParam
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
-import com.tokopedia.loginregister.redefineregisteremail.view.activity.RedefineRegisterViewModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RedefineRegisterInputPhoneViewModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RegistrationPhoneState
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
@@ -66,9 +64,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             RedefineRegisterInputPhoneViewModel::class.java
         )
     }
-
-    //shared viewModel with [RedefineRegisterEmailActivity]
-    private val viewModelActivity: RedefineRegisterViewModel by activityViewModels { viewModelFactory }
 
     private var _binding: FragmentRedefineRegisterInputPhoneBinding? = null
     private val binding get() = _binding
@@ -131,7 +126,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private fun showNavigateBackToolbar(isShow: Boolean) {
         binding?.unifyToolbar?.apply {
             isShowBackButton = isShow
-            viewModelActivity.isAllowBackPressed(isShow)
+            //viewModelActivity.isAllowBackPressed(isShow)
             if (isShow) {
                 actionText = RedefineRegisterEmailConstants.EMPTY_STRING
                 setNavigationOnClickListener {
@@ -144,6 +139,10 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        return binding?.unifyToolbar?.isShowBackButton == true
     }
 
     private fun initRegisterRequest() {
@@ -280,7 +279,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 is RegistrationPhoneState.Loading -> {
                     showRegisteredPhoneCheckLoading(true)
                 }
-                is RegistrationPhoneState.Registration -> {
+                is RegistrationPhoneState.Registered -> {
                     showRegisteredPhoneCheckLoading(false)
                     showDialogOfferLogin()
                 }

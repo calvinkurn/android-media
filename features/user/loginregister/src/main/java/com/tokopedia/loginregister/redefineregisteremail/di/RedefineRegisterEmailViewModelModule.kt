@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.loginregister.redefineregisteremail.view.activity.RedefineRegisterViewModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RedefineRegisterInputPhoneViewModel
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.view.viewmodel.RedefineRegisterEmailViewModel
 import dagger.Binds
@@ -28,10 +27,5 @@ abstract class RedefineRegisterEmailViewModelModule {
     @IntoMap
     @ViewModelKey(RedefineRegisterInputPhoneViewModel::class)
     internal abstract fun bindRedefineInputPhoneViewModel(viewModel: RedefineRegisterInputPhoneViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(RedefineRegisterViewModel::class)
-    internal abstract fun bindRedefineRegisterViewModel(viewModel: RedefineRegisterViewModel): ViewModel
 
 }
