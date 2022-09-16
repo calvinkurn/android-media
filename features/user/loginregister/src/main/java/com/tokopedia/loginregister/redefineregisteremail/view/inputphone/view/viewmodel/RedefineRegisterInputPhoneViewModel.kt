@@ -176,7 +176,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
             }
 
         }, {
-            _userPhoneUpdate.value = Fail(it)
+            _userProfileValidate.value = Fail(it)
         })
     }
 
