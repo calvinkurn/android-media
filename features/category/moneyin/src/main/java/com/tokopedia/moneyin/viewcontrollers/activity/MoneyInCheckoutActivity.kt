@@ -159,7 +159,7 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                                 ""
                             )
                             showMessageWithAction(
-                                it.data.error?.message,
+                                errorMsg,
                                 getString(com.tokopedia.abstraction.R.string.title_ok)
                             ) {}
                         }
