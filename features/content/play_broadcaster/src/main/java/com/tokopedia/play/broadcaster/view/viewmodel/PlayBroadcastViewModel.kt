@@ -391,22 +391,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return mDataStore.getSetupDataStore()
     }
 
-    private fun getConfiguration(selectedAccount: ContentAccountUiModel, autoSwitch: Boolean = false) {
+    private fun getConfiguration(selectedAccount: ContentAccountUiModel, firstOpen: Boolean = false) {
         viewModelScope.launchCatchError(block = {
 
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
             _configInfo.value = configUiModel
 
-            if (autoSwitch && isAllowChangeAccount) {
-                if (!configUiModel.streamAllowed || configUiModel.channelStatus == ChannelStatus.Live) {
-                    handleSwitchAccount()
-                    return@launchCatchError
-                }
-            }
-
-            if (!checkSelectedAccountConfiguration(configUiModel, selectedAccount)) {
-                _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+            if (!checkSelectedAccountConfiguration(configUiModel, selectedAccount, firstOpen)) {
+                if (firstOpen && isAllowChangeAccount) handleSwitchAccount()
+                else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
                 return@launchCatchError
             }
 
@@ -1594,48 +1588,57 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun checkSelectedAccountConfiguration(
         configUiModel: ConfigurationUiModel,
         selectedAccount: ContentAccountUiModel,
+        firstOpen: Boolean
     ): Boolean {
         return when {
             !configUiModel.streamAllowed -> {
                 _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.Banned,
-                        selectedAccount = selectedAccount,
-                    )
+                if (!firstOpen) {
+                    _accountStateInfo.update {
+                        AccountStateInfo(
+                            type = AccountStateInfoType.Banned,
+                            selectedAccount = selectedAccount,
+                        )
+                    }
                 }
                 warningInfoType = WarningType.BANNED
                 false
             }
             configUiModel.channelStatus == ChannelStatus.Live -> {
                 _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.Live,
-                        selectedAccount = selectedAccount,
-                    )
+                if (!firstOpen) {
+                    _accountStateInfo.update {
+                        AccountStateInfo(
+                            type = AccountStateInfoType.Live,
+                            selectedAccount = selectedAccount,
+                        )
+                    }
                 }
                 warningInfoType = WarningType.LIVE
                 false
             }
             !selectedAccount.hasAcceptTnc -> {
                 _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.NotAcceptTNC,
-                        selectedAccount = selectedAccount,
-                        tnc = configUiModel.tnc,
-                    )
+                if (!firstOpen) {
+                    _accountStateInfo.update {
+                        AccountStateInfo(
+                            type = AccountStateInfoType.NotAcceptTNC,
+                            selectedAccount = selectedAccount,
+                            tnc = configUiModel.tnc,
+                        )
+                    }
                 }
                 false
             }
             selectedAccount.isUser && !selectedAccount.hasUsername -> {
                 _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.NoUsername,
-                        selectedAccount = selectedAccount,
-                    )
+                if (!firstOpen) {
+                    _accountStateInfo.update {
+                        AccountStateInfo(
+                            type = AccountStateInfoType.NoUsername,
+                            selectedAccount = selectedAccount,
+                        )
+                    }
                 }
                 false
             }
