@@ -1017,7 +1017,10 @@ class DealsAnalytics @Inject constructor(
     fun pdpClick(action: String, brandName: String, displayName: String) {
         val label = String.format("%s - %s", brandName, displayName)
         val map = TrackAppUtils.gtmData(
-            EVENT_DEALS_CLICK, DealsAnalyticsConstants.Category.DIGITAL_DEALS, action, label.lowercase() ?: ""
+            EVENT_DEALS_CLICK,
+            DealsAnalyticsConstants.Category.DIGITAL_DEALS,
+            action,
+            label.lowercase() ?: ""
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
@@ -1049,11 +1052,13 @@ class DealsAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.ADD_TO_CART, eventDataLayer)
     }
 
-
     fun pdpRecommendationClick(id: String, index: Int, salesPrice: Long, displayName: String, brandTitle: String) {
         val eventDataLayer = Bundle()
         val label = String.format(
-            "%s - %s", displayName, index.toString())
+            "%s - %s",
+            displayName,
+            index.toString()
+        )
         val list = String.format(
             "%s - %s - %s - %s",
             "/" + DEALS,
@@ -1089,7 +1094,10 @@ class DealsAnalytics @Inject constructor(
     fun pdpRecommendationImpression(id: String, index: Int, salesPrice: Long, displayName: String, brandTitle: String, categoryName: String?) {
         val eventDataLayer = Bundle()
         val label = String.format(
-            "%s - %s", categoryName, index.toString())
+            "%s - %s",
+            categoryName,
+            index.toString()
+        )
         val list = String.format(
             "%s - %s - %s - %s",
             "/" + DEALS,

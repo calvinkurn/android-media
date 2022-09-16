@@ -265,7 +265,8 @@ class DealsPDPViewModel @Inject constructor (
                 productId = productId.toIntSafely().toLong(),
                 rating = Int.ZERO,
                 userId = userId.toIntSafely().toLong()
-        ))
+            )
+        )
     }
 
     private fun mapperParamTrackingRecommendation(productId: String, userId: String): DealsRecommendTrackingRequest {
