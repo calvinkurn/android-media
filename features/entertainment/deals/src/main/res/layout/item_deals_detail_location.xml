@@ -57,5 +57,4 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_location_address" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

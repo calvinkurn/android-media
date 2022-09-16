@@ -7,7 +7,7 @@ import io.mockk.MockKAnnotations
 import org.junit.Before
 import org.junit.Rule
 
-abstract class DealsPDPAllLocationViewModelTestFixture {
+open class DealsPDPAllLocationViewModelTestFixture {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()

@@ -7,7 +7,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Test
 
-class DealsPDPAllLocationViewModelTest: DealsPDPAllLocationViewModelTestFixture() {
+class DealsPDPAllLocationViewModelTest : DealsPDPAllLocationViewModelTestFixture() {
 
     @Test
     fun `when getting search result by name give expected search result`() {
@@ -78,7 +78,6 @@ class DealsPDPAllLocationViewModelTest: DealsPDPAllLocationViewModelTestFixture(
         )
 
         var outlet: List<Outlet>? = null
-
 
         runBlockingTest {
             val collectorJob = launch {

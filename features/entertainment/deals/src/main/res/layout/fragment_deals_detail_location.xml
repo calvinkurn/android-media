@@ -81,7 +81,6 @@
 
         </LinearLayout>
 
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <FrameLayout
@@ -99,4 +98,5 @@
             android:layout_height="50dp"
             android:layout_gravity="center" />
     </FrameLayout>
+
 </FrameLayout>

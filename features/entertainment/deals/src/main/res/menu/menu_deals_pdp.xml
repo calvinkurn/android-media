@@ -9,5 +9,4 @@
         android:title="@string/deals_pdp_favourite"
         app:showAsAction="always"
         tools:ignore="AppCompatResource" />
-
 </menu>

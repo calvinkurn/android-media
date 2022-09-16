@@ -24,7 +24,7 @@ import java.lang.reflect.Type
 import org.junit.Before
 import org.junit.Rule
 
-abstract class DealsPDPViewModelTestFixture {
+open class DealsPDPViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var dealsPDPDetailUseCase: DealsPDPDetailUseCase

@@ -11,7 +11,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
 
-abstract class DealsPDPSelectQuantityViewModelTestFixture {
+open class DealsPDPSelectQuantityViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var dealsPDPVerifyUseCase: DealsPDPVerifyUseCase

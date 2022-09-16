@@ -980,7 +980,6 @@ class DealsAnalytics @Inject constructor(
         return dataImpressions
     }
 
-    //pdp
     fun pdpSendScreenName() {
         val map = HashMap<String, String>()
         map[BUSINESS_UNIT] = TRAVELENTERTAINMENT_BU
@@ -988,7 +987,7 @@ class DealsAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME_DEALS_PDP, map)
     }
 
-    fun pdpViewProduct(id:String, salesPrice: Long,  displayName:String, brandTitle: String){
+    fun pdpViewProduct(id: String, salesPrice: Long, displayName: String, brandTitle: String) {
         val eventDataLayer = Bundle()
         eventDataLayer.generalTracker(
             DealsAnalyticsConstants.Event.VIEW_ITEM,
@@ -997,16 +996,16 @@ class DealsAnalytics @Inject constructor(
         )
 
         val itemBundles = arrayListOf<Bundle>()
-        itemBundles.add(Bundle().apply {
-            putString(ITEM_ID, id)
-            putLong(PRICE, salesPrice)
-            putString(DIMENSION_40,
-                String.format("%s - %s - %s", DEALS, BRAND, displayName))
-            putInt(INDEX, Int.ONE)
-            putString(ITEM_NAME, displayName)
-            putString(ITEM_BRAND, brandTitle)
-            putString(ITEM_VARIANT, "none")
-            putString(ITEM_CATEGORY, DEALS)
+        itemBundles.add(
+            Bundle().apply {
+                putString(ITEM_ID, id)
+                putLong(PRICE, salesPrice)
+                putString(DIMENSION_40, String.format("%s - %s - %s", DEALS, BRAND, displayName))
+                putInt(INDEX, Int.ONE)
+                putString(ITEM_NAME, displayName)
+                putString(ITEM_BRAND, brandTitle)
+                putString(ITEM_VARIANT, "none")
+                putString(ITEM_CATEGORY, DEALS)
         })
         eventDataLayer.putString(ITEM_LIST, "")
         eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)

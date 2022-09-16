@@ -4,5 +4,4 @@
         android:duration="@android:integer/config_mediumAnimTime"
         android:fromYDelta="100%p"
         android:toYDelta="0%p" />
-
 </set>

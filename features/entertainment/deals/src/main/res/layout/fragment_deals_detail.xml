@@ -20,7 +20,6 @@
             app:expandedTitleGravity="left|bottom"
             app:expandedTitleMarginBottom="8dp"
             app:expandedTitleMarginStart="16dp"
-            app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle2"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -127,6 +126,5 @@
             />
 
     </FrameLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

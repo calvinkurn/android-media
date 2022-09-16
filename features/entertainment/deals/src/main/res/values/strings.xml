@@ -99,4 +99,5 @@
     <string name="deals_pdp_price">Harga</string>
     <string name="deals_pdp_total_amount">Total Pembayaran</string>
     <string name="deals_pdp_select_number_of_voucher">Pilih Jumlah Voucher</string>
+    <string name="deals_pdp_content_desc_img">Desc</string>
 </resources>
