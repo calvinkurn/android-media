@@ -2580,7 +2580,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrders : toBeAppliedVoucherOrders) {
             doApplyBo(voucherOrders);
             reloadedUniqueIds.add(voucherOrders.getUniqueId());
-            unprocessedUniqueIds.remove(voucherOrders.getUniqueId());
         }
         return new Pair<>(reloadedUniqueIds, unappliedBoPromoUniqueIds);
     }
