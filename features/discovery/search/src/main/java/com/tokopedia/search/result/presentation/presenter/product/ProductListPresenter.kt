@@ -65,6 +65,7 @@ import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
@@ -162,12 +163,15 @@ class ProductListPresenter @Inject constructor(
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
+                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
         )
         private val showInspirationCarouselLayoutWithVideo = showInspirationCarouselLayout + SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
         private const val DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu"
         private const val DEFAULT_USER_ID = "0"
         private const val QUICK_FILTER_MINIMUM_SIZE = 2
+        private const val PRODUCT_BUNDLE_MINIMUM_SIZE = 2
+        private const val PRODUCT_BUNDLE_MAXIMUM_SIZE = 7
         private val LOCAL_SEARCH_KEY_PARAMS = listOf(
                 SearchApiConst.NAVSOURCE,
                 SearchApiConst.SRP_PAGE_ID,
@@ -1255,9 +1259,15 @@ class ProductListPresenter @Inject constructor(
     private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
         return !isABTestVideoWidget && isVideoLayout() && isFirstOptionHasNoProducts()
     }
+    private fun InspirationCarouselDataView.isInvalidProductBundleLayout() : Boolean {
+        return isBundleLayout()
+            && (options.size < PRODUCT_BUNDLE_MINIMUM_SIZE || options.size > PRODUCT_BUNDLE_MAXIMUM_SIZE)
+    }
 
     private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView) : Boolean {
-        return data.isInvalidCarouselChipsLayout() || data.isInvalidCarouselVideoLayout()
+        return data.isInvalidCarouselChipsLayout()
+            || data.isInvalidCarouselVideoLayout()
+            || data.isInvalidProductBundleLayout()
     }
 
     private fun shouldShowInspirationCarousel(layout: String): Boolean {
@@ -1273,6 +1283,7 @@ class ProductListPresenter @Inject constructor(
         when {
             data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
             data.isValidVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
+            data.isBundleLayout() -> convertInspirationCarouselToInspirationProductBundle(data)
             else -> listOf(data)
         }
     private fun InspirationCarouselDataView.isValidVideoLayout() : Boolean {
@@ -1286,6 +1297,17 @@ class ProductListPresenter @Inject constructor(
             layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
     private fun InspirationCarouselDataView.isVideoLayout() =
             layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
+    private fun InspirationCarouselDataView.isBundleLayout() =
+        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE
+
+    private fun convertInspirationCarouselToInspirationProductBundle(
+        data: InspirationCarouselDataView
+    ): List<Visitable<*>> {
+        return listOf(data.convertToInspirationProductBundleDataView(
+            view.queryKey,
+            externalReference,
+        ))
+    }
 
     private fun convertInspirationCarouselToInspirationCarouselVideo(data: InspirationCarouselDataView) : List<Visitable<*>> {
         return listOf(InspirationCarouselVideoDataView(data))

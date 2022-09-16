@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.di
 
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.feedcomponent.view.factory.FeedFragmentFactory
+import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
 import dagger.Binds
 import dagger.Module
 
@@ -12,5 +12,5 @@ import dagger.Module
 abstract class FeedFragmentFactoryModule {
 
     @Binds
-    abstract fun bindFragmentManager(fragmentFactory: FeedFragmentFactory): FragmentFactory
+    abstract fun bindFragmentManager(fragmentFactory: TkpdFragmentFactory): FragmentFactory
 }
