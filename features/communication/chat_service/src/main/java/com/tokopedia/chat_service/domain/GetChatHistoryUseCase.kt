@@ -15,4 +15,8 @@ class GetChatHistoryUseCase @Inject constructor(
     fun loadPreviousMessage() {
         repository.getConversationRepository().loadPreviousMessages()
     }
+
+    fun getTotalUnreadCount() : LiveData<Int> {
+        return repository.getConversationRepository().getTotalUnreadCountLiveDataCallback()
+    }
 }

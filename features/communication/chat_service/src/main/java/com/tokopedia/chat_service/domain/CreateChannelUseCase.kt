@@ -30,6 +30,10 @@ class CreateChannelUseCase @Inject constructor(
         )
     }
 
+    fun isChatConnected(): Boolean {
+        return repository.getConversationRepository().isChatConnected()
+    }
+
     data class CreateChannelParam(
         val createChannelInfo: CreateChannelInfo,
         val onSuccess: (channel: ConversationsChannel) -> Unit,

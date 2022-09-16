@@ -1,6 +1,9 @@
 package com.tokopedia.chat_service.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +15,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.chat_service.databinding.FragmentChatServiceBinding
 import com.tokopedia.chat_service.di.ChatServiceComponent
+import com.tokopedia.chat_service.view.activity.ChatServiceListActivity
 import com.tokopedia.chat_service.view.viewmodel.ChatServiceViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -75,11 +79,36 @@ class ChatServiceFragment: BaseDaggerFragment() {
         binding?.loadmoreBtn?.setOnClickListener {
             viewModel.loadPreviousMessages()
         }
+
+        binding?.chatListBtn?.setOnClickListener {
+            context?.let {
+                startActivity(Intent(it, ChatServiceListActivity::class.java))
+            }
+        }
+
+        binding?.mainEdt?.addTextChangedListener(getTextWatcherListener())
     }
 
     private fun initObservers() {
         viewModel.error.observe(viewLifecycleOwner) {
             it.printStackTrace()
+        }
+
+        viewModel.getTypingStatus().observe(viewLifecycleOwner) {
+            binding?.typingStatusTv?.text = it.toString()
+        }
+
+        viewModel.isChatConnected.observe(viewLifecycleOwner) {
+            val connectionString = if (it) {
+                "Chat connected"
+            } else {
+                "Chat disconnected"
+            }
+            binding?.connectionStatusTv?.text = connectionString
+        }
+
+        viewModel.getTotalUnreadCount().observe(viewLifecycleOwner) {
+            binding?.counterTv?.text = it.toString()
         }
     }
 
@@ -91,6 +120,7 @@ class ChatServiceFragment: BaseDaggerFragment() {
     private fun setupDummyChatService() {
         val orderId = getOrderIdOrDefault()
         if (orderId.isNotEmpty()) {
+            viewModel.resetTypingStatus()
             viewModel.initGroupBooking(
                 orderId,
                 2,
@@ -113,23 +143,22 @@ class ChatServiceFragment: BaseDaggerFragment() {
         return object : ConversationsGroupBookingListener {
             override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
                 view?.let {
+                    var errorMessage = error.getErrorMessage()
+                    if (errorMessage.isEmpty()) {
+                        errorMessage = error.toString()
+                    }
                     Toaster.build(
-                        it, error.getErrorMessage(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
+                        it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
                     ).show()
                 }
             }
 
-            override fun onGroupBookingChannelCreationStarted() {
-                view?.let {
-                    Toaster.build(
-                        it, "Starting", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL
-                    ).show()
-                }
-            }
+            override fun onGroupBookingChannelCreationStarted() {}
 
             override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
                 this@ChatServiceFragment.channelUrl = channelUrl
                 viewModel.registerActiveChannel(channelUrl)
+                viewModel.doCheckChatConnection()
                 observeChatHistory(channelUrl)
             }
 
@@ -147,6 +176,23 @@ class ChatServiceFragment: BaseDaggerFragment() {
                 binding?.mainTv?.text = messageText
             }
             viewModel.markChatAsRead(channelUrl)
+        }
+    }
+
+    private fun getTextWatcherListener(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (!s.isNullOrEmpty()) {
+                    viewModel.setTypingStatus(true)
+                } else {
+                    viewModel.setTypingStatus(false)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+
         }
     }
 

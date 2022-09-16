@@ -13,4 +13,8 @@ class RegistrationActiveChannelUseCase @Inject constructor(
     fun deRegisterActiveChannel(channelUrl: String) {
         repository.getConversationRepository().softDeregisterChannel(channelUrl)
     }
+
+    fun isChatConnected(): Boolean {
+        return repository.getConversationRepository().isChatConnected()
+    }
 }
