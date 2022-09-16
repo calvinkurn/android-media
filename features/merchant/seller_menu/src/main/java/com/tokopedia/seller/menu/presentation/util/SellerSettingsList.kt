@@ -79,7 +79,7 @@ object SellerSettingsList {
                     context.startActivity(intent)
                 }
             )
-        }else{
+        } else {
             return listOf(
                 SellerSettingsTitleUiModel(
                     context.getString(R.string.setting_menu_shop_profile),
