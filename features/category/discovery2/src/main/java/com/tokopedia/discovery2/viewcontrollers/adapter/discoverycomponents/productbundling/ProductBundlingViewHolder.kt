@@ -98,24 +98,18 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         }
 
         override fun addMultipleBundleToCart(selectedMultipleBundle: BundleDetailUiModel, productDetails: List<BundleProductUiModel>) {
-//            itemView.context?.let{ context ->
-//                val intent = RouteManager.getIntent(
-//                        context,
-//                        selectedProduct.productAppLink,
-//                        selectedMultipleBundle.bundleId
-//                )
-//                context.startActivity(intent)
-//            }
+            if(selectedMultipleBundle.bundleId.isNotEmpty()) {
+                itemView.context?.let { context ->
+                    RouteManager.route(context,"tokopedia://product-bundle/${productDetails.firstOrNull()?.productId}?source=discovery&bundleId=${selectedMultipleBundle.bundleId}")
+                }
+            }
         }
 
         override fun addSingleBundleToCart(selectedBundle: BundleDetailUiModel, bundleProducts: BundleProductUiModel) {
-            itemView.context?.let { context ->
-                val intent = RouteManager.getIntent(
-                        context,
-                        "tokopedia://product-bundle",
-                        selectedBundle.bundleId
-                )
-                context.startActivity(intent)
+            if(selectedBundle.bundleId.isNotEmpty()) {
+                itemView.context?.let { context ->
+                    RouteManager.route(context,"tokopedia://product-bundle/${bundleProducts.productId}?source=discovery&bundleId=${selectedBundle.bundleId}")
+                }
             }
         }
 
