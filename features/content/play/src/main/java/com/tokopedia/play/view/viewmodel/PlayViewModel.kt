@@ -976,7 +976,7 @@ class PlayViewModel @AssistedInject constructor(
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
-            is OpenCart -> openWithLogin(action.appLink, REQUEST_CODE_LOGIN_CART)
+            OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
         }
     }
 
