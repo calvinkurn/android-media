@@ -20,6 +20,10 @@ fun Fragment.hideKeyboard() {
     activity?.hideKeyboard()
 }
 
+fun EditText.hideKeyboard() {
+    showKeyboard(false)
+}
+
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
