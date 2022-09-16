@@ -358,9 +358,19 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             if (shippingDurationUiModel.isSelected) {
                 for (shippingCourierUiModel in shippingCourierViewModelList) {
                     shippingCourierUiModel.isSelected = false
-                    if (shippingCourierUiModel.productData.shipperProductId == profileShipment.recommendationSpId) {
+                    if (shippingCourierUiModel.productData.shipperProductId == profileShipment.recommendationSpId && !shippingCourierUiModel.productData.isUiRatesHidden) {
                         shippingCourierUiModel.isSelected = true
                         selectedShippingCourierUiModel = shippingCourierUiModel
+                        selectedShippingDurationUiModel = shippingDurationUiModel
+                    }
+                }
+                if (selectedShippingCourierUiModel == null) {
+                    // fallback if recommendation is also ui rates hidden
+                    val recommendedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden }
+                            ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden }
+                    if (recommendedShippingCourierUiModel != null) {
+                        recommendedShippingCourierUiModel.isSelected = true
+                        selectedShippingCourierUiModel = recommendedShippingCourierUiModel
                         selectedShippingDurationUiModel = shippingDurationUiModel
                     }
                 }
