@@ -1528,9 +1528,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         nonSellerAccount: ContentAccountUiModel?,
     ): ContentAccountUiModel {
         return when {
-            sellerAccount.hasAcceptTnc -> sellerAccount
-            nonSellerAccount != null -> nonSellerAccountCheck(nonSellerAccount)
-            else -> {
+            !sellerAccount.hasAcceptTnc -> {
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
@@ -1540,6 +1538,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 sellerAccount
             }
+            nonSellerAccount != null -> nonSellerAccountCheck(nonSellerAccount)
+            else -> sellerAccount
         }
     }
 
