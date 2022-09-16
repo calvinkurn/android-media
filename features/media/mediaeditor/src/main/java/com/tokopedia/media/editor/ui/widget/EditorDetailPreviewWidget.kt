@@ -28,8 +28,6 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
     fun initializeRotate(uriSource: Uri, listener: Listener, data: EditorDetailUiModel) {
         val resultDestination = getUCropTempResultPath()
 
-        val ratio = data.cropRotateValue.getRatio() ?: data.originalRatio
-
         cropImageView.setImageUri(uriSource, resultDestination)
 
         overlayView.apply {

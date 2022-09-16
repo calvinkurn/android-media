@@ -1,22 +1,15 @@
 package com.tokopedia.media.editor.ui.component
 
-import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
