@@ -25,7 +25,7 @@ object SellerSettingsList {
     fun create(context: Context, isMultilocation: Boolean = false): List<SettingUiModel> {
         val trackingAliasMap = trackingAliasMap(context)
 
-        return if(isMultilocation){
+        return if (isMultilocation) {
             return listOf(
                 SellerSettingsTitleUiModel(
                     context.getString(R.string.setting_menu_shop_profile),
