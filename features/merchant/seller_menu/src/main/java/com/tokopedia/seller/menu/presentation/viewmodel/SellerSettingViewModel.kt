@@ -9,7 +9,6 @@ import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SellerSettingViewModel @Inject constructor(
