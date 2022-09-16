@@ -77,7 +77,6 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
 
         showCloseIcon = true
         showHeader = true
-        showKnob = true
         isDragable = false
         isSkipCollapseState = true
         isHideable = false
