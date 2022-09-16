@@ -50,6 +50,9 @@
     <string name="chatbot_video_can_not_be_played">Gambar gagal dimuat. Refresh halaman ini atau cek koneksi internetmu.</string>
     <string name="chatbot_video_refresh">Refresh</string>
     <string name="chatbot_default_video_duration">0:00</string>
+    <string name="chatbot_exoplayer_play_button">Exoplayer Play Button</string>
+    <string name="chatbot_exoplayer_pause_button">Exoplayer Play Button</string>
+    <string name="chatbot_video_error">Video error</string>
     <string name="chatbot_exoplayer_time_separator">/</string>
     <string name="chatbot_text_for_no_transaction_found">Transaksi yang berkendala tidak ada di daftar pilihan.</string>
     <string name="chatbot_action_text_for_no_transaction_found">transaction_not_listed</string>
