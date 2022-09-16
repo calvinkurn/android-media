@@ -145,7 +145,10 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                         setCourierRatesBottomSheet(it.data)
                     else {
                         val courierBtn = findViewById<UnifyButton>(R.id.courier_btn)
-                        showMessageWithAction(it.data.error?.message, getString(com.tokopedia.abstraction.R.string.title_ok)) {}
+                        showMessageWithAction(
+                            it.data.error?.message?:getString(R.string.money_in_courier_service_error),
+                            getString(com.tokopedia.abstraction.R.string.title_ok)
+                        ) {}
                         courierBtn.setOnClickListener { v ->
                             sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
                                     MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
@@ -204,11 +207,12 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
 
     private fun setCourierRatesBottomSheet(data: RatesV4.Data) {
         val courierBtn = findViewById<UnifyButton>(R.id.courier_btn)
-        if (!data.services.first().products.isNullOrEmpty()) {
-            spId = data.services.first().products.first().shipper.shipperProduct.id
+        val firstProduct = data.services.first().products.firstOrNull()
+        if (firstProduct != null) {
+            spId = firstProduct.shipper.shipperProduct.id
             val moneyInCourierBottomSheet = MoneyInCourierBottomSheet.newInstance(
-                data.services.first().products.first().features.moneyIn,
-                data.services.first().products.first().shipper.shipperProduct.description)
+                firstProduct.features.moneyIn,
+                firstProduct.shipper.shipperProduct.description)
             courierBtn.setOnClickListener {
                 sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
                     MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
@@ -221,7 +225,7 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
             }
             moneyInCourierBottomSheet.setActionListener(this)
             val totalPaymentValue = findViewById<Typography>(R.id.tv_total_payment_value) as Typography
-            totalPaymentValue.text = data.services.first().products.first().price.text
+            totalPaymentValue.text = firstProduct.price.text
         }
     }
 
