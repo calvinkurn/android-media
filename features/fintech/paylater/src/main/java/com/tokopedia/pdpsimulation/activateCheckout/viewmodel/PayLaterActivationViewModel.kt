@@ -171,7 +171,7 @@ class PayLaterActivationViewModel @Inject constructor(
                 onSuccess = { addToCartOccMultiDataModel->
                     onSuccessAddToCartForCheckout(addToCartOccMultiDataModel)
                 },
-                onError = { throwable->
+                onError = { throwable ->
                     onErrorAddToCartForCheckout(throwable)
                 }
             )
