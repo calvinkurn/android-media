@@ -43,7 +43,6 @@ object ActivationHelper {
     }
 }
 
-
 sealed class BottomSheetType {
     data class GateWayBottomSheet(val bundleData: Bundle) : BottomSheetType()
 }
