@@ -35,10 +35,8 @@ object ActivationHelper {
         }
     }
 
-
-    fun Typography.setTextToDisplay (textToDisplay: String?)
-    {
-        if(textToDisplay.isNullOrBlank())
+    fun Typography.setTextToDisplay(textToDisplay: String?) {
+        if (textToDisplay.isNullOrBlank())
             this.visibility = View.GONE
         else
             this.text = textToDisplay
