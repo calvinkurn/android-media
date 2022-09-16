@@ -37,7 +37,7 @@
             <View
                 android:id="@+id/parallax_background"
                 android:paddingTop="14dp"
-                android:paddingBottom="14dp"
+                android:paddingBottom="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -58,8 +58,7 @@
                 android:id="@+id/rv_product"
                 android:layout_width="0dp"
                 android:layout_height="322dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="8dp"
                 android:clipToPadding="false"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"

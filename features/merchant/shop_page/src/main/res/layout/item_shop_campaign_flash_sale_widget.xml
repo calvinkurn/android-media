@@ -33,7 +33,7 @@
         android:id="@+id/tgp_flash_sale_timer_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="5dp"
         android:text="@string/shop_page_label_flash_sale"
         app:layout_constraintVertical_chainStyle="spread"
         app:layout_constraintLeft_toLeftOf="@id/tgp_flash_sale_campaign_name"
