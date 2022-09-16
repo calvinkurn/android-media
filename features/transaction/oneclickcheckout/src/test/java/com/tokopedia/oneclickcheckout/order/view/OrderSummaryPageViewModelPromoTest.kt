@@ -597,6 +597,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         //then
         assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
     }
 
     @Test
@@ -624,6 +625,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         //then
         assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
+
     }
 
     @Test
@@ -643,6 +646,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         //then
         assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
     }
 
     @Test
@@ -662,6 +666,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         //then
         assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
+
     }
 
     //case
@@ -690,11 +696,13 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.validateBboStacking()
         //then
         assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
+
     }
 
     // un-apply bo
     @Test
-    fun `un-apply Bbo promo`() {
+    fun `ignored Bbo promo`() {
         //Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -716,6 +724,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.validateBboStacking()
         //then
         assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
     }
 
     // show toaster
