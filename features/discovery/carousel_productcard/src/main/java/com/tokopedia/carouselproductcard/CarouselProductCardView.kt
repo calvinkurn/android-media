@@ -139,18 +139,11 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
     }
 
     private fun initBindCarousel(isGrid: Boolean, recyclerViewPool: RecyclerView.RecycledViewPool?) {
-        if (carouselLayoutManager == null) {
-            initLayoutManager()
-        }
+        initLayoutManager()
 
-        if (carouselProductCardAdapter == null) {
-            if (isGrid) initGridAdapter()
-            else initListAdapter()
-        }
-
-        if (carouselProductCardRecyclerView.adapter == null) {
-            initRecyclerView(recyclerViewPool)
-        }
+        if (isGrid) initGridAdapter()
+        else initListAdapter()
+        initRecyclerView(recyclerViewPool)
     }
 
     private fun createCarouselProductCardListenerInfo(
