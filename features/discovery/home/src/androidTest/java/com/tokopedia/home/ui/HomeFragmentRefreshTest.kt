@@ -57,7 +57,7 @@ class HomeFragmentRefreshTest {
         private const val BELOW_THREE_MINUTES_ELAPSED_TIME = 5000L
         private const val ABOVE_THREE_MINUTES_ELAPSED_TIME = 180001L
         private const val DELAY_TRANSITION = 500L
-        private const val DELAY_PROCESS = 7000L
+        private const val DELAY_PROCESS = 5000L
 
         private const val ADDRESS_1_ID = "0"
         private const val ADDRESS_1_CITY_ID = "228"
@@ -205,7 +205,7 @@ class HomeFragmentRefreshTest {
          * Address data changed in other page will change home page choose address in onResume
          */
         Thread.sleep(DELAY_PROCESS)
-        Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
+        Assert.assertTrue(dataChangedCount >= TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         onView(withText(containsString(ADDRESS_2_LABEL))).check(matches(isDisplayed()))
         Thread.sleep(DELAY_PROCESS)
     }
