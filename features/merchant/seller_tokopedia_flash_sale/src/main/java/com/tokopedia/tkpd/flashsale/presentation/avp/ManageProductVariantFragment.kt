@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.avp
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.View
@@ -15,6 +16,7 @@ import com.tokopedia.tkpd.flashsale.presentation.avp.adapter.ManageProductVarian
 import com.tokopedia.tkpd.flashsale.presentation.avp.adapter.item.ManageProductVariantItem
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import javax.inject.Inject
+import com.tokopedia.seller_tokopedia_flash_sale.R
 
 class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<CompositeAdapter>() {
 
@@ -26,6 +28,8 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
             fragment.arguments = bundle
             return fragment
         }
+
+        private const val MINIMUM_VARIANT_TO_BULK_APPLY = 2
     }
 
     //argument
@@ -61,7 +65,10 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
                 isShowWidgetBulkApply = true
             )
         }
-        setupWidgetBulkApply("Aktifkan varian untuk Atur Sekaligus", false)
+        setupWidgetBulkApply(
+            getString(R.string.stfs_inactive_variant_bulk_apply_place_holder),
+            false
+        )
         toItem()?.let { adapter?.submit(it) }
     }
 
@@ -79,7 +86,7 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
     }
 
     override fun getHeaderUnifyTitle(): String {
-        return "Atur Variant Produk"
+        return getString(R.string.stfs_stfs_manage_variant_title)
     }
 
     override fun onSubmitButtonClicked() {
@@ -110,16 +117,27 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
             }
         }
         adapter.submit(newItems)
+        setWidgetBulkApplyState(newItems)
+    }
 
-        var itemWithToggleOn = Int.ZERO
+    private fun setWidgetBulkApplyState(newItems: List<ManageProductVariantItem>) {
+        var activeVariantCount = Int.ZERO
         newItems.filter { it.isToggleOn }.map {
-            itemWithToggleOn++
+            activeVariantCount++
         }
 
-        if (itemWithToggleOn >= 2) {
-            setupWidgetBulkApply("Atur Sekaligus $itemWithToggleOn varian", true)
+        if (activeVariantCount >= MINIMUM_VARIANT_TO_BULK_APPLY) {
+            setupWidgetBulkApply(
+                getString(
+                    R.string.stfs_active_variant_bulk_apply_place_holder,
+                    activeVariantCount
+                ), true
+            )
         } else {
-            setupWidgetBulkApply("Aktifkan varian untuk Atur Sekaligus", false)
+            setupWidgetBulkApply(
+                getString(R.string.stfs_inactive_variant_bulk_apply_place_holder),
+                false
+            )
         }
     }
 
