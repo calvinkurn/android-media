@@ -8,7 +8,7 @@ import com.tokopedia.sellerhomecommon.common.DismissibleState
 
 interface BaseDismissibleWidgetUiModel<T : BaseDataUiModel> : BaseWidgetUiModel<T> {
     val isDismissible: Boolean
-    val dismissibleState: DismissibleState
+    var dismissibleState: DismissibleState
     val dismissToken: String
     var shouldShowDismissalTimer: Boolean
 }

@@ -45,9 +45,9 @@ class AnnouncementViewHolder(
             data.error.isNotBlank() -> {
                 //remove widget if state is error
                 if (listener.getIsShouldRemoveWidget()) {
-                    listener.removeWidget(adapterPosition, element)
+                    listener.removeWidget(absoluteAdapterPosition, element)
                 } else {
-                    listener.onRemoveWidget(adapterPosition)
+                    listener.onRemoveWidget(absoluteAdapterPosition)
                     itemView.toggleWidgetHeight(false)
                 }
             }
@@ -101,7 +101,7 @@ class AnnouncementViewHolder(
                 listener = object : DismissalTimerView.Listener {
 
                     override fun onFinished() {
-                        listener.removeWidget(adapterPosition, element)
+                        listener.removeWidget(absoluteAdapterPosition, element)
                     }
 
                     override fun onCancelTimer() {
@@ -148,12 +148,18 @@ class AnnouncementViewHolder(
             shcAnnouncementContainer.visible()
             viewShcAnnouncementDismissal.visible()
             viewShcSpacer.visible()
+            tvShcAnnouncementDismissYes.visible()
+            tvShcAnnouncementDismissNo.visible()
+            tvShcAnnouncementDismiss.text = root.context.getText(
+                R.string.shc_still_need_this_info
+            )
             tvShcAnnouncementDismissYes.setOnClickListener {
                 tvShcAnnouncementDismissYes.gone()
                 tvShcAnnouncementDismissNo.gone()
                 tvShcAnnouncementDismiss.text = root.context.getText(
                     R.string.shc_thanks_for_your_insight
                 )
+                element.dismissibleState = DismissibleState.TRIGGER
                 listener.setOnAnnouncementWidgetYesClicked(element)
             }
             tvShcAnnouncementDismissNo.setOnClickListener {

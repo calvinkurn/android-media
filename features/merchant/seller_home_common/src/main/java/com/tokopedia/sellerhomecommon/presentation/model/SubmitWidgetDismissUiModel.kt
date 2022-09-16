@@ -17,7 +17,8 @@ data class SubmitWidgetDismissUiModel(
     val feedbackReason3: Boolean = false,
     val feedbackReasonOther: String = String.EMPTY,
     val feedbackWidgetIDParent: String = String.EMPTY,
-    val shopId: String = String.EMPTY
+    val shopId: String = String.EMPTY,
+    val isFeedbackPositive: Boolean = false
 ) {
 
     companion object {

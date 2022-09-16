@@ -778,7 +778,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             dismissKey = String.format(ANNOUNCEMENT_DISMISSAL_KEY, element.dataKey),
             feedbackWidgetIDParent = element.id,
             dismissObjectIDs = listOf(element.id),
-            shopId = userSession.shopId
+            shopId = userSession.shopId,
+            isFeedbackPositive = true
         )
         sellerHomeViewModel.submitWidgetDismissal(param)
         SellerHomeTracking.sendClickWidgetAnnouncementDismissalPromptEvent(element.dataKey, true)

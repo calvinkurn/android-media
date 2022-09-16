@@ -62,6 +62,7 @@ class SubmitWidgetDismissUseCase @Inject constructor(
             putString(FEEDBACK_REASON_OTHER, data.feedbackReasonOther)
             putString(FEEDBACK_ID_PARENT, data.feedbackWidgetIDParent)
             putLong(SHOP_ID, data.shopId.toLongOrZero())
+            putBoolean(POSITIVE_FEEDBACK, data.isFeedbackPositive)
         }
         params = gqlParams
     }
@@ -78,10 +79,11 @@ class SubmitWidgetDismissUseCase @Inject constructor(
         private const val FEEDBACK_REASON_OTHER = "feedbackReasonOtherText"
         private const val FEEDBACK_ID_PARENT = "feedbackWidgetIDParent"
         private const val SHOP_ID = "shopID"
+        private const val POSITIVE_FEEDBACK = "feedbackPositive"
 
         internal const val QUERY = """
-            mutation dashboardDismissWithFeedback($$ACTION: String!, $$DISMISS_KEY: String!, $$DISMISS_OBJECT_ID_LIST: [String!]!, $$DISMISS_SIGN: String!, $$FEEDBACK_REASON_1: Boolean!, $$FEEDBACK_REASON_2: Boolean!, $$FEEDBACK_REASON_3: Boolean!, $$FEEDBACK_REASON_OTHER: String!, $$FEEDBACK_ID_PARENT: String!, $$SHOP_ID: Int!, $$DISMISS_TOKEN: String!) {
-              dashboardDismissWithFeedback($ACTION: $$ACTION, $DISMISS_KEY: $$DISMISS_KEY, $DISMISS_OBJECT_ID_LIST: $$DISMISS_OBJECT_ID_LIST, $DISMISS_SIGN: $$DISMISS_SIGN, $FEEDBACK_REASON_1: $$FEEDBACK_REASON_1, $FEEDBACK_REASON_2: $$FEEDBACK_REASON_2, $FEEDBACK_REASON_3: $$FEEDBACK_REASON_3, $FEEDBACK_REASON_OTHER: $$FEEDBACK_REASON_OTHER, $FEEDBACK_ID_PARENT: $$FEEDBACK_ID_PARENT, $SHOP_ID: $$SHOP_ID, $DISMISS_TOKEN: $$DISMISS_TOKEN, feedbackPositive: false) {
+            mutation dashboardDismissWithFeedback($$ACTION: String!, $$DISMISS_KEY: String!, $$DISMISS_OBJECT_ID_LIST: [String!]!, $$DISMISS_SIGN: String!, $$FEEDBACK_REASON_1: Boolean!, $$FEEDBACK_REASON_2: Boolean!, $$FEEDBACK_REASON_3: Boolean!, $$FEEDBACK_REASON_OTHER: String!, $$FEEDBACK_ID_PARENT: String!, $$SHOP_ID: Int!, $$DISMISS_TOKEN: String!, $$POSITIVE_FEEDBACK: Boolean!) {
+              dashboardDismissWithFeedback($ACTION: $$ACTION, $DISMISS_KEY: $$DISMISS_KEY, $DISMISS_OBJECT_ID_LIST: $$DISMISS_OBJECT_ID_LIST, $DISMISS_SIGN: $$DISMISS_SIGN, $FEEDBACK_REASON_1: $$FEEDBACK_REASON_1, $FEEDBACK_REASON_2: $$FEEDBACK_REASON_2, $FEEDBACK_REASON_3: $$FEEDBACK_REASON_3, $FEEDBACK_REASON_OTHER: $$FEEDBACK_REASON_OTHER, $FEEDBACK_ID_PARENT: $$FEEDBACK_ID_PARENT, $SHOP_ID: $$SHOP_ID, $DISMISS_TOKEN: $$DISMISS_TOKEN, $POSITIVE_FEEDBACK: $$POSITIVE_FEEDBACK) {
                 error
                 errorMsg
                 dismissToken
