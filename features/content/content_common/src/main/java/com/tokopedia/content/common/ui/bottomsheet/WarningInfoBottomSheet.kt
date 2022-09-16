@@ -95,7 +95,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
     }
 
     fun showNow(fragmentManager: FragmentManager) {
-        if(!isAdded) show(fragmentManager, TAG)
+        if(!isAdded) showNow(fragmentManager, TAG)
     }
 
     private fun routeToWebViewGetToKnowMore() {
