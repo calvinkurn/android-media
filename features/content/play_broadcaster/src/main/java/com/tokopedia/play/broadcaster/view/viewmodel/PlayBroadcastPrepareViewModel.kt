@@ -60,6 +60,8 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         }
     }
 
+    var isFromSwitchAccount: Boolean = false
+
     private val ingestUrlObserver = object : Observer<String> {
         override fun onChanged(t: String?) {}
     }

@@ -247,6 +247,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         if (contentAccount.id == parentViewModel.authorId) return
                         if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
                         else parentViewModel.submitAction(SwitchAccount)
+                        viewModel.isFromSwitchAccount = true
                     }
                 })
             }
@@ -265,7 +266,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     override fun clickNextOnCompleteOnboarding() {}
 
                     override fun clickCloseIcon() {
-                        activity?.finish()
+                        if (!viewModel.isFromSwitchAccount) activity?.finish()
+                        viewModel.isFromSwitchAccount = false
                     }
                 })
             }
@@ -273,7 +275,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setData(parentViewModel.warningInfoType)
                 childFragment.setListener(object : WarningInfoBottomSheet.Listener {
                     override fun clickCloseIcon() {
-                        activity?.finish()
+                        if (!viewModel.isFromSwitchAccount) activity?.finish()
+                        viewModel.isFromSwitchAccount = false
                     }
                 })
             }
@@ -922,7 +925,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
         if (!bottomSheet.isVisible) {
             view.setTermsAndConditions(tncList)
-            bottomSheet.setOnDismissListener { bottomSheet.dismiss() }
+            bottomSheet.setOnDismissListener {
+                if (viewModel.isFromSwitchAccount) bottomSheet.dismiss()
+                else activity?.finish()
+                viewModel.isFromSwitchAccount = false
+            }
             bottomSheet.show(childFragmentManager, TERMS_AND_CONDITION_TAG)
         }
     }
