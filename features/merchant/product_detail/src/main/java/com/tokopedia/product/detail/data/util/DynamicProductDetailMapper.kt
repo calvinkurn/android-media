@@ -57,7 +57,7 @@ import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
-import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
 import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
@@ -359,8 +359,8 @@ object DynamicProductDetailMapper {
     private fun mapToProductDetailInfo(component: Component): ProductDetailInfoDataModel {
         val data = component.componentData.firstOrNull()
         val contents = mapToProductDetailInfoContent(data = data)
-        val catalog = data?.catalogBottomSheet?.asModel()
-        val bottomSheet = data?.bottomSheet?.asModel() ?: ProductDetailInfoSeeMore()
+        val catalog = data?.catalogBottomSheet?.asUiData()
+        val bottomSheet = data?.bottomSheet?.asUiData() ?: ProductDetailInfoSeeMore()
 
         return ProductDetailInfoDataModel(
             type = component.type,

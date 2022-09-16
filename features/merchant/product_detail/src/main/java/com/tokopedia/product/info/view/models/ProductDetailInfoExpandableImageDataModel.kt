@@ -6,10 +6,10 @@ import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
  * Created by Yehezkiel on 14/10/20
  */
 data class ProductDetailInfoExpandableImageDataModel(
-        var componentName: Int = 0,
-        var title: String = "",
-        var imageUrl: String = "",
-        var isShowable: Boolean = false
+    var componentName: Int = 0,
+    var title: String = "",
+    var imageUrl: String = "",
+    var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
 
     override fun uniqueIdentifier(): Int = componentName

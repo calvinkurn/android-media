@@ -17,7 +17,7 @@ data class ProductDetailInfoSeeMore(
     val bottomSheetTitle: String = String.EMPTY
 ) : Parcelable
 
-fun ProductDetailInfoSeeMoreData.asModel() = ProductDetailInfoSeeMore(
+fun ProductDetailInfoSeeMoreData.asUiData() = ProductDetailInfoSeeMore(
     actionTitle = actionTitle,
     param = param,
     bottomSheetTitle = bottomSheetTitle

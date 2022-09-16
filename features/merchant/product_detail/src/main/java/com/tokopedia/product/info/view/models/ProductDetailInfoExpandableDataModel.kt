@@ -7,11 +7,11 @@ import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
  * Created by Yehezkiel on 13/10/20
  */
 data class ProductDetailInfoExpandableDataModel(
-        var componentName: Int = 0,
-        var title: String = "",
-        var textValue: String = "",
-        var youtubeVideo: List<YoutubeVideo> = listOf(),
-        var isShowable: Boolean = false
+    var componentName: Int = 0,
+    var title: String = "",
+    var textValue: String = "",
+    var youtubeVideo: List<YoutubeVideo> = listOf(),
+    var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
 
     override fun newInstance(): ProductDetailInfoVisitable {

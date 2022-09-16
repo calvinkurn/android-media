@@ -19,7 +19,8 @@ data class ProductDetailInfoHeaderDataModel(
         const val SPECIFICATION_SIZE_THRESHOLD = 11
     }
 
-    fun needToShowSpecification(): Boolean = (listOfInfo.size + listOfAnnotation.size) > SPECIFICATION_SIZE_THRESHOLD
+    fun needToShowSpecification(): Boolean =
+        (listOfInfo.size + listOfAnnotation.size) > SPECIFICATION_SIZE_THRESHOLD
 
     override fun newInstance(): ProductDetailInfoVisitable {
         return this.copy()
