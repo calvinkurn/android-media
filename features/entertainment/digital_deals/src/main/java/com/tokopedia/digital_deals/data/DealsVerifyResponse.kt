@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.data
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -63,6 +64,7 @@ data class MetaDataResponse(
         @SerializedName("quantity")
         @Expose
         val quantity: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
         val totalPrice: Long = 0
@@ -86,6 +88,7 @@ data class ItemMapResponse(
         @SerializedName("commission_type")
         @Expose
         val commissionType:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("currency_price")
         @Expose
         val currencyPrice: Long = 0,
@@ -140,6 +143,7 @@ data class ItemMapResponse(
         @SerializedName("payment_type")
         @Expose
         val paymentType:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: Long = 0,
@@ -182,6 +186,7 @@ data class ItemMapResponse(
         @SerializedName("start_time")
         @Expose
         val startTime:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
         val totalPrice: Long = 0,

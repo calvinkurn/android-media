@@ -160,7 +160,7 @@ class DealsAnalytics @Inject constructor(
     private fun getECommerceDataVoucherListSearchPage(items: List<VoucherModel>): MutableList<MutableMap<String, Any>> {
         val dataImpressions = mutableListOf<MutableMap<String, Any>>()
         items.forEach {
-            val price = if (it.realPrice.isNotEmpty()) it.realPrice.toInt() else 0
+            val price = if (it.realPrice.isNotEmpty()) it.realPrice.toLong() else 0L
             val impression = DataLayer.mapOf(
                     DealsAnalyticsConstants.Item.name, it.voucherName,
                     DealsAnalyticsConstants.Item.id, it.voucherId,
@@ -203,7 +203,7 @@ class DealsAnalytics @Inject constructor(
     }
 
     private fun getECommerceDataVoucherSearchPage(item: VoucherModel): MutableList<MutableMap<String, Any>> {
-        val price = if (item.realPrice.isNotEmpty()) item.realPrice.toInt() else 0
+        val price = if (item.realPrice.isNotEmpty()) item.realPrice.toLong() else 0L
 
         val data = mutableListOf<MutableMap<String, Any>>()
         data.add(DataLayer.mapOf(
@@ -632,7 +632,7 @@ class DealsAnalytics @Inject constructor(
     private fun getECommerceCuratedProduct(curatedProduct: CuratedProductCategoryDataView): MutableList<MutableMap<String, Any>> {
         val dataImpressions = mutableListOf<MutableMap<String, Any>>()
         curatedProduct.productCards.forEachIndexed { index, it ->
-            val price = if (it.priceNonCurrency.isNotEmpty()) it.priceNonCurrency.toInt() else 0
+            val price = if (it.priceNonCurrency.isNotEmpty()) it.priceNonCurrency.toLong() else 0L
             val impression = DataLayer.mapOf(
                     DealsAnalyticsConstants.Item.name, it.title,
                     DealsAnalyticsConstants.Item.id, it.id,
@@ -666,7 +666,7 @@ class DealsAnalytics @Inject constructor(
     }
 
     private fun getCuratedProductClick(productCardDataView: ProductCardDataView, position: Int): MutableList<MutableMap<String, Any>> {
-        val price = if (productCardDataView.priceNonCurrency.isNotEmpty()) productCardDataView.priceNonCurrency.toInt() else 0
+        val price = if (productCardDataView.priceNonCurrency.isNotEmpty()) productCardDataView.priceNonCurrency.toLong() else 0L
         val data = mutableListOf<MutableMap<String, Any>>()
 
         data.add(DataLayer.mapOf(
@@ -764,7 +764,7 @@ class DealsAnalytics @Inject constructor(
     private fun getECommerceProductCategory(productCardDataView: ProductCardDataView, position: Int): MutableList<MutableMap<String, Any>> {
         val dataImpressions = mutableListOf<MutableMap<String, Any>>()
         productCardDataView.let {
-            val price = if (it.priceNonCurrency.isNotEmpty()) it.priceNonCurrency.toInt() else 0
+            val price = if (it.priceNonCurrency.isNotEmpty()) it.priceNonCurrency.toLong() else 0L
             val impression = DataLayer.mapOf(
                     DealsAnalyticsConstants.Item.name, it.title,
                     DealsAnalyticsConstants.Item.id, it.id,

@@ -18,6 +18,7 @@ ext {
     biometricVersion = "1.1.0"
     appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
+    recyclerViewVersion = '1.2.1'
     dataStoreVersion = '1.0.0'
     protobufLiteVersion = '3.19.1'
     googleTinkVersion = '1.6.1'
@@ -91,6 +92,7 @@ ext {
     windowVersion = '1.0.0-alpha07'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
+    playIntegrityVersion = '1.0.1'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
@@ -166,7 +168,7 @@ ext {
     ]
 
     supportLibDependencies = [
-            recyclerViewV7    : "androidx.recyclerview:recyclerview:${supportLibraryVersion}",
+            recyclerViewV7    : "androidx.recyclerview:recyclerview:${recyclerViewVersion}",
             mediaV7           : "androidx.media:media:${supportLibraryVersion}",
             supportV4         : "androidx.legacy:legacy-support-v4:${supportLegacyLibraryVersion}",
             appCompactV7      : "androidx.appcompat:appcompat:${appCompatVersion}",
@@ -308,7 +310,8 @@ ext {
             jjwtImpl              : "io.jsonwebtoken:jjwt-impl:0.11.2",
             jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2",
             gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
-            dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0"
+            dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
+            playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion"
     ]
 
     testDependencies = [
