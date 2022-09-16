@@ -162,7 +162,6 @@ private const val ACTION_REPLY_BUTTON_CLICKED = "click reply"
 private const val ACTION_ACTION_BUBBLE_CLICKED = "click action button"
 private const val ACTION_THUMBS_UP_BUTTON_CLICKED = "click thumbs up button"
 private const val ACTION_THUMBS_DOWN_BUTTON_CLICKED = "click thumbs down button"
-private const val ACTION_THUMBS_DOWN_REASON_BUTTON_CLICKED = "click thumbs down reason button"
 private const val ACTION_IMPRESSION_CSAT_SMILEY_VIEW = "impression csat smiley form"
 private const val ACTION_IMPRESSION_WELCOME_MESSAGE = "impression welcome message"
 private const val WELCOME_MESSAGE_VALIDATION = "dengan Toped di sini"
@@ -331,7 +330,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val bundle = this.arguments
         if (bundle != null) {
             val intentData = bundle.getString(DEEP_LINK_URI, "")
-            var uri: Uri = Uri.parse(intentData)
+            val uri: Uri = Uri.parse(intentData)
 
             isAttached = checkForIsAttachedInvoice(uri)
             hashMap = presenter.getValuesForArticleEntry(uri)

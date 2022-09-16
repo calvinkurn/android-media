@@ -166,7 +166,6 @@ class ChatbotPresenterTest {
         Dispatchers.resetMain()
     }
 
-
     @Test
     fun `submitChatCsat success`() {
         val response = mockk<ChipSubmitChatCsatResponse>(relaxed = true)
@@ -298,13 +297,12 @@ class ChatbotPresenterTest {
         } returns response
 
         every {
-            response?.getResolutionLink?.resolutionLinkData?.orderList?.firstOrNull()?.resoList?.isNotEmpty()
+            response.getResolutionLink?.resolutionLinkData?.orderList?.firstOrNull()?.resoList?.isNotEmpty()
         } returns stickyButtonStatus
 
         presenter.checkLinkForRedirection("123", {}, {}, {})
 
         assertEquals(stickyButtonStatus, expectedButtonStatus)
-
     }
 
     @Test
@@ -318,7 +316,7 @@ class ChatbotPresenterTest {
         } returns response
 
         every {
-            response?.getResolutionLink?.resolutionLinkData?.orderList?.firstOrNull()?.resoList?.isNotEmpty()
+            response.getResolutionLink?.resolutionLinkData?.orderList?.firstOrNull()?.resoList?.isNotEmpty()
         } returns stickyButtonStatus
 
         presenter.checkLinkForRedirection("123", {}, {}, {})
@@ -340,7 +338,8 @@ class ChatbotPresenterTest {
         })
 
         assertEquals(
-            throwable, (result as Throwable)
+            throwable,
+            (result as Throwable)
         )
     }
 
@@ -359,7 +358,6 @@ class ChatbotPresenterTest {
         verify {
             view.onSuccessGetTickerData(any())
         }
-
     }
 
     @Test
@@ -392,12 +390,10 @@ class ChatbotPresenterTest {
         verify {
             view.onSuccessSubmitCsatRating(any())
         }
-
     }
 
     @Test
     fun `submitCsatRating failure`() {
-
         coEvery {
             submitCsatRatingUseCase.submitCsatRating(any(), captureLambda(), any())
         } coAnswers {
@@ -409,7 +405,6 @@ class ChatbotPresenterTest {
         verify {
             view.onError(any())
         }
-
     }
 
     @Test
@@ -428,7 +423,8 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         } just runs
 
@@ -441,7 +437,8 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         }
     }
@@ -467,7 +464,8 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         } just runs
 
@@ -480,10 +478,10 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         }
-
     }
 
     @Test
@@ -513,7 +511,6 @@ class ChatbotPresenterTest {
         verify {
             presenter.getChatRatingList(chatRatingListInput, any())
         }
-
     }
 
     @Test
@@ -539,7 +536,8 @@ class ChatbotPresenterTest {
         }, {}, {})
 
         assertEquals(
-            chatroomViewModel, getExistingChatMapper.map(expectedResponse)
+            chatroomViewModel,
+            getExistingChatMapper.map(expectedResponse)
         )
     }
 
@@ -557,18 +555,16 @@ class ChatbotPresenterTest {
         }, {})
 
         assertEquals(
-            exception, (result as Exception)
+            exception,
+            (result as Exception)
         )
-
     }
 
     @Test
     fun `getTopChat when inputList is not empty success`() {
-
         val expectedResponse = GetExistingChatPojo()
         val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
         val chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
-
 
         coEvery {
             getExistingChatUseCase.getTopChat(any())
@@ -592,7 +588,6 @@ class ChatbotPresenterTest {
         verify {
             presenter.getChatRatingList(chatRatingListInput, any())
         }
-
     }
 
     @Test
@@ -618,7 +613,8 @@ class ChatbotPresenterTest {
         }, {}, {})
 
         assertEquals(
-            chatroomViewModel, getExistingChatMapper.map(expectedResponse)
+            chatroomViewModel,
+            getExistingChatMapper.map(expectedResponse)
         )
     }
 
@@ -636,14 +632,13 @@ class ChatbotPresenterTest {
         }, {})
 
         assertEquals(
-            exception, (result as Exception)
+            exception,
+            (result as Exception)
         )
-
     }
 
     @Test
     fun `getExistingChat does not get called if messageId is empty`() {
-
         coEvery {
             getExistingChatUseCase.getFirstPageChat(any())
         }
@@ -660,7 +655,6 @@ class ChatbotPresenterTest {
         val expectedResponse = GetExistingChatPojo()
         val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
         val chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
-
 
         coEvery {
             getExistingChatUseCase.getFirstPageChat(any())
@@ -700,7 +694,8 @@ class ChatbotPresenterTest {
         }, { _, _ -> }, {})
 
         assertEquals(
-            exception, (result as Exception)
+            exception,
+            (result as Exception)
         )
     }
 
@@ -724,14 +719,13 @@ class ChatbotPresenterTest {
         }
 
         assertEquals(
-            expectedChatRatingList, ratingListResponse.chipGetChatRatingList
+            expectedChatRatingList,
+            ratingListResponse.chipGetChatRatingList
         )
-
     }
 
     @Test
     fun `getChatRatingList failure`() {
-
         val exception = mockk<Exception>()
         coEvery {
             chipGetChatRatingListUseCase.getChatRatingList(any())
@@ -746,7 +740,6 @@ class ChatbotPresenterTest {
 
     @Test
     fun `clearGetChatUseCase success`() {
-
         val expectedMinReplyTime = ""
 
         every {
@@ -759,12 +752,10 @@ class ChatbotPresenterTest {
             expectedMinReplyTime,
             ""
         )
-
     }
 
     @Test
     fun `setBeforeReplyTime success`() {
-
         val expectedBeforeReplyTime = "123"
 
         every {
@@ -781,30 +772,26 @@ class ChatbotPresenterTest {
 
     @Test
     fun `checkUploadSecure is true run uploadUsingSecureUpload`() {
-
         val response = mockk<CheckUploadSecureResponse>(relaxed = true)
 
         coEvery {
             checkUploadSecureUseCase.checkUploadSecure(any())
         } returns response
 
-
         coEvery {
             response.topbotUploadSecureAvailability.uploadSecureAvailabilityData.isUsingUploadSecure
         } returns true
 
-        //replace mockk
+        // replace mockk
         presenter.checkUploadSecure(" ", Intent())
 
         verify {
             view.uploadUsingSecureUpload(any())
         }
-
     }
 
     @Test
     fun `checkUploadSecure is false run uploadUsingOldMechanism`() {
-
         val response = mockk<CheckUploadSecureResponse>(relaxed = true)
 
         coEvery {
@@ -820,12 +807,10 @@ class ChatbotPresenterTest {
         verify {
             view.uploadUsingOldMechanism(any())
         }
-
     }
 
     @Test
     fun `checkUploadSecure returns exception`() {
-
         coEvery {
             checkUploadSecureUseCase.checkUploadSecure(any())
         } answers {
@@ -837,7 +822,6 @@ class ChatbotPresenterTest {
         verify {
             view.loadChatHistory()
         }
-
     }
 
     @Test
@@ -860,7 +844,6 @@ class ChatbotPresenterTest {
         verify {
             view.startNewSession()
         }
-
     }
 
     @Test
@@ -883,12 +866,10 @@ class ChatbotPresenterTest {
         verify {
             view.loadChatHistory()
         }
-
     }
 
     @Test
     fun `checkForSession failure  calls loadChatHistory`() {
-
         coEvery {
             getTopBotNewSessionUseCase.getTopBotUserSession(any(), captureLambda(), any())
         } coAnswers {
@@ -900,7 +881,6 @@ class ChatbotPresenterTest {
         verify {
             view.loadChatHistory()
         }
-
     }
 
     @Test
@@ -924,12 +904,10 @@ class ChatbotPresenterTest {
         verify {
             view.onSuccessSendRating(any(), any(), any())
         }
-
     }
 
     @Test
     fun `sendRating throws exception `() {
-
         coEvery {
             sendChatRatingUseCase.sendChatRating(captureLambda(), any(), any(), any(), any())
         } coAnswers {
@@ -941,7 +919,6 @@ class ChatbotPresenterTest {
         verify {
             view.onError(any())
         }
-
     }
 
     /******************************* Socket Related Unit Tests************************************/
@@ -953,17 +930,22 @@ class ChatbotPresenterTest {
 
         every {
             SendChatbotWebsocketParam.generateParamSendBubbleAction(
-                any(), any(),
-                any(), any()
+                any(),
+                any(),
+                any(),
+                any()
             )
         } returns mockk(relaxed = true)
 
         every {
             RxWebSocket.send(
                 SendChatbotWebsocketParam.generateParamSendBubbleAction(
-                    any(), any(),
-                    any(), any()
-                ), any()
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
             )
         } just runs
 
@@ -972,12 +954,14 @@ class ChatbotPresenterTest {
         verify {
             RxWebSocket.send(
                 SendChatbotWebsocketParam.generateParamSendBubbleAction(
-                    any(), any(),
-                    any(), any()
-                ), any()
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
             )
         }
-
     }
 
     @Test
@@ -1005,7 +989,8 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         } just runs
 
@@ -1020,7 +1005,8 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         }
     }
@@ -1033,7 +1019,9 @@ class ChatbotPresenterTest {
         every {
             SendChatbotWebsocketParam.generateParamSendQuickReply(
                 any(),
-                any(), any(), any()
+                any(),
+                any(),
+                any()
             )
         } returns mockk(relaxed = true)
 
@@ -1041,8 +1029,11 @@ class ChatbotPresenterTest {
             RxWebSocket.send(
                 SendChatbotWebsocketParam.generateParamSendQuickReply(
                     any(),
-                    any(), any(), any()
-                ), any()
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
             )
         } just runs
 
@@ -1052,11 +1043,13 @@ class ChatbotPresenterTest {
             RxWebSocket.send(
                 SendChatbotWebsocketParam.generateParamSendQuickReply(
                     any(),
-                    any(), any(), any()
-                ), any()
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
             )
         }
-
     }
 
     @Test
@@ -1082,12 +1075,12 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         } just runs
 
         presenter.sendInvoiceAttachment("123", InvoiceLinkPojo(), "", "", true, "")
-
 
         verify {
             RxWebSocket.send(
@@ -1097,10 +1090,10 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         }
-
     }
 
     @Test
@@ -1119,12 +1112,12 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         } just runs
 
         presenter.sendInvoiceAttachment("123", InvoiceLinkPojo(), "", "", false, "")
-
 
         verify {
             RxWebSocket.send(
@@ -1133,10 +1126,10 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         }
-
     }
 
     @Test
@@ -1157,7 +1150,6 @@ class ChatbotPresenterTest {
         verify {
             RxWebSocket.send(SendChatbotWebsocketParam.getReadMessage(any()), any())
         }
-
     }
 
     @Test
@@ -1176,7 +1168,8 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         } just runs
 
@@ -1189,20 +1182,19 @@ class ChatbotPresenterTest {
                     any(),
                     any(),
                     any()
-                ), any()
+                ),
+                any()
             )
         }
-
     }
 
     @Test
-    fun `mapToVisitable success` () {
-
+    fun `mapToVisitable success`() {
         val mockkVisitable = mockk<Visitable<*>>(relaxed = true)
 
         every {
             chatBotWebSocketMessageMapper.map(any())
-        }  returns mockkVisitable
+        } returns mockkVisitable
 
         presenter.mapToVisitable(ChatSocketPojo())
 
@@ -1218,10 +1210,8 @@ class ChatbotPresenterTest {
         assertNotNull(actionBubbleUiModel)
     }
 
-
     @Test
     fun `clearText success`() {
-
         every {
             view.clearChatText()
         } just runs
@@ -1235,7 +1225,6 @@ class ChatbotPresenterTest {
 
     @Test
     fun `showErrorSnackbar success`() {
-
         every {
             view.showSnackbarError(any())
         } just runs
@@ -1257,12 +1246,7 @@ class ChatbotPresenterTest {
 
     @Test
     fun `updateMappedPojo ratingList success`() {
-
     }
-
-
-
-
 
     private fun createActionBubble(): ChatActionBubbleViewModel {
         return ChatActionBubbleViewModel(
@@ -1272,7 +1256,7 @@ class ChatbotPresenterTest {
         )
     }
 
-    private fun getAttachSingleInvoiceUiModel(hashMap : Map<String, String>) : AttachInvoiceSingleViewModel {
+    private fun getAttachSingleInvoiceUiModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel {
         return AttachInvoiceSingleViewModel(
             typeString = "",
             type = 0,
@@ -1289,7 +1273,7 @@ class ChatbotPresenterTest {
         )
     }
 
-    private fun getMapForArticleEntry() :  Map<String, String> {
+    private fun getMapForArticleEntry(): Map<String, String> {
         return mapOf(
             ChatbotConstant.ChatbotUnification.ARTICLE_ID to "1",
             ChatbotConstant.ChatbotUnification.ARTICLE_TITLE to "2",
@@ -1308,5 +1292,4 @@ class ChatbotPresenterTest {
             ChatbotConstant.ChatbotUnification.USED_BY to "Article"
         )
     }
-
 }
