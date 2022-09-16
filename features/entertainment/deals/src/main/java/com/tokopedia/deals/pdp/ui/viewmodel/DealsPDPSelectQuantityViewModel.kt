@@ -139,10 +139,10 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
     fun mapOldProductDetailData(productDetailData: ProductDetailData): DealsDetailsResponse {
         val dealsOldProductDetailData =  DealsDetailsResponse()
         dealsOldProductDetailData.apply {
-            id = productDetailData.id.toIntSafely()
-            brandId = productDetailData.brandId.toIntSafely()
-            categoryId = productDetailData.categoryId.toIntSafely()
-            providerId = productDetailData.providerId.toIntSafely()
+            id = productDetailData.id.toIntSafely().toLong()
+            brandId = productDetailData.brandId.toIntSafely().toLong()
+            categoryId = productDetailData.categoryId.toIntSafely().toLong()
+            providerId = productDetailData.providerId.toIntSafely().toLong()
             providerProductId = productDetailData.providerProductId
             providerProductName = productDetailData.providerProductName
             displayName = productDetailData.displayName
@@ -150,8 +150,8 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
             imageWeb = productDetailData.imageWeb
             thumbnailWeb = productDetailData.thumbnailWeb
             longRichDesc = productDetailData.longRichDesc
-            mrp = productDetailData.mrp.toIntSafely()
-            salesPrice = productDetailData.salesPrice.toIntSafely()
+            mrp = productDetailData.mrp.toIntSafely().toLong()
+            salesPrice = productDetailData.salesPrice.toIntSafely().toLong()
             quantity = productDetailData.quantity.toIntSafely()
             soldQuantity = productDetailData.soldQuantity.toIntSafely()
             sellRate = productDetailData.sellRate.toIntSafely()
