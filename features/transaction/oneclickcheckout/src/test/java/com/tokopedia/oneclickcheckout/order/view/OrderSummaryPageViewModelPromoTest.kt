@@ -727,9 +727,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             (orderSummaryPageViewModel.globalEvent.value as OccGlobalEvent.ToasterInfo).message
         )
     }
-    // un show toaster
+
+    // show toaster for un-apply bo
     @Test
-    fun `un show bo stacking toaster error message`() {
+    fun `show shipping adjustment toaster`() {
         //Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -742,10 +743,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         //When
         orderSummaryPageViewModel.validateBboStacking()
         //Then
-        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
+        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.AdjustShippingToaster)
     }
-    // no promo bo
 
+    // no promo bo
     @Test
     fun `un-Apply Bbo promo`() {
         //Given
@@ -761,6 +762,48 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.validateBboStacking()
         //then
         assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+    }
+
+    //case
+    // apply bo
+    @Test
+    fun `didn't show any toaster if no promo un-apply or unstacked`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isApplyLogisticPromo = false)
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        code = "bbo",
+                        shippingId = 1,
+                        spId = 1,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green"),
+                    )
+                )
+            )
+        )
+
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //then
+        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
+    }
+
+    @Test
+    fun `didn't show any toaster if no promo validate`() {
+        //Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isApplyLogisticPromo = false)
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = null
+
+        //When
+        orderSummaryPageViewModel.validateBboStacking()
+        //then
+        assertTrue( orderSummaryPageViewModel.globalEvent.value is OccGlobalEvent.Normal)
     }
 
     @Test
