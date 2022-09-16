@@ -93,7 +93,7 @@ class PayLaterActivationViewModel @Inject constructor(
                 var combination = -1
                 for (i in variant.products.indices) {
                     if (selectedProductId == variant.products[i].productID) {
-                        combination = variant.products[i].combination[0] ?: -1
+                        combination = variant.products[i].combination.firstOrNull() ?: -1
                         break
                     }
                 }
