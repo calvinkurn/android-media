@@ -126,7 +126,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private fun showNavigateBackToolbar(isShow: Boolean) {
         binding?.unifyToolbar?.apply {
             isShowBackButton = isShow
-            //viewModelActivity.isAllowBackPressed(isShow)
             if (isShow) {
                 actionText = RedefineRegisterEmailConstants.EMPTY_STRING
                 setNavigationOnClickListener {
