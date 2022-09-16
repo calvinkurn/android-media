@@ -1684,7 +1684,8 @@ object DynamicProductDetailTracking {
                                               ratesEstimateData: P2RatesEstimateData?,
                                               buyerDistrictId: String,
                                               sellerDistrictId: String,
-                                              lcaWarehouseId: String, campaignId: String,
+                                              lcaWarehouseId: String,
+                                              campaignId: String,
                                               variantId: String ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
