@@ -394,7 +394,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun getConfiguration(selectedAccount: ContentAccountUiModel) {
-        _observableConfigInfo.value = NetworkResult.Loading
         viewModelScope.launchCatchError(block = {
 
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
@@ -1577,6 +1576,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleSwitchAccount() {
+        _observableConfigInfo.value = NetworkResult.Loading
+
         val currentSelected = switchAccount(
             when (_selectedAccount.value.type) {
                 TYPE_SHOP -> TYPE_USER
