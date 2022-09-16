@@ -34,30 +34,31 @@ import com.tokopedia.usecase.coroutines.Success
 @Composable
 fun CampaignListScreen(viewModel: CampaignListViewModel) {
     Column(modifier = Modifier.fillMaxSize()) {
-        SearchBar()
-        SortFilter(onDismissed = { viewModel.getCampaignList() })
-        List(viewModel = viewModel)
-    }
-}
+        val response = viewModel.getCampaignListResult.observeAsState()
 
-@Composable
-fun List(viewModel: CampaignListViewModel) {
-    val data = viewModel.getCampaignListResult.observeAsState()
-    if (data.value is Success) {
-        val items =
-            (data.value as Success<GetCampaignListV2Response>).data.getCampaignListV2.campaignList
-        val formattedCampaigns = viewModel.mapCampaignListDataToActiveCampaignList(items)
-        LazyColumn {
-            items(formattedCampaigns) {
-                CampaignItem(it)
-            }
+        SearchBar(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
+        SortFilter(modifier = Modifier.padding(horizontal = 16.dp), onDismissed = { viewModel.getCampaignList() })
+        Ticker(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
+
+        if (response.value is Success) {
+            val items = (response.value as Success<GetCampaignListV2Response>).data.getCampaignListV2.campaignList
+            val formattedCampaigns = viewModel.mapCampaignListDataToActiveCampaignList(items)
+            List(campaigns = formattedCampaigns)
         }
     }
-
 }
 
 @Composable
-private fun SearchBar() {
+fun List(campaigns : List<ActiveCampaign>) {
+    LazyColumn {
+        items(campaigns) {
+            CampaignItem(it)
+        }
+    }
+}
+
+@Composable
+private fun SearchBar(modifier: Modifier = Modifier) {
     val editorAction : (TextView, Int , KeyEvent) -> Boolean = { textView, actionId, event ->
         if (actionId == EditorInfo.IME_ACTION_SEARCH || event.keyCode == KeyEvent.KEYCODE_ENTER) {
             val query = textView.text.toString()
@@ -68,9 +69,9 @@ private fun SearchBar() {
             false
         }
     }
-    ComposeSearchBar(modifier = Modifier
-        .padding(16.dp)
-        .fillMaxWidth(),
+    ComposeSearchBar(
+        modifier = modifier.fillMaxWidth(),
+        placeholderText = stringResource(id = R.string.search_active_campaign),
         onTextChanged = { text ->
 
         }, onEditorAction = editorAction
@@ -79,7 +80,7 @@ private fun SearchBar() {
 }
 
 @Composable
-private fun SortFilter(onDismissed : () -> Unit) {
+private fun SortFilter(modifier: Modifier = Modifier, onDismissed : () -> Unit) {
     val campaignStatus = SortFilterItem(
         stringResource(id = R.string.campaign_list_label_status),
         ChipsUnify.TYPE_NORMAL,
@@ -95,11 +96,19 @@ private fun SortFilter(onDismissed : () -> Unit) {
     val items = arrayListOf(campaignStatus, campaignType)
 
     ComposeSortFilter(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         items = items,
         onDismissed = onDismissed
+    )
+}
+
+@Composable
+private fun Ticker(modifier: Modifier = Modifier) {
+    ComposeTicker(
+        modifier = modifier.fillMaxWidth(),
+        text = stringResource(id = R.string.another_campaign_type_wording),
+        onHyperlinkClicked = {},
+        onDismissed = {}
     )
 }
 

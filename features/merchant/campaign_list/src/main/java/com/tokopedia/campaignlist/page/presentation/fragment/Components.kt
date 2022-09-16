@@ -9,9 +9,15 @@ import com.tokopedia.campaignlist.common.util.onTextChanged
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 @Composable
-fun ComposeSortFilter(modifier: Modifier = Modifier, items : ArrayList<SortFilterItem>, onDismissed: () -> Unit) {
+fun ComposeSortFilter(
+    modifier: Modifier = Modifier,
+    items: ArrayList<SortFilterItem>,
+    onDismissed: () -> Unit
+) {
     AndroidView(
         modifier = modifier,
         factory = { context ->
@@ -30,7 +36,12 @@ fun ComposeSortFilter(modifier: Modifier = Modifier, items : ArrayList<SortFilte
 }
 
 @Composable
-fun ComposeSearchBar(modifier: Modifier = Modifier, onTextChanged : (String) -> Unit, onEditorAction: (TextView, Int, KeyEvent) -> Boolean) {
+fun ComposeSearchBar(
+    modifier: Modifier = Modifier,
+    placeholderText: String,
+    onTextChanged: (String) -> Unit,
+    onEditorAction: (TextView, Int, KeyEvent) -> Boolean
+) {
     AndroidView(
         modifier = modifier,
         factory = { context ->
@@ -42,7 +53,39 @@ fun ComposeSearchBar(modifier: Modifier = Modifier, onTextChanged : (String) -> 
                     onEditorAction(textView, actionId, event)
                 }
                 showIcon = false
-                searchBarPlaceholder = ""
+                searchBarPlaceholder = placeholderText
+            }
+        },
+        update = { view ->
+
+        }
+    )
+}
+
+@Composable
+fun ComposeTicker(
+    modifier: Modifier = Modifier,
+    text: CharSequence,
+    onHyperlinkClicked: (CharSequence) -> Unit = {},
+    onDismissed: () -> Unit = {}
+) {
+    AndroidView(
+        modifier = modifier,
+        factory = { context ->
+            Ticker(context).apply {
+                setTextDescription(text)
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        onHyperlinkClicked(linkUrl)
+                    }
+
+                    override fun onDismiss() {
+                        onDismissed()
+                    }
+
+                })
+                tickerShape = Ticker.SHAPE_LOOSE
+                tickerType = Ticker.TYPE_ANNOUNCEMENT
             }
         },
         update = { view ->
