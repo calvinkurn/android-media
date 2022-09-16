@@ -38,18 +38,18 @@ class TopAdsHeadlineViewModelTest {
 
     @Test
     fun `getTopAdsHeadlineData is success`() {
-        val actual = "applink"
-        var expected = ""
+        val expected = "applink"
+        var actual = ""
         every { topAdsAddressHelper.getAddressData() } returns mockk(relaxed = true)
         every { topAdsHeadlineUseCase.setParams(any(), any()) } just Runs
         coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
             displayAds = CpmModel(
-                data = mutableListOf(CpmData(applinks = actual))
+                data = mutableListOf(CpmData(applinks = expected))
             )
         )
         viewModel.getTopAdsHeadlineData(
             "",
-            onSuccess = { expected = it.data.first().applinks },
+            onSuccess = { actual = it.data.first().applinks },
             onError = {})
 
         Assert.assertEquals(expected, actual)
@@ -57,7 +57,7 @@ class TopAdsHeadlineViewModelTest {
 
     @Test
     fun `getTopAdsHeadlineData is empty`() {
-        var expected = false
+        var actual = false
         every { topAdsAddressHelper.getAddressData() } returns mockk(relaxed = true)
         every { topAdsHeadlineUseCase.setParams(any(), any()) } just Runs
         coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
@@ -68,9 +68,9 @@ class TopAdsHeadlineViewModelTest {
         viewModel.getTopAdsHeadlineData(
             "",
             onSuccess = {},
-            onError = {expected = true})
+            onError = {actual = true})
 
-        Assert.assertTrue(expected)
+        Assert.assertTrue(actual)
     }
 
     @Test()

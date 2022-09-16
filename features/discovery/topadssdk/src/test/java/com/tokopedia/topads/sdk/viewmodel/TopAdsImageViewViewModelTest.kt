@@ -44,6 +44,29 @@ class TopAdsImageViewViewModelTest {
     }
 
     @Test
+    fun `test get_query_params verify`() {
+        every {
+            topAdsImageViewUseCase.getQueryMap(any(), any(), any(), any(), any(), any())
+        } returns mutableMapOf()
+
+        val result = viewModel.getQueryParams("query", "", "", 4, 5, "", "", "1")
+
+        verify {
+            topAdsImageViewUseCase.getQueryMap(
+                "query",
+                "",
+                "",
+                4,
+                5,
+                "",
+                "",
+                "1"
+            )
+        }
+
+    }
+
+    @Test
     fun `test get_query_params default`() {
         val actual = "query"
         every {
