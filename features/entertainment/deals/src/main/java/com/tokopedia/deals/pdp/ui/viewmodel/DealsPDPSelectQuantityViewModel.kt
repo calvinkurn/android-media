@@ -137,7 +137,7 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
     }
 
     fun mapOldProductDetailData(productDetailData: ProductDetailData): DealsDetailsResponse {
-        val dealsOldProductDetailData =  DealsDetailsResponse()
+        val dealsOldProductDetailData = DealsDetailsResponse()
         dealsOldProductDetailData.apply {
             id = productDetailData.id.toIntSafely().toLong()
             brandId = productDetailData.brandId.toIntSafely().toLong()
@@ -296,7 +296,7 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
         return dateFormat.format(dateMilis).toString()
     }
 
-    private suspend fun verifyCheckout(dealsVerifyRequest: DealsVerifyRequest) : Result<DealsVerifyResponse> {
+    private suspend fun verifyCheckout(dealsVerifyRequest: DealsVerifyRequest): Result<DealsVerifyResponse> {
         val dealsVerifyResponse = withContext(dispatcher.io) {
             dealsPDPVerifyUseCase.execute(dealsVerifyRequest)
         }
