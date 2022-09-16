@@ -264,17 +264,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected && !it.productData.isUiRatesHidden }
                 ?: shippingCourierViewModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden }
                 ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden }
-        if (selectedShippingCourierUiModel == null) {
-            return Pair(
-                    OrderShipment(
-                            isLoading = false,
-                            serviceName = shipping.serviceName,
-                            serviceDuration = shipping.serviceDuration,
-                            isHideChangeCourierCard = shipping.isHideChangeCourierCard,
-                            serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE,
-                            shippingRecommendationData = shippingRecommendationData),
-                    null)
-        }
+                ?: shippingCourierViewModelList.first()
         var flagNeedToSetPinpoint = false
         var errorMessage: String? = null
         var shippingErrorId: String? = null
