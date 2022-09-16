@@ -81,6 +81,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -2281,6 +2282,7 @@ class NewShopPageFragment :
             type = LinkerData.SHOP_TYPE
             uri = shopPageHeaderDataModel?.shopCoreUrl
             id = shopPageHeaderDataModel?.shopId
+            linkAffiliateType = AffiliateLinkType.SHOP.value
         })
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
@@ -2851,6 +2853,7 @@ class NewShopPageFragment :
                 ogImageUrl = shareModel.ogImgUrl
             }
             isAffiliate = shareModel.isAffiliate
+            linkAffiliateType = AffiliateLinkType.SHOP.value
         })
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
