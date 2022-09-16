@@ -451,8 +451,17 @@ class DiscoveryFragment :
         setAdapter()
         discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         pageEndPoint = discoveryViewModel.pageIdentifier
+        checkForSamePageOpened()
         fetchDiscoveryPageData()
         setUpObserver()
+    }
+
+    private fun checkForSamePageOpened() {
+        discoveryViewModel.checkForSamePageOpened(
+            discoveryViewModel.getQueryParameterMapFromBundle(
+                arguments
+            )
+        )
     }
 
     private fun setAdapter() {

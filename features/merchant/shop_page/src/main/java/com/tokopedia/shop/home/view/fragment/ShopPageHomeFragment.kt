@@ -880,7 +880,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     private fun sendClickAddToCartTracker(atcTrackerModel: ShopPageAtcTracker) {
-        shopPageHomeTracking.onClickProductAtcButton(
+        shopPageHomeTracking.onClickProductAtcDirectPurchaseButton(
             atcTrackerModel,
             shopId,
             customDimensionShopPage.shopType.orEmpty(),
@@ -2234,16 +2234,18 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         position: Int,
         name: String
     ) {
-        val productPosition = if (name == ShopPageConstant.ShopProductCardAtc.CARD_HOME) {
-            position - shopHomeAdapter.getAllProductWidgetPosition()
-        } else {
-            position
+        if(isEnableDirectPurchase) {
+            val productPosition = if (name == ShopPageConstant.ShopProductCardAtc.CARD_HOME) {
+                position - shopHomeAdapter.getAllProductWidgetPosition()
+            } else {
+                position
+            }
+            trackImpressionProductAtc(
+                shopHomeProductUiModel,
+                ShopUtil.getActualPositionFromIndex(productPosition),
+                name
+            )
         }
-        trackImpressionProductAtc(
-            shopHomeProductUiModel,
-            ShopUtil.getActualPositionFromIndex(productPosition),
-            name
-        )
     }
 
     private fun trackImpressionProductAtc(
@@ -2251,7 +2253,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         position: Int,
         widgetName: String
     ) {
-        shopPageHomeTracking.onImpressionProductAtcButton(
+        shopPageHomeTracking.onImpressionProductAtcDirectPurchaseButton(
             shopHomeProductUiModel,
             widgetName,
             position,
