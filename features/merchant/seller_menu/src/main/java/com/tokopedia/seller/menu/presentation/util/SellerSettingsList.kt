@@ -131,7 +131,6 @@ object SellerSettingsList {
 
     }
 
-
     private fun trackingAliasMap(context: Context): Map<String, String?> {
         return mapOf<String, String?>(
             context.getString(R.string.setting_menu_set_shipment_method) to SHIPPING_SERVICE_ALIAS,
