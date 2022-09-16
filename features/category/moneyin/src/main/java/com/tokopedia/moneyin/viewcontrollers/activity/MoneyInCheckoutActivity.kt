@@ -214,12 +214,11 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
 
     private fun setCourierRatesBottomSheet(data: RatesV4.Data) {
         val courierBtn = findViewById<UnifyButton>(R.id.courier_btn)
-        val firstProduct = data.services.first().products.firstOrNull()
-        firstProduct?.let {
-            spId = firstProduct.shipper.shipperProduct.id
+        data.services.first().products.firstOrNull()?.let {
+            spId = it.shipper.shipperProduct.id
             val moneyInCourierBottomSheet = MoneyInCourierBottomSheet.newInstance(
-                firstProduct.features.moneyIn,
-                firstProduct.shipper.shipperProduct.description
+                it.features.moneyIn,
+                it.shipper.shipperProduct.description
             )
             courierBtn.setOnClickListener {
                 sendGeneralEvent(
@@ -234,7 +233,7 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
             }
             moneyInCourierBottomSheet.setActionListener(this)
             val totalPaymentValue = findViewById<Typography>(R.id.tv_total_payment_value) as Typography
-            totalPaymentValue.text = firstProduct.price.text
+            totalPaymentValue.text = it.price.text
         }
     }
 
