@@ -72,7 +72,9 @@ class DealsPDPShare(private val activity: WeakReference<Activity>) {
                 data.title,
                 titleShare,
                 TkpdBaseURL.WEB_DOMAIN + context.resources.getString(
-                com.tokopedia.deals.R.string.deals_pdp_share_web_link, data.seoUrl),
+                com.tokopedia.deals.R.string.deals_pdp_share_web_link,
+                    data.seoUrl
+                ),
                 context
             )
             doneLoadShare()

@@ -38,7 +38,7 @@ import javax.inject.Inject
 class DealsPDPSelectQuantityViewModel @Inject constructor(
     private val dealsPDPVerifyUseCase: DealsPDPVerifyUseCase,
     private val dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     var currentQuantity: Int = Int.ONE
     private val _inputVerifyState = MutableSharedFlow<DealsVerifyRequest>(Int.ONE)
@@ -120,9 +120,9 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
                         webAppUrl = it.webAppUrl,
                         productWebUrl = it.productWebUrl,
                         passengerForms = it.passengerForms.map {
-                            com.tokopedia.digital_deals.data.PassengerForm (
+                            com.tokopedia.digital_deals.data.PassengerForm(
                                 passengerInformation = it.passengerInformation.map {
-                                    com.tokopedia.digital_deals.data.PassengerInformation (
+                                    com.tokopedia.digital_deals.data.PassengerInformation(
                                         name = it.name,
                                         title = it.title,
                                         value = it.value
@@ -192,7 +192,7 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
         return dealsOldProductDetailData
     }
 
-    private fun mapVerifyRequest(dealsResponse: ProductDetailData): DealsVerifyRequest{
+    private fun mapVerifyRequest(dealsResponse: ProductDetailData): DealsVerifyRequest {
         return DealsVerifyRequest(
             book = true,
             checkout = false,

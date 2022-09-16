@@ -44,7 +44,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 
-class DealsPDPViewModel @Inject constructor (
+class DealsPDPViewModel @Inject constructor(
     private val dealsPDPDetailUseCase: DealsPDPDetailUseCase,
     private val dealsPDPEventContentUseCase: DealsPDPEventContentUseCase,
     private val dealsPDPRecommendationUseCase: DealsPDPRecommendationUseCase,
@@ -53,7 +53,7 @@ class DealsPDPViewModel @Inject constructor (
     private val dealsPDPRecommendTrackingUseCase: DealsPDPRecommendTrackingUseCase,
     private val dealsPDPRecentSearchTrackingUseCase: DealsPDPRecentSearchTrackingUseCase,
     private val dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _inputPDPState = MutableSharedFlow<String>(Int.ONE)
     private val _inputContentState = MutableSharedFlow<String>(Int.ONE)
@@ -188,9 +188,11 @@ class DealsPDPViewModel @Inject constructor (
     fun productImagesMapper(productDetail: ProductDetailData): List<String> {
         val images = mutableListOf<String>()
         if (productDetail.media.isNotEmpty()) {
-            images.addAll(productDetail.media.map {
-                it.url
-            })
+            images.addAll(
+                productDetail.media.map {
+                    it.url
+                }
+            )
         } else {
             images.add(productDetail.imageApp)
         }

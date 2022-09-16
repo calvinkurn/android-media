@@ -327,7 +327,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
     }
 
     private fun updateRating(productId: String, isLiked: Boolean) {
-        if(userSession.isLoggedIn) {
+        if (userSession.isLoggedIn) {
             viewModel.updateRating(productId, userSession.userId, isLiked)
         } else {
             context?.let { context ->
@@ -423,7 +423,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
     }
 
     private fun showBrand(data: ProductDetailData) {
-        if (data.outlets.size.isMoreThanZero()){
+        if (data.outlets.size.isMoreThanZero()) {
             clOutlets?.show()
             if (data.outlets.size == Int.ONE) {
                 tgAllLocation?.hide()
@@ -446,7 +446,9 @@ class DealsPDPFragment : BaseDaggerFragment() {
             tgBrandName?.text = data.brand.title
             tgNumberOfLocation?.text = String.format(
                 getString(com.tokopedia.deals.R.string.deals_pdp_number_of_items,
-                data.outlets.size))
+                    data.outlets.size
+                )
+            )
             ivBrandLogo?.loadImage(data.brand.featuredThumbnailImage)
 
             ivBrandLogo?.setOnClickListener {
@@ -547,8 +549,13 @@ class DealsPDPFragment : BaseDaggerFragment() {
                 btnCheckout?.setClickable(true)
                 btnCheckout?.text = context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_buy_now)
                 btnCheckout?.setOnClickListener {
-                    analytics.pdpCheckout(data.id, data.categoryId, data.salesPrice.toIntSafely().toLong(),
-                        data.displayName, data.brand.title)
+                    analytics.pdpCheckout(
+                        data.id,
+                        data.categoryId,
+                        data.salesPrice.toIntSafely().toLong(),
+                        data.displayName,
+                        data.brand.title
+                    )
                     dealsPDPCallbacks?.onSelectQuantityProduct(data)
                 }
             }
@@ -588,12 +595,14 @@ class DealsPDPFragment : BaseDaggerFragment() {
     }
 
     private fun updateExpiredDate(maxEndDate: String) {
-        tgExpiredDate?.text = String.format(getString(com.tokopedia.deals.R.string.deals_pdp_valid_through,
-            DealsUtils.convertEpochToString(maxEndDate.toIntSafely())))
+        tgExpiredDate?.text = String.format(
+            getString(com.tokopedia.deals.R.string.deals_pdp_valid_through,
+            DealsUtils.convertEpochToString(maxEndDate.toIntSafely())
+            )
+        )
     }
 
     private fun setRating(productId: String, likeCount: Int, isLiked: Boolean, isHideImageRating: Boolean = false) {
-
         if (isHideImageRating) {
             imgFavorite?.hide()
         } else {
@@ -608,7 +617,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
             }
         }
 
-        if(getIsLiked()) {
+        if (getIsLiked()) {
             imgFavorite?.setImageResource(com.tokopedia.deals.R.drawable.ic_wishlist_filled)
         } else {
             imgFavorite?.setImageResource(com.tokopedia.deals.R.drawable.ic_wishlist_unfilled)
@@ -650,7 +659,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
                 override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                     context?.let { context ->
                         val menuSize = toolbar?.menu?.size() ?: Int.ZERO
-                        if(menuSize > Int.ZERO) {
+                        if (menuSize > Int.ZERO) {
                             var colorInt = Int.ZERO
                             var headerTitle = ""
                             val appVerticalOffset = Math.abs(verticalOffset)
@@ -733,8 +742,10 @@ class DealsPDPFragment : BaseDaggerFragment() {
 
                     override fun onClickDealsProduct(pdpUrl: String, productDetail: EventProductDetail, index: Int) {
                         analytics.pdpRecommendationClick(
-                            productDetail.id, (index + Int.ONE), productDetail.salesPrice.toLong(),
-                            productDetail.displayName, productDetail.brand.title
+                            productDetail.id, (index + Int.ONE),
+                            productDetail.salesPrice.toLong(),
+                            productDetail.displayName,
+                            productDetail.brand.title
                         )
                         RouteManager.route(context, pdpUrl)
                     }

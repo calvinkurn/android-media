@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.databinding.ItemDealsPdpImageSliderBinding
 import com.tokopedia.media.loader.loadImage
 
-class WidgetDealsPDPCarouselAdapter(private val images : MutableList<String>):
+class WidgetDealsPDPCarouselAdapter(private val images: MutableList<String>) :
     RecyclerView.Adapter<WidgetDealsPDPCarouselAdapter.SliderViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SliderViewHolder {

@@ -16,7 +16,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 
-
 class DealsRecommendationAdapter(private val recommendationListener: RecommendationListener?) : RecyclerView.Adapter<DealsRecommendationAdapter.ViewHolder>() {
 
     private var products: MutableList<EventProductDetail> = mutableListOf()
