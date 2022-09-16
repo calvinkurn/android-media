@@ -705,7 +705,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 // Promo is clashing. Need to reload promo page
                 setApplyPromoStateClashing()
             } else {
-                if (validateUsePromoRevampUiModel.promoUiModel.success) {
+                if (validateUsePromoRevampUiModel.promoUiModel.globalSuccess) {
                     handleApplyPromoSuccess(selectedPromoList, validateUsePromoRevampUiModel, validateUsePromoRequest)
                 } else {
                     handleApplyPromoFailed(selectedPromoList, validateUsePromoRevampUiModel)
@@ -846,25 +846,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             isGlobalSuccess = true
         }
 
-        // Check all promo merchant is success
-        // Update : This logic might be unnecessary,
-        // since if global success is true, all voucher order status shoulbe success
-//        // temporary disabled for bo unstack
-//        var successCount = 0
-//        responseValidatePromo.voucherOrderUiModels.forEach { voucherOrder ->
-//            if (voucherOrder.success) {
-//                successCount++
-//            } else {
-//                // If one of promo merchant is error, then show error message
-//                val exception = PromoErrorException(voucherOrder.messageUiModel.text)
-//                PromoCheckoutLogger.logOnErrorApplyPromo(exception)
-//                // Notify fragment apply promo to stop loading
-//                setApplyPromoStateFailed(exception, selectedPromoList)
-//                sendAnalyticsOnErrorApplyPromo(exception, selectedPromoList)
-//            }
-//        }
-
-        if (isGlobalSuccess /*|| successCount == responseValidatePromo.voucherOrderUiModels.size*/) {
+        if (isGlobalSuccess) {
             var selectedRecommendationCount = 0
             promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {
                 if (selectedPromoList.contains(it)) selectedRecommendationCount++
@@ -948,15 +930,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun setApplyPromoStateSuccess(request: ValidateUsePromoRequest, response: ValidateUsePromoRevampUiModel) {
-        // TEMPORARY, uncomment to force BO code to red state
-//        for (voucherOrderUiModel in response.promoUiModel.voucherOrderUiModels) {
-//            val uniqueId = voucherOrderUiModel.uniqueId
-//            if (voucherOrderUiModel.code in bboPromoCodes) {
-//                voucherOrderUiModel.messageUiModel.state = "red"
-//            }
-//        }
-        // TEMPORARY, uncomment to add error message
-//        response.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message = "Pengiriman disesuaikan untuk promo yang kamu pilih."
         applyPromoResponseAction.value?.let {
             it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CALLER_PAGE
             it.data = response
