@@ -138,9 +138,9 @@
     <string name="stfs_remaining_quota_placeholder"><![CDATA[<b>%d</b>]]>/%2d Produk</string>
     <string name="stfs_proposed_before_label">Ajukan sebelum</string>
     <string name="product_eligible_for_selection_card_title_placeholder">%d produkmu sedang diseleksi</string>
-    <string name="product_eligible_for_selection_end_date_placeholder">Proses seleksi akan selesai pada %s</string>
+    <string name="product_eligible_for_selection_end_date_placeholder">Proses seleksi akan selesai pada %s pukul %2s</string>
     <string name="product_eligible_card_title_placeholder">Yay, %d produkmu lolos seleksi!</string>
-    <string name="product_eligible_start_date_placeholder">Campaign akan dimulai pada %s</string>
+    <string name="product_eligible_start_date_placeholder">Campaign akan dimulai pada %s pukul %2s</string>
     <string name="stfs_proposed_label">Diajukan</string>
     <string name="stfs_accepted_label">Diterima</string>
     <string name="stfs_rejected_label">Ditolak</string>
