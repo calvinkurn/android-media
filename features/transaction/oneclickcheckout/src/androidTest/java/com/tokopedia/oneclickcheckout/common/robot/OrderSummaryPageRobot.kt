@@ -454,6 +454,7 @@ class OrderSummaryPageRobot {
                 view.findViewById<View>(R.id.btn_pay).performClick()
             }
         }))
+        Thread.sleep(1000)
         OrderSummaryPageResultRobot().apply(func)
     }
 
