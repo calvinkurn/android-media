@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
@@ -12,7 +14,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
 import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -27,6 +28,7 @@ class PostMapper @Inject constructor(
 
     companion object {
         private const val MAX_ITEM_PER_PAGE = 3
+        private const val MILLIS_1000 = 1000
     }
 
     private var dataKeys: List<DataKeyModel> = emptyList()
@@ -62,7 +64,7 @@ class PostMapper @Inject constructor(
         emphasizeType: Int?,
         maxDisplay: Int
     ): List<PostListPagerUiModel> {
-        val maxItemPerPage = if (maxDisplay == 0) {
+        val maxItemPerPage = if (maxDisplay == Int.ZERO) {
             MAX_ITEM_PER_PAGE
         } else {
             maxDisplay
@@ -90,7 +92,7 @@ class PostMapper @Inject constructor(
                             textEmphasizeType = PostListDataUiModel.TEXT_EMPHASIZED,
                             stateText = postItem.stateText.orEmpty(),
                             stateMediaUrl = postItem.stateMediaUrl.orEmpty(),
-                            shouldShowUnderLine = index != postList.size.minus(1),
+                            shouldShowUnderLine = index != postList.size.minus(Int.ONE),
                             isPinned = postItem.isPinned
                         )
                     }
@@ -107,9 +109,8 @@ class PostMapper @Inject constructor(
                                 if (postItem.countdownDate.isNullOrBlank()) {
                                     null
                                 } else {
-                                    val timeMillis = TimeUnit.SECONDS.toMillis(
-                                        postItem.countdownDate.toLongOrZero()
-                                    )
+                                    val timeMillis =
+                                        postItem.countdownDate.toLongOrZero().times(MILLIS_1000)
                                     Date(timeMillis)
                                 }
                             } catch (e: Exception) {

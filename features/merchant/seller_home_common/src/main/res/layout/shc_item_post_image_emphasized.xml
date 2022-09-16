@@ -58,6 +58,7 @@
         android:id="@+id/timerShcPostItemTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/tvPostTitle"
         app:layout_constraintTop_toBottomOf="@+id/tvPostDescription"

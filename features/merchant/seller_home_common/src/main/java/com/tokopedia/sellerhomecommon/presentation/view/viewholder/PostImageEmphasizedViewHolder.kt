@@ -30,6 +30,7 @@ class PostImageEmphasizedViewHolder(
         val RES_LAYOUT = R.layout.shc_item_post_image_emphasized
     }
 
+    private var alreadySetTimer = false
     private val binding by lazy {
         ShcItemPostImageEmphasizedBinding.bind(itemView)
     }
@@ -76,7 +77,7 @@ class PostImageEmphasizedViewHolder(
     private fun setupTimer(element: PostItemUiModel.PostImageEmphasizedUiModel) {
         binding.run {
             val deadLine = element.countdownDate
-            if (deadLine != null && deadLine.time >= Date().time) {
+            if (deadLine != null && deadLine.time >= Date().time && !alreadySetTimer) {
                 val timerBackground = root.context.getResColor(
                     com.tokopedia.unifyprinciples.R.color.Unify_T100
                 )
@@ -87,7 +88,9 @@ class PostImageEmphasizedViewHolder(
                 timerShcPostItemTimer.targetDate = Calendar.getInstance().apply {
                     time = element.countdownDate
                 }
+                alreadySetTimer = true
             } else {
+                alreadySetTimer = false
                 timerShcPostItemTimer.gone()
             }
         }
