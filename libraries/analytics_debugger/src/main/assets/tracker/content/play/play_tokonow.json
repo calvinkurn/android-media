@@ -213,7 +213,8 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "clickContent",
