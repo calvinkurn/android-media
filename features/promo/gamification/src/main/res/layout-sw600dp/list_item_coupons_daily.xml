@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="h,3:1"
-        android:background="@color/Neutral_N150"
+        android:background="@color/Unify_N150"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

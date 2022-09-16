@@ -75,7 +75,7 @@
                 android:layout_marginRight="@dimen/gami_dp_17"
                 android:ellipsize="end"
                 android:gravity="center_horizontal"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_4"
                 app:typographyWeight="bold"
                 android:text="@string/gami_kamu_melewatkan" />
@@ -90,7 +90,7 @@
                 android:layout_marginEnd="@dimen/gami_core_floating_egg_dp_22"
                 android:layout_marginRight="@dimen/gami_core_floating_egg_dp_22"
                 android:gravity="center_horizontal"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
                 android:text="@string/gami_coba_ikutan" />
