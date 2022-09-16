@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
@@ -34,12 +35,15 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.FintechWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.LoadingViewHolder
 import com.tokopedia.product.detail.view.viewholder.OneLinersViewHolder
 import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
@@ -57,6 +61,8 @@ import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofStockV
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductNotifyMeViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductReportViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductReviewViewHolder
@@ -196,6 +202,17 @@ class DynamicProductDetailAdapterFactoryImpl(
         return FintechWidgetViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductRecommendationVerticalDataModel): Int {
+        return ProductRecommendationVerticalViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductRecommendationVerticalPlaceholderDataModel): Int {
+        return ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT
+    }
+
+    override fun type(data: LoadingDataModel): Int {
+        return LoadingViewHolder.LAYOUT
+    }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -256,6 +273,10 @@ class DynamicProductDetailAdapterFactoryImpl(
                     )
                 } else super.createViewHolder(view, type)
             }
+            ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(view, listener)
+            ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT -> ProductRecommendationVerticalPlaceholderViewHolder(view, listener)
+            LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
+
             else -> super.createViewHolder(view, type)
         }
     }

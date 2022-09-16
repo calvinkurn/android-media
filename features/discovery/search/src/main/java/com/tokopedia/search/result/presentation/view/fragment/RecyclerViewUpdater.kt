@@ -35,7 +35,8 @@ class RecyclerViewUpdater @Inject constructor(
     fun initialize(
         recyclerView: RecyclerView?,
         rvLayoutManager: RecyclerView.LayoutManager?,
-        onScrollListener: RecyclerView.OnScrollListener?,
+        loadMoreScrollListener: RecyclerView.OnScrollListener?,
+        onBoardingScrollListener: RecyclerView.OnScrollListener?,
         productListTypeFactory: ProductListTypeFactory,
     ) {
         this.recyclerView = recyclerView
@@ -44,22 +45,25 @@ class RecyclerViewUpdater @Inject constructor(
             typeFactory = productListTypeFactory
         )
 
-        setupRecyclerView(rvLayoutManager, onScrollListener)
+        setupRecyclerView(rvLayoutManager, loadMoreScrollListener, onBoardingScrollListener)
     }
 
     private fun setupRecyclerView(
         rvLayoutManager: RecyclerView.LayoutManager?,
-        rvOnScrollListener: RecyclerView.OnScrollListener?,
+        loadMoreScrollListener: RecyclerView.OnScrollListener?,
+        onBoardingScrollListener: RecyclerView.OnScrollListener?,
     ) {
         rvLayoutManager ?: return
-        rvOnScrollListener ?: return
+        loadMoreScrollListener ?: return
+        onBoardingScrollListener ?: return
 
         this.recyclerView?.run {
             layoutManager = rvLayoutManager
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
-            addOnScrollListener(rvOnScrollListener)
+            addOnScrollListener(loadMoreScrollListener)
+            addOnScrollListener(onBoardingScrollListener)
         }
     }
 
