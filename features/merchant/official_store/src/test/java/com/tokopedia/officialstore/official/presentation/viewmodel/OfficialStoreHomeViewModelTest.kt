@@ -43,15 +43,11 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
-import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -104,16 +100,10 @@ class OfficialStoreHomeViewModelTest {
     lateinit var userSessionInterface: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
-
-    @RelaxedMockK
     lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
 
     @RelaxedMockK
     lateinit var topAdsWishlishedUseCase: TopAdsWishlishedUseCase
-
-    @RelaxedMockK
-    lateinit var removeWishListUseCase: RemoveWishListUseCase
 
     @RelaxedMockK
     lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
@@ -149,10 +139,8 @@ class OfficialStoreHomeViewModelTest {
             getOfficialStoreDynamicChannelUseCase,
             getRecommendationUseCase,
             userSessionInterface,
-            addWishListUseCase,
             addToWishlistV2UseCase,
             topAdsWishlishedUseCase,
-            removeWishListUseCase,
             deleteWishlistV2UseCase,
             getDisplayHeadlineAds,
             getRecommendationUseCaseCoroutine,
@@ -416,149 +404,6 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_recommendation_is_top_ads__when_add_to_wishlist__should_set_success_value() {
-        runBlocking {
-            val isTopAds = true
-            val wishList = WishlistModel()
-            val recommendation = RecommendationItem(isTopAds = isTopAds)
-            val callback = mockk<((Boolean, Throwable?) -> Unit)>()
-
-
-            coEvery {
-                topAdsWishlishedUseCase.createObservable(any())
-            } returns mockObservable(wishList)
-
-            viewModel.addWishlist(recommendation, callback)
-            coVerify { topAdsWishlishedUseCase.createObservable(any()) }
-
-            verify { callback.invoke(any(), any()) }
-
-            print(viewModel.topAdsWishlistResult)
-            Assert.assertTrue(viewModel.topAdsWishlistResult.value is Success)
-            callback.assertSuccess()
-        }
-    }
-
-    @Test
-    fun given_recommendation_is_top_ads__when_add_to_wishlist_failed__should_set_error_value() {
-        runBlocking {
-            val isTopAds = true
-            val error = NullPointerException()
-            val recommendation = RecommendationItem(isTopAds = isTopAds)
-            val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
-
-            coEvery {
-                topAdsWishlishedUseCase.createObservable(any())
-            } throws error
-
-            viewModel.addWishlist(recommendation, callback)
-            val expectedError = Fail(NullPointerException())
-            coVerify { topAdsWishlishedUseCase.createObservable(any()) }
-
-            viewModel.topAdsWishlistResult.assertError(expectedError)
-            callback.assertError(error)
-        }
-    }
-
-    @Test
-    fun given_recommendation_is_NOT_top_ads__when_add_to_wishlist__should_invoke_callback_success() {
-        runBlocking {
-            val isTopAds = false
-            val productId = "15000"
-            val userId = "11000"
-
-            val recommendation = createRecommendation(productId, isTopAds)
-            val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
-            onAddWishList_thenCompleteWith(productId, userId)
-            viewModel.addWishlist(recommendation, callback)
-            val listener = CapturingSlot<WishListActionListener>()
-
-            coVerify {
-                addWishListUseCase.createObservable(productId, userId, capture(listener))
-            }
-
-            listener.captured.onSuccessAddWishlist(productId)
-            callback.assertSuccess()
-        }
-    }
-
-    @Test
-    fun given_recommendation_is_NOT_top_ads__when_add_to_wishlist_failed__should_invoke_callback_error() {
-        runBlocking {
-            val isTopAds = false
-            val productId = "1900"
-            val userId = "1350"
-
-            val recommendation = createRecommendation(productId, isTopAds)
-            val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
-
-            onAddWishList_thenCompleteWith(productId, userId)
-            viewModel.addWishlist(recommendation, callback)
-
-            val expectedError = Throwable("Error Message")
-            val listener = CapturingSlot<WishListActionListener>()
-
-            coVerify {
-                addWishListUseCase.createObservable(productId, userId, capture(listener))
-            }
-
-            listener.captured.onErrorAddWishList(expectedError.message, productId)
-            callback.assertError(expectedError)
-        }
-    }
-
-    @Test
-    fun given_gql_call_success__when_remove_wishlist__should_invoke_callback_success() {
-        runBlocking {
-            val isTopAds = false
-            val productId = "15000"
-            val userId = "11000"
-
-            val recommendation = createRecommendation(productId, isTopAds)
-            val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
-
-            coEvery { userSessionInterface.userId } returns userId
-            coEvery { removeWishListUseCase.createObservable(productId, userId, any()) } returns Unit
-
-            viewModel.removeWishlist(recommendation, callback)
-            val listener = CapturingSlot<WishListActionListener>()
-
-            coVerify {
-                removeWishListUseCase.createObservable(productId, userId, capture(listener))
-            }
-
-            listener.captured.onSuccessRemoveWishlist(productId)
-            callback.assertSuccess()
-        }
-    }
-
-    @Test
-    fun given_gql_call_error__when_remove_wishlist__should_invoke_callback_error() {
-        runBlocking {
-            val isTopAds = false
-            val productId = "1900"
-            val userId = "1350"
-
-            val recommendation = createRecommendation(productId, isTopAds)
-            val callback = mockk<((Boolean, Throwable?) -> Unit)>(relaxed = true)
-
-            coEvery { userSessionInterface.userId } returns userId
-            coEvery { removeWishListUseCase.createObservable(productId, userId, any()) } returns Unit
-
-            viewModel.removeWishlist(recommendation, callback)
-            val expectedError = Throwable("Error Message")
-            val listener = CapturingSlot<WishListActionListener>()
-
-            coVerify {
-                removeWishListUseCase.createObservable(productId, userId, capture(listener))
-            }
-
-            listener.captured.onErrorRemoveWishlist(expectedError.message, productId)
-            callback.assertError(expectedError)
-        }
-    }
-
-    @Test
     fun given_get_headlineAds_success_when_get_osDynamicChannel_featured_shop_then_update_list() {
         val prefixUrl = "prefix"
         val slug = "slug"
@@ -672,11 +517,6 @@ class OfficialStoreHomeViewModelTest {
 
     private fun onGetDynamicChannel_thenReturn(list: List<OfficialStoreChannel>) {
         coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns list
-    }
-
-    private fun onAddWishList_thenCompleteWith(productId: String, userId: String) {
-        coEvery { userSessionInterface.userId } returns userId
-        coEvery { addWishListUseCase.createObservable(productId, userId, any()) } returns Unit
     }
 
     private fun createCategory(prefixUrl: String, slug: String): Category {

@@ -365,26 +365,6 @@ class OfficialHomeFragment :
         )
     }
 
-    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-        if (isLogin()) {
-            if (isAddWishlist) {
-                viewModel.addWishlist(item, callback)
-            } else {
-                viewModel.removeWishlist(item, callback)
-            }
-        } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-
-        tracking?.eventClickWishlist(
-                category?.title.toEmptyStringIfNull(),
-                isAddWishlist,
-                isLogin(),
-                item.productId,
-                item.isTopAds
-        )
-    }
-
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
         if (isLogin()) {
             if (isAddWishlist) {
@@ -983,22 +963,10 @@ class OfficialHomeFragment :
     }
 
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isSuccess)
-            if (isUsingWishlistV2) handleWishlistV2ActionSuccess(productCardOptionsModel)
-            else handleWishlistActionSuccess(productCardOptionsModel)
+            handleWishlistV2ActionSuccess(productCardOptionsModel)
         else
-            if (isUsingWishlistV2) showErrorWishlistV2(productCardOptionsModel.wishlistResult)
-            else showErrorWishlist()
-    }
-
-    private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isAddWishlist)
-            showSuccessAddWishlist()
-        else
-            showSuccessRemoveWishlist()
-
-        updateWishlist(productCardOptionsModel.wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
+            showErrorWishlistV2(productCardOptionsModel.wishlistResult)
     }
 
     private fun handleWishlistV2ActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
@@ -1008,16 +976,6 @@ class OfficialHomeFragment :
             showSuccessRemoveWishlistV2()
 
         updateWishlist(productCardOptionsModel.wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
-    }
-
-    private fun showSuccessAddWishlist() {
-        activity?.let { activity ->
-            val view = activity.findViewById<View>(android.R.id.content) ?: return
-
-            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-            Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { RouteManager.route(activity, ApplinkConst.WISHLIST) }.show()
-        }
     }
 
     private fun showSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
@@ -1039,28 +997,12 @@ class OfficialHomeFragment :
         }
     }
 
-    private fun showSuccessRemoveWishlist() {
-        activity?.let {
-            val view = it.findViewById<View>(android.R.id.content) ?: return
-            val message = getString(com.tokopedia.officialstore.R.string.msg_success_remove_wishlist)
-
-            Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
-        }
-    }
-
     private fun showSuccessRemoveWishlistV2() {
         activity?.let {
             val view = it.findViewById<View>(android.R.id.content) ?: return
             val message = getString(Rwishlist.string.on_success_remove_from_wishlist_msg)
 
             Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-        }
-    }
-
-    private fun showErrorWishlist() {
-        activity?.let {
-            val view = it.findViewById<View>(android.R.id.content) ?: return
-            Toaster.build(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG, TYPE_ERROR).show()
         }
     }
 
