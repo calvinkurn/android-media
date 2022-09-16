@@ -261,8 +261,20 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         shippingCourierViewModelList.forEach {
             it.isSelected = it.productData.shipperProductId == shipping.shipperProductId
         }
-        val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected }
-                ?: shippingCourierViewModelList.firstOrNull { it.productData.isRecommend } ?: shippingCourierViewModelList.first()
+        val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected && !it.productData.isUiRatesHidden }
+                ?: shippingCourierViewModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden }
+                ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden }
+        if (selectedShippingCourierUiModel == null) {
+            return Pair(
+                    OrderShipment(
+                            isLoading = false,
+                            serviceName = shipping.serviceName,
+                            serviceDuration = shipping.serviceDuration,
+                            isHideChangeCourierCard = shipping.isHideChangeCourierCard,
+                            serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE,
+                            shippingRecommendationData = shippingRecommendationData),
+                    null)
+        }
         var flagNeedToSetPinpoint = false
         var errorMessage: String? = null
         var shippingErrorId: String? = null
@@ -310,6 +322,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             return onRevampNewShippingFromRecommendation(shippingDurationUiModels, profileShipment, shippingRecommendationData)
         }
         val selectedShippingCourierUiModel = getSelectedCourierFromProfileSpId(profileShipment.spId, selectedShippingDurationUiModel.shippingCourierViewModelList)
+                ?: return onRevampNewShippingFromRecommendation(shippingDurationUiModels, profileShipment, shippingRecommendationData)
         val flagNeedToSetPinpoint = false
         val errorMessage: String? = null
         val shippingErrorId: String? = null
@@ -429,12 +442,16 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 preselectedSpId)
     }
 
-    private fun getSelectedCourierFromProfileSpId(spId: Int, shippingCourierViewModelList: List<ShippingCourierUiModel>): ShippingCourierUiModel {
-        return if (spId > 0) {
-            shippingCourierViewModelList.firstOrNull { it.productData.shipperProductId == spId }
-        } else {
-            shippingCourierViewModelList.firstOrNull { it.isSelected }
-        } ?: shippingCourierViewModelList.first()
+    private fun getSelectedCourierFromProfileSpId(spId: Int, shippingCourierViewModelList: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
+        var selectedCourier: ShippingCourierUiModel? = null
+        if (spId > 0) {
+            selectedCourier = shippingCourierViewModelList.firstOrNull { it.productData.shipperProductId == spId && !it.productData.isUiRatesHidden }
+        }
+        if (selectedCourier == null) {
+            selectedCourier = shippingCourierViewModelList.firstOrNull { it.isSelected && !it.productData.isUiRatesHidden }
+                    ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden }
+        }
+        return selectedCourier
     }
 
     private fun getShippingCourierETA(eta: EstimatedTimeArrival?): String? {
