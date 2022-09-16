@@ -48,8 +48,8 @@ class ProductDetailInfoExpandableImageViewHolder(
             expandableTitleChevron.setOnClickListener {
                 expandableTitleChevron.isExpand = expandableTitleChevron.isExpand != true
                 listener.closeAllExpand(
-                    element.uniqueIdentifier(), expandableTitleChevron.isExpand
-                        ?: false
+                    uniqueIdentifier = element.uniqueIdentifier(),
+                    toggle = expandableTitleChevron.isExpand
                 )
             }
         }

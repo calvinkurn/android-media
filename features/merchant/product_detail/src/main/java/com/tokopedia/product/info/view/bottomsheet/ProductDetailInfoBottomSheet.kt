@@ -34,23 +34,23 @@ import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
 import com.tokopedia.product.info.data.response.ShopNotesData
-import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableDataModel
-import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableImageDataModel
-import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableListDataModel
-import com.tokopedia.product.info.view.models.ProductDetailInfoVisitable
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.BsProductDetailInfoAdapter
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactoryImpl
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableImageDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableListDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoVisitable
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import timber.log.Timber
 
 /**
  * Created by Yehezkiel on 12/10/20
@@ -227,7 +227,9 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToCatalog(url: String, catalogName: String) {
         DynamicProductDetailTracking.ProductDetailSheet.onCatalogBottomSheetClicked(
-            listener?.getPdpDataSource(), userSession.userId.orEmpty(), catalogName
+            productInfo = listener?.getPdpDataSource(),
+            userId = userSession.userId.orEmpty(),
+            catalogName = catalogName
         )
         goToApplink(url)
     }
@@ -235,7 +237,8 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     override fun goToCategory(url: String) {
         if (!GlobalConfig.isSellerApp()) {
             DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(
-                listener?.getPdpDataSource(), userSession.userId.orEmpty()
+                productInfo = listener?.getPdpDataSource(),
+                userId = userSession.userId.orEmpty()
             )
             goToApplink(url)
         }
@@ -243,7 +246,8 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToEtalase(url: String) {
         DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(
-            listener?.getPdpDataSource(), userSession.userId.orEmpty()
+            productInfo = listener?.getPdpDataSource(),
+            userId = userSession.userId.orEmpty()
         )
         goToApplink(url)
     }
@@ -257,18 +261,18 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         val data = listener?.getPdpDataSource() ?: return
 
         ProductEducationalHelper.goToEducationalBottomSheet(
-            context,
-            url,
-            data.basic.productID,
-            data.basic.shopID
+            context = context,
+            url = url,
+            productId = data.basic.productID,
+            shopId = data.basic.shopID
         )
 
         ProductDetailBottomSheetTracking.clickInfoItem(
-            data,
-            userSession.userId,
-            infoTitle,
-            infoValue,
-            position
+            productInfo = data,
+            userId = userSession.userId,
+            infoTitle = infoTitle,
+            infoValue = infoValue,
+            position = position
         )
     }
 
@@ -305,12 +309,13 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     override fun goToShopNotes(shopNotesData: ShopNotesData) {
         context?.let {
             DynamicProductDetailTracking.ProductDetailSheet.onShopNotesClicked(
-                listener?.getPdpDataSource(),
-                userSession.userId.orEmpty(),
-                shopNotesData.title
+                productInfo = listener?.getPdpDataSource(),
+                userId = userSession.userId.orEmpty(),
+                shopNotesTitle = shopNotesData.title
             )
             val bsShopNotes = ProductDetailBottomSheetBuilder.getShopNotesBottomSheet(
-                context = it, shopNotesData = shopNotesData
+                context = it,
+                shopNotesData = shopNotesData
             )
             bsShopNotes.show(childFragmentManager, "shopNotes")
         }
@@ -318,8 +323,8 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToSpecification(annotation: List<ProductDetailInfoContent>) {
         DynamicProductDetailTracking.ProductDetailSheet.onSpecificationClick(
-            listener?.getPdpDataSource(),
-            userSession.userId.orEmpty()
+            productInfo = listener?.getPdpDataSource(),
+            userId = userSession.userId.orEmpty()
         )
         val bs = ProductAnnotationBottomSheet()
         bs.getData(annotation)
@@ -331,7 +336,11 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     override fun closeAllExpand(uniqueIdentifier: Int, toggle: Boolean) {
-        productDetailInfoAdapter.closeAllExpanded(uniqueIdentifier, toggle, currentList ?: listOf())
+        productDetailInfoAdapter.closeAllExpanded(
+            uniqueIdentifier = uniqueIdentifier,
+            toggle = toggle,
+            currentData = currentList.orEmpty()
+        )
     }
 
     override fun onCustomInfoClicked(url: String) {

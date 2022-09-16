@@ -207,7 +207,6 @@ object ProductDetailInfoMapper {
         return listOfComponent
     }
 
-
     private fun generateHeaderDetailSpecification(
         componentId: Int,
         parcelData: ProductInfoParcelData
