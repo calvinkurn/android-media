@@ -57,7 +57,7 @@ class PlayVoucherView : FrameLayout {
     }
 
     private fun getDescription(voucherSize: Int): String =
-        if (voucherSize == 1) context.getString(R.string.play_product_voucher_header_empty_desc) else context.getString(
+        if (voucherSize == 0) context.getString(R.string.play_product_voucher_header_empty_desc) else context.getString(
             R.string.play_product_voucher_header_desc, voucherSize.toString()
         )
 
