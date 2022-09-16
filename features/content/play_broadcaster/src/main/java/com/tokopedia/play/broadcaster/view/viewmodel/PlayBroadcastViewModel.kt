@@ -196,6 +196,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
 
+    private var isFirstOpen: Boolean = true
+
     val contentAccountList: List<ContentAccountUiModel>
         get() = _accountListState.value
 
@@ -391,15 +393,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return mDataStore.getSetupDataStore()
     }
 
-    private fun getConfiguration(selectedAccount: ContentAccountUiModel, firstOpen: Boolean = false) {
+    private fun getConfiguration(selectedAccount: ContentAccountUiModel) {
+        _observableConfigInfo.value = NetworkResult.Loading
         viewModelScope.launchCatchError(block = {
 
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
             _configInfo.value = configUiModel
 
-            if (!checkSelectedAccountConfiguration(configUiModel, selectedAccount, firstOpen)) {
-                if (firstOpen && isAllowChangeAccount) handleSwitchAccount()
+            if (!checkSelectedAccountConfiguration(configUiModel, selectedAccount)) {
+                if (isFirstOpen && isAllowChangeAccount) {
+                    handleSwitchAccount()
+                    isFirstOpen = false
+                }
                 else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
                 return@launchCatchError
             }
@@ -1493,7 +1499,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         accountList = accountList
                     )
                 )
-                getConfiguration(_selectedAccount.value, true)
+                getConfiguration(_selectedAccount.value)
             }
         }, onError = {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList() }
@@ -1577,7 +1583,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 else -> TYPE_SHOP
             }
         )
-        _observableConfigInfo.value = NetworkResult.Loading
         getConfiguration(currentSelected)
     }
 
@@ -1588,57 +1593,52 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun checkSelectedAccountConfiguration(
         configUiModel: ConfigurationUiModel,
         selectedAccount: ContentAccountUiModel,
-        firstOpen: Boolean
     ): Boolean {
         return when {
             !configUiModel.streamAllowed -> {
+                if (isFirstOpen) return false
                 _accountStateInfo.update { AccountStateInfo() }
-                if (!firstOpen) {
-                    _accountStateInfo.update {
-                        AccountStateInfo(
-                            type = AccountStateInfoType.Banned,
-                            selectedAccount = selectedAccount,
-                        )
-                    }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.Banned,
+                        selectedAccount = selectedAccount,
+                    )
                 }
                 warningInfoType = WarningType.BANNED
                 false
             }
             configUiModel.channelStatus == ChannelStatus.Live -> {
+                if (isFirstOpen) return false
                 _accountStateInfo.update { AccountStateInfo() }
-                if (!firstOpen) {
-                    _accountStateInfo.update {
-                        AccountStateInfo(
-                            type = AccountStateInfoType.Live,
-                            selectedAccount = selectedAccount,
-                        )
-                    }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.Live,
+                        selectedAccount = selectedAccount,
+                    )
                 }
                 warningInfoType = WarningType.LIVE
                 false
             }
-            !selectedAccount.hasAcceptTnc -> {
+            selectedAccount.isUser && !selectedAccount.hasUsername -> {
+                if (isFirstOpen) return false
                 _accountStateInfo.update { AccountStateInfo() }
-                if (!firstOpen) {
-                    _accountStateInfo.update {
-                        AccountStateInfo(
-                            type = AccountStateInfoType.NotAcceptTNC,
-                            selectedAccount = selectedAccount,
-                            tnc = configUiModel.tnc,
-                        )
-                    }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.NoUsername,
+                        selectedAccount = selectedAccount,
+                    )
                 }
                 false
             }
-            selectedAccount.isUser && !selectedAccount.hasUsername -> {
+            !selectedAccount.hasAcceptTnc -> {
+                if (isFirstOpen) return false
                 _accountStateInfo.update { AccountStateInfo() }
-                if (!firstOpen) {
-                    _accountStateInfo.update {
-                        AccountStateInfo(
-                            type = AccountStateInfoType.NoUsername,
-                            selectedAccount = selectedAccount,
-                        )
-                    }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.NotAcceptTNC,
+                        selectedAccount = selectedAccount,
+                        tnc = configUiModel.tnc,
+                    )
                 }
                 false
             }
