@@ -1499,78 +1499,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         })
     }
 
-    private fun handleSwitchAccount() {
-        val currentSelected = switchAccount(
-            when (_selectedAccount.value.type) {
-                TYPE_SHOP -> TYPE_USER
-                else -> TYPE_SHOP
-            }
-        )
-        _observableConfigInfo.value = NetworkResult.Loading
-        getConfiguration(currentSelected)
-    }
-
-    private fun switchAccount(selectedType: String): ContentAccountUiModel {
-        return _accountListState.value.first { it.type == selectedType }
-    }
-
-    private fun checkSelectedAccountConfiguration(
-        configUiModel: ConfigurationUiModel,
-        selectedAccount: ContentAccountUiModel,
-    ): Boolean {
-        return when {
-            !configUiModel.streamAllowed -> {
-                _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.Banned,
-                        selectedAccount = selectedAccount,
-                    )
-                }
-                warningInfoType = WarningType.BANNED
-                false
-            }
-            configUiModel.channelStatus == ChannelStatus.Live -> {
-                _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.Live,
-                        selectedAccount = selectedAccount,
-                    )
-                }
-                warningInfoType = WarningType.LIVE
-                false
-            }
-            !selectedAccount.hasAcceptTnc -> {
-                _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.NotAcceptTNC,
-                        selectedAccount = selectedAccount,
-                        tnc = configUiModel.tnc,
-                    )
-                }
-                false
-            }
-            selectedAccount.isUser && !selectedAccount.hasUsername -> {
-                _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.NoUsername,
-                        selectedAccount = selectedAccount,
-                    )
-                }
-                false
-            }
-            else -> true
-        }
-    }
-
-    private fun updateSelectedAccount(selectedAccount: ContentAccountUiModel) {
-        _selectedAccount.update { selectedAccount }
-        sharedPref.setLastSelectedAccount(selectedAccount.type)
-    }
-
     // TODO need to refactor this for entry point from user profile
     private fun getSelectedAccount(
         cacheSelectedType: String,
@@ -1644,6 +1572,78 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
             else -> nonSellerAccount
         }
+    }
+
+    private fun handleSwitchAccount() {
+        val currentSelected = switchAccount(
+            when (_selectedAccount.value.type) {
+                TYPE_SHOP -> TYPE_USER
+                else -> TYPE_SHOP
+            }
+        )
+        _observableConfigInfo.value = NetworkResult.Loading
+        getConfiguration(currentSelected)
+    }
+
+    private fun switchAccount(selectedType: String): ContentAccountUiModel {
+        return _accountListState.value.first { it.type == selectedType }
+    }
+
+    private fun checkSelectedAccountConfiguration(
+        configUiModel: ConfigurationUiModel,
+        selectedAccount: ContentAccountUiModel,
+    ): Boolean {
+        return when {
+            !configUiModel.streamAllowed -> {
+                _accountStateInfo.update { AccountStateInfo() }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.Banned,
+                        selectedAccount = selectedAccount,
+                    )
+                }
+                warningInfoType = WarningType.BANNED
+                false
+            }
+            configUiModel.channelStatus == ChannelStatus.Live -> {
+                _accountStateInfo.update { AccountStateInfo() }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.Live,
+                        selectedAccount = selectedAccount,
+                    )
+                }
+                warningInfoType = WarningType.LIVE
+                false
+            }
+            !selectedAccount.hasAcceptTnc -> {
+                _accountStateInfo.update { AccountStateInfo() }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.NotAcceptTNC,
+                        selectedAccount = selectedAccount,
+                        tnc = configUiModel.tnc,
+                    )
+                }
+                false
+            }
+            selectedAccount.isUser && !selectedAccount.hasUsername -> {
+                _accountStateInfo.update { AccountStateInfo() }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.NoUsername,
+                        selectedAccount = selectedAccount,
+                    )
+                }
+                false
+            }
+            else -> true
+        }
+    }
+
+    private fun updateSelectedAccount(selectedAccount: ContentAccountUiModel) {
+        _selectedAccount.update { selectedAccount }
+        sharedPref.setLastSelectedAccount(selectedAccount.type)
     }
 
     /**
