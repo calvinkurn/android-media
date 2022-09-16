@@ -1912,10 +1912,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun isUsingAddRemoveWishlistV2(context: Context): Boolean {
-        return WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
-    }
-
     private fun trackingEventSuccessRemoveFromWishlist(componentTrackDataModel: ComponentTrackDataModel) {
         DynamicProductDetailTracking.Click.eventPDPRemoveToWishlist(
             viewModel.getDynamicProductInfoP1,
@@ -1942,23 +1938,15 @@ open class DynamicProductDetailFragment :
             if (isActive) {
                 productInfo?.basic?.productID?.let { productId ->
                     context?.let { context ->
-                        if (isUsingAddRemoveWishlistV2(context)) {
-                            removeWishlistV2(productId, componentTrackDataModel)
-                        } else {
-                            removeWishlist(productId)
-                            trackingEventSuccessRemoveFromWishlist(componentTrackDataModel)
-                        }
+                        removeWishlistV2(productId, componentTrackDataModel)
+                        trackingEventSuccessRemoveFromWishlist(componentTrackDataModel)
                     }
                 }
             } else {
                 productInfo?.basic?.productID?.let {
                     context?.let { context ->
-                        if (isUsingAddRemoveWishlistV2(context)) {
-                            addWishlistV2(componentTrackDataModel)
-                        } else {
-                            addWishList()
-                            trackingEventSuccessAddToWishlist(componentTrackDataModel)
-                        }
+                        addWishlistV2(componentTrackDataModel)
+                        trackingEventSuccessAddToWishlist(componentTrackDataModel)
                     }
                 }
             }
@@ -3557,53 +3545,45 @@ open class DynamicProductDetailFragment :
                     )
                 }
 
-                if (wishlistResult.isUsingWishlistV2) {
-                    context?.let { context ->
-                        view?.let { v ->
-                            if (wishlistResult.isAddWishlist) {
-                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
-                                    wishlistResult,
-                                    context,
-                                    v
-                                )
-                                if (productCardOptionsModel.isTopAds) hitWishlistClickUrl(
-                                    productCardOptionsModel
-                                )
-                            } else AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(
+                context?.let { context ->
+                    view?.let { v ->
+                        if (wishlistResult.isAddWishlist) {
+                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
                                 wishlistResult,
                                 context,
                                 v
                             )
-                        }
+                            if (productCardOptionsModel.isTopAds) hitWishlistClickUrl(
+                                productCardOptionsModel
+                            )
+                        } else AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(
+                            wishlistResult,
+                            context,
+                            v
+                        )
                     }
-                } else showToasterWishlist(wishlistResult)
+                }
             } else {
                 var errorMessage =
                     getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
                 if (wishlistResult.isAddWishlist) errorMessage =
                     getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
 
-                if (wishlistResult.isUsingWishlistV2) {
-                    view?.let { v ->
-                        if (wishlistResult.messageV2.isNotEmpty()) errorMessage =
-                            wishlistResult.messageV2
-                        if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
-                            context?.let { c ->
-                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(
-                                    errorMessage,
-                                    wishlistResult.ctaTextV2,
-                                    wishlistResult.ctaActionV2,
-                                    v,
-                                    c
-                                )
-                            }
-                        } else {
-                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+                view?.let { v ->
+                    if (wishlistResult.messageV2.isNotEmpty()) errorMessage =
+                        wishlistResult.messageV2
+                    if (wishlistResult.ctaTextV2.isNotEmpty() && wishlistResult.ctaActionV2.isNotEmpty()) {
+                        context?.let { c ->
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(
+                                errorMessage,
+                                wishlistResult.ctaTextV2,
+                                wishlistResult.ctaActionV2,
+                                v,
+                                c
+                            )
                         }
-                    }
-                } else {
-                    view?.let { v ->
-                        v.showToasterError(errorMessage)
+                    } else {
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
                     }
                 }
             }
@@ -3622,34 +3602,6 @@ open class DynamicProductDetailFragment :
                 productCardOptionsModel.productId,
                 productCardOptionsModel.productName,
                 productCardOptionsModel.productImageUrl
-            )
-        }
-    }
-
-    private fun showToasterWishlist(wishlistResult: ProductCardOptionsModel.WishlistResult) {
-        if (wishlistResult.isAddWishlist) {
-            val msg =
-                getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-            val ctaText =
-                getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-            val cta = { goToWishlist() }
-
-            view?.showToasterSuccess(
-                message = msg,
-                ctaText = ctaText,
-                ctaListener = cta
-            )
-        } else {
-            val msg =
-                getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
-            val ctaText =
-                getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
-            val cta = {}
-
-            view?.showToasterSuccess(
-                message = msg,
-                ctaText = ctaText,
-                ctaListener = cta
             )
         }
     }
@@ -4237,11 +4189,7 @@ open class DynamicProductDetailFragment :
 
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
                 context?.let { context ->
-                    if (isUsingAddRemoveWishlistV2(context)) {
-                        addWishlistV2(null)
-                    } else {
-                        addWishList()
-                    }
+                    addWishlistV2(null)
                 }
                 return@let
             }
@@ -4925,15 +4873,6 @@ open class DynamicProductDetailFragment :
         RouteManager.route(context, uri)
     }
 
-    private fun addWishList() {
-        viewModel.addWishList(
-            viewModel.getDynamicProductInfoP1?.basic?.productID
-                ?: "",
-            onSuccessAddWishlist = this::onSuccessAddWishlist,
-            onErrorAddWishList = this::onErrorAddWishList
-        )
-    }
-
     private fun addWishlistV2(
         componentTrackDataModel: ComponentTrackDataModel?) {
         val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
@@ -5008,14 +4947,6 @@ open class DynamicProductDetailFragment :
         if (isProductOos()) {
             refreshPage()
         }
-    }
-
-    private fun removeWishlist(productId: String) {
-        viewModel.removeWishList(
-            productId,
-            onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
-            onErrorRemoveWishList = this::onErrorRemoveWishList
-        )
     }
 
     private fun removeWishlistV2(
