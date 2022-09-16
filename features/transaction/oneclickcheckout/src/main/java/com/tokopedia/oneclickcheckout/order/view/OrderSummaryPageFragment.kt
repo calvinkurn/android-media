@@ -753,7 +753,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
                 is OccGlobalEvent.AdjustShippingToaster -> {
                     view?.let { v ->
-                        Toaster.build(v, getString(R.string.pp_auto_unapply_bo_toaster_message)).show()
+                        Toaster.build(v, getString(com.tokopedia.purchase_platform.common.R.string.pp_auto_unapply_bo_toaster_message)).show()
                     }
                 }
                 is OccGlobalEvent.ToasterInfo -> {
