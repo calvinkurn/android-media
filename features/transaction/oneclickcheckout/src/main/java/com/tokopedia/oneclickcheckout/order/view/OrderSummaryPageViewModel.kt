@@ -429,27 +429,29 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun validateBboStacking() {
+        var hasUnApply = false
+        var hasApply = false
         validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.let {
-            var hasApplyOrUnApply = false
+
             for (voucherOrderUiModel in it) {
                 if (voucherOrderUiModel.shippingId > 0
                     && voucherOrderUiModel.spId > 0
                     && voucherOrderUiModel.type == "logistic"
                 )
-                    if (voucherOrderUiModel.messageUiModel.state == "red") {
-                        hasApplyOrUnApply = true
-                        unApplyBbo(voucherOrderUiModel.code)
-                    } else if (voucherOrderUiModel.messageUiModel.state == "green") {
-                        hasApplyOrUnApply = true
+                    if (voucherOrderUiModel.messageUiModel.state == "green") {
                         applyBbo(voucherOrderUiModel.code)
+                        hasApply = true
                     }
             }
-            if (orderShipment.value.isApplyLogisticPromo && !hasApplyOrUnApply) {
+            if (orderShipment.value.isApplyLogisticPromo && !hasApply) {
                 // if use BO but voucher BO didn't exist
-                orderShipment.value.logisticPromoViewModel?.let { logisticPromo -> unApplyBbo(logisticPromo.promoCode) }
+                orderShipment.value.logisticPromoViewModel?.let { logisticPromo ->
+                    unApplyBbo(logisticPromo.promoCode)
+                    hasUnApply = true
+                }
             }
         }
-        displayingAdjustmentPromoToaster()
+        displayingAdjustmentPromoToaster(hasUnApply)
     }
 
     private fun unApplyBbo(code: String) {
@@ -469,10 +471,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun displayingAdjustmentPromoToaster() {
+    private fun displayingAdjustmentPromoToaster(hasUnApply: Boolean) {
         validateUsePromoRevampUiModel?.promoUiModel?.additionalInfoUiModel?.errorDetailUiModel?.message?.let {
             if (it.isNotBlank())
                 globalEvent.value = OccGlobalEvent.ToasterInfo(it)
+            else if (hasUnApply)
+                globalEvent.value = OccGlobalEvent.AdjustShippingToaster
         }
     }
 
