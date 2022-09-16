@@ -78,8 +78,20 @@ class FeedbackLoopOptionsBottomSheet : BaseBottomSheet<ShcBottomSheetFeedbackLoo
 
     private fun setSendButtonEnabled() {
         binding?.run {
-            val isEligibleSubmit = feedbackItems.any { it.isSelected }
+            val isEligibleSubmit = feedbackItems.any {
+                it.isSelected
+            }
             btnShcFeedbackLoopOptions.isEnabled = isEligibleSubmit
+
+            val otherItem = feedbackItems.firstOrNull {
+                it is FeedbackLoopOptionUiModel.Other
+            } as? FeedbackLoopOptionUiModel.Other
+
+            otherItem?.let {
+                if (it.isSelected) {
+                    btnShcFeedbackLoopOptions.isEnabled = it.value.isNotBlank()
+                }
+            }
         }
     }
 }
