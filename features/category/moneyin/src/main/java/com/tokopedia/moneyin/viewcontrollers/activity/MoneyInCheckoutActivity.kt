@@ -228,11 +228,13 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                         isCourierSet -> MoneyInGTMConstants.ACTION_CLICK_UBAH_KURIR
                         else -> MoneyInGTMConstants.ACTION_CLICK_PILIH_KURIR
                     },
-                    "")
+                    ""
+                )
                 moneyInCourierBottomSheet.show(supportFragmentManager, "")
             }
             moneyInCourierBottomSheet.setActionListener(this)
-            val totalPaymentValue = findViewById<Typography>(R.id.tv_total_payment_value) as Typography
+            val totalPaymentValue =
+                findViewById<Typography>(R.id.tv_total_payment_value) as Typography
             totalPaymentValue.text = it.price.text
         }
     }
