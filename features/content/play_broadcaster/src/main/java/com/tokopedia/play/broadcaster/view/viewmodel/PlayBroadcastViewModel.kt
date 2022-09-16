@@ -391,12 +391,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return mDataStore.getSetupDataStore()
     }
 
-    private fun getConfiguration(selectedAccount: ContentAccountUiModel) {
+    private fun getConfiguration(selectedAccount: ContentAccountUiModel, autoSwitch: Boolean = false) {
         viewModelScope.launchCatchError(block = {
 
             val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
             _configInfo.value = configUiModel
+
+            if (autoSwitch && isAllowChangeAccount) {
+                if (!configUiModel.streamAllowed || configUiModel.channelStatus == ChannelStatus.Live) {
+                    handleSwitchAccount()
+                    return@launchCatchError
+                }
+            }
 
             if (!checkSelectedAccountConfiguration(configUiModel, selectedAccount)) {
                 _observableConfigInfo.value = NetworkResult.Success(configUiModel)
@@ -1492,7 +1499,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         accountList = accountList
                     )
                 )
-                getConfiguration(_selectedAccount.value)
+                getConfiguration(_selectedAccount.value, true)
             }
         }, onError = {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList() }
@@ -1622,7 +1629,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 false
             }
-            selectedAccount.isUser && !selectedAccount.hasUsername -> {
+            selectedAccount.isUser && selectedAccount.hasUsername -> {
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
