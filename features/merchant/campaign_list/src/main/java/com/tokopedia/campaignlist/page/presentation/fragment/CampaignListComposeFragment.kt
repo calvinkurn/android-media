@@ -122,9 +122,9 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
     @Composable
     fun CampaignItem(campaign: ActiveCampaign) {
         Card(modifier = Modifier.fillMaxWidth()) {
-            ConstraintLayout {
+            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
-                val (ribbon, statusImage, statusText, campaignImage, campaignName, productQty) = createRefs()
+                val (ribbon, statusImage, campaignType, campaignStatus, campaignImage, campaignName, productQty, campaignStartDate, campaignStartTime, separator, campaignEndDate, campaignEndTime) = createRefs()
 
                 Image(
                     painter = painterResource(id = R.drawable.ic_green_top_drawing),
@@ -146,10 +146,17 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
                         }
                 )
 
-                Text(campaign.campaignType, modifier = Modifier.constrainAs(statusText) {
+                Text(campaign.campaignType, modifier = Modifier.constrainAs(campaignType) {
                     top.linkTo(statusImage.top)
                     bottom.linkTo(statusImage.bottom)
                     start.linkTo(statusImage.end, margin = 4.dp)
+                })
+
+                Text(campaign.campaignStatus, modifier = Modifier.constrainAs(campaignStatus) {
+                    top.linkTo(campaignType.top)
+                    bottom.linkTo(campaignType.bottom)
+                    start.linkTo(campaignType.end)
+                    end.linkTo(parent.end)
                 })
 
                 Image(
@@ -159,7 +166,7 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
                         .size(62.dp)
                         .constrainAs(campaignImage) {
                             start.linkTo(parent.start, margin = 12.dp)
-                            top.linkTo(statusText.bottom, margin = 12.dp)
+                            top.linkTo(campaignType.bottom, margin = 12.dp)
                         }
                 )
 
@@ -175,8 +182,52 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
                 Text(
                     campaign.productQty,
                     modifier = Modifier.constrainAs(productQty) {
-                        top.linkTo(campaignName.bottom)
-                        start.linkTo(campaignImage.end, margin = 12.dp)
+                        top.linkTo(campaignName.bottom, margin = 12.dp)
+                        start.linkTo(campaignName.start)
+                    }
+                )
+
+                Text(
+                    campaign.startDate,
+                    modifier = Modifier.constrainAs(campaignStartDate) {
+                        top.linkTo(productQty.bottom, margin = 12.dp)
+                        start.linkTo(productQty.start)
+                    }
+                )
+
+
+                Text(
+                    campaign.startTime,
+                    modifier = Modifier.constrainAs(campaignStartTime) {
+                        top.linkTo(campaignStartDate.bottom)
+                        start.linkTo(campaignStartDate.start)
+                    }
+                )
+
+                Text(
+                    "-",
+                    modifier = Modifier.constrainAs(separator) {
+                        top.linkTo(campaignStartDate.top)
+                        bottom.linkTo(campaignStartTime.bottom)
+                        start.linkTo(campaignStartDate.end, margin = 12.dp)
+                    }
+                )
+
+                Text(
+                    campaign.endDate,
+                    modifier = Modifier.constrainAs(campaignEndDate) {
+                        top.linkTo(campaignStartDate.top)
+                        bottom.linkTo(campaignStartDate.bottom)
+                        start.linkTo(separator.end, margin = 12.dp)
+                    }
+                )
+
+                Text(
+                    campaign.endTime,
+                    modifier = Modifier.constrainAs(campaignEndTime) {
+                        top.linkTo(campaignStartTime.top)
+                        bottom.linkTo(campaignStartTime.bottom)
+                        start.linkTo(separator.end, margin = 12.dp)
                     }
                 )
 
@@ -189,9 +240,18 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
     @Preview
     @Composable
     fun CampaignItemPreview() {
-        CampaignItem(
-            ActiveCampaign(campaignType = "Rilisan Spesial", campaignName = "Flash Sale 9.9", productQty = "9000 Product")
+        val campaign = ActiveCampaign(
+            campaignType = "Rilisan Spesial",
+            campaignStatus = "Berlangsung",
+            campaignName = "Flash Sale 9.9",
+            productQty = "9000 Product",
+            startDate = "17/01/2020",
+            startTime = "08:30 WIB",
+            endDate = "18/01/2020",
+            endTime = "22:00 WIB"
         )
+
+        CampaignItem(campaign)
     }
 
     private fun initViewTreeOwners() {
