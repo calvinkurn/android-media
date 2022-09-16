@@ -24,7 +24,6 @@ object ActivationHelper {
         }
     }
 
-
     fun View.showToaster(message: String?) {
         message?.let {
             Toaster.build(
