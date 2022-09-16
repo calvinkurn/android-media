@@ -5,22 +5,22 @@ import com.google.gson.annotations.SerializedName
 
 data class DealsVerifyRequest(
     @SerializedName("book")
-    var book : Boolean = true,
+    var book: Boolean = true,
     @SerializedName("checkout")
-    var checkout : Boolean = true,
+    var checkout: Boolean = true,
     @SerializedName("cartdata")
-    var cartdata : CartData = CartData()
+    var cartdata: CartData = CartData()
 )
 
 data class CartData(
     @SerializedName("metadata")
-    var metadata : MetaData = MetaData(),
+    var metadata: MetaData = MetaData(),
     @SerializedName("error")
-    var error : String = "",
+    var error: String = "",
     @SerializedName("status")
-    var status : String = "",
+    var status: String = "",
     @SerializedName("error_description")
-    var errorDescription : String = ""
+    var errorDescription: String = ""
 )
 
 data class MetaData(
