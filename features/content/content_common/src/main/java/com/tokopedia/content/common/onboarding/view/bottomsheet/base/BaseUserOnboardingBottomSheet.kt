@@ -86,6 +86,11 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
 
         dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
+        setCloseClickListener {
+            dismiss()
+            mListener?.clickCloseIcon()
+        }
+
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

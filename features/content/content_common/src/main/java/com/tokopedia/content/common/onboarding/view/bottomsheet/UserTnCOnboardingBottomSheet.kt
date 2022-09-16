@@ -86,11 +86,6 @@ class UserTnCOnboardingBottomSheet @Inject constructor(
     }
 
     private fun setupListener() {
-        setCloseClickListener {
-            dismiss()
-            mListener?.clickCloseIcon()
-        }
-
         binding.layoutTnc.cbxTnc.setOnCheckedChangeListener { _, _ ->
             viewModel.submitAction(UGCOnboardingAction.CheckTnc)
         }
