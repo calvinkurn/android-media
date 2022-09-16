@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view;
 
 import android.app.Activity;
+import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
@@ -404,7 +405,7 @@ public interface ShipmentContract {
 
         ShipmentNewUpsellModel getShipmentNewUpsellModel();
 
-        ArrayList<String> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
+        Pair<ArrayList<String>, ArrayList<String>> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
 
         void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
 
