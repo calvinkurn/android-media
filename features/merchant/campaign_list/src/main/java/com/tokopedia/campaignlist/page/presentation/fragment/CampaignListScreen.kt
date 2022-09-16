@@ -1,6 +1,7 @@
 package com.tokopedia.campaignlist.page.presentation.fragment
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,7 +11,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -19,16 +19,45 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
+import com.tokopedia.sortfilter.SortFilter
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Success
 
 @Composable
 fun CampaignListScreen(viewModel: CampaignListViewModel) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        val campaignStatus = SortFilterItem(
+            stringResource(id = R.string.campaign_list_label_status),
+            ChipsUnify.TYPE_NORMAL,
+            ChipsUnify.TYPE_NORMAL,
+            {}
+        )
+        val campaignType = SortFilterItem(
+            stringResource(R.string.campaign_type),
+            ChipsUnify.TYPE_SELECTED,
+            ChipsUnify.TYPE_NORMAL,
+            {}
+        )
+        val items = arrayListOf(campaignStatus, campaignType)
+
+        val onDismissed = {
+
+        }
+        ComposeSortFilter(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            items = items,
+            onDismissed = onDismissed
+        )
+
         List(viewModel = viewModel)
     }
 }
@@ -212,4 +241,23 @@ fun CampaignItemPreview() {
     )
 
     CampaignItem(campaign)
+}
+
+@Composable
+fun ComposeSortFilter(modifier: Modifier = Modifier, items : ArrayList<SortFilterItem>, onDismissed: () -> Unit) {
+    AndroidView(
+        modifier = modifier,
+        factory = { context ->
+
+            SortFilter(context).apply {
+                addItem(items)
+                filterRelationship = SortFilter.RELATIONSHIP_AND
+                filterType = SortFilter.TYPE_QUICK
+                dismissListener = onDismissed
+            }
+        },
+        update = { view ->
+
+        }
+    )
 }
