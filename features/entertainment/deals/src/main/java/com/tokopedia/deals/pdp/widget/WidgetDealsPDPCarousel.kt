@@ -30,7 +30,7 @@ class WidgetDealsPDPCarousel @JvmOverloads constructor(
     private var indicatorItems: ArrayList<ImageView> = arrayListOf()
     var imageUrls: ArrayList<String> = arrayListOf()
 
-    private val imageViewPagerAdapter: WidgetDealsPDPCarouselAdapter? = null
+    private var imageViewPagerAdapter: WidgetDealsPDPCarouselAdapter? = null
         get() = WidgetDealsPDPCarouselAdapter(imageUrls)
 
     var currentPosition: Int = Int.ZERO
