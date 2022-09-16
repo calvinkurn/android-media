@@ -5,7 +5,7 @@ import android.view.View
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.databinding.BsProductSpecificationBinding
-import com.tokopedia.product.info.model.productdetail.uidata.AnnotationValueDataModel
+import com.tokopedia.product.info.view.models.AnnotationValueDataModel
 import com.tokopedia.product.info.view.adapter.ProductAnnotationAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable

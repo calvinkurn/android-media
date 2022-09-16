@@ -1,6 +1,6 @@
-package com.tokopedia.product.info.model.productdetail.uidata
+package com.tokopedia.product.info.view.models
 
-import com.tokopedia.product.info.model.productdetail.response.ItemCatalog
+import com.tokopedia.product.info.data.response.ItemCatalog
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 
 data class ProductDetailInfoCatalogDataModel(

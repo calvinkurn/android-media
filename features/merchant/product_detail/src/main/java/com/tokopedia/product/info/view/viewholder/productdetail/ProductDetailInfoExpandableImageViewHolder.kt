@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.BsItemProductDetailExpandableImageBinding
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableImageDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil.Companion.DIFFUTIL_PAYLOAD_TOGGLE
 import com.tokopedia.product.info.widget.ExpandableAnimation

@@ -14,7 +14,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.databinding.BsItemProductDetailHeaderBinding
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifyprinciples.Typography

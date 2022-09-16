@@ -15,7 +15,7 @@ import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.data.util.thumbnailUrl
 import com.tokopedia.product.detail.databinding.BsItemProductDetailExpandableBinding
 import com.tokopedia.product.detail.databinding.BsItemProductDetailYoutubeImgBinding
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil.Companion.DIFFUTIL_PAYLOAD_TOGGLE
 import com.tokopedia.product.info.widget.ExpandableAnimation

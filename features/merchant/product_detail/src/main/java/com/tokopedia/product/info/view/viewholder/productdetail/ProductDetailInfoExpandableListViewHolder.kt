@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.BsItemProductDetailExpandableListBinding
-import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
+import com.tokopedia.product.info.data.response.ShopNotesData
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil.Companion.DIFFUTIL_PAYLOAD_TOGGLE
 import com.tokopedia.product.info.widget.ExpandableAnimation

@@ -1,4 +1,4 @@
-package com.tokopedia.product.info.model.productdetail.uidata
+package com.tokopedia.product.info.view.models
 
 data class AnnotationValueDataModel(
         var title: String = "",

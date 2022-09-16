@@ -33,11 +33,11 @@ import com.tokopedia.product.detail.tracking.ProductDetailBottomSheetTracking
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
-import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
+import com.tokopedia.product.info.data.response.ShopNotesData
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableImageDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableListDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoVisitable
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener

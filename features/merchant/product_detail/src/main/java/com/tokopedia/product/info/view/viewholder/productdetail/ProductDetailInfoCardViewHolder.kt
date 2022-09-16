@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.ProductDetailCardViewHolderBinding
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCardDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoCardDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 
 class ProductDetailInfoCardViewHolder(view: View,

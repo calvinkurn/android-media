@@ -3,7 +3,7 @@ package com.tokopedia.product.info.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.product.info.model.productdetail.uidata.AnnotationValueDataModel
+import com.tokopedia.product.info.view.models.AnnotationValueDataModel
 import com.tokopedia.product.info.view.viewholder.ProductAnnotationViewHolder
 
 /**

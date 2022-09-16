@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.BsItemProductDetailDiscussionBinding
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoDiscussionDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoDiscussionDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 
 /**

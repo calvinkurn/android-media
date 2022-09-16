@@ -6,19 +6,19 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
-import com.tokopedia.product.info.model.productdetail.response.BottomSheetItem
-import com.tokopedia.product.info.model.productdetail.response.BottomSheetProductDetailInfoResponse
-import com.tokopedia.product.info.model.productdetail.response.DataShopNotes
-import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
-import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
-import com.tokopedia.product.info.model.productdetail.uidata.AnnotationValueDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCardDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCatalogDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoDiscussionDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
+import com.tokopedia.product.info.data.response.BottomSheetItem
+import com.tokopedia.product.info.data.response.BottomSheetProductDetailInfoResponse
+import com.tokopedia.product.info.data.response.DataShopNotes
+import com.tokopedia.product.info.data.response.PdpGetDetailBottomSheet
+import com.tokopedia.product.info.data.response.ShopNotesData
+import com.tokopedia.product.info.view.models.AnnotationValueDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoCardDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoCatalogDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoDiscussionDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableImageDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableListDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel
 import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.product.util.ProductDetailTestUtil
@@ -175,7 +175,7 @@ class BsProductDetailInfoViewModelTest {
     fun `show specification component when success get data from network`() {
         // given
         coEvery {
-            getProductDetailBottomSheetUseCase.executeOnBackground(any(), any())
+            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
         } returns bottomSheetData
 
         // when
@@ -201,7 +201,7 @@ class BsProductDetailInfoViewModelTest {
     fun `show catalog description component when success get data from network`() {
         // given
         coEvery {
-            getProductDetailBottomSheetUseCase.executeOnBackground(any(), any())
+            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
         } returns bottomSheetData
 
         // when
@@ -222,7 +222,7 @@ class BsProductDetailInfoViewModelTest {
     fun `show non catalog description component when success get data from network`() {
         // given
         coEvery {
-            getProductDetailBottomSheetUseCase.executeOnBackground(any(), any())
+            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
         } returns bottomSheetData
 
         // when
@@ -244,7 +244,7 @@ class BsProductDetailInfoViewModelTest {
         viewModel.bottomSheetDetailData.observeForever { }
 
         coEvery {
-            getProductDetailBottomSheetUseCase.executeOnBackground(any(), any())
+            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
         } returns PdpGetDetailBottomSheet(bottomsheetData = bottomSheetOrderItem)
 
         viewModel.setParams(
@@ -315,7 +315,7 @@ class BsProductDetailInfoViewModelTest {
         viewModel.bottomSheetDetailData.observeForever { }
 
         coEvery {
-            getProductDetailBottomSheetUseCase.executeOnBackground(any(), any())
+            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
         } returns PdpGetDetailBottomSheet(
             bottomsheetData = bottomSheetOrderItem,
             dataShopNotes = shopNotes
@@ -399,7 +399,7 @@ class BsProductDetailInfoViewModelTest {
         viewModel.bottomSheetDetailData.observeForever { }
 
         coEvery {
-            getProductDetailBottomSheetUseCase.executeOnBackground(any(), any())
+            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
         } throws Throwable()
 
         viewModel.setParams(ProductInfoParcelData())

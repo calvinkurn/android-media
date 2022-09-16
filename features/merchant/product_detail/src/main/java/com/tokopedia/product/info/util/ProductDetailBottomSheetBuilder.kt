@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.databinding.BsProductShopNotesInfoBinding
 import com.tokopedia.product.detail.view.util.toDateId
-import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
+import com.tokopedia.product.info.data.response.ShopNotesData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**

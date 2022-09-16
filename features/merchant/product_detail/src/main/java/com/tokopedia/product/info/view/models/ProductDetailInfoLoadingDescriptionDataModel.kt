@@ -1,11 +1,11 @@
-package com.tokopedia.product.info.model.productdetail.uidata
+package com.tokopedia.product.info.view.models
 
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 
 /**
  * Created by Yehezkiel on 12/10/20
  */
-data class ProductDetailInfoLoadingSpecificationDataModel(
+data class ProductDetailInfoLoadingDescriptionDataModel(
     val isLoading: Boolean = false
 ) : ProductDetailInfoVisitable {
 

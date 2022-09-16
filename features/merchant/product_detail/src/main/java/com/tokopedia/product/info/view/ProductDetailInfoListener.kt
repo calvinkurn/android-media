@@ -1,7 +1,7 @@
 package com.tokopedia.product.info.view
 
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
-import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
+import com.tokopedia.product.info.data.response.ShopNotesData
 
 /**
  * Created by Yehezkiel on 12/10/20

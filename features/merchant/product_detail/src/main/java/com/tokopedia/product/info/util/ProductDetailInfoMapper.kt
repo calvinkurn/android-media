@@ -2,16 +2,16 @@ package com.tokopedia.product.info.util
 
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
-import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCardDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCatalogDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoDiscussionDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel.Companion.SPECIFICATION_SIZE_THRESHOLD
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
+import com.tokopedia.product.info.data.response.PdpGetDetailBottomSheet
+import com.tokopedia.product.info.view.models.ProductDetailInfoCardDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoCatalogDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoDiscussionDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableImageDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableListDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel.Companion.SPECIFICATION_SIZE_THRESHOLD
+import com.tokopedia.product.info.view.models.ProductDetailInfoVisitable
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.CATALOG
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.CUSTOM_INFO_KEY
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.DESCRIPTION_DETAIL_KEY

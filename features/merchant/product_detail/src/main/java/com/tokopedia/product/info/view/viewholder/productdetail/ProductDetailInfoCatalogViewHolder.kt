@@ -9,8 +9,8 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.databinding.BsItemProductDetailCatalogTitleBinding
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
-import com.tokopedia.product.info.model.productdetail.response.ItemCatalog
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoCatalogDataModel
+import com.tokopedia.product.info.data.response.ItemCatalog
+import com.tokopedia.product.info.view.models.ProductDetailInfoCatalogDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
 

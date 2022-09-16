@@ -2,10 +2,10 @@ package com.tokopedia.product.info.view.adapter.diffutil
 
 import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableImageDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableListDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoVisitable
 
 /**
  * Created by Yehezkiel on 12/10/20
