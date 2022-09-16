@@ -59,6 +59,9 @@ class InspirationCarouselProductDataViewMapper {
                 dimension90,
                 customVideoURL = product.customVideoURL,
                 externalReference = externalReference,
+                discount = product.discount,
+                label = product.label,
+                bundleId = product.bundleId,
             )
         }
     }

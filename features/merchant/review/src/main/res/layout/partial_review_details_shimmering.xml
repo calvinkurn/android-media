@@ -20,8 +20,8 @@
             
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/review_detail_shimmer_product_image"
-                android:layout_width="@dimen/dp_56"
-                android:layout_height="@dimen/dp_56"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginStart="12dp"
                 android:layout_marginLeft="12dp"

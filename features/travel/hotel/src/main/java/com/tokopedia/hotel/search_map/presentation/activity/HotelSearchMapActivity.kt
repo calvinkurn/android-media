@@ -13,6 +13,7 @@ import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search_map.di.DaggerHotelSearchMapComponent
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.fragment.HotelSearchMapFragment
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 class HotelSearchMapActivity : HotelBaseActivity(), HasComponent<HotelSearchMapComponent> {
 
@@ -40,9 +41,9 @@ class HotelSearchMapActivity : HotelBaseActivity(), HasComponent<HotelSearchMapC
                     ?: ""
                 hotelSearchModel.checkOut = uri.getQueryParameter(PARAM_CHECK_OUT)
                     ?: ""
-                hotelSearchModel.room = uri.getQueryParameter(PARAM_ROOM)?.toInt()
+                hotelSearchModel.room = uri.getQueryParameter(PARAM_ROOM)?.toIntSafely()
                     ?: 1
-                hotelSearchModel.adult = uri.getQueryParameter(PARAM_ADULT)?.toInt()
+                hotelSearchModel.adult = uri.getQueryParameter(PARAM_ADULT)?.toIntSafely()
                     ?: 1
 
                 selectedParam.name = uri.getQueryParameter(PARAM_FILTER_ID)

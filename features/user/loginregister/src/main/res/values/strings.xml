@@ -150,34 +150,6 @@
     <string name="close_popup">Tutup</string>
 
     <!-- External Register -->
-    <string name="title_external_register">Daftar</string>
-    <string name="title_external_register_verify">Verifikasi</string>
-    <string name="title_external_register_add_name">Siapa nama kamu?</string>
-    <string name="ovo_connect_account_description">Kamu bisa menghubungkan akun Tokopedia dan OVO agar transaksi jadi lebih praktis.</string>
-    <string name="ovo_connect_account_title">Hubungkan akun ini ke OVO?</string>
-    <string name="dialog_connect_account_positive_btn_text">Ya, Hubungkan</string>
-    <string name="dialog_connect_account_negative_btn_text">Daftar Tanpa Hubungkan</string>
-
-    <string name="dialog_register_account_positive_btn_text">Daftar Tokopedia &amp; OVO</string>
-    <string name="dialog_register_account_negative_btn_text">Daftar Tokopedia Saja</string>
-
-    <string name="base_add_name_next">Lanjut Daftar</string>
-    <string name="ovo_external_register_description_success">Akunmu sudah aktif. Cashback dari transaksimu di Tokopedia akan masuk ke OVO Points.</string>
-    <string name="ovo_external_register_title_success">Hore! Pendaftaranmu berhasil</string>
-
-    <string name="ovo_external_register_description_error">Kamu bisa lanjut daftar dulu &amp; hubungkan akun ini ke OVO lewat home Tokopedia nanti.</string>
-    <string name="ovo_external_register_title_error">Ada kendala saat akses OVO</string>
-
-    <string name="base_add_name_ktp_message">Pastikan sesuai KTP untuk memudahkan verifikasi.</string>
-    <string name="base_add_name_full_name">Nama Lengkap</string>
-    <string name="base_add_name_title">Siapa nama kamu?</string>
-
-    <string name="base_add_name_error_empty">Wajib diisi.</string>
-
-    <string name="ovo_register_account_description">Kamu bisa daftarkan nomor %1$s di Tokopedia &amp; OVO sekaligus, lho!</string>
-    <string name="ovo_register_account_title">Mau sekalian daftar OVO?</string>
-    <string name="content_desc_ovo_success">OvoSuccess</string>
-    <string name="external_account_success_btn_text">Mulai Belanja</string>
     <string name="desc_banner_register">banner_register</string>
     <string name="color_ticker_default">#cde4c3</string>
     <string name="color_ticker_warning">#ecdb77</string>

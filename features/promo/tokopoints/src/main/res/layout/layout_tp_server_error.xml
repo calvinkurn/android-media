@@ -7,7 +7,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/top_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_56"
+        android:layout_height="56dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         android:visibility="gone"
@@ -24,8 +24,8 @@
 
                 <com.tokopedia.unifycomponents.UnifyImageButton
                     android:id="@+id/iv_back_error"
-                    android:layout_width="@dimen/dp_28"
-                    android:layout_height="@dimen/dp_28"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:gravity="left"
                     android:padding="8dp"
                     app:srcCompat="@drawable/ic_tp_arrow_back"
@@ -48,7 +48,7 @@
         android:id="@+id/img_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="30dp"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,8 +60,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center_horizontal"
-        android:layout_marginStart="@dimen/dp_50"
-        android:layout_marginEnd="@dimen/dp_50"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         android:text="@string/tp_label_server_error"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
@@ -86,7 +86,7 @@
 
     <com.tokopedia.tokopoints.view.customview.RoundButton
         android:id="@+id/text_failed_action"
-        android:layout_width="@dimen/dp_200"
+        android:layout_width="200dp"
         android:layout_height="48dp"
         android:layout_marginTop="@dimen/tp_margin_large"
         android:gravity="center"

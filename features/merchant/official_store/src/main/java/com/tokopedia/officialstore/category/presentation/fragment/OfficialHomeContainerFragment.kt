@@ -494,14 +494,18 @@ class OfficialHomeContainerFragment
 
     private fun isAddressDataChanged(): Boolean {
         var isAddressChanged = false
-        chooseAddressData.toLocalCacheModel().let {
-            isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
-        }
+        context?.let { context ->
+            chooseAddressData.toLocalCacheModel().let {
+                isAddressChanged =
+                    ChooseAddressUtils.isLocalizingAddressHasUpdated(context, it)
+            }
 
-        if (isAddressChanged) {
-            val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-            chooseAddressData = OSChooseAddressData(isActive = true)
+            if (isAddressChanged) {
+                val localChooseAddressData =
+                    ChooseAddressUtils.getLocalizingAddressData(context)
+                chooseAddressData = OSChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
+            }
         }
         return isAddressChanged
     }

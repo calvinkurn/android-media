@@ -43,6 +43,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -61,8 +62,8 @@ public class Utils {
     private static final float MIN_RADIUS = 0.0f;
     public static Locale locale = new Locale("in", "ID");
     private static final String RUPIAH_FORMAT = "Rp %s";
-    private SparseIntArray likedEventMap;
-    private SparseIntArray unLikedEventMap;
+    private HashMap<Long, Integer> likedEventMap;
+    private HashMap<Long, Integer> unLikedEventMap;
     public static final String NSQ_SERVICE = "Recommendation_For_You";
     public static final String NSQ_USE_CASE = "24";
 
@@ -75,42 +76,42 @@ public class Utils {
     private Utils() {
     }
 
-    public void addLikedEvent(int id, int currentLikes) {
+    public void addLikedEvent(long id, int currentLikes) {
         if (likedEventMap == null)
-            likedEventMap = new SparseIntArray();
+            likedEventMap = new HashMap<Long, Integer>();
         likedEventMap.put(id, currentLikes + 1);
         removeUnlikedEvent(id);
     }
 
-    public void removeLikedEvent(int id) {
+    public void removeLikedEvent(long id) {
         if (likedEventMap != null && likedEventMap.size() > 0) {
-            int likes = likedEventMap.get(id);
-            likedEventMap.delete(id);
+            int likes = likedEventMap.get(id) == null ? 0 : likedEventMap.get(id);
+            likedEventMap.remove(id);
             addUnlikedEvent(id, likes);
         }
     }
 
-    public int containsLikedEvent(int id) {
+    public int containsLikedEvent(long id) {
         if (likedEventMap != null && likedEventMap.size() > 0)
-            return likedEventMap.get(id, -1);
+            return likedEventMap.get(id) == null ? 0 : likedEventMap.get(id) ;
         return -1;
     }
 
-    public int containsUnlikedEvent(int id) {
+    public int containsUnlikedEvent(long id) {
         if (unLikedEventMap != null && unLikedEventMap.size() > 0)
-            return unLikedEventMap.get(id, -1);
+            return unLikedEventMap.get(id) == null ? 0 : unLikedEventMap.get(id);
         return -1;
     }
 
-    private void addUnlikedEvent(int id, int likes) {
+    private void addUnlikedEvent(long id, int likes) {
         if (unLikedEventMap == null)
-            unLikedEventMap = new SparseIntArray();
+            unLikedEventMap = new HashMap<Long, Integer>();
         unLikedEventMap.put(id, likes - 1);
     }
 
-    private void removeUnlikedEvent(int id) {
+    private void removeUnlikedEvent(long id) {
         if (unLikedEventMap != null && unLikedEventMap.size() > 0) {
-            unLikedEventMap.delete(id);
+            unLikedEventMap.remove(id);
         }
 
     }

@@ -4,6 +4,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.bannerinfinite.BannerInfiniteRepository
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import javax.inject.Inject
 
 class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteRepository: BannerInfiniteRepository) {
@@ -22,7 +23,7 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
                         component.dynamicOriginalId!! else componentId,
                     getQueryParameterMap(PAGE_START,
                             bannersLimit,
-                            it.nextPageKey,isDarkMode),
+                            it.nextPageKey,isDarkMode,it.userAddressData),
                     pageEndPoint, it.name)
             it.showVerticalLoader = bannerListData.isNotEmpty()
             it.setComponentsItem(bannerListData, component.tabName)
@@ -46,7 +47,7 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
                         component1.dynamicOriginalId!! else component1.id,
                     getQueryParameterMap(component1.pageLoadedCounter,
                             bannerLimit,
-                            component1.nextPageKey,isDarkMode),
+                            component1.nextPageKey,isDarkMode,component1.userAddressData),
                     pageEndPoint,
                     component1.name)
             component1.nextPageKey = nextPage
@@ -67,7 +68,8 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
     private fun getQueryParameterMap(pageNumber: Int,
                                      bannerPerPage: Int,
                                      nextPageKey: String?,
-                                     isDarkMode: Boolean): MutableMap<String, Any> {
+                                     isDarkMode: Boolean,
+                                     userAddressData: LocalCacheModel?): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
@@ -75,6 +77,7 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
         queryParameterMap[Utils.RPC_PAGE_NUMBER] = pageNumber.toString()
         queryParameterMap[Utils.RPC_NEXT_PAGE] = nextPageKey ?: ""
         queryParameterMap[Utils.DARK_MODE] = isDarkMode
+        queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(userAddressData))
 
         return queryParameterMap
     }
