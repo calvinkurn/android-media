@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:text="@string/ugc_complete_onboarding_title"
             app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
             app:typographyType="heading_3" />
 
         <com.tokopedia.unifyprinciples.Typography

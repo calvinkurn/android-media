@@ -85,7 +85,6 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
         binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
         setTitle(getString(R.string.ugc_complete_onboarding_title))
-        binding.tvTitle.hide()
     }
 
     private fun setupListener() {
