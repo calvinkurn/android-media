@@ -624,7 +624,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     payLaterActivationViewModel.variantName,
                     payLaterActivationViewModel.selectedProductId,
                     payLaterActivationViewModel.selectedTenureSelected,
-                    quantity)
+                    quantity
+                    )
                 )
             ), childFragmentManager
         ) {
