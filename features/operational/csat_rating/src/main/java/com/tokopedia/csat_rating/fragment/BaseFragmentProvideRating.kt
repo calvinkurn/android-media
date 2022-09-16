@@ -331,12 +331,17 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
                     }
                     else -> {
                         setFilterList(viewModel?.reasonList.orEmpty())
+                        clearAllOfSelectedReason()
                         showSubmitButton()
                         updateScreenState(emoji)
                     }
                 }
             }
         }
+    }
+
+    private fun clearAllOfSelectedReason(){
+        selectedOption.clear()
     }
 
     private fun updateScreenState(emojiScreenState: ScreenState) {
