@@ -8,7 +8,7 @@ ext {
     jacocoVersion = "0.8.7"
     kotlinVersion = "1.5.30"
 
-    navigationVersion = "2.3.0"
+    navigationVersion = "2.3.5"
     lifeCycleVersion = "2.2.0"
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
@@ -39,7 +39,7 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '3.4.1'
     cardioVersion = '5.5.1'
-    roomVersion = '2.3.0'
+    roomVersion = '2.4.1'
     sqliteFrameworkVersion = '2.1.0'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
@@ -77,7 +77,7 @@ ext {
     kotlinTestVersion = '1.5.30'
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
-    crashlyticsGradleVersion = '2.2.0'
+    crashlyticsGradleVersion = '2.5.2'
     googleServiceGradleVersion = '4.3.3'
     chuckerVersion = '4.0.6-tkpd'
     sliceVersion = '1.0.0-alpha6'
@@ -91,6 +91,7 @@ ext {
     windowVersion = '1.0.0-alpha07'
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
+    playIntegrityVersion = '1.0.1'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
@@ -126,7 +127,7 @@ ext {
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.13.2'
     unifyGlobalErrorVersion = '1.0.18.2'
-    unifyHeaderVersion = '1.1.12'
+    unifyHeaderVersion = '1.1.13'
     unifySortFilterVersion = '1.1.4.2'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.10.2'
@@ -247,7 +248,7 @@ ext {
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
-            hansel                : "io.hansel.preprocessor:preprocessor:9.1.5",
+            hansel                : "io.hansel.preprocessor:preprocessor:9.3.0",
             protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
             autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
@@ -308,7 +309,8 @@ ext {
             jjwtImpl              : "io.jsonwebtoken:jjwt-impl:0.11.2",
             jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2",
             gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
-            dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0"
+            dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
+            playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion"
     ]
 
     testDependencies = [
