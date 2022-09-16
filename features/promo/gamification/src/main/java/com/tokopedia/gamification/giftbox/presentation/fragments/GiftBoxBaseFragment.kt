@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.*
 import android.widget.FrameLayout
@@ -134,8 +135,9 @@ open class GiftBoxBaseFragment : Fragment() {
             (activity as AppCompatActivity).supportActionBar?.title = ""
             tvToolbarTitle.text = activity?.getString(R.string.gami_gift_60_toolbar_title)
         }
-        ImageViewCompat.setImageTintList(imageToolbarIcon, ColorStateList.valueOf(ContextCompat.getColor(imageToolbarIcon.context, android.R.color.white)))
-        tvToolbarTitle.setTextColor(ContextCompat.getColor(tvToolbarTitle.context, android.R.color.white))
+        val colorWhiteUnify = com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        ImageViewCompat.setImageTintList(imageToolbarIcon, ColorStateList.valueOf(ContextCompat.getColor(imageToolbarIcon.context, colorWhiteUnify)))
+        tvToolbarTitle.setTextColor(ContextCompat.getColor(tvToolbarTitle.context, colorWhiteUnify))
     }
 
     fun getScreenDimens() {
@@ -153,7 +155,10 @@ open class GiftBoxBaseFragment : Fragment() {
 
     fun showLoader() {
         viewFlipper.displayedChild = CONTAINER_LOADER
-        loader.visibility = View.VISIBLE
+        Handler().postDelayed({
+            loader.visibility = View.VISIBLE
+        }, 5000)
+
     }
 
     fun hideLoader() {
