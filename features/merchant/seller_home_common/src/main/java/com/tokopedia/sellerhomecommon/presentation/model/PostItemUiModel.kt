@@ -15,8 +15,7 @@ sealed class PostItemUiModel(
     open val featuredMediaUrl: String = "",
     open val subtitle: String = "",
     open val textEmphasizeType: Int = PostListDataUiModel.IMAGE_EMPHASIZED,
-    open val isPinned: Boolean = false,
-    open val countdownDate: Date = Date()
+    open val isPinned: Boolean = false
 ) : Visitable<PostListAdapterTypeFactory> {
 
     data class PostImageEmphasizedUiModel(
@@ -27,7 +26,7 @@ sealed class PostItemUiModel(
         override val subtitle: String = "",
         override val textEmphasizeType: Int = PostListDataUiModel.IMAGE_EMPHASIZED,
         override val isPinned: Boolean = false,
-        override val countdownDate: Date = Date()
+        val countdownDate: Date? = null
     ) : PostItemUiModel(
         title,
         appLink,
@@ -35,8 +34,7 @@ sealed class PostItemUiModel(
         featuredMediaUrl,
         subtitle,
         textEmphasizeType,
-        isPinned,
-        countdownDate
+        isPinned
     ) {
 
         override fun type(typeFactory: PostListAdapterTypeFactory): Int {
@@ -52,7 +50,6 @@ sealed class PostItemUiModel(
         override val subtitle: String = "",
         override val textEmphasizeType: Int = PostListDataUiModel.TEXT_EMPHASIZED,
         override val isPinned: Boolean = false,
-        override val countdownDate: Date = Date(),
         val stateMediaUrl: String = "",
         val stateText: String = "",
         val shouldShowUnderLine: Boolean = false
@@ -63,8 +60,7 @@ sealed class PostItemUiModel(
         featuredMediaUrl,
         subtitle,
         textEmphasizeType,
-        isPinned,
-        countdownDate
+        isPinned
     ) {
 
         override fun type(typeFactory: PostListAdapterTypeFactory): Int {

@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhomecommon.domain.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -8,70 +7,54 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class GetPostDataResponse(
-        @SerializedName("fetchPostWidgetData")
-        @Expose
-        val getPostWidgetData: GetPostDataModel?
+    @SerializedName("fetchPostWidgetData")
+    val getPostWidgetData: GetPostDataModel?
 )
 
 data class GetPostDataModel(
-        @SerializedName("data")
-        @Expose
-        val data: List<PostDataModel>?
+    @SerializedName("data")
+    val data: List<PostDataModel>?
 )
 
 data class PostDataModel(
-        @SerializedName("datakey")
-        @Expose
-        val dataKey: String? = "",
-        @SerializedName("list")
-        @Expose
-        val list: List<PostItemDataModel>? = emptyList(),
-        @SerializedName("cta")
-        @Expose
-        val cta: PostCtaDataModel? = PostCtaDataModel(),
-        @SerializedName("errorMsg")
-        @Expose
-        val error: String? = "",
-        @SerializedName("emphasizeType")
-        @Expose
-        val emphasizeType: Int? = 0,
-        @SerializedName("showWidget")
-        @Expose
-        val showWidget: Boolean? = true
+    @SerializedName("datakey")
+    val dataKey: String? = "",
+    @SerializedName("list")
+    val list: List<PostItemDataModel>? = emptyList(),
+    @SerializedName("cta")
+    val cta: PostCtaDataModel? = PostCtaDataModel(),
+    @SerializedName("errorMsg")
+    val error: String? = "",
+    @SerializedName("emphasizeType")
+    val emphasizeType: Int? = 0,
+    @SerializedName("showWidget")
+    val showWidget: Boolean? = true
 )
 
 data class PostItemDataModel(
-        @SerializedName("title")
-        @Expose
-        val title: String?,
-        @SerializedName("url")
-        @Expose
-        val url: String?,
-        @SerializedName("applink")
-        @Expose
-        val appLink: String?,
-        @SerializedName("subtitle")
-        @Expose
-        val subtitle: String?,
-        @SerializedName("featuredMediaURL")
-        @Expose
-        val featuredMediaURL: String?,
-        @SerializedName("stateText")
-        @Expose
-        val stateText: String? = "",
-        @SerializedName("stateMediaURL")
-        @Expose
-        val stateMediaUrl: String? = "",
-        @SerializedName("pinned")
-        @Expose
-        val isPinned: Boolean = false
+    @SerializedName("title")
+    val title: String?,
+    @SerializedName("url")
+    val url: String?,
+    @SerializedName("applink")
+    val appLink: String?,
+    @SerializedName("subtitle")
+    val subtitle: String?,
+    @SerializedName("featuredMediaURL")
+    val featuredMediaURL: String?,
+    @SerializedName("stateText")
+    val stateText: String? = "",
+    @SerializedName("stateMediaURL")
+    val stateMediaUrl: String? = "",
+    @SerializedName("countdownDate")
+    val countdownDate: String? = "",
+    @SerializedName("pinned")
+    val isPinned: Boolean = false
 )
 
 data class PostCtaDataModel(
-        @SerializedName("text")
-        @Expose
-        val text: String? = "",
-        @SerializedName("applink")
-        @Expose
-        val appLink: String? = "",
+    @SerializedName("text")
+    val text: String? = "",
+    @SerializedName("applink")
+    val appLink: String? = "",
 )

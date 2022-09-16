@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
@@ -9,6 +10,9 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostCtaDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
+import timber.log.Timber
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -98,7 +102,20 @@ class PostMapper @Inject constructor(
                             featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
                             subtitle = postItem.subtitle.orEmpty(),
                             textEmphasizeType = PostListDataUiModel.IMAGE_EMPHASIZED,
-                            isPinned = postItem.isPinned
+                            isPinned = postItem.isPinned,
+                            countdownDate = try {
+                                if (postItem.countdownDate.isNullOrBlank()) {
+                                    null
+                                } else {
+                                    val timeMillis = TimeUnit.SECONDS.toMillis(
+                                        postItem.countdownDate.toLongOrZero()
+                                    )
+                                    Date(timeMillis)
+                                }
+                            } catch (e: Exception) {
+                                Timber.e(e)
+                                null
+                            }
                         )
                     }
                 }
