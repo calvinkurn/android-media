@@ -107,18 +107,19 @@ class EditorActivity : BaseEditorActivity() {
 
     override fun onHeaderActionClick() {
         val listImageEditState = viewModel.editStateList.values
+        viewModel.saveToGallery(
+            this,
+            listImageEditState.map { it.getImageUrl() }) {
+            val result = EditorResult(
+                originalPaths = listImageEditState.map { it.getOriginalUrl() },
+                editedImages = it
+            )
 
-        val result = EditorResult(
-            originalPaths = listImageEditState.map { it.getOriginalUrl() },
-            editedImages = viewModel.saveToGallery(
-                this,
-                listImageEditState.map { it.getImageUrl() })
-        )
-
-        val intent = Intent()
-        intent.putExtra(RESULT_INTENT_EDITOR, result)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
+            val intent = Intent()
+            intent.putExtra(RESULT_INTENT_EDITOR, result)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 
     private fun showBackDialogConfirmation() {

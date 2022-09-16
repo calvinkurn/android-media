@@ -153,11 +153,13 @@ class EditorViewModel @Inject constructor(
         }
     }
 
-    fun saveToGallery(context: Context, imageList: List<String>): List<String>{
-        return saveImageRepository.saveToGallery(
+    fun saveToGallery(context: Context, imageList: List<String>, onFinish: (result: List<String>) -> Unit){
+        saveImageRepository.saveToGallery(
             context,
             imageList
-        )
+        ) {
+            onFinish(it)
+        }
     }
 
     private fun updateEditedItem(originalUrl: String) {
