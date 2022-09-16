@@ -2532,7 +2532,7 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launchOverride("$REMINDER_JOB_ID-${section.id}", block = {
             val (isReminded, message) = repo.subscribeUpcomingCampaign(
                 section.id,
-                shouldRemind = if (wasAuthenticated) true
+                shouldRemind = if (!wasAuthenticated) true
                 else section.config.reminder == PlayUpcomingBellStatus.Off,
             )
 
