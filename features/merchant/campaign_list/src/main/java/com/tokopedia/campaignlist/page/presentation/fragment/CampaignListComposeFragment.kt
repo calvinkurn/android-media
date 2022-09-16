@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
@@ -22,8 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -36,10 +34,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.analytics.CampaignListTracker
-import com.tokopedia.campaignlist.common.data.model.response.CampaignDynamicRule
-import com.tokopedia.campaignlist.common.data.model.response.CampaignListV2
 import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
-import com.tokopedia.campaignlist.common.data.model.response.SellerCampaignInfo
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
@@ -123,7 +118,7 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
 
     @Composable
     fun CampaignItem(campaign: ActiveCampaign) {
-        Card(modifier = Modifier.fillMaxWidth()) {
+        Card(shape = RoundedCornerShape(8.dp), modifier = Modifier.fillMaxWidth().padding(12.dp)) {
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
                 val (ribbon,
@@ -170,8 +165,7 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
                 Text(campaign.campaignStatus, modifier = Modifier.constrainAs(campaignStatus) {
                     top.linkTo(campaignType.top)
                     bottom.linkTo(campaignType.bottom)
-                    start.linkTo(campaignType.end)
-                    end.linkTo(parent.end)
+                    end.linkTo(parent.end, margin = 16.dp)
                 })
 
                 Image(
@@ -247,11 +241,11 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
                 )
 
                 Button(onClick = {},
-                    modifier = Modifier.fillMaxWidth().constrainAs(buttonShare) {
-                        top.linkTo(campaignStartTime.bottom, margin = 12.dp)
-                        start.linkTo(campaignImage.start)
-                        end.linkTo(parent.end, margin = 12.dp)
-                        bottom.linkTo(parent.bottom, margin = 12.dp)
+                    modifier = Modifier.fillMaxWidth().padding(12.dp).constrainAs(buttonShare) {
+                        top.linkTo(campaignStartTime.bottom)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
                     }) {
                     Text(text = stringResource(id = R.string.action_share))
                 }
