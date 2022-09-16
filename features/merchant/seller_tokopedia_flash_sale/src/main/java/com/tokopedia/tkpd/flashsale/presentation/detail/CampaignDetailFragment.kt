@@ -24,7 +24,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
-import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
@@ -430,7 +429,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val targetDate = flashSale.submissionEndDateUnix
         val onTimerFinished = { binding.timer.gone() }
         binding.timer.timerFormat = TimerUnifySingle.FORMAT_AUTO
-        binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
+        binding.timer.targetDate = targetDate.toCalendar()
         binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
         binding.timer.onFinish = onTimerFinished
     }
@@ -653,7 +652,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun setupRegisteredTimer(binding: StfsCdpRegisteredMidBinding, flashSale: FlashSale) {
         val targetDate = flashSale.submissionEndDateUnix
         binding.timerRegistered.timerFormat = TimerUnifySingle.FORMAT_AUTO
-        binding.timerRegistered.targetDate = targetDate.removeTimeZone().toCalendar()
+        binding.timerRegistered.targetDate = targetDate.toCalendar()
         binding.timerRegistered.timerVariant = TimerUnifySingle.VARIANT_GENERAL
     }
 
