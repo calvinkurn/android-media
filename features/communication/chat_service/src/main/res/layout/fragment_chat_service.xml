@@ -68,8 +68,19 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/main_edt"
         app:layout_constraintLeft_toRightOf="@id/main_edt"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/loadmore_btn"
         app:layout_constraintBottom_toBottomOf="@id/main_edt"
         android:text="Send"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/loadmore_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/main_edt"
+        app:layout_constraintLeft_toRightOf="@id/main_btn"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/main_edt"
+        android:layout_marginStart="8dp"
+        android:text="More"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

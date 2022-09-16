@@ -71,6 +71,10 @@ class ChatServiceFragment: BaseDaggerFragment() {
         binding?.clearBtn?.setOnClickListener {
             binding?.mainTv?.text = ""
         }
+
+        binding?.loadmoreBtn?.setOnClickListener {
+            viewModel.loadPreviousMessages()
+        }
     }
 
     private fun initObservers() {
@@ -85,18 +89,21 @@ class ChatServiceFragment: BaseDaggerFragment() {
     }
 
     private fun setupDummyChatService() {
-        viewModel.initGroupBooking(
-            getOrderIdOrDefault(),
-            1,
-            getGroupBookingListener(),
-            OrderChatType.Driver
-        )
+        val orderId = getOrderIdOrDefault()
+        if (orderId.isNotEmpty()) {
+            viewModel.initGroupBooking(
+                orderId,
+                2,
+                getGroupBookingListener(),
+                OrderChatType.Driver
+            )
+        }
     }
 
     private fun getOrderIdOrDefault(): String {
         val text = binding?.orderIdEdt?.text
         return if (text.isNullOrEmpty()) {
-            "RB-169991-4236640"
+            "F-176219770"
         } else {
             text.toString()
         }
