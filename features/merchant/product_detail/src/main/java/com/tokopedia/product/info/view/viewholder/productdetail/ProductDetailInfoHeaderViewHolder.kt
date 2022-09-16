@@ -4,27 +4,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.databinding.BsItemProductDetailHeaderBinding
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
-import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
+import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifyprinciples.Typography
-import java.util.Locale
+import java.util.*
 
 /**
  * Created by Yehezkiel on 12/10/20
  */
-class ProductDetailInfoHeaderViewHolder(private val view: View,
-                                        private val listener: ProductDetailInfoListener) : AbstractViewHolder<ProductDetailInfoHeaderDataModel>(view) {
+class ProductDetailInfoHeaderViewHolder(
+    private val view: View,
+    private val listener: ProductDetailInfoListener
+) : AbstractViewHolder<ProductDetailInfoHeaderDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.bs_item_product_detail_header
@@ -39,7 +41,10 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
         setupSpecification(element.listOfAnnotation, element.needToShowSpecification())
     }
 
-    private fun setupSpecification(annotation: List<ProductDetailInfoContent>, showSpecification: Boolean) = with(binding) {
+    private fun setupSpecification(
+        annotation: List<ProductDetailInfoContent>,
+        showSpecification: Boolean
+    ) = with(binding) {
         if (showSpecification) {
             pdpHeaderProductSeeMore.show()
             pdpHeaderProductSeeMore.setOnClickListener {
@@ -64,14 +69,17 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
         }
     }
 
-    private fun setupItem(socProofBinding: ItemInfoProductDetailBinding,
-                          data: ProductDetailInfoContent) = with(socProofBinding) {
+    private fun setupItem(
+        socProofBinding: ItemInfoProductDetailBinding,
+        data: ProductDetailInfoContent
+    ) = with(socProofBinding) {
+        val bindingPosition = bindingAdapterPosition + Int.ONE
         infoDetailTitle.text = data.title
         infoDetailValue.text = data.subtitle
 
         infoDetailValue.run {
             if (data.applink.isNotEmpty()) {
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                setTextColor(context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 setWeight(Typography.BOLD)
 
                 infoDetailClickArea.setOnClickListener {
@@ -95,7 +103,12 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
             if (data.infoLink.isNotEmpty()) {
                 infoDetailIcon.show()
                 infoDetailClickArea.setOnClickListener {
-                    listener.goToEducational(data.infoLink, data.title, data.subtitle, adapterPosition + 1)
+                    listener.goToEducational(
+                        data.infoLink,
+                        data.title,
+                        data.subtitle,
+                        bindingPosition
+                    )
                 }
 
                 data.icon.toIntOrNull()?.let { icon ->
@@ -103,7 +116,7 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
                 }
             }
 
-            listener.onImpressInfo(data.title, data.subtitle, adapterPosition + Int.ONE)
+            listener.onImpressInfo(data.title, data.subtitle, bindingPosition)
         }
     }
 }

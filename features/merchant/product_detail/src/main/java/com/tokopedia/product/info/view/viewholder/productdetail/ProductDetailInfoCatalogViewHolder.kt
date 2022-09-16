@@ -61,7 +61,7 @@ class ProductDetailInfoCatalogViewHolder(
         listener.onImpressCatalog(
             key = catalog.key,
             value = catalog.value,
-            position = adapterPosition + Int.ONE
+            position = bindingAdapterPosition + Int.ONE
         )
     }
 }
