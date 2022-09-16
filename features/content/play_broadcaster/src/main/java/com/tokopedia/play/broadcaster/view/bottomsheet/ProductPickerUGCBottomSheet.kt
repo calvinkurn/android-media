@@ -23,6 +23,7 @@ import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collect
@@ -34,6 +35,7 @@ import javax.inject.Inject
  */
 class ProductPickerUGCBottomSheet @Inject constructor(
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: ProductPickerUGCAnalytic,
 ) : BaseProductSetupBottomSheet() {
 
@@ -41,7 +43,9 @@ class ProductPickerUGCBottomSheet @Inject constructor(
     private val binding: BottomSheetPlayUgcProductPickerBinding
         get() = _binding!!
 
-    private val parentViewModel by activityViewModels<PlayBroadcastViewModel>()
+    private val parentViewModel by activityViewModels<PlayBroadcastViewModel> {
+        parentViewModelFactoryCreator.create(requireActivity())
+    }
 
     private val productTagListener = object : ProductTagParentFragment.Listener {
         override fun onCloseProductTag() {

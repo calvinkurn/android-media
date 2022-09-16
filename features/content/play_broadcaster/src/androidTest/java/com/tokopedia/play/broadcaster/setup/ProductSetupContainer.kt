@@ -35,11 +35,12 @@ class ProductSetupContainer(
                 return object : PlayBroProductSetupViewModel.Factory {
                     override fun create(
                         productSectionList: List<ProductTagSectionUiModel>,
-                        savedStateHandle: SavedStateHandle
+                        savedStateHandle: SavedStateHandle,
+                        isEligibleForPin: Boolean,
                     ): PlayBroProductSetupViewModel {
                         return viewModel(savedStateHandle)
                     }
-                }.create(emptyList(), handle) as T
+                }.create(emptyList(), handle, false) as T
             }
         }
     }
