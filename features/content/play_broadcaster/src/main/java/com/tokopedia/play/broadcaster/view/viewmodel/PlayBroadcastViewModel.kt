@@ -1514,23 +1514,22 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun getDefaultSelectedAccount(accountList: List<ContentAccountUiModel>): ContentAccountUiModel {
-        val isHasSeller = accountList.find { it.type == TYPE_SHOP } != null
-        val isHasNonSeller = accountList.find { it.type == TYPE_USER } != null
+        val sellerAccount = accountList.firstOrNull { it.type == TYPE_SHOP }
+        val nonSellerAccount = accountList.firstOrNull { it.type == TYPE_USER }
         return when {
-            isHasSeller -> sellerAccountCheck(isHasNonSeller, accountList)
-            isHasNonSeller -> nonSellerAccountCheck(accountList)
+            sellerAccount != null -> sellerAccountCheck(sellerAccount, nonSellerAccount)
+            nonSellerAccount != null -> nonSellerAccountCheck(nonSellerAccount)
             else -> ContentAccountUiModel.Empty
         }
     }
 
     private fun sellerAccountCheck(
-        isHasNonSeller: Boolean,
-        accountList: List<ContentAccountUiModel>
+        sellerAccount: ContentAccountUiModel,
+        nonSellerAccount: ContentAccountUiModel?,
     ): ContentAccountUiModel {
-        val sellerAccount = accountList.first { it.type == TYPE_SHOP }
         return when {
             sellerAccount.hasAcceptTnc -> sellerAccount
-            isHasNonSeller -> nonSellerAccountCheck(accountList, sellerAccount)
+            nonSellerAccount != null -> nonSellerAccountCheck(nonSellerAccount)
             else -> {
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
@@ -1544,11 +1543,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun nonSellerAccountCheck(
-        accountList: List<ContentAccountUiModel>,
-        sellerAccount: ContentAccountUiModel? = null
-    ): ContentAccountUiModel {
-        val nonSellerAccount = accountList.first { it.type == TYPE_USER }
+    private fun nonSellerAccountCheck(nonSellerAccount: ContentAccountUiModel): ContentAccountUiModel {
         return when {
             !nonSellerAccount.hasUsername -> {
                 _accountStateInfo.update { AccountStateInfo() }
@@ -1558,7 +1553,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         selectedAccount = nonSellerAccount,
                     )
                 }
-                sellerAccount ?: nonSellerAccount
+                nonSellerAccount
             }
             !nonSellerAccount.hasAcceptTnc -> {
                 _accountStateInfo.update { AccountStateInfo() }
@@ -1568,7 +1563,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         selectedAccount = nonSellerAccount,
                     )
                 }
-                sellerAccount ?: nonSellerAccount
+                nonSellerAccount
             }
             else -> nonSellerAccount
         }
