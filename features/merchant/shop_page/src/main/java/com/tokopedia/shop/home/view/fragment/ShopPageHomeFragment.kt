@@ -3036,26 +3036,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
 
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
         viewModel?.clearGetShopProductUseCase()
-        val isUsingV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-            if (isUsingV2) handleWishlistActionAddToWishlistV2(productCardOptionsModel)
-            else handleWishlistActionAddToWishlist(productCardOptionsModel)
+            handleWishlistActionAddToWishlistV2(productCardOptionsModel)
         } else {
-            if (isUsingV2) handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel.wishlistResult)
-            else handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
-        }
-    }
-
-    private fun handleWishlistActionAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessAddWishlist(
-                threeDotsClickShopCarouselProductUiModel,
-                threeDotsClickShopProductViewModel
-            )
-        } else {
-            onErrorAddWishlist(
-                getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-            )
+            handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel.wishlistResult)
         }
     }
 
@@ -3071,19 +3055,6 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                 trackClickWishlist(threeDotsClickShopCarouselProductUiModel,
                     it, true)
             }
-        }
-    }
-
-    private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessRemoveWishList(
-                threeDotsClickShopCarouselProductUiModel,
-                threeDotsClickShopProductViewModel
-            )
-        } else {
-            onErrorRemoveWishList(
-                getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
-            )
         }
     }
 
