@@ -90,7 +90,6 @@ class MenuSettingViewModel @Inject constructor(
         }
     }
 
-
     fun getShopLocEligible(shopId: Long) {
         launchCatchError(block = {
             val shopLocWhitelist = shopLocWhitelist.get().invoke(shopId).shopLocWhitelist
