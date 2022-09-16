@@ -627,7 +627,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     quantity
                     )
                 )
-            ), childFragmentManager
+            ),
+            childFragmentManager
         ) {
             setTenureDetailData()
         }
