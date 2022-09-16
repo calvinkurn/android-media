@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 data class ChatbotUploadVideoEligibilityResponse(
     @SerializedName("topbotUploadVideoEligibility")
-    val topbotUploadVideoEligibility : TopBotUploadVideoEligibility
+    val topbotUploadVideoEligibility: TopBotUploadVideoEligibility
 ) {
     data class TopBotUploadVideoEligibility(
         @SerializedName("header")
-        val headerVideoEligibility : HeaderVideoEligibility,
+        val headerVideoEligibility: HeaderVideoEligibility,
         @SerializedName("data")
-        val dataVideoEligibility : DataVideoEligibility
+        val dataVideoEligibility: DataVideoEligibility
     ) {
         data class HeaderVideoEligibility(
             @SerializedName("is_success")

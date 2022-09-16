@@ -2,9 +2,7 @@ package com.tokopedia.chatbot.data.videoupload
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.SendableUiModel
-import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
-
 
 class VideoUploadUiModel(
     builder: Builder

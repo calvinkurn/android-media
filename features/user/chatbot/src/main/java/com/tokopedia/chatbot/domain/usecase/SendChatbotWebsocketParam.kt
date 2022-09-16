@@ -225,19 +225,18 @@ object SendChatbotWebsocketParam {
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
 
         val data = JsonObject()
-        data.addProperty("message_id", Integer.parseInt(messageId))
+        data.addProperty("message_id", messageId.convertMessageIdToLong())
         data.addProperty("message", "Uploaded Video")
         data.addProperty(
-            "attachment_type", Integer.parseInt(
-                ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
-            )
+            "attachment_type", (
+                    ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
+                    ).toIntOrZero()
         )
         data.addProperty("file_path", filePath)
         data.addProperty("start_time", startTime)
 
         json.add("data", data)
         return json
-
 
     }
 

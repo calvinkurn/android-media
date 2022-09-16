@@ -92,7 +92,7 @@ class ChatbotAnalytics @Inject constructor(
         sendGeneralEventWithTrackerId(map)
     }
 
-    fun eventOnVideoUpload(videoFilePath : String, extension : String, videoSize : String) {
+    fun eventOnVideoUpload(videoFilePath: String, extension: String, videoSize: String) {
         val eventLabel =  "media name:$videoFilePath ;media type:$extension ;media size:$videoSize "
         val map = TrackAppUtils.gtmData(
             EVENT_NAME,
@@ -109,7 +109,6 @@ class ChatbotAnalytics @Inject constructor(
         map[KEY_CURRENT_SITE] = CURRENT_SITE_CX
         getTracker().sendGeneralEvent(map)
     }
-
 
     private fun sendGeneralEvent(map: MutableMap<String, Any>) {
         map[KEY_USER_ID] = userSession.userId
