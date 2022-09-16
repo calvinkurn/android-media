@@ -5,7 +5,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
@@ -28,40 +27,40 @@ object SellerSettingsList {
         return if (isMultilocation) {
             return listOf(
                 SellerSettingsTitleUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.setting_menu_shop_profile),
+                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_profile),
                     IconUnify.SHOP_SETTING
                 ),
                 SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.setting_menu_basic_info),
+                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_basic_info),
                     clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.BASIC_INFO
                 ),
                 SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.setting_menu_shop_notes),
+                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_notes),
                     clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.NOTES
                 ),
                 SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.setting_menu_shop_working_hours),
+                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_working_hours),
                     clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.SCHEDULE
                 ),
                 DividerUiModel(DividerType.THIN_INDENTED),
-                IndentedSettingTitleUiModel(context.getString(com.tokopedia.seller.menu.R.string.setting_menu_location_and_shipment)),
+                IndentedSettingTitleUiModel(context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)),
                 SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.setting_menu_add_and_shop_location),
+                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_add_and_shop_location),
                     clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.LOCATION
                 ),
                 SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.setting_menu_set_shipment_method),
+                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method),
                     clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                    trackingAlias = trackingAliasMap[context.getString(com.tokopedia.seller.menu.R.string.setting_menu_set_shipment_method)],
+                    trackingAlias = trackingAliasMap[context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method)],
                     type = MenuItemType.SHIPPING
                 ),
                 DividerUiModel(DividerType.THICK),
@@ -82,34 +81,34 @@ object SellerSettingsList {
         } else {
             return listOf(
                 SellerSettingsTitleUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.setting_menu_shop_profile),
+                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_profile),
                     IconUnify.SHOP_SETTING
                 ),
                 SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.setting_menu_basic_info),
+                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_basic_info),
                     clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.BASIC_INFO
                 ),
                 SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.setting_menu_shop_notes),
+                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_notes),
                     clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.NOTES
                 ),
                 SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.setting_menu_shop_working_hours),
+                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_working_hours),
                     clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                     type = MenuItemType.SCHEDULE
                 ),
                 DividerUiModel(DividerType.THIN_INDENTED),
-                IndentedSettingTitleUiModel(context.getString(com.tokopedia.seller.menu.R.string.setting_menu_location_and_shipment)),
+                IndentedSettingTitleUiModel(context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)),
                 SellerMenuItemUiModel(
-                    context.getString(com.tokopedia.seller.menu.R.string.setting_menu_set_shipment_method),
+                    context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method),
                     clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
                     settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
-                    trackingAlias = trackingAliasMap[context.getString(com.tokopedia.seller.menu.R.string.setting_menu_set_shipment_method)],
+                    trackingAlias = trackingAliasMap[context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method)],
                     type = MenuItemType.SHIPPING
                 ),
                 DividerUiModel(DividerType.THICK),
@@ -133,7 +132,7 @@ object SellerSettingsList {
 
     private fun trackingAliasMap(context: Context): Map<String, String?> {
         return mapOf<String, String?>(
-            context.getString(com.tokopedia.seller.menu.R.string.setting_menu_set_shipment_method) to SHIPPING_SERVICE_ALIAS,
+            context.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method) to SHIPPING_SERVICE_ALIAS,
             LOGOUT_BUTTON_NAME to LOGOUT_ALIAS
         )
     }
