@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -1354,14 +1355,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ArrayList<String> reloadedUniqueIds = new ArrayList<>();
                 if (validateUsePromoRevampUiModel != null) {
                     String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
-                    if (messageInfo.length() > 0) {
-                        showToastNormal(messageInfo);
-                    }
                     shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
                     doUpdateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
                     updatePromoTrackingData(validateUsePromoRevampUiModel.getPromoUiModel().getTrackingDetailUiModels());
                     sendEEStep3();
-                    reloadedUniqueIds = shipmentPresenter.validateBoPromo(validateUsePromoRevampUiModel);
+                    Pair<ArrayList<String>, ArrayList<String>> validateBoResult = shipmentPresenter.validateBoPromo(validateUsePromoRevampUiModel);
+                    reloadedUniqueIds = validateBoResult.first;
+                    ArrayList<String> unappliedUniqueIds = validateBoResult.second;
+                    if (messageInfo.length() > 0) {
+                        showToastNormal(messageInfo);
+                    } else if (unappliedUniqueIds.size() > 0) {
+                        // when messageInfo is empty and has unapplied BO show hard coded toast
+                        showToastNormal(getString(com.tokopedia.purchase_platform.common.R.string.pp_auto_unapply_bo_toaster_message));
+                    }
                     if (shipmentAdapter.hasSetAllCourier()) {
                         resetPromoBenefit();
                         setPromoBenefit(validateUsePromoRevampUiModel.getPromoUiModel().getBenefitSummaryInfoUiModel().getSummaries());
