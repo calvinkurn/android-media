@@ -2,28 +2,18 @@ package com.tokopedia.loginregister.redefineregisteremail.view.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.redefineregisteremail.di.DaggerRedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
-import javax.inject.Inject
 
 class RedefineRegisterEmailActivity : BaseSimpleActivity(), HasComponent<RedefineRegisterEmailComponent> {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(
-            RedefineRegisterViewModel::class.java
-        )
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        component.inject(this)
         supportActionBar?.elevation = 0f
     }
 
@@ -40,6 +30,16 @@ class RedefineRegisterEmailActivity : BaseSimpleActivity(), HasComponent<Redefin
     }
 
     override fun onBackPressed() {
-        if (viewModel.isAllowBackPressed) super.onBackPressed()
+        try {
+            val fragment = supportFragmentManager.fragments.last().childFragmentManager.fragments.last()
+            if (fragment is TkpdBaseV4Fragment && fragment.isVisible) {
+                val handled = fragment.onFragmentBackPressed()
+                if (handled) {
+                    return
+                }
+            }
+        } catch (e: Exception) {}
+
+        super.onBackPressed()
     }
 }
