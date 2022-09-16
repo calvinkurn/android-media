@@ -45,6 +45,7 @@ import com.tokopedia.affiliate.model.response.ItemTypesItem
 import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker.Companion.IDENTIFIER_HOME
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetInfo
@@ -490,7 +491,21 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
     }
 
-    override fun onUserRegistered() {
+    override fun onUserNotRegistered() {
+        activity?.let {
+            AffiliateRegistrationActivity.newInstance(it)
+            it.finish()
+        }
+    }
+
+    override fun onNotEligible() {
+        activity?.let {
+            AffiliateRegistrationActivity.newInstance(it)
+            it.finish()
+        }
+    }
+
+    override fun onUserValidated() {
         affiliateHomeViewModel.getAnnouncementInformation()
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
     }
@@ -517,6 +532,7 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
         adapter.notifyItemRangeRemoved(PARTIAL_RESET_LENGTH, listSize - PARTIAL_RESET_LENGTH)
         loadMoreTriggerListener?.resetState()
         listSize = affiliateHomeViewModel.staticSize
+        isNoMoreData = false
     }
 
 }
