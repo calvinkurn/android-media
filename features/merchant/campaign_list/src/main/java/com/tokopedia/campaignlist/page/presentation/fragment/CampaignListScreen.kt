@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,9 +25,16 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
+import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.AVAILABLE_STATUS_ID
+import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.ONGOING_STATUS_ID
+import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.UPCOMING_IN_NEAR_TIME_STATUS_ID
+import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.UPCOMING_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Success
 
 @Composable
@@ -115,7 +121,8 @@ private fun Ticker(modifier: Modifier = Modifier) {
 @Composable
 fun CampaignItem(campaign: ActiveCampaign) {
     Card(
-        shape = RoundedCornerShape(8.dp), modifier = Modifier
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
     ) {
@@ -162,11 +169,15 @@ fun CampaignItem(campaign: ActiveCampaign) {
                 start.linkTo(statusImage.end, margin = 4.dp)
             })
 
-            Text(campaign.campaignStatus, modifier = Modifier.constrainAs(campaignStatus) {
-                top.linkTo(campaignType.top)
-                bottom.linkTo(campaignType.bottom)
-                end.linkTo(parent.end, margin = 16.dp)
-            })
+            CampaignLabel(
+                modifier = Modifier.constrainAs(campaignStatus) {
+                    top.linkTo(campaignType.top)
+                    bottom.linkTo(campaignType.bottom)
+                    end.linkTo(parent.end, margin = 16.dp)
+                },
+                campaignStatus = campaign.campaignStatus,
+                campaignStatusId = campaign.campaignStatusId.toIntOrZero()
+            )
 
             Image(
                 painter = painterResource(id = R.drawable.ic_rocket),
@@ -240,7 +251,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
                 }
             )
 
-            Button(onClick = {},
+            ComposeButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)
@@ -249,9 +260,13 @@ fun CampaignItem(campaign: ActiveCampaign) {
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }) {
-                Text(text = stringResource(id = R.string.action_share))
-            }
+                    },
+                text = stringResource(id = R.string.action_share),
+                buttonSize = UnifyButton.Size.SMALL,
+                buttonType = UnifyButton.Type.MAIN,
+                buttonVariant = UnifyButton.Variant.FILLED,
+                onClick = {}
+            )
 
 
         }
@@ -274,4 +289,15 @@ fun CampaignItemPreview() {
     )
 
     CampaignItem(campaign)
+}
+
+@Composable
+fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: Int) {
+    val labelType = when (campaignStatusId) {
+        ONGOING_STATUS_ID.toIntOrZero() -> Label.HIGHLIGHT_LIGHT_GREEN
+        UPCOMING_STATUS_ID.toIntOrZero(), UPCOMING_IN_NEAR_TIME_STATUS_ID.toIntOrZero() -> Label.HIGHLIGHT_LIGHT_ORANGE
+        AVAILABLE_STATUS_ID.toIntOrZero() -> Label.HIGHLIGHT_LIGHT_GREY
+        else -> Label.HIGHLIGHT_LIGHT_GREEN
+    }
+    ComposeLabel(modifier = modifier, labelText = campaignStatus, labelType = labelType)
 }

@@ -8,7 +8,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.tokopedia.campaignlist.common.util.onTextChanged
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
@@ -86,6 +88,53 @@ fun ComposeTicker(
                 })
                 tickerShape = Ticker.SHAPE_LOOSE
                 tickerType = Ticker.TYPE_ANNOUNCEMENT
+            }
+        },
+        update = { view ->
+
+        }
+    )
+}
+
+
+@Composable
+fun ComposeLabel(
+    modifier: Modifier = Modifier,
+    labelText: CharSequence,
+    labelType: Int
+) {
+    AndroidView(
+        modifier = modifier,
+        factory = { context ->
+            Label(context).apply {
+                setLabelType(labelType)
+                text = labelText
+            }
+        },
+        update = { view ->
+
+        }
+    )
+}
+
+@Composable
+fun ComposeButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    buttonSize: Int,
+    buttonVariant : Int,
+    buttonType : Int,
+    onClick: () -> Unit
+) {
+    AndroidView(
+        modifier = modifier,
+        factory = { context ->
+            UnifyButton(context).apply {
+                this.text = text
+                this.buttonSize = buttonSize
+                this.buttonVariant = buttonVariant
+                this.buttonType = buttonType
+                setOnClickListener { onClick() }
             }
         },
         update = { view ->

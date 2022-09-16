@@ -20,10 +20,10 @@ class ActiveCampaignViewHolder(
     }
 
     companion object {
-        private const val AVAILABLE_STATUS_ID = "5"
-        private const val UPCOMING_STATUS_ID = "6"
-        private const val ONGOING_STATUS_ID = "7"
-        private const val UPCOMING_IN_NEAR_TIME_STATUS_ID = "14"
+        const val AVAILABLE_STATUS_ID = "5"
+        const val UPCOMING_STATUS_ID = "6"
+        const val ONGOING_STATUS_ID = "7"
+        const val UPCOMING_IN_NEAR_TIME_STATUS_ID = "14"
     }
 
     private var context: Context? = null
