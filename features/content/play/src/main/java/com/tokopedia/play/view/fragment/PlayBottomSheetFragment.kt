@@ -275,7 +275,7 @@ class PlayBottomSheetFragment @Inject constructor(
             actionText = getString(R.string.play_action_lihat),
             actionClickListener = {
                 newAnalytic.clickToasterPrivate(voucherId = voucher.id)
-                playViewModel.submitAction(OpenCart(ApplinkConstInternalMarketplace.CART))
+                playViewModel.submitAction(OpenCart)
             }
         )
         newAnalytic.impressToasterPrivate(voucher.id)
