@@ -32,7 +32,7 @@ import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
@@ -75,7 +75,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         set(value) {
             field = value
             value?.run {
-                productId = operator.attributes.defaultProductId.toIntOrZero()
+                productId = operator.attributes.defaultProductId.toIntSafely()
             }
         }
 
@@ -261,10 +261,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     ?: TopupBillsExtraParam()
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                    menuId = digitalTelcoExtraParam.menuId.toInt()
+                    menuId = digitalTelcoExtraParam.menuId.toIntSafely()
                 }
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                    categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                    categoryId = digitalTelcoExtraParam.categoryId.toIntSafely()
                 }
                 rechargeProductFromSlice = this.getString(RECHARGE_PRODUCT_EXTRA, "")
             }

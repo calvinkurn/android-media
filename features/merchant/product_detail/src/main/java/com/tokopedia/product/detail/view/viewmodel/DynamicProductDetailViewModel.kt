@@ -22,6 +22,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
@@ -60,6 +61,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
@@ -275,6 +277,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private val _toolbarTransparentState = MutableLiveData<Boolean>()
     val toolbarTransparentState: LiveData<Boolean> get() = _toolbarTransparentState
+
+    private val _verticalRecommendation = MutableLiveData<Result<RecommendationWidget>>()
+    val verticalRecommendation: LiveData<Result<RecommendationWidget>> = _verticalRecommendation
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -610,11 +615,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     productId = it.basic.productID,
                     pdpSession = it.pdpSession,
                     shopId = it.basic.shopID,
-                    isTokoNow = it.basic.isTokoNow)
+                    isTokoNow = it.basic.isTokoNow
+            )
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
-            p2DataDeffered.await().let {
-                _p2Data.postValue(it)
+            p2DataDeffered.await().let { p2 ->
+                val p2Data = p2.copy(isToolbarTransparent = _toolbarTransparentState.value.orFalse())
+                _p2Data.postValue(p2Data)
             }
 
             p2LoginDeferred?.let {
@@ -1201,5 +1208,24 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         } catch (throwable: Throwable) {
             _toolbarTransparentState.value = false
         }
+    }
+
+    fun getVerticalRecommendationData(pageName: String, page: Int? = DEFAULT_PAGE_NUMBER, productId: String?) {
+        val nonNullPage = page ?: DEFAULT_PAGE_NUMBER
+        val nonNullProductId = productId.orEmpty()
+        launchCatchError(block = {
+            val requestParams = GetRecommendationRequestParam(
+                pageNumber = nonNullPage,
+                pageName = pageName,
+                productIds = arrayListOf(nonNullProductId)
+            )
+            val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
+            val dataResponse = recommendationResponse.firstOrNull()
+            if (dataResponse == null)
+                _verticalRecommendation.value = Fail(Throwable())
+            else _verticalRecommendation.value = dataResponse.asSuccess()
+        }, onError = {
+            _verticalRecommendation.value = Fail(it)
+        })
     }
 }

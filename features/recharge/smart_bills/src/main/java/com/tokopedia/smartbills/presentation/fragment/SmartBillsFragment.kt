@@ -113,10 +113,12 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     private var source: String = ""
+    private var message: String = ""
+    private var category: String = ""
 
     private var autoTick = false
-    private var totalPrice = 0
-    private var maximumPrice = 0
+    private var totalPrice = 0L
+    private var maximumPrice = 0L
     private var ongoingMonth: RechargeStatementMonths? = RechargeStatementMonths()
     private var listAccordion: List<Section> = listOf()
     private var listBills: List<RechargeBills> = listOf()
@@ -142,6 +144,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
         arguments?.let {
             source = it.getString(EXTRA_SOURCE_TYPE, "")
+            message = it.getString(EXTRA_ADD_BILLS_MESSAGE, "")
+            category = it.getString(EXTRA_ADD_BILLS_CATEGORY, "")
         }
     }
 
@@ -207,9 +211,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         showOnboarding()
 
                         // Save maximum price
-                        maximumPrice = 0
+                        maximumPrice = 0L
                         for (bill in bills) {
-                            maximumPrice += bill.amount.toInt()
+                            maximumPrice += bill.amount
                         }
                     } else {
                         hideLoading()
@@ -218,6 +222,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         smart_bills_checkout_view.setVisibilityLayout(false)
                         adapter.renderEmptyState()
                     }
+                    successAddBills(message, category)
                     smartBillsAnalytics.eventOpenScreen((bills?.isEmpty()) ?: true, bills?.size ?: 0)
                 }
                 is Fail -> {
@@ -364,20 +369,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 loadInitialData()
                 val message = data?.getStringExtra(EXTRA_ADD_BILLS_MESSAGE)
                 val category = data?.getStringExtra(EXTRA_ADD_BILLS_CATEGORY)
-                if (message != null) {
-                    view?.let { parentView ->
-                        Toaster.build(
-                            parentView,
-                            message,
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_NORMAL,
-                            getString(com.tokopedia.resources.common.R.string.general_label_ok)
-                        ).show()
-                    }
-                }
-                category?.let {
-                    smartBillsAnalytics.clickViewShowToasterTelcoAddBills(category)
-                }
+                successAddBills(message, category)
             }
         } else if (resultCode == Activity.RESULT_CANCELED) activity?.finish()
     }
@@ -387,6 +379,23 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         setupUI()
         initView()
         observeData()
+    }
+
+    private fun successAddBills(message: String?, category: String?) {
+        if (message != null && message.isNotEmpty()) {
+            view?.let { parentView ->
+                Toaster.build(
+                    parentView,
+                    message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                ).show()
+            }
+        }
+        if (category != null && category.isNotEmpty()) {
+            smartBillsAnalytics.clickViewShowToasterTelcoAddBills(category)
+        }
     }
 
     private fun setupUI(){
@@ -570,10 +579,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         if (isChecked) {
             // Do not trigger event if bill is auto-ticked
             if (!autoTick) smartBillsAnalytics.clickTickBill(item, listBills.indexOf(item))
-            totalPrice += item.amount.toInt()
+            totalPrice += item.amount
         } else {
             smartBillsAnalytics.clickUntickBill(item, listBills.indexOf(item))
-            totalPrice -= item.amount.toInt()
+            totalPrice -= item.amount
         }
         updateCheckoutView()
         updateCheckAll()
@@ -803,6 +812,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     override fun onCatalogClickCallback(applink: String, category: String) {
         smartBillsAnalytics.clickCategoryBottomsheetCatalog(category)
         val intent = RouteManager.getIntent(context, applink)
+        intent.putExtra(EXTRA_ADD_BILLS_IS_FROM_SBM, true)
         startActivityForResult(intent, REQUEST_CODE_ADD_BILLS)
     }
 
@@ -923,14 +933,17 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         const val REQUEST_CODE_ADD_BILLS= 2030
         const val EXTRA_ADD_BILLS_MESSAGE = "MESSAGE"
         const val EXTRA_ADD_BILLS_CATEGORY = "CATEGORY"
+        const val EXTRA_ADD_BILLS_IS_FROM_SBM = "IS_FROM_SBM"
 
         const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
         const val HELP_SBM_URL = "https://www.tokopedia.com/help/article/bayar-sekaligus"
 
-        fun newInstance(sourceType: String = ""): SmartBillsFragment {
+        fun newInstance(sourceType: String = "", message: String = "", category: String = ""): SmartBillsFragment {
             val fragment = SmartBillsFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_SOURCE_TYPE, sourceType)
+            bundle.putString(EXTRA_ADD_BILLS_MESSAGE, message)
+            bundle.putString(EXTRA_ADD_BILLS_CATEGORY, category)
             fragment.arguments = bundle
             return fragment
         }

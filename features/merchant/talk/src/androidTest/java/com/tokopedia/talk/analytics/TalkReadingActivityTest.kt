@@ -5,15 +5,15 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.talk.analytics.util.*
-import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_CLICK_CREATE_NEW_QUESTION_PATH
-import com.tokopedia.talk.feature.reading.presentation.activity.TalkReadingActivity
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.talk.R
+import com.tokopedia.talk.analytics.util.*
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.PRODUCT_ID_VALUE
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.SHOP_ID_VALUE
+import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.TALK_CLICK_CREATE_NEW_QUESTION_PATH
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
+import com.tokopedia.talk.feature.reading.presentation.activity.TalkReadingActivity
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
@@ -26,7 +26,6 @@ import org.junit.runner.RunWith
 class TalkReadingActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
     @get:Rule
     var activityRule: IntentsTestRule<TalkReadingActivity> = object: IntentsTestRule<TalkReadingActivity>(TalkReadingActivity::class.java) {
@@ -49,9 +48,11 @@ class TalkReadingActivityTest {
         }
     }
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(TalkMockResponse())
     }
 
@@ -67,8 +68,7 @@ class TalkReadingActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, TALK_CLICK_CREATE_NEW_QUESTION_PATH)
-            gtmLogDBSource.finishTest()
+            validate(cassavaRule, TALK_CLICK_CREATE_NEW_QUESTION_PATH)
         }
     }
 }
