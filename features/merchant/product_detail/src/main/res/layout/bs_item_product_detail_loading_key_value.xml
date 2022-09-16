@@ -8,19 +8,18 @@
     android:paddingTop="6dp">
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/pdp_guideline_1"
+        android:id="@+id/guideline_loading_key_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.4" />
 
-    <!--    region shimmer item 1-->
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_title_1"
         android:layout_width="0dp"
         android:layout_height="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/pdp_guideline_1"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_loading_key_value"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_corner_radius="8dp"
@@ -32,7 +31,7 @@
         android:layout_height="16dp"
         android:layout_marginStart="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/pdp_guideline_1"
+        app:layout_constraintStart_toEndOf="@+id/guideline_loading_key_value"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_corner_radius="8dp"
         app:loader_type="rect" />

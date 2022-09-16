@@ -117,5 +117,5 @@ data class ItemCatalog(
     val key: String = "",
     @SerializedName("value")
     @Expose
-    val value: String = "",
+    val value: String = ""
 )
