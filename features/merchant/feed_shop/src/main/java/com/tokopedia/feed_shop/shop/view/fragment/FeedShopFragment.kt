@@ -655,6 +655,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         createPostViewModel.editAuthorId = authorId
 
         val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2)
+        intent.putExtra(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE)
         intent.putExtra(KEY_AUTHOR_TYPE, VALUE_AUTHOR_TYPE)
         intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
         startActivity(intent)
