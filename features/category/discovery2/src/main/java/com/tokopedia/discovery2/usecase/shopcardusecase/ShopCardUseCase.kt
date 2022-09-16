@@ -5,7 +5,6 @@ import com.tokopedia.discovery2.Utils.Companion.RPC_NEXT_PAGE
 import com.tokopedia.discovery2.Utils.Companion.RPC_PAGE_NUMBER
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
-import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.repository.shopcard.ShopCardRepository
 import javax.inject.Inject
 
@@ -94,7 +93,7 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
-        queryParameterMap[Utils.RPC_PAGE__SIZE] = shopPerPage.toString()
+        queryParameterMap[Utils.RPC_PAGE_SIZE] = shopPerPage.toString()
         queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
 
         queryParameterMap[RPC_NEXT_PAGE] = nextPageKey ?: ""

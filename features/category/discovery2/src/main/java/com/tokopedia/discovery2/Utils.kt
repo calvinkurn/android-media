@@ -97,8 +97,9 @@ class Utils {
         private const val COUNT_ONLY = "count_only"
         private const val RPC_USER_ID = "rpc_UserID"
         const val RPC_PAGE_NUMBER = "rpc_page_number"
-        const val RPC_PAGE__SIZE = "rpc_page_size"
+        const val RPC_PAGE_SIZE = "rpc_page_size"
         const val RPC_NEXT_PAGE = "rpc_next_page"
+        const val RPC_FILTER_KEY = "rpc_"
         const val DARK_MODE = "dark_mode"
         const val DEFAULT_ENCODING = "UTF-8"
 
@@ -168,7 +169,7 @@ class Utils {
                 val filtersMap = selectedFilterMapParameter as MutableMap<String, String?>
                 filtersMap.let {
                     it[COUNT_ONLY] = "true"
-                    it[RPC_PAGE__SIZE] = "10"
+                    it[RPC_PAGE_SIZE] = "10"
                     it[RPC_PAGE_NUMBER] = "1"
                     it[RPC_USER_ID] = if (userId.isNullOrEmpty()) "0" else userId
 

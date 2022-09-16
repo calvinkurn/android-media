@@ -11,9 +11,6 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
     companion object {
         private const val VOUCHER_PER_PAGE = 10
         private const val PAGE_START = 1
-        private const val RPC_PAGE_NUMBER = "rpc_page_number"
-        private const val RPC_NEXT_PAGE = "rpc_next_page"
-        private const val RPC_PAGE_SIZE = "rpc_page_size"
     }
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, productsLimit: Int = VOUCHER_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
@@ -27,7 +24,9 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
                     PAGE_START,
                     productsLimit,
                     it.nextPageKey,
-                    it.userAddressData),
+                    it.userAddressData,
+                    it.selectedFilters,
+                    it.selectedSort),
                 pageEndPoint, it.name)
             it.showVerticalLoader = voucherListData.isNotEmpty()
             it.setComponentsItem(voucherListData, component.tabName)
@@ -52,7 +51,9 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
                 getQueryParameterMap(component1.pageLoadedCounter,
                     productsLimit,
                     component1.nextPageKey,
-                    component1.userAddressData),
+                    component1.userAddressData,
+                    component1.selectedFilters,
+                    component1.selectedSort),
                 pageEndPoint,
                 component1.name)
             component1.nextPageKey = nextPage
@@ -81,7 +82,9 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
                 getQueryParameterMap(component1.pageLoadedCounter,
                     productsLimit,
                     component1.nextPageKey,
-                    component1.userAddressData),
+                    component1.userAddressData,
+                    component1.selectedFilters,
+                    component1.selectedSort),
                 pageEndPoint,
                 component1.name)
             component1.nextPageKey = nextPage
@@ -107,16 +110,29 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
         }
     }
 
-    private fun getQueryParameterMap(pageNumber: Int,
-                                     productsPerPage: Int,
-                                     nextPageKey : String?,
-                                     userAddressData: LocalCacheModel?): MutableMap<String, Any> {
-
+    private fun getQueryParameterMap(
+        pageNumber: Int,
+        productsPerPage: Int,
+        nextPageKey: String?,
+        userAddressData: LocalCacheModel?,
+        selectedFilters: HashMap<String, String>?,
+        selectedSort: HashMap<String, String>?
+    ): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
 
-        queryParameterMap[RPC_PAGE_SIZE] = productsPerPage.toString()
-        queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
-        queryParameterMap[RPC_NEXT_PAGE] = nextPageKey ?: ""
+        queryParameterMap[Utils.RPC_PAGE_SIZE] = productsPerPage.toString()
+        queryParameterMap[Utils.RPC_PAGE_NUMBER] = pageNumber.toString()
+        queryParameterMap[Utils.RPC_NEXT_PAGE] = nextPageKey ?: ""
+        selectedFilters?.let {
+            for (map in it) {
+                queryParameterMap[Utils.RPC_FILTER_KEY + map.key] = map.value
+            }
+        }
+        selectedSort?.let {
+            for (map in it) {
+                queryParameterMap[Utils.RPC_FILTER_KEY + map.key] = map.value
+            }
+        }
         queryParameterMap.putAll(Utils.addAddressQueryMap(userAddressData))
         return queryParameterMap
     }

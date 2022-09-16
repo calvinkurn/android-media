@@ -71,7 +71,7 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
-        queryParameterMap[Utils.RPC_PAGE__SIZE] = bannerPerPage.toString()
+        queryParameterMap[Utils.RPC_PAGE_SIZE] = bannerPerPage.toString()
         queryParameterMap[Utils.RPC_PAGE_NUMBER] = pageNumber.toString()
         queryParameterMap[Utils.RPC_NEXT_PAGE] = nextPageKey ?: ""
         queryParameterMap[Utils.DARK_MODE] = isDarkMode
