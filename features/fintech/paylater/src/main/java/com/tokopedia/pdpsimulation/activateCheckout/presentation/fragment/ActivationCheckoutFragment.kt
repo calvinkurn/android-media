@@ -116,7 +116,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         val gatewayCode = arguments?.getString(PARAM_GATEWAY_CODE) ?: ""
         payLaterActivationViewModel.selectedProductId = productId
         payLaterActivationViewModel.selectedGatewayId = gateWayId
-        payLaterActivationViewModel.selectedTenureSelected  = tenureSelected
+        payLaterActivationViewModel.selectedTenureSelected = tenureSelected
         payLaterActivationViewModel.selectedGatewayCode = gatewayCode
     }
 
