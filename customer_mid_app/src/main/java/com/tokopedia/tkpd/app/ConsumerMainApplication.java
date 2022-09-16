@@ -372,21 +372,18 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         String version = versions.getFirst();
         String suffixVersion = versions.getSecond();
 
-        if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
-            GlobalConfig.VERSION_NAME = version;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
-        } else {
+        if (TextUtils.isEmpty(suffixVersion)) {
             GlobalConfig.VERSION_NAME = versionName();
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = versionName();
+        } else {
+            GlobalConfig.VERSION_NAME = version;
+            GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
         }
-        com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = versionName();// save raw version name
+        GlobalConfig.RAW_VERSION_NAME = versionName();
     }
 
     /**
      * cannot reference BuildConfig of an app.
      *
-     * @return
      */
     @NonNull
     public abstract String versionName();

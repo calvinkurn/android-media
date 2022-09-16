@@ -226,7 +226,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.powerMerchantSubscribe)
     implementation projectOrAar(rootProject.ext.features.topAdsDashboard)
     implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
-    implementation projectOrAar(rootProject.ext.features.topAdsManagement)
     implementation projectOrAar(rootProject.ext.features.report)
     implementation projectOrAar(rootProject.ext.features.topAdsAutoAds)
     implementation projectOrAar(rootProject.ext.features.topAdsCreate)

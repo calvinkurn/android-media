@@ -15,7 +15,7 @@ import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.checkout.RechargeCheckoutResponse
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -38,7 +38,7 @@ object DigitalCheckoutMapper {
             if (!isEnableVoucher) {
                 promoData = PromoData(
                     description = it.discountAmountLabel,
-                    amount = it.discountAmount.toInt(),
+                    amount = it.discountAmount.toLong(),
                     state = TickerCheckoutView.State.INACTIVE
                 )
             } else if (it.isSuccess && !(cartInfo.attributes.isCouponActive == COUPON_NOT_ACTIVE && it.isCoupon == VOUCHER_IS_COUPON)) {
@@ -47,7 +47,7 @@ object DigitalCheckoutMapper {
                     description = it.messageSuccess,
                     promoCode = it.code,
                     typePromo = it.isCoupon,
-                    amount = it.discountAmount.toInt(),
+                    amount = it.discountAmount.toLong(),
                     state = TickerCheckoutView.State.ACTIVE
                 )
             }
@@ -241,7 +241,7 @@ object DigitalCheckoutMapper {
             fintechProductsCheckout.add(
                 RequestBodyCheckout.FintechProductCheckout(
                     transactionType = fintech.transactionType,
-                    tierId = fintech.tierId.toIntOrZero(),
+                    tierId = fintech.tierId.toIntSafely(),
                     userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
                     fintechAmount = fintech.fintechAmount.toLong(),
                     fintechPartnerAmount = fintech.fintechPartnerAmount.toLong(),

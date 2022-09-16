@@ -8,18 +8,18 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven {
-            url "${new_artifactory_url}" + "/libs-release-local";
+            url "${gcp_artifactory_url}" + "/libs-release-local";
             credentials {
-                username = "${artifactory_username}"
-                password = "${new_artifactory_password}"
+                username = "${gcp_artifactory_username}"
+                password = "${gcp_artifactory_password}"
             }
             allowInsecureProtocol = true
         }
         maven {
-            url "${legacy_artifactory_url}" + "/libs-release-local";
+            url "${artifactory_url}" + "/libs-release-local";
             credentials {
                 username = "${artifactory_username}"
-                password = "${legacy_artifactory_password}"
+                password = "${artifactory_password}"
             }
             allowInsecureProtocol = true
         }
@@ -39,7 +39,7 @@ task clean(type: Delete) {
 }
 
 ext {
-    artifactoryUrl = "${new_artifactory_url}"
+    artifactoryUrl = "${artifactory_url}"
 }
 
 afterEvaluate {

@@ -9,10 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class NsqMessage implements Parcelable {
 
-    @SuppressLint("Invalid Data Type")
     @SerializedName("user_id")
     @Expose
-    private int userId;
+    private long userId;
 
     @SerializedName("action")
     @Expose
@@ -22,21 +21,20 @@ public class NsqMessage implements Parcelable {
     @Expose
     private String useCase;
 
-    @SuppressLint("Invalid Data Type")
     @SerializedName("product_id")
     @Expose
-    private Integer productId;
+    private long productId;
 
     @SerializedName("custom_message")
     @Expose
     private String message;
 
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -56,11 +54,11 @@ public class NsqMessage implements Parcelable {
         this.useCase = useCase;
     }
 
-    public Integer getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 
@@ -73,10 +71,10 @@ public class NsqMessage implements Parcelable {
     }
 
     protected NsqMessage(Parcel in) {
-        userId = in.readInt();
+        userId = in.readLong();
         action = in.readString();
         useCase = in.readString();
-        productId = in.readInt();
+        productId = in.readLong();
         message = in.readString();
     }
 
@@ -101,10 +99,10 @@ public class NsqMessage implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(userId);
+        dest.writeLong(userId);
         dest.writeString(action);
         dest.writeString(useCase);
-        dest.writeInt(productId);
+        dest.writeLong(productId);
         dest.writeString(message);
     }
 }

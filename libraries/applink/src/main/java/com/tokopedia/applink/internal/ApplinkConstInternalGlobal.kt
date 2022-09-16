@@ -277,18 +277,6 @@ object ApplinkConstInternalGlobal {
     //FeedbackPageActivity
     const val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
 
-    // OvoAddNameActivity
-    // tokopedia-android-internal://global/ovo-add-name
-    const val OVO_ADD_NAME = "$INTERNAL_GLOBAL/ovo-add-name"
-
-    // OvoFinalPageActivity
-    // tokopedia-android-internal://global/ovo-final-page
-    const val OVO_FINAL_PAGE = "$INTERNAL_GLOBAL/ovo-final-page"
-
-    // OvoRegisterInitialActivity
-    // tokopedia-android-internal://global/ovo-reg-init
-    const val OVO_REG_INIT = "$INTERNAL_GLOBAL/ovo-reg-init"
-
     // TelephonyActivity
     // tokopedia-android-internal://global/telephony-masking
     const val TELEPHONY_MASKING = "$INTERNAL_GLOBAL/telephony-masking"

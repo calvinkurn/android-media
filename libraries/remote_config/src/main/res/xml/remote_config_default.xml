@@ -643,8 +643,8 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_review_form_new_enable</key>
-        <value>true</value>
+        <key>android_robust_tester</key>
+        <value></value>
     </entry>
     <entry>
         <key>android_robust_tester</key>
