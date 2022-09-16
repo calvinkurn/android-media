@@ -343,7 +343,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeEditorParamModel() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            cropComponent.setupView(it, data.cropRotateValue)
+            if (data.isToolCrop()) cropComponent.setupView(it, data.cropRotateValue)
         }
     }
 
