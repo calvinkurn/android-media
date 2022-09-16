@@ -342,12 +342,23 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     private fun openFormShopEditAddress(data: Warehouse) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS)
-        if (!data.latLon.isNullOrEmpty()) {
-            intent.putExtra(EXTRA_LAT, data.latLon.substringBefore(",").toDouble())
-            intent.putExtra(EXTRA_LONG, data.latLon.substringAfter(",").toDouble())
+        data.latLon.checkLatlon { latitude, longitude ->
+            intent.putExtra(EXTRA_LAT, latitude)
+            intent.putExtra(EXTRA_LONG, longitude)
         }
         intent.putExtra(EXTRA_WAREHOUSE_DATA, data)
         startActivityForResult(intent, EDIT_WAREHOUSE_REQUEST_CODE)
+    }
+
+    private fun String?.checkLatlon(latLon: (latitude: Double, longitude: Double) -> Unit) {
+        this?.takeIf { isNotEmpty() } ?.apply {
+            val latitude = substringBefore(",").toDoubleOrNull()
+            val longitude = substringAfter(",").toDoubleOrNull()
+
+            if (latitude != null && longitude != null) {
+                latLon.invoke(latitude, longitude)
+            }
+        }
     }
 
     companion object {
