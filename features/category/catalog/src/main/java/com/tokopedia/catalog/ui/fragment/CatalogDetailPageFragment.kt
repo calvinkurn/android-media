@@ -314,7 +314,7 @@ class CatalogDetailPageFragment : Fragment(),
                         }
 
                     }
-                    if (!isNewComparison) {
+                    if (isNewComparison) {
                         catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON)
                     } else {
                         catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON_NEW)
