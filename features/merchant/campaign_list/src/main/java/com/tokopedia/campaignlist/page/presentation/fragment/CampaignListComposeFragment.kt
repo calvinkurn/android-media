@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -20,6 +21,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -124,7 +126,20 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
         Card(modifier = Modifier.fillMaxWidth()) {
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
 
-                val (ribbon, statusImage, campaignType, campaignStatus, campaignImage, campaignName, productQty, campaignStartDate, campaignStartTime, separator, campaignEndDate, campaignEndTime) = createRefs()
+                val (ribbon,
+                    statusImage,
+                    campaignType,
+                    campaignStatus,
+                    campaignImage,
+                    campaignName,
+                    productQty,
+                    campaignStartDate,
+                    campaignStartTime,
+                    separator,
+                    campaignEndDate,
+                    campaignEndTime,
+                    buttonShare
+                ) = createRefs()
 
                 Image(
                     painter = painterResource(id = R.drawable.ic_green_top_drawing),
@@ -230,6 +245,16 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
                         start.linkTo(separator.end, margin = 12.dp)
                     }
                 )
+
+                Button(onClick = {},
+                    modifier = Modifier.fillMaxWidth().constrainAs(buttonShare) {
+                        top.linkTo(campaignStartTime.bottom, margin = 12.dp)
+                        start.linkTo(campaignImage.start)
+                        end.linkTo(parent.end, margin = 12.dp)
+                        bottom.linkTo(parent.bottom, margin = 12.dp)
+                    }) {
+                    Text(text = stringResource(id = R.string.action_share))
+                }
 
 
             }
