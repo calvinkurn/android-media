@@ -5,6 +5,8 @@ import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
+import android.util.Pair;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -2544,40 +2546,22 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public ArrayList<String> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+    public Pair<ArrayList<String>, ArrayList<String>> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
         final ArrayList<String> unappliedBoPromoUniqueIds = new ArrayList<>();
         final ArrayList<String> reloadedUniqueIds = new ArrayList<>();
         final ArrayList<String> unprocessedUniqueIds = new ArrayList<>();
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             unprocessedUniqueIds.add(shipmentCartItemModel.getCartString());
         }
-        // loop twice for unapply BO and then apply BO to prevent race condition issue
+        // loop to list voucher orders to be applied this will be used later
+        final List<PromoCheckoutVoucherOrdersItemUiModel> toBeAppliedVoucherOrders = new ArrayList<>();
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-            final long shippingId = voucherOrdersItemUiModel.getShippingId();
-            final long spId = voucherOrdersItemUiModel.getSpId();
-            final String type = voucherOrdersItemUiModel.getType();
             // voucher with shippingId not zero, spId not zero, and voucher type logistic as promo for BO
-            if (shippingId > 0 && spId > 0 && type.equals("logistic")) {
-                if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
-                    doUnapplyBo(voucherOrdersItemUiModel.getUniqueId(), voucherOrdersItemUiModel.getCode());
-                    unappliedBoPromoUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
-                    reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
-                    unprocessedUniqueIds.remove(voucherOrdersItemUiModel.getUniqueId());
-                }
-            }
-        }
-        if (!unappliedBoPromoUniqueIds.isEmpty()) {
-            getView().renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds);
-        }
-        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-            final long shippingId = voucherOrdersItemUiModel.getShippingId();
-            final long spId = voucherOrdersItemUiModel.getSpId();
-            final String type = voucherOrdersItemUiModel.getType();
-            // voucher with shippingId not zero, spId not zero, and voucher type logistic as promo for BO
-            if (shippingId > 0 && spId > 0 && type.equals("logistic")) {
-                if (!voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
-                    doApplyBo(voucherOrdersItemUiModel);
-                    reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
+            if (voucherOrdersItemUiModel.getShippingId() > 0
+                    && voucherOrdersItemUiModel.getSpId() > 0
+                    && voucherOrdersItemUiModel.getType().equals("logistic")) {
+                if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("green")) {
+                    toBeAppliedVoucherOrders.add(voucherOrdersItemUiModel);
                     unprocessedUniqueIds.remove(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
@@ -2586,10 +2570,18 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null
                     && unprocessedUniqueIds.contains(shipmentCartItemModel.getCartString())) {
                 doUnapplyBo(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                unappliedBoPromoUniqueIds.add(shipmentCartItemModel.getCartString());
                 reloadedUniqueIds.add(shipmentCartItemModel.getCartString());
             }
         }
-        return reloadedUniqueIds;
+        if (unappliedBoPromoUniqueIds.size() > 0) {
+            getView().renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds);
+        }
+        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrders : toBeAppliedVoucherOrders) {
+            doApplyBo(voucherOrders);
+            reloadedUniqueIds.add(voucherOrders.getUniqueId());
+        }
+        return new Pair<>(reloadedUniqueIds, unappliedBoPromoUniqueIds);
     }
 
     @Override
