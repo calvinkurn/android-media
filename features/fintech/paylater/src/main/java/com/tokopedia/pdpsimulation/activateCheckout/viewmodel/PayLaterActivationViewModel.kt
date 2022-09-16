@@ -185,11 +185,11 @@ class PayLaterActivationViewModel @Inject constructor(
                 )
             )
             addToCartUseCase.execute(
-                onSuccess = {
-                    onSuccessAddToCartForCheckout(it)
+                onSuccess = { addToCartOccMultiDataModel->
+                    onSuccessAddToCartForCheckout(addToCartOccMultiDataModel)
                 },
-                onError = {
-                    onErrorAddToCartForCheckout(it)
+                onError = { throwable->
+                    onErrorAddToCartForCheckout(throwable)
                 }
             )
         }
