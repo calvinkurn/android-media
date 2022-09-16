@@ -430,6 +430,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun validateBboStacking() {
         var hasUnApply = false
+        var hasApply = false
         validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.let {
 
             for (voucherOrderUiModel in it) {
@@ -439,9 +440,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 )
                     if (voucherOrderUiModel.messageUiModel.state == "green") {
                         applyBbo(voucherOrderUiModel.code)
+                        hasApply = true
                     }
             }
-            if (orderShipment.value.isApplyLogisticPromo && !hasUnApply) {
+            if (orderShipment.value.isApplyLogisticPromo && !hasApply) {
                 // if use BO but voucher BO didn't exist
                 orderShipment.value.logisticPromoViewModel?.let { logisticPromo ->
                     unApplyBbo(logisticPromo.promoCode)
