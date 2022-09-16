@@ -664,14 +664,6 @@ class PlayBottomSheetFragment @Inject constructor(
                                 )
                             }
                         }
-                        is OpenPageEvent -> {
-                            openPageByApplink(
-                                applink = event.applink,
-                                params = event.params.toTypedArray(),
-                                requestCode = event.requestCode,
-                                pipMode = event.pipMode
-                            )
-                        }
                         else -> {}
                     }
                 }
