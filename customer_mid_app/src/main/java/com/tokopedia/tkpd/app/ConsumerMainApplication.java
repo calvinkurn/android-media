@@ -89,6 +89,7 @@ import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
+import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -155,6 +156,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
         super.onCreate();
+        TokoPatch.init(this);
         createAndCallPostSeq();
         initializeAbTestVariant();
         createAndCallFetchAbTest();
