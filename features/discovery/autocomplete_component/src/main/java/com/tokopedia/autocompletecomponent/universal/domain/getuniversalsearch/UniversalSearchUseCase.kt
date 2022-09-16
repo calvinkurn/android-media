@@ -69,6 +69,7 @@ internal class UniversalSearchUseCase(
                       component_id
                       tracking_option
                       price
+                      price_int
                       original_price
                       discount_percentage
                       rating_average
@@ -86,6 +87,12 @@ internal class UniversalSearchUseCase(
                         title
                         image_url
                         show
+                      }
+                      label_groups {
+                        position
+                        title
+                        type
+                        url
                       }
                     }
                     curated{

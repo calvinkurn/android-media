@@ -44,32 +44,39 @@ internal class UniversalSearchModelMapper(
     private fun UniversalSearchItem.convertToCarouselDataView(): CarouselDataView {
         return CarouselDataView(
             data = this.convertToBaseUniversalDataView(),
-            product = product.toCarouselProductDataView(),
+            product = product.toCarouselProductDataView(this),
         )
     }
 
-    private fun List<UniversalSearchModel.Product>.toCarouselProductDataView(): List<CarouselDataView.Product> {
-        return map {
+    private fun List<UniversalSearchModel.Product>.toCarouselProductDataView(
+        universalSearchItem : UniversalSearchItem
+    ): List<CarouselDataView.Product> {
+        return mapIndexed { index, product ->
             CarouselDataView.Product(
-                id = it.id,
-                applink = it.applink,
-                imageUrl = it.imageUrl,
-                title = it.title,
-                componentId = it.componentId,
-                trackingOption = it.trackingOption,
-                price = it.price,
-                originalPrice = it.originalPrice,
-                discountPercentage = it.discountPercentage,
-                ratingAverage = it.ratingAverage,
-                countSold = it.countSold,
+                id = product.id,
+                applink = product.applink,
+                imageUrl = product.imageUrl,
+                title = product.title,
+                componentId = product.componentId,
+                trackingOption = product.trackingOption,
+                price = product.price,
+                priceInt = product.priceInt,
+                originalPrice = product.originalPrice,
+                discountPercentage = product.discountPercentage,
+                ratingAverage = product.ratingAverage,
+                countSold = product.countSold,
                 shop = CarouselDataView.Product.Shop(
-                    name = it.shop.name,
-                    city = it.shop.city,
+                    name = product.shop.name,
+                    city = product.shop.city,
                 ),
-                badge = it.badge.toBadgeDataView(),
-                freeOngkir = it.freeOngkir.toFreeOngkirDataView(),
+                badge = product.badge.toBadgeDataView(),
+                freeOngkir = product.freeOngkir.toFreeOngkirDataView(),
                 keyword = keyword,
                 dimension90 = dimension90,
+                labelGroups = product.labelGroup.toLabelGroups(),
+                carouselTitle = universalSearchItem.title,
+                carouselType = universalSearchItem.type,
+                position = index + 1,
             )
         }
     }
@@ -119,5 +126,16 @@ internal class UniversalSearchModelMapper(
             imgUrl = this.imgUrl,
             isActive = this.isActive
         )
+    }
+
+    private fun List<UniversalSearchModel.LabelGroup>.toLabelGroups() : List<CarouselDataView.Product.LabelGroup> {
+        return map {
+            CarouselDataView.Product.LabelGroup(
+                position = it.position,
+                title = it.title,
+                type = it.type,
+                imageUrl = it.url,
+            )
+        }
     }
 }

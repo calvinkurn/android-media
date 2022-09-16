@@ -1,5 +1,6 @@
 package com.tokopedia.autocompletecomponent.universal.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -125,6 +126,11 @@ internal data class UniversalSearchModel(
         @Expose
         val price: String = "",
 
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("price_int")
+        @Expose
+        val priceInt: Int = 0,
+
         @SerializedName("original_price")
         @Expose
         val originalPrice: String = "",
@@ -151,7 +157,11 @@ internal data class UniversalSearchModel(
 
         @SerializedName("free_ongkir")
         @Expose
-        val freeOngkir: FreeOngkir = FreeOngkir()
+        val freeOngkir: FreeOngkir = FreeOngkir(),
+
+        @SerializedName("label_groups")
+        @Expose
+        val labelGroup: List<LabelGroup> = listOf(),
     )
 
     internal data class Shop(
@@ -224,6 +234,20 @@ internal data class UniversalSearchModel(
         @SerializedName("campaign_code")
         @Expose
         val campaignCode: String = "",
+    )
+
+    internal data class LabelGroup(
+        @SerializedName("position")
+        val position: String,
+
+        @SerializedName("title")
+        val title : String,
+
+        @SerializedName("type")
+        val type: String,
+
+        @SerializedName("url")
+        val url: String,
     )
 
     internal fun getItems(): List<UniversalSearchItem> {

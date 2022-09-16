@@ -1,6 +1,8 @@
 package com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.autocompletecomponent.analytics.UniversalTracking.getCarouselUnificationListName
 import com.tokopedia.autocompletecomponent.universal.presentation.BaseUniversalDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.typefactory.UniversalSearchTypeFactory
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
@@ -32,6 +34,7 @@ class CarouselDataView(
         val componentId: String = "",
         val trackingOption: Int = 0,
         val price: String = "",
+        val priceInt: Int = 0,
         val originalPrice: String = "",
         val discountPercentage: String = "",
         val ratingAverage: String = "",
@@ -41,6 +44,10 @@ class CarouselDataView(
         val freeOngkir: FreeOngkir = FreeOngkir(),
         val keyword: String = "",
         val dimension90: String = "",
+        val labelGroups: List<LabelGroup> = listOf(),
+        val carouselTitle : String = "",
+        val carouselType: String = "",
+        val position: Int = 0,
     ): ImpressHolder(),
         SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
@@ -65,5 +72,32 @@ class CarouselDataView(
             val imgUrl: String = "",
             val isActive: Boolean = false,
         )
+
+        class LabelGroup(
+            val position: String = "",
+            val title: String = "",
+            val type: String = "",
+            val imageUrl: String = ""
+        ) {
+            fun getPositionTitle(): String = "$position.$title"
+        }
+
+        private fun List<LabelGroup>?.getFormattedPositionName(): String =
+            this?.joinToString(transform = LabelGroup::getPositionTitle) ?: ""
+
+        fun asUnificationObjectDataLayer(): Any {
+            return DataLayer.mapOf(
+                "name", title,
+                "id", id,
+                "price", priceInt,
+                "brand", "none / other",
+                "category", "none / other",
+                "variant", "none / other",
+                "list", getCarouselUnificationListName(carouselType, componentId),
+                "position", position,
+                "dimension115", labelGroups.getFormattedPositionName(),
+                "dimension90", dimension90,
+            )
+        }
     }
 }

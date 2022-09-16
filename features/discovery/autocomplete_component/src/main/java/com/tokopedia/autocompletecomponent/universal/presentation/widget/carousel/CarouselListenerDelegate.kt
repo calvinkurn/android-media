@@ -2,18 +2,20 @@ package com.tokopedia.autocompletecomponent.universal.presentation.widget.carous
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.autocompletecomponent.analytics.CarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.autocompletecomponent.universal.di.UniversalSearchContext
 import com.tokopedia.autocompletecomponent.util.contextprovider.ContextProvider
 import com.tokopedia.autocompletecomponent.util.contextprovider.WeakReferenceContextProvider
-import com.tokopedia.iris.Iris
-import com.tokopedia.track.TrackApp
+import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
 class CarouselListenerDelegate @Inject constructor(
     @UniversalSearchContext context: Context?,
-    private val iris: Iris
+    private val trackingQueue: TrackingQueue,
+    private val searchParameter : SearchParameter,
+    private val carouselTrackingUnification: CarouselTrackingUnification,
 ): CarouselListener,
     ContextProvider by WeakReferenceContextProvider(context) {
 
@@ -21,16 +23,21 @@ class CarouselListenerDelegate @Inject constructor(
         get() = RecyclerView.RecycledViewPool()
 
     override fun onCarouselSeeAllClick(data: CarouselDataView) {
-        data.click(TrackApp.getInstance().gtm)
+        carouselTrackingUnification.trackCarouselClickSeeAll(
+            searchParameter.getSearchQuery(),
+            data.data
+        )
         RouteManager.route(context, data.data.applink)
     }
 
     override fun onCarouselItemClick(data: CarouselDataView.Product) {
-        data.click(TrackApp.getInstance().gtm)
+        val trackingData = createCarouselTrackingUnificationData(data, searchParameter)
+        carouselTrackingUnification.trackCarouselClick(trackingData)
         RouteManager.route(context, data.applink)
     }
 
     override fun onCarouselItemImpressed(data: CarouselDataView.Product) {
-        data.impress(iris)
+        val trackingData = createCarouselTrackingUnificationData(data, searchParameter)
+        carouselTrackingUnification.trackCarouselImpression(trackingQueue, trackingData)
     }
 }

@@ -18,6 +18,7 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.UniversalSearchFragmentLayoutBinding
 import com.tokopedia.autocompletecomponent.universal.UniversalConstant.UNIVERSAL_SEARCH_SCREEN_NAME
 import com.tokopedia.autocompletecomponent.universal.di.UniversalSearchContextModule
+import com.tokopedia.autocompletecomponent.universal.di.UniversalSearchSearchParameterModule
 import com.tokopedia.autocompletecomponent.universal.presentation.adapter.UniversalSearchAdapter
 import com.tokopedia.autocompletecomponent.universal.presentation.itemdecoration.UniversalSearchItemDecoration
 import com.tokopedia.autocompletecomponent.universal.presentation.typefactory.UniversalSearchTypeFactoryImpl
@@ -72,6 +73,10 @@ internal class UniversalSearchFragment: BaseDaggerFragment(), HasComponent<BaseA
 
     private var binding by autoClearedNullable<UniversalSearchFragmentLayoutBinding>()
 
+    private val searchParameter: SearchParameter by lazy {
+        arguments?.getParcelable(EXTRA_SEARCH_PARAMETER) ?: SearchParameter()
+    }
+
     override fun getScreenName(): String {
         return UNIVERSAL_SEARCH_SCREEN_NAME
     }
@@ -81,6 +86,7 @@ internal class UniversalSearchFragment: BaseDaggerFragment(), HasComponent<BaseA
             .builder()
             .baseAppComponent(component)
             .universalSearchContextModule(UniversalSearchContextModule(activity as Context))
+            .universalSearchSearchParameterModule(UniversalSearchSearchParameterModule(searchParameter))
             .build()
             .inject(this)
     }

@@ -1,7 +1,5 @@
 package com.tokopedia.autocompletecomponent.universal.presentation
 
-import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselDataView
-
 class BaseUniversalDataView(
     val id: String = "",
     val applink: String = "",

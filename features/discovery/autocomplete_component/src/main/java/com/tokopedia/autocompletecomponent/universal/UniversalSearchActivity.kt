@@ -18,12 +18,12 @@ import com.tokopedia.autocompletecomponent.universal.presentation.viewmodel.Univ
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 import javax.inject.Named
-import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
 
 open class UniversalSearchActivity : BaseActivity(), HasComponent<BaseAppComponent> {
 
@@ -76,7 +76,7 @@ open class UniversalSearchActivity : BaseActivity(), HasComponent<BaseAppCompone
             .beginTransaction()
             .replace(
                 R.id.universalSearchContainer,
-                UniversalSearchFragment.newInstance(null),
+                UniversalSearchFragment.newInstance(searchParameter),
                 UNIVERSAL_SEARCH_FRAGMENT_TAG
             )
             .commit()

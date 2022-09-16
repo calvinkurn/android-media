@@ -59,6 +59,14 @@ class CarouselViewHolder(
             productCardModelList = products.map {
                 val discountPercentage =
                     if (it.discountPercentage == "0") "" else it.discountPercentage+"%"
+                val labelGroups = it.labelGroups.map { labelGroup ->
+                    ProductCardModel.LabelGroup(
+                        position = labelGroup.position,
+                        title = labelGroup.title,
+                        type = labelGroup.type,
+                        imageUrl = labelGroup.imageUrl,
+                    )
+                }
 
                 ProductCardModel(
                     productName = it.title,
@@ -75,11 +83,7 @@ class CarouselViewHolder(
                             imageUrl = badge.imageUrl,
                         )
                     },
-                    labelGroupList = listOf(ProductCardModel.LabelGroup(
-                        position = "integrity",
-                        title = it.countSold,
-                        type = "textDarkGrey",
-                    )),
+                    labelGroupList = labelGroups,
                     freeOngkir = ProductCardModel.FreeOngkir(
                         imageUrl = it.freeOngkir.imgUrl,
                         isActive = it.freeOngkir.isActive,
