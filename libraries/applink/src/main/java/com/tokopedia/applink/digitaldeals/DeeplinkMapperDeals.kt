@@ -15,6 +15,7 @@ object DeeplinkMapperDeals {
     private const val DEALS = "deals"
     private const val DEALS_PRODUCT_DETAIL = "deals/i"
     private const val DEALS_BRAND_DETAIL = "deals/b"
+    private const val SECOND_PATH = 2
 
     fun getRegisteredNavigationFromHttpDeals(deeplink: String): String {
         val uri = Uri.parse(deeplink)
@@ -50,21 +51,21 @@ object DeeplinkMapperDeals {
             else UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.pathSegments[Int.ZERO])
 
             //tokopedia://deals/brand/{slug}
-            uri.pathSegments.size == 2 && uri.pathSegments[Int.ZERO] == "brand" ->
+            uri.pathSegments.size == SECOND_PATH && uri.pathSegments[Int.ZERO] == "brand" ->
                     "${ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE}?${uri.pathSegments[1]}"
 
             //tokopedia://deals/i/{slug}
-            uri.pathSegments.size == 2 && uri.pathSegments[Int.ZERO] == "i" ->
+            uri.pathSegments.size == SECOND_PATH && uri.pathSegments[Int.ZERO] == "i" ->
                 if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_DEALS_ENABLE_PDP))
                 "${ApplinkConstInternalDeals.DEALS_PRODUCT_DETAIL_PAGE}?${uri.lastPathSegment}"
                 else UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.lastPathSegment)
 
             //tokopedia://deals/allbrands/{isVoucher}
-            uri.pathSegments.size == 2 && uri.pathSegments[Int.ZERO] == "allbrands"->
+            uri.pathSegments.size == SECOND_PATH && uri.pathSegments[Int.ZERO] == "allbrands"->
                     "${ApplinkConstInternalDeals.DEALS_BRAND_PAGE}?${uri.query}"
 
             //tokopedia://deals/category/page
-            uri.pathSegments.size == 2 ->
+            uri.pathSegments.size == SECOND_PATH ->
                 "${ApplinkConstInternalDeals.DEALS_CATEGORY_PAGE}?${uri.query}"
             else -> ""
         }
