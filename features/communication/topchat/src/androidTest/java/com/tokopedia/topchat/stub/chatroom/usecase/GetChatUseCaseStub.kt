@@ -34,8 +34,8 @@ class GetChatUseCaseStub @Inject constructor(
         "success_get_chat_broadcast.json"
     private val bannedProductChatWithBuyerPath =
         "success_get_chat_first_page_with_banned_products.json"
-    private val sellerSrwPromptPath =
-        "seller/success_get_chat_replies_with_srw_reply_prompt.json"
+    private val chatTickerReminder =
+        "ticker_reminder/success_get_chat_replies_with_ticker_reminder.json"
     private val shippingLocationPath =
         "seller/chat_replies_shipping_location.json"
     private val upcomingCampaignPath =
@@ -234,15 +234,11 @@ class GetChatUseCaseStub @Inject constructor(
      */
 
     /**
-     * <!--- Start SRW Prompt --->
+     * <!--- Start Ticker Reminder --->
      */
 
-    val defaultSrwPrompt: GetExistingChatPojo get() {
-        return alterResponseOf(sellerSrwPromptPath) { response -> }
-    }
-
-    val noTriggerTextSrwPrompt: GetExistingChatPojo
-        get() = alterResponseOf(sellerSrwPromptPath) { response ->
+    val noMatchTickerReminderReplyId: GetExistingChatPojo
+        get() = alterResponseOf(chatTickerReminder) { response ->
             val chatReplies = response.getAsJsonObject(chatReplies)
             chatReplies.addProperty("hasNext", true)
             alterRepliesAttribute(0, 0, response) {
@@ -252,66 +248,16 @@ class GetChatUseCaseStub @Inject constructor(
             }
         }
 
-    fun getInTheMiddleOfThePageSrwPrompt(triggerText: String): GetExistingChatPojo {
-        return alterResponseOf(sellerSrwPromptPath) { response ->
+    fun getTickerReminderWithReplyId(targetReplyId: String): GetExistingChatPojo {
+        return alterResponseOf(chatTickerReminder) { response ->
             alterChatAttribute(0, 0, 1, response) { chat ->
-                chat.addProperty(msg, triggerText)
-            }
-            val chatReplies = response.getAsJsonObject(chatReplies)
-            chatReplies.addProperty("hasNext", true)
-            chatReplies.addProperty("hasNextAfter", true)
-        }
-    }
-
-    fun getSrwPromptWithTriggerText(triggerText: String): GetExistingChatPojo {
-        return alterResponseOf(sellerSrwPromptPath) { response ->
-            alterChatAttribute(0, 0, 1, response) { chat ->
-                chat.addProperty(msg, triggerText)
-            }
-        }
-    }
-
-    fun carouselSrwPrompt(triggerText: String): GetExistingChatPojo {
-        return alterResponseOf(sellerSrwPromptPath) { response ->
-            alterRepliesAttribute(0, 0, response) {
-                val product = it.get(0)
-                val chats = it.deepCopy()
-                it.removeAll { true }
-                it.apply {
-                    add(product)
-                    addAll(chats)
-                }
-            }
-            alterChatAttribute(0, 0, 2, response) { chat ->
-                chat.addProperty(msg, triggerText)
-            }
-        }
-    }
-
-    fun multipleSrwPrompt(triggerText: String): GetExistingChatPojo {
-        return alterResponseOf(sellerSrwPromptPath) { response ->
-            alterRepliesAttribute(0, 0, response) {
-                val product = it.get(0)
-                val msg = it.get(1)
-                val chats = it.deepCopy()
-                it.removeAll { true }
-                it.apply {
-                    add(product)
-                    add(msg)
-                    addAll(chats)
-                }
-            }
-            alterChatAttribute(0, 0, 1, response) { chat ->
-                chat.addProperty(msg, triggerText)
-            }
-            alterChatAttribute(0, 0, 3, response) { chat ->
-                chat.addProperty(msg, triggerText)
+                chat.addProperty(replyId, targetReplyId)
             }
         }
     }
 
     /**
-     * <!--- End SRW Prompt --->
+     * <!--- End Ticker Reminder --->
      */
 
     /**
@@ -476,6 +422,7 @@ class GetChatUseCaseStub @Inject constructor(
     private val parentReply = "parentReply"
     private val id = "id"
     private val attachmentIds = "attachmentID"
+    private val replyId = "replyId"
 
     private fun alterDateToToday(response: JsonObject) {
         val list = response.getAsJsonObject(chatReplies)

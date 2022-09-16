@@ -5,6 +5,6 @@ import com.tokopedia.topads.common.view.adapter.etalase.EtalaseAdapterTypeFactor
 /**
  * Author errysuprayogi on 11,November,2019
  */
-abstract class EtalaseViewModel {
+abstract class EtalaseUiModel {
     abstract fun type(typesFactory: EtalaseAdapterTypeFactory): Int
 }

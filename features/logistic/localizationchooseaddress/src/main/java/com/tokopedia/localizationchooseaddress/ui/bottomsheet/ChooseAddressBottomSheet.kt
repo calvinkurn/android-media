@@ -267,7 +267,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun initData() {
         source = listener?.getLocalizingAddressHostSourceBottomSheet().toString()
         isSupportWarehouseLoc = listener?.isSupportWarehouseLoc() ?: true
-        isTokonow = source.contains(TOKONOW, ignoreCase = true)
+        isTokonow = listener?.isFromTokonowPage() ?: false
         viewModel.getChosenAddressList(source, isTokonow)
     }
 
@@ -561,8 +561,16 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         ChooseAddressTracking.onClickCekAlamatLainnya(userSession.userId)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
         intent.putExtra(EXTRA_IS_LOCALIZATION, true)
-        intent.putExtra(PARAM_SOURCE, ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source)
+        intent.putExtra(PARAM_SOURCE, getParamSource())
         startActivityForResult(intent, REQUEST_CODE_ADDRESS_LIST)
+    }
+
+    private fun getParamSource(): String {
+        return if (isTokonow) {
+            ManageAddressSource.TOKONOW.source
+        } else {
+            ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -664,6 +672,13 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
          */
         fun isSupportWarehouseLoc(): Boolean {
             return true
+        }
+
+        /**
+         * To check from tokonow page or not
+         */
+        fun isFromTokonowPage(): Boolean {
+            return false
         }
     }
 }
