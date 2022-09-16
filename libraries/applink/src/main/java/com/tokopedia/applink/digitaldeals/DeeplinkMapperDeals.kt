@@ -4,8 +4,9 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
-import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -37,29 +38,29 @@ object DeeplinkMapperDeals {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         return when {
             // tokopedia://deals
-            uri.pathSegments.size == 0 ->
+            uri.pathSegments.size == Int.ZERO ->
                 ApplinkConstInternalDeals.DEALS_HOMEPAGE
 
             //tokopedia://deals/order
-            uri.pathSegments.size == 1 && uri.pathSegments[0] == "order"->
+            uri.pathSegments.size == Int.ONE && uri.pathSegments[Int.ZERO] == "order"->
                 ""
             // tokopedia://deals/{id}
-            uri.pathSegments.size == 1-> if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_DEALS_ENABLE_PDP))
+            uri.pathSegments.size == Int.ONE -> if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_DEALS_ENABLE_PDP))
                 "${ApplinkConstInternalDeals.DEALS_PRODUCT_DETAIL_PAGE}?${uri.lastPathSegment}"
-            else UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.pathSegments[0])
+            else UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.pathSegments[Int.ZERO])
 
             //tokopedia://deals/brand/{slug}
-            uri.pathSegments.size == 2 && uri.pathSegments[0] == "brand" ->
+            uri.pathSegments.size == 2 && uri.pathSegments[Int.ZERO] == "brand" ->
                     "${ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE}?${uri.pathSegments[1]}"
 
             //tokopedia://deals/i/{slug}
-            uri.pathSegments.size == 2 && uri.pathSegments[0] == "i" ->
+            uri.pathSegments.size == 2 && uri.pathSegments[Int.ZERO] == "i" ->
                 if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_DEALS_ENABLE_PDP))
                 "${ApplinkConstInternalDeals.DEALS_PRODUCT_DETAIL_PAGE}?${uri.lastPathSegment}"
                 else UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.lastPathSegment)
 
             //tokopedia://deals/allbrands/{isVoucher}
-            uri.pathSegments.size == 2 && uri.pathSegments[0] == "allbrands"->
+            uri.pathSegments.size == 2 && uri.pathSegments[Int.ZERO] == "allbrands"->
                     "${ApplinkConstInternalDeals.DEALS_BRAND_PAGE}?${uri.query}"
 
             //tokopedia://deals/category/page

@@ -21,9 +21,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class WidgetDealsPDPCarousel @JvmOverloads constructor(
-    context : Context,
-    attrs : AttributeSet? = null,
-    defStyleAttr : Int = Int.ZERO
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = Int.ZERO
 ) : BaseCustomView(context, attrs, defStyleAttr) {
     private val indicatorBannerContainer: LinearLayout
     private val vpBannerCategory: RecyclerView

@@ -445,7 +445,8 @@ class DealsPDPFragment : BaseDaggerFragment() {
             tgBrandAddress?.text = outlet.district
             tgBrandName?.text = data.brand.title
             tgNumberOfLocation?.text = String.format(
-                getString(com.tokopedia.deals.R.string.deals_pdp_number_of_items,
+                getString(
+                    com.tokopedia.deals.R.string.deals_pdp_number_of_items,
                     data.outlets.size
                 )
             )
@@ -492,7 +493,9 @@ class DealsPDPFragment : BaseDaggerFragment() {
             seeMoreButtonDesc?.setOnClickListener {
                 analytics.pdpClick(EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL, data.brand.title, data.displayName)
                 dealsPDPCallbacks?.onShowMoreDesc(
-                    getString(com.tokopedia.deals.R.string.deals_pdp_show_description),
+                    getString(
+                        com.tokopedia.deals.R.string.deals_pdp_show_description
+                    ),
                     data.longRichDesc
                 )
             }
@@ -596,8 +599,10 @@ class DealsPDPFragment : BaseDaggerFragment() {
 
     private fun updateExpiredDate(maxEndDate: String) {
         tgExpiredDate?.text = String.format(
-            getString(com.tokopedia.deals.R.string.deals_pdp_valid_through,
-            DealsUtils.convertEpochToString(maxEndDate.toIntSafely())
+            getString(
+                com.tokopedia.deals.R.string.deals_pdp_valid_through,
+                DealsUtils.convertEpochToString(maxEndDate.toIntSafely()
+            )
             )
         )
     }
@@ -753,8 +758,12 @@ class DealsPDPFragment : BaseDaggerFragment() {
 
                     override fun onImpressProduct(productDetail: EventProductDetail, index: Int) {
                         analytics.pdpRecommendationImpression(
-                            productDetail.id, (index + Int.ONE), productDetail.salesPrice.toLong(),
-                            productDetail.displayName, productDetail.brand.title, productDetail.category.firstOrNull()?.title
+                            productDetail.id,
+                            (index + Int.ONE),
+                            productDetail.salesPrice.toLong(),
+                            productDetail.displayName,
+                            productDetail.brand.title,
+                            productDetail.category.firstOrNull()?.title
                         )
                     }
                 })
