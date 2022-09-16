@@ -56,23 +56,6 @@ class PayLaterActivationViewModel @Inject constructor(
     var variantName = ""
 
 
-    fun setProductId(productId: String) {
-        selectedProductId = productId
-    }
-
-    fun setGatewayId(gatewayId: String) {
-        selectedGatewayId = gatewayId
-    }
-
-    fun setTenure(tenure: String) {
-        selectedTenureSelected = tenure
-    }
-
-    fun setGatewayCode(gatewayCode: String) {
-        selectedGatewayCode = gatewayCode
-    }
-
-
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
 

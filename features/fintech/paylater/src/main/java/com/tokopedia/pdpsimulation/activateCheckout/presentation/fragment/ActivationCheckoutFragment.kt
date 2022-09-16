@@ -114,10 +114,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         val gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?: "0"
         val tenureSelected = arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0"
         val gatewayCode = arguments?.getString(PARAM_GATEWAY_CODE) ?: ""
-        payLaterActivationViewModel.setProductId(productId)
-        payLaterActivationViewModel.setGatewayId(gateWayId)
-        payLaterActivationViewModel.setTenure(tenureSelected)
-        payLaterActivationViewModel.setGatewayCode(gatewayCode)
+        payLaterActivationViewModel.selectedProductId = productId
+        payLaterActivationViewModel.selectedGatewayId = gateWayId
+        payLaterActivationViewModel.selectedTenureSelected  = tenureSelected
+        payLaterActivationViewModel.selectedGatewayCode = gatewayCode
     }
 
     private fun observeCartDetail() {
@@ -147,7 +147,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     fun updateSelectedTenure(gatewaySelected: String) {
-        payLaterActivationViewModel.setGatewayId(gatewaySelected)
+        payLaterActivationViewModel.selectedGatewayId = gatewaySelected
     }
 
     private fun observerProductData() {
@@ -362,7 +362,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     it.isSelectedTenure = false
                 }
                 for (i in 0 until checkoutData.tenureDetail.size) {
-                    if (payLaterActivationViewModel.selectedTenureSelected.toInt() == checkoutData.tenureDetail[i].tenure) {
+                    if (payLaterActivationViewModel.selectedTenureSelected.toIntOrZero() == checkoutData.tenureDetail[i].tenure) {
                         selectedTenurePosition = i
                         break
                     }
@@ -482,7 +482,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 .toIntOrZero() > MINIMUM_THRESHOLD_QUANTITY
         val currentDetailQuantityValue = detailHeader.quantityEditor.editText.text.toString()
         try {
-            if (currentDetailQuantityValue.replace("[^0-9]".toRegex(), "").toInt() > productStock) {
+            if (currentDetailQuantityValue.replace("[^0-9]".toRegex(), "").toIntOrZero() > productStock) {
                 detailHeader.quantityEditor.editText.setText(productStock.toString())
                 quantity = productStock
             }
@@ -692,7 +692,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             if (s.isNotBlank()) {
 
                 val mQuantity = try {
-                    s.replace("[^0-9]".toRegex(), "").toInt()
+                    s.replace("[^0-9]".toRegex(), "").toIntOrZero()
                 } catch (e: Exception) {
                     1
                 }
@@ -739,7 +739,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
                 if (this.selectedProductId.isNotBlank()) {
                     if (payLaterActivationViewModel.selectedProductId != this.selectedProductId) {
-                        payLaterActivationViewModel.setProductId(this.selectedProductId)
+                        payLaterActivationViewModel.selectedProductId = this.selectedProductId
                         startAllLoaders()
                         payLaterActivationViewModel.getProductDetail(this.selectedProductId)
                     }
@@ -790,7 +790,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         activationTenureAdapter.notifyItemChanged(selectedTenurePosition)
         activationTenureAdapter.notifyItemChanged(newPositionToSelect)
         selectedTenurePosition = newPositionToSelect
-        payLaterActivationViewModel.setTenure(tenureSelectedModel.tenure.toString())
+        payLaterActivationViewModel.selectedTenureSelected = tenureSelectedModel.tenure.toString()
     }
 
     companion object {
