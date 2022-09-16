@@ -55,7 +55,7 @@ class DealsPDPShare(private val activity : WeakReference<Activity>) {
                     Int.ZERO,
                     pdpToLinkerDataMapper(data, context), object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult) {
-                            openIntentShare(data.title, titleShare ,linkerShareData.shareContents, context)
+                            openIntentShare(data.title, titleShare, linkerShareData.shareContents, context)
                             doneLoadShare()
                         }
 

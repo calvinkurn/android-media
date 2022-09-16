@@ -18,7 +18,7 @@ import com.tokopedia.deals.pdp.ui.fragment.DealsPDPDescFragment
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPFragment
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPSelectDealsQuantityFragment
 
-class DealsPDPActivity: BaseSimpleActivity(), HasComponent<DealsPDPComponent>, DealsPDPCallbacks {
+class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, DealsPDPCallbacks {
 
     var productId: String? = null
 
