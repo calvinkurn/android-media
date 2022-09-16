@@ -172,24 +172,9 @@ class ReadReviewViewHolder(
         tvReviewMessageSeeMore?.apply {
             setOnClickListener {
                 if (expanded) {
-                    setupReviewMessageSeeMore(message, feedbackId, productId, false)
-                    setReviewText(
-                        message = message,
-                        maxLines = MAX_LINES_REVIEW_COLLAPSED,
-                        enable = true
-                    )
+                    onCollapseReviewTextClicked(message, feedbackId, productId)
                 } else {
-                    if(isProductReview) {
-                        ReadReviewTracking.trackOnSeeFullReviewClicked(feedbackId, productId)
-                    } else {
-                        ReadReviewTracking.trackOnShopReviewSeeFullReviewClicked(feedbackId, shopId)
-                    }
-                    setupReviewMessageSeeMore(message, feedbackId, productId, true)
-                    setReviewText(
-                        message = message,
-                        maxLines = MAX_LINES_REVIEW_EXPANDED,
-                        enable = true
-                    )
+                    onExpandReviewTextClicked(message, feedbackId, productId)
                 }
             }
         }
@@ -404,7 +389,38 @@ class ReadReviewViewHolder(
         }
     }
 
-    inner class ReviewMessageEllipsizeChecker: ViewTreeObserver.OnPreDrawListener {
+    private fun onCollapseReviewTextClicked(
+        message: String,
+        feedbackId: String,
+        productId: String
+    ) {
+        setupReviewMessageSeeMore(message, feedbackId, productId, false)
+        setReviewText(
+            message = message,
+            maxLines = MAX_LINES_REVIEW_COLLAPSED,
+            enable = true
+        )
+    }
+
+    private fun onExpandReviewTextClicked(
+        message: String,
+        feedbackId: String,
+        productId: String
+    ) {
+        if (isProductReview) {
+            ReadReviewTracking.trackOnSeeFullReviewClicked(feedbackId, productId)
+        } else {
+            ReadReviewTracking.trackOnShopReviewSeeFullReviewClicked(feedbackId, shopId)
+        }
+        setupReviewMessageSeeMore(message, feedbackId, productId, true)
+        setReviewText(
+            message = message,
+            maxLines = MAX_LINES_REVIEW_EXPANDED,
+            enable = true
+        )
+    }
+
+    private inner class ReviewMessageEllipsizeChecker: ViewTreeObserver.OnPreDrawListener {
         override fun onPreDraw(): Boolean {
             reviewMessage?.layout?.run {
                 val lines = lineCount
