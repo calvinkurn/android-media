@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.cart.view.CartActivity
+import com.tokopedia.sellerorder.list.presentation.activities.SomListActivity
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -119,8 +121,11 @@ class MainActivity : AppCompatActivity() {
         if(appLink.isNotBlank())
             RouteManager.route(this, appLink)
         else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this,CartActivity::class.java))
     }
-
+//    tokopedia://shipping/tracking/903176947?url_live_tracking=
+//    tokopedia://marketplace/order/973837297
+//    tokopedia://marketplace/order/943237179
     private fun getDefaultAppLink(): String {
         /*
          * Put your default applink here

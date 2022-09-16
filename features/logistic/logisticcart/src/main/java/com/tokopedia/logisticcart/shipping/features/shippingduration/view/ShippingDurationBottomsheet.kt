@@ -312,6 +312,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
         }
         return false
+
     }
 
     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
