@@ -21,7 +21,7 @@ import javax.inject.Provider
 
 class MenuSettingViewModel @Inject constructor(
     private val authorizeAccessUseCase: Provider<AuthorizeAccessUseCase>,
-    private val shopLocWhitelist: ShopMultilocWhitelistUseCase,
+    private val shopLocWhitelist: Provider<ShopMultilocWhitelistUseCase>,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -93,7 +93,7 @@ class MenuSettingViewModel @Inject constructor(
 
     fun getShopLocEligible(shopId: Long) {
         launchCatchError(block = {
-            val shopLocWhitelist = shopLocWhitelist.invoke(shopId).shopLocWhitelist
+            val shopLocWhitelist = shopLocWhitelist.get().invoke(shopId).shopLocWhitelist
             val eligibilityState = shopLocWhitelist.data.eligibilityState
             val isMultilocation = eligibilityState==1
             _shopLocEligible.postValue(Success(isMultilocation))
