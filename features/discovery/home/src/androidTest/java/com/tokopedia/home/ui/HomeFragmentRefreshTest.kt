@@ -208,9 +208,9 @@ class HomeFragmentRefreshTest {
          * Address data changed in other page will change home page choose address in onResume
          */
         Thread.sleep(DELAY_PROCESS)
-        Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         println("dataChangedCount $dataChangedCount , partialRefresh $TOTAL_PARTIAL_HEADER_REFRESH_COUNT")
         Log.d("dhabalog","dataChangedCount $dataChangedCount , partialRefresh $TOTAL_PARTIAL_HEADER_REFRESH_COUNT")
+        Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         onView(withText(containsString(ADDRESS_2_LABEL))).check(matches(isDisplayed()))
         Thread.sleep(DELAY_PROCESS)
     }
@@ -261,6 +261,8 @@ class HomeFragmentRefreshTest {
             override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
                 super.onItemRangeChanged(positionStart, itemCount)
                 if (positionStart == 0) {
+                    Log.d("dhabalog", "itemCount ${itemCount}" )
+                    println("itemCount ${itemCount}" )
                     dataChangedCount++
                 }
             }
