@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.databinding.FragmentSellerSettingsBinding
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
