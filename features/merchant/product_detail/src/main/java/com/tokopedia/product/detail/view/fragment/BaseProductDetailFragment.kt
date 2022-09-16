@@ -29,9 +29,7 @@ import javax.inject.Inject
  */
 abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactory> : BaseDaggerFragment() {
 
-    val productAdapter: ProductDetailAdapter by lazy {
-        createAdapterInstance()
-    }
+    var productAdapter: ProductDetailAdapter? = null
     var productDaggerComponent: ProductDetailComponent? = null
 
     @Inject
@@ -60,6 +58,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
         setHasOptionsMenu(true)
+        productAdapter = createAdapterInstance()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -82,24 +81,24 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         hideSwipeLoading()
 
         rvPdp?.post {
-            productAdapter.submitList(visitables)
+            productAdapter?.submitList(visitables)
         }
     }
 
     fun submitList(visitables: List<DynamicPdpDataModel>) {
         rvPdp?.post {
-            productAdapter.submitList(visitables)
+            productAdapter?.submitList(visitables)
             binding?.pdpNavigation?.updateItemPosition()
         }
     }
 
     fun showLoading() {
-        productAdapter.showLoading()
+        productAdapter?.showLoading()
     }
 
     fun renderPageError(errorModel: PageErrorDataModel) {
         context?.let { _ ->
-            productAdapter.showError(errorModel)
+            productAdapter?.showError(errorModel)
             swipeToRefresh?.let {
                 it.isEnabled = false
             }
@@ -116,7 +115,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     fun <T : DynamicPdpDataModel> getComponentPosition(data: T?): Int {
         return if (data != null) {
-            productAdapter.currentList.indexOf(data)
+            productAdapter?.currentList?.indexOf(data) ?: RecyclerView.NO_POSITION
         } else {
             RecyclerView.NO_POSITION
         }
@@ -124,9 +123,9 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     fun <T : DynamicPdpDataModel> getComponentPositionBeforeUpdate(data: T?): Int {
         return if (data != null) {
-            productAdapter.currentList.indexOfFirst {
+            productAdapter?.currentList?.indexOfFirst {
                 it.name() == data.name()
-            }
+            } ?: RecyclerView.NO_POSITION
         } else {
             RecyclerView.NO_POSITION
         }
@@ -206,11 +205,5 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         val scrollListener = endlessScrollListener ?: return
         rv.removeOnScrollListener(scrollListener)
         endlessScrollListener = null
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        rvPdp?.adapter = null
-        binding = null
     }
 }

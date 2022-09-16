@@ -108,7 +108,8 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
         Espresso.onView(ViewMatchers.withId(R.id.rv_pdp))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        val rvSize = activityCommonRule.activity.getPdpFragment().productAdapter.currentList.size
+        val rvSize = activityCommonRule.activity.getPdpFragment().productAdapter?.currentList?.size
+                ?: 0
 
         Thread.sleep(2000)
 
