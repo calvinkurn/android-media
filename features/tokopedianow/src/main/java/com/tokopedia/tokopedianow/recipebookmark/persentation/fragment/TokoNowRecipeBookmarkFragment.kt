@@ -14,7 +14,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -98,8 +97,8 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         )
     }
 
-    override fun onClickBookmark(recipeId: String) {
-        RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_DETAIL, recipeId)
+    override fun onClickBookmark(appUrl: String) {
+        RouteManager.route(context, appUrl)
     }
 
     private fun injectDependencies() {

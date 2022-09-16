@@ -124,6 +124,7 @@ internal object GetRecipeBookmarksQuery: GqlQueryInterface {
                           url
                           type
                         }
+                        appUrl
                      }
                   }
                }

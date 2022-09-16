@@ -44,7 +44,9 @@ data class GetRecipeBookmarksResponse(
                 @SerializedName("tags")
                 val tags: List<Tag>?,
                 @SerializedName("title")
-                val title: String
+                val title: String,
+                @SerializedName("appUrl")
+                val appUrl: String
             ) {
                 data class Image(
                     @SerializedName("urlOriginal")
