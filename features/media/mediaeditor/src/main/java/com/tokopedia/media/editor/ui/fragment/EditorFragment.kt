@@ -95,13 +95,6 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             viewBinding?.viewPager?.let {
                 val stateList = viewModel.editStateList.values.toList()
                 it.setAdapter(stateList)
-                it.setOnPageChanged { position, isVideo ->
-                    thumbnailDrawerComponent.clickIndex(position)
-
-                    editorToolComponent.container().apply {
-                        if (isVideo) hide() else visible()
-                    }
-                }
             }
 
             return
@@ -284,7 +277,16 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             if (it.autoCropRatio != null) {
                 startAutoCrop()
             } else {
-                viewBinding?.viewPager?.setAdapter(viewModel.editStateList.values.toList())
+                viewBinding?.viewPager?.apply {
+                    setAdapter(viewModel.editStateList.values.toList())
+                    setOnPageChanged { position, isVideo ->
+                        thumbnailDrawerComponent.clickIndex(position)
+
+                        editorToolComponent.container().apply {
+                            if (isVideo) hide() else visible()
+                        }
+                    }
+                }
             }
         }
     }
