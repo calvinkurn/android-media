@@ -1629,7 +1629,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 false
             }
-            selectedAccount.isUser && selectedAccount.hasUsername -> {
+            selectedAccount.isUser && !selectedAccount.hasUsername -> {
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
