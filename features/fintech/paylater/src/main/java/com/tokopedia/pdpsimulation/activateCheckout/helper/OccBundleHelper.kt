@@ -79,7 +79,6 @@ object OccBundleHelper {
 
 }
 
-
 data class BundleData(
     val listofTenureDetail: List<TenureDetail>,
     val selectedPosition: Int,
