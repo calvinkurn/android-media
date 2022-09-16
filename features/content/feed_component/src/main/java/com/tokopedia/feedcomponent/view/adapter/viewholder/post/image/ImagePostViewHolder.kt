@@ -66,6 +66,7 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
             activityId: String,
             postType: String,
             shopId: String,
+            isFollowed: Boolean = false,
             productList: List<FeedXProduct>)
 
 
