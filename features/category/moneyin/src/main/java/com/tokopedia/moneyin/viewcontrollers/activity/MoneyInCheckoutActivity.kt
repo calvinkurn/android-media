@@ -215,13 +215,15 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
     private fun setCourierRatesBottomSheet(data: RatesV4.Data) {
         val courierBtn = findViewById<UnifyButton>(R.id.courier_btn)
         val firstProduct = data.services.first().products.firstOrNull()
-        if (firstProduct != null) {
+        firstProduct?.let {
             spId = firstProduct.shipper.shipperProduct.id
             val moneyInCourierBottomSheet = MoneyInCourierBottomSheet.newInstance(
                 firstProduct.features.moneyIn,
-                firstProduct.shipper.shipperProduct.description)
+                firstProduct.shipper.shipperProduct.description
+            )
             courierBtn.setOnClickListener {
-                sendGeneralEvent(MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
+                sendGeneralEvent(
+                    MoneyInGTMConstants.ACTION_CLICK_MONEYIN,
                     MoneyInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                     when {
                         isCourierSet -> MoneyInGTMConstants.ACTION_CLICK_UBAH_KURIR
