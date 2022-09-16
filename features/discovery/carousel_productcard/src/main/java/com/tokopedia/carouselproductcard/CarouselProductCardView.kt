@@ -193,7 +193,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
             finishCalculate: (() -> Unit)? = null,
             carouselViewAllCardData: CarouselViewAllCardData? = null,
     ) {
-        carouselProductCardRecyclerView.setHeightBasedOnProductCardMaxHeight(productCardModelList, isGrid)
+        carouselProductCardRecyclerView?.setHeightBasedOnProductCardMaxHeight(productCardModelList, isGrid)
         submitList(
             productCardModelList,
             showSeeMoreCard,
@@ -205,7 +205,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
     }
 
     private fun createProductCardCarouselLayoutManager(): RecyclerView.LayoutManager {
-        return object: LinearLayoutManager(context, HORIZONTAL, false) {
+        return object: LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false) {
             override fun requestChildRectangleOnScreen(
                     parent: RecyclerView,
                     child: View,
@@ -227,14 +227,14 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
     }
 
     private fun initRecyclerView(recyclerViewPool: RecyclerView.RecycledViewPool?) {
-        carouselProductCardRecyclerView.layoutManager = carouselLayoutManager
-        carouselProductCardRecyclerView.itemAnimator = null
-        carouselProductCardRecyclerView.setHasFixedSize(true)
-        carouselProductCardRecyclerView.adapter = carouselProductCardAdapter?.asRecyclerViewAdapter()
+        carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
+        carouselProductCardRecyclerView?.itemAnimator = null
+        carouselProductCardRecyclerView?.setHasFixedSize(true)
+        carouselProductCardRecyclerView?.adapter = carouselProductCardAdapter?.asRecyclerViewAdapter()
 
-        recyclerViewPool?.let { carouselProductCardRecyclerView.setRecycledViewPool(it) }
+        recyclerViewPool?.let { carouselProductCardRecyclerView?.setRecycledViewPool(it) }
 
-        if (carouselProductCardRecyclerView.onFlingListener == null) {
+        if (carouselProductCardRecyclerView?.onFlingListener == null) {
             snapHelper.attachToRecyclerView(carouselProductCardRecyclerView)
         }
     }
