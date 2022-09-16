@@ -65,7 +65,7 @@ index 22c388c24679..b7ea1cc08158 100644
  //Installing Git Hooks
  task installGitHooks {
 diff --git a/buildconfig/dependencies/dependencies.gradle b/buildconfig/dependencies/dependencies.gradle
-index 3def83b9af57..07f09a9fd0f6 100755
+index edcd41a4ba10..60e35c132858 100755
 --- a/buildconfig/dependencies/dependencies.gradle
 +++ b/buildconfig/dependencies/dependencies.gradle
 @@ -1,6 +1,6 @@
@@ -85,7 +85,7 @@ index 3def83b9af57..07f09a9fd0f6 100755
      lifeCycleVersion = "2.2.0"
      lifeCycleExtensionsVersion = "2.2.0"
      archCoreVersion = "2.1.0"
-@@ -39,7 +39,7 @@ ext {
+@@ -40,7 +40,7 @@ ext {
      apolloVersion = '0.3.0'
      lottieVersion = '3.4.1'
      cardioVersion = '5.5.1'
@@ -94,7 +94,7 @@ index 3def83b9af57..07f09a9fd0f6 100755
      sqliteFrameworkVersion = '2.1.0'
      multiDexVersion = '2.0.0'
      twitter4JVersion = '4.0.7'
-@@ -77,7 +77,7 @@ ext {
+@@ -78,7 +78,7 @@ ext {
      kotlinTestVersion = '1.5.30'
      KotlinMockitoVersion = '1.5.0'
      SpekVersion = "1.1.5"
@@ -103,7 +103,7 @@ index 3def83b9af57..07f09a9fd0f6 100755
      googleServiceGradleVersion = '4.3.3'
      chuckerVersion = '4.0.6-tkpd'
      sliceVersion = '1.0.0-alpha6'
-@@ -247,7 +247,7 @@ ext {
+@@ -249,7 +249,7 @@ ext {
              chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
              roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
              lottie                : "com.airbnb.android:lottie:$lottieVersion",
@@ -218,7 +218,7 @@ index 9e2f06e131b4..c6f528e51cf5 100644
      implementation projectOrAar(rootProject.ext.features.csat_rating)
      implementation projectOrAar(rootProject.ext.features.resourcesCommon)
 diff --git a/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java b/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java
-index 795012f7189d..0fef70b43ad0 100644
+index 9c91175c8dc2..6282ebcc255c 100644
 --- a/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java
 +++ b/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java
 @@ -89,6 +89,7 @@ import com.tokopedia.unifyprinciples.Typography;
@@ -1103,7 +1103,7 @@ index 9e8f48b99a5d..bd07385e9525 100644
  
      buildFeatures {
 diff --git a/features/communication/topchat/build.gradle b/features/communication/topchat/build.gradle
-index 8a8309df307a..8cb4a93b86b5 100644
+index 77a2ab31b6e5..8581b852abc2 100644
 --- a/features/communication/topchat/build.gradle
 +++ b/features/communication/topchat/build.gradle
 @@ -31,11 +31,11 @@ android {
@@ -1645,10 +1645,10 @@ index 31023fdc74cb..8bc7a5b83762 100644
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/payment/pms/build.gradle b/features/payment/pms/build.gradle
-index 14aa17fe96b3..b727d6d13eb0 100644
+index 1d74fccc9048..7964698b0df6 100644
 --- a/features/payment/pms/build.gradle
 +++ b/features/payment/pms/build.gradle
-@@ -19,12 +19,12 @@ buildscript {
+@@ -20,12 +20,12 @@ buildscript {
  
  android {
      compileOptions {
@@ -1838,7 +1838,7 @@ index e825235d6b56..a923ca49e162 100644
  
      testOptions {
 diff --git a/features/transaction/unifyorderhistory/build.gradle b/features/transaction/unifyorderhistory/build.gradle
-index d77b5f6ba33b..b66f98f95d48 100644
+index b29ed9fb645c..ed11ca379ac5 100644
 --- a/features/transaction/unifyorderhistory/build.gradle
 +++ b/features/transaction/unifyorderhistory/build.gradle
 @@ -29,7 +29,7 @@ android {
@@ -2400,24 +2400,17 @@ index 9f2f02e96b6b..c786b2dcd12e 100644
  
      signingConfigs {
 diff --git a/libraries/remote_config/src/main/res/xml/remote_config_default.xml b/libraries/remote_config/src/main/res/xml/remote_config_default.xml
-index 2a776a485228..22ace9df672c 100644
+index 2a776a485228..e4125b657e46 100644
 --- a/libraries/remote_config/src/main/res/xml/remote_config_default.xml
 +++ b/libraries/remote_config/src/main/res/xml/remote_config_default.xml
-@@ -642,4 +642,15 @@
+@@ -642,4 +642,8 @@
          <key>android_enable_blocking_touch_pdp_navbar</key>
          <value>true</value>
      </entry>
-+<<<<<<< HEAD
-+    <entry>
-+        <key>android_review_form_new_enable</key>
-+        <value>true</value>
-+    </entry>
 +    <entry>
 +        <key>android_robust_tester</key>
 +        <value></value>
 +    </entry>
-+=======
-+>>>>>>> d17b9862394c1125f5529487fab1d4429617eb76
  </defaultsMap>
 diff --git a/libraries/tokopatch/build.gradle b/libraries/tokopatch/build.gradle
 index 59135ab9363d..be0d5fa5aaef 100644
