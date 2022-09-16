@@ -42,7 +42,9 @@
                     app:layout_constraintRight_toRightOf="parent"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
-                    android:background="@drawable/bg_blur_image" />
+                    android:background="@drawable/bg_blur_image"
+                    android:contentDescription="@string/deals_pdp_content_desc_img"
+                    />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

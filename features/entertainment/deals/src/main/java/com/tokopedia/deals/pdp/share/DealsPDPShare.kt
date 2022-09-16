@@ -18,7 +18,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.lang.ref.WeakReference
 
-class DealsPDPShare(private val activity : WeakReference<Activity>) {
+class DealsPDPShare(private val activity: WeakReference<Activity>) {
 
     companion object {
         private const val TYPE = "text/plain"
@@ -42,7 +42,8 @@ class DealsPDPShare(private val activity : WeakReference<Activity>) {
         }
         activity.get()?.startActivity(
             Intent.createChooser(
-                shareIntent, context.resources.getString(R.string.deals_brand_detail_share_title)
+                shareIntent,
+                context.resources.getString(R.string.deals_brand_detail_share_title)
             )
         )
     }
@@ -53,7 +54,8 @@ class DealsPDPShare(private val activity : WeakReference<Activity>) {
             LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(
                     Int.ZERO,
-                    pdpToLinkerDataMapper(data, context), object : ShareCallback {
+                    pdpToLinkerDataMapper(data, context),
+                    object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult) {
                             openIntentShare(data.title, titleShare, linkerShareData.shareContents, context)
                             doneLoadShare()
@@ -67,8 +69,11 @@ class DealsPDPShare(private val activity : WeakReference<Activity>) {
             )
         } else {
             openIntentShare(
-                data.title, titleShare, TkpdBaseURL.WEB_DOMAIN + context.resources.getString(
-                com.tokopedia.deals.R.string.deals_pdp_share_web_link, data.seoUrl), context
+                data.title,
+                titleShare,
+                TkpdBaseURL.WEB_DOMAIN + context.resources.getString(
+                com.tokopedia.deals.R.string.deals_pdp_share_web_link, data.seoUrl),
+                context
             )
             doneLoadShare()
         }

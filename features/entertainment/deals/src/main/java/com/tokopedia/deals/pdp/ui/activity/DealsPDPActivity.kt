@@ -71,8 +71,10 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
     override fun onShowMoreDesc(title: String, text: String) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(
-            com.tokopedia.deals.R.anim.deals_slide_in_up, com.tokopedia.deals.R.anim.deals_slide_in_down,
-            com.tokopedia.deals.R.anim.deals_slide_out_down, com.tokopedia.deals.R.anim.deals_slide_out_up
+            com.tokopedia.deals.R.anim.deals_slide_in_up,
+            com.tokopedia.deals.R.anim.deals_slide_in_down,
+            com.tokopedia.deals.R.anim.deals_slide_out_down,
+            com.tokopedia.deals.R.anim.deals_slide_out_up
         )
         transaction.add(com.tokopedia.deals.R.id.deals_detail_parent_view, DealsPDPDescFragment.createInstance(title, text))
         transaction.addToBackStack(null)
@@ -82,8 +84,10 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
     override fun onShowAllLocation(outlets: List<Outlet>) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(
-            com.tokopedia.deals.R.anim.deals_slide_in_up, com.tokopedia.deals.R.anim.deals_slide_in_down,
-            com.tokopedia.deals.R.anim.deals_slide_out_down, com.tokopedia.deals.R.anim.deals_slide_out_up
+            com.tokopedia.deals.R.anim.deals_slide_in_up,
+            com.tokopedia.deals.R.anim.deals_slide_in_down,
+            com.tokopedia.deals.R.anim.deals_slide_out_down,
+            com.tokopedia.deals.R.anim.deals_slide_out_up
         )
         transaction.add(com.tokopedia.deals.R.id.deals_detail_parent_view, DealsPDPAllLocationFragment.createInstance(outlets))
         transaction.addToBackStack(null)
@@ -93,8 +97,10 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
     override fun onSelectQuantityProduct(data: ProductDetailData) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(
-            com.tokopedia.deals.R.anim.deals_slide_in_up, com.tokopedia.deals.R.anim.deals_slide_in_down,
-            com.tokopedia.deals.R.anim.deals_slide_out_down, com.tokopedia.deals.R.anim.deals_slide_out_up
+            com.tokopedia.deals.R.anim.deals_slide_in_up,
+            com.tokopedia.deals.R.anim.deals_slide_in_down,
+            com.tokopedia.deals.R.anim.deals_slide_out_down,
+            com.tokopedia.deals.R.anim.deals_slide_out_up
         )
         transaction.add(com.tokopedia.deals.R.id.deals_detail_parent_view, DealsPDPSelectDealsQuantityFragment.createInstance(data))
         transaction.addToBackStack(null)

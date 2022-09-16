@@ -51,7 +51,9 @@
                     android:layout_height="88dp"
                     android:scaleType="centerCrop"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/deals_pdp_content_desc_img"
+                    />
 
             </androidx.cardview.widget.CardView>
 

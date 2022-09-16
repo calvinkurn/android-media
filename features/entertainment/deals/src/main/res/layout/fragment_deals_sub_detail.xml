@@ -78,7 +78,9 @@
         app:layout_constraintBottom_toBottomOf="@+id/tg_sales_price"
         app:layout_constraintRight_toLeftOf="@+id/tg_favourite"
         app:layout_constraintTop_toTopOf="@+id/tg_sales_price"
-        app:srcCompat="@drawable/ic_wishlist_unfilled" />
+        app:srcCompat="@drawable/ic_wishlist_unfilled"
+        android:contentDescription="@string/deals_pdp_content_desc_img"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_favourite"
@@ -111,7 +113,9 @@
         android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider1"
-        app:srcCompat="@drawable/ic_promo_valid_clock" />
+        app:srcCompat="@drawable/ic_promo_valid_clock"
+        android:contentDescription="@string/deals_pdp_content_desc_img"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_expiry_date"
@@ -207,7 +211,9 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_popular"
+                    android:contentDescription="@string/deals_pdp_content_desc_img"
+                    />
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
@@ -402,7 +408,9 @@
             android:layout_marginTop="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_how_to_redeem" />
+            app:srcCompat="@drawable/ic_how_to_redeem"
+            android:contentDescription="@string/deals_pdp_content_desc_img"
+            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/see_how_to_redeem_voucher"
@@ -415,7 +423,9 @@
             android:text="@string/deals_pdp_see_how_to_redeem_voucher"
             app:layout_constraintBottom_toBottomOf="@+id/iv_how_to_redeem"
             app:layout_constraintLeft_toRightOf="@+id/iv_how_to_redeem"
-            app:layout_constraintTop_toTopOf="@+id/iv_how_to_redeem" />
+            app:layout_constraintTop_toTopOf="@+id/iv_how_to_redeem"
+            android:contentDescription="@string/deals_pdp_content_desc_img"
+            />
 
         <ImageView
             android:id="@+id/iv_arrow"
@@ -427,7 +437,9 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="@+id/iv_how_to_redeem"
-            app:srcCompat="@drawable/ic_arrow_right_deals" />
+            app:srcCompat="@drawable/ic_arrow_right_deals"
+            android:contentDescription="@string/deals_pdp_content_desc_img"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View

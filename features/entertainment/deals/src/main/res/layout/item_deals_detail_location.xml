@@ -45,6 +45,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tg_location_address"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tg_location_name"
+        android:contentDescription="@string/deals_pdp_content_desc_img"
         />
 
     <View

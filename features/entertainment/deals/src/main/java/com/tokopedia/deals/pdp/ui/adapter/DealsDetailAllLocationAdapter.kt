@@ -8,7 +8,7 @@ import com.tokopedia.deals.pdp.data.Outlet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
-class DealsDetailAllLocationAdapter(private val locationCallBack : LocationCallBack?): RecyclerView.Adapter<DealsDetailAllLocationAdapter.ViewHolder>() {
+class DealsDetailAllLocationAdapter(private val locationCallBack: LocationCallBack?) : RecyclerView.Adapter<DealsDetailAllLocationAdapter.ViewHolder>() {
 
     private var outlets: MutableList<Outlet> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,7 +34,7 @@ class DealsDetailAllLocationAdapter(private val locationCallBack : LocationCallB
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(val binding: ItemDealsDetailLocationBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: ItemDealsDetailLocationBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(outlet: Outlet) {
             with(binding) {
                 tgLocationName.text = outlet.name

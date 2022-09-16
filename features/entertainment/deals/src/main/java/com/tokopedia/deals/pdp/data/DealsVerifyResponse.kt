@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 data class DealsVerifyResponse(
     @SerializedName("event_verify")
     val eventVerify: EventVerifyResponse = EventVerifyResponse()
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class EventVerifyResponse(
@@ -23,7 +23,7 @@ data class EventVerifyResponse(
     val status: String = "",
     @SerializedName("gateway_code")
     val gatewayCode: String = ""
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class MetaDataResponse(
@@ -50,7 +50,7 @@ data class MetaDataResponse(
     @SuppressLint("Invalid Data Type")
     @SerializedName("total_price")
     val totalPrice: Long = 0
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class ItemMapResponse(
@@ -139,13 +139,13 @@ data class ItemMapResponse(
     val productWebUrl: String = "",
     @SerializedName("passenger_forms")
     var passengerForms: MutableList<PassengerForm> = arrayListOf()
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class PassengerForm(
     @SerializedName("passenger_informations")
     var passengerInformation: List<PassengerInformation> = arrayListOf()
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class PassengerInformation(
@@ -155,4 +155,4 @@ data class PassengerInformation(
     var value: String = "",
     @SerializedName("title")
     var title: String = ""
-): Parcelable
+) : Parcelable

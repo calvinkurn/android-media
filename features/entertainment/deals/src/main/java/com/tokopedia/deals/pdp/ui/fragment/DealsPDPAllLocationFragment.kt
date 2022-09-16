@@ -31,7 +31,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
 
-class DealsPDPAllLocationFragment: BaseDaggerFragment() {
+class DealsPDPAllLocationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -181,7 +181,7 @@ class DealsPDPAllLocationFragment: BaseDaggerFragment() {
             val fragment = DealsPDPAllLocationFragment()
             val bundle = Bundle()
             bundle.putParcelableArrayList(EXTRA_OUTLETS, ArrayList(outlets))
-            fragment.arguments  = bundle
+            fragment.arguments = bundle
             return fragment
         }
     }

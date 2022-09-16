@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 
 
-class DealsRecommendationAdapter(private val recommendationListener : RecommendationListener?): RecyclerView.Adapter<DealsRecommendationAdapter.ViewHolder>() {
+class DealsRecommendationAdapter(private val recommendationListener: RecommendationListener?) : RecyclerView.Adapter<DealsRecommendationAdapter.ViewHolder>() {
 
     private var products: MutableList<EventProductDetail> = mutableListOf()
 
@@ -44,7 +44,7 @@ class DealsRecommendationAdapter(private val recommendationListener : Recommenda
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(val binding: ItemDealsCardShortBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: ItemDealsCardShortBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(product: EventProductDetail) {
             with(binding) {
                 tgDealIntro.text = product.displayName
@@ -59,7 +59,8 @@ class DealsRecommendationAdapter(private val recommendationListener : Recommenda
                 }
 
                 if (product.mrp.toIntSafely() != Int.ZERO &&
-                    product.mrp.toIntSafely() != product.salesPrice.toIntSafely()) {
+                    product.mrp.toIntSafely() != product.salesPrice.toIntSafely()
+                ) {
                     tgMrp.show()
                     tgMrp.text = DealsUtils.convertToCurrencyString(product.mrp.toLong())
                     tgMrp.paintFlags = tgMrp.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -77,7 +78,7 @@ class DealsRecommendationAdapter(private val recommendationListener : Recommenda
                 tgSalesPrice.text = DealsUtils.convertToCurrencyString(product.salesPrice.toLong())
 
                 ivBrand.setOnClickListener {
-                    val brandUrl = ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE+"?"+product.brand.seoUrl
+                    val brandUrl = ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE + "?" + product.brand.seoUrl
                     recommendationListener?.onClickDealsBrand(brandUrl)
                 }
 

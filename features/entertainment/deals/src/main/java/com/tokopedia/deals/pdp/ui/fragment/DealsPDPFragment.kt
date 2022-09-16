@@ -74,12 +74,14 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
 
-class DealsPDPFragment: BaseDaggerFragment() {
+class DealsPDPFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var analytics: DealsAnalytics
 
@@ -264,7 +266,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                     is Success -> {
                         DealsPDPIdlingResource.decrement()
                         hideLoading()
-                        if (it.data.data.isNullOrEmpty()){
+                        if (it.data.data.isNullOrEmpty()) {
                             setRating(ID_ZERO, Int.ZERO, false, isHideImageRating = true)
                         } else {
                             it.data.data?.first()?.let {
