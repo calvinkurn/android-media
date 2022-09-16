@@ -146,27 +146,6 @@ public class ImageLoader {
                 });
     }
 
-    public void loadBadge(final LinearLayout container, List<Badge> badges) {
-        container.removeAllViews();
-        for (Badge badge : badges) {
-            if(badge.isShow()) {
-                final View view = LayoutInflater.from(context).inflate(R.layout.layout_badge, null);
-                final ImageView imageView = (ImageView) view.findViewById(R.id.badge);
-                Glide.with(context).load(badge.getImageUrl()).listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        container.addView(view);
-                        return true;
-                    }
-                }).into(imageView);
-            }
-        }
-    }
 
     public static void clearImage(final ImageView imageView) {
         if (imageView != null) {
