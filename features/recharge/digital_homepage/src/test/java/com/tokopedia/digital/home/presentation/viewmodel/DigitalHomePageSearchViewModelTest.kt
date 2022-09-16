@@ -226,4 +226,14 @@ class DigitalHomePageSearchViewModelTest {
         //then
         assertEquals(job, digitalHomePageSearchViewModel.job)
     }
+
+    @Test(expected = UninitializedPropertyAccessException::class)
+    fun getJobUninitialized() {
+        //given
+
+        //when
+        digitalHomePageSearchViewModel.job
+
+        //then
+    }
 }
