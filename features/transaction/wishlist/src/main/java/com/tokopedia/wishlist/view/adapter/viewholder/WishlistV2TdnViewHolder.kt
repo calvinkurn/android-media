@@ -46,7 +46,6 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
                     setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
                         override fun onTopAdsImageViewClicked(applink: String?) {
                             actionListener?.onBannerTopAdsClick(item.dataObject, adapterPosition)
-                            RouteManager.route(itemView.context, applink)
                         }
                     })
 
