@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.databinding.ItemDealsPdpImageSliderBinding
 import com.tokopedia.media.loader.loadImage
 
-class WidgetDealsPDPCarouselAdapter(private val images: MutableList<String>):
+class WidgetDealsPDPCarouselAdapter(private val images : MutableList<String>):
     RecyclerView.Adapter<WidgetDealsPDPCarouselAdapter.SliderViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SliderViewHolder  {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SliderViewHolder {
         val binding = ItemDealsPdpImageSliderBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
@@ -32,7 +32,7 @@ class WidgetDealsPDPCarouselAdapter(private val images: MutableList<String>):
 
     inner class SliderViewHolder(val binding: ItemDealsPdpImageSliderBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(url: String) {
-            with(binding){
+            with(binding) {
                 imageBanner.loadImage(url)
             }
         }

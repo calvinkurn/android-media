@@ -2,7 +2,7 @@ package com.tokopedia.deals.pdp.data
 
 import com.google.gson.annotations.SerializedName
 
-data class DealsRatingUpdateResponse (
+data class DealsRatingUpdateResponse(
     @SerializedName("data")
     val data: DealsRatingUpdate = DealsRatingUpdate(),
     @SerializedName("status")
@@ -25,5 +25,5 @@ data class DealsRatingUpdate(
     @SerializedName("feedback")
     val feedback: String = "",
     @SerializedName("status")
-    val status: Int = 0,
+    val status: Int = 0
 )

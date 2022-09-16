@@ -265,7 +265,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                         DealsPDPIdlingResource.decrement()
                         hideLoading()
                         if (it.data.data.isNullOrEmpty()){
-                            setRating("0", Int.ZERO, false, isHideImageRating = true)
+                            setRating(ID_ZERO, Int.ZERO, false, isHideImageRating = true)
                         } else {
                             it.data.data?.first()?.let {
                                 setRating(it.productId.toString(), it.totalLikes, it.isLiked)
@@ -277,7 +277,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                     is Fail -> {
                         DealsPDPIdlingResource.decrement()
                         hideLoading()
-                        setRating("0", Int.ZERO, false, isHideImageRating = true)
+                        setRating(ID_ZERO, Int.ZERO, false, isHideImageRating = true)
                     }
                 }
             }
@@ -293,7 +293,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
                     }
 
                     is Fail -> {
-                        setRating("0", Int.ZERO, false, isHideImageRating = true)
+                        setRating(ID_ZERO, Int.ZERO, false, isHideImageRating = true)
                     }
                 }
             }
@@ -724,20 +724,24 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 tgRecommendation?.show()
                 rvRecommendation?.show()
 
-                val adapter = DealsRecommendationAdapter(object: DealsRecommendationAdapter.RecommendationListener {
+                val adapter = DealsRecommendationAdapter(object : DealsRecommendationAdapter.RecommendationListener {
                     override fun onClickDealsBrand(brandUrl: String) {
                         RouteManager.route(context, brandUrl)
                     }
 
                     override fun onClickDealsProduct(pdpUrl: String, productDetail: EventProductDetail, index: Int) {
-                        analytics.pdpRecommendationClick(productDetail.id, (index + Int.ONE), productDetail.salesPrice.toLong(),
-                            productDetail.displayName, productDetail.brand.title)
+                        analytics.pdpRecommendationClick(
+                            productDetail.id, (index + Int.ONE), productDetail.salesPrice.toLong(),
+                            productDetail.displayName, productDetail.brand.title
+                        )
                         RouteManager.route(context, pdpUrl)
                     }
 
                     override fun onImpressProduct(productDetail: EventProductDetail, index: Int) {
-                        analytics.pdpRecommendationImpression(productDetail.id, (index + Int.ONE), productDetail.salesPrice.toLong(),
-                            productDetail.displayName, productDetail.brand.title, productDetail.category.firstOrNull()?.title)
+                        analytics.pdpRecommendationImpression(
+                            productDetail.id, (index + Int.ONE), productDetail.salesPrice.toLong(),
+                            productDetail.displayName, productDetail.brand.title, productDetail.category.firstOrNull()?.title
+                        )
                     }
                 })
 
@@ -745,7 +749,6 @@ class DealsPDPFragment: BaseDaggerFragment() {
                 rvRecommendation?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 adapter.addProducts(listProduct)
             }
-
         }
     }
 
@@ -785,7 +788,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     private fun share(productdetail: ProductDetailData) {
         activity?.let { activity ->
             val weakReference = WeakReference<Activity>(activity)
-            if(!::dealsSharePDP.isInitialized) dealsSharePDP = DealsPDPShare(weakReference)
+            if (!::dealsSharePDP.isInitialized) dealsSharePDP = DealsPDPShare(weakReference)
             dealsSharePDP.shareEvent(productdetail, productdetail.displayName, requireContext(), { showShareLoading() }, { hideShareLoading() })
         }
     }
@@ -799,6 +802,7 @@ class DealsPDPFragment: BaseDaggerFragment() {
     }
 
     companion object {
+        private const val ID_ZERO = "0"
         private const val ZERO_PERCENT = "0%"
         private const val MAX_LINE = 10
         private const val TIME_LAPSE = 100L

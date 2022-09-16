@@ -1,8 +1,8 @@
 package com.tokopedia.deals.pdp.domain.query
 
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.deals.pdp.domain.query.DealsPDPContentQuery.DEALS_PDP_CONTENT_OPERATION_NAME
 import com.tokopedia.deals.pdp.domain.query.DealsPDPContentQuery.DEALS_PDP_CONTENT_QUERY
+import com.tokopedia.gql_query_annotation.GqlQuery
 
 @GqlQuery(DEALS_PDP_CONTENT_OPERATION_NAME, DEALS_PDP_CONTENT_QUERY)
 object DealsPDPContentQuery {

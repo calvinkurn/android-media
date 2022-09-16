@@ -2,30 +2,30 @@ package com.tokopedia.deals.pdp.data
 
 import com.google.gson.annotations.SerializedName
 
-data class DealsTravelRecentSearchTrackingRequest (
+data class DealsTravelRecentSearchTrackingRequest(
     @SerializedName("message")
     val message: DealsTravelMessage = DealsTravelMessage(),
     @SerializedName("service")
     val service: String = "",
     @SerializedName("travel_recent_search")
-    val travelRecentSearch: TravelRecentSearch = TravelRecentSearch(),
+    val travelRecentSearch: TravelRecentSearch = TravelRecentSearch()
 )
 
-data class DealsTravelMessage (
+data class DealsTravelMessage(
     @SerializedName("user_id")
-    val userId: Long = 0,
+    val userId: Long = 0
 )
 
-data class TravelRecentSearch (
+data class TravelRecentSearch(
     @SerializedName("data_type")
     val dataType: String = "",
     @SerializedName("recent_data")
-    val recentData: RecentData = RecentData(),
+    val recentData: RecentData = RecentData()
 )
 
 data class RecentData(
     @SerializedName("entertainment")
-    val entertainment: Entertainment = Entertainment(),
+    val entertainment: Entertainment = Entertainment()
 )
 
 data class Entertainment(
@@ -42,5 +42,5 @@ data class Entertainment(
     @SerializedName("url")
     val url: String = "",
     @SerializedName("value")
-    val value: String = "",
+    val value: String = ""
 )

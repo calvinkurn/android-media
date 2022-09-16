@@ -10,10 +10,10 @@ import javax.inject.Inject
 class DealsPDPEventContentUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<DealsProductEventContent>(graphqlRepository) {
 
-        init {
-            setGraphqlQuery(EventContentByIdQuery())
-            setTypeClass(DealsProductEventContent::class.java)
-        }
+    init {
+        setGraphqlQuery(EventContentByIdQuery())
+        setTypeClass(DealsProductEventContent::class.java)
+    }
 
     suspend fun execute(typeId: String, typeValue: String): DealsProductEventContent {
         setRequestParams(DealsPDPContentQuery.createRequestParams(typeId, typeValue))

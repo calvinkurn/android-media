@@ -92,7 +92,6 @@
                 android:background="@color/Unify_N75"
                 app:layout_constraintTop_toBottomOf="@+id/card_view_brand" />
 
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_purchase_details"
                 android:textColor="@color/Unify_N700_68"
@@ -216,7 +215,6 @@
         android:layout_gravity="bottom"
         app:cardBackgroundColor="@color/Unify_Background"
         app:cardElevation="0dp">
-
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_continue"

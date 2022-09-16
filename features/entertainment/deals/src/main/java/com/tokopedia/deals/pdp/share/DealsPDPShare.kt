@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.deals.R
 import com.tokopedia.deals.pdp.data.ProductDetailData
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -17,7 +18,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.lang.ref.WeakReference
 
-class DealsPDPShare (private val activity: WeakReference<Activity>) {
+class DealsPDPShare(private val activity : WeakReference<Activity>) {
 
     companion object {
         private const val TYPE = "text/plain"
@@ -26,12 +27,11 @@ class DealsPDPShare (private val activity: WeakReference<Activity>) {
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity.get()) }
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
 
-
     fun shareEvent(data: ProductDetailData, titleShare: String, context: Context, loadShare: () -> Unit, doneLoadShare: () -> Unit) {
-        generateBranchLink(data,  context, titleShare, loadShare, doneLoadShare)
+        generateBranchLink(data, context, titleShare, loadShare, doneLoadShare)
     }
 
-    private fun openIntentShare(title: String, titleShare:String, url:String, context: Context) {
+    private fun openIntentShare(title: String, titleShare: String, url: String, context: Context) {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             type = TYPE
@@ -41,15 +41,18 @@ class DealsPDPShare (private val activity: WeakReference<Activity>) {
             putExtra(Intent.EXTRA_SUBJECT, title)
         }
         activity.get()?.startActivity(
-            Intent.createChooser(shareIntent, context.resources.getString(
-                R.string.deals_brand_detail_share_title)))
+            Intent.createChooser(
+                shareIntent, context.resources.getString(R.string.deals_brand_detail_share_title)
+            )
+        )
     }
 
     private fun generateBranchLink(data: ProductDetailData, context: Context, titleShare: String, loadShare: () -> Unit, doneLoadShare: () -> Unit) {
         loadShare()
         if (isBranchUrlActive()) {
             LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(0,
+                LinkerUtils.createShareRequest(
+                    Int.ZERO,
                     pdpToLinkerDataMapper(data, context), object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult) {
                             openIntentShare(data.title, titleShare ,linkerShareData.shareContents, context)
@@ -59,13 +62,16 @@ class DealsPDPShare (private val activity: WeakReference<Activity>) {
                         override fun onError(linkerError: LinkerError) {
                             doneLoadShare()
                         }
-                    }))
+                    }
+                )
+            )
         } else {
-            openIntentShare(data.title, titleShare, TkpdBaseURL.WEB_DOMAIN + context.resources.getString(
-                com.tokopedia.deals.R.string.deals_pdp_share_web_link, data.seoUrl), context)
+            openIntentShare(
+                data.title, titleShare, TkpdBaseURL.WEB_DOMAIN + context.resources.getString(
+                com.tokopedia.deals.R.string.deals_pdp_share_web_link, data.seoUrl), context
+            )
             doneLoadShare()
         }
-
     }
 
     private fun pdpToLinkerDataMapper(data: ProductDetailData, context: Context): LinkerShareData {

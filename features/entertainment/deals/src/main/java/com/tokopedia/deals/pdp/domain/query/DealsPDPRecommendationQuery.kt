@@ -64,8 +64,8 @@ object DealsPDPRecommendationQuery {
 
     @JvmStatic
     fun createRequestParam(
-        childCategoryIds: String?,
-    ) : HashMap<String, Any> {
+        childCategoryIds: String?
+    ): HashMap<String, Any> {
         val hashMap = hashMapOf<String, Any>()
         val pdpRecommendation: ArrayList<RequestParam> = arrayListOf()
         pdpRecommendation.add(RequestParam(DealsSearchConstants.MAP_CATEGORY, DealsSearchConstants.DEFAULT_CATEGORY))

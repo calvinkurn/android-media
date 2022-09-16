@@ -28,6 +28,7 @@ import com.tokopedia.deals.pdp.domain.DealsPDPRecommendTrackingUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPRecommendationUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPUpdateRatingUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -154,7 +155,7 @@ class DealsPDPViewModel @Inject constructor (
         )
 
     var isLiked = false
-    var totalLikes = 0
+    var totalLikes = Int.ZERO
 
     fun setPDP(urlProduct: String) {
         _inputPDPState.tryEmit(urlProduct)
@@ -222,7 +223,7 @@ class DealsPDPViewModel @Inject constructor (
 
     private suspend fun getRating(productId: String): Result<DealsRatingResponse> {
         dealsPDPGetRatingUseCase.setUrlId(productId)
-        val dealsRatingResponse = withContext(dispatcher.io){
+        val dealsRatingResponse = withContext(dispatcher.io) {
             convertToRatingResponse(dealsPDPGetRatingUseCase.executeOnBackground())
         }
 
@@ -257,12 +258,13 @@ class DealsPDPViewModel @Inject constructor (
     }
 
     private fun mapperParamUpdateRating(productId: String, userId: String, isLiked: Boolean): DealsRatingUpdateRequest {
-        return DealsRatingUpdateRequest(DealRatingRequest(
-            feedback = "",
-            isLiked = isLiked.toString(),
-            productId = productId.toIntSafely().toLong(),
-            rating = 0,
-            userId = userId.toIntSafely().toLong()
+        return DealsRatingUpdateRequest(
+            DealRatingRequest(
+                feedback = "",
+                isLiked = isLiked.toString(),
+                productId = productId.toIntSafely().toLong(),
+                rating = Int.ZERO,
+                userId = userId.toIntSafely().toLong()
         ))
     }
 
@@ -300,7 +302,6 @@ class DealsPDPViewModel @Inject constructor (
             )
         )
     }
-
 
     private fun convertToRatingResponse(typeRestResponseMap: Map<Type, RestResponse?>): DealsRatingResponse {
         return typeRestResponseMap[DealsRatingResponse::class.java]?.getData() as DealsRatingResponse

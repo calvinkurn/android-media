@@ -70,7 +70,6 @@
         app:layout_constraintTop_toTopOf="@+id/tg_mrp"
         tools:text="20% OFF" />
 
-
     <ImageView
         android:id="@+id/iv_wish_list"
         android:layout_width="24dp"
@@ -103,7 +102,6 @@
         android:layout_marginTop="16dp"
         android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@+id/tg_sales_price" />
-
 
     <ImageView
         android:id="@+id/iv_clock"
@@ -334,7 +332,6 @@
             android:background="@color/Unify_N100"
             app:layout_constraintTop_toBottomOf="@+id/seemorebutton_description" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_tnc"

@@ -19,5 +19,5 @@ data class DealsRating(
     @SerializedName("total_likes")
     val totalLikes: Int = 0,
     @SerializedName("is_liked")
-    val isLiked: Boolean = false,
+    val isLiked: Boolean = false
 )

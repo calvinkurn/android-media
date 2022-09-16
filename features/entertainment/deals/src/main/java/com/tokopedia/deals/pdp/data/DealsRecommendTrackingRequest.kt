@@ -2,14 +2,14 @@ package com.tokopedia.deals.pdp.data
 
 import com.google.gson.annotations.SerializedName
 
-class DealsRecommendTrackingRequest (
+class DealsRecommendTrackingRequest(
     @SerializedName("message")
     val message: DealsRecommendMessage = DealsRecommendMessage(),
     @SerializedName("service")
     val service: String = ""
 )
 
-class DealsRecommendMessage (
+class DealsRecommendMessage(
     @SerializedName("action")
     val action: String = "",
     @SerializedName("product_id")
@@ -17,6 +17,5 @@ class DealsRecommendMessage (
     @SerializedName("use_case")
     val useCase: String = "",
     @SerializedName("user_id")
-    val userId: Long = 0,
+    val userId: Long = 0
 )
-

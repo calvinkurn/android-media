@@ -25,7 +25,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,13 +33,14 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 class DealsPDPSelectQuantityViewModel @Inject constructor(
     private val dealsPDPVerifyUseCase: DealsPDPVerifyUseCase,
-    private val dispatcher: CoroutineDispatchers,
+    private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
-    var currentQuantity: Int = 1
+    var currentQuantity: Int = Int.ONE
     private val _inputVerifyState = MutableSharedFlow<DealsVerifyRequest>(Int.ONE)
 
     val flowVerify: SharedFlow<Result<DealsVerifyResponse>> =

@@ -216,7 +216,7 @@ data class ProductDetailData(
     val url: String = "",
     @SerializedName("use_pdf")
     val usePdf: Int = 0
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Brand(
@@ -230,7 +230,7 @@ data class Brand(
     val title: String = "",
     @SerializedName("seo_url")
     val seoUrl: String = ""
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Catalog(
@@ -240,7 +240,7 @@ data class Catalog(
     val digitalProductCode: String = "",
     @SerializedName("digital_product_id")
     val digitalProductId: String = ""
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Category(
@@ -252,7 +252,7 @@ data class Category(
     val title: String = "",
     @SerializedName("url")
     val url: String = ""
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class AddressDetail(
@@ -284,7 +284,7 @@ data class AddressDetail(
     val status: Int = 0,
     @SerializedName("updated_at")
     val updatedAt: String = ""
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Form(
@@ -315,8 +315,8 @@ data class Form(
     @SerializedName("validator_regex")
     val validatorRegex: String = "",
     @SerializedName("value")
-    var value: String = "",
-): Parcelable
+    var value: String = ""
+) : Parcelable
 
 @Parcelize
 data class Group(
@@ -348,7 +348,7 @@ data class Group(
     val tnc: String = "",
     @SerializedName("updated_at")
     val updatedAt: String = ""
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Outlet(
@@ -390,7 +390,7 @@ data class Outlet(
     val state: String = "",
     @SerializedName("updated_at")
     val updatedAt: String = ""
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Package(
@@ -466,7 +466,7 @@ data class Package(
     val venueDetail: String = "",
     @SerializedName("venue_id")
     val venueId: String = ""
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Schedules(
@@ -476,7 +476,7 @@ data class Schedules(
     val groups: List<Group> = emptyList(),
     @SerializedName("schedule")
     val schedule: Schedule
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Schedule(
@@ -502,7 +502,7 @@ data class Schedule(
     val tnc: String = "",
     @SerializedName("updated_at")
     val updatedAt: String = ""
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Facilities(
@@ -520,7 +520,7 @@ data class Facilities(
     val title: String = "",
     @SerializedName("type")
     val type: Int = 0
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Media(
@@ -546,7 +546,7 @@ data class Media(
     val updatedAt: String = "",
     @SerializedName("url")
     val url: String = ""
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class PackageV3(
@@ -577,7 +577,7 @@ data class PackageV3(
     @SerializedName("forms_package")
     val formsPackages: List<Form> = emptyList(),
     var isRecommendationPackage: Boolean = false
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class PackageItem(
@@ -622,5 +622,5 @@ data class PackageItem(
     @SerializedName("provider_custom_text")
     val providerCustomText: String = "",
     @SerializedName("forms_item")
-    val formsItems: List<Form> = emptyList(),
-): Parcelable
+    val formsItems: List<Form> = emptyList()
+) : Parcelable

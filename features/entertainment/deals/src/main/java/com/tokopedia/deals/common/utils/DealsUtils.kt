@@ -5,11 +5,12 @@ import android.content.res.Resources
 import androidx.annotation.StringRes
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.ui.dataview.ProductCategoryDataView
-import com.tokopedia.deals.pdp.ui.fragment.DealsPDPFragment
 import com.tokopedia.kotlin.extensions.view.ONE
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import java.util.TimeZone
+import java.util.Date
 
 object DealsUtils {
 
@@ -35,9 +36,12 @@ object DealsUtils {
             val tncBuffer = StringBuilder()
             for (i in splitArray.indices) {
                 val line = splitArray[i]
-                if (i < splitArray.size - Int.ONE) tncBuffer.append(" ").append(DOT_HTML).append("  ")
-                    .append(line.trim { it <= ' ' }).append(ENTER_HTML)
-                else tncBuffer.append(" ").append(DOT_HTML).append("  ").append(line.trim { it <= ' ' })
+                if (i < splitArray.size - Int.ONE) {
+                    tncBuffer.append(" ").append(DOT_HTML).append("  ")
+                        .append(line.trim { it <= ' ' }).append(ENTER_HTML)
+                } else {
+                    tncBuffer.append(" ").append(DOT_HTML).append("  ").append(line.trim { it <= ' ' })
+                }
             }
             tncBuffer.toString()
         } else {

@@ -45,22 +45,26 @@ class DealsPDPModule {
 
     @Provides
     @DealsPDPScope
-    fun provideAuthInterceptors(@ApplicationContext context: Context,
-                                userSession: UserSessionInterface): TkpdAuthInterceptor {
+    fun provideAuthInterceptors(
+        @ApplicationContext context: Context,
+        userSession: UserSessionInterface
+    ): TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, context as NetworkRouter, userSession)
     }
 
     @Provides
     @DealsPDPScope
-    fun provideInterceptors(tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            fingerprintInterceptor: FingerprintInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor,
-                            chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
+    fun provideInterceptors(
+        tkpdAuthInterceptor: TkpdAuthInterceptor,
+        fingerprintInterceptor: FingerprintInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        chuckerInterceptor: ChuckerInterceptor
+    ): MutableList<Interceptor> {
         val listInterceptor = mutableListOf<Interceptor>()
         listInterceptor.add(fingerprintInterceptor)
         listInterceptor.add(tkpdAuthInterceptor)
 
-        if (GlobalConfig.isAllowDebuggingTools()){
+        if (GlobalConfig.isAllowDebuggingTools()) {
             listInterceptor.add(httpLoggingInterceptor)
             listInterceptor.add(chuckerInterceptor)
         }
@@ -70,8 +74,10 @@ class DealsPDPModule {
 
     @Provides
     @DealsPDPScope
-    fun provideRestRepository(interceptors: MutableList<Interceptor>,
-                              @ApplicationContext context: Context): RestRepository {
+    fun provideRestRepository(
+        interceptors: MutableList<Interceptor>,
+        @ApplicationContext context: Context
+    ): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }

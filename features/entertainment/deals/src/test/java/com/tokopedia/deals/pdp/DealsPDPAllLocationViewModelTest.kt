@@ -37,7 +37,6 @@ class DealsPDPAllLocationViewModelTest : DealsPDPAllLocationViewModelTestFixture
 
         var outlet: List<Outlet>? = null
 
-
         runBlockingTest {
             val collectorJob = launch {
                 viewModel.flowSearchResult.collectLatest {

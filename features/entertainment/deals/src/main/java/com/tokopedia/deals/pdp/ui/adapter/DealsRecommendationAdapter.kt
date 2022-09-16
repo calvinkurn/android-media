@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.deals.databinding.ItemDealsCardShortBinding
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.utils.DealsUtils
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -16,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 
 
-class DealsRecommendationAdapter (private val recommendationListener: RecommendationListener?): RecyclerView.Adapter<DealsRecommendationAdapter.ViewHolder>() {
+class DealsRecommendationAdapter(private val recommendationListener : RecommendationListener?): RecyclerView.Adapter<DealsRecommendationAdapter.ViewHolder>() {
 
     private var products: MutableList<EventProductDetail> = mutableListOf()
 
@@ -57,8 +58,8 @@ class DealsRecommendationAdapter (private val recommendationListener: Recommenda
                     tgHotDeal.hide()
                 }
 
-                if (product.mrp.toIntSafely() != 0 && product.mrp.toIntSafely() !=
-                    product.salesPrice.toIntSafely()) {
+                if (product.mrp.toIntSafely() != Int.ZERO &&
+                    product.mrp.toIntSafely() != product.salesPrice.toIntSafely()) {
                     tgMrp.show()
                     tgMrp.text = DealsUtils.convertToCurrencyString(product.mrp.toLong())
                     tgMrp.paintFlags = tgMrp.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG

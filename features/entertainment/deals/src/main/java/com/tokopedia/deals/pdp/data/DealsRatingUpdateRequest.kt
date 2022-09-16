@@ -2,9 +2,9 @@ package com.tokopedia.deals.pdp.data
 
 import com.google.gson.annotations.SerializedName
 
-data class DealsRatingUpdateRequest (
+data class DealsRatingUpdateRequest(
     @SerializedName("rating")
-    val rating: DealRatingRequest = DealRatingRequest(),
+    val rating: DealRatingRequest = DealRatingRequest()
 )
 
 data class DealRatingRequest(
@@ -17,5 +17,5 @@ data class DealRatingRequest(
     @SerializedName("user_id")
     val userId: Long = 0,
     @SerializedName("rating")
-    val rating: Int = 0,
+    val rating: Int = 0
 )

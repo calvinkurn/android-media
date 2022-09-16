@@ -183,7 +183,7 @@ data class EventProductDetail(
         @SerializedName("category")
         @Expose
         val category: List<Category> = listOf()
-): Parcelable, ImpressHolder()
+) : Parcelable, ImpressHolder()
 
 @Parcelize
 data class Brand(

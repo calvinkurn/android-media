@@ -13,13 +13,16 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.R
 import com.tokopedia.deals.databinding.WidgetDealsPdpCarouselBinding
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
 
-class WidgetDealsPDPCarousel @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
-                                                       defStyleAttr: Int = 0): BaseCustomView(context, attrs, defStyleAttr) {
+class WidgetDealsPDPCarousel @JvmOverloads constructor(
+    context : Context, attrs : AttributeSet? = null, defStyleAttr : Int = Int.ZERO
+): BaseCustomView(context, attrs, defStyleAttr) {
     private val indicatorBannerContainer: LinearLayout
     private val vpBannerCategory: RecyclerView
     private var binding: WidgetDealsPdpCarouselBinding? = null
@@ -27,10 +30,10 @@ class WidgetDealsPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
     private var indicatorItems: ArrayList<ImageView> = arrayListOf()
     var imageUrls: ArrayList<String> = arrayListOf()
 
-    var imageViewPagerAdapter: WidgetDealsPDPCarouselAdapter? = null
+    private val imageViewPagerAdapter: WidgetDealsPDPCarouselAdapter? = null
         get() = WidgetDealsPDPCarouselAdapter(imageUrls)
 
-    var currentPosition: Int = 0
+    var currentPosition: Int = Int.ZERO
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -59,7 +62,7 @@ class WidgetDealsPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
             vpBannerCategory.layoutManager = layoutManager
 
             vpBannerCategory.adapter = imageViewPagerAdapter
-            for (count in 0 until imageUrls.size) {
+            for (count in Int.ZERO until imageUrls.size) {
                 val pointView = ImageView(context)
                 pointView.setPadding(
                     resources.getDimensionPixelSize(com.tokopedia.deals.R.dimen.deals_dp_5),
@@ -67,13 +70,16 @@ class WidgetDealsPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
                     resources.getDimensionPixelSize(com.tokopedia.deals.R.dimen.deals_dp_5),
                     resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0)
                 )
-                if (count == 0) pointView.setImageDrawable(
-                    resizeIndicator(
-                        getIndicatorFocus(),
-                        imageUrls.size
+                if (count == Int.ZERO) {
+                    pointView.setImageDrawable(
+                        resizeIndicator(
+                            getIndicatorFocus(),
+                            imageUrls.size
+                        )
                     )
-                )
-                else pointView.setImageDrawable(resizeIndicator(getIndicator(), imageUrls.size))
+                } else {
+                    pointView.setImageDrawable(resizeIndicator(getIndicator(), imageUrls.size))
+                }
 
                 indicatorItems.add(pointView)
                 indicatorBannerContainer.addView(pointView)
@@ -85,14 +91,14 @@ class WidgetDealsPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
                     super.onScrolled(recyclerView, dx, dy)
                     currentPosition =
                         (vpBannerCategory.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-                    if (currentPosition != -1) vpBannerCategory.smoothScrollToPosition(
+                    if (currentPosition != -Int.ONE) vpBannerCategory.smoothScrollToPosition(
                         currentPosition
                     )
                     setCurrentIndicator()
                 }
             })
 
-            if (imageUrls.size == 1) indicatorBannerContainer.visibility = View.GONE
+            if (imageUrls.size == Int.ONE) indicatorBannerContainer.visibility = View.GONE
 
             val snapHelper = PagerSnapHelper()
             vpBannerCategory.onFlingListener = null
@@ -101,15 +107,18 @@ class WidgetDealsPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
     }
 
     fun setCurrentIndicator() {
-        for (i in 0 until indicatorItems.size) {
-            if (currentPosition != i) indicatorItems[i].setImageDrawable(
-                resizeIndicator(
-                    getIndicator(),
-                    indicatorItems.size
+        for (i in Int.ZERO until indicatorItems.size) {
+            if (currentPosition != i) {
+                indicatorItems[i].setImageDrawable(
+                    resizeIndicator(
+                        getIndicator(),
+                        indicatorItems.size
+                    )
                 )
-            )
-            else indicatorItems.get(i)
-                .setImageDrawable(resizeIndicator(getIndicatorFocus(), indicatorItems.size))
+            } else {
+                indicatorItems.get(i)
+                    .setImageDrawable(resizeIndicator(getIndicatorFocus(), indicatorItems.size))
+            }
         }
     }
 
@@ -128,13 +137,17 @@ class WidgetDealsPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
     }
 
     fun resizeIndicator(id: Int, size: Int): GradientDrawable {
-        val getDisplayWidth = Resources.getSystem().displayMetrics.widthPixels / (size + 1)
+        val getDisplayWidth = Resources.getSystem().displayMetrics.widthPixels / (size + Int.ONE)
         val gradientDrawable: GradientDrawable =
             context.resources.getDrawable(id) as GradientDrawable
-        gradientDrawable.setSize(getDisplayWidth, 16)
+        gradientDrawable.setSize(getDisplayWidth, HEIGHT)
         return gradientDrawable
     }
 
     private fun getIndicatorFocus(): Int = R.drawable.widget_deals_pdp_indicator_focus
     private fun getIndicator(): Int = R.drawable.widget_deals_pdp_indicator
+
+    companion object {
+        private const val HEIGHT = 16
+    }
 }

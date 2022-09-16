@@ -50,111 +50,109 @@ data class MetaDataResponse(
     @SuppressLint("Invalid Data Type")
     @SerializedName("total_price")
     val totalPrice: Long = 0
-
-) : Parcelable
+): Parcelable
 
 @Parcelize
 data class ItemMapResponse(
     @SerializedName("base_price")
-    val basePrice:String = "",
+    val basePrice: String = "",
     @SerializedName("category_id")
-    val categoryId:String = "",
+    val categoryId: String = "",
     @SerializedName("child_category_ids")
-    val childCategoryIds:String = "",
+    val childCategoryIds: String = "",
     @SerializedName("commission")
     val commission: Int = 0,
     @SerializedName("commission_type")
-    val commissionType:String = "",
+    val commissionType: String = "",
     @SuppressLint("Invalid Data Type")
     @SerializedName("currency_price")
     val currencyPrice: Long = 0,
     @SerializedName("description")
-    val description:String = "",
+    val description: String = "",
     @SerializedName("email")
-    val email:String = "",
+    val email: String = "",
     @SerializedName("end_time")
-    val endTime:String = "",
+    val endTime: String = "",
     @SerializedName("error")
-    val error:String = "",
+    val error: String = "",
     @SerializedName("flag_id")
-    val flagId:String = "",
+    val flagId: String = "",
     @SerializedName("id")
-    val id:String = "",
+    val id: String = "",
     @SerializedName("invoice_id")
-    val invoiceId:String = "",
+    val invoiceId: String = "",
     @SerializedName("invoice_item_id")
-    val invoiceItemId:String = "",
+    val invoiceItemId: String = "",
     @SerializedName("invoice_status")
-    val invoiceStatus:String = "",
+    val invoiceStatus: String = "",
     @SerializedName("location_desc")
-    val locationDesc:String = "",
+    val locationDesc: String = "",
     @SerializedName("location_name")
-    val locationName:String = "",
+    val locationName: String = "",
     @SerializedName("mobile")
-    val mobile:String = "",
+    val mobile: String = "",
     @SerializedName("name")
-    val name:String = "",
+    val name: String = "",
     @SerializedName("order_trace_id")
-    val orderTraceId:String = "",
+    val orderTraceId: String = "",
     @SerializedName("package_id")
-    val packageId:String = "",
+    val packageId: String = "",
     @SerializedName("package_name")
-    val packageName:String = "",
+    val packageName: String = "",
     @SerializedName("payment_type")
-    val paymentType:String = "",
+    val paymentType: String = "",
     @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     val price: Long = 0,
     @SerializedName("product_app_url")
-    val productAppUrl:String = "",
+    val productAppUrl: String = "",
     @SerializedName("product_id")
-    val productId:String = "",
+    val productId: String = "",
     @SerializedName("product_image")
-    val productImage:String = "",
+    val productImage: String = "",
     @SerializedName("product_name")
-    val productName:String = "",
+    val productName: String = "",
     @SerializedName("provider_id")
-    val providerId:String = "",
+    val providerId: String = "",
     @SerializedName("provider_invoice_code")
-    val providerInvoiceCode:String = "",
+    val providerInvoiceCode: String = "",
     @SerializedName("provider_order_id")
-    val providerOrderId:String = "",
+    val providerOrderId: String = "",
     @SerializedName("provider_package_id")
-    val providerPackageId:String = "",
+    val providerPackageId: String = "",
     @SerializedName("provider_schedule_id")
-    val providerScheduleId:String = "",
+    val providerScheduleId: String = "",
     @SerializedName("provider_ticket_id")
-    val providerTicketId:String = "",
+    val providerTicketId: String = "",
     @SerializedName("quantity")
     val quantity: Int = 0,
     @SerializedName("schedule_timestamp")
-    val scheduleTimestamp:String = "",
+    val scheduleTimestamp: String = "",
     @SerializedName("start_time")
-    val startTime:String = "",
+    val startTime: String = "",
     @SuppressLint("Invalid Data Type")
     @SerializedName("total_price")
     val totalPrice: Long = 0,
     @SerializedName("web_app_url")
-    val webAppUrl:String = "",
+    val webAppUrl: String = "",
     @SerializedName("product_web_url")
-    val productWebUrl:String = "",
+    val productWebUrl: String = "",
     @SerializedName("passenger_forms")
-    var passengerForms : MutableList<PassengerForm> = arrayListOf()
-) : Parcelable
+    var passengerForms: MutableList<PassengerForm> = arrayListOf()
+): Parcelable
 
 @Parcelize
 data class PassengerForm(
     @SerializedName("passenger_informations")
-    var passengerInformation : List<PassengerInformation> = arrayListOf()
-) : Parcelable
+    var passengerInformation: List<PassengerInformation> = arrayListOf()
+): Parcelable
 
 @Parcelize
 data class PassengerInformation(
     @SerializedName("name")
-    var name : String = "",
+    var name: String = "",
     @SerializedName("value")
-    var value : String = "",
+    var value: String = "",
     @SerializedName("title")
-    var title : String = ""
-
-) : Parcelable
+    var title: String = ""
+): Parcelable

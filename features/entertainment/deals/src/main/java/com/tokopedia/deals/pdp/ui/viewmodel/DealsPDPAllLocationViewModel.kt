@@ -4,18 +4,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.pdp.data.Outlet
 import com.tokopedia.kotlin.extensions.view.ONE
-import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
+import javax.inject.Inject
 
-class DealsPDPAllLocationViewModel @Inject constructor(dispatcher: CoroutineDispatchers):
+class DealsPDPAllLocationViewModel @Inject constructor(dispatcher: CoroutineDispatchers) :
     BaseViewModel(dispatcher.main) {
 
     private val _inputSearch = MutableSharedFlow<Pair<String, List<Outlet>>>(Int.ONE)
@@ -35,10 +32,10 @@ class DealsPDPAllLocationViewModel @Inject constructor(dispatcher: CoroutineDisp
         _inputSearch.tryEmit(Pair(key, outlets))
     }
 
-    private fun getSearchResult(key: String, outlets: List<Outlet>) : List<Outlet> {
+    private fun getSearchResult(key: String, outlets: List<Outlet>): List<Outlet> {
         return outlets.filter {
             it.name.trim().lowercase().contains(key.trim().lowercase()) ||
-                    it.district.trim().lowercase().contains(key.trim().lowercase())
+            it.district.trim().lowercase().contains(key.trim().lowercase())
         }
     }
 

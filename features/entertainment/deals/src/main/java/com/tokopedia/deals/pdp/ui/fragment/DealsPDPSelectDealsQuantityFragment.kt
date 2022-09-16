@@ -25,7 +25,6 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -37,14 +36,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import javax.inject.Inject
-import kotlin.math.min
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
-class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
+class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
     private val viewModel by lazy {
@@ -121,8 +120,7 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
     }
 
     private fun setupHeader() {
-        toolbar?.headerTitle = context?.resources?.
-        getString(com.tokopedia.deals.R.string.deals_pdp_select_number_of_voucher).orEmpty()
+        toolbar?.headerTitle = context?.resources?.getString(com.tokopedia.deals.R.string.deals_pdp_select_number_of_voucher).orEmpty()
         (activity as DealsPDPActivity).setSupportActionBar(toolbar)
         (activity as DealsPDPActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -135,7 +133,7 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
             val mrp = mrp.toLong()
             val salesPrice = salesPrice.toLong()
 
-            if (mrp.isMoreThanZero() && mrp != salesPrice ) {
+            if (mrp.isMoreThanZero() && mrp != salesPrice) {
                 tgMrp?.apply {
                     show()
                     text = DealsUtils.convertToCurrencyString(mrp)
@@ -160,7 +158,8 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
                 } else {
                     startActivityForResult(
                         RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
+                        REQUEST_CODE_LOGIN
+                    )
                 }
             }
         }
@@ -222,7 +221,6 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
                 }
             }
         }
-
     }
 
     companion object {
@@ -239,5 +237,4 @@ class DealsPDPSelectDealsQuantityFragment: BaseDaggerFragment() {
             return fragment
         }
     }
-
 }

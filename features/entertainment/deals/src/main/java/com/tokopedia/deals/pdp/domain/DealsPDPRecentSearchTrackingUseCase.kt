@@ -11,7 +11,7 @@ import com.tokopedia.url.TokopediaUrl
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-class DealsPDPRecentSearchTrackingUseCase @Inject constructor(private val repository: RestRepository): RestRequestUseCase(repository) {
+class DealsPDPRecentSearchTrackingUseCase @Inject constructor(private val repository : RestRepository): RestRequestUseCase(repository) {
 
     private var url: String = TokopediaUrl.getInstance().BOOKING + DEALS_TRACKING
     private var dealsTravelRecentSearchTrackingRequest: DealsTravelRecentSearchTrackingRequest =
