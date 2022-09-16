@@ -645,6 +645,25 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
     }
 
+    @Test
+    fun `Auto un-apply bbo when last validate promo order null`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(
+            isApplyLogisticPromo = true,
+            logisticPromoViewModel = helper.logisticPromo,
+            logisticPromoShipping = helper.firstCourierSecondDuration
+        )
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = null
+
+        //when
+        orderSummaryPageViewModel.autoUnApplyBBO()
+
+        //then
+        assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+    }
+
     //case
     // apply bo
     @Test
