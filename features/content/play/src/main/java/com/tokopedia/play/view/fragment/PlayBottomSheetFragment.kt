@@ -274,7 +274,7 @@ class PlayBottomSheetFragment @Inject constructor(
             message = getString(R.string.play_voucher_code_copied),
             actionText = getString(R.string.play_action_lihat),
             actionClickListener = {
-                playViewModel.submitAction(OpenPageWithLogin(ApplinkConstInternalMarketplace.CART))
+                playViewModel.submitAction(OpenCart(ApplinkConstInternalMarketplace.CART))
             }
         )
         analytic.clickCopyVoucher(voucher)

@@ -9,6 +9,7 @@ import com.google.android.gms.cast.framework.CastStateListener
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -975,7 +976,7 @@ class PlayViewModel @AssistedInject constructor(
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
-            is OpenPageWithLogin -> openWithLogin(action.appLink)
+            is OpenCart -> openWithLogin(action.appLink, REQUEST_CODE_LOGIN_CART)
         }
     }
 
@@ -2070,8 +2071,8 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun openWithLogin(appLink: String){
-        needLogin {
+    private fun openWithLogin(appLink: String, requestCode: Int? = null){
+        needLogin(requestCode) {
             openPage(appLink)
         }
     }
@@ -2100,6 +2101,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_USER_REPORT -> handleUserReport()
             REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
             REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems()
+            REQUEST_CODE_LOGIN_CART -> openPage(ApplinkConstInternalMarketplace.CART)
             else -> {}
         }
     }
@@ -2655,6 +2657,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_USER_REPORT = 575
         private const val REQUEST_CODE_LOGIN_PLAY_INTERACTIVE = 576
         private const val REQUEST_CODE_LOGIN_PLAY_TOKONOW = 577
+        private const val REQUEST_CODE_LOGIN_CART = 578
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
 
