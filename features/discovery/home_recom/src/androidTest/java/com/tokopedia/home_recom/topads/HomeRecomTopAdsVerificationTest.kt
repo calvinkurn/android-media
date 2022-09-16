@@ -2,6 +2,7 @@ package com.tokopedia.home_recom.topads
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.util.Log
 import android.view.View
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +15,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.activity.HomeRecommendationActivityTest
+import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
@@ -85,7 +87,13 @@ class HomeRecomTopAdsVerificationTest {
     private fun countTopAdsInItem(item: Visitable<*>) : Int {
         var count = 0
 
+        Log.d("dhabalog", item.toString())
         when (item) {
+            is ProductInfoDataModel -> {
+                if (item.isGetTopAds && item.productDetailData?.isTopads == true) {
+                    count++
+                }
+            }
             is RecommendationItemDataModel -> {
                 if (item.productItem.isTopAds) count++
             }
