@@ -74,7 +74,9 @@ import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
 import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
 import com.tokopedia.chatbot.ChatbotConstant.VIDEO_URL
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_DURATION_FOR_VIDEO
-import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_MEDIA_COUNT
+import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_IMAGE_COUNT
+import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_MEDIA_ITEM_COUNT
+import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_VIDEO_COUNT
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
@@ -675,7 +677,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     pageSource(PageSource.ChatBot)
                     modeType(ModeType.VIDEO_ONLY)
                     multipleSelectionMode()
-                    maxVideoItem(MAX_MEDIA_COUNT)
+                    maxMediaItem(MAX_MEDIA_ITEM_COUNT)
+                    maxVideoItem(MAX_VIDEO_COUNT)
                     maxVideoDuration(MAX_DURATION_FOR_VIDEO)
                 }
             }
@@ -689,6 +692,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 MediaPicker.intentWithGalleryFirst(context) {
                     pageSource(PageSource.ChatBot)
                     modeType(ModeType.IMAGE_ONLY)
+                    maxMediaItem(MAX_IMAGE_COUNT)
                     multipleSelectionMode()
                 }
             }
