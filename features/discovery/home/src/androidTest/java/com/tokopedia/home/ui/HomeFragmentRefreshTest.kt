@@ -2,6 +2,7 @@ package com.tokopedia.home.ui
 
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -147,68 +148,72 @@ class HomeFragmentRefreshTest {
         Thread.sleep(DELAY_PROCESS)
     }
 
-//    @Test
-//    fun test_onresume_when_elapsed_above_three_minutes_then_do_full_refresh() {
-//        onView(withId(R.id.home_fragment_recycler_view)).check(matches(isDisplayed()))
-//        /**
-//         * Setup adapter data observer to observe data changes
-//         */
-//        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
-//        recyclerView.adapter?.registerAdapterDataObserver(changeCountDetector())
-//
-//        goToOtherPage()
-//
-//        Thread.sleep(ABOVE_THREE_MINUTES_ELAPSED_TIME)
-//
-//        mDevice?.pressBack()
-//
-//        /**
-//         * Assert data changes count
-//         * Full refresh will trigger more than 2 data changes
-//         * - Wallet data changes
-//         * - Membership data changes
-//         * - Other data changes (from dynamic channel i.e Best seller widget, Play carousel widget, etc)
-//         */
-//        Thread.sleep(DELAY_PROCESS)
-//        Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
-//        Thread.sleep(DELAY_PROCESS)
-//    }
+    @Test
+    fun test_onresume_when_elapsed_above_three_minutes_then_do_full_refresh() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(matches(isDisplayed()))
+        /**
+         * Setup adapter data observer to observe data changes
+         */
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        recyclerView.adapter?.registerAdapterDataObserver(changeCountDetector())
 
-//    @Test
-//    fun test_onresume_when_elapsed_below_three_minutes_and_change_address_then_do_full_refresh() {
-//        onView(withId(R.id.home_fragment_recycler_view)).check(matches(isDisplayed()))
-//        /**
-//         * Setup adapter data observer to observe data changes
-//         */
-//        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
-//        recyclerView.adapter?.registerAdapterDataObserver(changeCountDetector())
-//
-//        goToOtherPage()
-//
-//        /**
-//         * Set to another location
-//         */
-//        setToLocation2()
-//
-//        Thread.sleep(DELAY_PROCESS)
-//        Thread.sleep(BELOW_THREE_MINUTES_ELAPSED_TIME)
-//
-//        mDevice?.pressBack()
-//
-//        /**
-//         * Assert data changes count
-//         * Full refresh will trigger more than 2 data changes
-//         * - Wallet data changes
-//         * - Membership data changes
-//         * - Other data changes (from dynamic channel i.e Best seller widget, Play carousel widget, etc)
-//         *
-//         * Address data changed in other page will change home page choose address in onResume
-//         */
-//        Thread.sleep(DELAY_PROCESS)
-//        Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
-//        onView(withText(containsString(ADDRESS_2_LABEL))).check(matches(isDisplayed()))
-//        Thread.sleep(DELAY_PROCESS)
-//    }
+        goToOtherPage()
+
+        Thread.sleep(ABOVE_THREE_MINUTES_ELAPSED_TIME)
+
+        mDevice?.pressBack()
+
+        /**
+         * Assert data changes count
+         * Full refresh will trigger more than 2 data changes
+         * - Wallet data changes
+         * - Membership data changes
+         * - Other data changes (from dynamic channel i.e Best seller widget, Play carousel widget, etc)
+         */
+        Thread.sleep(DELAY_PROCESS)
+        println("dataChangedCount $dataChangedCount , partialRefresh $TOTAL_PARTIAL_HEADER_REFRESH_COUNT")
+        Log.d("dhabalog","dataChangedCount $dataChangedCount , partialRefresh $TOTAL_PARTIAL_HEADER_REFRESH_COUNT")
+        Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
+        Thread.sleep(DELAY_PROCESS)
+    }
+
+    @Test
+    fun test_onresume_when_elapsed_below_three_minutes_and_change_address_then_do_full_refresh() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(matches(isDisplayed()))
+        /**
+         * Setup adapter data observer to observe data changes
+         */
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        recyclerView.adapter?.registerAdapterDataObserver(changeCountDetector())
+
+        goToOtherPage()
+
+        /**
+         * Set to another location
+         */
+        setToLocation2()
+
+        Thread.sleep(DELAY_PROCESS)
+        Thread.sleep(BELOW_THREE_MINUTES_ELAPSED_TIME)
+
+        mDevice?.pressBack()
+
+        /**
+         * Assert data changes count
+         * Full refresh will trigger more than 2 data changes
+         * - Wallet data changes
+         * - Membership data changes
+         * - Other data changes (from dynamic channel i.e Best seller widget, Play carousel widget, etc)
+         *
+         * Address data changed in other page will change home page choose address in onResume
+         */
+        Thread.sleep(DELAY_PROCESS)
+        Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
+        println("dataChangedCount $dataChangedCount , partialRefresh $TOTAL_PARTIAL_HEADER_REFRESH_COUNT")
+        Log.d("dhabalog","dataChangedCount $dataChangedCount , partialRefresh $TOTAL_PARTIAL_HEADER_REFRESH_COUNT")
+        onView(withText(containsString(ADDRESS_2_LABEL))).check(matches(isDisplayed()))
+        Thread.sleep(DELAY_PROCESS)
+    }
 
     private fun goToOtherPage() {
         context.startActivity(Intent(context, InstrumentationHomeEmptyActivity::class.java).apply {
