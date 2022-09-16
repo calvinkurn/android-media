@@ -402,7 +402,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             if (!checkSelectedAccountConfiguration(configUiModel, selectedAccount)) {
                 if (isFirstOpen && isAllowChangeAccount) {
-                    handleSwitchAccount()
+                    handleSwitchAccount(false)
                     isFirstOpen = false
                 }
                 else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
@@ -1575,8 +1575,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleSwitchAccount() {
-        _observableConfigInfo.value = NetworkResult.Loading
+    private fun handleSwitchAccount(needLoading: Boolean = true) {
+        if (needLoading) _observableConfigInfo.value = NetworkResult.Loading
 
         val currentSelected = switchAccount(
             when (_selectedAccount.value.type) {
