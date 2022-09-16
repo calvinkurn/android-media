@@ -43,21 +43,29 @@ object ApplinkConstInternalTokopediaNow {
 
     //TokoNowRecipeDetailActivity
     @JvmField
-    val RECIPE_DETAIL = "$INTERNAL_TOKOPEDIA_NOW/recipe-detail?recipe_id={recipe_id}"
+    val RECIPE_DETAIL = "$INTERNAL_TOKOPEDIA_NOW/recipe/detail"
 
     //TokoNowRecipeBookmarkActivity
     @JvmField
-    val RECIPE_BOOKMARK = "$INTERNAL_TOKOPEDIA_NOW/recipe-bookmark"
+    val RECIPE_BOOKMARK = "$INTERNAL_TOKOPEDIA_NOW/recipe/bookmark"
 
     //TokoNowRecipeHomeActivity
     @JvmField
-    val RECIPE_HOME = "$INTERNAL_TOKOPEDIA_NOW/recipe-home"
+    val RECIPE_HOME = "$INTERNAL_TOKOPEDIA_NOW/recipe/home"
 
     //TokoNowRecipeSearchActivity
     @JvmField
-    val RECIPE_SEARCH = "$INTERNAL_TOKOPEDIA_NOW/recipe-search"
+    val RECIPE_SEARCH = "$INTERNAL_TOKOPEDIA_NOW/recipe/search"
 
     //TokoNowRecipeAutoCompleteActivity
     @JvmField
-    val RECIPE_AUTO_COMPLETE = "$INTERNAL_TOKOPEDIA_NOW/recipe-auto-complete"
+    val RECIPE_AUTO_COMPLETE = "$INTERNAL_TOKOPEDIA_NOW/recipe/auto-complete"
+
+    //TokoNowRecipeSimilarProductActivity
+    @JvmField
+    val RECIPE_SIMILAR_PRODUCT_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/recipe/similar-product-bottomsheet"
+
+    //TokoNowRecipeSearchIngredientActivity
+    @JvmField
+    val RECIPE_INGREDIENT_BOTTOM_SHEET = "$INTERNAL_TOKOPEDIA_NOW/recipe/ingredient-bottomsheet"
 }

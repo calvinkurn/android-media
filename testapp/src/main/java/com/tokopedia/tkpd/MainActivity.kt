@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
@@ -116,8 +117,9 @@ class MainActivity : AppCompatActivity() {
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
         val appLink = etAppLink.text.toString()
+        RouteManager.route(this, ApplinkConstInternalTokopediaNow.RECIPE_INGREDIENT_BOTTOM_SHEET)
         if(appLink.isNotBlank())
-            RouteManager.route(this, appLink)
+            RouteManager.route(this, ApplinkConstInternalTokopediaNow.RECIPE_INGREDIENT_BOTTOM_SHEET)
         else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 

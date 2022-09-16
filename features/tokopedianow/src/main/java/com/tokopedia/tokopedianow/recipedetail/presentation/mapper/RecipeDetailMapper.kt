@@ -105,8 +105,8 @@ object RecipeDetailMapper {
     }
 
     fun mapToRecipeInfo(response: RecipeResponse): RecipeInfoUiModel {
-        val thumbnail = response.images.first().urlThumbnail
-        val imageUrls = response.images.map { it.urlThumbnail }
+        val thumbnail = response.images.first().urlOriginal
+        val imageUrls = response.images.map { it.urlOriginal }
         val recipeLabels = response.tags.map {
             it.name
         }
@@ -117,7 +117,8 @@ object RecipeDetailMapper {
             duration = response.duration.orZero(),
             labels = recipeLabels,
             thumbnail = thumbnail,
-            imageUrls = imageUrls
+            imageUrls = imageUrls,
+            shareUrl = response.url
         )
     }
 

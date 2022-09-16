@@ -16,6 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
+import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -2409,7 +2410,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check tokonow recipe detail deeplink should return recipe detail internal applink in customerapp`() {
         val recipeId = "100"
-        val expectedDeepLink = UriUtil.buildUri(ApplinkConstInternalTokopediaNow.RECIPE_DETAIL, recipeId)
+        val expectedDeepLink = UriUtil.buildUriAppendParam(
+            ApplinkConstInternalTokopediaNow.RECIPE_DETAIL,
+            mapOf(DeeplinkMapperTokopediaNow.PARAM_RECIPE_ID to recipeId)
+        )
         val appLink = UriUtil.buildUri(ApplinkConst.TokopediaNow.RECIPE_DETAIL, recipeId)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
@@ -2418,7 +2422,11 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check tokonow recipe detail deeplink should return recipe detail internal applink with query param in customerapp`() {
         val recipeId = "101"
         val queryParam = "autoplay=true"
-        val expectedDeepLink = "${UriUtil.buildUri(ApplinkConstInternalTokopediaNow.RECIPE_DETAIL, recipeId)}&$queryParam"
+        val deepLink = UriUtil.buildUriAppendParam(
+            ApplinkConstInternalTokopediaNow.RECIPE_DETAIL,
+            mapOf(DeeplinkMapperTokopediaNow.PARAM_RECIPE_ID to recipeId)
+        )
+        val expectedDeepLink = "$deepLink&$queryParam"
         val appLink = "${UriUtil.buildUri(ApplinkConst.TokopediaNow.RECIPE_DETAIL, recipeId)}&$queryParam"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }

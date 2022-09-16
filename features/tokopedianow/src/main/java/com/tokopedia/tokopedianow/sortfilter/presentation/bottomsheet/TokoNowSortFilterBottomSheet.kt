@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
+import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder.ChipListener
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSortFilterBinding
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
@@ -64,11 +65,13 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView()
+        configureBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        configureMaxHeight()
         setupRecyclerView()
         setupBtnFilter()
     }
@@ -123,18 +126,18 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
     }
 
     private fun initView() {
-        clearContentPadding = true
-        showCloseIcon = true
-        isDragable = false
-        isHideable = false
-        setupItemView()
-    }
-
-    private fun setupItemView() {
         binding = BottomsheetTokopedianowSortFilterBinding.inflate(LayoutInflater.from(context))
         rvSort = binding?.rvSortBasedOnBuying
         btnApplyFilter = binding?.btnApplyFilter
         setChild(binding?.root)
+    }
+
+    private fun configureBottomSheet() {
+        clearContentPadding = true
+        showCloseIcon = false
+        isDragable = true
+        isHideable = true
+        showKnob = true
     }
 
     private fun setupRecyclerView() {

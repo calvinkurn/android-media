@@ -208,7 +208,7 @@
     <string name="tokopedianow_recipe_search_ingredient_subtitle_bottomsheet">Kamu bisa pilih lebih dari 1 bahan</string>
     <string name="tokopedianow_recipe_search_ingredient_button_bottomsheet">Cari Resep - %d bahan</string>
 
-    <string name="tokopedianow_share_recipe_text">Coba cek resep ini, deh: “%1$s” di Tokopedia NOW! Bisa belanja bahannya langsung disini, lho! %2$s</string>
+    <string name="tokopedianow_share_recipe_text">Coba cek resep ini, deh: “%1$s” di Tokopedia NOW! Bisa belanja bahannya langsung disini, lho!</string>
     <string name="tokopedianow_share_recipe_title">%1$s - Untuk %2$d orang, %3$d menit</string>
 
     <string name="tokopedianow_recipe_ooc_header_text">Bahan untuk resep ini</string>
@@ -228,5 +228,6 @@
 
     <string name="tokopedianow_filter">Filter</string>
     <string name="tokopedianow_duration_format">%02d:%02d</string>
+    <string name="tokopedianow_recipe_similar_product_title">Produk serupa</string>
     <string name="tokopedianow_recipe_autocomplete_info">Silakan cari resep berdasarkan namanya. Contoh: “Soto Ayam”</string>
 </resources>

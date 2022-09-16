@@ -8,12 +8,11 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeOutOfCoverageBinding
 import com.tokopedia.tokopedianow.recipedetail.constant.RecipeImageUrl
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.OutOfCoverageUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OutOfCoverageViewHolder(
     itemView: View,
-    private val recipeDetailView: RecipeDetailView?
+    private val listener: OutOfCoverageListener?
 ) : AbstractViewHolder<OutOfCoverageUiModel>(itemView) {
 
     companion object {
@@ -34,12 +33,16 @@ class OutOfCoverageViewHolder(
 
     private fun renderChangeAddressBtn() {
         binding?.btnChangeAddress?.setOnClickListener {
-            recipeDetailView?.showChooseAddressBottomSheet()
+            listener?.onCLickChangeAddress()
         }
     }
 
     private fun renderTextLearnMore() {
         val text = itemView.context.getString(R.string.tokopedianow_recipe_learn_more)
         binding?.textLearnMore?.text = MethodChecker.fromHtml(text)
+    }
+
+    interface OutOfCoverageListener {
+        fun onCLickChangeAddress()
     }
 }

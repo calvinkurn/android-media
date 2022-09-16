@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
@@ -97,7 +98,7 @@ class TokoNowRecipeFilterFragment : Fragment() {
             TokoNowSectionHeaderUiModel(
                 id = "2",
                 title = "Bahan",
-                seeAllAppLink = "tokopedia://now"
+                seeAllAppLink = ApplinkConstInternalTokopediaNow.RECIPE_INGREDIENT_BOTTOM_SHEET
             ),
             TokoNowChipListUiModel(
                 parentId = "2",
