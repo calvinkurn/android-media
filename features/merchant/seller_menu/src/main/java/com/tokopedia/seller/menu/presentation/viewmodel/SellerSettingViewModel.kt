@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.seller.menu.domain.usecase.GetShopScoreLevelUseCase
 import com.tokopedia.usecase.coroutines.Fail
