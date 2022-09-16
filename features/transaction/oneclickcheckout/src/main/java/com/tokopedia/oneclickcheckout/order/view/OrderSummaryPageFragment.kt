@@ -751,12 +751,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
                     }
                 }
+                is OccGlobalEvent.AdjustShippingToaster -> {
+                    view?.let { v ->
+                        Toaster.build(v, getString(R.string.pp_auto_unapply_bo_toaster_message)).show()
+                    }
+                }
                 is OccGlobalEvent.ToasterInfo -> {
                     progressDialog?.dismiss()
                     view?.let { v ->
                         Toaster.build(v, it.message).show()
                     }
                 }
+
                 is OccGlobalEvent.PopUp -> {
                     showPopUpDialog(it.popUp)
                 }
