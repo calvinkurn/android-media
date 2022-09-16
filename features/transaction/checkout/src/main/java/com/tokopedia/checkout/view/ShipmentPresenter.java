@@ -2553,15 +2553,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             unprocessedUniqueIds.add(shipmentCartItemModel.getCartString());
         }
+        // loop to list voucher orders to be applied this will be used later
+        final List<PromoCheckoutVoucherOrdersItemUiModel> toBeAppliedVoucherOrders = new ArrayList<>();
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-            final long shippingId = voucherOrdersItemUiModel.getShippingId();
-            final long spId = voucherOrdersItemUiModel.getSpId();
-            final String type = voucherOrdersItemUiModel.getType();
             // voucher with shippingId not zero, spId not zero, and voucher type logistic as promo for BO
-            if (shippingId > 0 && spId > 0 && type.equals("logistic")) {
+            if (voucherOrdersItemUiModel.getShippingId() > 0
+                    && voucherOrdersItemUiModel.getSpId() > 0
+                    && voucherOrdersItemUiModel.getType().equals("logistic")) {
                 if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("green")) {
-                    doApplyBo(voucherOrdersItemUiModel);
-                    reloadedUniqueIds.add(voucherOrdersItemUiModel.getUniqueId());
+                    toBeAppliedVoucherOrders.add(voucherOrdersItemUiModel);
                     unprocessedUniqueIds.remove(voucherOrdersItemUiModel.getUniqueId());
                 }
             }
@@ -2576,6 +2576,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         if (unappliedBoPromoUniqueIds.size() > 0) {
             getView().renderUnapplyBoIncompleteShipment(unappliedBoPromoUniqueIds);
+        }
+        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrders : toBeAppliedVoucherOrders) {
+            doApplyBo(voucherOrders);
+            reloadedUniqueIds.add(voucherOrders.getUniqueId());
+            unprocessedUniqueIds.remove(voucherOrders.getUniqueId());
         }
         return new Pair<>(reloadedUniqueIds, unappliedBoPromoUniqueIds);
     }
