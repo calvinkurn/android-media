@@ -6,13 +6,22 @@ import com.tokopedia.chatbot.domain.usecase.TicketListContactUsUsecase
 import com.tokopedia.chatbot.view.viewmodel.ChatbotViewModel
 import com.tokopedia.chatbot.view.viewmodel.TicketListState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
-import org.junit.*
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
@@ -26,21 +35,20 @@ class ChatbotViewModelTest {
     @get:Rule
     var testRule = CoroutineTestRule()
 
-    private lateinit var ticketListContactUsUsecase : TicketListContactUsUsecase
+    private lateinit var ticketListContactUsUsecase: TicketListContactUsUsecase
 
-    private lateinit var viewModel : ChatbotViewModel
+    private lateinit var viewModel: ChatbotViewModel
 
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
     @Before
     @Throws(Exception::class)
-    fun setUp(){
+    fun setUp() {
         MockKAnnotations.init(this)
         ticketListContactUsUsecase = mockk(relaxed = true)
         viewModel =
-            ChatbotViewModel(ticketListContactUsUsecase,testRule.dispatchers)
-
+            ChatbotViewModel(ticketListContactUsUsecase, testRule.dispatchers)
     }
 
     @After
@@ -50,8 +58,7 @@ class ChatbotViewModelTest {
     }
 
     @Test
-    fun `getTicketList success if isActive is true` ()  {
-
+    fun `getTicketList success if isActive is true`() {
         val actual = mockk<InboxTicketListResponse.Ticket.Data.NoticeItem>(relaxed = true)
         val response = mockk<InboxTicketListResponse>(relaxed = true)
 
@@ -64,7 +71,7 @@ class ChatbotViewModelTest {
         } returns actual
 
         coEvery {
-            ticketListContactUsUsecase.getTicketList(captureLambda(),any())
+            ticketListContactUsUsecase.getTicketList(captureLambda(), any())
         } coAnswers {
             firstArg<(InboxTicketListResponse) -> Unit>().invoke(response)
         }
@@ -75,12 +82,10 @@ class ChatbotViewModelTest {
             (viewModel.ticketList.value as TicketListState.BottomSheetData).noticeData,
             actual
         )
-
     }
 
     @Test
-    fun `getTicketList success if isActive is false` ()  {
-
+    fun `getTicketList success if isActive is false`() {
         val actual = mockk<InboxTicketListResponse.Ticket.Data.NoticeItem>(relaxed = true)
         val response = mockk<InboxTicketListResponse>(relaxed = true)
 
@@ -93,7 +98,7 @@ class ChatbotViewModelTest {
         } returns actual
 
         coEvery {
-            ticketListContactUsUsecase.getTicketList(captureLambda(),any())
+            ticketListContactUsUsecase.getTicketList(captureLambda(), any())
         } coAnswers {
             firstArg<(InboxTicketListResponse) -> Unit>().invoke(response)
         }
@@ -103,12 +108,10 @@ class ChatbotViewModelTest {
         assertTrue(
             (viewModel.ticketList.value is TicketListState.ShowContactUs)
         )
-
     }
 
     @Test
-    fun `getTicketList success if noticeData is null` ()  {
-
+    fun `getTicketList success if noticeData is null`() {
         val actual = mockk<InboxTicketListResponse.Ticket.Data.NoticeItem>(relaxed = true)
         val response = mockk<InboxTicketListResponse>(relaxed = true)
 
@@ -121,7 +124,7 @@ class ChatbotViewModelTest {
         } returns null
 
         coEvery {
-            ticketListContactUsUsecase.getTicketList(captureLambda(),any())
+            ticketListContactUsUsecase.getTicketList(captureLambda(), any())
         } coAnswers {
             firstArg<(InboxTicketListResponse) -> Unit>().invoke(response)
         }
@@ -131,14 +134,12 @@ class ChatbotViewModelTest {
         assertTrue(
             (viewModel.ticketList.value is TicketListState.ShowContactUs)
         )
-
     }
 
     @Test
-    fun `getTicketList failure` () {
-
+    fun `getTicketList failure`() {
         coEvery {
-            ticketListContactUsUsecase.getTicketList(any(),captureLambda())
+            ticketListContactUsUsecase.getTicketList(any(), captureLambda())
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
@@ -148,8 +149,18 @@ class ChatbotViewModelTest {
         assertTrue(
             (viewModel.ticketList.value is TicketListState.ShowContactUs)
         )
-
     }
 
+    @Test
+    fun `onCleared success`() {
+        every {
+            ticketListContactUsUsecase.cancelJobs()
+        } just runs
 
+        val method = viewModel::class.java.getDeclaredMethod("onCleared")
+        method.isAccessible = true
+        method.invoke(viewModel)
+
+        verify { ticketListContactUsUsecase.cancelJobs() }
+    }
 }

@@ -4,7 +4,7 @@ package com.tokopedia.chatbot.data.invoice
  * Created by Hendri on 28/03/18.
  */
 
-class AttachInvoiceSingleViewModel {
+class AttachInvoiceSingleUiModel {
     var typeString: String = ""
     var type: Int = 0
     var code: String = ""
@@ -19,9 +19,20 @@ class AttachInvoiceSingleViewModel {
     var amount: String = ""
     var isSearchAllButton: Boolean = false
         private set
-    constructor(typeString: String, type: Int, code: String, createdTime: String,
-                description: String, url: String, id: Long, imageUrl: String,
-                status: String, statusId: Int, title: String, amount: String) {
+    constructor(
+        typeString: String,
+        type: Int,
+        code: String,
+        createdTime: String,
+        description: String,
+        url: String,
+        id: Long,
+        imageUrl: String,
+        status: String,
+        statusId: Int,
+        title: String,
+        amount: String
+    ) {
         this.typeString = typeString
         this.type = type
         this.code = code
@@ -40,5 +51,4 @@ class AttachInvoiceSingleViewModel {
     constructor(isSearchAllButton: Boolean) {
         this.isSearchAllButton = isSearchAllButton
     }
-
 }

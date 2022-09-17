@@ -1,6 +1,6 @@
 package com.tokopedia.chatbot.domain.usecase
 
-import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.domain.gqlqueries.SendChatRatingQuery
 import com.tokopedia.chatbot.domain.gqlqueries.queries.SEND_CHAT_RATING_QUERY
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -20,11 +20,11 @@ class SendChatRatingUseCase
     GraphqlUseCase<SendRatingPojo>(graphqlRepository) {
 
     fun sendChatRating(
-        onSuccess: KFunction3<SendRatingPojo, Int, ChatRatingViewModel, Unit>,
+        onSuccess: KFunction3<SendRatingPojo, Int, ChatRatingUiModel, Unit>,
         onError: (Throwable) -> Unit,
         messageId: String,
         rating: Int,
-        element: ChatRatingViewModel,
+        element: ChatRatingUiModel
     ) {
         try {
             this.setTypeClass(SendRatingPojo::class.java)
@@ -35,16 +35,15 @@ class SendChatRatingUseCase
             this.execute(
                 { result ->
                     onSuccess(result, rating, element)
-                }, { error ->
+                },
+                { error ->
                     onError(error)
                 }
             )
-
         } catch (throwable: Throwable) {
             onError(throwable)
         }
     }
-
 
     companion object {
 
@@ -60,6 +59,4 @@ class SendChatRatingUseCase
             return requestParams
         }
     }
-
-
 }

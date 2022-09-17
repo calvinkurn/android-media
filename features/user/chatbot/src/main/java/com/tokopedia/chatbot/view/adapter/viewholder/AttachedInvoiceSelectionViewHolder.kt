@@ -14,8 +14,8 @@ import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionUiModel
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -28,20 +28,25 @@ import com.tokopedia.unifycomponents.UnifyButton
  * Created by Hendri on 28/03/18.
  */
 
-class AttachedInvoiceSelectionViewHolder(itemView: View,
-                                         private val selectedListener: AttachedInvoiceSelectionListener)
-    : AbstractViewHolder<AttachInvoiceSelectionViewModel>(itemView) {
+class AttachedInvoiceSelectionViewHolder(
+    itemView: View,
+    private val selectedListener: AttachedInvoiceSelectionListener
+) :
+    AbstractViewHolder<AttachInvoiceSelectionUiModel>(itemView) {
     private val singleItemAdapter: AttachedInvoiceSelectionViewHolder.AttachedInvoicesItemsAdapter
     private val invoiceSelection: RecyclerView = itemView.findViewById(R.id.attach_invoice_chat_invoice_selection)
 
     init {
         singleItemAdapter = AttachedInvoicesItemsAdapter()
-        invoiceSelection.layoutManager = LinearLayoutManager(itemView.context,
-                LinearLayoutManager.HORIZONTAL, false)
+        invoiceSelection.layoutManager = LinearLayoutManager(
+            itemView.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
         invoiceSelection.adapter = singleItemAdapter
     }
 
-    override fun bind(element: AttachInvoiceSelectionViewModel) {
+    override fun bind(element: AttachInvoiceSelectionUiModel) {
         if (element.status == RENDER_INVOICE_LIST_AND_BUTTON_ACTION) {
             singleItemAdapter.setList(element.list)
             invoiceSelection.show()
@@ -51,20 +56,22 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
     }
 
     private inner class AttachedInvoicesItemsAdapter : RecyclerView.Adapter<AttachedInvoiceSingleItemViewHolder>() {
-        internal var list: List<AttachInvoiceSingleViewModel>? = null
+        internal var list: List<AttachInvoiceSingleUiModel>? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttachedInvoiceSingleItemViewHolder {
             val itemView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_carousel_invoice_attach, parent, false)
+                .inflate(R.layout.item_carousel_invoice_attach, parent, false)
             return AttachedInvoiceSingleItemViewHolder(itemView)
         }
 
-        override fun onBindViewHolder(holder: AttachedInvoiceSingleItemViewHolder,
-                                      position: Int) {
+        override fun onBindViewHolder(
+            holder: AttachedInvoiceSingleItemViewHolder,
+            position: Int
+        ) {
             list?.getOrNull(position)?.let { holder.bind(it) }
             holder.pilihButton.setOnClickListener {
                 selectedListener.onInvoiceSelected(
-                        AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(list!![position])
+                    AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(list!![position])
                 )
             }
         }
@@ -73,11 +80,11 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
             return list?.size ?: 0
         }
 
-        fun getList(): List<AttachInvoiceSingleViewModel>? {
+        fun getList(): List<AttachInvoiceSingleUiModel>? {
             return list
         }
 
-        fun setList(list: List<AttachInvoiceSingleViewModel>?) {
+        fun setList(list: List<AttachInvoiceSingleUiModel>?) {
             this.list = list
             notifyDataSetChanged()
         }
@@ -92,7 +99,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
         private val price: TextView
         private val productImage: ImageUnify
         private val pricePrefix: TextView
-        val pilihButton : UnifyButton
+        val pilihButton: UnifyButton
 
         init {
             invoiceDate = itemView.findViewById(R.id.tv_invoice_date)
@@ -105,7 +112,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
             pilihButton = itemView.findViewById(R.id.btn_pilih)
         }
 
-        fun bind(element: AttachInvoiceSingleViewModel) {
+        fun bind(element: AttachInvoiceSingleUiModel) {
             if (!TextUtils.isEmpty(element.imageUrl)) {
                 productImage.show()
                 ImageHandler.loadImageRounded2(productImage.context, productImage, element.imageUrl)
@@ -132,7 +139,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
             if (totalAmount.isNullOrEmpty()) {
                 pricePrefix.hide()
                 price.hide()
-            }else{
+            } else {
                 pricePrefix.show()
                 price.text = totalAmount
                 price.show()
@@ -158,7 +165,6 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
                 else -> Label.GENERAL_DARK_GREY
             }
         }
-
     }
 
     companion object {

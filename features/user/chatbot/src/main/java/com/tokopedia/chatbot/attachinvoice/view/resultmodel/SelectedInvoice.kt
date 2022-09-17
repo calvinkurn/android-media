@@ -2,8 +2,7 @@ package com.tokopedia.chatbot.attachinvoice.view.resultmodel
 
 import android.os.Parcel
 import android.os.Parcelable
-
-import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
+import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceUiModel
 import com.tokopedia.chatbot.attachinvoice.view.model.TransactionInvoiceUiModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
@@ -24,10 +23,20 @@ class SelectedInvoice() : Parcelable {
     var status: String? = null
     var statusId: Int = 0
 
-    constructor(invoiceId: Long?, invoiceNo: String, invoiceTypeStr: String,
-                invoiceType: Int?, topProductName: String, topProductImage: String,
-                description: String, amount: String, date: String,
-                invoiceUrl: String, status: String, statusId: Int) : this() {
+    constructor(
+        invoiceId: Long?,
+        invoiceNo: String,
+        invoiceTypeStr: String,
+        invoiceType: Int?,
+        topProductName: String,
+        topProductImage: String,
+        description: String,
+        amount: String,
+        date: String,
+        invoiceUrl: String,
+        status: String,
+        statusId: Int
+    ) : this() {
         this.invoiceId = invoiceId
         this.invoiceNo = invoiceNo
         this.invoiceTypeStr = invoiceTypeStr
@@ -42,7 +51,7 @@ class SelectedInvoice() : Parcelable {
         this.statusId = statusId
     }
 
-    constructor(viewModel: InvoiceViewModel) : this() {
+    constructor(viewModel: InvoiceUiModel) : this() {
         this.invoiceId = viewModel.invoiceId
         this.invoiceNo = viewModel.invoiceNumber
         this.invoiceTypeStr = viewModel.invoiceTypeStr

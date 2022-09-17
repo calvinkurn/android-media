@@ -51,19 +51,19 @@ import com.tokopedia.chatbot.ChatbotConstant.MODE_AGENT
 import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
-import com.tokopedia.chatbot.data.ConnectionDividerViewModel
+import com.tokopedia.chatbot.data.ConnectionDividerUiModel
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
-import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
-import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
-import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
-import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
-import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
+import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.data.replybubble.ReplyBubbleAttributes
-import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
@@ -265,7 +265,7 @@ class ChatbotPresenter @Inject constructor(
 
                     val liveChatDividerAttribute = Gson().fromJson(chatResponse.attachment?.attributes, LiveChatDividerAttributes::class.java)
                     if (attachmentType == CHAT_DIVIDER_DEBUGGING) {
-                        val model = ChatSepratorViewModel(
+                        val model = ChatSepratorUiModel(
                             sepratorMessage = liveChatDividerAttribute?.divider?.label,
                             dividerTiemstamp = chatResponse.message.timeStampUnixNano
                         )
@@ -325,17 +325,17 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    private fun getLiveChatQuickReply(): List<QuickReplyViewModel> {
+    private fun getLiveChatQuickReply(): List<QuickReplyUiModel> {
         val quickReplyListPojo = GsonBuilder().create()
             .fromJson<QuickReplyAttachmentAttributes>(
                 chatResponse.attachment?.attributes,
                 QuickReplyAttachmentAttributes::class.java
             )
-        val list = ArrayList<QuickReplyViewModel>()
+        val list = ArrayList<QuickReplyUiModel>()
         if (quickReplyListPojo != null && !quickReplyListPojo.quickReplies.isEmpty()) {
             for (pojo in quickReplyListPojo.quickReplies) {
                 if (!TextUtils.isEmpty(pojo.text)) {
-                    list.add(QuickReplyViewModel(pojo.text, pojo.value, pojo.action))
+                    list.add(QuickReplyUiModel(pojo.text, pojo.value, pojo.action))
                 }
             }
         }
@@ -350,7 +350,7 @@ class ChatbotPresenter @Inject constructor(
             } else {
                 view.isBackAllowed(true)
             }
-            val model = ConnectionDividerViewModel(
+            val model = ConnectionDividerUiModel(
                 dividerMessage = agentQueue?.label,
                 isShowButton = true,
                 type = agentQueue?.type ?: SHOW_TEXT,
@@ -414,7 +414,7 @@ class ChatbotPresenter @Inject constructor(
         return json
     }
 
-    override fun sendRating(messageId: String, rating: Int, element: ChatRatingViewModel) {
+    override fun sendRating(messageId: String, rating: Int, element: ChatRatingUiModel) {
         sendChatRatingUseCase.sendChatRating(
             ::onSuccessSendRating,
             ::onFailureSendRating,
@@ -428,13 +428,13 @@ class ChatbotPresenter @Inject constructor(
         view.onError(throwable)
     }
 
-    private fun onSuccessSendRating(pojo: SendRatingPojo, rating: Int, element: ChatRatingViewModel) {
+    private fun onSuccessSendRating(pojo: SendRatingPojo, rating: Int, element: ChatRatingUiModel) {
         view.onSuccessSendRating(pojo, rating, element)
     }
 
     override fun sendActionBubble(
         messageId: String,
-        selected: ChatActionBubbleViewModel,
+        selected: ChatActionBubbleUiModel,
         startTime: String,
         opponentId: String
     ) {
@@ -507,7 +507,7 @@ class ChatbotPresenter @Inject constructor(
 
     override fun sendQuickReply(
         messageId: String,
-        quickReply: QuickReplyViewModel,
+        quickReply: QuickReplyUiModel,
         startTime: String,
         opponentId: String
     ) {
@@ -524,7 +524,7 @@ class ChatbotPresenter @Inject constructor(
 
     override fun sendQuickReplyInvoice(
         messageId: String,
-        quickReply: QuickReplyViewModel,
+        quickReply: QuickReplyUiModel,
         startTime: String,
         opponentId: String,
         event: String,
@@ -671,8 +671,8 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    override fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel {
-        return AttachInvoiceSingleViewModel(
+    override fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleUiModel {
+        return AttachInvoiceSingleUiModel(
             typeString = "",
             type = 0,
             code = hashMap[CODE] ?: "",
@@ -750,7 +750,7 @@ class ChatbotPresenter @Inject constructor(
         uploadImageUseCase.unsubscribe()
     }
 
-    private fun sendUploadedImageToWebsocket(json: JsonObject) {
+    fun sendUploadedImageToWebsocket(json: JsonObject) {
         val list = ArrayList<Interceptor>()
         list.add(tkpdAuthInterceptor)
         list.add(fingerprintInterceptor)
@@ -802,7 +802,7 @@ class ChatbotPresenter @Inject constructor(
         view.showErrorToast(throwable)
     }
 
-    override fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsViewModel?) {
+    override fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsUiModel?) {
         val input = genrateInput(selectedValue, model)
         chipSubmitHelpfulQuestionsUseCase.cancelJobs()
         chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(
@@ -815,15 +815,11 @@ class ChatbotPresenter @Inject constructor(
         onSubmitError(throwable)
     }
 
-//    @VisibleForTesting
-//    val onSubmitError: (Throwable) -> Unit = {
-//        it.printStackTrace()
-//    }
     fun onSubmitError(throwable: Throwable) {
         throwable.printStackTrace()
     }
 
-    private fun genrateInput(selectedValue: Int, model: HelpFullQuestionsViewModel?): SubmitOptionInput {
+    private fun genrateInput(selectedValue: Int, model: HelpFullQuestionsUiModel?): SubmitOptionInput {
         val input = SubmitOptionInput()
         with(input) {
             caseChatID = model?.helpfulQuestion?.caseChatId ?: ""
@@ -911,11 +907,11 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    override fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel {
+    override fun getActionBubbleforNoTrasaction(): ChatActionBubbleUiModel {
         val text = view.context?.getString(R.string.chatbot_text_for_no_transaction_found) ?: ""
         val value = view.context?.getString(R.string.chatbot_text_for_no_transaction_found) ?: ""
         val action = view.context?.getString(R.string.chatbot_action_text_for_no_transaction_found) ?: ""
-        return ChatActionBubbleViewModel(text, value, action)
+        return ChatActionBubbleUiModel(text, value, action)
     }
 
     override fun checkForSession(messageId: String) {
@@ -1002,9 +998,9 @@ class ChatbotPresenter @Inject constructor(
     fun getChatRatingData(mappedPojo: ChatroomViewModel): ChipGetChatRatingListInput {
         val input = ChipGetChatRatingListInput()
         for (message in mappedPojo.listChat) {
-            if (message is HelpFullQuestionsViewModel) {
+            if (message is HelpFullQuestionsUiModel) {
                 input.list.add(ChipGetChatRatingListInput.ChatRating(ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST.toIntOrZero(), message.helpfulQuestion?.caseChatId ?: ""))
-            } else if (message is CsatOptionsViewModel) {
+            } else if (message is CsatOptionsUiModel) {
                 input.list.add(ChipGetChatRatingListInput.ChatRating(ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_OPTIONS.toIntOrZero(), message.csat?.caseChatId ?: ""))
             }
         }
@@ -1053,17 +1049,17 @@ class ChatbotPresenter @Inject constructor(
             for (rate in ratings.ratingListData.list ?: listOf()) {
                 val rateListMsgs = mappedPojo.listChat.filter { msg ->
                     when {
-                        msg is HelpFullQuestionsViewModel && rate.attachmentType == ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST.toIntOrZero()
+                        msg is HelpFullQuestionsUiModel && rate.attachmentType == ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST.toIntOrZero()
                         -> (msg.helpfulQuestion?.caseChatId == rate.caseChatID)
-                        msg is CsatOptionsViewModel && rate.attachmentType == ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_OPTIONS.toIntOrZero()
+                        msg is CsatOptionsUiModel && rate.attachmentType == ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_OPTIONS.toIntOrZero()
                         -> (msg.csat?.caseChatId == rate.caseChatID)
                         else -> false
                     }
                 }
                 rateListMsgs.forEach {
-                    if (it is HelpFullQuestionsViewModel) {
+                    if (it is HelpFullQuestionsUiModel) {
                         it.isSubmited = rate.isSubmitted ?: true
-                    } else if (it is CsatOptionsViewModel) {
+                    } else if (it is CsatOptionsUiModel) {
                         it.isSubmited = rate.isSubmitted ?: true
                     }
                 }

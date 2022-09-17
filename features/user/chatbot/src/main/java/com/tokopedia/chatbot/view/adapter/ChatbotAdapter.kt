@@ -5,11 +5,11 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
-import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
+import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.util.ChatDiffUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 
@@ -17,8 +17,8 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterList
  * @author by nisie on 27/11/18.
  */
 
-class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
-    : BaseChatAdapter(adapterTypeFactory), ChatbotAdapterListener {
+class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl) :
+    BaseChatAdapter(adapterTypeFactory), ChatbotAdapterListener {
 
     override fun enableShowTime(): Boolean = false
 
@@ -48,24 +48,24 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
 
     override fun isPreviousItemSender(adapterPosition: Int): Boolean {
         val item = visitables.getOrNull(adapterPosition + 1)
-        return item is SendableUiModel && item.isSender || item is ChatSepratorViewModel
+        return item is SendableUiModel && item.isSender || item is ChatSepratorUiModel
     }
 
-    fun showBottomLoading(){
-        if (visitables.getOrNull(0) !is LoadingMoreModel){
-            visitables.add(0,loadingMoreModel)
+    fun showBottomLoading() {
+        if (visitables.getOrNull(0) !is LoadingMoreModel) {
+            visitables.add(0, loadingMoreModel)
             notifyItemInserted(0)
         }
     }
 
-    fun showTopLoading(){
-        if (visitables.isEmpty()){
-            visitables.add(visitables.size,loadingMoreModel)
+    fun showTopLoading() {
+        if (visitables.isEmpty()) {
+            visitables.add(visitables.size, loadingMoreModel)
             notifyItemInserted(visitables.size)
+        } else if (visitables[visitables.size - 1] !is LoadingMoreModel) {
+            visitables.add(visitables.size, loadingMoreModel)
         }
-        else if(visitables[visitables.size-1] !is LoadingMoreModel)
-            visitables.add(visitables.size,loadingMoreModel)
-            notifyItemInserted(visitables.size)
+        notifyItemInserted(visitables.size)
     }
 
     fun hideBottomLoading() {
@@ -76,9 +76,9 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
     }
 
     fun hideTopLoading() {
-        if (visitables.getOrNull(visitables.size-1) is LoadingMoreModel) {
-            visitables.removeAt(visitables.size-1)
-            notifyItemRemoved(visitables.size-1)
+        if (visitables.getOrNull(visitables.size - 1) is LoadingMoreModel) {
+            visitables.removeAt(visitables.size - 1)
+            notifyItemRemoved(visitables.size - 1)
         }
     }
 
@@ -108,5 +108,4 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         visitables.clear()
         notifyDataSetChanged()
     }
-
 }
