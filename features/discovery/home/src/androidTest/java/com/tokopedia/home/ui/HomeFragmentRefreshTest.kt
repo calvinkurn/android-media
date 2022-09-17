@@ -205,6 +205,10 @@ class HomeFragmentRefreshTest {
          * Address data changed in other page will change home page choose address in onResume
          */
         Thread.sleep(DELAY_PROCESS)
+        Assert.assertTrue(dataChangedCount > 0)
+        Assert.assertTrue(dataChangedCount > 1)
+        Assert.assertTrue(dataChangedCount > 2)
+        Assert.assertTrue(dataChangedCount > 3)
         onView(withText(containsString(ADDRESS_2_LABEL))).check(matches(isDisplayed()))
         Thread.sleep(DELAY_PROCESS)
     }
