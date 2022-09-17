@@ -9,9 +9,12 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.ChatbotConstant
+import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
@@ -24,6 +27,8 @@ import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
+import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueData
 import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueHeader
 import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueResponse
@@ -72,6 +77,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -290,15 +296,25 @@ class ChatbotPresenterTest {
     fun `checkLinkForRedirection success resoList not empty`() {
         val response = mockk<ResoLinkResponse>(relaxed = true)
         val stickyButtonStatus = true
-        val expectedButtonStatus = true
+        var expectedButtonStatus = true
+        val mockOrderData = mockk<List<ResoLinkResponse.GetResolutionLink.ResolutionLinkData.Order>>(relaxed = true)
+        val expectedDynamicLink = "Dynamic Link"
 
         coEvery {
             getResolutionLinkUseCase.getResoLinkResponse(any())
         } returns response
 
         every {
-            response.getResolutionLink?.resolutionLinkData?.orderList?.firstOrNull()?.resoList?.isNotEmpty()
+            response.getResolutionLink?.resolutionLinkData?.orderList
+        } returns mockOrderData
+
+        every {
+            mockOrderData.firstOrNull()?.resoList?.isNotEmpty()
         } returns stickyButtonStatus
+
+        every {
+            mockOrderData.firstOrNull()?.dynamicLink
+        } returns expectedDynamicLink
 
         presenter.checkLinkForRedirection("123", {}, {}, {})
 
@@ -310,14 +326,24 @@ class ChatbotPresenterTest {
         val response = mockk<ResoLinkResponse>(relaxed = true)
         val stickyButtonStatus = false
         val expectedButtonStatus = false
+        val mockOrderData = mockk<List<ResoLinkResponse.GetResolutionLink.ResolutionLinkData.Order>>(relaxed = true)
+        val expectedDynamicLink = "Dynamic Link"
 
         coEvery {
             getResolutionLinkUseCase.getResoLinkResponse(any())
         } returns response
 
         every {
-            response.getResolutionLink?.resolutionLinkData?.orderList?.firstOrNull()?.resoList?.isNotEmpty()
+            response.getResolutionLink?.resolutionLinkData?.orderList
+        } returns mockOrderData
+
+        every {
+            mockOrderData.firstOrNull()?.resoList?.isNotEmpty()
         } returns stickyButtonStatus
+
+        every {
+            mockOrderData.firstOrNull()?.dynamicLink
+        } returns expectedDynamicLink
 
         presenter.checkLinkForRedirection("123", {}, {}, {})
 
@@ -828,6 +854,7 @@ class ChatbotPresenterTest {
     fun `checkForSession success if newSession is in response calls startNewSession`() {
         val response = mockk<TopBotNewSessionResponse>(relaxed = true)
         val isNewSession = true
+        val isTypingBlock = true
 
         coEvery {
             getTopBotNewSessionUseCase.getTopBotUserSession(captureLambda(), any(), any())
@@ -839,10 +866,17 @@ class ChatbotPresenterTest {
             response.topBotGetNewSession.isNewSession
         } returns isNewSession
 
+        every {
+            response.topBotGetNewSession.isTypingBlocked
+        } returns isTypingBlock
+
         presenter.checkForSession("123456")
 
         verify {
             view.startNewSession()
+        }
+        verify {
+            view.blockTyping()
         }
     }
 
@@ -850,6 +884,7 @@ class ChatbotPresenterTest {
     fun `checkForSession success if newSession is in response calls loadChatHistory`() {
         val response = mockk<TopBotNewSessionResponse>(relaxed = true)
         val isNewSession = false
+        val isTypingBlock = false
 
         coEvery {
             getTopBotNewSessionUseCase.getTopBotUserSession(captureLambda(), any(), any())
@@ -861,10 +896,17 @@ class ChatbotPresenterTest {
             response.topBotGetNewSession.isNewSession
         } returns isNewSession
 
+        every {
+            response.topBotGetNewSession.isTypingBlocked
+        } returns isTypingBlock
+
         presenter.checkForSession("123456")
 
         verify {
             view.loadChatHistory()
+        }
+        verify {
+            view.enableTyping()
         }
     }
 
@@ -1245,7 +1287,185 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `updateMappedPojo ratingList success`() {
+    fun `generateInvoice success`() {
+        val generatedInvoice = getInvoice()
+        presenter.generateInvoice(InvoiceLinkPojo(), "")
+        assertNotNull(generatedInvoice)
+    }
+
+    @Test
+    fun `detachView success`() {
+        every {
+            presenter.destroyWebSocket()
+        } just runs
+
+        presenter.detachView()
+
+        verify { presenter.destroyWebSocket() }
+    }
+
+    @Test
+    fun `getChatRatingData when type is HelpFullQuestionsViewModel`() {
+        var input = ChipGetChatRatingListInput()
+        var mappedPojo = mockk<ChatroomViewModel>(relaxed = true)
+        mappedPojo.listChat.add(mockk())
+        var helpfulQuestionUiModel = mockk<HelpFullQuestionsViewModel>(relaxed = true)
+        every {
+            mappedPojo.listChat.firstOrNull()
+        } returns helpfulQuestionUiModel
+
+        every {
+            input.list.add(
+                ChipGetChatRatingListInput.ChatRating(
+                    22,
+                    helpfulQuestionUiModel?.helpfulQuestion?.caseChatId ?: ""
+                )
+            )
+        } returns true
+
+        val chatRoomViewModel = ChatroomViewModel()
+        chatRoomViewModel.listChat.add(
+            HelpFullQuestionsViewModel(
+                "", "", "", "", "",
+                "", "", "",
+                HelpFullQuestionPojo.HelpfulQuestion("", "", emptyList(), 1)
+            )
+        )
+        chatRoomViewModel.listChat.add(
+            CsatOptionsViewModel(
+                "", "", "", "", "", "", "",
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+            )
+        )
+
+        presenter.getChatRatingData(chatRoomViewModel)
+
+        assertEquals(1, input.list.size)
+        assertTrue(input.list.firstOrNull() is ChipGetChatRatingListInput.ChatRating)
+    }
+
+    @Test
+    fun `getChatRatingData when type is HelpFullQuestionsViewModel and null`() {
+        var input = ChipGetChatRatingListInput()
+        var mappedPojo = mockk<ChatroomViewModel>(relaxed = true)
+        mappedPojo.listChat.add(mockk())
+        var helpfulQuestionUiModel = mockk<HelpFullQuestionsViewModel>(relaxed = true)
+        every {
+            mappedPojo.listChat.firstOrNull()
+        } returns helpfulQuestionUiModel
+
+        every {
+            input.list.add(
+                ChipGetChatRatingListInput.ChatRating(
+                    22,
+                    helpfulQuestionUiModel?.helpfulQuestion?.caseChatId ?: ""
+                )
+            )
+        } returns true
+
+        val chatRoomViewModel = ChatroomViewModel()
+        chatRoomViewModel.listChat.add(
+            HelpFullQuestionsViewModel(
+                "", "", "", "", "",
+                "", "", "",
+                null
+            )
+        )
+        chatRoomViewModel.listChat.add(
+            CsatOptionsViewModel(
+                "", "", "", "", "", "", "",
+                "", null
+            )
+        )
+
+        presenter.getChatRatingData(chatRoomViewModel)
+
+        assertEquals(1, input.list.size)
+        assertTrue(input.list.firstOrNull() is ChipGetChatRatingListInput.ChatRating)
+    }
+
+    @Test
+    fun `getChatRatingData when type is CsatOptionsViewModel`() {
+        var input = ChipGetChatRatingListInput()
+        var mappedPojo = mockk<ChatroomViewModel>(relaxed = true)
+        mappedPojo.listChat.add(mockk())
+        var csatOptionsViewModel = mockk<CsatOptionsViewModel>(relaxed = true)
+        every {
+            mappedPojo.listChat.firstOrNull()
+        } returns csatOptionsViewModel
+
+        every {
+            input.list.add(
+                ChipGetChatRatingListInput.ChatRating(
+                    23,
+                    csatOptionsViewModel.csat?.caseChatId ?: ""
+                )
+            )
+        } returns true
+
+        val chatRoomViewModel = ChatroomViewModel()
+        chatRoomViewModel.listChat.add(
+            HelpFullQuestionsViewModel(
+                "", "", "", "", "",
+                "", "", "",
+                HelpFullQuestionPojo.HelpfulQuestion("", "", emptyList(), 1)
+            )
+        )
+        chatRoomViewModel.listChat.add(
+            CsatOptionsViewModel(
+                "", "", "", "", "", "", "",
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+            )
+        )
+
+        presenter.getChatRatingData(chatRoomViewModel)
+
+        assertEquals(1, input.list.size)
+        assertTrue(input.list.firstOrNull() is ChipGetChatRatingListInput.ChatRating)
+    }
+
+    @Test
+    fun `getChatRatingData when type is CsatOptionsViewModel and null`() {
+        var input = ChipGetChatRatingListInput()
+        var mappedPojo = mockk<ChatroomViewModel>(relaxed = true)
+        mappedPojo.listChat.add(mockk())
+        var csatOptionsViewModel = mockk<CsatOptionsViewModel>(relaxed = true)
+        every {
+            mappedPojo.listChat.firstOrNull()
+        } returns csatOptionsViewModel
+
+        every {
+            input.list.add(
+                ChipGetChatRatingListInput.ChatRating(
+                    23,
+                    csatOptionsViewModel.csat?.caseChatId ?: ""
+                )
+            )
+        } returns true
+
+        val chatRoomViewModel = ChatroomViewModel()
+        chatRoomViewModel.listChat.add(
+            HelpFullQuestionsViewModel(
+                "", "", "", "", "",
+                "", "", "",
+                HelpFullQuestionPojo.HelpfulQuestion("", "", emptyList(), 1)
+            )
+        )
+        chatRoomViewModel.listChat.add(
+            CsatOptionsViewModel(
+                "", "", "", "", "", "", "",
+                "", null
+            )
+        )
+
+        presenter.getChatRatingData(chatRoomViewModel)
+
+        assertEquals(1, input.list.size)
+        assertTrue(input.list.firstOrNull() is ChipGetChatRatingListInput.ChatRating)
+    }
+
+    private fun getInvoice(): AttachInvoiceSentUiModel {
+        return AttachInvoiceSentUiModel.Builder().build()
     }
 
     private fun createActionBubble(): ChatActionBubbleViewModel {

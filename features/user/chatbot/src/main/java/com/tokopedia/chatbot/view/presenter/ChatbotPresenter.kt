@@ -914,8 +914,7 @@ class ChatbotPresenter @Inject constructor(
     override fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel {
         val text = view.context?.getString(R.string.chatbot_text_for_no_transaction_found) ?: ""
         val value = view.context?.getString(R.string.chatbot_text_for_no_transaction_found) ?: ""
-        val action = view.context?.getString(R.string.chatbot_action_text_for_no_transaction_found)
-            ?: ""
+        val action = view.context?.getString(R.string.chatbot_action_text_for_no_transaction_found) ?: ""
         return ChatActionBubbleViewModel(text, value, action)
     }
 
