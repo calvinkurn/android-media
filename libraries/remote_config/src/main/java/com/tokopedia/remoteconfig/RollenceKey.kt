@@ -40,10 +40,8 @@ object RollenceKey {
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform
-    const val WISHLIST_V2_REVAMP = "Wishlist_revamp_apps"
     const val WISHLIST_CONTROL_VARIANT = "control_variant"
     const val WISHLIST_EXPERIMENT_VARIANT = "experiment_variant"
-    const val ADD_REMOVE_WISHLIST_V2 = "addremove_wishlistv2"
     const val WISHLIST_COLLECTION = "WL_collection_andro"
 
     // Logistic
