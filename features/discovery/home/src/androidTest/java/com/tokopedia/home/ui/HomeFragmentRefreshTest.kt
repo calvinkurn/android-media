@@ -2,7 +2,6 @@ package com.tokopedia.home.ui
 
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -171,8 +170,6 @@ class HomeFragmentRefreshTest {
          * - Other data changes (from dynamic channel i.e Best seller widget, Play carousel widget, etc)
          */
         Thread.sleep(DELAY_PROCESS)
-        println("dataChangedCount $dataChangedCount , partialRefresh $TOTAL_PARTIAL_HEADER_REFRESH_COUNT")
-        Log.d("dhabalog","dataChangedCount $dataChangedCount , partialRefresh $TOTAL_PARTIAL_HEADER_REFRESH_COUNT")
         Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         Thread.sleep(DELAY_PROCESS)
     }
@@ -208,8 +205,6 @@ class HomeFragmentRefreshTest {
          * Address data changed in other page will change home page choose address in onResume
          */
         Thread.sleep(DELAY_PROCESS)
-        println("dataChangedCount $dataChangedCount , partialRefresh $TOTAL_PARTIAL_HEADER_REFRESH_COUNT")
-        Log.d("dhabalog","dataChangedCount $dataChangedCount , partialRefresh $TOTAL_PARTIAL_HEADER_REFRESH_COUNT")
         Assert.assertTrue(dataChangedCount > TOTAL_PARTIAL_HEADER_REFRESH_COUNT)
         onView(withText(containsString(ADDRESS_2_LABEL))).check(matches(isDisplayed()))
         Thread.sleep(DELAY_PROCESS)
@@ -261,8 +256,6 @@ class HomeFragmentRefreshTest {
             override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
                 super.onItemRangeChanged(positionStart, itemCount)
                 if (positionStart == 0) {
-                    Log.d("dhabalog", "itemCount ${itemCount}" )
-                    println("itemCount ${itemCount}" )
                     dataChangedCount++
                 }
             }
