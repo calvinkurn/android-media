@@ -29,7 +29,7 @@ object MediaLoaderTracker {
 
     private const val PAGE_NAME_NOT_FOUND = "None"
 
-    private fun priority() = Priority.P2
+    private fun priority() = Priority.P1
 
     private fun tag() = TAG
 
