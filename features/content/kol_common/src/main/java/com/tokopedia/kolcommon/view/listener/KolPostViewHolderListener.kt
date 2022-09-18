@@ -27,7 +27,7 @@ interface KolPostViewHolderListener {
     fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                            activityType: String)
 
-    fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+    fun onGoToKolComment(rowNumber: Int, id: String, hasMultipleContent: Boolean,
                          activityType: String)
 
     fun onEditClicked(hasMultipleContent: Boolean, activityId: String,

@@ -254,9 +254,9 @@ class FeedShopPresenter @Inject constructor(
         }
     }
 
-    override fun deletePost(id: Int, rowNumber: Int) {
+    override fun deletePost(id: String, rowNumber: Int) {
         deletePostUseCase.execute(
-                DeletePostUseCase.createRequestParams(id.toString()),
+                DeletePostUseCase.createRequestParams(id),
                 object : Subscriber<Boolean>() {
                     override fun onNext(isSuccess: Boolean?) {
                         if (isSuccess == null || isSuccess.not()) {

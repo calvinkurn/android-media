@@ -275,7 +275,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         sheet.onReport = {
             if (userSession?.isLoggedIn == true) {
                 reportBottomSheet = ReportBottomSheet.newInstance(
-                    id.toInt(),
                     context = object : ReportBottomSheet.OnReportOptionsClick {
                         override fun onReportAction(reasonType: String, reasonDesc: String) {
                             reportAction(

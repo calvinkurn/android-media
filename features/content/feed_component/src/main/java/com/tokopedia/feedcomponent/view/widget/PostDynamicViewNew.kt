@@ -336,7 +336,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 val listener = this@PostDynamicViewNew.listener ?: return
 
                 listener.onTagClicked(
-                    mData.id.toIntOrZero(),
+                    mData.id,
                     media.tagProducts,
                     listener,
                     mData.author.id,
@@ -357,7 +357,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 val listener = this@PostDynamicViewNew.listener ?: return
 
                 listener.onTagClicked(
-                    mData.id.toIntOrZero(),
+                    mData.id,
                     media.tagProducts,
                     listener,
                     mData.author.id,
@@ -473,7 +473,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.comments,
             userSession.profilePicture,
             userSession.name,
-            feedXCard.id.toIntOrZero(),
+            feedXCard.id,
             feedXCard.author.type,
             feedXCard.author.id,
             feedXCard.typename,
@@ -497,7 +497,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             listener?.onShareClick(
                 positionInFeed,
-                feedXCard.id.toIntOrZero(),
+                feedXCard.id,
                 feedXCard.author.name + " `post",
                 desc.replace("%s", feedXCard.author.name),
                 url = url,
@@ -604,7 +604,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun bindHeader(
         feedXCard: FeedXCard
     ) {
-        val activityId = feedXCard.id.toIntOrZero()
+        val activityId = feedXCard.id
         val author = feedXCard.author
         val reportable = feedXCard.reportable
         val deletable = feedXCard.deletable
@@ -616,7 +616,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val adId = feedXCard.adId
         val shopId = feedXCard.shopId
         val cpmData = feedXCard.cpmData
-        val channelId = feedXCard.playChannelID.toIntOrZero()
+        val channelId = feedXCard.playChannelID
         val isFollowed = followers.isFollowed
         val count = followers.count
         val isVideo = mediaType != TYPE_IMAGE
@@ -737,7 +737,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 type,
                 mediaType,
                 caption,
-                channelId.toString())
+                channelId)
         }
     }
     private fun bindViews(feedXCard: FeedXCard){
@@ -874,7 +874,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 listener?.onAvatarClick(
                     positionInFeed,
                     caption.author.appLink,
-                    if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID.toIntOrZero() else caption.id.toIntOrZero(),
+                    if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID else caption.id,
                     "",
                     followCta,
                     caption.typename,
@@ -1006,7 +1006,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         comments: FeedXComments,
         profilePicture: String,
         name: String,
-        id: Int,
+        id: String,
         authorType: Int,
         authorId: String,
         type: String,
@@ -1265,7 +1265,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     products: List<FeedXProduct>
                 ) {
                     val finalPostId =
-                        if (feedXCard.isTypeVOD) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
+                        if (feedXCard.isTypeVOD) feedXCard.playChannelID else feedXCard.id
                     it.onTagClicked(
                         finalPostId,
                         products,
@@ -1530,7 +1530,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.totalProducts,
             true,
             mutableListOf(),
-            feedXCard.id.toIntOrZero(), // just replace to String instead of return null
+            feedXCard.id, // just replace to String instead of return null
             positionInFeed,
             feedXCard.typename,
             feedXCard.followers.isFollowed,

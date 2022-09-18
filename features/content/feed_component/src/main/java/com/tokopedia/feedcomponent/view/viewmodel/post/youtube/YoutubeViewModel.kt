@@ -9,6 +9,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 data class YoutubeViewModel (
         val youtubeId: String = " ",
         val trackingList: MutableList<TrackingViewModel> = ArrayList(),
-        override var postId: Int = 0,
+        override var postId: String = "0",
         override var positionInFeed: Int = 0
 ) : BasePostViewModel

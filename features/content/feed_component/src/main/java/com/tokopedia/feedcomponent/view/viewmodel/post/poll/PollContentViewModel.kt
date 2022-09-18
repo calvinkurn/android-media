@@ -13,6 +13,6 @@ data class PollContentViewModel (
         var voted: Boolean = false,
         val optionList: MutableList<PollContentOptionViewModel>,
         val trackingList: MutableList<TrackingViewModel> = ArrayList(),
-        override var postId: Int = 0,
+        override var postId: String = "0",
         override var positionInFeed: Int = 0
 ) : BasePostViewModel

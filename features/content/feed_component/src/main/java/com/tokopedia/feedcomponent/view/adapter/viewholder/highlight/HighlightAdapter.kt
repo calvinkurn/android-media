@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewMod
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.android.synthetic.main.item_highlight_card.view.*
 
 /**
@@ -52,10 +53,10 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
 
         private fun initViewListener(item: HighlightCardViewModel, positionInAdapter: Int) {
             itemView.likeIcon.setOnClickListener{
-                highlightListener.onLikeClick(item.positionInFeed, positionInAdapter, item.postId, item.footer.like.isChecked)
+                highlightListener.onLikeClick(item.positionInFeed, positionInAdapter, item.postId.toIntOrZero(), item.footer.like.isChecked)
             }
             itemView.likeText.setOnClickListener{
-                highlightListener.onLikeClick(positionInAdapter, positionInAdapter, item.postId, item.footer.like.isChecked)
+                highlightListener.onLikeClick(positionInAdapter, positionInAdapter, item.postId.toIntOrZero(), item.footer.like.isChecked)
             }
             itemView.commentIcon.setOnClickListener{
                 highlightListener.onCommentClick(item.positionInFeed, positionInAdapter, item.postId)
@@ -67,7 +68,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                 highlightListener.onAvatarClick(
                     item.positionInFeed,
                     item.header.avatarApplink,
-                    0,
+                    "0",
                     "",
                     FollowCta(),
                     "",
@@ -78,7 +79,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                 highlightListener.onAvatarClick(
                     item.positionInFeed,
                     item.header.avatarApplink,
-                    0,
+                    "0",
                     "",
                     FollowCta(),
                     "",
@@ -154,7 +155,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
         fun onAvatarClick(
             positionInFeed: Int,
             redirectUrl: String,
-            activityId: Int,
+            activityId: String,
             activityName: String,
             followCta: FollowCta,
             type: String,
@@ -166,7 +167,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
 
         fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean)
 
-        fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int)
+        fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: String)
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 

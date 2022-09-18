@@ -201,7 +201,18 @@ class DynamicFeedFragment:
         }
     }
 
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta, type: String, isFollowed: Boolean, shopId: String, mediaType: String, isCaption: Boolean) {
+    override fun onAvatarClick(
+        positionInFeed: Int,
+        redirectUrl: String,
+        activityId: String,
+        activityName: String,
+        followCta: FollowCta,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String,
+        mediaType: String,
+        isCaption: Boolean
+    ) {
         onGoToLink(redirectUrl)
     }
 
@@ -213,7 +224,7 @@ class DynamicFeedFragment:
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
+    override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: String) {
         if (userSession.isLoggedIn) {
             RouteManager.getIntent(
                     requireContext(),
@@ -224,7 +235,7 @@ class DynamicFeedFragment:
                                     COMMENT_ARGS_POSITION_COLUMN to columnNumber.toString()
                             )
                     ),
-                    id.toString()
+                    id
             ).run { startActivityForResult(this, KOL_COMMENT_CODE) }
         } else {
             routeToLogin()
@@ -249,7 +260,7 @@ class DynamicFeedFragment:
     }
 
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
-        feedAnalyticTracker.eventTrendingClickMedia(item.postId.toString())
+        feedAnalyticTracker.eventTrendingClickMedia(item.postId)
         onGoToLink(item.applink)
     }
 

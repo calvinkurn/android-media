@@ -28,7 +28,7 @@ data class ProductPostTagViewModelNew(
     var shopName: String = "",
     override var feedType: String = "",
     override var positionInFeed: Int = 0,
-    override var postId: Int = 0,
+    override var postId: String = "0",
     var postType: String = "",
     var mediaType : String = "",
     var isFollowed:Boolean = false,

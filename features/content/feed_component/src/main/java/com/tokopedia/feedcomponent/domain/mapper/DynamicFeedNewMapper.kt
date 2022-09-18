@@ -90,7 +90,7 @@ object DynamicFeedNewMapper {
     private fun mapCardBanner(posts: MutableList<Visitable<*>>, items: List<FeedXCardDataItem>) {
         val bannerList: MutableList<BannerItemViewModel> = ArrayList()
         items.forEach { media ->
-            val id: Int = media.id.toIntOrNull() ?: 0
+            val id = media.id
             bannerList.add(BannerItemViewModel(
                     id, media.coverUrl, media.appLink
             ))

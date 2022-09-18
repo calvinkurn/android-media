@@ -203,7 +203,7 @@ open class DynamicPostViewHolder(v: View,
                     itemView.menu.setOnClickListener {
                         listener.onMenuClick(
                                 adapterPosition,
-                                postId.toIntOrZero(),
+                                postId,
                                 header.reportable,
                                 header.deletable,
                                 header.editable,
@@ -236,7 +236,7 @@ open class DynamicPostViewHolder(v: View,
         listener.onAvatarClick(
                 adapterPosition,
                 redirectUrl,
-                activityId.toIntOrZero(),
+                activityId,
                 activityName,
                 followCta,
                 shopId = shopId,
@@ -345,7 +345,7 @@ open class DynamicPostViewHolder(v: View,
                                 template: TemplateBody,
                                 feedType: String) {
         itemView.contentLayout.shouldShowWithAction(template.media && contentList.size !=0) {
-            contentList.forEach { it.postId = postId.toIntOrZero() }
+            contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
             adapter = PostPagerAdapter(imagePostListener,
@@ -405,7 +405,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.commentIcon.setOnClickListener {
                     listener.onCommentClick(
                             adapterPosition,
-                            id.toIntOrZero(),
+                            id,
                             "",
                             "",
                             isFollowed = false,
@@ -415,7 +415,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.commentText.setOnClickListener {
                     listener.onCommentClick(
                             adapterPosition,
-                            id.toIntOrZero(), "",
+                            id, "",
                             "",
                             isFollowed = false,
                             mediaType = ""
@@ -432,7 +432,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.shareIcon.setOnClickListener {
                     listener.onShareClick(
                             adapterPosition,
-                            id.toIntOrZero(),
+                            id,
                             footer.share.title,
                             footer.share.description,
                             footer.share.url,
@@ -443,7 +443,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.shareText.setOnClickListener {
                     listener.onShareClick(
                             adapterPosition,
-                            id.toIntOrZero(),
+                            id,
                             footer.share.title,
                             footer.share.description,
                             footer.share.url,
@@ -520,7 +520,7 @@ open class DynamicPostViewHolder(v: View,
                 }
                 itemView.rvPosttag.isNestedScrollingEnabled = false
                 itemView.rvPosttag.layoutManager = layoutManager
-                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(postTag.items, feedType, postId.toIntOrZero(), adapterPosition, authorType),
+                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(postTag.items, feedType, postId, adapterPosition, authorType),
                         PostTagTypeFactoryImpl(listener,  DeviceScreenInfo.getScreenWidth(itemView.context)))
                 (itemView.rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
             } else {
@@ -537,7 +537,7 @@ open class DynamicPostViewHolder(v: View,
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
     }
 
-    private fun mapPostTag(postTagItemList: List<PostTagItem>, feedType: String, postId: Int, positionInFeed: Int, authorType: String): MutableList<BasePostTagViewModel> {
+    private fun mapPostTag(postTagItemList: List<PostTagItem>, feedType: String, postId: String, positionInFeed: Int, authorType: String): MutableList<BasePostTagViewModel> {
         val needToRezise = postTagItemList.size > 1
         val itemList: MutableList<BasePostTagViewModel> = ArrayList()
         for (postTagItem in postTagItemList) {
@@ -595,7 +595,7 @@ open class DynamicPostViewHolder(v: View,
         fun onAvatarClick(
             positionInFeed: Int,
             redirectUrl: String,
-            activityId: Int,
+            activityId: String,
             activityName: String,
             followCta: FollowCta,
             type: String = "",
@@ -617,7 +617,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onMenuClick(
             positionInFeed: Int,
-            postId: Int,
+            postId: String,
             reportable: Boolean,
             deletable: Boolean,
             editable: Boolean,
@@ -646,7 +646,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onCommentClick(
             positionInFeed: Int,
-            id: Int,
+            id: String,
             authorType: String,
             type: String,
             isFollowed: Boolean = false,
@@ -660,7 +660,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onShareClick(
             positionInFeed: Int,
-            id: Int,
+            id: String,
             title: String,
             description: String,
             url: String,
@@ -722,7 +722,7 @@ open class DynamicPostViewHolder(v: View,
         fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String)
 
         fun onTagClicked(
-                postId: Int,
+                postId: String,
                 products: List<FeedXProduct>,
                 listener: DynamicPostListener,
                 id: String,
