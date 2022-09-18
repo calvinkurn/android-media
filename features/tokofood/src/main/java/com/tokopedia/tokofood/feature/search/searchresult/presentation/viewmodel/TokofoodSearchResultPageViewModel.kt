@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -187,10 +188,13 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     fun openDetailFilterBottomSheet() {
         launchCatchError(
             block = {
+                val dynamicFilterModelData = dynamicFilterModel.value?.let {
+                    getDynamicFilterModel(it.data)
+                }
                 _uiEventFlow.emit(
                     TokofoodSearchUiEvent(
                         state = TokofoodSearchUiEvent.EVENT_OPEN_DETAIL_BOTTOMSHEET,
-                        data = dynamicFilterModel.value
+                        data = dynamicFilterModelData
                     )
                 )
             },
@@ -317,7 +321,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                 val dataValue = withContext(dispatcher.io) {
                     tokofoodFilterSortUseCase.execute(TokofoodFilterSortUseCase.TYPE_DETAIL)
                 }
-                val dynamicFilterModelResult = DynamicFilterModel(dataValue)
+                val dynamicFilterModelResult = getDynamicFilterModel(dataValue)
                 dynamicFilterModel.value = dynamicFilterModelResult
                 _uiEventFlow.emit(
                     TokofoodSearchUiEvent(
@@ -520,10 +524,25 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         }
     }
 
+    private fun getDynamicFilterModel(dataValue: DataValue): DynamicFilterModel {
+        val updatedDataValue = dataValue.apply {
+            filter.forEach { filter ->
+                filter.options.forEach { option ->
+                    option.inputState = currentSearchParameter.value?.get(option.key)?.takeIf { it.isNotBlank() }.let { selectedParams ->
+                        (selectedParams?.split(PARAM_VALUES_DIVIDER)?.contains(option.value) == true).toString()
+                    }
+                }
+            }
+        }
+        return DynamicFilterModel(updatedDataValue)
+    }
+
     companion object {
         private const val MIN_SEARCH_KEYWORD_LENGTH = 3
 
         private const val SHARING_DELAY_MILLIS = 5000L
+
+        private const val PARAM_VALUES_DIVIDER = "#"
     }
 
 }
