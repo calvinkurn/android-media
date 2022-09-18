@@ -145,6 +145,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
     fun resetFilterSearch() {
         currentSearchParameter.value = null
+        currentSortFilterUiModels.value = null
         _searchMap.tryEmit(hashMapOf())
     }
 

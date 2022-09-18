@@ -7,7 +7,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class Option(@SerializedName("name")
+data class Option(@SerializedName("name")
              @Expose
              var name: String = "",
 

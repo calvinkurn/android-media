@@ -60,7 +60,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     override fun onStart() {
         super.onStart()
         collectValues()
-        viewModel.setPriceRangeUiModels(priceRangeItemUiModels)
+        viewModel.setPriceRangeUiModels(priceRangeItemUiModels, true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,6 +109,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     private fun collectValues() {
         collectApplyButtonClicked()
         collectShouldShowApplyButton()
+        collectShouldShowResetButton()
         collectUiModels()
     }
 
@@ -124,6 +125,13 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.shouldShowApplyButton.collect { shouldShow ->
                 toggleButtonLayoutVisibility(shouldShow)
+            }
+        }
+    }
+
+    private fun collectShouldShowResetButton() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.shouldShowResetButton.collect { shouldShow ->
                 toggleResetButton(shouldShow)
             }
         }
