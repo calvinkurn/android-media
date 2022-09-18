@@ -68,7 +68,7 @@ object MediaLoaderTracker {
         if (!data.url.contains(CDN_URL)) return
 
         ServerLogger.log(
-            priority = Priority.P1,
+            priority = priority(),
             tag = tag(),
             message = data.toMap(context)
         )
@@ -110,7 +110,7 @@ object MediaLoaderTracker {
             Toast.makeText(context, "$ipInfo URL is $url", Toast.LENGTH_LONG).show()
 
             ServerLogger.log(
-                priority = priority(),
+                priority = Priority.P1,
                 tag = TAG_CDN_MONITORING,
                 message = map
             )
