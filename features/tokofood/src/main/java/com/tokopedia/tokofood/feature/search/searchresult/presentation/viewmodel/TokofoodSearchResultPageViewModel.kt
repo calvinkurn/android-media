@@ -392,6 +392,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
     private fun getInitialSearchResultSuccessState(searchResult: TokofoodSearchMerchantResponse): TokofoodSearchUiState {
         val currentSearchParameter = getCurrentSearchParameter()
+        pageKeyLiveData.value = searchResult.tokofoodSearchMerchant.nextPageKey
         return when {
             searchResult.tokofoodSearchMerchant.merchants.isEmpty() && currentSearchParameter.hasFilterSortApplied() -> {
                 TokofoodSearchUiState(state = TokofoodSearchUiState.STATE_EMPTY_WITH_FILTER)
@@ -481,7 +482,10 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
     private fun getSuccessLoadSearchResultMore(uiState: TokofoodSearchUiState): List<Visitable<*>> {
         return (uiState.data as? TokofoodSearchMerchantResponse)?.let { response ->
-            currentVisitables.value.orEmpty() + tokofoodMerchantSearchResultMapper.mapResponseToVisitables(response)
+            currentVisitables.value.orEmpty()
+                .filter { it !is TokoFoodProgressBarUiModel } + tokofoodMerchantSearchResultMapper.mapResponseToVisitables(
+                response
+            )
         }.orEmpty()
     }
 
