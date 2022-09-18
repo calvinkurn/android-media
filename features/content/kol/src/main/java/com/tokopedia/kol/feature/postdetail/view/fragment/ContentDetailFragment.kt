@@ -1333,7 +1333,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         }
     }
 
-
     private fun onGoToLink(link: String) {
         context?.let {
             if (!TextUtils.isEmpty(link)) {

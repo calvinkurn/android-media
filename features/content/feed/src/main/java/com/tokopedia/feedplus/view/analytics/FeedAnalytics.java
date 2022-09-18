@@ -573,7 +573,7 @@ public class FeedAnalytics {
             return ASGC;
     }
 
-    public void eventDetailProductClick(ProductEcommerce product, int userId, String shopId, String activityId, String type, boolean isFollowed) {
+    public void eventDetailProductClick(ProductEcommerce product, String userId, String shopId, String activityId, String type, boolean isFollowed) {
         String eventAction = ACTION_CLICK_PRODUCT+" - " + getPostType(type, isFollowed);
         trackEnhancedEcommerceEvent(
                 DataLayer.mapOf(

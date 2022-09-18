@@ -340,8 +340,8 @@ class ContentExploreFragment :
         imageAdapter.showEmpty()
     }
 
-    override fun goToKolPostDetail(postId: Int, name: String, recomId: Int) {
-        val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, postId.toString())
+    override fun goToKolPostDetail(postId: String, name: String, recomId: Int) {
+        val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, postId)
         val finaAppLink = Uri.parse(contentAppLink)
                 .buildUpon()
                 .appendQueryParameter(SOURCE, EXPLORE_TAB)

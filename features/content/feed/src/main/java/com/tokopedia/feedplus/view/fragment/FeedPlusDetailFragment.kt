@@ -46,7 +46,6 @@ import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -415,7 +414,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         context: Context,
         shopId: String
     ) {
-        val finalID = if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+        val finalID = if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId
         feedAnalytics.eventClickBottomSheetMenu(
                 finalID,
                 item.postType,
@@ -436,7 +435,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
         sheet.shareProductCB = {
             onShareProduct(
-                    item.id.toIntOrZero(),
+                    item.id,
                     item.text,
                     desc,
                     item.weblink,
@@ -466,7 +465,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         }
     }
     private fun onShareProduct(
-            id: Int,
+            id: String,
             title: String,
             description: String,
             url: String,
@@ -480,18 +479,18 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     ) {
         feedAnalytics.eventonShareProductClicked(
                 activityId,
-                id.toString(),
+                id,
                 type,
                 isFollowed, shopId,""
         )
 
         val urlString: String = if (isTopads) {
-            String.format(getString(R.string.feed_share_pdp), id.toString())
+            String.format(getString(R.string.feed_share_pdp), id)
         } else{
             url
         }
         activity?.let {
-            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id)
                     .setName(title)
                     .setDescription(description)
                     .setImgUri(imageUrl)
@@ -710,9 +709,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     if (feedDetailProductModel.isDiscount) feedDetailProductModel.priceDiscount else feedDetailProductModel.price,
                     adapterPosition
                 ),
-                userSession.userId?.toIntOrNull() ?: 0,
+                userSession.userId,
                 feedDetailProductModel.shopId,
-                feedDetailProductModel.postId.toString(),
+                feedDetailProductModel.postId,
                 feedDetailProductModel.postType,
                 feedDetailProductModel.isFollowed
             )
@@ -843,7 +842,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     adClickUrl = adClickUrl
             )
             item.feedType = "product"
-            item.postId = activityId.toIntOrZero()
+            item.postId = activityId
             itemList.add(item)
         }
         return itemList

@@ -118,7 +118,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
                     }
                 }
                 is RuntimeException -> {
-                    when (throwable.localizedMessage.toIntOrNull()) {
+                    when (throwable.localizedMessage?.toIntOrNull()) {
                         ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
                             GlobalError.NO_CONNECTION
                         )

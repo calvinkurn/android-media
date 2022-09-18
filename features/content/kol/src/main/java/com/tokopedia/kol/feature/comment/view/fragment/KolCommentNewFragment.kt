@@ -55,6 +55,7 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgument
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
@@ -252,7 +253,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         if (::reportBottomSheet.isInitialized)
             reportBottomSheet.setFinalView()
 
-        presenter.sendReport(id.toInt(), reasonType, reasonDesc, "comment")
+        presenter.sendReport(id.toIntOrZero(), reasonType, reasonDesc, "comment")
         if (isFromContentDetailPage)
             analyticsTracker.sendClickReportOnComment(getContentDetailAnalyticsData())
         else

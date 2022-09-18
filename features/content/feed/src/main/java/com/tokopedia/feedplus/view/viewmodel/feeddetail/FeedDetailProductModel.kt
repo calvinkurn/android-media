@@ -29,7 +29,7 @@ data class FeedDetailProductModel (
         val shopName: String ,
         var feedType: String = "",
         var positionInFeed: Int = 0 ,
-        var postId: Int = 0,
+        var postId: String = "",
         var postType: String = "",
         var isFollowed:Boolean = false,
         var description:String = "",

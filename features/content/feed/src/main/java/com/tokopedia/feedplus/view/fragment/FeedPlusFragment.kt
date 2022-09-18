@@ -185,7 +185,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
     private var layoutManager: LinearLayoutManager? = null
-    private var loginIdInt: Int = 0
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
     private var afterRefresh: Boolean = false
@@ -617,9 +616,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, playWidgetCoordinator)
         adapter = FeedPlusAdapter(typeFactory, this)
 
-        val loginIdString = userSession.userId
-        loginIdInt = loginIdString.toIntOrZero()
-
         newFeedReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
                 if (intent != null && intent.action != null) {
@@ -892,7 +888,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
         )
         analytics.eventTrackingEnhancedEcommerce(
-            FeedEnhancedTracking.getClickTracking(listTopAds, loginIdInt)
+            FeedEnhancedTracking.getClickTracking(listTopAds, userIdInt)
         )
     }
 
@@ -920,7 +916,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
 
         analytics.eventTrackingEnhancedEcommerce(
-            FeedEnhancedTracking.getClickTracking(listTopAds, loginIdInt)
+            FeedEnhancedTracking.getClickTracking(listTopAds, userIdInt)
         )
     }
 
@@ -2383,7 +2379,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onShareProduct(
-        id: Int,
+        id: String,
         title: String,
         description: String,
         url: String,
@@ -2398,7 +2394,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         feedAnalytics.eventonShareProductClicked(
             activityId,
-            id.toString(),
+            id,
             type,
             isFollowed, shopId,
             mediaType
@@ -2415,7 +2411,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             url
         }
         activity?.let {
-            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id)
                 .setName(title)
                 .setDescription(description)
                 .setImgUri(imageUrl)
@@ -3026,7 +3022,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
                 if (visitable.feedXCard.tags.isNotEmpty()) {
                     postTagAnalytics.trackViewPostTagFeed(
-                        visitable.feedXCard.id.toIntOrZero(),
+                        visitable.feedXCard.id,
                         visitable.feedXCard.tags,
                         visitable.feedXCard.author.type,
                         trackingPostModel
@@ -3348,7 +3344,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         sheet.show(childFragmentManager, "")
         sheet.shareProductCB = {
             onShareProduct(
-                item.id.toIntOrZero(),
+                item.id,
                 item.text,
                 item.description,
                 item.weblink,

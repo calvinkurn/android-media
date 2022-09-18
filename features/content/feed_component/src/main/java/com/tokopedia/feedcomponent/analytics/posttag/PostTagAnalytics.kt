@@ -286,7 +286,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     //row 7
     //docs - https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1781959013
     fun trackViewPostTagFeed(
-            postId: Int,
+            postId: String,
             postTagItemList: List<FeedXProduct>,
             author: Int,
             trackingModel: TrackingPostModel) {

@@ -30,7 +30,6 @@ import javax.inject.Inject
  */
 
 class KolCommentNewActivity : BaseSimpleActivity() {
-    private var kolId: Int = 0
     private var fromApplink = false
     var postId: String? = ""
 
@@ -76,7 +75,6 @@ class KolCommentNewActivity : BaseSimpleActivity() {
 
     private fun getDataFromIntent() {
         intent.data?.let {
-            kolId = it.lastPathSegment?.toIntOrNull() ?: 0
             it.getQueryParameter(KolCommentActivity.ARGS_FROM_APPLINK)?.let { isAppLink ->
                 fromApplink = isAppLink == "true"
             }

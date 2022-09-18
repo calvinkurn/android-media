@@ -31,7 +31,7 @@ object GetExploreDataMapper {
     private fun convertToKolPostViewModel(postKol: PostKol, pos: Int): ExploreImageViewModel {
         val content = getContent(postKol)
         return ExploreImageViewModel(
-                postKol.id.toIntOrZero(),
+                postKol.id,
                 postKol.userName,
                 getImageUrl(content),
                 pos,

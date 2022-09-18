@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
  */
 
 data class ExploreImageViewModel(
-        val postId: Int = 0,
+        val postId: String = "",
         val userName: String = "",
         val imageUrl: String = "",
         val itemPos: Int = 0,

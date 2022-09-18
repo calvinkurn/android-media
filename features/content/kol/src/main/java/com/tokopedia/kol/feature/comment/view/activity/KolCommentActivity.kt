@@ -20,7 +20,6 @@ import com.tokopedia.track.TrackAppUtils
  * tokopedia-android-internal://content/comment/{post_id}
  */
 class KolCommentActivity : BaseSimpleActivity() {
-    private var kolId: Int = 0
     private var fromApplink = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +29,6 @@ class KolCommentActivity : BaseSimpleActivity() {
 
     private fun getDataFromIntent() {
         intent.data?.let {
-            kolId = it.lastPathSegment?.toIntOrNull() ?: 0
             it.getQueryParameter(ARGS_FROM_APPLINK)?.let { isAppLink ->
                 fromApplink = isAppLink == "true"
             }
@@ -49,10 +47,10 @@ class KolCommentActivity : BaseSimpleActivity() {
 
         //because all extras are retrieved as String from deeplink
         val rowPosition = bundle[ARGS_POSITION]
-        if (rowPosition is String) bundle.putInt(ARGS_POSITION, rowPosition.toInt())
+        if (rowPosition is String) bundle.putInt(ARGS_POSITION, rowPosition.toIntOrZero())
 
         val colPosition = bundle[ARGS_POSITION_COLUMN]
-        if (colPosition is String) bundle.putInt(ARGS_POSITION_COLUMN, colPosition.toInt())
+        if (colPosition is String) bundle.putInt(ARGS_POSITION_COLUMN, colPosition.toIntOrZero())
 
         return KolCommentFragment.createInstance(bundle)
     }
