@@ -9,6 +9,8 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ChildProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
+import com.tokopedia.tkpd.flashsale.util.constant.NumericalNormalizationConstant.BULK_APPLY_PERCENT_NORMALIZATION
+import com.tokopedia.tkpd.flashsale.util.constant.NumericalNormalizationConstant.BULK_APPLY_CURRENCY_NORMALIZATION
 import kotlin.math.roundToInt
 
 object BulkApplyMapper {
@@ -25,13 +27,13 @@ object BulkApplyMapper {
                 price = it.price,
                 discountSetup = when (result.discountType) {
                     DiscountType.RUPIAH -> DiscountSetup(
-                        discount = ((result.discountAmount.toDouble() / it.price) * 100).roundToInt(),
+                        discount = ((result.discountAmount.toDouble() / it.price) * BULK_APPLY_PERCENT_NORMALIZATION).roundToInt(),
                         price = result.discountAmount,
                         stock = result.stock.toLong()
                     )
                     DiscountType.PERCENTAGE -> DiscountSetup(
                         discount = result.discountAmount.toInt(),
-                        price = ((result.discountAmount * 0.01) * it.price).toLong(),
+                        price = ((result.discountAmount * BULK_APPLY_CURRENCY_NORMALIZATION) * it.price).toLong(),
                         stock = result.stock.toLong()
                     )
                 },
