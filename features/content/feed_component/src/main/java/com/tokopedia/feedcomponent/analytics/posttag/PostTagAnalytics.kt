@@ -1,7 +1,6 @@
 package com.tokopedia.feedcomponent.analytics.posttag
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Event.EVENT_CLICK_SOCIAL_COMMERCE
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Action.CLICK_PRODUCT
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -109,9 +108,9 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                         label,
                         postItemList.mapIndexed { pos, item ->
                             getProductList(
-                                    item.id.toIntOrZero(),
+                                    item.id,
                                     item.text,
-                                    item.price.toIntOrZero(),
+                                    item.price,
                                     "",
                                     "",
                                     "",
@@ -145,9 +144,9 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                         label,
                         postItemList.mapIndexed { pos, item ->
                             getProductList(
-                                    item.id.toIntOrZero(),
+                                    item.id,
                                     item.name,
-                                    item.price,
+                                    item.price.toString(),
                                     "",
                                     "",
                                     "",
@@ -185,9 +184,9 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                         action,
                         label,
                         getProductList(
-                                postTag.id.toIntOrZero(),
+                                postTag.id,
                                 postTag.text,
-                                formatPriceToInt(postTag.price),
+                                formatPrice(postTag.price),
                                 "",
                                 "",
                                 "",
@@ -212,9 +211,9 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                         Action.CLICK_BELI,
                         postTag.id,
                         getProductList(
-                                postTag.id.toIntOrZero(),
+                                postTag.id,
                                 postTag.text,
-                                formatPriceToInt(postTag.price),
+                                formatPrice(postTag.price),
                                 "",
                                 "",
                                 "",
@@ -227,17 +226,17 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
         )
     }
 
-    private fun formatPriceToInt(price: String): Int {
-        var result = 0
+    private fun formatPrice(price: String): String {
+        var result = "0"
         try {
             var rex = Regex(REGEX_NUMERIC)
-            result = rex.replace(price, "").toInt()
+            result = rex.replace(price, "")
         } catch (e: Exception) {
         }
         return result
     }
 
-    private fun getProductList(id: Int, name: String, price: Int, brand: String, category: String,
+    private fun getProductList(id: String, name: String, price: String, brand: String, category: String,
                                variant: String, list: String, position: Int)
             : List<PostTagEnhancedTracking.Product> {
         val dataList = ArrayList<PostTagEnhancedTracking.Product>()
@@ -278,26 +277,6 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 EVENT_CATEGORY, category,
                 EVENT_ACTION, action,
                 EVENT_LABEL, label,
-                KEY_USER_ID, userId,
-                KEY_USER_ID_MOD, userId % USER_ID_MOD_50,
-                EVENT_ECOMMERCE, PostTagEnhancedTracking.Ecommerce.getEcommerceClick(products, listSource)
-        )
-    }
-
-    private fun getEventSocialCommerceClick(screenName: String,
-                                            category: String,
-                                            action: String,
-                                            productId: String,
-                                            products: List<PostTagEnhancedTracking.Product>,
-                                            userId: Int,
-                                            listSource: String): Map<String, Any> {
-
-        return DataLayer.mapOf(
-                SCREEN_NAME, screenName,
-                EVENT_NAME, EVENT_CLICK_SOCIAL_COMMERCE,
-                EVENT_CATEGORY, category,
-                EVENT_ACTION, action,
-                EVENT_LABEL, productId,
                 KEY_USER_ID, userId,
                 KEY_USER_ID_MOD, userId % USER_ID_MOD_50,
                 EVENT_ECOMMERCE, PostTagEnhancedTracking.Ecommerce.getEcommerceClick(products, listSource)
