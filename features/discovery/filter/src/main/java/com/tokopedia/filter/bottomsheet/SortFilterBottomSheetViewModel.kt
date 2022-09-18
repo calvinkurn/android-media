@@ -629,6 +629,7 @@ internal class SortFilterBottomSheetViewModel {
             is SortViewModel -> visitable.reset(index)
             is FilterViewModel -> visitable.reset(index)
             is PriceFilterViewModel -> visitable.reset(index)
+            is PriceRangeFilterCheckboxUiModel -> visitable.reset(index)
         }
     }
 
@@ -675,6 +676,20 @@ internal class SortFilterBottomSheetViewModel {
             if (it.isSelected) {
                 shouldUpdate = true
                 it.isSelected = false
+            }
+        }
+
+        if (shouldUpdate) updateViewInPositionEventMutableLiveData.value = Event(filterIndex)
+    }
+
+    private fun PriceRangeFilterCheckboxUiModel.reset(filterIndex: Int) {
+        var shouldUpdate = false
+
+        priceRangeList.forEach {
+            if (it.isSelected) {
+                shouldUpdate = true
+                it.isSelected = false
+                it.option.inputState = false.toString()
             }
         }
 
