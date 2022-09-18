@@ -15,7 +15,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 
 interface ICartListPresenter {
@@ -71,10 +70,6 @@ interface ICartListPresenter {
 
     fun generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList: List<CartRecentViewItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
 
-    fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener)
-
-    fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener)
-
     fun processAddToWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener)
 
     fun processRemoveFromWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener)
@@ -88,8 +83,6 @@ interface ICartListPresenter {
     fun dataHasChanged(): Boolean
 
     fun processGetRecentViewData(allProductIds: List<String>)
-
-    fun processGetWishlistData()
 
     fun processGetWishlistV2Data()
 

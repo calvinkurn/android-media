@@ -13,7 +13,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
-import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 
@@ -79,8 +78,6 @@ interface ICartListView : CustomerView {
     fun stopAllCartPerformanceTrace()
 
     fun renderRecentView(recommendationWidget: RecommendationWidget?)
-
-    fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean)
 
     fun renderWishlistV2(wishlists: List<GetWishlistV2Response.Data.WishlistV2.Item>?, forceReload: Boolean)
 
