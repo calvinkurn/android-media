@@ -190,4 +190,11 @@
     <string name="chooseproduct_filter_criteria_text">Memenuhi Kriteria</string>
     <string name="chooseproduct_filter_category_text">Semua Kategori</string>
 
+    <!--Manage Product-->
+    <string name="manageproductnonvar_stock_title">Stok Campaign</string>
+    <string name="manageproductnonvar_stock_subtitle">Stok wajib %1d - %2d</string>
+    <string name="manageproductnonvar_save">Simpan</string>
+    <string name="manageproductnonvar_title">Atur Varian</string>
+    <string name="manageproductnonvar_stock_total_format">Total Stok: %d</string>
+
 </resources>
