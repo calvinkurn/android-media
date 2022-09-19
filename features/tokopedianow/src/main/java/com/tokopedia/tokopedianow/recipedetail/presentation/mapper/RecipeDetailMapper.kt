@@ -8,6 +8,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
 import com.tokopedia.tokopedianow.common.util.NumberFormatter.formatFloatToString
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
+import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeProductResponse
 import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
 import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientTabUiModel
@@ -133,22 +135,8 @@ object RecipeDetailMapper {
 
         val instruction = InstructionUiModel(response.instruction)
 
-        val products = response.products.map {
-            val detail = it.detail
-
-            RecipeProductUiModel(
-                id = it.id,
-                shopId = detail.shopID,
-                name = detail.name,
-                stock = detail.stock,
-                minOrder = detail.minOrder,
-                maxOrder = detail.maxOrder,
-                priceFmt = detail.fmtPrice,
-                weight = "500 g", // to do: waiting BE to provide weight response
-                imageUrl = detail.imageUrl,
-                slashedPrice = detail.slashedPrice,
-                discountPercentage = formatFloatToString(detail.discountPercentage)
-            )
+        val products = response.products.mapIndexed { index, product ->
+            mapToProductUiModel(index, product)
         }
 
         val ingredientTabItems = mutableListOf<Visitable<*>>().apply {
@@ -169,6 +157,32 @@ object RecipeDetailMapper {
         return RecipeTabUiModel(
             IngredientTabUiModel(ingredientTabItems),
             InstructionTabUiModel(instructionTabItems)
+        )
+    }
+
+    private fun mapToProductUiModel(index: Int, product: RecipeProductResponse): RecipeProductUiModel {
+        val position = index + 1
+        val detail = product.detail
+
+        val similarProducts = product.similarProducts.mapIndexed { idx, similarProduct ->
+            mapToProductUiModel(idx, similarProduct)
+        }
+
+        return RecipeProductUiModel(
+            id = product.id,
+            shopId = detail.shopID,
+            name = detail.name,
+            stock = detail.stock,
+            minOrder = detail.minOrder,
+            maxOrder = detail.maxOrder,
+            priceFmt = detail.fmtPrice,
+            weight = "500 g", // to do: waiting BE to provide weight response
+            imageUrl = detail.imageUrl,
+            slashedPrice = detail.slashedPrice,
+            discountPercentage = formatFloatToString(detail.discountPercentage),
+            categoryId = detail.categoryID,
+            similarProducts = similarProducts,
+            position = position
         )
     }
 }

@@ -30,6 +30,9 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val title = getString(R.string.tokopedianow_recipe_similar_product_title)
+        val productList = arguments
+            ?.getParcelableArrayList<RecipeProductUiModel>(EXTRA_SIMILAR_PRODUCT_LIST).orEmpty()
+
         val bottomSheet = TokoNowRecipeProductBottomSheet.newInstance().apply {
             val productList = mutableListOf<RecipeProductUiModel>()
 

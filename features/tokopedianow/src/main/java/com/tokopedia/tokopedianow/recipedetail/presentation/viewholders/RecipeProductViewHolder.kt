@@ -40,6 +40,7 @@ class RecipeProductViewHolder(
         renderProductButton(product)
         renderQuantityEditor(product)
         renderDeleteBtn(product)
+        renderSimilarProductBtn(product)
         setOnClickListener(product)
     }
 
@@ -132,6 +133,20 @@ class RecipeProductViewHolder(
     private fun removeTextChangeListener(qtyEditorListener: TextWatcher?) {
         binding?.quantityEditor?.editText
             ?.removeTextChangedListener(qtyEditorListener)
+    }
+
+    private fun renderSimilarProductBtn(product: RecipeProductUiModel) {
+        if(product.similarProducts.isNotEmpty()) {
+            binding?.textSimilarProduct?.setOnClickListener {
+                openSimilarProductBottomSheet()
+            }
+
+            binding?.textSimilarProduct?.show()
+            binding?.imageChevron?.show()
+        } else {
+            binding?.textSimilarProduct?.hide()
+            binding?.imageChevron?.hide()
+        }
     }
 
     private fun renderDeleteBtn(product: RecipeProductUiModel) {

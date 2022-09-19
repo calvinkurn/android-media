@@ -15,7 +15,8 @@ data class RecipeProductUiModel(
     val weight: String,
     val imageUrl: String,
     val slashedPrice: String = "",
-    val discountPercentage: String = ""
+    val discountPercentage: String = "",
+    val similarProducts: List<RecipeProductUiModel> = emptyList(),
 ) : Visitable<RecipeProductTypeFactory> {
     override fun type(typeFactory: RecipeProductTypeFactory): Int {
         return typeFactory.type(this)
