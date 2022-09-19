@@ -31,6 +31,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCas
 import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.SubmitWidgetDismissUseCase
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
@@ -58,6 +59,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
@@ -65,6 +67,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
@@ -176,6 +179,9 @@ class SellerHomeViewModelTest {
     lateinit var shopQuestGeneralTrackerUseCase: ShopQuestGeneralTrackerUseCase
 
     @RelaxedMockK
+    lateinit var submitWidgetDismissUseCase: SubmitWidgetDismissUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
     @get:Rule
@@ -233,6 +239,7 @@ class SellerHomeViewModelTest {
             { getUnificationDataUseCase },
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
+            { submitWidgetDismissUseCase },
             { sellerHomeLayoutHelper },
             remoteConfig,
             coroutineTestRule.dispatchers
@@ -1439,6 +1446,62 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Fail(networkException)
         viewModel.postListWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `when submit feedback dismissal widget should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val param = SubmitWidgetDismissUiModel(
+                action = SubmitWidgetDismissUiModel.Action.DISMISS
+            )
+            val mockResult = WidgetDismissalResultUiModel(
+                action = SubmitWidgetDismissUiModel.Action.DISMISS
+            )
+
+            coEvery {
+                submitWidgetDismissUseCase.execute(any())
+            } returns mockResult
+
+            viewModel.submitWidgetDismissal(param)
+
+            coVerify {
+                submitWidgetDismissUseCase.execute(any())
+            }
+            coVerify {
+                viewModel.submitWidgetDismissal(any())
+            }
+
+            assert(param.action == mockResult.action)
+
+            val expectedResult = Success(mockResult)
+            Assertions.assertEquals(expectedResult, viewModel.submitWidgetDismissal.value)
+        }
+    }
+
+    @Test
+    fun `when submit feedback dismissal widget should return error result`() {
+        coroutineTestRule.runBlockingTest {
+            val param = SubmitWidgetDismissUiModel(
+                action = SubmitWidgetDismissUiModel.Action.DISMISS
+            )
+            val exception = Throwable()
+
+            coEvery {
+                submitWidgetDismissUseCase.execute(param)
+            } throws exception
+
+            viewModel.submitWidgetDismissal(param)
+
+            coVerify {
+                submitWidgetDismissUseCase.execute(any())
+            }
+            coVerify {
+                viewModel.submitWidgetDismissal(any())
+            }
+
+            val expectedResult = Fail(exception)
+            viewModel.submitWidgetDismissal.verifyErrorEquals(expectedResult)
+        }
     }
 
     @Test

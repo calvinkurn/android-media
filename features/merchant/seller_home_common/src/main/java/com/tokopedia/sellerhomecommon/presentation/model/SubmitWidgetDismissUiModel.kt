@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
  */
 
 data class SubmitWidgetDismissUiModel(
-    val action: Action,
+    val action: Action = Action.DISMISS,
     val dismissKey: String = String.EMPTY,
     val dismissObjectIDs: List<String> = emptyList(),
     val dismissSign: String = String.EMPTY,

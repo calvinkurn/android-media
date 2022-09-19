@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -28,13 +27,14 @@ class SubmitWidgetDismissUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): WidgetDismissalResultUiModel {
         param?.let {
+            val typeClass = WidgetDismissWithFeedbackResponse::class.java
             val gqlRequest = GraphqlRequest(
                 SubmitWidgetDismissalGqlMutation(),
-                WidgetDismissWithFeedbackResponse::class.java,
+                typeClass,
                 params.parameters
             )
             val response = gqlRepository.response(listOf(gqlRequest))
-            val result = response.getSuccessData<WidgetDismissWithFeedbackResponse>()
+            val result = response.getData<WidgetDismissWithFeedbackResponse>(typeClass)
             if (result.data.isError) {
                 throw MessageErrorException(result.data.errorMsg)
             } else {
@@ -44,9 +44,10 @@ class SubmitWidgetDismissUseCase @Inject constructor(
         throw MessageErrorException(NULL_PARAM_ERROR)
     }
 
-    fun setParam(param: SubmitWidgetDismissUiModel) {
+    suspend fun execute(param: SubmitWidgetDismissUiModel): WidgetDismissalResultUiModel {
         this.param = param
         setRequestParam(param)
+        return executeOnBackground()
     }
 
     private fun setRequestParam(data: SubmitWidgetDismissUiModel) {
@@ -80,7 +81,7 @@ class SubmitWidgetDismissUseCase @Inject constructor(
         private const val FEEDBACK_ID_PARENT = "feedbackWidgetIDParent"
         private const val SHOP_ID = "shopID"
         private const val POSITIVE_FEEDBACK = "feedbackPositive"
-        private const val NULL_PARAM_ERROR = "Parameter is null, please invoke setParam(...) method"
+        private const val NULL_PARAM_ERROR = "Parameter is null, please invoke execute(...) method"
 
         internal const val QUERY = """
             mutation dashboardDismissWithFeedback($$ACTION: String!, $$DISMISS_KEY: String!, $$DISMISS_OBJECT_ID_LIST: [String!]!, $$DISMISS_SIGN: String!, $$FEEDBACK_REASON_1: Boolean!, $$FEEDBACK_REASON_2: Boolean!, $$FEEDBACK_REASON_3: Boolean!, $$FEEDBACK_REASON_OTHER: String!, $$FEEDBACK_ID_PARENT: String!, $$SHOP_ID: Int!, $$DISMISS_TOKEN: String!, $$POSITIVE_FEEDBACK: Boolean!) {
