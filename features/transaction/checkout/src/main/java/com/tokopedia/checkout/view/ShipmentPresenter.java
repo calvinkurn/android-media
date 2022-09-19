@@ -2692,7 +2692,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 )));
     }
 
-    private List<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel) {
+    public List<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel) {
         ArrayList<Product> products = new ArrayList<>();
         if (shipmentCartItemModel != null) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {

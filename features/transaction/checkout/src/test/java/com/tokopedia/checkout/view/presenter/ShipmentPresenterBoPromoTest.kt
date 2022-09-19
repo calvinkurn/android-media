@@ -1206,4 +1206,103 @@ class ShipmentPresenterBoPromoTest {
             clearCacheAutoApplyStackUseCase.createObservable(any())
         }
     }
+
+    // Test ShipmentPresenter.getProductForRatesRequest(...)
+
+    @Test
+    fun `WHEN create product for rates with cart item valid THEN products should not be empty`() {
+        // Given
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = "111-111-111",
+            cartItemModels = listOf(
+                CartItemModel(
+                    isError = false,
+                    productId = 1,
+                    isFreeShipping = true,
+                    isFreeShippingExtra = true
+                ),
+                CartItemModel(
+                    isError = false,
+                    productId = 2,
+                    isFreeShipping = true,
+                    isFreeShippingExtra = true
+                )
+            )
+        )
+
+        // When
+        val result = presenter.getProductForRatesRequest(shipmentCartItemModel)
+
+        // Then
+        assert(result.size == 2)
+    }
+
+    @Test
+    fun `WHEN create product for rates with cart item partially error THEN products should not be empty`() {
+        // Given
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = "111-111-111",
+            cartItemModels = listOf(
+                CartItemModel(
+                    isError = true,
+                    productId = 1,
+                    isFreeShipping = true,
+                    isFreeShippingExtra = true
+                ),
+                CartItemModel(
+                    isError = false,
+                    productId = 2,
+                    isFreeShipping = true,
+                    isFreeShippingExtra = true
+                )
+            )
+        )
+
+        // When
+        val result = presenter.getProductForRatesRequest(shipmentCartItemModel)
+
+        // Then
+        assert(result.size == 1)
+    }
+
+    @Test
+    fun `WHEN create product for rates with cart item all error THEN products should be empty`() {
+        // Given
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartString = "111-111-111",
+            cartItemModels = listOf(
+                CartItemModel(
+                    isError = true,
+                    productId = 1,
+                    isFreeShipping = true,
+                    isFreeShippingExtra = true
+                ),
+                CartItemModel(
+                    isError = true,
+                    productId = 2,
+                    isFreeShipping = true,
+                    isFreeShippingExtra = true
+                )
+            )
+        )
+
+        // When
+        val result = presenter.getProductForRatesRequest(shipmentCartItemModel)
+
+        // Then
+        assert(result.isEmpty())
+    }
+
+    @Test
+    fun `WHEN create product for rates with cart items empty THEN products should be empty`() {
+        // Given
+        val shipmentCartItemModel = null
+
+        // When
+        val result = presenter.getProductForRatesRequest(shipmentCartItemModel)
+
+        // Then
+        assert(result.isEmpty())
+    }
+
 }
