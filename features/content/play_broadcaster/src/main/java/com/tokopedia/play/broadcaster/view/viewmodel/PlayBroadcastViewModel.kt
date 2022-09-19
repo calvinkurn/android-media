@@ -1522,57 +1522,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun getDefaultSelectedAccount(accountList: List<ContentAccountUiModel>): ContentAccountUiModel {
         val sellerAccount = accountList.firstOrNull { it.type == TYPE_SHOP }
         val nonSellerAccount = accountList.firstOrNull { it.type == TYPE_USER }
-        return when {
-            sellerAccount != null -> sellerAccountCheck(sellerAccount, nonSellerAccount)
-            nonSellerAccount != null -> nonSellerAccountCheck(nonSellerAccount)
-            else -> ContentAccountUiModel.Empty
-        }
-    }
-
-    private fun sellerAccountCheck(
-        sellerAccount: ContentAccountUiModel,
-        nonSellerAccount: ContentAccountUiModel?,
-    ): ContentAccountUiModel {
-        return when {
-            !sellerAccount.hasAcceptTnc -> {
-                _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.NotAcceptTNC,
-                        selectedAccount = sellerAccount,
-                    )
-                }
-                sellerAccount
-            }
-            nonSellerAccount != null -> nonSellerAccountCheck(nonSellerAccount)
-            else -> sellerAccount
-        }
-    }
-
-    private fun nonSellerAccountCheck(nonSellerAccount: ContentAccountUiModel): ContentAccountUiModel {
-        return when {
-            !nonSellerAccount.hasUsername -> {
-                _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.NoUsername,
-                        selectedAccount = nonSellerAccount,
-                    )
-                }
-                nonSellerAccount
-            }
-            !nonSellerAccount.hasAcceptTnc -> {
-                _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.NotAcceptTNC,
-                        selectedAccount = nonSellerAccount,
-                    )
-                }
-                nonSellerAccount
-            }
-            else -> nonSellerAccount
-        }
+        return if (sellerAccount != null) {
+            if (sellerAccount.hasAcceptTnc) sellerAccount
+            else nonSellerAccount ?: sellerAccount
+        } else nonSellerAccount ?: ContentAccountUiModel.Empty
     }
 
     private fun handleSwitchAccount(needLoading: Boolean = true) {
@@ -1597,7 +1550,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     ): Boolean {
         return when {
             !configUiModel.streamAllowed -> {
-                if (isFirstOpen) return false
+                if (isFirstOpen && isAllowChangeAccount) return false
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
@@ -1609,7 +1562,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 false
             }
             configUiModel.channelStatus == ChannelStatus.Live -> {
-                if (isFirstOpen) return false
+                if (isFirstOpen && isAllowChangeAccount) return false
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
@@ -1621,7 +1574,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 false
             }
             selectedAccount.isUser && !selectedAccount.hasUsername -> {
-                if (isFirstOpen) return false
+                if (isFirstOpen && isAllowChangeAccount) return false
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
@@ -1632,7 +1585,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 false
             }
             !selectedAccount.hasAcceptTnc -> {
-                if (isFirstOpen) return false
+                if (isFirstOpen && isAllowChangeAccount) return false
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
