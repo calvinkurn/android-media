@@ -35,6 +35,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 
 @Composable
@@ -75,7 +76,7 @@ private fun SearchBar(modifier: Modifier = Modifier) {
             false
         }
     }
-    ComposeSearchBar(
+    UnifySearchBar(
         modifier = modifier.fillMaxWidth(),
         placeholderText = stringResource(id = R.string.search_active_campaign),
         onTextChanged = { text ->
@@ -101,7 +102,7 @@ private fun SortFilter(modifier: Modifier = Modifier, onDismissed : () -> Unit) 
     )
     val items = arrayListOf(campaignStatus, campaignType)
 
-    ComposeSortFilter(
+    UnifySortFilter(
         modifier = modifier.fillMaxWidth(),
         items = items,
         onDismissed = onDismissed
@@ -110,7 +111,7 @@ private fun SortFilter(modifier: Modifier = Modifier, onDismissed : () -> Unit) 
 
 @Composable
 private fun Ticker(modifier: Modifier = Modifier) {
-    ComposeTicker(
+    UnifyTicker(
         modifier = modifier.fillMaxWidth(),
         text = stringResource(id = R.string.another_campaign_type_wording),
         onHyperlinkClicked = {},
@@ -163,11 +164,17 @@ fun CampaignItem(campaign: ActiveCampaign) {
                     }
             )
 
-            Text(campaign.campaignType, modifier = Modifier.constrainAs(campaignType) {
-                top.linkTo(statusImage.top)
-                bottom.linkTo(statusImage.bottom)
-                start.linkTo(statusImage.end, margin = 4.dp)
-            })
+            UnifyTypography(
+                text = campaign.campaignType,
+                modifier = Modifier.constrainAs(campaignType) {
+                    top.linkTo(statusImage.top)
+                    bottom.linkTo(statusImage.bottom)
+                    start.linkTo(statusImage.end, margin = 4.dp)
+                },
+                type = Typography.BODY_3,
+                weight = Typography.BOLD,
+                colorId =  com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            )
 
             CampaignLabel(
                 modifier = Modifier.constrainAs(campaignStatus) {
@@ -190,38 +197,46 @@ fun CampaignItem(campaign: ActiveCampaign) {
                     }
             )
 
-            Text(
-                campaign.campaignName,
+            UnifyTypography(
+                text = campaign.campaignName,
                 modifier = Modifier.constrainAs(campaignName) {
                     top.linkTo(campaignImage.top)
                     start.linkTo(campaignImage.end, margin = 12.dp)
-                }
-
+                },
+                type = Typography.BODY_2,
+                weight = Typography.BOLD,
+                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
 
-            Text(
+            UnifyTypography(
                 campaign.productQty,
                 modifier = Modifier.constrainAs(productQty) {
                     top.linkTo(campaignName.bottom, margin = 12.dp)
                     start.linkTo(campaignName.start)
-                }
+                },
+                type = Typography.BODY_3,
+                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
 
-            Text(
+            UnifyTypography(
                 campaign.startDate,
                 modifier = Modifier.constrainAs(campaignStartDate) {
                     top.linkTo(productQty.bottom, margin = 12.dp)
                     start.linkTo(productQty.start)
-                }
+                },
+                type = Typography.BODY_3,
+                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
 
 
-            Text(
+            UnifyTypography(
                 campaign.startTime,
                 modifier = Modifier.constrainAs(campaignStartTime) {
                     top.linkTo(campaignStartDate.bottom)
                     start.linkTo(campaignStartDate.start)
-                }
+                },
+                type = Typography.BODY_3,
+                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
             )
 
             Text(
@@ -233,22 +248,26 @@ fun CampaignItem(campaign: ActiveCampaign) {
                 }
             )
 
-            Text(
+            UnifyTypography(
                 campaign.endDate,
                 modifier = Modifier.constrainAs(campaignEndDate) {
                     top.linkTo(campaignStartDate.top)
                     bottom.linkTo(campaignStartDate.bottom)
                     start.linkTo(separator.end, margin = 12.dp)
-                }
+                },
+                type = Typography.BODY_3,
+                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
 
-            Text(
+            UnifyTypography(
                 campaign.endTime,
                 modifier = Modifier.constrainAs(campaignEndTime) {
                     top.linkTo(campaignStartTime.top)
                     bottom.linkTo(campaignStartTime.bottom)
                     start.linkTo(separator.end, margin = 12.dp)
-                }
+                },
+                type = Typography.BODY_3,
+                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
             )
 
             ComposeButton(
@@ -299,5 +318,5 @@ fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: 
         AVAILABLE_STATUS_ID.toIntOrZero() -> Label.HIGHLIGHT_LIGHT_GREY
         else -> Label.HIGHLIGHT_LIGHT_GREEN
     }
-    ComposeLabel(modifier = modifier, labelText = campaignStatus, labelType = labelType)
+    UnifyLabel(modifier = modifier, labelText = campaignStatus, labelType = labelType)
 }
