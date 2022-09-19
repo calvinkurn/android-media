@@ -486,24 +486,26 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun implementPreviousWatermark(detailUiModel: EditorDetailUiModel?) {
-        detailUiModel?.let {
+    private fun implementPreviousWatermark(detailUiModel: EditorDetailUiModel) {
+        detailUiModel.watermarkMode?.let {
+            if(it.watermarkType != data.watermarkMode?.watermarkType){
+                return
+            }
+
             getBitmap()?.let { bitmap ->
                 val shopName = if (userSession.shopName.isEmpty())
                     DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
 
-                it.watermarkMode?.let { watermarkData ->
-                    viewModel.setWatermark(
-                        requireContext(),
-                        bitmap,
-                        watermarkData.watermarkType,
-                        shopName,
-                        detailUiModel = it,
-                        useStorageColor = true
-                    )
-                }
+                viewModel.setWatermark(
+                    requireContext(),
+                    bitmap,
+                    it.watermarkType,
+                    shopName,
+                    detailUiModel = detailUiModel,
+                    useStorageColor = true
+                )
 
-                watermarkComponent.setWatermarkTypeSelected(it.watermarkMode?.watermarkType)
+                watermarkComponent.setWatermarkTypeSelected(it.watermarkType)
             }
         }
     }
@@ -532,7 +534,7 @@ class DetailEditorFragment @Inject constructor(
             when (editorToolType) {
                 EditorToolType.BRIGHTNESS -> implementPreviousStateBrightness(brightnessValue)
                 EditorToolType.CONTRAST -> implementPreviousStateContrast(contrastValue)
-                EditorToolType.WATERMARK -> implementPreviousWatermark(this)
+                EditorToolType.WATERMARK -> implementPreviousWatermark(previousState)
             }
         }
     }
@@ -693,6 +695,7 @@ class DetailEditorFragment @Inject constructor(
 
                     if (data.isToolWatermark()) {
                         setWatermarkDrawerItem(bitmap)
+                        watermarkComponent.setWatermarkTypeSelected(data.watermarkMode?.watermarkType)
                     }
                 },
                 onCleared = {}
