@@ -11,13 +11,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.autocompletecomponent.AutocompleteIdlingResource
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselViewHolder
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.doubleline.DoubleLineViewHolder
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -35,8 +34,9 @@ internal class UniversalSearchTrackingTest {
         false,
     )
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     private val recyclerViewId = R.id.universalSearchRecyclerView
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
@@ -44,8 +44,6 @@ internal class UniversalSearchTrackingTest {
 
     @Before
     fun setUp() {
-        gtmLogDBSource.deleteAll().subscribe()
-
         setupGraphqlMockResponse(UniversalSearchMockModelConfig())
 
         activityRule.launchActivity(createUniversalIntent("susu"))
@@ -112,15 +110,13 @@ internal class UniversalSearchTrackingTest {
 
     private fun assertCassavaTracker() {
         MatcherAssert.assertThat(
-            getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
+            cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
             hasAllSuccess()
         )
     }
 
     @After
     fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
-
         IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
     }
 }
