@@ -1365,6 +1365,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleBroadcastStateChanged(state: PlayBroadcasterState) {
+        logPusherState(state)
         when(state) {
             is PlayBroadcasterState.Started -> handleBroadcasterStart()
             is PlayBroadcasterState.Resume -> handleBroadcasterResume(state.startedBefore, state.shouldContinue)
@@ -1373,7 +1374,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcasterState.Error -> handleBroadcasterError(state.cause)
             PlayBroadcasterState.Stopped -> handleBroadcasterStop()
         }
-        logPusherState(state)
     }
 
     private fun handleBroadcasterError(cause: Throwable) {
@@ -1391,6 +1391,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             getPinnedMessage()
             getInteractiveConfig()
         }) {
+            logger.logBroadcastError(it)
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 handleBroadcasterStart()
             })
@@ -1422,6 +1423,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
             } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
         }) {
+            logger.logBroadcastError(it)
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 doResumeBroadcaster(shouldContinue)
             })
@@ -1437,6 +1439,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 updateCurrentInteractiveStatus()
             } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
         }) {
+            logger.logBroadcastError(it)
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 handleBroadcasterRecovered()
             })
@@ -1454,14 +1457,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             broadcastTimer.pause()
             updateChannelStatus(PlayChannelStatusType.Pause)
-        }) {}
+        }) {
+            logger.logBroadcastError(it)
+        }
     }
 
     private fun handleBroadcasterStop() {
         viewModelScope.launchCatchError(block = {
             closeWebSocket()
             updateChannelStatus(PlayChannelStatusType.Stop)
-        }) {}
+        }) {
+            logger.logBroadcastError(it)
+        }
 
         mIsBroadcastStopped = true
     }

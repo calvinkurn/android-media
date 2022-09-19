@@ -23,6 +23,10 @@ interface PlayLogger {
         socketType: PlaySocketType
     )
 
+    fun logBroadcastError(
+        throwable: Throwable
+    )
+
     fun sendAll(channelId: String)
 
     fun sendBroadcasterLog(metric: PlayBroadcasterMetric)

@@ -18,7 +18,7 @@ class PlayLoggerImpl @Inject constructor(
 
     companion object {
         const val LIMIT_LOG = 20
-        private const val TAG_SCALYR = "PLAY_BROADCASTER"
+        private const val TAG_PLAY_BROADCASTER = "PLAY_BROADCASTER"
         private const val TAG_PLAY_BROADCASTER_MONITORING = "PLAY_BROADCASTER_MONITORING"
 
         private const val CHANNEL_ID_TAG = "channelID"
@@ -31,30 +31,42 @@ class PlayLoggerImpl @Inject constructor(
         private const val TRAFFIC_TAG = "traffic"
         private const val VIDEO_BUFFER_TIMESTAMP_TAG = "videoBufferTimestamp"
         private const val AUTHOR_ID_TAG = "authorID"
+
+        private const val CHANNEL_TAG = "channel"
+        private const val PUSHER_TAG = "pusher"
+        private const val SOCKET_TAG = "socket"
+        private const val ERROR_TAG = "error"
     }
 
     /***
      * Send logs to PLAY_BROADCASTER
      */
     private fun sendLog(messages: Map<String, String>) {
-        ServerLogger.log(Priority.P2, TAG_SCALYR, messages)
+        ServerLogger.log(Priority.P2, TAG_PLAY_BROADCASTER, messages)
     }
 
     override fun logChannelStatus(channelStatus: ChannelStatus) {
         collector.collect(
-            Pair("channel", channelStatus.value)
+            Pair(CHANNEL_TAG, channelStatus.value)
         )
     }
 
     override fun logPusherState(pusherState: PlayBroadcasterState) {
         collector.collect(
-            Pair("pusher", pusherState.tag)
+            Pair(PUSHER_TAG, pusherState.tag)
         )
     }
 
     override fun logSocketType(socketType: PlaySocketType) {
         collector.collect(
-            Pair("socket", socketType.type.value)
+            Pair(SOCKET_TAG, socketType.type.value)
+        )
+    }
+
+    override fun logBroadcastError(throwable: Throwable) {
+        val errMessage = throwable.localizedMessage ?: return
+        collector.collect(
+            Pair(ERROR_TAG, errMessage)
         )
     }
 
