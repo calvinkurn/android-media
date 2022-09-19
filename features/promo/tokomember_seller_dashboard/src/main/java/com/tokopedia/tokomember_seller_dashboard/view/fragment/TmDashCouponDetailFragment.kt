@@ -552,7 +552,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
         LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(
             0,linkerShareData,object : ShareCallback{
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareString = requireContext().resources.getString(R.string.tm_share_coupon_string,couponData?.voucherImage,linkerShareData?.url)
+                    val shareString = requireContext().resources.getString(R.string.tm_share_coupon_string,couponData?.voucherName,linkerShareData?.url)
                     SharingUtil.executeShareIntent(
                         shareModel,
                         linkerShareData,
