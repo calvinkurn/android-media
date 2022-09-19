@@ -13,8 +13,15 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.content.common.producttag.analytic.coordinator.ProductImpressionCoordinator
+import com.tokopedia.content.common.producttag.analytic.coordinator.ShopImpressionCoordinator
 import com.tokopedia.content.common.producttag.view.bottomsheet.ProductTagSourceBottomSheet
+import com.tokopedia.content.common.producttag.view.fragment.ContentAutocompleteFragment
+import com.tokopedia.content.common.producttag.view.fragment.GlobalSearchFragment
+import com.tokopedia.content.common.producttag.view.fragment.GlobalSearchProductTabFragment
+import com.tokopedia.content.common.producttag.view.fragment.GlobalSearchShopTabFragment
+import com.tokopedia.content.common.producttag.view.fragment.LastPurchasedProductFragment
 import com.tokopedia.content.common.producttag.view.fragment.LastTaggedProductFragment
+import com.tokopedia.content.common.producttag.view.fragment.ShopProductFragment
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
@@ -32,10 +39,12 @@ import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
+import com.tokopedia.play.test.espresso.clickOnViewChild
 import com.tokopedia.play.test.espresso.delay
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.hamcrest.core.AllOf
 
 /**
  * Created by kenny.hadisaputra on 16/09/22
@@ -50,10 +59,13 @@ class ProductChooserUGCRobot(
             productTagSourceRaw = source,
             productTagConfig = config,
         )
-    }
+    },
 ) {
 
     private val context = InstrumentationRegistry.getInstrumentation().context
+
+    private val productImpressionCoordinator: ProductImpressionCoordinator = ProductImpressionCoordinator()
+    private val shopImpressionCoordinator: ShopImpressionCoordinator = ShopImpressionCoordinator()
 
     private val onAttach: (Fragment) -> Unit = {
         when (it) {
@@ -130,13 +142,37 @@ class ProductChooserUGCRobot(
                 }
                 LastTaggedProductFragment::class.java.name -> {
                     LastTaggedProductFragment(
-                        impressionCoordinator = ProductImpressionCoordinator()
+                        impressionCoordinator = productImpressionCoordinator
                     )
                 }
                 ProductTagSourceBottomSheet::class.java.name -> {
                     ProductTagSourceBottomSheet(
                         analyticUserSession,
                     )
+                }
+                ContentAutocompleteFragment::class.java.name -> {
+                    ContentAutocompleteFragment()
+                }
+                GlobalSearchFragment::class.java.name -> {
+                    GlobalSearchFragment()
+                }
+                GlobalSearchProductTabFragment::class.java.name -> {
+                    GlobalSearchProductTabFragment(
+                        impressionCoordinator = productImpressionCoordinator
+                    )
+                }
+                GlobalSearchShopTabFragment::class.java.name -> {
+                    GlobalSearchShopTabFragment(
+                        impressionCoordinator = shopImpressionCoordinator
+                    )
+                }
+                ShopProductFragment::class.java.name -> {
+                    ShopProductFragment(
+                        impressionCoordinator = productImpressionCoordinator
+                    )
+                }
+                LastPurchasedProductFragment::class.java.name -> {
+                    LastPurchasedProductFragment()
                 }
                 else -> {
                     ProductPickerUGCBottomSheet(
@@ -165,6 +201,8 @@ class ProductChooserUGCRobot(
         Espresso.onView(
             ViewMatchers.withId(com.tokopedia.content.common.R.id.tv_cc_product_tag_product_source)
         ).perform(ViewActions.click())
+
+        await(500)
     }
 
     fun selectProductSourceOptionTokopedia() = chainable {
@@ -173,14 +211,156 @@ class ProductChooserUGCRobot(
         ).perform(ViewActions.click())
     }
 
-    fun selectLastTaggedProduct(position: Int = 0) {
+    fun selectProductSourceOptionLastPurchased() = chainable {
         Espresso.onView(
-            ViewMatchers.withId(R.id.rv_products)
+            ViewMatchers.withId(com.tokopedia.content.common.R.id.cl_last_purchase)
+        ).perform(ViewActions.click())
+    }
+
+    fun selectSearchBar() = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.content.common.R.id.cl_search)
+        ).perform(ViewActions.click())
+    }
+
+    fun typeInSearchBar(query: String) = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)
+        ).perform(ViewActions.replaceText(query))
+    }
+
+    fun selectSearchBarInShopProductPage() = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.content.common.R.id.sb_shop_product)
+        ).perform(ViewActions.click())
+    }
+
+    fun clickBackButton() = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.content.common.R.id.ic_cc_product_tag_back)
+        ).perform(ViewActions.click())
+    }
+
+    fun clickSaveButton() = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.content.common.R.id.btn_save)
+        ).perform(ViewActions.click())
+    }
+
+    fun pressImeActionInGlobalSearchBar() = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)
+        ).perform(ViewActions.pressImeActionButton())
+    }
+
+    fun selectProductInLastTaggedProduct(position: Int) = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_last_tagged_product)
         ).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position, ViewActions.click()
             )
         )
+    }
+
+    fun selectProductInLastPurchasedProduct(position: Int) = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_last_purchased_product)
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                position, ViewActions.click()
+            )
+        )
+    }
+
+    fun selectProductInGlobalSearchProduct(position: Int) = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_global_search_product)
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                position, ViewActions.click()
+            )
+        )
+    }
+
+    fun selectShopInGlobalSearchShop(position: Int) = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.content.common.R.id.rv_global_search_shop)
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                position, ViewActions.click()
+            )
+        )
+    }
+
+    fun selectProductTabInGlobalSearch() = chainable {
+        Espresso.onView(
+            AllOf.allOf(
+                ViewMatchers.isDescendantOfA(
+                    ViewMatchers.withId(com.tokopedia.content.common.R.id.tab_layout)
+                ),
+                ViewMatchers.withText("Barang")
+            )
+        ).perform(ViewActions.click())
+    }
+
+    fun selectShopTabInGlobalSearch() = chainable {
+        Espresso.onView(
+            AllOf.allOf(
+                ViewMatchers.isDescendantOfA(
+                    ViewMatchers.withId(com.tokopedia.content.common.R.id.tab_layout)
+                ),
+                ViewMatchers.withText("Toko")
+            )
+        ).perform(ViewActions.click())
+    }
+
+    fun selectFilterChipsInProductTab(position: Int) = chainable {
+        Espresso.onView(
+            AllOf.allOf(
+                ViewMatchers.isDescendantOfA(
+                    ViewMatchers.withId(com.tokopedia.content.common.R.id.cl_global_search_product)
+                ),
+                ViewMatchers.withParent(
+                    ViewMatchers.withId(com.tokopedia.sortfilter.R.id.sort_filter_items)
+                ),
+                ViewMatchers.withParentIndex(position),
+            )
+        ).perform(ViewActions.click())
+    }
+
+    fun selectAdvancedFilterChipsInProductTab() = chainable {
+        Espresso.onView(
+            AllOf.allOf(
+                ViewMatchers.isDescendantOfA(
+                    ViewMatchers.withId(com.tokopedia.content.common.R.id.cl_global_search_product)
+                ),
+                ViewMatchers.withId(com.tokopedia.sortfilter.R.id.sort_filter_prefix),
+            )
+        ).perform(ViewActions.click())
+
+        await(500)
+    }
+
+    fun selectFilterInAdvancedFilterBottomSheet(position: Int) = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.filter.R.id.optionRecyclerView)
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                position, clickOnViewChild(com.tokopedia.filter.R.id.sortFilterChipsUnify)
+            )
+        )
+    }
+
+    fun selectApplyInAdvancedFilterBottomSheet() = chainable {
+        Espresso.onView(
+            ViewMatchers.withId(com.tokopedia.filter.R.id.buttonApplyContainer)
+        ).perform(ViewActions.click())
+    }
+
+    fun sendPendingImpressions() = chainable {
+        productImpressionCoordinator.sendProductImpress()
+        shopImpressionCoordinator.sendShopImpress()
     }
 
     fun await(durationInMs: Long) = chainable {

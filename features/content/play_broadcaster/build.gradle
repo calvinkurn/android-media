@@ -138,6 +138,10 @@ dependencies {
         exclude group: 'com.google.firebase'
     }
     androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
+
+    //For Ui test
+    androidTestImplementation rootProject.ext.unifyDependencies.sortFilter
+    androidTestImplementation projectOrAar(rootProject.ext.features.filter)
 }
 
 project.ext {
