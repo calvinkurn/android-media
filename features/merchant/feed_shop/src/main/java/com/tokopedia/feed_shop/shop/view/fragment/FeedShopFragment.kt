@@ -168,6 +168,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         private const val LOGIN_FOLLOW_CODE = 1384
         private const val OPEN_CONTENT_REPORT = 1130
         private const val KOL_COMMENT_CODE = 13
+        private const val PARAM_SOURCE = "source"
+        private const val SHOP_PAGE = "shop_page"
 
         private const val PARAM_CREATE_POST_URL: String = "PARAM_CREATE_POST_URL"
         private const val PARAM_SHOP_ID: String = "PARAM_SHOP_ID"
@@ -814,7 +816,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
-        onGoToLink(redirectLink)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventShopPageClickPost(
@@ -824,7 +825,19 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 trackingPostModel.mediaUrl,
                     positionInFeed)
         }
+        val finaApplink = getUpdatedApplinkForContentDetailPage(redirectLink)
+        onGoToLink(finaApplink)
     }
+
+    /**
+     * Here we are appending the source of opening content detail page to the original applink
+     * source = shop_page here
+     */
+    private fun getUpdatedApplinkForContentDetailPage(originalRedirectlink: String) =
+        Uri.parse(originalRedirectlink)
+            .buildUpon()
+            .appendQueryParameter(PARAM_SOURCE, SHOP_PAGE)
+            .build().toString()
 
     override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
                                   redirectLink: String, isSingleItem: Boolean) {
@@ -920,7 +933,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             isFollowed: Boolean,
             startTime: Long
     ) {
-        onGoToLink(redirectUrl)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventShopPageClickPost(
@@ -931,6 +943,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     positionInFeed
             )
         }
+        val finaApplink = getUpdatedApplinkForContentDetailPage(redirectUrl)
+        onGoToLink(finaApplink)
     }
 
     override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {

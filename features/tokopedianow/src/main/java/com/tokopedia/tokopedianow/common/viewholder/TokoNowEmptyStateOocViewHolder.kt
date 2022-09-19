@@ -110,6 +110,10 @@ class TokoNowEmptyStateOocViewHolder(
             override fun onLocalizingAddressLoginSuccessBottomSheet() { /* to do : nothing */ }
 
             override fun onDismissChooseAddressBottomSheet() { /* to do : nothing */ }
+
+            override fun isFromTokonowPage(): Boolean {
+                return true
+            }
         })
         listener?.onGetFragmentManager()?.let {
             chooseAddressBottomSheet.show(it, SHIPPING_CHOOSE_ADDRESS_TAG)

@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 
@@ -33,7 +34,7 @@ object FlightErrorUtil {
             val flightError = Gson().fromJson<Map<String, Any>>(t.message, type)
             if (flightError.containsKey(KEY_ID)) {
                 errorId = try {
-                    flightError[KEY_ID].toString().toInt()
+                    flightError[KEY_ID].toString().toIntSafely()
                 } catch (t: Throwable) {
                     t.printStackTrace()
                     0
@@ -52,7 +53,7 @@ object FlightErrorUtil {
 
     fun getErrorCode(flightError: FlightOrderError): Int {
         return try {
-            flightError.id.toInt()
+            flightError.id.toIntSafely()
         } catch (e: Exception) {
             -1
         }
