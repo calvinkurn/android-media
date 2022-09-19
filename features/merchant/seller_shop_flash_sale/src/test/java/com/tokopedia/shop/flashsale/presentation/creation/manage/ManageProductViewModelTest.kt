@@ -577,6 +577,10 @@ class ManageProductViewModelTest {
         relativeTimeDifferenceInMinute = 100,
         thematicInfo = ThematicInfo(0, 0, "", 0, ""),
         reviewStartDate = Date(),
-        reviewEndDate = Date()
+        reviewEndDate = Date(),
+        packageInfo = PackageInfo(
+            packageId = 0,
+            packageName = "VPS"
+        )
     )
 }
