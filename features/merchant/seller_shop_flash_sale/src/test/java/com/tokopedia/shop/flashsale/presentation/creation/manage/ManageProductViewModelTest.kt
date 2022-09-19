@@ -543,14 +543,6 @@ class ManageProductViewModelTest {
         )
     )
 
-    private fun generateIncompleteProduct() = SellerCampaignProductList(
-        productList = listOf(
-            Product(
-                productMapData = ProductMapData()
-            )
-        )
-    )
-
     private fun generateCampaignUiModel() = CampaignUiModel(
         campaignId = 1001,
         campaignName = "Flash Sale Toko",
