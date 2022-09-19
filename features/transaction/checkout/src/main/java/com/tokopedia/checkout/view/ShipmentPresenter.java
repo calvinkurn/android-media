@@ -2045,7 +2045,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         );
     }
 
-    private void hitClearAllBo() {
+    @Override
+    public void hitClearAllBo() {
         ArrayList<ClearPromoOrder> clearOrders = new ArrayList<>();
         boolean hasBo = false;
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
 import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
@@ -51,7 +52,7 @@ import org.mockito.Mockito
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterBoUnstackTest {
+class ShipmentPresenterBoPromoTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
@@ -133,6 +134,23 @@ class ShipmentPresenterBoUnstackTest {
         )
         presenter.attachView(view)
         presenter = spyk(presenter)
+    }
+
+    // Test ShipmentPresenter.getCartDataForRates()
+
+    @Test
+    fun `WHEN initialize presenter THEN cart data should be filled`() {
+        // Given
+        val cartData = "{\\\"data\\\":{\\\"codes\\\":null,\\\"grand_total\\\":3.14,\\\"book\\\":false,\\\"service_id\\\":123,\\\"secret_key\\\":\\\"123\\\",\\\"user_data\\\":{\\\"user_id\\\":123,\\\"email\\\":\\\"test@test.com\\\",\\\"msisdn\\\":\\\"08123\\\",\\\"msisdn_verified\\\":false,\\\"is_qc_acc\\\":false,\\\"app_version\\\":\\\"1.23\\\",\\\"ip_address\\\":\\\"test\\\",\\\"user_agent\\\":\\\"test\\\",\\\"advertisement_id\\\":\\\"test\\\",\\\"device_type\\\":\\\"android\\\",\\\"device_id\\\":\\\"test\\\"},\\\"meta_data\\\":{\\\"orders\\\":[{\\\"shop_id\\\":1,\\\"shop_name\\\":\\\"test\\\",\\\"codes\\\":null,\\\"unique_id\\\":\\\"1-1-1-1\\\",\\\"is_po\\\":false,\\\"duration\\\":\\\"0\\\",\\\"warehouse_id\\\":1,\\\"address_id\\\":1}]},\\\"state\\\":\\\"checkout\\\"}}"
+        val cartShipmentAddressFormData = CartShipmentAddressFormData(
+            cartData = cartData
+        )
+
+        // When
+        presenter.initializePresenterData(cartShipmentAddressFormData)
+
+        // Then
+        assert(presenter.cartDataForRates == cartData)
     }
 
     // Test ShipmentPresenter.doApplyBo(...)
@@ -1061,6 +1079,131 @@ class ShipmentPresenterBoUnstackTest {
         }
         verify(inverse = true) {
             presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+        }
+    }
+
+    // Test ShipmentPresenter.hitClearAllBo()
+
+    @Test
+    fun `WHEN hit clear all BO with cart list with valid voucher logistic promo THEN call clear cache auto apply use case`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "111-111-111",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TEST1"
+                ),
+                shipmentCartData = ShipmentCartData(
+                    boMetadata = BoMetadata(
+                        boType = 1
+                    )
+                ),
+                cartItemModels = listOf(
+                    CartItemModel(
+                        preOrderDurationDay = 10
+                    )
+                ),
+            ),
+            ShipmentCartItemModel(
+                cartString = "222-222-222",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TEST2"
+                ),
+                shipmentCartData = ShipmentCartData(
+                    boMetadata = BoMetadata(
+                        boType = 1
+                    )
+                ),
+                cartItemModels = listOf(
+                    CartItemModel(
+                        preOrderDurationDay = 10
+                    )
+                ),
+            ),
+        )
+
+        every { compositeSubscription.add(any()) } just runs
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true,
+                    tickerMessage = ""
+                )
+            )
+        )
+
+        // When
+        presenter.hitClearAllBo()
+
+        // Then
+        verify {
+            clearCacheAutoApplyStackUseCase.setParams(any())
+            compositeSubscription.add(any())
+            clearCacheAutoApplyStackUseCase.createObservable(any())
+        }
+    }
+
+    @Test
+    fun `WHEN hit clear all BO with cart list with voucher logistic null THEN don't call clear cache auto apply use case`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "111-111-111",
+                voucherLogisticItemUiModel = null,
+                shipmentCartData = null
+            ),
+            ShipmentCartItemModel(
+                cartString = "222-222-222",
+                voucherLogisticItemUiModel = null,
+                shipmentCartData = null
+            ),
+        )
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true,
+                    tickerMessage = ""
+                )
+            )
+        )
+
+        // When
+        presenter.hitClearAllBo()
+
+        // Then
+        verify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any())
+            compositeSubscription.add(any())
+            clearCacheAutoApplyStackUseCase.createObservable(any())
+        }
+    }
+
+    @Test
+    fun `WHEN hit clear all BO with empty cart list THEN don't call clear cache auto apply use case`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf()
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true,
+                    tickerMessage = ""
+                )
+            )
+        )
+
+        // When
+        presenter.hitClearAllBo()
+
+        // Then
+        verify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any())
+            compositeSubscription.add(any())
+            clearCacheAutoApplyStackUseCase.createObservable(any())
         }
     }
 }

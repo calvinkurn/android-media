@@ -411,6 +411,8 @@ public interface ShipmentContract {
         void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel);
 
         void doUnapplyBo(String uniqueId, String promoCode);
+
+        void hitClearAllBo();
     }
 
 }
