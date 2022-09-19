@@ -2588,11 +2588,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void doUnapplyBo(String uniqueId, String promoCode) {
         final int itemAdapterPosition = getView().getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId);
         final ShipmentCartItemModel shipmentCartItemModel = getView().getShipmentCartItemModel(itemAdapterPosition);
-        if (itemAdapterPosition != -1) {
+        if (shipmentCartItemModel != null && itemAdapterPosition != -1) {
             getView().resetCourier(itemAdapterPosition);
-            if (shipmentCartItemModel != null) {
-                clearCacheAutoApply(shipmentCartItemModel, promoCode);
-            }
+            clearCacheAutoApply(shipmentCartItemModel, promoCode);
             clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode);
             getView().onNeedUpdateViewItem(itemAdapterPosition);
         }
@@ -2713,13 +2711,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void validateClearAllBoPromo() {
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-            for (OrdersItem ordersItem : lastValidateUsePromoRequest.getOrders()) {
-                if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())
-                        && ordersItem.getCodes().isEmpty()
-                        && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                    doUnapplyBo(shipmentCartItemModel.getCartString(),
-                            shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+        if (shipmentCartItemModelList != null && lastValidateUsePromoRequest != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                for (OrdersItem ordersItem : lastValidateUsePromoRequest.getOrders()) {
+                    if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())
+                            && ordersItem.getCodes().isEmpty()
+                            && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                        doUnapplyBo(shipmentCartItemModel.getCartString(),
+                                shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                    }
                 }
             }
         }

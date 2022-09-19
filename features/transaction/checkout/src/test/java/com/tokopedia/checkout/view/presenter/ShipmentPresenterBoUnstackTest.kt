@@ -11,6 +11,7 @@ import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -18,6 +19,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
@@ -133,13 +135,179 @@ class ShipmentPresenterBoUnstackTest {
         presenter = spyk(presenter)
     }
 
-    // Test doUnapplyBo()
+    // Test ShipmentPresenter.doApplyBo(...)
+
+    // Because doApplyBo() doesn't return anything or calling any presenter/view
+    // we assume do apply BO success by checking ratesUseCase.execute(...)
+    // in processBoPromoCourierRecommendation(...) is called
 
     @Test
-    fun `WHEN unapply BO promo item not found in list THEN don't do unapply BO promo`() {
+    fun `WHEN apply BO promo cart item found with no promo code THEN do apply BO`() {
         // Given
-        val uniqueId = "111-222-333"
-        val promoCode = "TESTBO"
+        val voucherOrder = PromoCheckoutVoucherOrdersItemUiModel(
+            uniqueId = "111-111-111"
+        )
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
+            cartString = "111-111-111",
+            shopShipmentList = listOf(),
+            voucherLogisticItemUiModel = null
+        )
+        every { ratesStatesConverter.fillState(any(), any(), any(), any()) } returns ShippingRecommendationData()
+        every { getRatesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+        every { presenter.cancelAutoApplyPromoStackLogistic(any(), any(), any()) } just runs
+        every { presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any()) } just runs
+        every { view.resetCourier(Mockito.anyInt()) } just runs
+        every { view.renderCourierStateFailed(any(), any(), any()) } just runs
+        every { view.logOnErrorLoadCourier(any(), any()) } just runs
+
+        presenter.recipientAddressModel = RecipientAddressModel()
+
+        // When
+        presenter.doApplyBo(voucherOrder)
+
+        // Then
+        verifyOrder {
+            getRatesUseCase.execute(any())
+            compositeSubscription.add(any())
+        }
+    }
+
+    @Test
+    fun `WHEN apply BO promo cart item found with different promo code THEN do apply BO`() {
+        // Given
+        val voucherOrder = PromoCheckoutVoucherOrdersItemUiModel(
+            uniqueId = "111-111-111",
+            code = "BOCODE"
+        )
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
+            cartString = "111-111-111",
+            shopShipmentList = listOf(),
+            voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "PROMOCODE")
+        )
+        every { ratesStatesConverter.fillState(any(), any(), any(), any()) } returns ShippingRecommendationData()
+        every { getRatesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+        every { presenter.cancelAutoApplyPromoStackLogistic(any(), any(), any()) } just runs
+        every { presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any()) } just runs
+        every { view.resetCourier(Mockito.anyInt()) } just runs
+        every { view.renderCourierStateFailed(any(), any(), any()) } just runs
+        every { view.logOnErrorLoadCourier(any(), any()) } just runs
+
+        presenter.recipientAddressModel = RecipientAddressModel()
+
+        // When
+        presenter.doApplyBo(voucherOrder)
+
+        // Then
+        verifyOrder {
+            getRatesUseCase.execute(any())
+            compositeSubscription.add(any())
+        }
+    }
+
+    @Test
+    fun `WHEN apply BO promo cart item found with same promo code THEN don't do apply BO`() {
+        // Given
+        val voucherOrder = PromoCheckoutVoucherOrdersItemUiModel(
+            uniqueId = "111-111-111",
+            code = "BOCODE"
+        )
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
+            cartString = "111-111-111",
+            shopShipmentList = listOf(),
+            voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "BOCODE")
+        )
+
+        // When
+        presenter.doApplyBo(voucherOrder)
+
+        // Then
+        verify(inverse = true) {
+            getRatesUseCase.execute(any())
+            compositeSubscription.add(any())
+        }
+    }
+
+    @Test
+    fun `WHEN apply BO promo item not found THEN don't apply BO`() {
+        // Given
+        val voucherOrder = PromoCheckoutVoucherOrdersItemUiModel()
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
+        every { view.getShipmentCartItemModel(any()) } returns null
+
+        // When
+        presenter.doApplyBo(voucherOrder)
+
+        // Then
+        verify(inverse = true) {
+            getRatesUseCase.execute(any())
+            compositeSubscription.add(any())
+        }
+    }
+
+    @Test
+    fun `WHEN apply BO cart item found with invalid position THEN don't do apply BO`() {
+        // Given
+        val voucherOrder = PromoCheckoutVoucherOrdersItemUiModel()
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel()
+
+        // When
+        presenter.doApplyBo(voucherOrder)
+
+        // Then
+        verify(inverse = true) {
+            getRatesUseCase.execute(any())
+            compositeSubscription.add(any())
+        }
+    }
+
+    // Test ShipmentPresenter.doUnapplyBo()
+
+    @Test
+    fun `WHEN unapply BO promo cart item found THEN do unapply BO promo`() {
+        // Given
+        val uniqueId = "111-111-111"
+        val promoCode = "BOCODE"
+
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
+            cartString = "111-111-111",
+            cartItemModels = listOf(CartItemModel()),
+            shipmentCartData = ShipmentCartData(
+                boMetadata = BoMetadata(boType = 1)
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true,
+                    tickerMessage = ""
+                )
+            )
+        )
+
+        // When
+        presenter.doUnapplyBo(uniqueId, promoCode)
+
+        // Then
+        verifyOrder {
+            view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
+            view.getShipmentCartItemModel(any())
+            view.resetCourier(Mockito.anyInt())
+            presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any())
+            view.onNeedUpdateViewItem(any())
+        }
+    }
+
+    @Test
+    fun `WHEN unapply BO promo cart item not found THEN don't do unapply BO promo`() {
+        // Given
+        val uniqueId = "111-111-111"
+        val promoCode = "BOCODE"
 
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
         every { view.getShipmentCartItemModel(any()) } returns null
@@ -161,7 +329,7 @@ class ShipmentPresenterBoUnstackTest {
             view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
             view.getShipmentCartItemModel(any())
         }
-        verifyOrder(inverse = true) {
+        verify(inverse = true) {
             view.resetCourier(Mockito.anyInt())
             presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any())
             view.onNeedUpdateViewItem(any())
@@ -169,19 +337,13 @@ class ShipmentPresenterBoUnstackTest {
     }
 
     @Test
-    fun `WHEN unapply BO promo item found in list THEN do unapply BO promo`() {
+    fun `WHEN unapply BO promo item found null THEN don't do unapply BO promo`() {
         // Given
-        val uniqueId = "111-222-333"
-        val promoCode = "TESTBO"
+        val uniqueId = "111-111-111"
+        val promoCode = "BOCODE"
 
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
-        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-222-333",
-            cartItemModels = listOf(CartItemModel()),
-            shipmentCartData = ShipmentCartData(
-                boMetadata = BoMetadata(boType = 1)
-            )
-        )
+        every { view.getShipmentCartItemModel(any()) } returns null
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
             ClearPromoUiModel(
@@ -199,793 +361,94 @@ class ShipmentPresenterBoUnstackTest {
         verifyOrder {
             view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
             view.getShipmentCartItemModel(any())
+        }
+        verify(inverse = true) {
             view.resetCourier(Mockito.anyInt())
             presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any())
             view.onNeedUpdateViewItem(any())
         }
     }
 
-    // Test validateBoPromo()
-
-    // Test validateBoPromo() => Test with BO orders (shippingId > 0 && spId > 0 && type == "logistic")
-
     @Test
-    fun `WHEN validate BO promo has multiple red state orders THEN do unapply BO promo`() {
+    fun `WHEN unapply BO promo item found with invalid position THEN don't do unapply BO promo`() {
         // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 2,
-                        spId = 2,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 1,
-                        spId = 1,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
+        val uniqueId = "111-111-111"
+        val promoCode = "BOCODE"
+
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel()
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true,
+                    tickerMessage = ""
                 )
             )
         )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
 
         // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
+        presenter.doUnapplyBo(uniqueId, promoCode)
 
         // Then
-        verify(exactly = 2) {
-            presenter.doUnapplyBo(any(), any())
+        verifyOrder {
+            view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
+            view.getShipmentCartItemModel(any())
         }
         verify(inverse = true) {
-            presenter.doApplyBo(any()) // validate doApplyBo() not called
+            view.resetCourier(Mockito.anyInt())
+            presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any())
+            view.onNeedUpdateViewItem(any())
         }
     }
 
-    @Test
-    fun `WHEN validate BO promo has multiple green state orders THEN do apply BO promo`() {
-        // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 2,
-                        spId = 2,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 1,
-                        spId = 1,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                )
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-
-        // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        verify(exactly = 2) {
-            presenter.doApplyBo(any())
-        }
-        verify(inverse = true) {
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
-        }
-    }
+    // Test ShipmentPresenter.validateClearAllBoPromo()
 
     @Test
-    fun `WHEN validate BO promo has multiple green and red state orders THEN do apply and unapply BO promo`() {
+    fun `WHEN clear BO promo while user has active BO promo in checkout page and user success to clear used BO promo THEN call unapply BO promo`() {
         // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 2,
-                        spId = 2,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 1,
-                        spId = 1,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 5,
-                        spId = 5,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 6,
-                        spId = 6,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 6,
-                        spId = 6,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                )
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-
-        // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        verify(exactly = 2) {
-            presenter.doApplyBo(any()) // validate doApplyBo() called 2 times
-        }
-        verify(exactly = 3) {
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() called 3 times
-        }
-    }
-
-    // Test validateBoPromo() => Test with non BO orders (shippingId == 0 && spId == 0 && type != "logistic")
-
-    @Test
-    fun `WHEN validate BO promo has non BO orders THEN don't call apply and unapply BO promo`() {
-        // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 5,
-                        spId = 5,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 1,
-                        spId = 1,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                )
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-
-        // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        verify(inverse = true) {
-            presenter.doApplyBo(any()) // validate doApplyBo() not called
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
-        }
-    }
-
-    @Test
-    fun `WHEN validate BO promo has both BO orders and non BO orders THEN call apply and unapply BO promo`() {
-        // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    // valid green state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 7,
-                        spId = 7,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 5,
-                        spId = 5,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 1,
-                        spId = 1,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    // valid red state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 6,
-                        spId = 6,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    // valid green state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 10,
-                        spId = 10,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                )
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-
-        // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        verify(exactly = 2) {
-            presenter.doApplyBo(any()) // validate doApplyBo() called twice
-        }
-        verify(exactly = 1) {
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() called once
-        }
-    }
-
-    @Test
-    fun `WHEN validate BO promo has empty orders THEN don't call apply and unapply BO promo`() {
-        // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf()
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-
-        // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        verify(inverse = true) {
-            presenter.doApplyBo(any()) // validate doApplyBo() not called
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
-        }
-    }
-
-    // Test validateBoPromo() => Test reloadedUniqueIds
-
-    @Test
-    fun `WHEN validate BO promo has valid green or red orders THEN reloaded uniques ids should not be empty`() {
-        // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    // valid green state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 7,
-                        spId = 7,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 5,
-                        spId = 5,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 1,
-                        spId = 1,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    // valid red state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 6,
-                        spId = 6,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    // valid green state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 10,
-                        spId = 10,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                )
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-
-        // When
-        val reloadedUniqueIds = presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        assert(reloadedUniqueIds.size == 3)
-    }
-
-    @Test
-    fun `WHEN validate BO promo has invalid green or red orders THEN reloaded uniques ids should be empty`() {
-        // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 5,
-                        spId = 5,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 1,
-                        spId = 1,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                )
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-
-        // When
-        val reloadedUniqueIds = presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        assert(reloadedUniqueIds.size == 0)
-    }
-
-    @Test
-    fun `WHEN validate BO promo has empty orders THEN reloaded uniques ids should be empty`() {
-        // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf()
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-
-        // When
-        val reloadedUniqueIds = presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        assert(reloadedUniqueIds.size == 0)
-    }
-
-    // Test validateBoPromo() => Test unprocessedUniqueIds
-
-    @Test
-    fun `WHEN validate BO promo with unprocessed shipment in cart THEN call do unapply BO promo()`() {
-        // Given
-        val shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(
-                cartString = "111-111-111",
-                voucherLogisticItemUiModel = VoucherLogisticItemUiModel()
-            ),
-            ShipmentCartItemModel(
-                cartString = "222-222-222",
-                voucherLogisticItemUiModel = VoucherLogisticItemUiModel()
-            )
-        )
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    // valid green state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "222-222-222",
-                        shippingId = 7,
-                        spId = 7,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "111-111-111",
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "444-444-444",
-                        shippingId = 5,
-                        spId = 5,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "555-555-555",
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "666-666-666",
-                        shippingId = 1,
-                        spId = 1,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    // valid red state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "777-777-777",
-                        shippingId = 6,
-                        spId = 6,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    // valid green state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "888-888-888",
-                        shippingId = 10,
-                        spId = 10,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                )
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-
-        // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        verify(exactly = 2) {
-            presenter.doApplyBo(any())
-        }
-        verify(exactly = 2) {
-            presenter.doUnapplyBo(any(), any())
-        }
-    }
-
-    // Test validateBoPromo() => Test unappliedBoPromoUniqueIds (micro interaction)
-
-    @Test
-    fun `WHEN validate BO promo with valid green and red state THEN call renderUnapplyBoIncompleteShipment()`() {
-        // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    // valid green state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 7,
-                        spId = 7,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 5,
-                        spId = 5,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 1,
-                        spId = 1,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    // valid red state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 6,
-                        spId = 6,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    // valid green state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 10,
-                        spId = 10,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                )
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-        every { view.renderUnapplyBoIncompleteShipment(any()) } just runs
-
-        // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        verify(exactly = 1) {
-            view.renderUnapplyBoIncompleteShipment(any())
-        }
-    }
-
-    @Test
-    fun `WHEN validate BO promo with valid green state only THEN call renderUnapplyBoIncompleteShipment()`() {
-        // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    // valid green state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 7,
-                        spId = 7,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 5,
-                        spId = 5,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 1,
-                        spId = 1,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    // valid green state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 10,
-                        spId = 10,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                )
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-        every { view.renderUnapplyBoIncompleteShipment(any()) } just runs
-
-        // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        verify(inverse = true) {
-            view.renderUnapplyBoIncompleteShipment(any())
-        }
-    }
-
-    @Test
-    fun `WHEN validate BO promo with valid red state only THEN call renderUnapplyBoIncompleteShipment()`() {
-        // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 5,
-                        spId = 5,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 0,
-                        spId = 0,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 1,
-                        spId = 1,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    // valid red state
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        shippingId = 6,
-                        spId = 6,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                )
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-        every { view.renderUnapplyBoIncompleteShipment(any()) } just runs
-
-        // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        verify(exactly = 1) {
-            view.renderUnapplyBoIncompleteShipment(any())
-        }
-    }
-
-    @Test
-    fun `WHEN validate BO promo with empty orders THEN don't call renderUnapplyBoIncompleteShipment()`() {
-        // Given
-        val shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf()
-            )
-        )
-        presenter.shipmentCartItemModelList = shipmentCartItemModelList
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-        every { view.renderUnapplyBoIncompleteShipment(any()) } just runs
-
-        // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        verify(inverse = true) {
-            view.renderUnapplyBoIncompleteShipment(any())
-        }
-    }
-
-    // Test validateClearAllBoPromo()
-
-    @Test
-    fun `WHEN clear BO promo while user has active BO promo in checkout page then user success to clear used BO promo THEN call unapply BO promo`() {
-        // Given
-        val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartString = "111-222-333"
-            voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
-                code = "TESTBO"
-            )
-        }
         presenter.shipmentCartItemModelList = listOf(
-            shipmentCartItemModel
+            ShipmentCartItemModel().apply {
+                cartString = "111-111-111"
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TESTBO1"
+                )
+            },
+            ShipmentCartItemModel().apply {
+                cartString = "222-222-222"
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TESTBO2"
+                )
+            }
         )
         val lastValidateUseRequest = ValidateUsePromoRequest().apply {
             orders = listOf(
                 OrdersItem().apply {
-                    uniqueId = "111-222-333"
+                    uniqueId = "111-111-111"
+                    codes = mutableListOf()
+                },
+                OrdersItem().apply {
+                    uniqueId = "222-222-222"
                     codes = mutableListOf()
                 }
             )
         }
         presenter.setLatValidateUseRequest(lastValidateUseRequest)
 
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
-        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
-            cartString = "111-222-333",
-            cartItemModels = listOf(CartItemModel()),
-            shipmentCartData = ShipmentCartData(
-                boMetadata = BoMetadata(boType = 1)
-            )
-        )
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
-            ClearPromoUiModel(
-                successDataModel = SuccessDataUiModel(
-                    success = true,
-                    tickerMessage = ""
-                )
-            )
-        )
+        every { presenter.doUnapplyBo(any(), any()) } just runs
 
         // When
         presenter.validateClearAllBoPromo()
 
         // Then
-        verify { presenter.doUnapplyBo(any(), any()) }
+        verify(exactly = 2) { presenter.doUnapplyBo(any(), any()) }
     }
 
     @Test
-    fun `WHEN clear BO promo while user has active BO promo in checkout page then user failed to clear used BO promo THEN don't call unapply BO promo`() {
+    fun `WHEN clear BO promo while user has active BO promo in checkout page and user failed to clear used BO promo THEN don't call unapply BO promo`() {
         // Given
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartString = "111-222-333"
+            cartString = "111-111-111"
             voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
                 code = "TESTBO"
             )
@@ -996,24 +459,14 @@ class ShipmentPresenterBoUnstackTest {
         val lastValidateUseRequest = ValidateUsePromoRequest().apply {
             orders = listOf(
                 OrdersItem().apply {
-                    uniqueId = "111-222-333"
-                    codes = mutableListOf(
-                        "TESTBO"
-                    )
+                    uniqueId = "111-111-111"
+                    codes = mutableListOf("TESTBO")
                 }
             )
         }
         presenter.setLatValidateUseRequest(lastValidateUseRequest)
 
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
-            ClearPromoUiModel(
-                successDataModel = SuccessDataUiModel(
-                    success = true,
-                    tickerMessage = ""
-                )
-            )
-        )
+        every { presenter.doUnapplyBo(any(), any()) } just runs
 
         // When
         presenter.validateClearAllBoPromo()
@@ -1026,7 +479,7 @@ class ShipmentPresenterBoUnstackTest {
     fun `WHEN clear BO promo while user has no active BO promo in checkout page then clear all promo THEN don't call unapply BO promo`() {
         // Given
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartString = "111-222-333"
+            cartString = "111-111-111"
             voucherLogisticItemUiModel = null
         }
         presenter.shipmentCartItemModelList = listOf(
@@ -1035,22 +488,14 @@ class ShipmentPresenterBoUnstackTest {
         val lastValidateUseRequest = ValidateUsePromoRequest().apply {
             orders = listOf(
                 OrdersItem().apply {
-                    uniqueId = "111-222-333"
+                    uniqueId = "111-111-111"
                     codes = mutableListOf()
                 }
             )
         }
         presenter.setLatValidateUseRequest(lastValidateUseRequest)
 
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
-            ClearPromoUiModel(
-                successDataModel = SuccessDataUiModel(
-                    success = true,
-                    tickerMessage = ""
-                )
-            )
-        )
+        every { presenter.doUnapplyBo(any(), any()) } just runs
 
         // When
         presenter.validateClearAllBoPromo()
@@ -1063,7 +508,7 @@ class ShipmentPresenterBoUnstackTest {
     fun `WHEN clear BO promo while user has no active BO promo in checkout page then apply new promo THEN don't call unapply BO promo`() {
         // Given
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartString = "111-222-333"
+            cartString = "111-111-111"
             voucherLogisticItemUiModel = null
         }
         presenter.shipmentCartItemModelList = listOf(
@@ -1072,25 +517,14 @@ class ShipmentPresenterBoUnstackTest {
         val lastValidateUseRequest = ValidateUsePromoRequest().apply {
             orders = listOf(
                 OrdersItem().apply {
-                    uniqueId = "111-222-333"
-                    codes = mutableListOf(
-                        "TESTBO",
-                        "TESTNONBO"
-                    )
+                    uniqueId = "111-111-111"
+                    codes = mutableListOf("TESTBO", "TESTNONBO")
                 }
             )
         }
         presenter.setLatValidateUseRequest(lastValidateUseRequest)
 
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
-            ClearPromoUiModel(
-                successDataModel = SuccessDataUiModel(
-                    success = true,
-                    tickerMessage = ""
-                )
-            )
-        )
+        every { presenter.doUnapplyBo(any(), any()) } just runs
 
         // When
         presenter.validateClearAllBoPromo()
@@ -1103,7 +537,7 @@ class ShipmentPresenterBoUnstackTest {
     fun `WHEN clear BO promo with cart item unique_id different from validateUse unique_id THEN don't call unapply BO promo`() {
         // Given
         val shipmentCartItemModel = ShipmentCartItemModel().apply {
-            cartString = "111-222-333"
+            cartString = "111-111-111"
             voucherLogisticItemUiModel = null
         }
         presenter.shipmentCartItemModelList = listOf(
@@ -1112,22 +546,14 @@ class ShipmentPresenterBoUnstackTest {
         val lastValidateUseRequest = ValidateUsePromoRequest().apply {
             orders = listOf(
                 OrdersItem().apply {
-                    uniqueId = "111-222-111"
+                    uniqueId = "999-999-999"
                     codes = mutableListOf()
                 }
             )
         }
         presenter.setLatValidateUseRequest(lastValidateUseRequest)
 
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
-            ClearPromoUiModel(
-                successDataModel = SuccessDataUiModel(
-                    success = true,
-                    tickerMessage = ""
-                )
-            )
-        )
+        every { presenter.doUnapplyBo(any(), any()) } just runs
 
         // When
         presenter.validateClearAllBoPromo()
@@ -1136,13 +562,125 @@ class ShipmentPresenterBoUnstackTest {
         verify(inverse = true) { presenter.doUnapplyBo(any(), any()) }
     }
 
-    // Test clearOrderPromoCodeFromLastValidateUseRequest()
+    @Test
+    fun `WHEN clear all BO promo with cart list null THEN don't clear all BO promo`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf()
+        presenter.setLatValidateUseRequest(null)
+
+        every { presenter.doUnapplyBo(any(), any()) } just runs
+
+        // When
+        presenter.validateClearAllBoPromo()
+
+        // Then
+        verify(inverse = true) {
+            presenter.doUnapplyBo(any(), any())
+        }
+    }
 
     @Test
-    fun `WHEN clearing last validate use with lastValidateUseRequest null THEN last validate use's should still be null`() {
+    fun `WHEN clear all BO promo with last validate use null THEN don't clear all BO promo`() {
+        // Given
+        presenter.shipmentCartItemModelList = null
+        presenter.setLatValidateUseRequest(ValidateUsePromoRequest())
+
+        every { presenter.doUnapplyBo(any(), any()) } just runs
+
+        // When
+        presenter.validateClearAllBoPromo()
+
+        // Then
+        verify(inverse = true) {
+            presenter.doUnapplyBo(any(), any())
+        }
+    }
+
+    // Test ShipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(...)
+
+    @Test
+    fun `WHEN clear order from last validate use with valid unique id with valid promo code THEN clear last validate use promo code`() {
         // Given
         val uniqueId = "111-111-111"
-        val promoCode = "BOCODE"
+        val promoCode = "TESTBO"
+
+        presenter.setLatValidateUseRequest(
+            ValidateUsePromoRequest(
+                orders = listOf(
+                    OrdersItem(
+                        uniqueId = "111-111-111",
+                        codes = mutableListOf("TESTBO")
+                    )
+                )
+            )
+        )
+
+        // When
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+
+        // Then
+        val order = presenter.lastValidateUseRequest.orders.first { it.uniqueId == uniqueId }
+        assert(order.codes.size == 0)
+        assert(!order.codes.contains(promoCode))
+    }
+
+    @Test
+    fun `WHEN clear order from last validate use with valid unique id with invalid promo code THEN do nothing`() {
+        // Given
+        val uniqueId = "111-111-111"
+        val promoCode = "TESTBO"
+
+        presenter.setLatValidateUseRequest(
+            ValidateUsePromoRequest(
+                orders = listOf(
+                    OrdersItem(
+                        uniqueId = "111-111-111",
+                        codes = mutableListOf("TESTNONBO")
+                    )
+                )
+            )
+        )
+
+        // When
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+
+        // Then
+        val order = presenter.lastValidateUseRequest.orders.first { it.uniqueId == uniqueId }
+        assert(order.codes.size > 0)
+        assert(!order.codes.contains(promoCode))
+    }
+
+    @Test
+    fun `WHEN clear order from last validate use with invalid unique id THEN do nothing`() {
+        // Given
+        val uniqueId = "111-111-111"
+        val promoCode = "TESTBO"
+
+        presenter.setLatValidateUseRequest(
+            ValidateUsePromoRequest(
+                orders = listOf(
+                    OrdersItem(
+                        uniqueId = "222-222-222",
+                        codes = mutableListOf("TESTBO")
+                    )
+                )
+            )
+        )
+
+        // When
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+
+        // Then
+        val order = presenter.lastValidateUseRequest.orders.firstOrNull { it.uniqueId == uniqueId }
+        assert(order == null)
+    }
+
+    @Test
+    fun `WHEN clear order from last validate use with last validate use null THEN do nothing`() {
+        // Given
+        val uniqueId = "111-111-111"
+        val promoCode = "TESTBO"
+
         presenter.setLatValidateUseRequest(null)
 
         // When
@@ -1153,99 +691,259 @@ class ShipmentPresenterBoUnstackTest {
     }
 
     @Test
-    fun `WHEN clearing last validate use request with matching unique id and promo code THEN order with matching unique id should be cleared`() {
+    fun `WHEN clear order from last validate use with last validate use empty THEN do nothing`() {
         // Given
         val uniqueId = "111-111-111"
-        val promoCode = "CODE1"
-        presenter.setLatValidateUseRequest(ValidateUsePromoRequest(
-            orders = listOf(
-                OrdersItem(
-                    uniqueId = "111-111-111",
-                    codes = mutableListOf("CODE1")
-                ),
-                OrdersItem(
-                    uniqueId = "222-222-222",
-                    codes = mutableListOf("CODE2")
-                ),
-                OrdersItem(
-                    uniqueId = "333-333-333",
-                    codes = mutableListOf("CODE3")
-                ),
-            )
-        ))
+        val promoCode = "TESTBO"
+
+        presenter.setLatValidateUseRequest(ValidateUsePromoRequest(orders = emptyList()))
 
         // When
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        assert(presenter.lastValidateUseRequest.orders.size == 3)
-
-        val matchingOrder = presenter.lastValidateUseRequest.orders.find { it.uniqueId == uniqueId }
-        assert(matchingOrder != null)
-        assert(matchingOrder?.codes?.find { it == promoCode } == null)
+        assert(presenter.lastValidateUseRequest.orders.isEmpty())
     }
 
+    // Test ShipmentPresenter.validateBoPromo(...)
+
     @Test
-    fun `WHEN clearing last validate use request with matching unique id but not matching promo code THEN orders should not be changed`() {
+    fun `WHEN validate BO promo has multiple green state orders and cart item with voucher logistic empty THEN do apply BO promo`() {
         // Given
-        val uniqueId = "111-111-111"
-        val promoCode = "CODE4"
-        presenter.setLatValidateUseRequest(ValidateUsePromoRequest(
-            orders = listOf(
-                OrdersItem(
-                    uniqueId = "111-111-111",
-                    codes = mutableListOf("CODE1")
-                ),
-                OrdersItem(
-                    uniqueId = "222-222-222",
-                    codes = mutableListOf("CODE2")
-                ),
-                OrdersItem(
-                    uniqueId = "333-333-333",
-                    codes = mutableListOf("CODE3")
-                ),
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "111-111-111",
+                        code = "TEST1",
+                        shippingId = 2,
+                        spId = 2,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    ),
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "222-222-222",
+                        code = "TEST2",
+                        shippingId = 1,
+                        spId = 1,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    ),
+                )
             )
-        ))
+        )
+        presenter.shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
+
+        every { presenter.doApplyBo(any()) } just runs
+        every { presenter.doUnapplyBo(any(), any()) } just runs
 
         // When
-        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+        presenter.validateBoPromo(validateUsePromoRevampUiModel)
 
         // Then
-        assert(presenter.lastValidateUseRequest.orders.size == 3)
-        presenter.lastValidateUseRequest.orders.forEach {
-            assert(it.codes.isNotEmpty())
+        verify(exactly = 2) {
+            presenter.doApplyBo(any())
+        }
+        verify(inverse = true) {
+            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
         }
     }
 
     @Test
-    fun `WHEN clearing last validate use request with no matching unique id THEN orders should not be changed`() {
+    fun `WHEN validate BO promo has multiple green state orders and cart item with voucher logistic not empty THEN do apply and unapply BO promo`() {
         // Given
-        val uniqueId = "666-666-666"
-        val promoCode = "CODE1"
-        presenter.setLatValidateUseRequest(ValidateUsePromoRequest(
-            orders = listOf(
-                OrdersItem(
-                    uniqueId = "111-111-111",
-                    codes = mutableListOf("CODE1")
-                ),
-                OrdersItem(
-                    uniqueId = "222-222-222",
-                    codes = mutableListOf("CODE2")
-                ),
-                OrdersItem(
-                    uniqueId = "333-333-333",
-                    codes = mutableListOf("CODE3")
-                ),
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "111-111-111",
+                        code = "TEST1",
+                        shippingId = 2,
+                        spId = 2,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    ),
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "222-222-222",
+                        code = "TEST2",
+                        shippingId = 1,
+                        spId = 1,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    ),
+                )
             )
-        ))
+        )
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "333-333-333",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TEST3",
+                )
+            ),
+        )
+
+        every { presenter.doApplyBo(any()) } just runs
+        every { presenter.doUnapplyBo(any(), any()) } just runs
 
         // When
-        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+        presenter.validateBoPromo(validateUsePromoRevampUiModel)
 
         // Then
-        assert(presenter.lastValidateUseRequest.orders.size == 3)
-        presenter.lastValidateUseRequest.orders.forEach {
-            assert(it.codes.isNotEmpty())
+        verify(exactly = 2) {
+            presenter.doApplyBo(any()) // validate doApplyBo() called 2 times
+        }
+        verify(exactly = 1) {
+            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() called 1 times
+        }
+    }
+
+    @Test
+    fun `WHEN validate BO promo has no green state orders and cart item with voucher logistic empty THEN don't apply and unapply BO promo`() {
+        // Given
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "111-111-111",
+                        code = "TEST1",
+                        shippingId = 2,
+                        spId = 2,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "red")
+                    ),
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "222-222-222",
+                        code = "TEST2",
+                        shippingId = 1,
+                        spId = 1,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "red")
+                    ),
+                )
+            )
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        every { presenter.doApplyBo(any()) } just runs
+        every { presenter.doUnapplyBo(any(), any()) } just runs
+
+        // When
+        presenter.validateBoPromo(validateUsePromoRevampUiModel)
+
+        // Then
+        verify(inverse = true) {
+            presenter.doApplyBo(any()) // validate doApplyBo() not called
+            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+        }
+    }
+
+    @Test
+    fun `WHEN validate BO promo has empty logistic voucher order and cart item with voucher logistic not empty THEN do unapply BO promo`() {
+        // Given
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf()
+            )
+        )
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "333-333-333",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TEST3",
+                )
+            ),
+            ShipmentCartItemModel(
+                cartString = "555-555-555",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TEST5",
+                )
+            ),
+        )
+
+        every { presenter.doApplyBo(any()) } just runs
+        every { presenter.doUnapplyBo(any(), any()) } just runs
+
+        // When
+        presenter.validateBoPromo(validateUsePromoRevampUiModel)
+
+        // Then
+        verify(inverse = true) {
+            presenter.doApplyBo(any()) // validate doApplyBo() not called
+        }
+        verify(exactly = 2) {
+            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() called 2 times
+        }
+    }
+
+    @Test
+    fun `WHEN validate BO promo has no logistic voucher order and cart item with voucher logistic empty THEN don't apply and unapply BO promo`() {
+        // Given
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "111-111-111",
+                        code = "TEST1",
+                        shippingId = 0,
+                        spId = 0,
+                        type = "merchant",
+                        messageUiModel = MessageUiModel(state = "green")
+                    ),
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "222-222-222",
+                        code = "TEST2",
+                        shippingId = 1,
+                        spId = 1,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "red")
+                    ),
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "333-333-333",
+                        code = "TEST3",
+                        shippingId = 0,
+                        spId = 0,
+                        type = "merchant",
+                        messageUiModel = MessageUiModel(state = "red")
+                    ),
+                )
+            )
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        every { presenter.doApplyBo(any()) } just runs
+        every { presenter.doUnapplyBo(any(), any()) } just runs
+
+        // When
+        presenter.validateBoPromo(validateUsePromoRevampUiModel)
+
+        // Then
+        verify(inverse = true) {
+            presenter.doApplyBo(any()) // validate doApplyBo() not called
+            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+        }
+    }
+
+    @Test
+    fun `WHEN validate BO promo has empty logistic voucher order and cart item with voucher logistic empty THEN don't apply and unapply BO promo`() {
+        // Given
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf()
+            )
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        every { presenter.doApplyBo(any()) } just runs
+        every { presenter.doUnapplyBo(any(), any()) } just runs
+
+        // When
+        presenter.validateBoPromo(validateUsePromoRevampUiModel)
+
+        // Then
+        verify(inverse = true) {
+            presenter.doApplyBo(any()) // validate doApplyBo() not called
+            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
         }
     }
 }
