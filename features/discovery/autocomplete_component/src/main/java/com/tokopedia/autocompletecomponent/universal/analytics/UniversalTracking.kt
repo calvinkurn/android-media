@@ -15,12 +15,9 @@ object UniversalTracking {
         products: ArrayList<Any>,
     ) {
         val impressionDataLayer = DataLayer.mapOf(
-            UniversalTrackingConstant.EVENT,
-            UniversalEventTracking.Event.PRODUCT_VIEW,
-            UniversalTrackingConstant.EVENT_CATEGORY,
-            UniversalEventTracking.Category.SEARCH_RESULT,
-            UniversalTrackingConstant.EVENT_ACTION,
-            UniversalEventTracking.Action.IMPRESSION_CAROUSEL_PRODUCT,
+            UniversalTrackingConstant.EVENT, UniversalEventTracking.Event.PRODUCT_VIEW,
+            UniversalTrackingConstant.EVENT_CATEGORY, UniversalEventTracking.Category.SEARCH_RESULT,
+            UniversalTrackingConstant.EVENT_ACTION, UniversalEventTracking.Action.IMPRESSION_CAROUSEL_PRODUCT,
             UniversalTrackingConstant.EVENT_LABEL, eventLabel,
             ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
@@ -39,12 +36,9 @@ object UniversalTracking {
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
-                UniversalTrackingConstant.EVENT,
-                UniversalEventTracking.Event.PRODUCT_CLICK,
-                UniversalTrackingConstant.EVENT_CATEGORY,
-                UniversalEventTracking.Category.SEARCH_RESULT,
-                UniversalTrackingConstant.EVENT_ACTION,
-                UniversalEventTracking.Action.CLICK_CAROUSEL_PRODUCT,
+                UniversalTrackingConstant.EVENT, UniversalEventTracking.Event.PRODUCT_CLICK,
+                UniversalTrackingConstant.EVENT_CATEGORY, UniversalEventTracking.Category.SEARCH_RESULT,
+                UniversalTrackingConstant.EVENT_ACTION, UniversalEventTracking.Action.CLICK_CAROUSEL_PRODUCT,
                 UniversalTrackingConstant.EVENT_LABEL, eventLabel,
                 ECOMMERCE, DataLayer.mapOf("click",
                     DataLayer.mapOf(
