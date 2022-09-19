@@ -23,12 +23,26 @@ fun NavGraphBuilder.splashComposable(
 }
 
 fun NavGraphBuilder.homeComposable(
+    navigateToNotification: () -> Unit,
     navigateToNewOrderSummary: () -> Unit
 ) {
     composable(
         route = ScreenConstant.HOME_SCREEN
     ) {
-        HomeScreen(navigateToNewOrderSummary)
+        HomeScreen(
+            navigateToNotification = navigateToNotification,
+            navigateToNewOrderSummary = navigateToNewOrderSummary
+        )
+    }
+}
+
+fun NavGraphBuilder.notificationComposable(
+    navigateToNotification: () -> Unit
+) {
+    composable(
+        route = ScreenConstant.NOTIFICATION
+    ) {
+//        NotificationS
     }
 }
 

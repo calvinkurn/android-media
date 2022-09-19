@@ -71,12 +71,13 @@ private fun generateMenuItem(
 
 @Composable
 fun HomeScreen(
+    navigateToNotification: () -> Unit,
     navigateToNewOrderSummary: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
 
     val menuItems = generateMenuItem(
-        navigateToNotification = {},
+        navigateToNotification = navigateToNotification,
         navigateToChat = {},
         navigateToNewOrderList = {},
         navigateToNewOrderSummary = navigateToNewOrderSummary

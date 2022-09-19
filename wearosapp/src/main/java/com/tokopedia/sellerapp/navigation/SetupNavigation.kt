@@ -28,6 +28,7 @@ fun SetupNavigation(
             navigateToHomeScreen = nav.toHomeScreen
         )
         homeComposable(
+            navigateToNotification = nav.toNotificationScreen,
             navigateToNewOrderSummary = nav.toNewOrderSummaryScreen
         )
         newOrderSummaryScreenComposable(

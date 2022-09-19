@@ -5,6 +5,7 @@ import com.tokopedia.sellerapp.util.ScreenConstant.HOME_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_DETAIL_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_LIST_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_SUMMARY_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.NOTIFICATION
 import com.tokopedia.sellerapp.util.ScreenConstant.SPLASH_SCREEN
 
 class ScreenNavigation(navController: NavController) {
@@ -14,6 +15,9 @@ class ScreenNavigation(navController: NavController) {
                 inclusive = true
             }
         }
+    }
+    val toNotificationScreen: () -> Unit = {
+        navController.navigate(route = NOTIFICATION)
     }
     val toNewOrderSummaryScreen: () -> Unit = {
         navController.navigate(route = NEW_ORDER_SUMMARY_SCREEN)

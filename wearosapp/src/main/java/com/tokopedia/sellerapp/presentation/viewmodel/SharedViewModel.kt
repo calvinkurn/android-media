@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.MessageConstant.ACCEPT_BULK_ORDER_PATH
+import com.tokopedia.sellerapp.util.MessageConstant.GET_NOTIFICATION_LIST_PATH
 import com.tokopedia.sellerapp.util.MessageConstant.GET_ORDER_LIST_PATH
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,6 +29,10 @@ class SharedViewModel @Inject constructor(
     val orderList: StateFlow<UiState<List<String>>>
         get() = _orderList
 
+    private val _notificationList: MutableStateFlow<UiState<List<String>>> = MutableStateFlow(UiState.Idle())
+    val notificationList: StateFlow<UiState<List<String>>>
+    get() = _notificationList
+
     private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
     val action: StateFlow<UiState<Boolean>>
         get() = _action
@@ -36,6 +41,11 @@ class SharedViewModel @Inject constructor(
         when(messageEvent.path) {
             GET_ORDER_LIST_PATH -> {
                 _orderList.value = UiState.Success(
+                    data = listOf(messageEvent.data.decodeToString())
+                )
+            }
+            GET_NOTIFICATION_LIST_PATH -> {
+                _notificationList.value = UiState.Success(
                     data = listOf(messageEvent.data.decodeToString())
                 )
             }
