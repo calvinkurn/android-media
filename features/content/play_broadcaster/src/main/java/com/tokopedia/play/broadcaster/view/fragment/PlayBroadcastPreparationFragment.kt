@@ -878,6 +878,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun showUGCOnboardingBottomSheet(onboardingType: Int) {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment = childFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
+        if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
         try {
             val bundle = Bundle().apply {
                 putInt(UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE, onboardingType)
