@@ -42,6 +42,7 @@ import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.vi
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RegistrationPhoneState
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
@@ -156,7 +157,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 email = paramEmail,
                 phone = binding?.fieldInputPhone?.editText?.text.toString(),
                 fullName = paramName,
-                password = paramPassword,
+                encryptedPassword = paramPassword,
                 validateToken = paramToken,
                 hash = paramHash
             )
@@ -164,7 +165,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             viewModel.registerV2(
                 email = paramEmail,
                 fullName = paramName,
-                password = paramPassword,
+                encryptedPassword = paramPassword,
                 validateToken = paramToken,
                 hash = paramHash
             )
@@ -249,11 +250,15 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         viewModel.userPhoneUpdate.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    goToHome()
+                    if (it.data.data.errors.isEmpty()) {
+                        goToHome()
+                    } else {
+                        val messageError = it.data.data.errors.first()
+                        onUserPhoneUpdateFailed(MessageErrorException(messageError))
+                    }
                 }
                 is Fail -> {
-                    handleGlobalError(it.throwable)
-                    onEntireLoadingFailed()
+                    onUserPhoneUpdateFailed(it.throwable)
                 }
             }
         }
@@ -308,19 +313,15 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         viewModel.userProfileValidate.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    showDialogConfirmPhone(it.data)
+                    if (it.data.data.isValid) {
+                        showDialogConfirmPhone(binding?.fieldInputPhone?.editText?.text.toString())
+                    } else {
+                        val message = it.data.data.message
+                        onUserProfileValidateFailed(MessageErrorException(message))
+                    }
                 }
                 is Fail -> {
-                    showRegisteredPhoneCheckLoading(false)
-
-                    when (it.throwable) {
-                        is AkamaiErrorException -> {
-                            showDialogFailed()
-                        }
-                        else -> {
-                            showToasterError(it.throwable)
-                        }
-                    }
+                    onUserProfileValidateFailed(it.throwable)
                 }
             }
         }
@@ -412,6 +413,24 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             }
         }
         showToasterError(throwable)
+    }
+
+    private fun onUserProfileValidateFailed(throwable: Throwable) {
+        showRegisteredPhoneCheckLoading(false)
+
+        when (throwable) {
+            is AkamaiErrorException -> {
+                showDialogFailed()
+            }
+            else -> {
+                showToasterError(throwable)
+            }
+        }
+    }
+
+    private fun onUserPhoneUpdateFailed(throwable: Throwable) {
+        handleGlobalError(throwable)
+        onEntireLoadingFailed()
     }
 
     private fun onSuccessRegistered() {

@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data
+package com.tokopedia.sessioncommon.data.register
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
@@ -26,5 +26,5 @@ data class RegisterV2Param(
     val validateToken: String = "",
 
     @SerializedName("h")
-    val h: String = ""
+    val hash: String = ""
 ) : GqlParam

@@ -1,9 +1,9 @@
-package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.abstraction
+package com.tokopedia.sessioncommon.domain.commonaction
 
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetRegisterV2UseCase
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.Register
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.RegisterV2Param
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.data.register.Register
+import com.tokopedia.sessioncommon.data.register.RegisterV2Model
+import com.tokopedia.sessioncommon.data.register.RegisterV2Param
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -11,42 +11,20 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.util.EncoderDecoder
 
-abstract class RegisterV2Abstraction(
-    private val email: String = "",
-    private val phone: String = "",
-    private val fullName: String,
-    private val encryptedPassword: String,
-    private val validateToken: String,
-    private val hash: String,
-    private val getRegisterV2UseCase: GetRegisterV2UseCase,
+abstract class RegisterV2SaveSession(
+    private val registerV2Model: RegisterV2Model,
     private val userSession: UserSessionInterface
 ) {
-    private suspend fun result(): Result<Register> {
 
-        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+    private fun result(): Result<Register> {
 
-        val registerV2Param = RegisterV2Param(
-            regType = REGISTRATION_TYPE,
-            osType = OS_TYPE,
-            fullName = fullName,
-            email = email,
-            phone = phone,
-            password = encryptedPassword,
-            validateToken = validateToken,
-            h = hash
-        )
-
-        val responseRegisterV2 = getRegisterV2UseCase(registerV2Param)
-
-        val result = onSuccessRegisterV2Request(responseRegisterV2.register)
+        val result = onSuccessRegisterV2Request(registerV2Model.register)
 
         when (result) {
-            is Success -> {
-                loadUserInfo()
-            }
             is Fail -> {
                 userSession.clearToken()
             }
+            else -> {}
         }
 
         return result
@@ -76,12 +54,11 @@ abstract class RegisterV2Abstraction(
         )
     }
 
-    protected abstract suspend fun loadUserInfo()
-
-    suspend fun data(): Result<Register> = result()
+    fun data(): Result<Register> = result()
 
     companion object {
         private const val REGISTRATION_TYPE = "email"
         private const val OS_TYPE = "1"
     }
+
 }
