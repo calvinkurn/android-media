@@ -459,7 +459,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openFlight(Uri uri, Bundle bundle) {
-        RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
+        List<String> linkSegment = uri.getPathSegments();
+        if (linkSegment.size() > 1) {
+            if (linkSegment.get(1).equals("invoice")) {
+                // eg : https://www.tokopedia.com/flight/invoice?id=xxxx
+                String applink = ApplinkConstInternalTravel.FLIGHT_ORDER_DETAIL.replace("{orderId}", uri.getQueryParameter("id"));
+                RouteManager.route(context, applink + "?" + "open_invoice=1");
+            } else {
+                RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
+            }
+        }else {
+            RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
+        }
+        context.finish();
     }
 
     private void openProfile(List<String> linkSegment, Bundle bundle) {

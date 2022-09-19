@@ -36,4 +36,6 @@ object ApplinkConstInternalTravel {
     const val EXTRA_DESTINATION_WEB_URL = "EXTRA_DESTINATION_WEB_URL"
 
     const val TRAVEL_ACTION = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TRAVEL_SLICE/main"
+
+    const val FLIGHT_ORDER_DETAIL = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_FLIGHT/order/{orderId}"
 }
