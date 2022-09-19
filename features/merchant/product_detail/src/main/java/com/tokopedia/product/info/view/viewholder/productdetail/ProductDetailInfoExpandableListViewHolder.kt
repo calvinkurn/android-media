@@ -31,8 +31,9 @@ class ProductDetailInfoExpandableListViewHolder(
     private val binding = BsItemProductDetailExpandableListBinding.bind(view)
 
     override fun bind(element: ProductDetailInfoExpandableListDataModel) {
-        binding.expandableTitleChevron.titleText =
+        binding.expandableTitleChevron.titleText = element.title.ifBlank {
             view.context.getString(R.string.merchant_product_detail_shop_notes_title)
+        }
         setupExpandableItem(element)
     }
 
