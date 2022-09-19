@@ -538,12 +538,7 @@
           "destination_activity": "com.tokopedia.recharge_credit_card.RechargeCCActivity", 
           "deeplink": "tokopedia-android-internal://recharge/cc", 
           "deeplink_variable": "ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.digital.home.old.presentation.activity.DigitalHomePageActivity", 
-          "deeplink": "tokopedia-android-internal://recharge/home", 
-          "deeplink_variable": "ApplinkConsInternalDigital.SUBHOMEPAGE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity", 
           "deeplink": "tokopedia-android-internal://recharge/home/dynamic", 
