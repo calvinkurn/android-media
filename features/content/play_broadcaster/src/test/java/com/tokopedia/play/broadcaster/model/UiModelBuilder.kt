@@ -1,6 +1,9 @@
 package com.tokopedia.play.broadcaster.model
 
 import com.google.gson.Gson
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
@@ -177,6 +180,36 @@ class UiModelBuilder {
             }),
             listOfChoices = choices,
             reward = reward
+        )
+    }
+
+    fun buildAccountListModel(
+        idShop: String = "",
+        idBuyer: String = "",
+        tncShop: Boolean = false,
+        usernameShop: Boolean = true,
+        tncBuyer: Boolean = false,
+        usernameBuyer: Boolean = false,
+    ): List<ContentAccountUiModel> {
+        return listOf(
+            ContentAccountUiModel(
+                id = idShop,
+                type = TYPE_SHOP,
+                name = "Shop",
+                iconUrl = "icon.url.shop",
+                badge = "icon.badge",
+                hasUsername = usernameShop,
+                hasAcceptTnc = tncShop
+            ),
+            ContentAccountUiModel(
+                id = idBuyer,
+                type = TYPE_USER,
+                name = "Buyer",
+                iconUrl = "icon.url.shop",
+                badge = "icon.badge",
+                hasUsername = usernameBuyer,
+                hasAcceptTnc = tncBuyer
+            ),
         )
     }
 }
