@@ -5,27 +5,27 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.databinding.FilterPriceRangeItemBinding
 
-class PriceRangeCbItemAdapter(
+class PriceRangeFilterCheckboxItemAdapter(
     private val priceRangeFilterList: List<PriceRangeFilterCheckboxItemUiModel>,
     private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
-) : RecyclerView.Adapter<PriceRangeCbItemViewHolder>() {
+) : RecyclerView.Adapter<PriceRangeFilterCheckboxItemViewHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): PriceRangeCbItemViewHolder {
+    ): PriceRangeFilterCheckboxItemViewHolder {
         val binding = FilterPriceRangeItemBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return PriceRangeCbItemViewHolder(
+        return PriceRangeFilterCheckboxItemViewHolder(
             binding,
             priceRangeFilterCheckboxListener
         )
     }
 
-    override fun onBindViewHolder(holder: PriceRangeCbItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PriceRangeFilterCheckboxItemViewHolder, position: Int) {
         holder.bind(priceRangeFilterList[position], priceRangeFilterList.size)
     }
 

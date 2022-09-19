@@ -54,6 +54,11 @@ class TokofoodFilterSortMapper @Inject constructor() {
         }
     }
 
+    fun getCurrentSortKey(uiModels: List<TokofoodSortFilterItemUiModel>?): String {
+        return uiModels?.filterIsInstance<TokofoodSortItemUiModel>()
+            ?.firstOrNull()?.sortList?.firstOrNull()?.key.orEmpty()
+    }
+
     private fun convertToFilterItemUiModel(filter: Filter): TokofoodFilterItemUiModel {
         return TokofoodFilterItemUiModel(
             sortFilterItem = filter.convertToSortFilterItem(),

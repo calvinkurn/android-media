@@ -36,6 +36,7 @@ import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErr
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentSearchResultBinding
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
+import com.tokopedia.tokofood.feature.search.searchresult.analytics.TokofoodSearchResultAnalytics
 import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultAdapterTypeFactory
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.TokofoodSearchResultDiffer
@@ -71,6 +72,9 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var analytics: TokofoodSearchResultAnalytics
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(TokofoodSearchResultPageViewModel::class.java)
@@ -133,35 +137,45 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onOpenFullFilterBottomSheet() {
+        analytics.sendCompleteFilterClickTracking(keyword)
         viewModel.openDetailFilterBottomSheet()
     }
 
     override fun onOpenQuickFilterBottomSheet(sortList: List<Sort>) {
+        val sortValue = viewModel.getCurrentSortValue()
+        val destinationId = getDestinationId()
+        analytics.sendSortClickTracking(keyword, sortValue, destinationId)
         showQuickSortBottomSheet(sortList)
     }
 
-    override fun onOpenQuickFilterBottomSheet(filter: Filter) {
+    override fun onOpenQuickFilterBottomSheet(filter: Filter, isSelected: Boolean) {
+        analytics.sendMiniFilterClickTracking(keyword, filter.options, isSelected)
         showQuickFilterBottomSheet(filter)
     }
 
     override fun onSelectSortChip(sort: Sort, isSelected: Boolean) {
+        val destinationId = getDestinationId()
+        analytics.sendSortClickTracking(keyword, sort.value, destinationId)
         viewModel.applySort(sort, isSelected)
     }
 
-    override fun onSelectFilterChip(filter: Filter) {
+    override fun onSelectFilterChip(filter: Filter, isSelected: Boolean) {
+        analytics.sendMiniFilterClickTracking(keyword, filter.options, isSelected)
         viewModel.applyFilter(filter)
     }
 
     override fun onImpressCompleteFilterChip() {
-        // TODO("Not yet implemented")
+        analytics.sendCompleteFilterImpressionTracking(keyword, getDestinationId())
     }
 
-    override fun onImpressSortChip() {
-        // TODO("Not yet implemented")
+    override fun onImpressSortChip(sorts: List<Sort>) {
+        val sortValue = viewModel.getCurrentSortValue()
+        val destinationId = getDestinationId()
+        analytics.sendSortImpressionTracking(keyword, destinationId, sorts, sortValue)
     }
 
-    override fun onImpressFilterChip() {
-        // TODO("Not yet implemented")
+    override fun onImpressFilterChip(options: List<Option>) {
+        analytics.sendMiniFilterImpressionTracking(keyword, options, getDestinationId())
     }
 
     override fun onClickRetryError() {
@@ -169,15 +183,23 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onClickMerchant(merchant: Merchant, position: Int) {
-        goToMerchantPage(merchant)
+        analytics.sendMerchantCardClickTracking(
+            destinationId = getDestinationId(),
+            keyword = keyword,
+            merchant = merchant,
+            sortValue = viewModel.getCurrentSortValue(),
+            index = position
+        )
+        goToMerchantPage(merchant.applink)
     }
 
-    override fun onImpressMerchant(merchant: Merchant, position: Int) {
-        // TODO: Add tracker
-    }
-
-    override fun onBranchButtonClicked(branchApplink: String) {
-        TokofoodRouteManager.routePrioritizeInternal(context, branchApplink)
+    override fun onBranchButtonClicked(merchant: Merchant) {
+        analytics.sendOtherBranchesClickTracking(
+            destinationId = getDestinationId(),
+            keyword = keyword,
+            merchant = merchant
+        )
+        TokofoodRouteManager.routePrioritizeInternal(context, merchant.branchApplink)
     }
 
     override fun onResetFilterButtonClicked() {
@@ -193,6 +215,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        analytics.sendSubmitFilterClickTracking()
         viewModel.resetParams(applySortFilterModel.selectedFilterMapParameter + applySortFilterModel.selectedSortMapParameter)
     }
 
@@ -225,6 +248,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     override fun getLocalizingAddressHostSourceData(): String = SOURCE
 
     override fun onLocalizingAddressLoginSuccess() {}
+
+    override fun onClickChooseAddressTokoNowTracker() {
+        analytics.sendAddressWidgetClickTracking(getDestinationId())
+    }
 
     override fun onApplyPriceRange(checkedOptions: List<Option>) {
         viewModel.applyOptions(checkedOptions)
@@ -384,8 +411,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                     this
                 )
             }
-        } else {
-            // TODO: Create method to change tab values
         }
         tokofoodSearchFilterTab?.setQuickFilter(uiModels)
     }
@@ -511,9 +536,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         return context?.getString(com.tokopedia.tokofood.R.string.search_srp_filter_apply).orEmpty()
     }
 
-    private fun goToMerchantPage(merchant: Merchant) {
-        val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, String.EMPTY)
-        TokofoodRouteManager.routePrioritizeInternal(context, merchantApplink)
+    private fun goToMerchantPage(applink: String) {
+        TokofoodRouteManager.routePrioritizeInternal(context, applink)
     }
 
     private fun goToDiscoverySearchPage() {
@@ -533,6 +557,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         } catch (ex: Exception) {
             Timber.e(ex)
         }
+    }
+
+    private fun getDestinationId(): String {
+        return localCacheModel?.district_id.orEmpty()
     }
 
     companion object {

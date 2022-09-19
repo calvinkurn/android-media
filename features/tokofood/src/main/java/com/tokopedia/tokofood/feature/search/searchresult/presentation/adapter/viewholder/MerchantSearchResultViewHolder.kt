@@ -45,12 +45,9 @@ class MerchantSearchResultViewHolder(
         setPriceLevel(merchant.priceLevel)
         setViewDividerCategoryPriceLevel(merchant.merchantCategories, merchant.priceLevel)
         setMerchantClosed(merchant.isClosed)
-        setOtherBranchButton(merchant.hasBranch, merchant.branchApplink)
+        setOtherBranchButton(merchant)
         binding?.root?.setOnClickListener {
             listener?.onClickMerchant(merchant, adapterPosition)
-        }
-        itemView.addOnImpressionListener(merchant) {
-            listener?.onImpressMerchant(merchant, adapterPosition)
         }
     }
 
@@ -214,11 +211,11 @@ class MerchantSearchResultViewHolder(
         }
     }
 
-    private fun setOtherBranchButton(hasBranch: Boolean, branchApplink: String) {
+    private fun setOtherBranchButton(merchant: Merchant) {
         binding?.btnTokofoodItemSrpBranch?.run {
-            showWithCondition(hasBranch)
+            showWithCondition(merchant.hasBranch)
             setOnClickListener {
-                listener?.onBranchButtonClicked(branchApplink)
+                listener?.onBranchButtonClicked(merchant)
             }
         }
     }
@@ -254,8 +251,7 @@ class MerchantSearchResultViewHolder(
 
     interface TokoFoodMerchantSearchResultListener {
         fun onClickMerchant(merchant: Merchant, position: Int)
-        fun onImpressMerchant(merchant: Merchant, position: Int)
-        fun onBranchButtonClicked(branchApplink: String)
+        fun onBranchButtonClicked(merchant: Merchant)
     }
 
     companion object {

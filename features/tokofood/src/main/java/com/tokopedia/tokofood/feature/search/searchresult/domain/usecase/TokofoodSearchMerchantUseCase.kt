@@ -33,6 +33,7 @@ private const val QUERY = """
               etaFmt
               promo
               hasBranch
+              branchApplink
               isClosed
             }
             nextPageKey

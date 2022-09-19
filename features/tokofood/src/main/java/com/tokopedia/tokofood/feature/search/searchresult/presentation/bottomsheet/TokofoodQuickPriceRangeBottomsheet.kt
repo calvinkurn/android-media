@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeCbItemAdapter
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemAdapter
 import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxListener
 import com.tokopedia.filter.common.data.Option
@@ -60,7 +60,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     override fun onStart() {
         super.onStart()
         collectValues()
-        viewModel.setPriceRangeUiModels(priceRangeItemUiModels)
+        viewModel.setPriceRangeUiModels(priceRangeItemUiModels, true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,6 +109,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     private fun collectValues() {
         collectApplyButtonClicked()
         collectShouldShowApplyButton()
+        collectShouldShowResetButton()
         collectUiModels()
     }
 
@@ -124,6 +125,13 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.shouldShowApplyButton.collect { shouldShow ->
                 toggleButtonLayoutVisibility(shouldShow)
+            }
+        }
+    }
+
+    private fun collectShouldShowResetButton() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.shouldShowResetButton.collect { shouldShow ->
                 toggleResetButton(shouldShow)
             }
         }
@@ -150,7 +158,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     }
 
     private fun setupAdapter(uiModels: List<PriceRangeFilterCheckboxItemUiModel>) {
-        val quickPriceRangeAdapter = PriceRangeCbItemAdapter(uiModels, this)
+        val quickPriceRangeAdapter = PriceRangeFilterCheckboxItemAdapter(uiModels, this)
         binding?.rvTokofoodSearchQuickPriceRange?.swapAdapter(quickPriceRangeAdapter, false)
     }
 
