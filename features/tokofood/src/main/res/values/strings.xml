@@ -175,6 +175,9 @@
     <string name="search_srp_quick_price_range_button">Tampilkan</string>
     <string name="search_srp_quick_price_reset">Reset</string>
 
+    <!-- Search - Common -->
+    <string name="search_common_to_homepage">Ke Homepage</string>
+
     <!-- id -->
     <item name="product_ui_model" type="id" />
     <item name="custom_order_detail" type="id" />

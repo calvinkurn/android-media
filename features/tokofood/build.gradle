@@ -18,6 +18,7 @@ android {
                     pathSources + 'merchant',
                     pathSources + 'purchase',
                     pathSources + 'ordertracking',
+                    pathSources + searchPath + 'common',
                     pathSources + searchPath + 'searchbar',
                     pathSources + searchPath + 'initialstate',
                     pathSources + searchPath + 'searchresult'
