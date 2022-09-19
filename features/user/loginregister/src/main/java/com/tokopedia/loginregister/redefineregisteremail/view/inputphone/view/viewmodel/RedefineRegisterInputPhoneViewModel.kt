@@ -7,18 +7,19 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.abstraction.GetProfileInfoAbstraction
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.abstraction.RegisterV2Abstraction
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserInfoUseCase
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetRegisterV2UseCase
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.GetUserInfoModel
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.Register
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetRegisterCheckUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoUseCase
+import com.tokopedia.sessioncommon.data.register.Register
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileUpdateUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileValidateUseCase
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateParam
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileValidateModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileValidateParam
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.data.register.RegisterV2Param
+import com.tokopedia.sessioncommon.domain.usecase.GetRegisterCheckUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetRegisterV2AndSaveSessionUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,8 +29,8 @@ import javax.inject.Inject
 
 class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private val getRegisterCheckUseCase: GetRegisterCheckUseCase,
-    private val getUserInfoUseCase: GetUserInfoUseCase,
-    private val getRegisterV2UseCase: GetRegisterV2UseCase,
+    private val getUserInfoAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
+    private val getRegisterV2AndSaveSessionUseCase: GetRegisterV2AndSaveSessionUseCase,
     private val getUserProfileUpdateUseCase: GetUserProfileUpdateUseCase,
     private val getUserProfileValidateUseCase: GetUserProfileValidateUseCase,
     private val userSession: UserSessionInterface,
@@ -47,17 +48,17 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private val _registerV2 = MutableLiveData<Result<Register>>()
     val registerV2: LiveData<Result<Register>> get() = _registerV2
 
-    private val _getUserInfo = MutableLiveData<Result<GetUserInfoModel>>()
-    val getUserInfo: LiveData<Result<GetUserInfoModel>> get() = _getUserInfo
+    private val _getUserInfo = MutableLiveData<Result<ProfilePojo>>()
+    val getUserInfo: LiveData<Result<ProfilePojo>> get() = _getUserInfo
 
     private val _submitRegisterLoading = SingleLiveEvent<Boolean>()
     val submitRegisterLoading: LiveData<Boolean> get() = _submitRegisterLoading
 
-    private val _userPhoneUpdate = MutableLiveData<Result<Unit>>()
-    val userPhoneUpdate: LiveData<Result<Unit>> get() = _userPhoneUpdate
+    private val _userPhoneUpdate = MutableLiveData<Result<UserProfileUpdateModel>>()
+    val userPhoneUpdate: LiveData<Result<UserProfileUpdateModel>> get() = _userPhoneUpdate
 
-    private val _userProfileValidate = MutableLiveData<Result<String>>()
-    val userProfileValidate: LiveData<Result<String>> get() = _userProfileValidate
+    private val _userProfileValidate = MutableLiveData<Result<UserProfileValidateModel>>()
+    val userProfileValidate: LiveData<Result<UserProfileValidateModel>> get() = _userProfileValidate
 
     fun validatePhone(phone: String) {
         phoneError = when {
@@ -115,8 +116,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     fun getUserInfo() {
         _submitRegisterLoading.value = true
         launchCatchError(coroutineContext, {
-            _getUserInfo.value =
-                object : GetProfileInfoAbstraction(getUserInfoUseCase, userSession) {}.data()
+            _getUserInfo.value = getUserInfoAndSaveSessionUseCase(Unit)
 
             _submitRegisterLoading.value = false
         }, {
@@ -130,27 +130,28 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
         email: String = "",
         phone: String = "",
         fullName: String,
-        password: String,
+        encryptedPassword: String,
         validateToken: String,
         hash: String
     ) {
         _submitRegisterLoading.value = true
         launchCatchError(coroutineContext, {
-            _registerV2.value = object : RegisterV2Abstraction(
-                email,
-                phone,
-                fullName,
-                password,
-                validateToken,
-                hash,
-                getRegisterV2UseCase,
-                userSession
-            ) {
-                override suspend fun loadUserInfo() {
-                    getUserInfo()
-                }
-            }.data()
+            val param = RegisterV2Param(
+                regType = REGISTRATION_TYPE,
+                osType = OS_TYPE,
+                fullName = fullName,
+                email = email,
+                phone = phone,
+                password = encryptedPassword,
+                validateToken = validateToken,
+                hash = hash
+            )
 
+            val result = getRegisterV2AndSaveSessionUseCase(param)
+
+            if (result is Success) getUserInfo()
+
+            _registerV2.value = result
             _submitRegisterLoading.value = false
         }, {
             _submitRegisterLoading.value = false
@@ -165,16 +166,9 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
                 email = email,
                 phone = phone
             )
-
             val response = getUserProfileValidateUseCase(param)
 
-            if (response.data.isValid) {
-                _userProfileValidate.value = Success(phone)
-            } else {
-                val message = response.data.message
-                _userProfileValidate.value = Fail(MessageErrorException(message))
-            }
-
+            _userProfileValidate.value = Success(response)
         }, {
             _userProfileValidate.value = Fail(it)
         })
@@ -191,19 +185,16 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
 
             val response = getUserProfileUpdateUseCase(param)
 
-            if (response.data.errors.isEmpty()) {
-                _userPhoneUpdate.value = Success(Unit)
-            } else {
-                val messageError = response.data.errors.first()
-                _userPhoneUpdate.value = Fail(MessageErrorException(messageError))
-            }
-
+            _userPhoneUpdate.value = Success(response)
         }, {
             _userPhoneUpdate.value = Fail(it)
         })
     }
 
     companion object {
+        private const val REGISTRATION_TYPE = "email"
+        private const val OS_TYPE = "1"
+
         const val NOTHING_RESOURCE = 0
         const val RESOURCE_NOT_CHANGED = -1
     }
