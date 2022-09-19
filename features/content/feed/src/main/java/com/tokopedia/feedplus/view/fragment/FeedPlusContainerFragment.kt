@@ -64,9 +64,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
-import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.seller_migration_common.presentation.util.setupBottomSheetFeedSellerMigration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
@@ -726,24 +723,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun canGoToExplore(): Boolean {
         return pagerAdapter.isContextExploreExist
-    }
-
-    private fun goToCreateAffiliate() {
-        if (context != null) {
-            if (affiliatePreference.isFirstTimeEducation(userSession.userId)) {
-
-                val intent = RouteManager.getIntent(
-                        context,
-                        ApplinkConst.DISCOVERY_PAGE.replace("{page_id}", DISCOVERY_BY_ME)
-                )
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                startActivity(intent)
-                affiliatePreference.setFirstTimeEducation(userSession.userId)
-
-            } else {
-                RouteManager.route(context, ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1")
-            }
-        }
     }
 
     fun hideAllFab() {
