@@ -116,7 +116,6 @@ object WishlistCollectionAnalytics {
     private const val OPEN_ALL_WISHLIST_PAGE_TRACKER_ID = "32119"
     private const val OPEN_COLLECTION_DETAIL_PAGE_TRACKER_ID = "32120"
 
-
     private const val CREATE_NEW_COLLECTION_ON_WISHLIST_PAGE_TRACKER_ID = "32121"
     private const val CLICK_BUAT_KOLEKSI_ON_CREATE_NEW_COLLECTION_BOTTOMSHEET_TRACKER_ID = "32122"
     private const val CLICK_X_ON_CREATE_NEW_COLLECTION_BOTTOMSHEET_TRACKER_ID = "32123"
@@ -731,7 +730,6 @@ object WishlistCollectionAnalytics {
             .send()
     }
 
-
     fun sendClickCheckWishlistEvent(productId: String, source: String) {
         wishlistCollectionTrackerBuilder()
             .setEvent(CLICK_PP)
@@ -744,7 +742,6 @@ object WishlistCollectionAnalytics {
             .send()
     }
 
-
     fun sendClickCollectionFolderEvent(collectionId: String, productId: String, source: String) {
         wishlistCollectionTrackerBuilder()
             .setEvent(CLICK_PP)
@@ -756,7 +753,6 @@ object WishlistCollectionAnalytics {
             .build()
             .send()
     }
-
 
     fun sendClickKoleksiBaruEvent(productId: String, source: String) {
         wishlistCollectionTrackerBuilder()
