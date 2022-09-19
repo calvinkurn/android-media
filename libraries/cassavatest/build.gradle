@@ -16,7 +16,7 @@ android {
 }
 
 dependencies {
-    api project(rootProject.ext.libraries.analyticsDebugger)
+    api rootProject.ext.tkpdInternalLibDependencies.cassava
     implementation projectOrAar(rootProject.ext.libraries.keys)
 
     implementation rootProject.ext.unifyDependencies.principles

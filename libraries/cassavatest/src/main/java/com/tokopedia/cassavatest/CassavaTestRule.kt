@@ -7,8 +7,8 @@ import com.tokopedia.analyticsdebugger.cassava.core.Validator
 import com.tokopedia.analyticsdebugger.cassava.core.ValidatorEngine
 import com.tokopedia.analyticsdebugger.cassava.core.toDefaultValidator
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaDatabase
-import com.tokopedia.analyticsdebugger.database.GtmLogDB
-import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
+import com.tokopedia.analyticsdebugger.cassava.database.GtmLogDB
+import com.tokopedia.analyticsdebugger.cassava.debugger.data.repository.GtmRepo
 import kotlinx.coroutines.runBlocking
 import org.junit.rules.TestRule
 import org.junit.runner.Description
