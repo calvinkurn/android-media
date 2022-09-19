@@ -58,6 +58,10 @@ object ApplyPromoDataProvider {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_merchant_response_failed.json"), ValidateUseResponse::class.java)
     }
 
+    fun provideApplyPromoBoResponseFailed(): ValidateUseResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_bo_response_failed.json"), ValidateUseResponse::class.java)
+    }
+
     fun provideApplyPromoResponseClashing(): ValidateUseResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_response_clashing.json"), ValidateUseResponse::class.java)
     }
