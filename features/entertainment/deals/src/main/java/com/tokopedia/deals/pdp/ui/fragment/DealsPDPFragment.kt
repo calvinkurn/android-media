@@ -214,6 +214,15 @@ class DealsPDPFragment : BaseDaggerFragment() {
     }
 
     private fun observeFlowData() {
+        observePDP()
+        observeContent()
+        observeRecommendation()
+        observeRating()
+        observeUpdateRating()
+        observeTracker()
+    }
+
+    private fun observePDP() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowPDP.collect {
                 when (it) {
@@ -231,7 +240,9 @@ class DealsPDPFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
 
+    private fun observeContent() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowContent.collect {
                 when (it) {
@@ -245,7 +256,9 @@ class DealsPDPFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
 
+    private fun observeRecommendation() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowRecommendation.collect {
                 when (it) {
@@ -259,7 +272,9 @@ class DealsPDPFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
 
+    private fun observeRating() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowRating.collect {
                 when (it) {
@@ -284,7 +299,9 @@ class DealsPDPFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
 
+    private fun observeUpdateRating() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowUpdateRating.collect {
                 when (it) {
@@ -300,7 +317,9 @@ class DealsPDPFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
 
+    private fun observeTracker() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowRecommendationTracking.collect {}
         }

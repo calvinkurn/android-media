@@ -253,11 +253,4 @@ object DealsPDPDetailQuery {
         }
     }
     """
-
-    private const val PRODUCT_ID_KEY = "urlPDP"
-
-    @JvmStatic
-    fun createRequestParam(productId: String) = HashMap<String, Any>().apply {
-        put(PRODUCT_ID_KEY, productId)
-    }
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.deals.pdp.domain.query
 
-import com.tokopedia.deals.pdp.data.DealsVerifyRequest
 import com.tokopedia.deals.pdp.domain.query.DealsPDPVerifyQuery.DEALS_PDP_VERIFY_OPERATION_NAME
 import com.tokopedia.deals.pdp.domain.query.DealsPDPVerifyQuery.DEALS_PDP_VERIFY_QUERY
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -124,11 +123,4 @@ object DealsPDPVerifyQuery {
         }
     }
     """
-
-    private const val VERIFY_KEY = "eventVerify"
-
-    @JvmStatic
-    fun createRequestParam(dealsVerifyRequest: DealsVerifyRequest) = HashMap<String, Any>().apply {
-        put(VERIFY_KEY, dealsVerifyRequest)
-    }
 }

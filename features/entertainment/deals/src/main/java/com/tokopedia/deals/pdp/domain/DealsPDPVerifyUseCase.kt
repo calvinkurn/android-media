@@ -2,7 +2,6 @@ package com.tokopedia.deals.pdp.domain
 
 import com.tokopedia.deals.pdp.data.DealsVerifyRequest
 import com.tokopedia.deals.pdp.data.DealsVerifyResponse
-import com.tokopedia.deals.pdp.domain.query.DealsPDPVerifyQuery
 import com.tokopedia.deals.pdp.domain.query.VerifyV2Query
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -17,7 +16,15 @@ class DealsPDPVerifyUseCase @Inject constructor(graphqlRepository: GraphqlReposi
     }
 
     suspend fun execute(verifyRequest: DealsVerifyRequest): DealsVerifyResponse {
-        setRequestParams(DealsPDPVerifyQuery.createRequestParam(verifyRequest))
+        setRequestParams(createRequestParam(verifyRequest))
         return executeOnBackground()
+    }
+
+    private fun createRequestParam(dealsVerifyRequest: DealsVerifyRequest) = HashMap<String, Any>().apply {
+        put(VERIFY_KEY, dealsVerifyRequest)
+    }
+
+    companion object {
+        private const val VERIFY_KEY = "eventVerify"
     }
 }

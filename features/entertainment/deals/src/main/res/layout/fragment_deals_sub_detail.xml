@@ -70,7 +70,7 @@
         app:layout_constraintTop_toTopOf="@+id/tg_mrp"
         tools:text="20% OFF" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_wish_list"
         android:layout_width="24dp"
         android:layout_height="24dp"
@@ -105,7 +105,7 @@
         android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@+id/tg_sales_price" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_clock"
         android:layout_width="24dp"
         android:layout_height="24dp"
@@ -205,7 +205,7 @@
                 app:cardCornerRadius="8dp"
                 app:cardElevation="0dp">
 
-                <ImageView
+                <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_view_brand"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -400,7 +400,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cl_tnc">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_how_to_redeem"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -427,7 +427,7 @@
             android:contentDescription="@string/deals_pdp_content_desc_img"
             />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_arrow"
             android:layout_width="24dp"
             android:layout_height="24dp"

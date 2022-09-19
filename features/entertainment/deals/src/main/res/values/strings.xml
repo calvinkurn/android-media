@@ -90,9 +90,7 @@
     <string name="deals_pdp_empty_location_list_text_lower">Silakan lakukan pencarian dengan kata  kunci lain</string>
     <string name="deals_pdp_search_input_hint_deals_outlets">Cari Lokasi</string>
     <string name="deals_pdp_login_likes">Please Login to like deals</string>
-    <string name="deals_pdp_share_web_link">deals/i/%1$s/</string>
     <string name="deals_pdp_share_title">Bagikan Produk Ini</string>
-    <string name="deals_pdp_share_app_link">tokopedia://deals/%1$s</string>
     <string name="deals_pdp_button_continue">Lanjutkan</string>
     <string name="deals_pdp_text_purchase_detail">Rincian Pembelian</string>
     <string name="deals_pdp_deal_quantity">Kuantitas</string>

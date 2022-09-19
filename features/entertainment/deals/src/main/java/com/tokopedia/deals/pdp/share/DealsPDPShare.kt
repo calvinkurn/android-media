@@ -22,6 +22,8 @@ class DealsPDPShare(private val activity: WeakReference<Activity>) {
 
     companion object {
         private const val TYPE = "text/plain"
+        private const val WEB_LINK_PATH = "deals/i/"
+        private const val APP_LINK_PATH = "tokopedia://deals/"
     }
 
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity.get()) }
@@ -71,10 +73,7 @@ class DealsPDPShare(private val activity: WeakReference<Activity>) {
             openIntentShare(
                 data.title,
                 titleShare,
-                TkpdBaseURL.WEB_DOMAIN + context.resources.getString(
-                com.tokopedia.deals.R.string.deals_pdp_share_web_link,
-                    data.seoUrl
-                ),
+                TkpdBaseURL.WEB_DOMAIN + WEB_LINK_PATH + data.seoUrl,
                 context
             )
             doneLoadShare()
@@ -90,7 +89,7 @@ class DealsPDPShare(private val activity: WeakReference<Activity>) {
                 type = LinkerData.ENTERTAINMENT_TYPE
                 ogUrl = null
                 imgUri = data.imageApp
-                deepLink = context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_share_app_link, data.seoUrl)
+                deepLink = APP_LINK_PATH + data.seoUrl
                 uri = data.webUrl
                 desktopUrl = data.webUrl
             }

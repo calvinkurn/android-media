@@ -20,13 +20,4 @@ object DealsPDPContentQuery {
             }
         }
     """
-
-    private const val TYPE_ID = "typeID"
-    private const val TYPE_VALUE = "typeValue"
-
-    @JvmStatic
-    fun createRequestParams(typeId: String, typeValue: String) = HashMap<String, Any>().apply {
-        put(TYPE_ID, typeId)
-        put(TYPE_VALUE, typeValue)
-    }
 }

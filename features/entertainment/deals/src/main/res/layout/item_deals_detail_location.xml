@@ -36,7 +36,7 @@
         app:layout_constraintRight_toLeftOf="@+id/iv_map"
         app:layout_constraintTop_toBottomOf="@id/tg_location_name" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_map"
         android:layout_width="24dp"
         android:layout_height="24dp"
