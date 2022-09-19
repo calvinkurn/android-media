@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.databinding.RecentSearchItemInitialStateBinding
@@ -49,7 +48,7 @@ class RecentSearchItemViewHolder(view: View,
 
     private fun setRecentSearchImageUrl(imageUrl: String) {
         with(binding) {
-            ivDeleteRecentSearch.loadImage(imageUrl)
+            ivDeleteRecentSearch.setImageUrl(imageUrl)
         }
     }
 
@@ -61,7 +60,7 @@ class RecentSearchItemViewHolder(view: View,
 
     private fun setRecentSearchAction(element: RecentSearchItemUiModel) {
         with(binding) {
-            ivDeleteRecentSearch.loadImage(element.imageActionUrl)
+            ivDeleteRecentSearch.setImageUrl(element.imageActionUrl)
             ivDeleteRecentSearch.setOnClickListener {
                 actionListener.onDeleteRecentSearchClicked(element.itemId, adapterPosition)
             }
