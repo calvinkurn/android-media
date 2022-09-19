@@ -77,10 +77,6 @@ open class UserIdentificationCommonModule {
 
     @Provides
     @ActivityScope
-    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
-
-    @Provides
-    @ActivityScope
     open fun provideGetUserProjectInfoUseCase(
         @ApplicationContext repository: GraphqlRepository,
         dispatchers: CoroutineDispatchers
