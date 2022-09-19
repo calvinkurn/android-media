@@ -54,6 +54,7 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgument
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_VIDEO
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
@@ -86,7 +87,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     private var postType: String = ""
     private var contentDetailSource: String = ""
     private var isFromContentDetailPage: Boolean = false
-    public var ARGS_TOTAL_COMMENT:String = "ARGS_TOTAL_COMMENT"
 
     @Inject
     internal lateinit var feedAnalytics: FeedAnalyticTracker
@@ -446,7 +446,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         val intent = Intent()
         val arguments = arguments
         if (arguments != null && arguments.size() > 0) intent.putExtras(arguments)
-        intent.putExtra(ARGS_TOTAL_COMMENT, totalNewComment)
+        intent.putExtra(COMMENT_ARGS_TOTAL_COMMENT, totalNewComment)
         return intent
     }
 
