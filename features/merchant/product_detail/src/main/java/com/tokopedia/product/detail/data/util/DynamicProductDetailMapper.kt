@@ -1,6 +1,9 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.kotlin.extensions.orFalse
@@ -24,15 +27,10 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieRequest
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateLinkDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateProductDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestDetail
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateRequestHeader
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateShopDetail
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
@@ -57,6 +55,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
@@ -131,6 +130,15 @@ object DynamicProductDetailMapper {
                         else ->
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
+                }
+                ProductDetailConstant.PRODUCT_LIST_VERTICAL -> {
+                    listOfComponent.add(
+                        ProductRecommendationVerticalPlaceholderDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
+                    listOfComponent.add(LoadingDataModel())
                 }
                 ProductDetailConstant.VARIANT -> {
                     if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
@@ -263,8 +271,12 @@ object DynamicProductDetailMapper {
         val bestSellerComponent = mapToOneLinersComponent(ProductDetailConstant.BEST_SELLER, data)
         val stockAssuranceComponent = mapToOneLinersComponent(ProductDetailConstant.STOCK_ASSURANCE, data)
 
-        val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
-                ?: ComponentData()
+        val newDataWithMedia = contentData?.copy(
+            media = mediaData.media,
+            youtubeVideos = mediaData.youtubeVideos,
+            containerType = mediaData.containerType
+        ) ?: ComponentData()
+
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
@@ -560,39 +572,6 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun generateAffiliateCookieRequest(productInfo: DynamicProductInfoP1,
-                                       affiliateUuid: String,
-                                       deviceId: String,
-                                       uuid: String,
-                                       affiliateChannel: String): AffiliateCookieRequest {
-        val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
-        return AffiliateCookieRequest(
-                header = AffiliateRequestHeader(
-                        uuid = uuid,
-                        deviceId = deviceId,
-                        irisSessionId = TrackApp.getInstance().gtm.irisSessionId
-                ),
-                affiliateDetail = AffiliateRequestDetail(
-                        affiliateUniqueId = affiliateUuid
-                ),
-                affiliateProductDetail = AffiliateProductDetail(
-                        productId = productInfo.basic.productID,
-                        categoryId = categoryId,
-                        isVariant = productInfo.isProductVariant(),
-                        stockQty = productInfo.getFinalStock().toDoubleOrZero()
-                ),
-                affiliateLinkDetail = AffiliateLinkDetail(
-                        affiliateLink = "",
-                        channel = affiliateChannel,
-                        linkType = PDP_SOURCE_AFFILIATE,
-                        linkIdentifier = "0"
-                ),
-                affiliateShopDetail = AffiliateShopDetail(
-                        shopId = productInfo.basic.shopID
-                )
-        )
-    }
-
     fun removeUnusedComponent(
         productInfo: DynamicProductInfoP1?,
         variantData: ProductVariant?,
@@ -632,5 +611,20 @@ object DynamicProductDetailMapper {
         } else {
             productInfo.finalPrice
         }
+    }
+
+    fun getAffiliatePageDetail(productInfo: DynamicProductInfoP1): AffiliatePageDetail {
+        val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
+        return AffiliatePageDetail(
+            pageId = productInfo.basic.productID,
+            source = AffiliateSdkPageSource.PDP(
+                shopId = productInfo.basic.shopID,
+                productInfo = AffiliateSdkProductInfo(
+                    categoryID = categoryId,
+                    isVariant = productInfo.isProductVariant(),
+                    stockQty = productInfo.getFinalStock().toIntOrZero()
+                )
+            )
+        )
     }
 }

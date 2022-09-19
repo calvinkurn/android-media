@@ -21,6 +21,12 @@ android {
     buildFeatures {
         viewBinding true
     }
+    defaultConfig {
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 kapt {
@@ -81,6 +87,9 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.core
     implementation projectOrAar(rootProject.ext.libraries.encryption)
 
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+
     //test
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
@@ -89,6 +98,11 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)

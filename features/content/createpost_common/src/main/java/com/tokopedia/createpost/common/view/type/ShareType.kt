@@ -32,17 +32,7 @@ sealed class ShareType(
                     }
             )
 
-    data class Facebook(val isActive: Boolean) :
-            ShareType(
-                    R.string.cp_common_share_facebook,
-                    R.string.cp_common_share_facebook_option,
-                    null,
-                    R.drawable.cp_common_ic_facebook,
-                    isActive,
-                    false
-            )
-
-    data class Twitter(val isActive: Boolean) :
+        data class Twitter(val isActive: Boolean) :
             ShareType(
                     R.string.cp_common_share_twitter,
                     R.string.cp_common_share_twitter_option,

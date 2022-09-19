@@ -6,10 +6,8 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.N
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 data class NotificationTopAdsBannerUiModel constructor(
-        val ad: TopAdsImageViewModel
+        val ads: ArrayList<TopAdsImageViewModel>
 ) : Visitable<NotificationTypeFactory> {
-
-    val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun type(typeFactory: NotificationTypeFactory): Int {
         return typeFactory.type(this)
