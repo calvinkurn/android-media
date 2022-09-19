@@ -421,9 +421,9 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
     private fun SearchParameter.hasFilterSortApplied(): Boolean {
         return if (contains(SearchApiConst.Q)) {
-            getSearchParameterHashMap().entries.size > Int.ONE
+            getSearchParameterHashMap().entries.filter { it.value.isNotBlank() }.size > Int.ONE
         } else {
-            getSearchParameterMap().entries.size > Int.ZERO
+            getSearchParameterHashMap().entries.filter { it.value.isNotBlank() }.size > Int.ZERO
         }
     }
 
