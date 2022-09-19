@@ -178,10 +178,12 @@ class PlayAnalytic(
     fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section) {
         if (products.isEmpty()) return
 
+        val firstProduct = products.first().first
+
         val (eventAction, eventLabel) = when(sectionInfo.config.type){
-            ProductSectionType.Active -> Pair("impression - product in ongoing section",generateBaseEventLabel(productId = products.first().first.id, campaignId = sectionInfo.id))
-            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section",generateBaseEventLabel(productId = products.first().first.id, campaignId = sectionInfo.id))
-            else -> Pair("view product", "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - product in bottom sheet")
+            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = firstProduct, campaignId = sectionInfo.id))
+            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = firstProduct, campaignId = sectionInfo.id))
+            else -> Pair("view product", "$mChannelId - ${firstProduct.id} - ${mChannelType.value} - product in bottom sheet - is pinned product ${firstProduct.isPinned}")
         }
         trackingQueue.putEETracking(
                 event = EventModel(
@@ -200,14 +202,13 @@ class PlayAnalytic(
                                 }
                         )
                 ),
-                customDimension = if(sectionInfo.config.type != ProductSectionType.Other){
+                customDimension =
                     hashMapOf(
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
                     )
-                } else null
         )
     }
 
@@ -216,9 +217,9 @@ class PlayAnalytic(
                      position: Int) {
 
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Upcoming -> Pair("$KEY_TRACK_CLICK - product in upcoming section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - product in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
-            else -> Pair(KEY_TRACK_CLICK, "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet")
+            ProductSectionType.Upcoming -> Pair("$KEY_TRACK_CLICK - product in upcoming section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - product in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
+            else -> Pair("click product in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet - is pinned product ${product.isPinned}")
         }
 
         trackingQueue.putEETracking(
@@ -398,7 +399,7 @@ class PlayAnalytic(
                         "productView",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                     "view on featured product",
-                    "$mChannelId - ${products.first().first.id} - ${mChannelType.value}"
+                    "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - featured product tagging"
                 ),
                 hashMapOf(
                         "ecommerce" to hashMapOf(
@@ -424,7 +425,7 @@ class PlayAnalytic(
                 EventModel(
                     "productClick",
                     KEY_TRACK_GROUP_CHAT_ROOM,
-                    KEY_TRACK_CLICK,
+                    "click featured product tagging",
                     "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging",
                 ),
                 hashMapOf(
@@ -642,8 +643,8 @@ class PlayAnalytic(
                                                     cartId: String,
                                                     shopInfo: PlayPartnerInfo) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
-            else -> Pair("$KEY_TRACK_CLICK buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
+            else -> Pair("click buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned}")
         }
         trackingQueue.putEETracking(
                 EventModel(
@@ -670,8 +671,8 @@ class PlayAnalytic(
                                                    cartId: String,
                                                    shopInfo: PlayPartnerInfo) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - atc in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
-            else -> Pair("$KEY_TRACK_CLICK atc in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - atc in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
+            else -> Pair("$KEY_TRACK_CLICK atc in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value} - is pinned product ${product.isPinned}")
         }
         trackingQueue.putEETracking(
                 EventModel(
@@ -824,7 +825,9 @@ class PlayAnalytic(
         return identifier + System.currentTimeMillis()
     }
 
-    private fun generateBaseEventLabel(productId: String, campaignId: String): String = "$mChannelId - $productId - ${mChannelType.value} - $campaignId"
+    private fun generateBaseEventLabel(product: PlayProductUiModel.Product, campaignId: String): String {
+        return "$mChannelId - ${product.id} - ${mChannelType.value} - $campaignId - is pinned product ${product.isPinned}"
+    }
 
     private fun generateBaseTracking(product: PlayProductUiModel.Product, type: ProductSectionType): HashMap<String, Any>{
         val base: HashMap<String, Any> = hashMapOf(
@@ -845,177 +848,6 @@ class PlayAnalytic(
            )
        }
         return base
-    }
-
-    fun clickFollowShopInteractive(
-        interactiveId: String,
-        interactiveType: InteractiveUiModel,
-        shopId: String
-    ) {
-        val (eventAction, eventLabel) = when(interactiveType){
-            is InteractiveUiModel.Quiz -> Pair("click - follow quiz popup","$shopId - $channelId - $userId - $interactiveId")
-            is InteractiveUiModel.Giveaway -> Pair("click follow from engagement tools widget","$channelId - $mChannelType - $interactiveId")
-            else -> Pair("","")
-        }
-        sendCompleteGeneralEvent(
-            event = if(interactiveType is InteractiveUiModel.Quiz) KEY_TRACK_CLICK_CONTENT else KEY_TRACK_CLICK_GROUP_CHAT,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = eventAction,
-            eventLabel = eventLabel
-        )
-    }
-
-    fun impressFollowShopInteractive(
-        shopId: String,
-        interactiveType: InteractiveUiModel,
-    ) {
-        if(interactiveType !is InteractiveUiModel.Quiz) return
-        sendCompleteGeneralEvent(
-            event = KEY_TRACK_VIEW_CONTENT_IRIS,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "view - follow quiz popup",
-            eventLabel = "$shopId - $channelId - $userId - ${interactiveType.id}"
-        )
-    }
-
-    fun clickWinnerBadge(shopId: String, interactiveType: InteractiveUiModel, interactiveId: String) {
-        val (eventAction, eventLabel) = when(interactiveType){
-            is InteractiveUiModel.Giveaway -> Pair("click daftar pemenang on engagement tools widget","$channelId - $mChannelType")
-            else -> Pair("click - hasil game button","$shopId - $channelId - $userId - $interactiveId")
-        }
-
-        sendCompleteGeneralEvent(
-            event = if(interactiveType is InteractiveUiModel.Quiz) KEY_TRACK_CLICK_CONTENT else KEY_TRACK_CLICK_GROUP_CHAT,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = eventAction,
-            eventLabel = eventLabel
-        )
-    }
-
-    fun impressWinnerBadge(
-        shopId: String,
-        interactiveId: String
-    ) {
-        sendCompleteGeneralEvent(
-            event = KEY_TRACK_VIEW_CONTENT_IRIS,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "view - hasil game button",
-            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
-        )
-    }
-
-    fun clickTapTap(
-        interactiveId: String
-    ) {
-        sendCompleteGeneralEvent(
-            event = com.tokopedia.play.analytic.KEY_TRACK_CLICK_GROUP_CHAT,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "click tap terus icon",
-            eventLabel = "$channelId - $mChannelType - $interactiveId"
-        )
-    }
-
-    fun clickRefreshLeaderBoard(
-        interactiveId: String,
-        shopId: String
-    ) {
-        sendCompleteGeneralEvent(
-            event = KEY_TRACK_CLICK_CONTENT,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "click - refresh button leaderboard bottomsheet",
-            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
-        )
-    }
-
-    fun impressRefreshLeaderBoard(
-        interactiveId: String,
-        shopId: String
-    ) {
-        sendCompleteGeneralEvent(
-            event = KEY_TRACK_VIEW_CONTENT_IRIS,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "view - refresh button leaderboard bottomsheet",
-            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
-        )
-    }
-
-    fun clickQuizOption(
-        choiceAlphabet: String,
-        interactiveId: String,
-        shopId: String
-    ) {
-        sendCompleteGeneralEvent(
-            event = KEY_TRACK_CLICK_CONTENT,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "click - multiple choice quiz popup",
-            eventLabel = "$shopId - $channelId - $userId - $interactiveId - $choiceAlphabet"
-        )
-    }
-
-    fun impressQuizOptions(
-        interactiveId: String,
-        shopId: String
-    ) {
-        sendCompleteGeneralEvent(
-            event = KEY_TRACK_VIEW_CONTENT_IRIS,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "view - multiple choice quiz popup",
-            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
-        )
-    }
-
-    fun clickActiveInteractive(
-        interactiveId: String,
-        shopId: String,
-        interactiveType: InteractiveUiModel,
-        ) {
-        if(interactiveType !is InteractiveUiModel.Quiz) return
-        sendCompleteGeneralEvent(
-            event = KEY_TRACK_CLICK_CONTENT,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "click - quiz widget",
-            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
-        )
-    }
-
-    fun impressActiveInteractive(
-        interactiveId: String,
-        shopId: String
-    ) {
-        sendCompleteGeneralEvent(
-            event = KEY_TRACK_VIEW_CONTENT_IRIS,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "view - quiz widget",
-            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
-        )
-    }
-
-    fun impressLeaderBoard(interactiveId: String, shopId: String) {
-        sendCompleteGeneralEvent(
-            event = KEY_TRACK_VIEW_CONTENT_IRIS,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "view - quiz leaderboard bottomsheet",
-            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
-        )
-    }
-
-    private fun sendCompleteGeneralEvent(
-        event: String,
-        eventCategory: String,
-        eventAction: String,
-        eventLabel: String
-    ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to event,
-                KEY_EVENT_CATEGORY to eventCategory,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-            )
-        )
     }
 
     companion object {

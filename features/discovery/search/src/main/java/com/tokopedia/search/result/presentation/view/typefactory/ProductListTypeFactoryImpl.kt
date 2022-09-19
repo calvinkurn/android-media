@@ -10,13 +10,11 @@ import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchD
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder
@@ -31,7 +29,6 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTitleViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTopAdsImageViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SeparatorViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder
@@ -57,6 +54,10 @@ import com.tokopedia.search.result.product.emptystate.EmptyStateListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavViewHolder
+import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListener
+import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleDataView
+import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleViewHolder
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.BigGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
@@ -102,6 +103,7 @@ class ProductListTypeFactoryImpl(
     private val inspirationSizeListener: InspirationSizeListener,
     private val violationListener: ViolationListener,
     private val videoCarouselListener: InspirationVideoCarouselListener,
+    private val inspirationBundleListener: InspirationBundleListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
     private val isUsingViewStub: Boolean = false,
@@ -189,10 +191,6 @@ class ProductListTypeFactoryImpl(
         }
     }
 
-    override fun type(separatorDataView: SeparatorDataView): Int {
-        return SeparatorViewHolder.LAYOUT
-    }
-
     override fun type(searchProductTitleDataView: SearchProductTitleDataView): Int {
         return SearchProductTitleViewHolder.LAYOUT
     }
@@ -223,6 +221,9 @@ class ProductListTypeFactoryImpl(
     override fun type(violationView: ViolationDataView): Int =
         ViolationViewHolder.LAYOUT
 
+    override fun type(inspirationProductBundleDataView: InspirationProductBundleDataView): Int =
+        InspirationProductBundleViewHolder.LAYOUT
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -246,6 +247,10 @@ class ProductListTypeFactoryImpl(
                     videoCarouselWidgetCoordinator,
                     networkMonitor
                 )
+            InspirationProductBundleViewHolder.LAYOUT -> InspirationProductBundleViewHolder(
+                view,
+                inspirationBundleListener,
+            )
             SearchLoadingMoreViewHolder.LAYOUT -> SearchLoadingMoreViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
             RecommendationItemViewHolder.LAYOUT ->
@@ -257,7 +262,6 @@ class ProductListTypeFactoryImpl(
                 SmallGridInspirationCardViewHolder(view, inspirationCardListener)
             BigGridInspirationCardViewHolder.LAYOUT ->
                 BigGridInspirationCardViewHolder(view, inspirationCardListener)
-            SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view)
             SearchProductTitleViewHolder.LAYOUT -> SearchProductTitleViewHolder(view)
             SearchInTokopediaViewHolder.LAYOUT ->
                 SearchInTokopediaViewHolder(view, searchInTokopediaListener)

@@ -50,6 +50,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -115,6 +117,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     var rechargeProductFromSlice: String = ""
 
     private var isAddSBM: Boolean = false
+    private var isFromSBM: Boolean = false
 
     private var operatorId: Int = 0
         set(value) {
@@ -169,12 +172,13 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             val savedEnquiryData: TopupBillsEnquiry? = saveInstanceManager!!.get(EXTRA_PARAM_ENQUIRY_DATA, TopupBillsEnquiry::class.java)
             if (savedEnquiryData != null) {
                 enquiryData = savedEnquiryData
-                productId = enquiryData?.attributes?.productId?.toIntOrNull() ?: 0
-                price = enquiryData?.attributes?.price?.toIntOrNull() ?: 0
+                productId = enquiryData?.attributes?.productId?.toIntSafely().toZeroIfNull()
+                price = enquiryData?.attributes?.price?.toIntSafely().toZeroIfNull()
             }
 
             arguments?.let {
                 isAddSBM = it.getBoolean(EXTRA_PARAM_IS_ADD_BILLS, false)
+                isFromSBM = it.getBoolean(EXTRA_ADD_BILLS_IS_FROM_SBM, false)
             }
 
             adapter = RechargeGeneralAdapter(it, RechargeGeneralAdapterFactory(this, isAddSBM), this)
@@ -282,9 +286,12 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                         val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.SMART_BILLS)
                         intent.putExtra(EXTRA_ADD_BILLS_MESSAGE, message)
                         intent.putExtra(EXTRA_ADD_BILLS_CATEGORY, categoryName)
-                        activity?.setResult(Activity.RESULT_OK, intent)
+                        if (isFromSBM) {
+                            activity?.setResult(Activity.RESULT_OK, intent)
+                        } else {
+                            startActivity(intent)
+                        }
                         activity?.finish()
-
                     }
                 }
 
@@ -482,10 +489,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             operator_select.actionListener = object : TopupBillsInputFieldWidget.ActionListener {
                 override fun onFinishInput(input: String) {
                     operatorGroup.operators.find { it.attributes.name == input }?.let {
-                        if (operatorId != it.id.toInt()) {
+                        if (operatorId != it.id.toIntSafely()) {
                             // Save operator id for enquiry
                             resetInputData()
-                            operatorId = it.id.toInt()
+                            operatorId = it.id.toIntSafely()
                             if (!isAddSBM) {
                                 rechargeGeneralAnalytics.eventChooseOperator(categoryName, operatorName)
                             }
@@ -515,7 +522,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             if (operatorGroup.operators.size == 1) {
                 if (isHidden) operator_select.hide()
                 // Get product data based on operator id
-                operatorId = operatorGroup.operators.firstOrNull()?.id.toIntOrZero()
+                operatorId = operatorGroup.operators.firstOrNull()?.id.toIntSafely()
                 adapter.showLoading()
                 getProductList(menuId, operatorId.toString())
             }
@@ -554,7 +561,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             if (productId == 0){
                                 productId = rechargeGeneralProductItemData.dataCollections.firstOrNull()?.products?.firstOrNull()?.id.toIntOrZero()
                             }
-                            productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toInt()
+                            productId = getIdFromProduct(rechargeGeneralProductItemData.dataCollections, productId.toString()).toIntSafely()
                             rechargeGeneralProductItemData.selectedProductId = productId.toString()
                             dataList.add(rechargeGeneralProductItemData)
                         }
@@ -563,7 +570,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                         product?.let { catalogProduct ->
                             with(catalogProduct.attributes) {
                                 val slashedPrice = if (promo != null) price else ""
-                                productId = catalogProduct.id.toIntOrZero()
+                                productId = catalogProduct.id.toIntSafely()
                             }
                         }
                     }
@@ -655,7 +662,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
                             // Show label & store id for enquiry
                             field.setInputText(item.title, false)
-                            productId = item.id.toIntOrZero()
+                            productId = item.id.toIntSafely()
                             if (!isAddSBM) {
                                 rechargeGeneralAnalytics.eventClickProductCard(categoryName, operatorName, item.title.toLowerCase())
                             }
@@ -717,8 +724,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
     private fun setupAutoFillData(data: TopupBillsRecommendation) {
         with(data) {
-            this@RechargeGeneralFragment.operatorId = operatorId.toIntOrZero()
-            this@RechargeGeneralFragment.productId = productId.toIntOrZero()
+            this@RechargeGeneralFragment.operatorId = operatorId.toIntSafely()
+            this@RechargeGeneralFragment.productId = productId.toIntSafely()
             if (clientNumber.isNotEmpty()) {
                 inputData[PARAM_CLIENT_NUMBER] = clientNumber
             }
@@ -756,7 +763,11 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 }
                 recharge_general_ticker.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                        if (linkUrl.startsWith(PREFIX_LINK)) {
+                            RouteManager.route(context, linkUrl.toString())
+                        } else {
+                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                        }
                     }
 
                     override fun onDismiss() {
@@ -770,7 +781,11 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     val tickerAdapter = TickerPagerAdapter(context, messages)
                     tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                         override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                            if (linkUrl.startsWith(PREFIX_LINK)) {
+                                RouteManager.route(context, linkUrl.toString())
+                            } else {
+                                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                            }
                         }
                     })
                     tickerAdapter.onDismissListener = {
@@ -913,7 +928,12 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         recharge_general_enquiry_button.show()
         loading_view.show()
 
-        getMenuDetail(menuId)
+        if (isAddSBM) {
+            getMenuDetail(menuId, PLATFORM_ID_ADD_SBM)
+        } else {
+            getMenuDetail(menuId)
+        }
+
         getFavoriteNumbers(categoryId)
         getCatalogPluginData(operatorId, categoryId)
         getOperatorCluster(menuId)
@@ -1268,7 +1288,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     private fun getFirstOperatorId(cluster: RechargeGeneralOperatorCluster): Int {
-        return cluster.operatorGroups?.firstOrNull()?.operators?.firstOrNull()?.id.toIntOrZero()
+        return cluster.operatorGroups?.firstOrNull()?.operators?.firstOrNull()?.id.toIntSafely()
     }
 
     private fun getOperatorData(operatorId: Int): CatalogOperator? {
@@ -1307,7 +1327,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 val product = products.firstOrNull { it.id == productId.toString() }
                 product?.run {
                     productName = attributes.desc
-                    this@RechargeGeneralFragment.price = attributes.pricePlain.toIntOrZero()
+                    this@RechargeGeneralFragment.price = attributes.pricePlain.toIntSafely()
                     isPromo = attributes.promo != null
 
                     // Show product info ticker
@@ -1383,6 +1403,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     companion object {
+        private const val PREFIX_LINK = "tokopedia"
         const val EXTRA_PARAM_MENU_ID = "EXTRA_PARAM_MENU_ID"
         const val EXTRA_PARAM_CATEGORY_ID = "EXTRA_PARAM_CATEGORY_ID"
         const val EXTRA_PARAM_OPERATOR_ID = "EXTRA_PARAM_OPERATOR_ID"
@@ -1391,6 +1412,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         const val EXTRA_PARAM_INPUT_DATA_KEYS = "EXTRA_PARAM_INPUT_DATA_KEYS"
         const val EXTRA_PARAM_ENQUIRY_DATA = "EXTRA_PARAM_ENQUIRY_DATA"
         const val EXTRA_PARAM_IS_ADD_BILLS = "EXTRA_PARAM_IS_ADD_BILLS"
+        const val EXTRA_ADD_BILLS_IS_FROM_SBM = "IS_FROM_SBM"
         const val EXTRA_ADD_BILLS_MESSAGE = "MESSAGE"
         const val EXTRA_ADD_BILLS_CATEGORY = "CATEGORY"
 
@@ -1408,6 +1430,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
 
+        const val PLATFORM_ID_ADD_SBM = 48
+
         val ITEM_DECORATOR_SIZE = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
 
         fun newInstance(categoryId: Int,
@@ -1415,7 +1439,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                         operatorId: Int = 0,
                         productId: Int = 0,
                         rechargeProductFromSlice: String = "",
-                        isAddSBM: Boolean = false
+                        isAddSBM: Boolean = false,
+                        isFromSBM: Boolean = false
         ): RechargeGeneralFragment {
             val fragment = RechargeGeneralFragment()
             val bundle = Bundle()
@@ -1424,6 +1449,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             bundle.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
             bundle.putInt(EXTRA_PARAM_PRODUCT_ID, productId)
             bundle.putBoolean(EXTRA_PARAM_IS_ADD_BILLS, isAddSBM)
+            bundle.putBoolean(EXTRA_ADD_BILLS_IS_FROM_SBM, isFromSBM)
             bundle.putString(RECHARGE_PRODUCT_EXTRA, rechargeProductFromSlice)
             fragment.arguments = bundle
             return fragment

@@ -11,11 +11,12 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
+import com.tokopedia.feedcomponent.view.widget.PostTagView
 
 /**
  * Created by kenny.hadisaputra on 24/06/22
  */
-internal class FeedPostCarouselAdapter(
+class FeedPostCarouselAdapter(
     dataSource: DataSource,
     imageListener: CarouselImageViewHolder.Listener,
     videoListener: CarouselVideoViewHolder.Listener,
@@ -24,7 +25,7 @@ internal class FeedPostCarouselAdapter(
     init {
         delegatesManager
             .addDelegate(CarouselImageDelegate(dataSource, imageListener))
-            .addDelegate(CarouselVideoDelegate(dataSource, videoListener))
+            .addDelegate(CarouselVideoDelegate(videoListener))
     }
 
     override fun areItemsTheSame(oldItem: FeedXMedia, newItem: FeedXMedia): Boolean {
@@ -45,7 +46,6 @@ internal class FeedPostCarouselAdapter(
         }
         val removeFocusPayload = Bundle().apply {
             putBoolean(PAYLOAD_FOCUS, false)
-            putBoolean(PAYLOAD_RESET_TOP_ADS, false)
         }
         notifyItemChanged(position, focusPayload)
         notifyItemRangeChanged(
@@ -60,28 +60,9 @@ internal class FeedPostCarouselAdapter(
         )
     }
 
-    fun updateCTAasperWidgetColor(position: Int) {
-        val greenTopAdsPayload = Bundle().apply {
-            putBoolean(PAYLOAD_CTA_COLOR_CHANGED, true)
-        }
-        notifyItemChanged(position, greenTopAdsPayload)
-    }
-
-    fun updateNeighbourTopAdsColor(basePosition: Int) {
-        val removeFocusPayload = Bundle().apply {
-            putBoolean(PAYLOAD_CHANGE_TOP_ADS, true)
-        }
-        notifyItemRangeChanged(
-            basePosition - FOCUS_POSITION_THRESHOLD,
-            2 * FOCUS_POSITION_THRESHOLD + 1,
-            removeFocusPayload
-        )
-    }
-
     fun removeAllFocus(position: Int) {
         val removeFocusPayload = Bundle().apply {
             putBoolean(PAYLOAD_FOCUS, false)
-            putBoolean(PAYLOAD_RESET_TOP_ADS, true)
         }
         notifyItemRangeChanged(
             position - FOCUS_POSITION_THRESHOLD,
@@ -124,19 +105,7 @@ internal class FeedPostCarouselAdapter(
             else {
                 if (payloads.containsKey(PAYLOAD_FOCUS)) {
                     if (payloads.getBoolean(PAYLOAD_FOCUS)) holder.focusMedia()
-                    else holder.removeFocus(
-                        resetTopAds = payloads.getBoolean(PAYLOAD_RESET_TOP_ADS, true),
-                    )
-                }
-
-                if (payloads.containsKey(PAYLOAD_CHANGE_TOP_ADS)) {
-                    if (payloads.getBoolean(PAYLOAD_CHANGE_TOP_ADS)) holder.changeTopAds(
-                        isColorChangedAsPerAsgcWidget = dataSource.getFeedXCard().isAsgcColorChangedAsPerWidgetColor
-                    )
-                }
-
-                if (payloads.containsKey(PAYLOAD_CTA_COLOR_CHANGED)) {
-                    holder.changeTopAds(isColorChangedAsPerAsgcWidget = true)
+                    else holder.removeFocus()
                 }
             }
         }
@@ -147,7 +116,6 @@ internal class FeedPostCarouselAdapter(
     }
 
     private class CarouselVideoDelegate(
-        private val dataSource: DataSource,
         private val listener: CarouselVideoViewHolder.Listener,
     ) : BaseAdapterDelegate<FeedXMedia, FeedXMedia, CarouselVideoViewHolder>(
         R.layout.item_post_video_new
@@ -183,23 +151,20 @@ internal class FeedPostCarouselAdapter(
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): CarouselVideoViewHolder {
-            return CarouselVideoViewHolder.create(parent, dataSource, listener)
+            return CarouselVideoViewHolder.create(parent, listener)
         }
     }
 
     companion object {
         private const val PAYLOAD_FOCUS = "payload_focus"
         private const val PAYLOAD_PAUSE = "payload_pause"
-        private const val PAYLOAD_RESET_TOP_ADS = "payload_reset_top_ads"
-        private const val PAYLOAD_CHANGE_TOP_ADS = "payload_change_top_ads"
-        private const val PAYLOAD_CTA_COLOR_CHANGED = "payload_cta_color_changed"
 
         private const val FOCUS_POSITION_THRESHOLD = 2
     }
 
     interface DataSource {
         fun getFeedXCard(): FeedXCard
-        fun getDynamicPostListener(): DynamicPostViewHolder.DynamicPostListener?
+        fun getTagBubbleListener(): PostTagView.TagBubbleListener?
         fun getPositionInFeed(): Int
     }
 }

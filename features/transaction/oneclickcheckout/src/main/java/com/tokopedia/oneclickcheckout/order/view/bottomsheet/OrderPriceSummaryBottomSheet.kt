@@ -70,7 +70,7 @@ class OrderPriceSummaryBottomSheet {
         }
 
         if (orderCost.shippingDiscountAmount > 0 && orderCost.shippingDiscountAmount >= orderCost.shippingFee) {
-            binding.tvTotalShippingPriceValue.setText(com.tokopedia.purchase_platform.common.R.string.label_free_shipping)
+            binding.tvTotalShippingPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(0.0, false).removeDecimalSuffix()
             binding.tvTotalShippingDiscountValue.gone()
             binding.tvTotalShippingDiscountLabel.gone()
         } else {

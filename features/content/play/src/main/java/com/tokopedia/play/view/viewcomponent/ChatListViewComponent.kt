@@ -20,8 +20,4 @@ class ChatListViewComponent(
     fun setChatList(chatList: List<PlayChatUiModel>) {
         playChatListView.setChatList(chatList)
     }
-
-    fun setMask(height: Float, animate: Boolean) {
-        playChatListView.setTopMask(height, animate)
-    }
 }

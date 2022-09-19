@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -15,48 +16,50 @@
         android:text="@string/seller_reputation"
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_16"
-        android:textStyle="normal"
-        />
+        android:textStyle="normal" />
 
     <TextView
-        android:lineSpacingExtra="7sp"
-        android:text="@string/seller_reputation_given_by_buyer"
         style="@style/TextView.Small.BlackDisabled"
-        />
+        android:lineSpacingExtra="7sp"
+        android:text="@string/seller_reputation_given_by_buyer" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_15"
         android:layout_marginTop="@dimen/dp_15"
+        android:layout_marginBottom="@dimen/dp_15"
         android:orientation="horizontal">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:id="@+id/seller_reputation"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginRight="10dp"
-                      android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/seller_reputation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_reputation_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:unify_image_corner_radius="0" />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/reputation_point"
-            android:lineSpacingExtra="7sp"
             style="@style/TextView.Small.BlackDisabled"
-            tools:text="200 Poin"
-            />
+            android:lineSpacingExtra="7sp"
+            tools:text="200 Poin" />
     </LinearLayout>
 
     <Button
         android:id="@+id/close_button"
+        style="@style/TextView.Small.WhitePrimary"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:background="@color/Unify_G400"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:lineSpacingExtra="7sp"
-        android:text="@string/close"
-        style="@style/TextView.Small.WhitePrimary"
-        />
+        android:text="@string/close" />
 </LinearLayout>

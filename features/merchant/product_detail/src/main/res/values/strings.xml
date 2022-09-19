@@ -5,7 +5,7 @@
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_product_info">Informasi Produk</string>
     <string name="merchant_product_detail_label_product_detail">Detail Produk</string>
-    <string name="merchant_product_detail_shipping">Detail Pengiriman</string>
+    <string name="merchant_product_detail_shipping">Detail pengiriman</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
     <string name="merchant_product_detail_label_selengkapnya">Selengkapnya</string>
     <string name="label_image_preview_pdp">Gambar produk</string>
@@ -198,5 +198,5 @@
     <string name="pdp_title_topads_headline">Toko lainnya yang cocok buatmu</string>
 
     <string name="pdp_media_label_builder">%1$s • %2$s </string>
-
+    <string name="pdp_general_info_see">Lihat</string>
 </resources>

@@ -1,8 +1,10 @@
 package com.tokopedia.play.broadcaster.util.logger
 
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.data.type.PlaySocketType
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
-import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 
 
 /**
@@ -11,11 +13,11 @@ import com.tokopedia.play_common.types.PlayChannelStatusType
 interface PlayLogger {
 
     fun logChannelStatus(
-        channelStatus: PlayChannelStatusType
+        channelStatus: ChannelStatus
     )
 
     fun logPusherState(
-        pusherState: PlayLivePusherMediatorState
+        pusherState: PlayBroadcasterState
     )
 
     fun logSocketType(
@@ -23,5 +25,7 @@ interface PlayLogger {
     )
 
     fun sendAll(channelId: String)
+
+    fun sendBroadcasterLog(metric: PlayBroadcasterMetric)
 
 }

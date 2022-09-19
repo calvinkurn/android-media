@@ -3,6 +3,8 @@ package com.tokopedia.shop.analytic
 import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.kotlin.extensions.view.digitsOnly
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CATEGORY_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PG
@@ -54,6 +56,7 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -1049,10 +1052,11 @@ class ShopPageTrackingBuyer(
             userId: String
     ) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
                 ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SHARE_BUTTON,
                 ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-                ShopPageTrackingConstant.EVENT_LABEL to "",
+                ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+                ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_CLICK_SHARE_BUTTON,
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
@@ -1080,10 +1084,11 @@ class ShopPageTrackingBuyer(
 
     fun clickCloseNewShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
                 ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_CLOSE_SHARE_BOTTOM_SHEET,
                 ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-                ShopPageTrackingConstant.EVENT_LABEL to "",
+                ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+                ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_CLOSE_SHARE_BOTTOM_SHEET,
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
@@ -1094,10 +1099,11 @@ class ShopPageTrackingBuyer(
 
     fun clickShareBottomSheetOption(socialMediaName: String, customDimensionShopPage: CustomDimensionShopPage, userId: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
                 ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SHARE_BOTTOM_SHEET_OPTION,
                 ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-                ShopPageTrackingConstant.EVENT_LABEL to socialMediaName,
+                ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()} - ${UniversalShareBottomSheet.Companion.KEY_CONTEXTUAL_IMAGE}",
+                ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_CLICK_SHARING_CHANNEL,
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
@@ -1123,10 +1129,11 @@ class ShopPageTrackingBuyer(
 
     fun onImpressionShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS,
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.VIEW_COMMUNICATION_IRIS,
                 ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.VIEW_SHARE_BOTTOM_SHEET,
                 ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-                ShopPageTrackingConstant.EVENT_LABEL to "",
+                ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+                ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_VIEW_ON_SHARING_CHANNEL,
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
@@ -1137,10 +1144,11 @@ class ShopPageTrackingBuyer(
 
     fun onImpressionScreenshotShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS,
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.VIEW_COMMUNICATION_IRIS,
                 ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.VIEW_SCREENSHOT_SHARE_BOTTOM_SHEET,
                 ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-                ShopPageTrackingConstant.EVENT_LABEL to "",
+                ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+                ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_VIEW_SCREEN_SHOT_BOTTOM_SHEET,
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
@@ -1151,10 +1159,11 @@ class ShopPageTrackingBuyer(
 
     fun clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
                 ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET,
                 ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-                ShopPageTrackingConstant.EVENT_LABEL to "",
+                ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+                ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_CLOSE_SCREEN_SHOT_SHARE_BOTTOM_SHEET,
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
@@ -1165,10 +1174,11 @@ class ShopPageTrackingBuyer(
 
     fun clickScreenshotShareBottomSheetOption(socialMediaName: String, customDimensionShopPage: CustomDimensionShopPage, userId: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
                 ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SCREENSHOT_SHARE_BOTTOM_SHEET_OPTION,
                 ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-                ShopPageTrackingConstant.EVENT_LABEL to socialMediaName,
+                ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()}",
+                ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_SCREEN_SHOT_CLICK_SHARING_CHANNEL,
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
@@ -1205,10 +1215,11 @@ class ShopPageTrackingBuyer(
 
     fun clickUniversalSharingPermission(action: String, label: String, shopId: String, userId: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
-                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
                 ShopPageTrackingConstant.EVENT_ACTION to action,
                 ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-                ShopPageTrackingConstant.EVENT_LABEL to label,
+                ShopPageTrackingConstant.EVENT_LABEL to "$label - ${shopId}",
+                ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_ACCESS_MEDIA_FILES,
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to shopId,
@@ -1231,7 +1242,7 @@ class ShopPageTrackingBuyer(
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
-    fun onImpressionProductAtcButton(
+    fun onImpressionProductAtcDirectPurchaseButton(
         shopProductUiModel: ShopProductUiModel,
         widgetName: String,
         position: Int,
@@ -1251,7 +1262,7 @@ class ShopPageTrackingBuyer(
             putParcelableArrayList(
                 PROMOTIONS,
                 arrayListOf(
-                    createProductAtcButtonPromotions(
+                    createProductAtcDirectPurchaseButtonPromotions(
                         widgetName,
                         position,
                         shopProductUiModel
@@ -1262,7 +1273,7 @@ class ShopPageTrackingBuyer(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
     }
 
-    private fun createProductAtcButtonPromotions(
+    private fun createProductAtcDirectPurchaseButtonPromotions(
         widgetName: String,
         position: Int,
         shopProductUiModel: ShopProductUiModel
@@ -1275,7 +1286,7 @@ class ShopPageTrackingBuyer(
         }
     }
 
-    fun onClickProductAtcButton(
+    fun onClickProductAtcDirectPurchaseButton(
         atcTrackerModel: ShopPageAtcTracker,
         shopId: String,
         shopType: String,
@@ -1293,7 +1304,7 @@ class ShopPageTrackingBuyer(
             putParcelableArrayList(
                 ITEMS,
                 arrayListOf(
-                    createClickProductAtcButtonItems(
+                    createClickProductAtcDirectPurchaseButtonItems(
                         atcTrackerModel,
                         shopId,
                         shopName,
@@ -1308,7 +1319,7 @@ class ShopPageTrackingBuyer(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_PRODUCT_ATC, eventBundle)
     }
 
-    private fun createClickProductAtcButtonItems(
+    private fun createClickProductAtcDirectPurchaseButtonItems(
         atcTrackerModel: ShopPageAtcTracker,
         shopId: String,
         shopName: String,
@@ -1322,7 +1333,7 @@ class ShopPageTrackingBuyer(
             putString(ITEM_ID, atcTrackerModel.productId)
             putString(ITEM_NAME, atcTrackerModel.productName)
             putString(ITEM_VARIANT, atcTrackerModel.isVariant.toString())
-            putString(PRICE, atcTrackerModel.productPrice)
+            putLong(PRICE, atcTrackerModel.productPrice.digitsOnly().orZero())
             putInt(QUANTITY, atcTrackerModel.quantity)
             putString(ITEMS_SHOP_ID, shopId)
             putString(SHOP_NAME, shopName)
@@ -1374,7 +1385,8 @@ class ShopPageTrackingBuyer(
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             PRODUCT_ID to atcTrackerModel.productId,
             SHOP_ID to shopId,
-            USER_ID to userId
+            USER_ID to userId,
+            DIMENSION_45 to atcTrackerModel.cartId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }

@@ -1,0 +1,23 @@
+{
+  "feedXProfileForm": {
+    "profile": {
+      "username": "ramaputra",
+      "biography": "Test Insrumentation Test",
+      "sharelink": {
+        "weblink": "https://www.tokopedia.com/people/rama",
+        "applink": "tokopedia://people/200020131"
+      },
+      "canChangeUsername": true,
+      "profilePreviewImageURL": "https://images.tokopedia.net/img/feeds/UserProfilePreview.png"
+    },
+    "userProfileConfiguration": {
+      "usernameConfiguration": {
+        "maximumChar": 20,
+        "minimumChar": 3
+      },
+      "biographyConfiguration": {
+        "maximumChar": 150
+      }
+    }
+  }
+}

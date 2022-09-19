@@ -4,8 +4,13 @@ import android.content.Intent
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.csat_rating.ProvideRatingContract
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating.Companion.NO_EMOJI
-import com.tokopedia.csat_rating.presenter.screenState.*
-import java.util.*
+import com.tokopedia.csat_rating.presenter.screenState.FifthScreenState
+import com.tokopedia.csat_rating.presenter.screenState.FirstScreenState
+import com.tokopedia.csat_rating.presenter.screenState.FourthScreenState
+import com.tokopedia.csat_rating.presenter.screenState.ScreenState
+import com.tokopedia.csat_rating.presenter.screenState.SecondScreenState
+import com.tokopedia.csat_rating.presenter.screenState.ThirdScreenState
+import com.tokopedia.csat_rating.presenter.screenState.ZeroScreenState
 
 class BaseProvideRatingFragmentPresenter : BaseDaggerPresenter<ProvideRatingContract.ProvideRatingView>(), ProvideRatingContract.ProvideRatingPresenter {
     private var captionsList = ArrayList<String>()
@@ -82,6 +87,7 @@ class BaseProvideRatingFragmentPresenter : BaseDaggerPresenter<ProvideRatingCont
             view.setMessage(it.getMessage())
             view.setMessageColor(it.getMessageColor())
             view.setQuestion(it.getQuestion())
+            view.disableSubmitButton()
         }
 
     }

@@ -747,6 +747,32 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEE_ALL_ULASAN)
         }
 
+        fun onClickReviewerName(
+            dynamicProductInfoP1: DynamicProductInfoP1,
+            reviewID: String,
+            userId: String,
+            reviewerUserID: String,
+            statistics: String,
+            label: String,
+            componentTrackData: ComponentTrackDataModel
+        ) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PG,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.MostHelpfulReview.ACTON_CLICK_REVIEWER_NAME,
+                    String.format(
+                        ProductTrackingConstant.MostHelpfulReview.LABEL_CLICK_REVIEWER_NAME,
+                        reviewID, reviewerUserID, statistics, label
+                    )
+            )
+            mapEvent[ProductTrackingConstant.Tracking.KEY_TRACKER_ID] = ProductTrackingConstant.MostHelpfulReview.TRACKER_ID_CLICK_REVIEWER_NAME
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+
+            TrackingUtil.addComponentTracker(mapEvent, dynamicProductInfoP1, componentTrackData, ProductTrackingConstant.MostHelpfulReview.ACTON_CLICK_REVIEWER_NAME)
+        }
+
         fun eventRecommendationClick(product: RecommendationItem, chipValue: String, isComparison: Boolean, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String,
                                      productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             val listValue = ProductTrackingConstant.Tracking.LIST_DEFAULT + pageName +
@@ -1658,7 +1684,9 @@ object DynamicProductDetailTracking {
                                               ratesEstimateData: P2RatesEstimateData?,
                                               buyerDistrictId: String,
                                               sellerDistrictId: String,
-                                              lcaWarehouseId: String ->
+                                              lcaWarehouseId: String,
+                                              campaignId: String,
+                                              variantId: String ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1727,7 +1755,9 @@ object DynamicProductDetailTracking {
                         productInfo?.getFinalStock(),
                         trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
                         lcaWarehouseId,
-                        shopInfo?.shopCore?.ownerId
+                        shopInfo?.shopCore?.ownerId,
+                        campaignId,
+                        variantId
                 )
     }
 
@@ -1747,14 +1777,17 @@ object DynamicProductDetailTracking {
                          ratesEstimateData: P2RatesEstimateData?,
                          buyerDistrictId: String,
                          sellerDistrictId: String,
-                         lcaWarehouseId: String) {
+                         lcaWarehouseId: String,
+                         campaignId: String,
+                         variantId: String
+    ) {
         productInfo?.let {
             if (shopInfo?.isShopInfoNotEmpty() == true) {
                 val sentBundle = generateProductViewBundle(
                         irisSessionId, trackerListName, it, shopInfo,
                         trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
                         isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData,
-                        buyerDistrictId, sellerDistrictId, lcaWarehouseId
+                        buyerDistrictId, sellerDistrictId, lcaWarehouseId, campaignId, variantId
                 )
                 sendTrackingBundle(
                         ProductDetailViewsBundler.KEY,

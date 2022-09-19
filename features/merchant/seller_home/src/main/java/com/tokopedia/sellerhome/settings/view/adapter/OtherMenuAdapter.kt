@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
@@ -35,7 +36,9 @@ class OtherMenuAdapter(
         private const val SLASH_PRICE_END_DATE = 1657990800000 // Sun Jul 17 2022 00:00:00
     }
 
-    private val settingList = listOf(
+    private var isShowCentralizedPromoTag: Boolean = false
+
+    private fun generateSettingList() = listOf(
         SettingTitleUiModel(context?.getString(R.string.setting_menu_improve_sales).orEmpty()),
         StatisticMenuItemUiModel(
             title = context?.getString(R.string.setting_menu_statistic).orEmpty(),
@@ -43,6 +46,7 @@ class OtherMenuAdapter(
             iconUnify = IconUnify.GRAPH,
             tag = getStatisticNewTag()
         ),
+
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_ads_and_shop_promotion).orEmpty(),
             clickApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
@@ -92,12 +96,6 @@ class OtherMenuAdapter(
             context?.startActivity(intent)
         },
         DividerUiModel(),
-        PrintingMenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_product_package).orEmpty(),
-            iconUnify = IconUnify.PACKAGE
-        ) {
-            listener.goToPrintingPage()
-        },
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_finance_service).orEmpty(),
             clickApplink = null,
@@ -159,7 +157,7 @@ class OtherMenuAdapter(
     }
 
     private fun getCentralizedPromoTag(): String {
-        val shouldShow = !areDatesExpired()
+        val shouldShow = isShowCentralizedPromoTag
         return if (shouldShow) {
             context?.getString(R.string.setting_new_tag).orEmpty()
         } else {
@@ -187,12 +185,17 @@ class OtherMenuAdapter(
 
     fun populateAdapterData() {
         clearAllElements()
-        addElement(settingList)
+        addElement(generateSettingList())
     }
+
+
+    fun setCentralizedPromoTag(isShow: Boolean = false) {
+        this.isShowCentralizedPromoTag = isShow
+        populateAdapterData()
+    }
+
 
     interface Listener {
-        fun goToPrintingPage()
         fun goToSettings()
     }
-
 }

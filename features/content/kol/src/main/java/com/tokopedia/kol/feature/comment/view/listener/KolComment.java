@@ -62,7 +62,7 @@ public interface KolComment {
 
         void replyToUser(MentionableUserViewModel user);
 
-        void onHashTagClicked(String hashTag, String id);
+        void onHashTagClicked(String hashTag);
 
         void onSuccessSendReport();
 

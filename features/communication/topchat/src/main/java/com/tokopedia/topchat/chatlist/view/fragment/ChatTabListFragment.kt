@@ -15,7 +15,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -35,8 +34,10 @@ import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity.Companion.S
 import com.tokopedia.topchat.chatlist.view.adapter.ChatListPagerAdapter
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
+import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
+import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.view.listener.ChatListContract
 import com.tokopedia.topchat.chatlist.view.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.view.uimodel.base.BaseIncomingItemWebSocketModel.Companion.ROLE_BUYER
@@ -51,7 +52,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
-open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment,
+open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment,
     SellerHomeFragmentListener {
 
     override fun getScreenName(): String = "/new-inbox/chat"
@@ -150,11 +151,19 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     }
 
     override fun initInjector() {
+        if (activity is ChatListActivity) {
+            getComponent(ChatListComponent::class.java).inject(this)
+        } else {
+            initInjectorSellerApp()
+        }
+    }
+
+    private fun initInjectorSellerApp() {
         DaggerChatListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .chatListContextModule(context?.let { ChatListContextModule(it) })
-                .build()
-                .inject(this)
+            .baseAppComponent((activity?.application as BaseMainApplication?)?.baseAppComponent)
+            .chatListContextModule(context?.let { ChatListContextModule(it) })
+            .build()
+            .inject(this)
     }
 
     override fun notifyViewCreated() {
@@ -319,14 +328,14 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     private fun setTitleTab(title: String, counter: String): CharSequence? {
         if (counter.toLongOrZero() > 0) {
             val counterFormatted: String =
-                    if (counter.toLongOrZero() > 99) {
-                        "99+"
+                    if (counter.toLongOrZero() > LIMIT_NOTIFICATION) {
+                        LIMIT_NOTIFICATION_STRING
                     } else {
                         counter
                     }
 
-            return if (title.length > 10) {
-                title.take(9) + ".. ($counterFormatted)"
+            return if (title.length > MAX_LENGTH_TITLE) {
+                title.take(TITLE_LENGTH) + ".. ($counterFormatted)"
             } else {
                 "$title ($counterFormatted)"
             }
@@ -359,7 +368,7 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
         tabList.add(buyerTabFragment)
     }
 
-    open protected fun createBuyerTabFragment(): ChatListFragment {
+    protected open fun createBuyerTabFragment(): ChatListFragment {
         return ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_USER)
     }
 
@@ -375,7 +384,7 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     }
 
     private fun initViewModel() {
-        viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        viewModelProvider = ViewModelProvider(this, viewModelFactory)
         webSocketViewModel = viewModelProvider.get(WebSocketViewModel::class.java)
         chatNotifCounterViewModel = viewModelProvider.get(ChatTabCounterViewModel::class.java)
     }
@@ -467,7 +476,7 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     }
 
     override fun loadNotificationCounter() {
-        chatNotifCounterViewModel.queryGetNotifCounter()
+        chatNotifCounterViewModel.queryGetNotifCounter(userSession.shopId)
     }
 
     override fun showSearchOnBoardingTooltip() {
@@ -579,6 +588,10 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
 
     companion object {
         private val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
+        private const val LIMIT_NOTIFICATION = 99
+        private const val LIMIT_NOTIFICATION_STRING = "99+"
+        private const val MAX_LENGTH_TITLE = 10
+        private const val TITLE_LENGTH = 9
 
         @JvmStatic
         fun create(): ChatTabListFragment {
