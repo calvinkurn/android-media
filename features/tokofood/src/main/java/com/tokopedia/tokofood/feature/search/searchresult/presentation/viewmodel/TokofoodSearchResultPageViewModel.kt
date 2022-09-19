@@ -33,7 +33,6 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.T
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiEvent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiState
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
-import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortItemUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -471,7 +470,8 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     }
 
     private fun getEmptyWithoutFilterState(): List<Visitable<*>> {
-        return listOf(MerchantSearchEmptyWithoutFilterUiModel(pageKeyLiveData.value.orEmpty()))
+        val currentKeyword = currentSearchParameter.value?.getSearchQuery()
+        return listOf(MerchantSearchEmptyWithoutFilterUiModel(currentKeyword.orEmpty()))
     }
 
     private fun getEmptyWithFilterState(): List<Visitable<*>> {
