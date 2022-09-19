@@ -12,6 +12,7 @@ import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.data.TickerData.ChipGetActiveTickerV4
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
@@ -335,6 +336,72 @@ class ChatbotPresenterTest {
     }
 
     @Test
+    fun `OnClickLeaveQueue success with null errorCode`() {
+        runBlockingTest {
+            every { presenter.chatResponse.msgId } returns "1234"
+            every {
+                leaveQueueUseCase.execute(any(), any(), any(), any())
+            } answers {
+                firstArg<(LeaveQueueResponse) -> Unit>().invoke(
+                    LeaveQueueResponse(
+                        postLeaveQueue = PostLeaveQueue(
+                            leaveQueueData = LeaveQueueData("Ok"),
+                            leaveQueueHeader = LeaveQueueHeader(200, null, 1, "reason")
+                        )
+                    )
+                )
+            }
+
+            presenter.OnClickLeaveQueue("123456")
+
+            verify(exactly = 0) { presenter.onSuccess(any()) }
+        }
+    }
+
+    @Test
+    fun `OnClickLeaveQueue success with null leaveQueueHeader`() {
+        runBlockingTest {
+            every { presenter.chatResponse.msgId } returns "1234"
+            every {
+                leaveQueueUseCase.execute(any(), any(), any(), any())
+            } answers {
+                firstArg<(LeaveQueueResponse) -> Unit>().invoke(
+                    LeaveQueueResponse(
+                        postLeaveQueue = PostLeaveQueue(
+                            leaveQueueData = LeaveQueueData("Ok"),
+                            leaveQueueHeader = null
+                    )
+                )
+                )
+            }
+
+            presenter.OnClickLeaveQueue("123456")
+
+            verify(exactly = 0) { presenter.onSuccess(any()) }
+        }
+    }
+
+    @Test
+    fun `OnClickLeaveQueue success with null postLeaveQueue`() {
+        runBlockingTest {
+            every { presenter.chatResponse.msgId } returns "1234"
+            every {
+                leaveQueueUseCase.execute(any(), any(), any(), any())
+            } answers {
+                firstArg<(LeaveQueueResponse) -> Unit>().invoke(
+                    LeaveQueueResponse(
+                        postLeaveQueue = null
+                    )
+                )
+            }
+
+            presenter.OnClickLeaveQueue("123456")
+
+            verify(exactly = 0) { presenter.onSuccess(any()) }
+        }
+    }
+
+    @Test
     fun `OnClickLeaveQueue failure`() {
         runBlockingTest {
             every { presenter.chatResponse.msgId } returns "1234"
@@ -447,8 +514,13 @@ class ChatbotPresenterTest {
             firstArg<(Throwable) -> Unit>().invoke(Exception())
         }
 
-        presenter.hitGqlforOptionList(1, HelpFullQuestionsUiModel("", "", "", "", "", "", "",
-            "",null,""))
+        presenter.hitGqlforOptionList(
+            1,
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "", "", "",
+                "", null, ""
+            )
+        )
 
         verify { presenter.onSubmitError(any()) }
     }
@@ -469,14 +541,6 @@ class ChatbotPresenterTest {
         every {
             response.getResolutionLink?.resolutionLinkData?.orderList
         } returns mockOrderData
-
-        every {
-            mockOrderData.firstOrNull()?.resoList?.isNotEmpty()
-        } returns stickyButtonStatus
-
-        every {
-            mockOrderData.firstOrNull()?.dynamicLink
-        } returns expectedDynamicLink
 
         presenter.checkLinkForRedirection("123", {}, {}, {})
 
@@ -545,6 +609,46 @@ class ChatbotPresenterTest {
         presenter.showTickerData()
 
         verify {
+            view.onSuccessGetTickerData(any())
+        }
+    }
+
+    @Test
+    fun `showTickerData success with null tickerdata`() {
+        val response = TickerDataResponse(
+            ChipGetActiveTickerV4(
+                "",null
+            )
+        )
+
+        coEvery {
+            getTickerDataUseCase.getTickerData(captureLambda(), any())
+        } coAnswers {
+            firstArg<(TickerDataResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.showTickerData()
+
+        verify(exactly = 0) {
+            view.onSuccessGetTickerData(any())
+        }
+    }
+
+    @Test
+    fun `showTickerData success with null ChipGetActiveTickerV4`() {
+        val response = TickerDataResponse(
+           null
+        )
+
+        coEvery {
+            getTickerDataUseCase.getTickerData(captureLambda(), any())
+        } coAnswers {
+            firstArg<(TickerDataResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.showTickerData()
+
+        verify(exactly = 0) {
             view.onSuccessGetTickerData(any())
         }
     }
@@ -620,6 +724,42 @@ class ChatbotPresenterTest {
         presenter.sendMessage("", "123", "", "", null) {}
 
         verify {
+            RxWebSocket.send(
+                ChatbotSendWebsocketParam.generateParamSendMessage(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        }
+    }
+
+    @Test
+    fun `sendMessage without parent reply and with empty message`() {
+        mockkObject(RxWebSocket)
+        mockkObject(ChatbotSendWebsocketParam)
+
+        every {
+            ChatbotSendWebsocketParam.generateParamSendMessage(any(), any(), any(), any())
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                ChatbotSendWebsocketParam.generateParamSendMessage(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        } just runs
+
+        presenter.sendMessage("", "", "", "", null) {}
+
+        verify(exactly = 0) {
             RxWebSocket.send(
                 ChatbotSendWebsocketParam.generateParamSendMessage(
                     any(),
@@ -1450,6 +1590,14 @@ class ChatbotPresenterTest {
     }
 
     @Test
+    fun `createAttachInvoiceSingleViewModel success with null`() {
+        val map = getMapForArticleEntry()
+        val attachInvoiceSingleUiModel = getAttachSingleInvoiceUiModelWithNull()
+        presenter.createAttachInvoiceSingleViewModel(map)
+        assertNotNull(attachInvoiceSingleUiModel)
+    }
+
+    @Test
     fun `generateInvoice success`() {
         val generatedInvoice = getInvoice()
         presenter.generateInvoice(InvoiceLinkPojo(), "")
@@ -1781,7 +1929,52 @@ class ChatbotPresenterTest {
         )
     }
 
+    private fun getAttachSingleInvoiceUiModelWithNull(): AttachInvoiceSingleUiModel {
+        val hashMap = HashMap<String, String?>()
+        hashMap[ChatbotConstant.ChatbotUnification.CODE] = null
+        hashMap[ChatbotConstant.ChatbotUnification.DESCRIPTION] = null
+        hashMap[ChatbotConstant.ChatbotUnification.IMAGE_URL] = null
+        hashMap[ChatbotConstant.ChatbotUnification.ID] = null
+        hashMap[ChatbotConstant.ChatbotUnification.STATUS] = null
+        hashMap[ChatbotConstant.ChatbotUnification.STATUS_ID] = null
+        hashMap[ChatbotConstant.ChatbotUnification.TITLE] = null
+        hashMap[ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT] = null
+        return AttachInvoiceSingleUiModel(
+            typeString = "",
+            type = 0,
+            code = hashMap[ChatbotConstant.ChatbotUnification.CODE] ?: "",
+            createdTime = SendableUiModel.generateStartTime(),
+            description = hashMap[ChatbotConstant.ChatbotUnification.DESCRIPTION] ?: "",
+            url = hashMap[ChatbotConstant.ChatbotUnification.IMAGE_URL] ?: "",
+            id = hashMap.get(ChatbotConstant.ChatbotUnification.ID).toLongOrZero(),
+            imageUrl = hashMap[ChatbotConstant.ChatbotUnification.IMAGE_URL] ?: "",
+            status = hashMap[ChatbotConstant.ChatbotUnification.STATUS] ?: "",
+            statusId = hashMap[ChatbotConstant.ChatbotUnification.STATUS_ID].toIntOrZero(),
+            title = hashMap[ChatbotConstant.ChatbotUnification.TITLE] ?: "",
+            amount = hashMap[ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT] ?: ""
+        )
+    }
     private fun getMapForArticleEntry(): Map<String, String> {
+        return mapOf(
+            ChatbotConstant.ChatbotUnification.ARTICLE_ID to "1",
+            ChatbotConstant.ChatbotUnification.ARTICLE_TITLE to "2",
+            ChatbotConstant.ChatbotUnification.CODE to "3",
+            ChatbotConstant.ChatbotUnification.CREATE_TIME to "time",
+            ChatbotConstant.ChatbotUnification.DESCRIPTION to "description",
+            ChatbotConstant.ChatbotUnification.EVENT to "event",
+            ChatbotConstant.ChatbotUnification.ID to "0",
+            ChatbotConstant.ChatbotUnification.IMAGE_URL to "url",
+            ChatbotConstant.ChatbotUnification.IS_ATTACHED to "true",
+            ChatbotConstant.ChatbotUnification.STATUS to "status",
+            ChatbotConstant.ChatbotUnification.STATUS_COLOR to "status_color",
+            ChatbotConstant.ChatbotUnification.STATUS_ID to "0",
+            ChatbotConstant.ChatbotUnification.TITLE to "title",
+            ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT to "123",
+            ChatbotConstant.ChatbotUnification.USED_BY to "Article"
+        )
+    }
+
+    private fun getMapForArticleEntryForNull(): Map<String, String> {
         return mapOf(
             ChatbotConstant.ChatbotUnification.ARTICLE_ID to "1",
             ChatbotConstant.ChatbotUnification.ARTICLE_TITLE to "2",

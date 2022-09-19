@@ -680,7 +680,7 @@ class ChatbotPresenter @Inject constructor(
             id = hashMap.get(ID).toLongOrZero(),
             imageUrl = hashMap[IMAGE_URL] ?: "",
             status = hashMap[STATUS] ?: "",
-            statusId = hashMap[STATUS_ID]!!.toIntOrZero(),
+            statusId = hashMap[STATUS_ID].toIntOrZero(),
             title = hashMap[TITLE] ?: "",
             amount = hashMap[TOTAL_AMOUNT] ?: ""
         )
