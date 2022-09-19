@@ -1145,46 +1145,54 @@ class ShipmentPresenterBoPromoTest {
     }
 
     @Test
-    fun `WHEN hit clear all BO with cart list with voucher logistic null THEN don't call clear cache auto apply use case`() {
+    fun `WHEN hit clear all BO with invalid cart item THEN don't call clear cache auto apply use case`() {
         // Given
+        // Test negative branch
         presenter.shipmentCartItemModelList = listOf(
+            // Test shipmentCartItemModel == null
+            null,
+            // Test shipmentCartData == null
+            ShipmentCartItemModel(
+                cartString = "111-111-111",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "TEST1"),
+                shipmentCartData = null,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        preOrderDurationDay = 10
+                    )
+                ),
+            ),
+            // Test voucherLogisticItemUiModel.code == ""
+            ShipmentCartItemModel(
+                cartString = "111-111-111",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = ""),
+                shipmentCartData = ShipmentCartData(
+                    boMetadata = BoMetadata(
+                        boType = 1
+                    )
+                ),
+                cartItemModels = listOf(
+                    CartItemModel(
+                        preOrderDurationDay = 10
+                    )
+                ),
+            ),
+            // Test voucherLogisticItemUiModel == null
             ShipmentCartItemModel(
                 cartString = "111-111-111",
                 voucherLogisticItemUiModel = null,
-                shipmentCartData = null
-            ),
-            ShipmentCartItemModel(
-                cartString = "222-222-222",
-                voucherLogisticItemUiModel = null,
-                shipmentCartData = null
+                shipmentCartData = ShipmentCartData(
+                    boMetadata = BoMetadata(
+                        boType = 1
+                    )
+                ),
+                cartItemModels = listOf(
+                    CartItemModel(
+                        preOrderDurationDay = 10
+                    )
+                ),
             ),
         )
-
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
-            ClearPromoUiModel(
-                successDataModel = SuccessDataUiModel(
-                    success = true,
-                    tickerMessage = ""
-                )
-            )
-        )
-
-        // When
-        presenter.hitClearAllBo()
-
-        // Then
-        verify(inverse = true) {
-            clearCacheAutoApplyStackUseCase.setParams(any())
-            compositeSubscription.add(any())
-            clearCacheAutoApplyStackUseCase.createObservable(any())
-        }
-    }
-
-    @Test
-    fun `WHEN hit clear all BO with empty cart list THEN don't call clear cache auto apply use case`() {
-        // Given
-        presenter.shipmentCartItemModelList = listOf()
 
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
@@ -1305,4 +1313,10 @@ class ShipmentPresenterBoPromoTest {
         assert(result.isEmpty())
     }
 
+    // Test ShipmentPresenter.cancelAutoApplyPromoStackAfterClash(ClashingInfoDetailUiModel(...)
+
+    @Test
+    fun `WHEN THEN`() {
+
+    }
 }
