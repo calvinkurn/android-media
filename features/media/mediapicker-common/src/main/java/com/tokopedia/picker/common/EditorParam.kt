@@ -13,7 +13,7 @@ data class EditorParam(
     var autoCropRatio: ImageRatioType? = null
 ) : Parcelable {
     fun withWatermark() = editorToolsList.add(EditorToolType.WATERMARK)
-    fun withRemoveBackground() = editorToolsList.add(EditorToolType.REMOVE_BACKGROUND)
+    fun withRemoveBackground() = editorToolsList.add(0, EditorToolType.REMOVE_BACKGROUND)
 }
 
 fun createDefaultEditorTools() = arrayListOf(
