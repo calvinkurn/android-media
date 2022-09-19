@@ -88,7 +88,8 @@ object BulkApplyMapper {
             textStock = context.getString(R.string.bulk_apply_text_stock),
             textStockDescription = context.getString(
                 R.string.bulk_apply_text_stock_description,
-                product.productCriteria.minCustomStock, product.productCriteria.maxCustomStock
+                product.productCriteria.minCustomStock,
+                product.productCriteria.maxCustomStock
             ),
             minimumStock = product.productCriteria.minCustomStock,
             maximumStock = product.productCriteria.maxCustomStock,
