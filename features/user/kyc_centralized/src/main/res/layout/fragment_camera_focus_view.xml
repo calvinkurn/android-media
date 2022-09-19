@@ -172,7 +172,7 @@
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/progress_bar"
+        android:id="@+id/loader"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
         android:layout_centerInParent="true"

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,10 +16,13 @@ import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * @author by nisie on 13/11/18.
@@ -56,13 +60,6 @@ open class UserIdentificationCommonModule {
 
     @ActivityScope
     @Provides
-    @IntoMap
-    @StringKey(KYCConstant.QUERY_GET_KYC_PROJECT_INFO)
-    fun provideRawQueryGetKycProjectInfo(@ActivityScope context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.kyc_centralized.R.raw.query_get_kyc_project_info)
-
-    @ActivityScope
-    @Provides
     fun provideSharedPreference(
         @ApplicationContext context: Context
     ): SharedPreferences = context.getSharedPreferences(sharedPreferenceName, Context.MODE_PRIVATE)
@@ -77,4 +74,14 @@ open class UserIdentificationCommonModule {
     open fun provideCipher(): CipherProvider {
         return CipherProviderImpl()
     }
+
+    @Provides
+    @ActivityScope
+    open fun provideGetUserProjectInfoUseCase(
+        @ApplicationContext repository: GraphqlRepository,
+        dispatchers: CoroutineDispatchers
+    ): GetUserProjectInfoUseCase {
+        return GetUserProjectInfoUseCase(repository, dispatchers)
+    }
+
 }

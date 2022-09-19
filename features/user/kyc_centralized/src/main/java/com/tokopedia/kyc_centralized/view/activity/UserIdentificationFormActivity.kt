@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
@@ -33,8 +34,9 @@ import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.KYCConstant.Companion.LIVENESS_TAG
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
+import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.utils.file.FileUtil
 import timber.log.Timber
 
@@ -55,7 +57,9 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         intent?.data?.let {
-            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toIntOrNull() ?: KYCConstant.STATUS_DEFAULT
+            projectId = it.getQueryParameter(
+                ApplinkConstInternalGlobal.PARAM_PROJECT_ID
+            )?.toIntOrZero() ?: KycStatus.DEFAULT.code
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         }
@@ -90,7 +94,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     }
 
     override fun getListFragment(): List<Fragment> {
-        return if (projectId == KYCConstant.STATUS_DEFAULT) {
+        return if (projectId == KycStatus.DEFAULT.code) {
             val notFoundList = ArrayList<Fragment>()
             notFoundList.add(NotFoundFragment.createInstance())
             notFoundList

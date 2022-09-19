@@ -1,47 +1,38 @@
 package com.tokopedia.kyc_centralized.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.kyc_centralized.common.KycUserProjectInfoPojo
 import javax.inject.Inject
 
 class GetUserProjectInfoUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
-        private val rawQueries: Map<String, String>
-): UseCase<KycUserProjectInfoPojo>() {
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers,
+) : CoroutineUseCase<Map<String, Int>, KycUserProjectInfoPojo>(dispatchers.io) {
 
-    var params: HashMap<String, Any> = HashMap()
-
-    override suspend fun executeOnBackground(): KycUserProjectInfoPojo {
-        val rawQuery = rawQueries[KYCConstant.QUERY_GET_KYC_PROJECT_INFO]
-        val gqlRequest = GraphqlRequest(rawQuery,
-                KycUserProjectInfoPojo::class.java, params)
-        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
-        val errors = gqlResponse.getError(KycUserProjectInfoPojo::class.java)
-        if (!errors.isNullOrEmpty()) {
-            throw MessageErrorException(errors[0].message)
-        } else {
-            return gqlResponse.getData(KycUserProjectInfoPojo::class.java)
-        }
+    override suspend fun execute(params: Map<String, Int>): KycUserProjectInfoPojo {
+        return repository.request(graphqlQuery(), params)
     }
 
-    companion object {
-        private const val PROJECT_ID = "projectId"
-
-        fun createParam(projectId: Int): HashMap<String, Any> {
-            var id = projectId
-            if(id < 0) {
-                id = KYCConstant.KYC_PROJECT_ID
+    override fun graphqlQuery(): String = """
+        query get_project_info(${'$'}projectId: Int!) {
+            kycProjectInfo(projectID: ${'$'}projectId) {
+                Status
+                StatusName
+                Message
+                IsAllowToRegister
+                Reason
+                TypeList {
+                  TypeID
+                  Status
+                  StatusName
+                  IsAllowToUpload
+                }
+                IsSelfie
             }
-            return hashMapOf(
-                    PROJECT_ID to id
-            )
         }
-    }
+    """.trimIndent()
 }

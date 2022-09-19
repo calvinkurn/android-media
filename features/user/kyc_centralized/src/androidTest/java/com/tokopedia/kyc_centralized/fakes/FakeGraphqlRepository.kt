@@ -12,8 +12,9 @@ import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import com.tokopedia.kyc_centralized.common.KycUserProjectInfoPojo
+import javax.inject.Inject
 
-class FakeGraphqlRepository : GraphqlRepository {
+class FakeGraphqlRepository @Inject constructor() : GraphqlRepository {
 
     var infoCount = 0
 

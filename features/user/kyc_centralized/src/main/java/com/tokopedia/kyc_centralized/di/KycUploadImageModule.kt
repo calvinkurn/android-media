@@ -28,24 +28,10 @@ import java.util.concurrent.TimeUnit
 
 @Module
 open class KycUploadImageModule {
-    private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
     private val NET_READ_TIMEOUT = 300
     private val NET_WRITE_TIMEOUT = 300
     private val NET_CONNECT_TIMEOUT = 300
     private val NET_RETRY = 3
-
-    @ActivityScope
-    @KycQualifier
-    @Provides
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        val logging = HttpLoggingInterceptor()
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            logging.level = HttpLoggingInterceptor.Level.BODY
-        } else {
-            logging.level = HttpLoggingInterceptor.Level.NONE
-        }
-        return logging
-    }
 
     @ActivityScope
     @Provides
@@ -108,25 +94,6 @@ open class KycUploadImageModule {
         builder.connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
         builder.writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
         return builder.build()
-    }
-
-    @ActivityScope
-    @KycQualifier
-    @Provides
-    fun provideRetrofitBuilder(gson: Gson): Retrofit.Builder {
-        return Retrofit.Builder()
-                .addConverterFactory(StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideGson(): Gson {
-        return GsonBuilder()
-                .setDateFormat(GSON_DATE_FORMAT)
-                .setPrettyPrinting()
-                .serializeNulls()
-                .create()
     }
 
     @ActivityScope

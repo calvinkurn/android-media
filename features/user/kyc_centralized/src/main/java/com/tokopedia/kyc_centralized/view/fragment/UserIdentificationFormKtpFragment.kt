@@ -38,7 +38,7 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
 
     override fun setContentView() {
         val scale = context?.resources?.displayMetrics?.density.orZero()
-        onboardingImage?.setPadding(
+        viewBinding?.formOnboardingImage?.setPadding(
             PADDING_ZERO,
             (PADDING_16 * scale + PADDING_0_5F).toInt(),
             PADDING_ZERO,
@@ -46,32 +46,32 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
         )
         setTextView()
         setButtonView()
-        onboardingImage?.loadImage(KycUrl.SCAN_KTP)
+        viewBinding?.formOnboardingImage?.loadImage(KycUrl.SCAN_KTP)
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
                     .updateToolbarTitle(getString(R.string.title_kyc_info))
         }
 
         if (isKycSelfie) {
-            layoutSecurity?.hide()
+            viewBinding?.securityLayout?.hide()
         } else {
-            layoutSecurity?.show()
+            viewBinding?.securityLayout?.show()
         }
     }
 
     private fun setTextView() {
-        title?.setText(R.string.ktp_title)
-        subtitle?.text = MethodChecker.fromHtml(getString(R.string.ktp_subtitle))
-        subtitle?.gravity = Gravity.LEFT
-        bulletTextLayout?.let { context?.let { context ->
+        viewBinding?.title?.setText(R.string.ktp_title)
+        viewBinding?.subtitle?.text = MethodChecker.fromHtml(getString(R.string.ktp_subtitle))
+        viewBinding?.subtitle?.gravity = Gravity.LEFT
+        viewBinding?.layoutInfoBullet?.let { context?.let { context ->
                 (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(getString(R.string.ktp_body_1), context, it)
             }
         }
-        bulletTextLayout?.let { context?.let { context ->
+        viewBinding?.layoutInfoBullet?.let { context?.let { context ->
         (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(getString(R.string.ktp_body_2), context, it)
             }
         }
-        bulletTextLayout?.let {
+        viewBinding?.layoutInfoBullet?.let {
             context?.let { context ->
                 (activity as UserIdentificationFormActivity?)?.setTextViewWithBullet(getString(R.string.ktp_body_3), context, it)
             }
@@ -79,8 +79,8 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
     }
 
     private fun setButtonView() {
-        button?.setText(R.string.ktp_button)
-        button?.setOnClickListener { v: View? ->
+        viewBinding?.button?.setText(R.string.ktp_button)
+        viewBinding?.button?.setOnClickListener { v: View? ->
             checkPermission {
                 analytics?.eventClickNextKtpPage()
                 val intent = context?.let {
