@@ -15,7 +15,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,6 +43,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 
@@ -52,27 +57,41 @@ fun CampaignListScreen(
         val response = viewModel.getCampaignListResult.observeAsState()
         val meta = viewModel.getSellerMetaDataResult.observeAsState()
 
-        SearchBar(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
+        SearchBar(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            onSearchClicked = { searchQuery ->
+                viewModel.setCampaignName(searchQuery)
+                viewModel.getCampaignList(campaignName = searchQuery)
+            }
+        )
 
         if (meta.value is Success) {
-            val unformattedCampaignType =
-                (meta.value as Success<GetSellerCampaignSellerAppMetaResponse>).data.getSellerCampaignSellerAppMeta.campaignTypeData
-            val campaignType =
-                viewModel.mapCampaignTypeDataToCampaignTypeSelections(unformattedCampaignType)
+            val metadataResponse = (meta.value as Success<GetSellerCampaignSellerAppMetaResponse>).data.getSellerCampaignSellerAppMeta
+            val campaignType = viewModel.mapCampaignTypeDataToCampaignTypeSelections(metadataResponse.campaignTypeData)
+            val campaignStatus = viewModel.mapCampaignStatusToCampaignStatusSelections(metadataResponse.campaignStatus)
 
-            val unformattedCampaignStatus =
-                (meta.value as Success<GetSellerCampaignSellerAppMetaResponse>).data.getSellerCampaignSellerAppMeta.campaignStatus
-            val campaignStatus: List<CampaignStatusSelection> =
-                viewModel.mapCampaignStatusToCampaignStatusSelections(unformattedCampaignStatus)
+            viewModel.setDefaultCampaignTypeSelection(campaignType)
+            val defaultCampaignType = viewModel.getSelectedCampaignTypeSelection()?.campaignTypeName.orEmpty()
 
             SortFilter(
                 modifier = Modifier.padding(horizontal = 16.dp),
+                defaultCampaignType = defaultCampaignType,
                 onCampaignStatusTap = { onCampaignStatusTap(campaignStatus) },
                 onCampaignTypeTap = { onCampaignTypeTap(campaignType) },
-                onDismissed = { viewModel.getCampaignList() })
+                onClearFilter = { viewModel.getCampaignList() }
+            )
         }
 
-        Ticker(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
+        var isTickerDismissed by remember { mutableStateOf(false) }
+
+        if (!isTickerDismissed) {
+            CampaignTicker(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                onDismissed = {
+                    isTickerDismissed = true
+                }
+            )
+        }
 
         if (response.value is Success) {
             val items =
@@ -93,65 +112,67 @@ fun List(campaigns: List<ActiveCampaign>) {
 }
 
 @Composable
-private fun SearchBar(modifier: Modifier = Modifier) {
+private fun SearchBar(modifier: Modifier = Modifier, onSearchClicked : (String) -> Unit) {
     val editorAction: (TextView, Int, KeyEvent) -> Boolean = { textView, actionId, event ->
         if (actionId == EditorInfo.IME_ACTION_SEARCH || event.keyCode == KeyEvent.KEYCODE_ENTER) {
             val query = textView.text.toString()
-            //viewModel.setCampaignName(query)
-            //   viewModel.getCampaignList(campaignName = query)
+            onSearchClicked(query)
             true
         } else {
             false
         }
     }
+
     UnifySearchBar(
         modifier = modifier.fillMaxWidth(),
         placeholderText = stringResource(id = R.string.search_active_campaign),
-        onTextChanged = { text ->
-
-        }, onEditorAction = editorAction
+        onEditorAction = editorAction
     )
-
 }
 
 @Composable
 private fun SortFilter(
     modifier: Modifier = Modifier,
+    defaultCampaignType : String,
     onCampaignStatusTap: () -> Unit,
     onCampaignTypeTap: () -> Unit,
-    onDismissed: () -> Unit
+    onClearFilter: () -> Unit
 ) {
     val campaignStatus = SortFilterItem(
         stringResource(id = R.string.campaign_list_label_status),
         ChipsUnify.TYPE_NORMAL,
         ChipsUnify.TYPE_NORMAL,
         onCampaignStatusTap
-    )
+    ).apply {
+        chevronListener = onCampaignStatusTap
+    }
+
     val campaignType = SortFilterItem(
-        stringResource(R.string.campaign_type),
+        defaultCampaignType,
         ChipsUnify.TYPE_SELECTED,
         ChipsUnify.TYPE_NORMAL,
         onCampaignTypeTap
-    )
+    ).apply {
+        chevronListener = onCampaignTypeTap
+    }
 
     UnifySortFilter(
         modifier = modifier.fillMaxWidth(),
         items = arrayListOf(campaignStatus, campaignType),
         filterRelationship = SortFilter.RELATIONSHIP_AND,
         filterType = SortFilter.TYPE_QUICK,
-        onDismissed = onDismissed
+        onClearFilter = onClearFilter
     )
 }
 
 @Composable
-private fun Ticker(modifier: Modifier = Modifier) {
+private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed : () -> Unit) {
     UnifyTicker(
         modifier = modifier.fillMaxWidth(),
         text = stringResource(id = R.string.another_campaign_type_wording),
-        onHyperlinkClicked = {},
-        onDismissed = {
-
-        }
+        tickerShape = Ticker.SHAPE_LOOSE,
+        tickerType = Ticker.TYPE_ANNOUNCEMENT,
+        onDismissed = onDismissed
     )
 }
 
@@ -245,7 +266,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
             )
 
             UnifyTypography(
-                campaign.productQty,
+                stringResource(id = R.string.campaign_list_product_quantity_label, campaign.productQty),
                 modifier = Modifier.constrainAs(productQty) {
                     top.linkTo(campaignName.bottom, margin = 12.dp)
                     start.linkTo(campaignName.start)

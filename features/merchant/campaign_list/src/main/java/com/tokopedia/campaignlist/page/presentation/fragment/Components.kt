@@ -4,11 +4,16 @@ import android.content.res.ColorStateList
 import android.view.KeyEvent
 import android.widget.TextView
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.tokopedia.campaignlist.common.util.onTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Label
@@ -24,7 +29,7 @@ fun UnifySortFilter(
     items: ArrayList<SortFilterItem>,
     filterRelationship: Int,
     filterType: Int,
-    onDismissed: () -> Unit
+    onClearFilter: () -> Unit
 ) {
     AndroidView(
         modifier = modifier,
@@ -33,11 +38,8 @@ fun UnifySortFilter(
                 addItem(items)
                 this.filterRelationship = filterRelationship
                 this.filterType = filterType
-                dismissListener = onDismissed
+                dismissListener = onClearFilter
             }
-        },
-        update = { view ->
-
         }
     )
 }
@@ -46,7 +48,7 @@ fun UnifySortFilter(
 fun UnifySearchBar(
     modifier: Modifier = Modifier,
     placeholderText: String,
-    onTextChanged: (String) -> Unit,
+    onTextChanged: (String) -> Unit = { _ -> },
     onEditorAction: (TextView, Int, KeyEvent) -> Boolean
 ) {
     AndroidView(
@@ -66,6 +68,8 @@ fun UnifySearchBar(
 fun UnifyTicker(
     modifier: Modifier = Modifier,
     text: CharSequence,
+    tickerShape: Int,
+    tickerType: Int,
     onHyperlinkClicked: (CharSequence) -> Unit = {},
     onDismissed: () -> Unit = {}
 ) {
@@ -81,16 +85,12 @@ fun UnifyTicker(
 
                     override fun onDismiss() {
                         onDismissed()
-                        gone()
                     }
 
                 })
-                tickerShape = Ticker.SHAPE_LOOSE
-                tickerType = Ticker.TYPE_ANNOUNCEMENT
+                this.tickerShape = tickerShape
+                this.tickerType = tickerType
             }
-        },
-        update = { view ->
-
         }
     )
 }
@@ -109,9 +109,6 @@ fun UnifyLabel(
                 setLabelType(labelType)
                 text = labelText
             }
-        },
-        update = { view ->
-
         }
     )
 }
@@ -135,9 +132,6 @@ fun UnifyButton(
                 this.buttonType = buttonType
                 setOnClickListener { onClick() }
             }
-        },
-        update = { view ->
-
         }
     )
 }
@@ -163,9 +157,6 @@ fun UnifyTypography(
                 setWeight(weight)
                 setTextColor(colorStateList)
             }
-        },
-        update = { view ->
-
         }
     )
 }
