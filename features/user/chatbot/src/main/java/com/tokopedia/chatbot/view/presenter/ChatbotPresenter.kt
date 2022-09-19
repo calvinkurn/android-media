@@ -101,7 +101,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVI
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_CODE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOURCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.SESSION_CHANGE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.common.network.data.model.RestResponse
@@ -166,7 +166,7 @@ class ChatbotPresenter @Inject constructor(
         const val UPDATE_TOOLBAR = "14"
         const val CHAT_DIVIDER_DEBUGGING = "15"
         const val LIVE_CHAT_DIVIDER = "16"
-        const val QUERY_SORCE_TYPE = "Apps"
+        const val QUERY_SOURCE_TYPE = "Apps"
         const val SESSION_CHANGE = "31"
     }
 
@@ -801,7 +801,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsUiModel?) {
-        val input = genrateInput(selectedValue, model)
+        val input = generateInput(selectedValue, model)
         chipSubmitHelpfulQuestionsUseCase.cancelJobs()
         chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(
             ::onErrorOptionList,
@@ -817,13 +817,13 @@ class ChatbotPresenter @Inject constructor(
         throwable.printStackTrace()
     }
 
-    private fun genrateInput(selectedValue: Int, model: HelpFullQuestionsUiModel?): SubmitOptionInput {
+    private fun generateInput(selectedValue: Int, model: HelpFullQuestionsUiModel?): SubmitOptionInput {
         val input = SubmitOptionInput()
         with(input) {
             caseChatID = model?.helpfulQuestion?.caseChatId ?: ""
             caseID = model?.helpfulQuestion?.caseId ?: ""
             messageID = model?.messageId ?: ""
-            source = QUERY_SORCE_TYPE
+            source = QUERY_SOURCE_TYPE
             value = selectedValue
         }
         return input

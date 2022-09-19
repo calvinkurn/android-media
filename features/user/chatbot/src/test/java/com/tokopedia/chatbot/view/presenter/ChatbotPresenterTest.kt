@@ -191,6 +191,76 @@ class ChatbotPresenterTest {
     }
 
     @Test
+    fun `submitChatCsat success when toaster Message is null`() {
+        val response = ChipSubmitChatCsatResponse(
+            ChipSubmitChatCsatResponse.ChipSubmitChatCSAT(
+                ChipSubmitChatCsatResponse.ChipSubmitChatCSAT.CsatSubmitData(
+                    1,
+                    null
+                ),
+                emptyList(),
+                "",
+                ""
+            )
+        )
+
+        coEvery {
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.submitChatCsat(ChipSubmitChatCsatInput())
+
+        verify {
+            view.onSuccessSubmitChatCsat(any())
+        }
+    }
+
+    @Test
+    fun `submitChatCsat success when csatSubmitData is null`() {
+        val response = ChipSubmitChatCsatResponse(
+            ChipSubmitChatCsatResponse.ChipSubmitChatCSAT(
+                null,
+                emptyList(),
+                "",
+                ""
+            )
+        )
+
+        coEvery {
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.submitChatCsat(ChipSubmitChatCsatInput())
+
+        verify {
+            view.onSuccessSubmitChatCsat(any())
+        }
+    }
+
+    @Test
+    fun `submitChatCsat success when ChipSubmitChatCsat is null`() {
+        val response = ChipSubmitChatCsatResponse(
+            null
+        )
+
+        coEvery {
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.submitChatCsat(ChipSubmitChatCsatInput())
+
+        verify {
+            view.onSuccessSubmitChatCsat(any())
+        }
+    }
+
+    @Test
     fun `submitChatCsat failure`() {
         coEvery {
             chipSubmitChatCsatUseCase.chipSubmitChatCsat(any(), captureLambda(), any())
@@ -289,6 +359,96 @@ class ChatbotPresenterTest {
         }
 
         presenter.hitGqlforOptionList(1, null)
+
+        verify { presenter.onSubmitError(any()) }
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure with model not null`() {
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
+        } answers {
+            firstArg<(Throwable) -> Unit>().invoke(Exception())
+        }
+
+        presenter.hitGqlforOptionList(
+            1,
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "", "", "",
+                "", HelpFullQuestionPojo.HelpfulQuestion("", "", emptyList(), 1)
+            )
+        )
+
+        verify { presenter.onSubmitError(any()) }
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel helpfulQuestion caseChatId  null`() {
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
+        } answers {
+            firstArg<(Throwable) -> Unit>().invoke(Exception())
+        }
+
+        presenter.hitGqlforOptionList(
+            1,
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "", "", "",
+                "", HelpFullQuestionPojo.HelpfulQuestion(null, "", emptyList(), 1)
+            )
+        )
+
+        verify { presenter.onSubmitError(any()) }
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel helpfulQuestion caseId  null`() {
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
+        } answers {
+            firstArg<(Throwable) -> Unit>().invoke(Exception())
+        }
+
+        presenter.hitGqlforOptionList(
+            1,
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "", "", "",
+                "", HelpFullQuestionPojo.HelpfulQuestion("", null, emptyList(), 1)
+            )
+        )
+
+        verify { presenter.onSubmitError(any()) }
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel messageId  null`() {
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
+        } answers {
+            firstArg<(Throwable) -> Unit>().invoke(Exception())
+        }
+
+        presenter.hitGqlforOptionList(
+            1,
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "", "", "",
+                "", HelpFullQuestionPojo.HelpfulQuestion("", "", emptyList(), 1)
+            )
+        )
+
+        verify { presenter.onSubmitError(any()) }
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel is  null`() {
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any())
+        } answers {
+            firstArg<(Throwable) -> Unit>().invoke(Exception())
+        }
+
+        presenter.hitGqlforOptionList(1, HelpFullQuestionsUiModel("", "", "", "", "", "", "",
+            "",null,""))
 
         verify { presenter.onSubmitError(any()) }
     }
