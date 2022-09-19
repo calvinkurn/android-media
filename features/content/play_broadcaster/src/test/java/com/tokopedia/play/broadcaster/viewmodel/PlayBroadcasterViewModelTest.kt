@@ -85,7 +85,7 @@ class PlayBroadcasterViewModelTest {
         )
 
         robot.use {
-            it.getConfig()
+            it.getAccountConfiguration()
             it.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(countDown)
         }
     }
@@ -113,7 +113,7 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.SetProduct(mockProductTagSection))
             }
 

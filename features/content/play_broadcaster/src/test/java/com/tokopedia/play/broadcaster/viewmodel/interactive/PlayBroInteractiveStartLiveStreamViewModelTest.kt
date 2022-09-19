@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -48,7 +49,9 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
         )
     )
 
-    init {
+    @Before
+    fun setUp() {
+        coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
     }
 
@@ -64,7 +67,7 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
 
                 startLive()
             }

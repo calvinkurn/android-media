@@ -33,6 +33,7 @@ class PlayBroadcastPinnedMessageTest {
 
     @Before
     fun setUp() {
+        coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
     }
 
@@ -53,7 +54,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
             }
 
@@ -79,7 +80,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
             }
 
@@ -100,7 +101,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
             }
 
@@ -124,7 +125,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
 
                 setPinned(newMessage)
@@ -152,7 +153,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
 
                 setPinned(newMessage)
@@ -173,7 +174,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
 
                 editPinned()
@@ -194,7 +195,7 @@ class PlayBroadcastPinnedMessageTest {
 
         robot.use {
             val stateList = robot.recordStateAsList {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
 
                 editPinned()

@@ -184,8 +184,8 @@ class UiModelBuilder {
     }
 
     fun buildAccountListModel(
-        idShop: String = "",
-        idBuyer: String = "",
+        idShop: String = "1234",
+        idBuyer: String = "5678",
         tncShop: Boolean = false,
         usernameShop: Boolean = true,
         tncBuyer: Boolean = false,
