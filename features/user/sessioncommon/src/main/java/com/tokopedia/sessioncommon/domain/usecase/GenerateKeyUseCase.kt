@@ -1,17 +1,17 @@
-package com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain
+package com.tokopedia.sessioncommon.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.data.GenerateKeyModel
+import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import javax.inject.Inject
 
 class GenerateKeyUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Unit, GenerateKeyModel>(dispatchers.io) {
+) : CoroutineUseCase<Unit, GenerateKeyPojo>(dispatchers.io) {
 
     override fun graphqlQuery(): String =
         """
@@ -24,7 +24,7 @@ class GenerateKeyUseCase @Inject constructor(
             }
         """.trimIndent()
 
-    override suspend fun execute(params: Unit): GenerateKeyModel {
+    override suspend fun execute(params: Unit): GenerateKeyPojo {
         val parameters = mapOf(
             PARAM_RELATION_TYPE to VALUE_RELATION_TYPE
         )

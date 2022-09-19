@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
-import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.GenerateKeyUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GenerateKeyUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.ValidateUserDataUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.data.ValidateUserData
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.data.ValidateUserDataParam
@@ -132,7 +132,7 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     private fun validateUserData() {
         _isLoading.value = true
         launchCatchError(coroutineContext, {
-            val keyData = generateKeyUseCase(Unit).generateKey
+            val keyData = generateKeyUseCase(Unit).keyData
             _encryptedPassword = RsaUtils.encrypt(_currentPassword, keyData.key.decodeBase64(), true)
             _currentHash = keyData.hash
 
