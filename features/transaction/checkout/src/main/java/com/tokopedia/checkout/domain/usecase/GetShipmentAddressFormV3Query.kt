@@ -398,6 +398,11 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   maximum_amount
                   basis_amount
                 }
+                hyperlink_text {
+                  text
+                  url
+                  is_show
+                }
               }
               tickers {
                 id

@@ -58,7 +58,7 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
         }
 
         if (egoldAttributeModel.isShowHyperlink) {
-            tvEmasHyperlink.text = egoldAttributeModel.hyperlinkText
+            tvEmasHyperlink.text = String.format(Locale.getDefault(), "(${egoldAttributeModel.hyperlinkText})")
             tvEmasHyperlink.setOnClickListener {
                 RouteManager.route(
                     itemView.context,

@@ -858,9 +858,9 @@ class ShipmentMapper @Inject constructor() {
             subText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.subText
             tickerText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tickerText
             tooltipText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tooltipText
-            hyperlinkText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.hyperlinkText
-            hyperlinkUrl = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.hyperlinkUrl
-            isShowHyperlink = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.isShowHyperlink
+            hyperlinkText = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.text
+            hyperlinkUrl = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.url
+            isShowHyperlink = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.isShow
 
             val tmpEgoldTieringModelArrayList: ArrayList<EgoldTieringModel> = arrayListOf()
             shipmentAddressFormDataResponse.egoldAttributes.egoldTieringDataArrayList.forEach {
