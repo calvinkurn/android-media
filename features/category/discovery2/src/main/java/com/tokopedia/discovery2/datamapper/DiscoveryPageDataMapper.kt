@@ -257,7 +257,11 @@ class DiscoveryPageDataMapper(
         }
         component.properties?.template = Constant.ProductTemplate.LIST
         component.componentsPerPage = COMPONENTS_PER_PAGE
-        return parseProductVerticalList(component,false)
+        val showEmptyState =
+            ((component.selectedSort != null && component.selectedFilters != null) &&
+                (component.selectedSort?.isNotEmpty() == true ||
+                    component.selectedFilters?.isNotEmpty() == true))
+        return parseProductVerticalList(component, showEmptyState)
     }
 
     private fun addBannerTimerComp(component: ComponentsItem): Boolean {
