@@ -10,7 +10,8 @@ import java.util.*
 /**
  * @author : Steven 2019-08-06
  */
-class ChatListPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+class ChatListPagerAdapter(fm: FragmentManager)
+    : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private var itemList: MutableList<ChatListTab> = ArrayList()
 
