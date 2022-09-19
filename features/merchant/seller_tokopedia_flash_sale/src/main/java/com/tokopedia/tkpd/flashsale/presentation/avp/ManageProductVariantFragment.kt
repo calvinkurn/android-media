@@ -58,8 +58,8 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
         super.onViewCreated(view, savedInstanceState)
         product?.let {
             viewModel.setupInitiateProductData(it)
-            setupHeaderData(it)
         }
+        setupHeaderData(viewModel.getFinalProductData())
         setupWidgetBulkApply(
             getString(R.string.stfs_inactive_variant_bulk_apply_place_holder),
             false
@@ -104,30 +104,21 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
             .add(ManageProductVariantDelegateAdapter(
                 onToggleSwitched = { position, isChecked ->
                     onToggleSwitched(position, isChecked)
-                    viewModel.setItemToggleValue(position, isChecked)
                 },
                 onDiscountAmountChanged = { position, value ->
                     viewModel.setDiscountAmount(position, value)
+                    Timber.tag("Masuk").d(value.toString())
                 }
             ))
             .build()
     }
 
     private fun onToggleSwitched(itemPosition: Int, isChecked: Boolean) {
-        val selectedProduct = adapter?.getItems()?.get(itemPosition)
-        val selectedProductId = selectedProduct?.id()
-
-        val adapter = adapter ?: return
-        val oldItems = adapter.getItems().filterIsInstance<ManageProductVariantItem>()
-        val newItems = oldItems.map {
-            if (it.productId == selectedProductId) {
-                it.copy(isToggleOn = isChecked)
-            } else {
-                it.copy()
-            }
+        viewModel.setItemToggleValue(itemPosition, isChecked)
+        viewModel.getFinalProductData().toItem()?.let {
+            adapter?.submit(it)
+            setWidgetBulkApplyState(it)
         }
-        adapter.submit(newItems)
-        setWidgetBulkApplyState(newItems)
     }
 
     private fun setWidgetBulkApplyState(newItems: List<ManageProductVariantItem>) {

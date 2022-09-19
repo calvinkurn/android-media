@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.avp.adapter
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.tkpd.flashsale.presentation.avp.adapter.item.ManageProductVariantItem
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import timber.log.Timber
+import java.lang.Math.floor
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -28,6 +31,8 @@ class ManageProductVariantDelegateAdapter(
     companion object {
         private const val NUMBER_PATTERN = "#,###,###"
     }
+
+    var isForceTextChanged = false
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = LayoutCampaignManageProductDetailVariantItemBinding.inflate(
@@ -82,23 +87,19 @@ class ManageProductVariantDelegateAdapter(
             discountPercentageView: TextFieldUnify2,
             item: ManageProductVariantItem
         ) {
-            val numberFormatter =
-                NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
-            numberFormatter.applyPattern(NUMBER_PATTERN)
+            this.textInputLayout.editText?.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            val watcher = NumberThousandSeparatorTextWatcher(
-                this.textInputLayout.editText ?: return, numberFormatter
-            ) { number, formattedNumber ->
-                this.textInputLayout.editText?.setText(formattedNumber)
-                this.textInputLayout.editText?.setSelection(
-                    this.textInputLayout.editText?.text?.length.orZero()
-                )
-                val discountPercentage = item.price.price.toLong() / number * 100
-                discountPercentageView.textInputLayout.editText?.setText(discountPercentage.toString())
-                onDiscountAmountChanged(adapterPosition, number)
-            }
+                override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            this.textInputLayout.editText?.addTextChangedListener(watcher)
+                override fun afterTextChanged(s: Editable?) {
+                    val number = s.toString().digitsOnly()
+                    val discountedPrice =
+                        kotlin.math.floor((number / item.price.price.toDouble()) * 100)
+                    discountPercentageView.textInputLayout.editText?.setText(discountedPrice.toString())
+                    onDiscountAmountChanged(adapterPosition, number)
+                }
+            })
         }
 
         private fun getPriceRange(item: ManageProductVariantItem): String {

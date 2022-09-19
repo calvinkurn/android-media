@@ -1249,6 +1249,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     "${child*2000}",
                     "${child*3000}"
                 ),
+                0,
+                0,
                 productId = child.toLong(),
                 sku = "SKU-$child",
                 stock = 80,
