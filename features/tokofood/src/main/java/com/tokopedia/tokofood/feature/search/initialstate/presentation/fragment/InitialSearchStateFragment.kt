@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentInitialStateFoodBinding
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.InitialStateViewUpdateListener
@@ -172,7 +173,11 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener {
                     setInitialStateData(it.data.initialStateList)
                 }
                 is Fail -> {
-                    //TODO send server logger
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_INITIAL_SEARCH_STATE,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_INITIAL_SEARCH_STATE,
+                    )
                 }
             }
         }
@@ -182,7 +187,11 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener {
         observe(viewModel.removeSearchHistory) {
             when (it) {
                 is Fail -> {
-                    //TODO send server logger
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_REMOVE_RECENT_SEARCH,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_REMOVE_RECENT_SEARCH,
+                    )
                 }
             }
         }
@@ -212,6 +221,20 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener {
         this.keyword = keyword
         this.initialStateViewUpdateListener?.showInitialStateView()
         localCacheModel?.let { viewModel.fetchInitialState(it) }
+    }
+
+    private fun logExceptionToServerLogger(
+        throwable: Throwable,
+        errorType: String,
+        errorDesc: String
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.SEARCH,
+            throwable,
+            errorType,
+            userSession.deviceId.orEmpty(),
+            errorDesc
+        )
     }
 
     companion object {

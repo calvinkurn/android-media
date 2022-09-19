@@ -25,6 +25,7 @@ object TokofoodErrorLogger {
         internal const val PURCHASE = "PURCHASE"
         internal const val PROMO = "PROMO"
         internal const val POST_PURCHASE = "POST_PURCHASE"
+        internal const val SEARCH = "SEARCH"
     }
 
     object ErrorDescription {
@@ -42,6 +43,8 @@ object TokofoodErrorLogger {
         internal const val ERROR_CHOOSE_ADDRESS_MERCHANT_PAGE = "error of choose_address in merchant page"
         internal const val ERROR_CHECK_DELIVERY_COVERAGE = "error of deliverage coverage"
         internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error of eligible for address"
+        internal const val ERROR_INITIAL_SEARCH_STATE = "error of initial search state"
+        internal const val ERROR_REMOVE_RECENT_SEARCH = "error of remove recent search"
     }
 
     object ErrorType {
@@ -58,6 +61,8 @@ object TokofoodErrorLogger {
         internal const val ERROR_CHOOSE_ADDRESS = "error_choose_address"
         internal const val ERROR_CHECK_DELIVERY_COVERAGE = "error_check_delivery_coverage"
         internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error_eligible_for_address"
+        internal const val ERROR_INITIAL_SEARCH_STATE = "error_initial_search_state"
+        internal const val ERROR_REMOVE_RECENT_SEARCH = "error_remove_recent_search"
     }
 
     fun logExceptionToServerLogger(
