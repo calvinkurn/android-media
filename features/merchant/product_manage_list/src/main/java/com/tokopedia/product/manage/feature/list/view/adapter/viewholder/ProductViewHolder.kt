@@ -71,7 +71,9 @@ class ProductViewHolder(
         } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION
             && GlobalConfig.isSellerApp()
         ) {
-            listener.onImpressionMoreOption()
+            if (!binding?.imageNotifyMeBuyer?.isVisible.orFalse()){
+                listener.onImpressionMoreOption()
+            }
         }
 
     }
