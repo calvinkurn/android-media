@@ -20,7 +20,6 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListener
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_a_pager.*
 
 class WishlistCollectionHostBottomSheetFragment: Fragment(),
     BottomSheetCollectionWishlistAdapter.ActionListener,

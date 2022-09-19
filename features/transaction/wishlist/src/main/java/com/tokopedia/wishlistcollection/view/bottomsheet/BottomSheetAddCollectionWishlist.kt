@@ -62,6 +62,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     private var isProductActive: Boolean = true
     private var toasterErrorMessage: String = ""
     private var source: String = ""
+    private var productId: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -171,10 +172,9 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     }
 
     private fun loadData() {
-        val productId = arguments?.get(PRODUCT_IDs).toString()
+        productId = arguments?.get(PRODUCT_IDs).toString()
         isProductActive = arguments?.get(IS_PRODUCT_ACTIVE) as Boolean
         source = arguments?.get(SOURCE).toString()
-        WishlistCollectionAnalytics.sendClickCheckWishlistEvent(productId, source)
         var sourceParam = source
         if (sourceParam == SRC_WISHLIST_COLLECTION_BULK_ADD) sourceParam = SRC_WISHLIST_COLLECTION
         val param = GetWishlistCollectionsBottomSheetParams(
@@ -248,6 +248,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         setAction(dataGetBottomSheetCollections.titleButton.text) {
             if (dataGetBottomSheetCollections.titleButton.action == OPEN_WISHLIST_COLLECTION) {
                 context?.let { c ->
+                    WishlistCollectionAnalytics.sendClickCheckWishlistEvent(productId, source)
                     dismiss()
                     goToWishlistPage(c) }
             }
