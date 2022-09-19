@@ -7,7 +7,7 @@
     <gradient
         android:angle="270"
         android:endColor="@color/Unify_NN1000"
-        android:startColor="@color/dividerunify_background"
+        android:startColor="@color/Unify_NN50"
         android:type="linear">
     </gradient>
 
