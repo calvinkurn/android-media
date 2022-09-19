@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -26,15 +25,17 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentSearchResultBinding
+import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
+import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.TokofoodSearchErrorStateViewHolder
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
 import com.tokopedia.tokofood.feature.search.searchresult.analytics.TokofoodSearchResultAnalytics
 import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
@@ -68,7 +69,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     FilterGeneralDetailBottomSheet.Callback,
     TokofoodQuickSortBottomSheet.Listener,
     ChooseAddressWidget.ChooseAddressWidgetListener,
-    TokofoodQuickPriceRangeBottomsheet.Listener {
+    TokofoodQuickPriceRangeBottomsheet.Listener,
+    TokofoodSearchErrorStateViewHolder.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -80,7 +82,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         ViewModelProvider(this, viewModelFactory).get(TokofoodSearchResultPageViewModel::class.java)
     }
     private val adapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
-        TokofoodSearchResultAdapterTypeFactory(this, this, this, this)
+        TokofoodSearchResultAdapterTypeFactory(this, this, this, this, this)
     }
     private val merchantResultAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val differ = TokofoodSearchResultDiffer()
@@ -255,6 +257,14 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun onApplyPriceRange(checkedOptions: List<Option>) {
         viewModel.applyOptions(checkedOptions)
+    }
+
+    override fun onRetry() {
+        onClickRetryError()
+    }
+
+    override fun onGoToHome() {
+        navigateToNewFragment(TokoFoodHomeFragment.createInstance())
     }
 
     override fun onDestroyView() {
@@ -561,6 +571,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun getDestinationId(): String {
         return localCacheModel?.district_id.orEmpty()
+    }
+
+    private fun navigateToNewFragment(fragment: Fragment) {
+        (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
     }
 
     companion object {

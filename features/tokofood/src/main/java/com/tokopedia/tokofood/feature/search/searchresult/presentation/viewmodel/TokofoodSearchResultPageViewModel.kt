@@ -19,9 +19,11 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
+import com.tokopedia.tokofood.feature.search.common.presentation.uimodel.TokofoodSearchErrorStateUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodFilterSortUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodSearchMerchantUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodFilterSortMapper
@@ -495,7 +497,8 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
     private fun getErrorSearchResultInitial(uiState: TokofoodSearchUiState): List<Visitable<*>> {
         return uiState.throwable?.let {
-            listOf(TokoFoodErrorStateUiModel(String.EMPTY, it))
+            val globalErrorType = it.getGlobalErrorType()
+            listOf(TokofoodSearchErrorStateUiModel(globalErrorType))
         }.orEmpty()
     }
 
