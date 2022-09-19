@@ -79,7 +79,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:unify_image_type="circle" />
 
             <com.tokopedia.unifycomponents.TabsUnify
                 android:id="@+id/tab_layout"
