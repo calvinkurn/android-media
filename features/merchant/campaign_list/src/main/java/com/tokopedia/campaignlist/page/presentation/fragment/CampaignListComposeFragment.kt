@@ -16,6 +16,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.analytics.CampaignListTracker
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
+import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignStatusBottomSheet
+import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignTypeBottomSheet
+import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
+import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -59,11 +63,17 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
                               savedInstanceState: Bundle?): View {
         initViewTreeOwners()
 
+        viewModel.getSellerMetaData()
         viewModel.getCampaignList()
+
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                CampaignListScreen(viewModel)
+                CampaignListScreen(
+                    viewModel = viewModel,
+                    onCampaignStatusTap = { campaignStatuses -> showCampaignStatusBottomSheet(campaignStatuses) },
+                    onCampaignTypeTap = { campaignType -> showCampaignTypeBottomSheet(campaignType) }
+                )
             }
         }
     }
@@ -76,5 +86,28 @@ class CampaignListComposeFragment : BaseDaggerFragment() {
         ViewTreeLifecycleOwner.set(decoderView, this)
         ViewTreeViewModelStoreOwner.set(decoderView, this)
         ViewTreeSavedStateRegistryOwner.set(decoderView, this)
+    }
+
+    private fun showCampaignStatusBottomSheet(campaignStatusSelections: List<CampaignStatusSelection>) {
+        val bottomSheet = CampaignStatusBottomSheet.createInstance(campaignStatusSelections, object : CampaignStatusBottomSheet.OnApplyButtonClickListener {
+            override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
+
+            }
+
+            override fun onNoCampaignStatusSelected() {
+
+            }
+
+        })
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showCampaignTypeBottomSheet(campaignTypeSelection: List<CampaignTypeSelection>) {
+        val bottomSheet = CampaignTypeBottomSheet.createInstance(campaignTypeSelection, object : CampaignTypeBottomSheet.OnApplyButtonClickListener {
+            override fun onApplyCampaignTypeFilter(selectedCampaignType: CampaignTypeSelection) {
+
+            }
+        })
+        bottomSheet.show(childFragmentManager)
     }
 }

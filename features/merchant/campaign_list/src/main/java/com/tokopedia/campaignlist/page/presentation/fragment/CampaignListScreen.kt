@@ -24,13 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
+import com.tokopedia.campaignlist.common.data.model.response.GetSellerCampaignSellerAppMetaResponse
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
+import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
+import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.AVAILABLE_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.ONGOING_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.UPCOMING_IN_NEAR_TIME_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.UPCOMING_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Label
@@ -39,16 +43,40 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 
 @Composable
-fun CampaignListScreen(viewModel: CampaignListViewModel) {
+fun CampaignListScreen(
+    viewModel: CampaignListViewModel,
+    onCampaignStatusTap: (List<CampaignStatusSelection>) -> Unit,
+    onCampaignTypeTap: (List<CampaignTypeSelection>) -> Unit,
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         val response = viewModel.getCampaignListResult.observeAsState()
+        val meta = viewModel.getSellerMetaDataResult.observeAsState()
 
         SearchBar(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
-        SortFilter(modifier = Modifier.padding(horizontal = 16.dp), onDismissed = { viewModel.getCampaignList() })
+
+        if (meta.value is Success) {
+            val unformattedCampaignType =
+                (meta.value as Success<GetSellerCampaignSellerAppMetaResponse>).data.getSellerCampaignSellerAppMeta.campaignTypeData
+            val campaignType =
+                viewModel.mapCampaignTypeDataToCampaignTypeSelections(unformattedCampaignType)
+
+            val unformattedCampaignStatus =
+                (meta.value as Success<GetSellerCampaignSellerAppMetaResponse>).data.getSellerCampaignSellerAppMeta.campaignStatus
+            val campaignStatus: List<CampaignStatusSelection> =
+                viewModel.mapCampaignStatusToCampaignStatusSelections(unformattedCampaignStatus)
+
+            SortFilter(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                onCampaignStatusTap = { onCampaignStatusTap(campaignStatus) },
+                onCampaignTypeTap = { onCampaignTypeTap(campaignType) },
+                onDismissed = { viewModel.getCampaignList() })
+        }
+
         Ticker(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
 
         if (response.value is Success) {
-            val items = (response.value as Success<GetCampaignListV2Response>).data.getCampaignListV2.campaignList
+            val items =
+                (response.value as Success<GetCampaignListV2Response>).data.getCampaignListV2.campaignList
             val formattedCampaigns = viewModel.mapCampaignListDataToActiveCampaignList(items)
             List(campaigns = formattedCampaigns)
         }
@@ -56,7 +84,7 @@ fun CampaignListScreen(viewModel: CampaignListViewModel) {
 }
 
 @Composable
-fun List(campaigns : List<ActiveCampaign>) {
+fun List(campaigns: List<ActiveCampaign>) {
     LazyColumn {
         items(campaigns) {
             CampaignItem(it)
@@ -66,11 +94,11 @@ fun List(campaigns : List<ActiveCampaign>) {
 
 @Composable
 private fun SearchBar(modifier: Modifier = Modifier) {
-    val editorAction : (TextView, Int , KeyEvent) -> Boolean = { textView, actionId, event ->
+    val editorAction: (TextView, Int, KeyEvent) -> Boolean = { textView, actionId, event ->
         if (actionId == EditorInfo.IME_ACTION_SEARCH || event.keyCode == KeyEvent.KEYCODE_ENTER) {
             val query = textView.text.toString()
             //viewModel.setCampaignName(query)
-         //   viewModel.getCampaignList(campaignName = query)
+            //   viewModel.getCampaignList(campaignName = query)
             true
         } else {
             false
@@ -87,24 +115,30 @@ private fun SearchBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SortFilter(modifier: Modifier = Modifier, onDismissed : () -> Unit) {
+private fun SortFilter(
+    modifier: Modifier = Modifier,
+    onCampaignStatusTap: () -> Unit,
+    onCampaignTypeTap: () -> Unit,
+    onDismissed: () -> Unit
+) {
     val campaignStatus = SortFilterItem(
         stringResource(id = R.string.campaign_list_label_status),
         ChipsUnify.TYPE_NORMAL,
         ChipsUnify.TYPE_NORMAL,
-        {}
+        onCampaignStatusTap
     )
     val campaignType = SortFilterItem(
         stringResource(R.string.campaign_type),
         ChipsUnify.TYPE_SELECTED,
         ChipsUnify.TYPE_NORMAL,
-        {}
+        onCampaignTypeTap
     )
-    val items = arrayListOf(campaignStatus, campaignType)
 
     UnifySortFilter(
         modifier = modifier.fillMaxWidth(),
-        items = items,
+        items = arrayListOf(campaignStatus, campaignType),
+        filterRelationship = SortFilter.RELATIONSHIP_AND,
+        filterType = SortFilter.TYPE_QUICK,
         onDismissed = onDismissed
     )
 }
@@ -115,7 +149,9 @@ private fun Ticker(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
         text = stringResource(id = R.string.another_campaign_type_wording),
         onHyperlinkClicked = {},
-        onDismissed = {}
+        onDismissed = {
+
+        }
     )
 }
 
@@ -171,9 +207,9 @@ fun CampaignItem(campaign: ActiveCampaign) {
                     bottom.linkTo(statusImage.bottom)
                     start.linkTo(statusImage.end, margin = 4.dp)
                 },
-                type = Typography.BODY_3,
+                type = Typography.DISPLAY_3,
                 weight = Typography.BOLD,
-                colorId =  com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                colorId = com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
 
             CampaignLabel(
@@ -203,7 +239,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
                     top.linkTo(campaignImage.top)
                     start.linkTo(campaignImage.end, margin = 12.dp)
                 },
-                type = Typography.BODY_2,
+                type = Typography.DISPLAY_2,
                 weight = Typography.BOLD,
                 colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
@@ -214,7 +250,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
                     top.linkTo(campaignName.bottom, margin = 12.dp)
                     start.linkTo(campaignName.start)
                 },
-                type = Typography.BODY_3,
+                type = Typography.DISPLAY_3,
                 colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
 
@@ -224,7 +260,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
                     top.linkTo(productQty.bottom, margin = 12.dp)
                     start.linkTo(productQty.start)
                 },
-                type = Typography.BODY_3,
+                type = Typography.DISPLAY_3,
                 colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
 
@@ -235,7 +271,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
                     top.linkTo(campaignStartDate.bottom)
                     start.linkTo(campaignStartDate.start)
                 },
-                type = Typography.BODY_3,
+                type = Typography.DISPLAY_3,
                 colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
             )
 
@@ -255,7 +291,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
                     bottom.linkTo(campaignStartDate.bottom)
                     start.linkTo(separator.end, margin = 12.dp)
                 },
-                type = Typography.BODY_3,
+                type = Typography.DISPLAY_3,
                 colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
 
@@ -266,11 +302,11 @@ fun CampaignItem(campaign: ActiveCampaign) {
                     bottom.linkTo(campaignStartTime.bottom)
                     start.linkTo(separator.end, margin = 12.dp)
                 },
-                type = Typography.BODY_3,
+                type = Typography.DISPLAY_3,
                 colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
             )
 
-            ComposeButton(
+            UnifyButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)

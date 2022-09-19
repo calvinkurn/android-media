@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.tokopedia.campaignlist.common.util.onTextChanged
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Label
@@ -21,16 +22,17 @@ import com.tokopedia.unifyprinciples.Typography
 fun UnifySortFilter(
     modifier: Modifier = Modifier,
     items: ArrayList<SortFilterItem>,
+    filterRelationship: Int,
+    filterType: Int,
     onDismissed: () -> Unit
 ) {
     AndroidView(
         modifier = modifier,
         factory = { context ->
-
             SortFilter(context).apply {
                 addItem(items)
-                filterRelationship = SortFilter.RELATIONSHIP_AND
-                filterType = SortFilter.TYPE_QUICK
+                this.filterRelationship = filterRelationship
+                this.filterType = filterType
                 dismissListener = onDismissed
             }
         },
@@ -51,18 +53,11 @@ fun UnifySearchBar(
         modifier = modifier,
         factory = { context ->
             SearchBarUnify(context).apply {
-                searchBarTextField.onTextChanged { value ->
-                    onTextChanged(value)
-                }
-                searchBarTextField.setOnEditorActionListener { textView, actionId, event ->
-                    onEditorAction(textView, actionId, event)
-                }
+                searchBarTextField.onTextChanged(onTextChanged)
+                searchBarTextField.setOnEditorActionListener(onEditorAction)
                 showIcon = false
                 searchBarPlaceholder = placeholderText
             }
-        },
-        update = { view ->
-
         }
     )
 }
@@ -86,6 +81,7 @@ fun UnifyTicker(
 
                     override fun onDismiss() {
                         onDismissed()
+                        gone()
                     }
 
                 })
@@ -121,7 +117,7 @@ fun UnifyLabel(
 }
 
 @Composable
-fun ComposeButton(
+fun UnifyButton(
     modifier: Modifier = Modifier,
     text: String,
     buttonSize: Int,
