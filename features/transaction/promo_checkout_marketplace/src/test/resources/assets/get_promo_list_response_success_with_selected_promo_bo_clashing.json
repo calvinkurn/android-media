@@ -90,11 +90,7 @@
                       "shipping_id": 11,
                       "sp_id": 18,
                       "benefit_amount": 30000,
-                      "promo_id": 0,
-                      "shipping_subsidy": 20000,
-                      "shipping_price": 10000,
-                      "benefit_class": "",
-                      "bo_campaign_id": 3
+                      "promo_id": 0
                     },
                     {
                       "code": "PLUSAA",
@@ -152,7 +148,7 @@
                   "shop_id": 0,
                   "benefit_amount": 30000,
                   "is_recommended": false,
-                  "is_selected": true,
+                  "is_selected": false,
                   "is_attempted": false,
                   "is_bebas_ongkir": true,
                   "clashing_infos": [
@@ -405,7 +401,7 @@
                   "shop_id": 102,
                   "benefit_amount": 30000,
                   "is_recommended": true,
-                  "is_selected": false,
+                  "is_selected": true,
                   "is_attempted": false,
                   "is_bebas_ongkir": false,
                   "clashing_infos": [

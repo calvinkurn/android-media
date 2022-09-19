@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithMultipleClashingBoPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
@@ -132,6 +133,30 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         // THEN
         assert(!(viewModel.promoListUiModel.value?.get(1) as PromoListItemUiModel).uiState.isSelected)
         assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == false)
+    }
+    
+    @Test
+    fun `WHEN click selected BO clashing promo item but already selected other bo clashing promo THEN should show ticker BO clashing`() {
+        // GIVEN
+        val data = providePromoListWithMultipleClashingBoPromo()
+        val promoListItemUiModel = data[1] as PromoListItemUiModel
+        promoListItemUiModel.uiState.isSelected = true
+        val otherPromoListItemUiModel = data[3] as PromoListItemUiModel
+        otherPromoListItemUiModel.uiState.isSelected = true
+        viewModel.setPromoListValue(data)
+
+        every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickSelectPromo(any(), any()) } just Runs
+        every { analytics.eventClickDeselectKupon(any(), any(), any()) } just Runs
+        every { analytics.eventClickDeselectPromo(any(), any()) } just Runs
+
+        // WHEN
+        viewModel.updatePromoListAfterClickPromoItem(promoListItemUiModel)
+
+        // THEN
+        assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == true)
+        assert(viewModel.fragmentUiModel.value?.uiData?.boClashingMessage == otherPromoListItemUiModel.uiData.boClashingInfos.first().message)
+        assert(viewModel.fragmentUiModel.value?.uiData?.boClashingImage == otherPromoListItemUiModel.uiData.boClashingInfos.first().icon)
     }
 
     @Test
