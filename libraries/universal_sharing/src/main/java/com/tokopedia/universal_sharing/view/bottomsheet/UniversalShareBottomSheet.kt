@@ -349,9 +349,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         show(fragmentManager, fragment, screenshotDetector)
     }
 
-
-    //call this method before show method if the request data is awaited
-    fun affiliateRequestDataAwaited(){
+    // call this method before show method if the request data is awaited
+    fun affiliateRequestDataAwaited() {
        showLoader = true
         handler = Handler(Looper.getMainLooper())
         handler?.postDelayed({
