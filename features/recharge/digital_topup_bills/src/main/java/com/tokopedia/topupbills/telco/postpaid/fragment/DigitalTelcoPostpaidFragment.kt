@@ -32,7 +32,7 @@ import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
@@ -75,7 +75,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         set(value) {
             field = value
             value?.run {
-                productId = operator.attributes.defaultProductId.toIntOrZero()
+                productId = operator.attributes.defaultProductId.toIntSafely()
             }
         }
 
@@ -214,21 +214,23 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         val oldItems = telcoTabViewModel.createIdSnapshot()
         performChange()
         val newItems = telcoTabViewModel.createIdSnapshot()
-        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                oldItems[oldItemPosition] == newItems[newItemPosition]
+        viewPager.adapter?.let {
+            DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                    oldItems[oldItemPosition] == newItems[newItemPosition]
 
-            override fun getOldListSize(): Int {
-                return oldItems.size
-            }
+                override fun getOldListSize(): Int {
+                    return oldItems.size
+                }
 
-            override fun getNewListSize(): Int {
-                return newItems.size
-            }
+                override fun getNewListSize(): Int {
+                    return newItems.size
+                }
 
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                areItemsTheSame(oldItemPosition, newItemPosition)
-        }, true).dispatchUpdatesTo(viewPager.adapter!!)
+                override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                    areItemsTheSame(oldItemPosition, newItemPosition)
+            }, true).dispatchUpdatesTo(it)
+        }
     }
 
     override fun setupCheckoutData() {
@@ -259,10 +261,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     ?: TopupBillsExtraParam()
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                    menuId = digitalTelcoExtraParam.menuId.toInt()
+                    menuId = digitalTelcoExtraParam.menuId.toIntSafely()
                 }
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                    categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                    categoryId = digitalTelcoExtraParam.categoryId.toIntSafely()
                 }
                 rechargeProductFromSlice = this.getString(RECHARGE_PRODUCT_EXTRA, "")
             }
@@ -638,6 +640,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_POSTPAID_TRACE = "dg_telco_postpaid_pdp"
         private const val TITLE_PAGE = "telco post paid"
+
+        private const val MINIMUM_OPERATOR_PREFIX = 4
 
         private const val VALID_MIN_INPUT_NUMBER = 10
         private const val VALID_MAX_INPUT_NUMBER = 14

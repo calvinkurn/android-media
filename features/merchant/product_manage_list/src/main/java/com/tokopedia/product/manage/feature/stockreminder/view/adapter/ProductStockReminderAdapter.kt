@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.stockreminder.view.adapter
 
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -73,7 +74,7 @@ class ProductStockReminderAdapter(
         private fun setupStatusSwitch(product: ProductStockReminderUiModel) {
             binding.swStockReminder.setOnCheckedChangeListener { _, _ ->
                 val stockLimit = binding.qeStock.getValue().orZero()
-                validateMinMaxStock(stockLimit)
+                validateMinMaxStock(stockLimit, product.maxStock)
                 notifyChange(product.id, stockLimit)
             }
             binding.swStockReminder.isChecked =
@@ -82,6 +83,8 @@ class ProductStockReminderAdapter(
 
         private fun setupStockEditorText(product: ProductStockReminderUiModel) {
             binding.qeStock.editText.run {
+                val maxLength = InputFilter.LengthFilter(StockReminderConst.MAXIMUM_LENGTH)
+                filters = arrayOf(maxLength)
                 textChangeListener = createTextChangeListener(product)
                 addTextChangedListener(textChangeListener)
             }
@@ -89,6 +92,7 @@ class ProductStockReminderAdapter(
             binding.qeStock.setValue(product.stockAlertCount)
 
             binding.qeStock.run {
+                maxValue = product.maxStock ?: MAXIMUM_STOCK_REMINDER
                 editText.setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         clearFocus()
@@ -108,7 +112,7 @@ class ProductStockReminderAdapter(
                     } else {
                         StockReminderConst.EMPTY_INPUT_STOCK
                     }
-                    validateMinMaxStock(stock)
+                    validateMinMaxStock(stock, product.maxStock)
                     notifyChange(product.id, stock)
                     toggleQuantityEditorBtn(stock)
                 }
@@ -126,7 +130,8 @@ class ProductStockReminderAdapter(
             }
         }
 
-        private fun validateMinMaxStock(stock: Int) {
+        private fun validateMinMaxStock(stock: Int, maxStock: Int?) {
+            val maxStockReminder = maxStock ?: MAXIMUM_STOCK_REMINDER
             when {
                 stock < MINIMUM_STOCK_REMINDER -> {
                     binding.qeStock.errorMessageText = itemView.resources.getString(
@@ -134,10 +139,10 @@ class ProductStockReminderAdapter(
                         MINIMUM_STOCK_REMINDER
                     )
                 }
-                stock > MAXIMUM_STOCK_REMINDER -> {
+                stock > maxStockReminder -> {
                     binding.qeStock.errorMessageText = itemView.resources.getString(
                         R.string.product_stock_reminder_max_stock_error,
-                        MAXIMUM_STOCK_REMINDER.getNumberFormatted()
+                        maxStockReminder.getNumberFormatted()
                     )
                 }
                 else -> {

@@ -8,15 +8,15 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
-import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
+import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 import com.tokopedia.wishlist.databinding.*
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COUNT_MANAGE_ROW
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGET
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE_CAROUSEL
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE_COLLECTION
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LOADER_GRID
@@ -29,6 +29,8 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TICKER
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.view.adapter.viewholder.*
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
+import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionEmptyStateViewHolder
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 
 class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
@@ -56,30 +58,32 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_DELETION_PROGRESS_WIDGET = 14
         const val START_LOADER = 0
         const val TOTAL_LOADER = 5
+        const val LAYOUT_EMPTY_STATE_COLLECTION = 15
     }
 
     interface ActionListener {
         fun onCariBarangClicked()
         fun onNotFoundButtonClicked(keyword: String)
-        fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item)
-        fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean, position: Int)
+        fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item)
+        fun onCheckBulkOption(productId: String, isChecked: Boolean, position: Int)
         fun onUncheckAutomatedBulkDelete(productId: String, isChecked: Boolean, position: Int)
-        fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int)
+        fun onAtc(wishlistItem: WishlistV2UiModel.Item, position: Int)
         fun onCheckSimilarProduct(url: String)
         fun onResetFilter()
-        fun onManageClicked(showCheckbox: Boolean)
-        fun onProductItemClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int)
-        fun onProductRecommItemClicked(recommendationItem: RecommendationItem)
-        fun onViewProductCard(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int)
+        fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean, isBulkAdd: Boolean)
+        fun onProductItemClicked(wishlistItem: WishlistV2UiModel.Item, position: Int)
+        fun onViewProductCard(wishlistItem: WishlistV2UiModel.Item, position: Int)
         fun onBannerTopAdsImpression(topAdsImageViewModel: TopAdsImageViewModel, position: Int)
         fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int)
         fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationCarouselItemImpression(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationCarouselItemClick(recommendationItem: RecommendationItem, position: Int)
-        fun onTickerCTAShowBottomSheet(bottomSheetCleanerData: WishlistV2Response.Data.WishlistV2.StorageCleanerBottomSheet)
+        fun onTickerCTAShowBottomSheet(bottomSheetCleanerData: WishlistV2UiModel.StorageCleanerBottomSheet)
         fun onTickerCTASortFromLatest()
         fun onTickerCloseIconClicked()
+        fun goToWishlistAllToAddCollection()
+        fun onChangeCollectionName()
     }
 
     init { setHasStableIds(true) }
@@ -145,6 +149,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             LAYOUT_DELETION_PROGRESS_WIDGET -> {
                 val binding = WishlistV2CountDeletionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 WishlistV2DeletionProgressWidgetItemViewHolder(binding)
+            }
+            LAYOUT_EMPTY_STATE_COLLECTION -> {
+                val binding = WishlistV2EmptyStateItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                WishlistCollectionEmptyStateViewHolder(binding, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -248,6 +256,12 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     holder.itemView.layoutParams = params
                     (holder as WishlistV2DeletionProgressWidgetItemViewHolder).bind(element)
                 }
+                TYPE_EMPTY_STATE_COLLECTION -> {
+                    val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
+                    params.isFullSpan = true
+                    holder.itemView.layoutParams = params
+                    (holder as WishlistCollectionEmptyStateViewHolder).bind(element)
+                }
             }
         }
     }
@@ -277,6 +291,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_RECOMMENDATION_TITLE_WITH_MARGIN -> LAYOUT_RECOMMENDATION_TITLE_WITH_MARGIN
             TYPE_TICKER -> LAYOUT_TICKER
             TYPE_DELETION_PROGRESS_WIDGET -> LAYOUT_DELETION_PROGRESS_WIDGET
+            TYPE_EMPTY_STATE_COLLECTION -> LAYOUT_EMPTY_STATE_COLLECTION
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -297,19 +312,23 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemChanged(position)
     }
 
-    private fun clearCheckbox() {
+    fun clearCheckbox() {
         listTypeData.forEach {
             it.isChecked = false
         }
     }
 
-    private fun checkAllCheckbox() {
+    fun checkAllCheckbox() {
         listTypeData.forEach {
             it.isChecked = true
         }
     }
 
     fun setActionListener(v2Fragment: WishlistV2Fragment) {
+        this.actionListener = v2Fragment
+    }
+
+    fun setActionListener(v2Fragment: WishlistCollectionDetailFragment) {
         this.actionListener = v2Fragment
     }
 

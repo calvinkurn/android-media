@@ -17,6 +17,7 @@ import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
+import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.test.espresso.delay
 import com.tokopedia.play.test.factory.TestFragmentFactory
 import com.tokopedia.play.test.factory.TestViewModelFactory
@@ -29,16 +30,11 @@ import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.mapper.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -125,7 +121,9 @@ class PlayViewerIdGenerator {
                 timerFactory = mockk(relaxed = true),
                 castPlayerHelper = mockk(relaxed = true),
                 playShareExperience = mockk(relaxed = true),
+                playLog = mockk(relaxed = true),
                 chatStreamsFactory = mockk(relaxed = true),
+                liveRoomMetricsCommon = mockk(relaxed = true),
             )
         }
     }
@@ -135,6 +133,7 @@ class PlayViewerIdGenerator {
             PlayFragment::class.java to {
                 PlayFragment(
                     playViewModelFactory,
+                    mockk(relaxed = true),
                     mockk(relaxed = true),
                     mockk(relaxed = true),
                 )
@@ -148,12 +147,15 @@ class PlayViewerIdGenerator {
                     multipleLikesIconCacheStorage = mockk(relaxed = true),
                     castAnalyticHelper = mockk(relaxed = true),
                     performanceClassConfig = mockk(relaxed = true),
+                    newAnalytic = mockk(relaxed = true),
+                    analyticManagerFactory = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {
                 PlayBottomSheetFragment(
                     viewModelFactory = mockViewModelFactory,
                     analytic = mockk(relaxed = true),
+                    newAnalytic = mockk(relaxed = true),
                 )
             },
             PlayVideoFragment::class.java to {
@@ -162,17 +164,22 @@ class PlayViewerIdGenerator {
                     pipAnalytic = mockk(relaxed = true),
                     analytic = mockk(relaxed = true),
                     pipSessionStorage = mockk(relaxed = true),
+                    playLog = mockk(relaxed = true),
                 )
             }
         )
     )
+    private val uiModelBuilder = UiModelBuilder.get()
 
     private val printConditions = listOf(
         PrintCondition { view ->
             val parent = (view.parent as? ViewGroup) ?: return@PrintCondition true
             val packageName = parent::class.java.`package`?.name.orEmpty()
             val className = parent::class.java.name
-            !packageName.startsWith("com.tokopedia") || !className.contains("unify", ignoreCase = true)
+            !packageName.startsWith("com.tokopedia") || !className.contains(
+                "unify",
+                ignoreCase = true
+            )
         },
         PrintCondition { view ->
             view.id != View.NO_ID || view is ViewGroup
@@ -199,54 +206,30 @@ class PlayViewerIdGenerator {
 
     @Test
     fun inhousePlayer() {
-        val tagItem = TagItemUiModel(
-            product = ProductUiModel(
-                productSectionList = listOf(
-                    ProductSectionUiModel.Section(
+        val tagItem = uiModelBuilder.buildTagItem(
+            product = uiModelBuilder.buildProductModel(
+                productList = listOf(
+                    uiModelBuilder.buildProductSection(
                         productList = listOf(
-                            PlayProductUiModel.Product(
+                            uiModelBuilder.buildProduct(
                                 id = "1",
                                 shopId = "2",
-                                imageUrl = "",
                                 title = "Barang 1",
                                 stock = StockAvailable(1),
-                                isVariantAvailable = false,
-                                price = OriginalPrice("0", 0.0),
-                                minQty = 1,
-                                isFreeShipping = false,
-                                applink = "",
-                            )
+                            ),
                         ),
-                        config = ProductSectionUiModel.Section.ConfigUiModel(
+                        config = uiModelBuilder.buildSectionConfig(
                             type = ProductSectionType.Other,
                             title = "Section 1",
-                            startTime = "",
-                            timerInfo = "",
-                            serverTime = "",
-                            background = ProductSectionUiModel.Section.BackgroundUiModel(
-                                gradients = emptyList(), imageUrl = ""
-                            ),
-                            endTime = "",
-                            reminder = PlayUpcomingBellStatus.Unknown,
                         ),
                         id = "1"
                     )
                 ),
                 canShow = true,
             ),
-            voucher = VoucherUiModel(
+            voucher = uiModelBuilder.buildVoucherModel(
                 voucherList = listOf(
-                    MerchantVoucherUiModel(
-                        id = "",
-                        type = MerchantVoucherType.Private,
-                        title = "",
-                        description = "",
-                        code = "",
-                        copyable = false,
-                        highlighted = false,
-                        voucherStock = 1,
-                        expiredDate = "",
-                    )
+                    uiModelBuilder.buildMerchantVoucher()
                 )
             ),
             maxFeatured = 1,
@@ -255,18 +238,15 @@ class PlayViewerIdGenerator {
         )
 
         val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
-        coEvery { repo.getTagItem(any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any()) } returns tagItem
         every { mockChannelStorage.getChannelList() } returns listOf("12669")
-        every { mockChannelStorage.getData(any()) } returns PlayChannelData(
+        every { mockChannelStorage.getData(any()) } returns uiModelBuilder.buildChannelData(
             id = "12669",
-            channelDetail = PlayChannelDetailUiModel(),
             partnerInfo = PlayPartnerInfo(name = "test"),
-            likeInfo = PlayLikeInfoUiModel(),
             channelReportInfo = PlayChannelReportUiModel(totalViewFmt = "1200"),
             pinnedInfo = PlayPinnedInfoUiModel(
                 PinnedMessageUiModel("1", appLink = "", title = "Test pinned"),
             ),
-            quickReplyInfo = PlayQuickReplyInfoUiModel(emptyList()),
             videoMetaInfo = PlayVideoMetaInfoUiModel(
                 videoPlayer = PlayVideoPlayerUiModel.General.Incomplete(
                     params = PlayGeneralVideoPlayerParams(
@@ -279,10 +259,7 @@ class PlayViewerIdGenerator {
                     "", VideoOrientation.Vertical, "Video Keren"
                 ),
             ),
-            leaderboard = LeaderboardUiModel.Empty,
-            upcomingInfo = PlayUpcomingUiModel(),
             tagItems = tagItem,
-            status = PlayStatusUiModel.Empty,
         )
 
         PlayInjector.set(

@@ -16,7 +16,7 @@ object UserSessionDataStoreClient {
             return userSessionDataStore
         }
 
-        val aead = AeadEncryptorImpl(context).getAead()
+        val aead = AeadEncryptorImpl(context)
         val store = DataStoreFactory.create(
             UserSessionSerializer(aead),
             produceFile = { context.dataStoreFile(DATA_STORE_FILE_NAME) })

@@ -28,13 +28,13 @@ class TokoNowCategoryItemViewHolder(
     override fun bind(data: TokoNowCategoryItemUiModel) {
         binding?.apply {
             val isFirstCategory = data.warehouseId.isNotBlank()
-            checkTitleCategory(data.title)
-            checkFirstData(isFirstCategory, data.imageUrl.orEmpty())
-            checkLayoutClicked(data, isFirstCategory)
+            setTitleCategory(data.title)
+            setDataCategory(isFirstCategory, data.imageUrl.orEmpty())
+            setLayoutClicked(data, isFirstCategory)
         }
     }
 
-    private fun checkFirstData(isFirstCategory: Boolean, imageUrl: String) {
+    private fun setDataCategory(isFirstCategory: Boolean, imageUrl: String) {
         binding?.apply {
             if (isFirstCategory) {
                 sivCategory.loadImage(VectorDrawableCompat.create(itemView.resources, R.drawable.tokopedianow_bg_all_category, itemView.context.theme))
@@ -48,30 +48,26 @@ class TokoNowCategoryItemViewHolder(
         }
     }
 
-    private fun checkTitleCategory(title: String) {
+    private fun setTitleCategory(title: String) {
         binding?.apply {
-            if (title.isBlank()) {
-                tpCategory.hide()
-            } else {
-                tpCategory.text = title
-            }
+            tpCategory.text = title
         }
     }
 
-    private fun checkLayoutClicked(data: TokoNowCategoryItemUiModel, isFirstCategory: Boolean) {
+    private fun setLayoutClicked(data: TokoNowCategoryItemUiModel, isFirstCategory: Boolean) {
         binding?.root?.setOnClickListener {
             if (isFirstCategory) {
                 RouteManager.route(itemView.context, data.appLink, data.warehouseId)
                 listener?.onAllCategoryClicked()
             } else {
                 RouteManager.route(itemView.context, data.appLink)
-                listener?.onCategoryClicked(adapterPosition, data.id)
+                listener?.onCategoryClicked(adapterPosition, data.id, data.headerName)
             }
         }
     }
 
     interface TokoNowCategoryItemListener {
         fun onAllCategoryClicked()
-        fun onCategoryClicked(position: Int, categoryId: String)
+        fun onCategoryClicked(position: Int, categoryId: String, headerName: String)
     }
 }

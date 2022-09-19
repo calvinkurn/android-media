@@ -111,6 +111,8 @@ object PayloadConverter {
         model.webHookParam = data.getString(WEBHOOK_PARAM)
 
         model.payloadExtra = getPayloadExtras(data)
+        model.groupId = data.getString(GROUP_ID, "0").toIntOrZero()
+        model.groupName = data.getString(GROUP_NAME)
 
         return model
     }
@@ -125,7 +127,10 @@ object PayloadConverter {
         model.elementId = data.elementId
         model.tribeKey = data.tribeKey
         model.type = data.type
-        model.pushPayloadExtra = PushPayloadExtra(isReviewNotif = data.isReviewNotif)
+        model.pushPayloadExtra = PushPayloadExtra(
+            isReviewNotif = data.isReviewNotif,
+            replyType = data.replyType ?: ""
+        )
 
         setNotificationSound(model, data)
 
@@ -222,6 +227,8 @@ object PayloadConverter {
         model.webHookParam = data.webHookParam
 
         model.payloadExtra = getPayloadExtras(data)
+        model.groupId = data.groupId ?: 0
+        model.groupName = data.groupName
         return model
     }
 
@@ -231,15 +238,15 @@ object PayloadConverter {
         val isAdvanceTarget = isBooleanTrue(bundle, ADVANCE_TARGET)
 
         val appPriorities = when {
-            mainAppPriority.toInt() < sellerAppPriority.toInt() -> NotificationPriorityType.MainApp
-            mainAppPriority.toInt() > sellerAppPriority.toInt() -> NotificationPriorityType.SellerApp
+            mainAppPriority.toIntOrZero() < sellerAppPriority.toIntOrZero() -> NotificationPriorityType.MainApp
+            mainAppPriority.toIntOrZero() > sellerAppPriority.toIntOrZero() -> NotificationPriorityType.SellerApp
             else -> NotificationPriorityType.Both
         }
 
         return NotificationTargetPriorities(appPriorities, isAdvanceTarget)
     }
 
-    private fun isBooleanTrue(data: Bundle, key: String): Boolean {
+    public fun isBooleanTrue(data: Bundle, key: String): Boolean {
         return try {
             return data.containsKey(key) && data.getString(key)?.toBoolean() == true
         } catch (e: Exception) {

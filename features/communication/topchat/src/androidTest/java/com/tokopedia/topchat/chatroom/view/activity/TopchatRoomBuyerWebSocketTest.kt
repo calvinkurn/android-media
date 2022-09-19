@@ -2,13 +2,13 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
+import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
@@ -28,10 +28,8 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        onView(withId(R.id.new_comment))
-                .perform(click())
-                .perform(typeText(myMsg))
-        onView(withId(R.id.send_but))
+        typeMessage(myMsg)
+        onView(withIndex(withId(R.id.send_but), 0))
                 .perform(click())
         websocket.simulateResponse(wsMineResponseText)
 

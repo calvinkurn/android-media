@@ -67,7 +67,7 @@ class MembershipPmProCheckListView : LinearLayout {
     }
 
     private fun showNetIncomeCheckList(data: MembershipDataUiModel) {
-        val netIncomeStr = CurrencyFormatHelper.convertToRupiah(data.netIncome.toString())
+        val netIncomeStr = CurrencyFormatHelper.convertToRupiah(data.getNetIncomeValue().toString())
         val netIncomeFmt = if (data.isEligibleIncome()) {
             context.getString(R.string.pm_net_income, eligibleColor, netIncomeStr)
         } else {
@@ -82,17 +82,18 @@ class MembershipPmProCheckListView : LinearLayout {
     }
 
     private fun showOrderCheckList(data: MembershipDataUiModel) {
+        val totalOrderStr = data.getTotalOrderValue().toString()
         val orderFmt = if (data.isEligibleOrder()) {
             context.getString(
-                R.string.pm_number_of_order,
+                R.string.pm_pro_number_of_order,
                 eligibleColor,
-                data.totalOrder.toString()
+                totalOrderStr
             )
         } else {
             context.getString(
-                R.string.pm_number_of_order,
+                R.string.pm_pro_number_of_order,
                 notEligibleColor,
-                data.totalOrder.toString()
+                totalOrderStr
             )
         }
         binding.run {

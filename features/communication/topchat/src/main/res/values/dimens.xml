@@ -40,6 +40,7 @@
     <dimen name="dp_topchat_5">5dp</dimen>
     <dimen name="dp_topchat_6">6dp</dimen>
     <dimen name="dp_topchat_7">7dp</dimen>
+    <dimen name="dp_topchat_8">8dp</dimen>
     <dimen name="dp_topchat_9">9dp</dimen>
     <dimen name="dp_topchat_10">10dp</dimen>
     <dimen name="dp_topchat_11">11dp</dimen>

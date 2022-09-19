@@ -3,14 +3,17 @@ package com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
@@ -23,6 +26,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import java.lang.StringBuilder
+import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 class TokoFoodMerchantListViewHolder (
     itemView: View,
@@ -69,10 +73,10 @@ class TokoFoodMerchantListViewHolder (
     private fun setMerchantLayout(merchant: Merchant) {
         setImageMerchant(merchant.imageURL)
         setTitleMerchant(merchant.name)
-        setLabelDiscount(merchant.promo)
+        setLabelDiscount(merchant.promo, merchant.priceLevel)
         setMerchantDistance(merchant.distanceFmt, merchant.etaFmt)
         setMerchantRating(merchant.ratingFmt, merchant.rating)
-        setMerchantCategory(merchant.merchantCategories)
+        setMerchantCategory(merchant.merchantCategories, merchant.priceLevel)
         setPriceLevel(merchant.priceLevel)
         setViewDividerCategoryPriceLevel(merchant.merchantCategories, merchant.priceLevel)
         setMerchantClosed(merchant.isClosed)
@@ -97,13 +101,24 @@ class TokoFoodMerchantListViewHolder (
         }
     }
 
-    private fun setLabelDiscount(label: String) {
+    private fun setLabelDiscount(label: String, priceLevel: PriceLevel) {
         if (label.isNullOrEmpty()){
             labelMerchantDiskon?.hide()
         } else {
             labelMerchantDiskon?.show()
             labelMerchantDiskon?.text = label
         }
+
+        labelMerchantDiskon?.run {
+            val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
+            if (priceLevel.fareCount <= 0) {
+                labelParams.topToBottom = tgTokoFoodMerchantCategory?.id ?: ConstraintLayout.LayoutParams.UNSET
+            } else {
+                labelParams.topToBottom = tgTokoFoodMerchantPriceScale?.id ?: ConstraintLayout.LayoutParams.UNSET
+            }
+            layoutParams = labelParams
+        }
+
     }
 
     private fun setMerchantDistance(distance: String, eta: String) {
@@ -139,26 +154,60 @@ class TokoFoodMerchantListViewHolder (
     private fun setViewDividerCategoryPriceLevel(categories: List<String>, priceLevel: PriceLevel){
         val price = getPriceLevelString(priceLevel)
         val category = getCategoryString(categories)
-        if (category.isNullOrEmpty() || price.isNullOrEmpty()){
+        if (category.isNullOrEmpty() || price.isNullOrEmpty() || priceLevel.fareCount <= 0){
             viewDividerTokoFoodMerchant?.hide()
         } else {
             viewDividerTokoFoodMerchant?.show()
         }
     }
 
-    private fun setMerchantCategory(categories: List<String>){
+    private fun setMerchantCategory(categories: List<String>, priceLevel: PriceLevel){
         val category = getCategoryString(categories)
         if (category.isNullOrEmpty()){
             tgTokoFoodMerchantCategory?.hide()
         } else {
             tgTokoFoodMerchantCategory?.show()
             tgTokoFoodMerchantCategory?.text = category
+
+            tgTokoFoodMerchantCategory?.run {
+                val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
+
+                if (priceLevel.fareCount <= 0) {
+
+                    setMargin(
+                        getDimens(unifyDimens.spacing_lvl3),
+                        getDimens(unifyDimens.spacing_lvl2),
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.unify_space_0))
+
+                    labelParams.topToTop = ConstraintLayout.LayoutParams.UNSET
+                    labelParams.startToEnd = ConstraintLayout.LayoutParams.UNSET
+                    labelParams.bottomToBottom = ConstraintLayout.LayoutParams.UNSET
+                    labelParams.startToEnd = imgTokoFoodMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
+                    labelParams.topToBottom = tgTokoFoodMerchantTitle?.id ?: ConstraintLayout.LayoutParams.UNSET
+                } else {
+
+                    setMargin(
+                        getDimens(unifyDimens.spacing_lvl2),
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.unify_space_0),
+                        getDimens(unifyDimens.unify_space_0))
+
+                    labelParams.startToEnd =  ConstraintLayout.LayoutParams.UNSET
+                    labelParams.topToBottom = ConstraintLayout.LayoutParams.UNSET
+                    labelParams.topToTop = viewDividerTokoFoodMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
+                    labelParams.startToEnd = viewDividerTokoFoodMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
+                    labelParams.bottomToBottom = viewDividerTokoFoodMerchant?.id ?: ConstraintLayout.LayoutParams.UNSET
+                }
+
+                layoutParams = labelParams
+            }
         }
     }
 
     private fun setPriceLevel(priceLevel: PriceLevel) {
         val price = getPriceLevelString(priceLevel)
-        if (price.isNullOrEmpty()){
+        if (price.isNullOrEmpty() || priceLevel.fareCount <= 0){
             tgTokoFoodMerchantPriceScale?.hide()
         } else {
             tgTokoFoodMerchantPriceScale?.show()

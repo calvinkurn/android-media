@@ -3,10 +3,10 @@ package com.tokopedia.flight.cancellation.domain
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.data.FlightCancellationGQLQuery
 import com.tokopedia.flight.cancellation.data.FlightCancellationPassengerEntity
 import com.tokopedia.flight.cancellation.data.FlightCancellationReasonDataCacheSource
 import com.tokopedia.flight.cancellation.data.FlightCancellationResponseEntity
+import com.tokopedia.flight.cancellation.data.QueryCancelPassenger
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
 import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
@@ -33,7 +33,7 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
 
         val params = mapOf(PARAM_INVOICE_ID to invoiceId)
         val graphqlRequest = GraphqlRequest(
-            FlightCancellationGQLQuery.CANCEL_PASSENGER,
+            QueryCancelPassenger(),
             FlightCancellationPassengerEntity.Response::class.java,
             params
         )

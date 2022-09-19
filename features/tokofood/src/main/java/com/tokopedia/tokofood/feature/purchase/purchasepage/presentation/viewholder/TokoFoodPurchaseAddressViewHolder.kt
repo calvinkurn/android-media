@@ -29,7 +29,7 @@ class TokoFoodPurchaseAddressViewHolder(private val viewBinding: ItemPurchaseAdd
             }
             val addressAndPhone = itemView.context?.getString(
                 com.tokopedia.tokofood.R.string.text_purchase_address_phone,
-                element.addressName,
+                element.receiverName,
                 element.receiverPhone
             ).orEmpty()
             textReceiverNameAndPhone.text = addressAndPhone

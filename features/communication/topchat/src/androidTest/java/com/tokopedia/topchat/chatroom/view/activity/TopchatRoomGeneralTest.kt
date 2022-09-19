@@ -46,7 +46,7 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         }
 
         // Then
-        onView(withId(R.id.new_comment)).check(matches(withText(intentMsg)))
+        typeMessage(intentMsg)
     }
 
     @Test
@@ -63,7 +63,7 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         }
 
         // Then
-        onView(withId(R.id.new_comment)).check(matches(withText(intentMsg)))
+        typeMessage(intentMsg)
     }
 
     @Test

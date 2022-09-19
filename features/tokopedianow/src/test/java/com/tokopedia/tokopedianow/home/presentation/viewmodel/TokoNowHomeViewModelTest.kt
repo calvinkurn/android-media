@@ -42,6 +42,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.data.createCategoryGridDataModel
 import com.tokopedia.tokopedianow.data.createCategoryGridListFirstFetch
 import com.tokopedia.tokopedianow.data.createCategoryGridListSecondFetch
+import com.tokopedia.tokopedianow.data.createCategoryGridWithAdultDataFetch
 import com.tokopedia.tokopedianow.data.createCategoryList
 import com.tokopedia.tokopedianow.data.createChooseAddress
 import com.tokopedia.tokopedianow.data.createDynamicChannelLayoutList
@@ -67,6 +68,7 @@ import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
 import com.tokopedia.tokopedianow.data.createTicker
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
@@ -424,13 +426,76 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                         title = "",
                         imageUrl = null,
                         appLink = "tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
+                        warehouseId = "1",
+                    ),
+                    TokoNowCategoryItemUiModel(
+                        id = "1",
+                        title = "Category 1",
+                        imageUrl = "tokopedia://",
+                        appLink = "tokoepdia://",
+                        headerName = "Category Tokonow"
+                    )
+                )
+            ),
+            state = TokoNowLayoutState.SHOW
+        )
+
+        // verify use case called and response
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+        verifyGetCategoryListUseCaseCalled(count = 2)
+        verifyGetCategoryListResponseSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when get category grid should not add adult category to category list`() {
+        val localCacheModel = LocalCacheModel(
+            warehouse_id = "1"
+        )
+
+        //set mock data
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), localCacheModel)
+        onGetCategoryList_thenReturn(createCategoryGridWithAdultDataFetch())
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = listOf())
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
+
+        //prepare model that need to be changed
+        val model = TokoNowCategoryGridUiModel(
+            id="11111",
+            title="Category Tokonow",
+            categoryListUiModel = null,
+            state= TokoNowLayoutState.SHOW
+        )
+
+        viewModel.getCategoryGrid(model, "1")
+
+        //prepare model for expectedResult
+        val expectedResponse = TokoNowCategoryGridUiModel(
+            id = "11111",
+            title = "Category Tokonow",
+            categoryListUiModel = TokoNowCategoryListUiModel(
+                categoryList = listOf(
+                    TokoNowCategoryItemUiModel(
+                        id = "",
+                        title = "",
+                        imageUrl = null,
+                        appLink = "tokopedia-android-internal://now/category-list?warehouse_id={warehouse_id}",
                         warehouseId = "1"
                     ),
                     TokoNowCategoryItemUiModel(
                         id = "1",
                         title = "Category 1",
                         imageUrl = "tokopedia://",
-                        appLink = "tokoepdia://"
+                        appLink = "tokoepdia://",
+                        headerName = "Category Tokonow"
+                    ),
+                    TokoNowCategoryItemUiModel(
+                        id="3",
+                        title="Category 3",
+                        imageUrl="tokopedia://",
+                        appLink="tokoepdia://",
+                        headerName = "Category Tokonow"
                     )
                 )
             ),
@@ -769,6 +834,80 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `when removeLeftCarouselAtc should remove left carousel atc widget from layout list`() {
+        val warehouseId = "1"
+        val localCacheModel = LocalCacheModel(warehouse_id = warehouseId)
+        val dynamicChannelResponse = createDynamicChannelLayoutList(
+            listOf(
+                HomeLayoutResponse(
+                    id = "2122",
+                    layout = "left_carousel_atc",
+                    header = Header(
+                        name = "Mix Left Atc Carousel",
+                        serverTimeUnix = 0
+                    )
+                )
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = dynamicChannelResponse,
+            localCacheModel = localCacheModel
+        )
+
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = emptyList()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        val expectedResultWithLeftCarouselAtcWidget = Success(
+            HomeLayoutListUiModel(
+                items = listOf(
+                    TokoNowChooseAddressWidgetUiModel(id = "0"),
+                    createLeftCarouselAtcDataModel(
+                        id = "2122",
+                        headerName = "Mix Left Atc Carousel",
+                    )
+                ),
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList.verifySuccessEquals(expectedResultWithLeftCarouselAtcWidget)
+
+        viewModel.removeLeftCarouselAtc("2122")
+
+        val expectedResultWithoutLeftCarouselAtcWidget = Success(
+            HomeLayoutListUiModel(
+                items = listOf(
+                    TokoNowChooseAddressWidgetUiModel(id = "0"),
+                ),
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList.verifySuccessEquals(expectedResultWithoutLeftCarouselAtcWidget)
+    }
+
+    @Test
+    fun `when removeLeftCarouselAtc throw exception should not set homeLayoutList value`() {
+        onGetHomeLayoutItemList_returnNull()
+
+        viewModel.removeLeftCarouselAtc("1")
+
+        viewModel.homeLayoutList
+            .verifyValueEquals(null)
+    }
+
+
+    @Test
     fun `given index is NOT between visible item index when getLayoutData should not call use case`() {
         val index = 1
 
@@ -940,7 +1079,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     quantity = 4,
                     product =  ProductCardModel(
                         nonVariant = NonVariant(quantity, 3, 4)
-                    )
+                    ),
+                    position = 1,
+                    headerName = "Kamu pernah beli"
                 )
             ),
             state = TokoNowLayoutState.SHOW
@@ -1015,7 +1156,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     product =  ProductCardModel(
                         hasAddToCartButton = true,
                         nonVariant = NonVariant(quantity, 3, 4)
-                    )
+                    ),
+                    position = 1,
+                    headerName = "Kamu pernah beli"
                 )
             ),
             state = TokoNowLayoutState.SHOW
@@ -1260,7 +1403,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 product = ProductCardModel(
                     hasAddToCartButton = true,
                     nonVariant = NonVariant(minQuantity = 3, maxQuantity = 4)
-                )
+                ),
+                position = 1,
+                headerName = "Kamu pernah beli"
             )
         )
         val actual = viewModel.getRepurchaseProducts()
@@ -1309,7 +1454,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
-        val recomItemList = listOf(RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0"))
+        val recomItemList = listOf(RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", position = 1))
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
         val homeRecomUiModel = HomeProductRecomUiModel(id = "1001", recomWidget = recomWidget)
 
@@ -1373,8 +1518,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     product =  ProductCardModel(
                         hasAddToCartButton = true,
                         nonVariant = NonVariant(0, 3, 4)
-                    )
-
+                    ),
+                    position = 1,
+                    headerName = "Kamu pernah beli"
                 )
             ),
             state = TokoNowLayoutState.SHOW
@@ -1428,14 +1574,14 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.addProductToCart(productId, quantity, shopId, type)
 
         val recomItemList = listOf(
-            RecommendationItem(productId = 1, isRecomProductShowVariantAndCart = true, price = "0"),
-            RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", quantity = quantity)
+            RecommendationItem(productId = 1, isRecomProductShowVariantAndCart = true, price = "0", position = 1),
+            RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", quantity = quantity, position = 2)
         )
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
         val homeRecomUiModel = HomeProductRecomUiModel(id = "1001", recomWidget = recomWidget)
 
         val expectedResult = HomeAddToCartTracker(
-            position = 1,
+            position = 2,
             quantity = quantity,
             cartId = cartId,
             homeRecomUiModel
@@ -1494,14 +1640,14 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.addProductToCart(productId, 4, shopId, type)
 
         val recomItemList = listOf(
-            RecommendationItem(productId = 1, isRecomProductShowVariantAndCart = true, price = "0", quantity = 4),
-            RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", quantity = 0)
+            RecommendationItem(productId = 1, isRecomProductShowVariantAndCart = true, price = "0", quantity = 4, position = 1),
+            RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", quantity = 0, position = 2)
         )
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
         val homeRecomUiModel = HomeProductRecomUiModel(id = "1001", recomWidget = recomWidget)
 
         val expected = HomeAddToCartTracker(
-            position = 0,
+            position = 1,
             quantity = 4,
             cartId = cartId,
             data = homeRecomUiModel
@@ -1613,14 +1759,14 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.addProductToCart(productId, 0, shopId, type)
 
         val recomItemList = listOf(
-            RecommendationItem(productId = 1, isRecomProductShowVariantAndCart = true, price = "0", quantity = 0),
-            RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", quantity = 0)
+            RecommendationItem(productId = 1, isRecomProductShowVariantAndCart = true, price = "0", quantity = 0, position = 1),
+            RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0", quantity = 0, position = 2)
         )
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
         val homeRecomUiModel = HomeProductRecomUiModel(id = "1001", recomWidget = recomWidget)
 
-        val expected = HomeAddToCartTracker(
-            position = 0,
+        val expected = HomeRemoveFromCartTracker(
+            position = 1,
             quantity = 0,
             cartId = cartId,
             data = homeRecomUiModel
@@ -1630,8 +1776,31 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         verifyGetMiniCartUseCaseCalled()
         verifyDeleteCartUseCaseCalled()
 
-        viewModel.homeAddToCartTracker
+        viewModel.homeRemoveFromCartTracker
             .verifyValueEquals(expected)
+    }
+
+
+    @Test
+    fun `homeLayoutItemList does NOT contain product recom when remove from cart should NOT track the product`() {
+        val warehouseId = "1"
+        val productId = "1"
+        val shopId = "5"
+        val cartId = "1999"
+        val type = TokoNowLayoutType.PRODUCT_RECOM
+
+        val miniCartItems = mapOf(MiniCartItemKey(productId) to MiniCartItem.MiniCartItemProduct(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
+
+        onGetMiniCart_thenReturn(miniCartResponse)
+        onRemoveItemCart_thenReturn(RemoveFromCartData())
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
+
+        viewModel.getMiniCart(listOf(shopId), warehouseId)
+        viewModel.addProductToCart(productId, 0, shopId, type)
+
+        viewModel.homeRemoveFromCartTracker
+            .verifyValueEquals(null)
     }
 
     @Test
@@ -1868,12 +2037,13 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             product =  ProductCardModel(
                 hasAddToCartButton = true,
                 nonVariant = NonVariant(0, 1, 4)
-            )
-
+            ),
+            position = 2,
+            headerName = "Kamu pernah beli"
         )
 
         val expected = HomeAddToCartTracker(
-            position = 1,
+            position = 2,
             quantity = 2,
             cartId = "1999",
             productCardUiModel
@@ -1986,7 +2156,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             channelHeaderName = "Mix Left Carousel",
             shopId = "100",
             channelId = "2122",
-            productCardModel = ProductCardModel(formattedPrice = "0", nonVariant = NonVariant(quantity=0, minQuantity=0, maxQuantity=0))
+            productCardModel = ProductCardModel(formattedPrice = "0", nonVariant = NonVariant(quantity=0, minQuantity=0, maxQuantity=0)),
+            position = 1
         )
 
         val expected = HomeAddToCartTracker(

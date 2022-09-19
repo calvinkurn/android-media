@@ -7,14 +7,21 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieDrawable
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.shop.common.util.ShopUtil.isUrlJson
 import com.tokopedia.shop.common.util.ShopUtil.isUrlPng
 import com.tokopedia.shop.databinding.ShopPageDynamicTabViewBinding
 import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
+import com.tokopedia.shop.pageheader.data.model.ShopTabIconUrlModel
+import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 
 internal class ShopPageFragmentPagerAdapter(
@@ -38,24 +45,50 @@ internal class ShopPageFragmentPagerAdapter(
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
         tab.customView?.let {
-            ShopPageTabViewBinding.bind(it).apply {
-                val shopPageTabViewIcon: IconUnify = this.shopPageTabViewIcon
-                setTabIcon(shopPageTabViewIcon, tab.position, isActive)
-            }
+            configTabViewBinding(it, tab, isActive) ?: configDynamicTabViewBinding(it, tab, isActive)
+        }
+    }
+
+    private fun configTabViewBinding(
+        view: View,
+        tab: TabLayout.Tab,
+        isActive: Boolean
+    ): ShopPageTabViewBinding? {
+        return getTabViewBinding(view)?.apply {
+            val shopPageTabViewIcon: IconUnify = this.shopPageTabViewIcon
+            setTabIcon(shopPageTabViewIcon, tab.position, isActive)
+        }
+    }
+
+    private fun getTabViewBinding(view: View): ShopPageTabViewBinding? {
+        return try {
+            ShopPageTabViewBinding.bind(view)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun configDynamicTabViewBinding(
+        view: View,
+        tab: TabLayout.Tab,
+        isActive: Boolean
+    ): ShopPageDynamicTabViewBinding? {
+        return getDynamicTabViewBinding(view)?.apply {
+            setDynamicTabIcon(this, tab.position, isActive)
+        }
+    }
+
+    private fun getDynamicTabViewBinding(view: View): ShopPageDynamicTabViewBinding? {
+        return try {
+            ShopPageDynamicTabViewBinding.bind(view)
+        } catch (_: Exception) {
+            null
         }
     }
 
     fun getDynamicTabView(position: Int, selectedPosition: Int): View = ShopPageDynamicTabViewBinding.inflate(LayoutInflater.from(ctxRef.get())).apply {
         setDynamicTabIcon(this, position, position == selectedPosition)
     }.root
-
-    fun handleSelectedDynamicTab(tab: TabLayout.Tab, isActive: Boolean) {
-        tab.customView?.let {
-            ShopPageDynamicTabViewBinding.bind(it).apply {
-                setDynamicTabIcon(this, tab.position, isActive)
-            }
-        }
-    }
 
     private fun getTabIconDrawable(position: Int, isActive: Boolean): Int? = ctxRef.get()?.run {
         return if (isActive) {
@@ -84,12 +117,14 @@ internal class ShopPageFragmentPagerAdapter(
 
     private fun setDynamicTabIcon(binding: ShopPageDynamicTabViewBinding, position: Int, isActive: Boolean) {
         binding.shopPageDynamicTabViewIcon.hide()
+        binding.shopPageDynamicTabLottieView.hide()
         ctx?.let {
-            val iconUrl: String = if (isActive) {
+            val iconDataJsonString: String = if (isActive) {
                 listShopPageTabModel.getOrNull(position)?.iconActiveUrl.orEmpty()
             } else {
                 listShopPageTabModel.getOrNull(position)?.iconUrl.orEmpty()
             }
+            val iconUrl = getIconUrlFromJsonString(iconDataJsonString)
             when {
                 iconUrl.isUrlPng() -> {
                     binding.shopPageDynamicTabViewIcon.apply {
@@ -98,7 +133,43 @@ internal class ShopPageFragmentPagerAdapter(
                         isEnabled = true
                     }
                 }
+                iconUrl.isUrlJson() -> {
+                    binding.shopPageDynamicTabLottieView.apply {
+                        show()
+                        setupLottieAnimation(iconUrl, this)
+                        isEnabled = true
+                    }
+                }
                 else -> {}
+            }
+        }
+    }
+
+    private fun getIconUrlFromJsonString(iconDataJsonString: String): String {
+        return try {
+            CommonUtil.fromJson<ShopTabIconUrlModel>(
+                iconDataJsonString,
+                ShopTabIconUrlModel::class.java
+            ).run {
+                if (ctx?.isDarkMode() == true) {
+                    darkModeUrl
+                } else {
+                    lightModeUrl
+                }
+            }
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    private fun setupLottieAnimation(lottieIconUrl: String, lottieIcon: LottieAnimationView) {
+        ctx?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, lottieIconUrl)
+            lottieCompositionLottieTask.addListener { result ->
+                lottieIcon.setComposition(result)
+                lottieIcon.visibility = View.VISIBLE
+                lottieIcon.playAnimation()
+                lottieIcon.repeatCount = LottieDrawable.INFINITE
             }
         }
     }

@@ -39,6 +39,11 @@ private const val suggestionCampaignAtTopResponse = "autocomplete/suggestion/loc
 private const val suggestionShopAdsResponse = "autocomplete/suggestion/shopads/suggestion-shop-ads-response.json"
 private const val suggestionWithoutShopAdsResponse = "autocomplete/suggestion/shopads/suggestion-without-shop-ads-response.json"
 private const val suggestionWithoutShopAdsTemplateResponse = "autocomplete/suggestion/shopads/suggestion-shop-ads-without-template.json"
+private const val suggestionMultipleShopAdsNoMatchResponse = "autocomplete/suggestion/shopads/suggestion-multiple-shop-ads-no-match-response.json"
+private const val suggestionMultipleShopAdsMatchFirstResponse = "autocomplete/suggestion/shopads/suggestion-multiple-shop-ads-match-first.json"
+private const val suggestionSingleShopAdsMatchFirstResponse = "autocomplete/suggestion/shopads/suggestion-single-shop-ads-match-first.json"
+private const val suggestionMultipleShopAdsMatchSecondResponse = "autocomplete/suggestion/shopads/suggestion-multiple-shop-ads-match-second.json"
+private const val suggestionMultipleShopAdsMatchBothResponse = "autocomplete/suggestion/shopads/suggestion-multiple-shop-ads-match-both.json"
 
 internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
@@ -375,5 +380,109 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `then verify suggestion view will call showSuggestionResult`()
         `then verify visitable list is empty`()
+    }
+
+    @Test
+    fun `Suggestion will show main ads and all organic shop`() {
+        val suggestionUniverse = suggestionMultipleShopAdsNoMatchResponse.jsonToObject<SuggestionUniverse>()
+        val expectedSize = suggestionUniverse.data.items.size
+
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`()
+
+        `then verify suggestion view will call showSuggestionResult`()
+        `Then verify shop ads shown is main ads`(suggestionUniverse)
+        `Then verify shops visitable list size`(expectedSize)
+    }
+
+    private fun `Then verify shop ads shown is main ads`(suggestionUniverse: SuggestionUniverse) {
+        val shopAdsDoubleLineDataView = (visitableList.first() as SuggestionDoubleLineDataDataView)
+        val mainAdsApplink = suggestionUniverse.cpmModel.data.first().applinks
+
+        shopAdsDoubleLineDataView.data.applink shouldBe mainAdsApplink
+    }
+
+    private fun `Then verify shops visitable list size`(expectedSize: Int) {
+        visitableList.size shouldBe expectedSize
+    }
+
+    @Test
+    fun `Suggestion will show sub ads and all organic shop`() {
+        val suggestionUniverse = suggestionMultipleShopAdsMatchFirstResponse.jsonToObject<SuggestionUniverse>()
+        val expectedSize = suggestionUniverse.data.items.size
+
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`()
+
+        `then verify suggestion view will call showSuggestionResult`()
+        `Then verify shop ads shown is sub ads`(suggestionUniverse)
+        `Then verify shops visitable list size`(expectedSize)
+    }
+
+    private fun `Then verify shop ads shown is sub ads`(suggestionUniverse: SuggestionUniverse) {
+        val shopAdsDoubleLineDataView = (visitableList.first() as SuggestionDoubleLineDataDataView)
+        val subAdsApplink = suggestionUniverse.cpmModel.data[1].applinks
+
+        shopAdsDoubleLineDataView.data.applink shouldBe subAdsApplink
+    }
+
+    @Test
+    fun `Suggestion will not show shop ads and show all organic shop`() {
+        val suggestionUniverse = suggestionSingleShopAdsMatchFirstResponse.jsonToObject<SuggestionUniverse>()
+        val expectedSize = 2
+
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`()
+
+        `then verify suggestion view will call showSuggestionResult`()
+        `Then verify first visitable list is not shop ads`()
+        `Then verify shops visitable list size`(expectedSize)
+    }
+
+    private fun `Then verify first visitable list is not shop ads`() {
+        val suggestionDoubleLineDataView = (visitableList.first() as SuggestionDoubleLineDataDataView)
+
+        suggestionDoubleLineDataView.data.template shouldBe SUGGESTION_DOUBLE_LINE
+    }
+
+    @Test
+    fun `Suggestion will show main ads and exclude one organic shop`() {
+        val suggestionUniverse = suggestionMultipleShopAdsMatchSecondResponse.jsonToObject<SuggestionUniverse>()
+        val expectedSize = 2
+        val excludedApplink = "tokopedia://shop/2386090?source=universe&st=product"
+
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`()
+
+        `then verify suggestion view will call showSuggestionResult`()
+        `Then verify shop ads shown is main ads`(suggestionUniverse)
+        `Then verify shops visitable list size`(expectedSize)
+        `Then verify shown shops is excluding main ads`(excludedApplink)
+    }
+
+    private fun `Then verify shown shops is excluding main ads`(excludedApplink: String) {
+        val isExcludedApplinkExists =
+            visitableList.any {
+                (it as SuggestionDoubleLineDataDataView).data.applink == excludedApplink
+            }
+
+        isExcludedApplinkExists shouldBe false
+    }
+
+    @Test
+    fun `Suggestion will not show any organic shop`() {
+        val suggestionUniverse = suggestionMultipleShopAdsMatchBothResponse.jsonToObject<SuggestionUniverse>()
+        val expectedSize = 2
+
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`()
+        `then verify suggestion view will call showSuggestionResult`()
+        `Then verify shop ads shown is sub ads`(suggestionUniverse)
+        `Then verify shops visitable list size`(expectedSize)
     }
 }

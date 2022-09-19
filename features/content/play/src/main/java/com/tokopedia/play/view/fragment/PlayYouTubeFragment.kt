@@ -144,7 +144,7 @@ class PlayYouTubeFragment @Inject constructor(
      * Private methods
      */
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic, playLog, playViewModel.latestCompleteChannelData)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic, playLog)
     }
 
     private fun initView(view: View) {
@@ -182,6 +182,8 @@ class PlayYouTubeFragment @Inject constructor(
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner) {
             youtubeViewOnStateChanged(videoPlayer = it.videoPlayer)
+
+            videoAnalyticHelper.setVideoData(playViewModel.channelId, it.videoPlayer)
         }
     }
 

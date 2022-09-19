@@ -522,7 +522,6 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     private fun actionConfirmationButton() {
         confirmationBinding?.run {
             btnAccessReject.setOnClickListener {
-                shopAdminTrackers.clickInvitationPageReject()
                 showRejectConfirmationDialog()
             }
             btnAccessAccept.setOnClickListener {
@@ -608,6 +607,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         confirmRejectDialog?.dismissDialog()
         confirmRejectDialog?.getDialog()?.run {
             setPrimaryCTAClickListener {
+                shopAdminTrackers.clickInvitationPageReject()
                 showLoadingDialog()
                 adminConfirmationReg(false)
             }

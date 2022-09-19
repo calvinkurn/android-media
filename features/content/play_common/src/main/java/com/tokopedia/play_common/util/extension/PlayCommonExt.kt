@@ -12,6 +12,7 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.text.SpannableStringBuilder
+import android.text.SpannedString
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -298,7 +299,6 @@ val List<GraphqlError>.defaultErrorMessage: String
 
 
 fun dismissToaster() {
-    try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 }
 
 fun SpannableStringBuilder.append(
@@ -328,6 +328,11 @@ fun Fragment.hideKeyboard() {
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+}
+
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
 }
 
 fun EditText.showKeyboard(isShow: Boolean) {
@@ -371,4 +376,12 @@ fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
 fun <T: Any> MutableStateFlow<T?>.setValueIfNotNull(fn: T.() -> T) {
     val value = this.value ?: return
     this.value = value.fn()
+}
+
+fun Boolean.switch() : Boolean = !this
+
+inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit): SpannedString {
+    val builder = SpannableStringBuilder()
+    builder.builderAction()
+    return SpannedString(builder)
 }

@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_potential_pm_pro_benefit"
         app:layout_constraintTop_toTopOf="@id/iv_potential_pm_pro_benefit"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         tools:text="@string/title_item_benefit_2_pm_pro" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
