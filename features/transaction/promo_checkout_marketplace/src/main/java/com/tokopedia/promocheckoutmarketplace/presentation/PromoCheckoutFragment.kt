@@ -843,6 +843,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun reloadData() {
         viewModel.resetPromoInput()
+        viewBinding?.containerTickerBoClashing?.gone()
         viewBinding?.containerActionBottom?.gone()
         adapter.clearAllElements()
         viewBinding?.layoutMainContainer?.show()

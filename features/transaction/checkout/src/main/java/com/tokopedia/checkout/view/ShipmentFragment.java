@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -1090,9 +1091,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
                 if (courierItemData.getLogPromoCode() != null && courierItemData.getLogPromoCode().length() > 0) {
                     for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                        if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) &&
-                                !ordersItem.getCodes().contains(courierItemData.getLogPromoCode())) {
-                            ordersItem.getCodes().add(courierItemData.getLogPromoCode());
+                        if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
+                            if (!ordersItem.getCodes().contains(courierItemData.getLogPromoCode())) {
+                                ordersItem.getCodes().add(courierItemData.getLogPromoCode());
+                            }
                             ordersItem.setShippingId(courierItemData.getShipperId());
                             ordersItem.setSpId(courierItemData.getShipperProductId());
                             ordersItem.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
@@ -1101,7 +1103,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
                                     .get(0).getPreOrderDurationDay());
                             ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
-                            ordersItem.setBoCampaignId(0);
+                            ordersItem.setBoCampaignId(courierItemData.getBoCampaignId());
                             ordersItem.setShippingSubsidy(courierItemData.getShippingSubsidy());
                             ordersItem.setBenefitClass(courierItemData.getBenefitClass());
                             ordersItem.setShippingPrice(courierItemData.getShippingRate());
@@ -1353,14 +1355,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ArrayList<String> reloadedUniqueIds = new ArrayList<>();
                 if (validateUsePromoRevampUiModel != null) {
                     String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
-                    if (messageInfo.length() > 0) {
-                        showToastNormal(messageInfo);
-                    }
                     shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
                     doUpdateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
                     updatePromoTrackingData(validateUsePromoRevampUiModel.getPromoUiModel().getTrackingDetailUiModels());
                     sendEEStep3();
-                    reloadedUniqueIds = shipmentPresenter.validateBoPromo(validateUsePromoRevampUiModel);
+                    Pair<ArrayList<String>, ArrayList<String>> validateBoResult = shipmentPresenter.validateBoPromo(validateUsePromoRevampUiModel);
+                    reloadedUniqueIds = validateBoResult.first;
+                    ArrayList<String> unappliedUniqueIds = validateBoResult.second;
+                    if (messageInfo.length() > 0) {
+                        showToastNormal(messageInfo);
+                    } else if (unappliedUniqueIds.size() > 0) {
+                        // when messageInfo is empty and has unapplied BO show hard coded toast
+                        showToastNormal(getString(com.tokopedia.purchase_platform.common.R.string.pp_auto_unapply_bo_toaster_message));
+                    }
                     if (shipmentAdapter.hasSetAllCourier()) {
                         resetPromoBenefit();
                         setPromoBenefit(validateUsePromoRevampUiModel.getPromoUiModel().getBenefitSummaryInfoUiModel().getSummaries());
@@ -2092,7 +2099,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
                             .get(0).getPreOrderDurationDay());
                     ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
-                    ordersItem.setBoCampaignId(0);
+                    ordersItem.setBoCampaignId(courierData.getBoCampaignId());
                     ordersItem.setShippingSubsidy(courierData.getShippingSubsidy());
                     ordersItem.setBenefitClass(courierData.getBenefitClass());
                     ordersItem.setShippingPrice(courierData.getShippingRate());
@@ -2636,12 +2643,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperId());
                     ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperProductId());
                     if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                        // todo: bo campaign id
                         ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getFreeShippingMetadata());
                         ordersItem.setBenefitClass(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getBenefitClass());
                         ordersItem.setShippingSubsidy(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShippingSubsidy());
                         ordersItem.setShippingPrice(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShippingRate());
                         ordersItem.setEtaText(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getEtaText());
+                        ordersItem.setBoCampaignId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getBoCampaignId());
                     } else {
                         ordersItem.setFreeShippingMetadata("");
                         ordersItem.setBoCampaignId(0);
@@ -2665,12 +2672,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
                     ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
                     if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                        // todo: bo campaign id
                         ordersItem.setFreeShippingMetadata(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getFreeShippingMetadata());
                         ordersItem.setBenefitClass(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getBenefitClass());
                         ordersItem.setShippingSubsidy(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShippingSubsidy());
                         ordersItem.setShippingPrice(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShippingRate());
                         ordersItem.setEtaText(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getEtaText());
+                        ordersItem.setBoCampaignId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getBoCampaignId());
                     } else {
                         ordersItem.setFreeShippingMetadata("");
                         ordersItem.setBoCampaignId(0);

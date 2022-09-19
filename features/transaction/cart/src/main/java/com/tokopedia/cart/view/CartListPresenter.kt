@@ -75,7 +75,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.Clear
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -259,10 +258,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     private fun onSuccessGetCartList(cartData: CartData, initialLoad: Boolean) {
         view?.let {
-            val lastApplyData = cartData.promo.lastApplyPromo.lastApplyPromoData
-            if (lastApplyData.codes.isNotEmpty() || lastApplyData.listVoucherOrders.isNotEmpty()) {
-                setLastApplyValid()
-            }
+            setLastApplyValid()
             setValidateUseLastResponse(null)
             setUpdateCartAndValidateUseLastResponse(null)
             if (!initialLoad) {
@@ -1817,11 +1813,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             val boUniqueIds = mutableSetOf<String>()
             for (voucherOrderUiModel in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
                 if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0 && voucherOrderUiModel.type == "logistic") {
-                    if (voucherOrderUiModel.messageUiModel.state == "red") {
-                        clearRedBo(voucherOrderUiModel, shopDataList)
-                        boUniqueIds.add(voucherOrderUiModel.uniqueId)
-                    } else if (voucherOrderUiModel.messageUiModel.state == "green") {
-                        shopDataList.firstOrNull { it.cartString == voucherOrderUiModel.uniqueId }?.boCode = voucherOrderUiModel.uniqueId
+                    if (voucherOrderUiModel.messageUiModel.state == "green") {
+                        shopDataList.firstOrNull { it.cartString == voucherOrderUiModel.uniqueId }?.boCode = voucherOrderUiModel.code
                         boUniqueIds.add(voucherOrderUiModel.uniqueId)
                     }
                 }
@@ -1832,29 +1825,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 }
             }
         }
-    }
-
-    private fun clearRedBo(voucherOrderUiModel: PromoCheckoutVoucherOrdersItemUiModel, shopDataList: List<CartShopHolderData>) {
-        val shop = shopDataList.firstOrNull { it.cartString == voucherOrderUiModel.uniqueId } ?: return
-        clearCacheAutoApplyStackUseCase.setParams(ClearPromoRequest(
-                serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                orderData = ClearPromoOrderData(
-                        orders = listOf(
-                                ClearPromoOrder(
-                                        uniqueId = shop.cartString,
-                                        boType = shop.boMetadata.boType,
-                                        codes = mutableListOf(voucherOrderUiModel.code),
-                                        shopId = shop.shopId.toLongOrZero(),
-                                        isPo = shop.isPo,
-                                        poDuration = shop.poDuration,
-                                        warehouseId = shop.warehouseId
-                                )
-                        )
-                )
-        ))
-        compositeSubscription.add(clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe())
-        lastValidateUseRequest?.orders?.firstOrNull { it.uniqueId == voucherOrderUiModel.uniqueId }?.codes?.remove(voucherOrderUiModel.code)
-        shop.boCode = ""
     }
 
     private fun clearBo(shop: CartShopHolderData) {

@@ -8,6 +8,7 @@ import io.mockk.coVerify
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
@@ -21,11 +22,11 @@ class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
         } returns expectedResponse
 
         //When
-        viewModel.getTickerReminder()
+        viewModel.getTickerReminder(false)
 
         //Then
         assertThat(
-            viewModel.srwTickerReminder.value,
+            viewModel.tickerReminder.value,
             `is`(Success(expectedResponse.getReminderTicker))
         )
     }
@@ -38,29 +39,11 @@ class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
         } throws IllegalStateException()
 
         //When
-        viewModel.getTickerReminder()
+        viewModel.getTickerReminder(false)
 
         //Then
         assertEquals(
-            viewModel.srwTickerReminder.value, null
-        )
-    }
-
-    @Test
-    fun should_remove_ticker_reminder_when_removed() {
-        //Given
-        val expectedResponse = GetReminderTickerResponse()
-        coEvery {
-            reminderTickerUseCase.invoke(any())
-        } returns expectedResponse
-
-        //When
-        viewModel.getTickerReminder()
-        viewModel.removeTicker()
-
-        //Then
-        assertEquals(
-            viewModel.srwTickerReminder.value, null
+            viewModel.tickerReminder.value, null
         )
     }
 
@@ -73,7 +56,7 @@ class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
         } returns Unit
 
         //When
-        viewModel.closeTickerReminder(response.getReminderTicker)
+        viewModel.closeTickerReminder(response.getReminderTicker, false)
 
         //Then
         coVerify {
@@ -90,6 +73,6 @@ class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
         } throws IllegalStateException()
 
         //When
-        viewModel.closeTickerReminder(response.getReminderTicker)
+        viewModel.closeTickerReminder(response.getReminderTicker, false)
     }
 }

@@ -38,4 +38,5 @@ data class LogisticPromoUiModel(val promoCode: String = "",
                                 val freeShippingMetadata: String = "",
                                 val benefitClass: String = "",
                                 val shippingSubsidy: Long = 0,
+                                val boCampaignId: Long = 0,
 ) : RatesViewModelType, Parcelable

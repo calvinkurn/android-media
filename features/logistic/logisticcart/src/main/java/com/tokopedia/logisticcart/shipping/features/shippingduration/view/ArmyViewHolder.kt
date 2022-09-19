@@ -49,11 +49,11 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             lblCodAvailableEta.visibility = View.GONE
         }
 
-        if (data.promoMessage.isNotBlank()) {
-            tvInfo.text = MethodChecker.fromHtml(data.promoMessage)
-            tvInfo.visibility = View.VISIBLE
-        } else if (data.bottomSheetDescription.isNotEmpty()) {
+        if (data.bottomSheetDescription.isNotEmpty()) {
             tvInfo.text = MethodChecker.fromHtml(data.bottomSheetDescription)
+            tvInfo.visibility = View.VISIBLE
+        } else if (data.promoMessage.isNotBlank()) {
+            tvInfo.text = MethodChecker.fromHtml(data.promoMessage)
             tvInfo.visibility = View.VISIBLE
         } else {
             tvInfo.visibility = View.GONE

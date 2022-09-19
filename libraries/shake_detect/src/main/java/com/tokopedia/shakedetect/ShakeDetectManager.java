@@ -157,7 +157,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             return;
         }
         Activity act = activityRef.get();
-        if (!screenName.equals(mOpenedActivity) && act.equals(activity)) {
+        if (!screenName.equals(mOpenedActivity) && (act != null && act.equals(activity))) {
             mOpenedActivity = null;
             this.activityRef = null;
         }
