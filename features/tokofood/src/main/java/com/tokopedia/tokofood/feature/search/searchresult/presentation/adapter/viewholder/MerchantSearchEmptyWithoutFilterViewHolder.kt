@@ -72,6 +72,6 @@ class MerchantSearchEmptyWithoutFilterViewHolder(
 
         // TODO: Change to correct image
         private const val EMPTY_STATE_URL =
-            "https://images.tokopedia.net/img/android/tokofood/il_tokofood_category_empty_state.png"
+            "https://images.tokopedia.net/img/android/tokofood/merchant_not_found.png"
     }
 }

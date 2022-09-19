@@ -200,7 +200,6 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
             },
             onError = {}
         )
-        // TODO: Check whether we need to always load detail filter
         if (dynamicFilterModel.value == null) {
             loadDetailSortFilter()
         }

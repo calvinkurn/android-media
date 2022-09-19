@@ -39,14 +39,12 @@ class TokofoodSearchResultAnalytics @Inject constructor(private val userSession:
         )
     }
 
-    // TODO: Determine whether we still need to send filter values
     fun sendCompleteFilterClickTracking(keyword: String) {
-        val eventLabel = "${keyword}__"
         Tracker.Builder()
             .setEvent(TokoFoodAnalyticsConstants.CLICK_PG)
             .setEventAction(TokoFoodAnalyticsConstants.CLICK_COMPLETE_FILTER_TOKOFOOD)
             .setEventCategory(TokoFoodAnalyticsConstants.TOKOFOOD_SEARCH_RESULT_PAGE)
-            .setEventLabel(eventLabel)
+            .setEventLabel(keyword)
             .setCustomProperty(
                 TokoFoodAnalyticsConstants.TRACKER_ID,
                 TokoFoodAnalyticsConstants.TRACKER_ID_35774

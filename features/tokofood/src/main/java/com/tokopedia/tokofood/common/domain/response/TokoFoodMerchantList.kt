@@ -13,6 +13,8 @@ data class TokoFoodMerchantList(
 data class Merchant (
     @SerializedName("id")
     val id: String = "",
+    @SerializedName("applink")
+    val applink: String = "",
     @SerializedName("brandID")
     val brandId: String = "",
     @SerializedName("name")
