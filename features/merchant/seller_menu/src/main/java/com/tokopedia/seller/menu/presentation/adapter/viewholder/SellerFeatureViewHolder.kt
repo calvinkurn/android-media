@@ -61,7 +61,6 @@ class SellerFeatureViewHolder(
             val appLinks = ArrayList<String>().apply {
                 add(ApplinkConstInternalSellerapp.SELLER_HOME)
                 add(UriUtil.buildUri(ApplinkConst.SHOP, feature.userSession.shopId))
-                add(ApplinkConst.CONTENT_CREATE_POST)
             }
             goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_PLAY_FEED, appLinks)
             sellerMenuTracker?.sendEventClickFeedAndPlay()
