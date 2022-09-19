@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
-import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating.Companion.NO_EMOJI
 import com.tokopedia.csat_rating.presenter.screenState.*
 import javax.inject.Inject

@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.csat_rating.di.scope.CsatScope
 import dagger.Component
 
 @CsatCommonScope

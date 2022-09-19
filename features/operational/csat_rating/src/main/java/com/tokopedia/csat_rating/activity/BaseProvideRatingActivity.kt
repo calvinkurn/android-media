@@ -1,12 +1,10 @@
 package com.tokopedia.csat_rating.activity
 
-import androidx.fragment.app.Fragment
 import android.os.Bundle
-
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.csat_rating.di.CsatRatingComponentHelper
-import com.tokopedia.csat_rating.di.component.CsatComponent
 import com.tokopedia.csat_rating.di.general.CsatComponentCommon
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.kotlin.extensions.view.hide

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.view.MenuItem
 import android.view.View
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 

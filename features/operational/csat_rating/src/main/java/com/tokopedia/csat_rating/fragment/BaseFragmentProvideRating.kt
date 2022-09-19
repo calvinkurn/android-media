@@ -29,7 +29,8 @@ import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Co
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FOURTH_EMOJI
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.SECOND_EMOJI
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.THIRD_EMOJI
-import com.tokopedia.csat_rating.presenter.screenState.*
+import com.tokopedia.csat_rating.presenter.screenState.ScreenState
+import com.tokopedia.csat_rating.presenter.screenState.ZeroScreenState
 import com.tokopedia.csat_rating.quickfilter.QuickFilterItem
 import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterView
 import com.tokopedia.kotlin.extensions.view.hide

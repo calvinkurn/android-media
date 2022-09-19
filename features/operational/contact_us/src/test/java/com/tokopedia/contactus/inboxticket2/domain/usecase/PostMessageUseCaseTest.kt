@@ -2,13 +2,13 @@ package com.tokopedia.contactus.inboxticket2.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
-import com.tokopedia.contactus.inboxticket2.data.model.TicketReplyResponse
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -16,7 +16,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
-import kotlin.jvm.Throws
 
 @ExperimentalCoroutinesApi
 class PostMessageUseCaseTest {
