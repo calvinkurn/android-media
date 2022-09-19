@@ -543,9 +543,7 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
-        // TODO
-    }
+    override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {}
 
     override fun sendMessageWithWebsocket(
         messageId: String,
