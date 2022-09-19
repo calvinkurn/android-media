@@ -6,8 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowTagBinding
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder
+import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder.TagListener
 
-class TagAdapter(private var itemList: List<TagUiModel>): RecyclerView.Adapter<TagViewHolder>() {
+class TagAdapter(
+    private var itemList: List<TagUiModel>,
+    private val listener: TagListener? = null
+) : RecyclerView.Adapter<TagViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
         return TagViewHolder(
@@ -15,7 +19,8 @@ class TagAdapter(private var itemList: List<TagUiModel>): RecyclerView.Adapter<T
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            listener
         )
     }
 

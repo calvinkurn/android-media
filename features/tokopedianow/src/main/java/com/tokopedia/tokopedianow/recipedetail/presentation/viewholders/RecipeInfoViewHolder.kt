@@ -14,7 +14,10 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUi
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
-class RecipeInfoViewHolder(itemView: View): AbstractViewHolder<RecipeInfoUiModel>(itemView) {
+class RecipeInfoViewHolder(
+    itemView: View,
+    private val listener: TagListener? = null
+): AbstractViewHolder<RecipeInfoUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_tokopedianow_recipe_info
@@ -55,7 +58,7 @@ class RecipeInfoViewHolder(itemView: View): AbstractViewHolder<RecipeInfoUiModel
     }
 
     private fun renderTags(recipe: RecipeInfoUiModel) {
-        val tagAdapter = TagAdapter(recipe.tags)
+        val tagAdapter = TagAdapter(recipe.tags, listener)
         binding?.rvTags?.apply {
             layoutManager = LinearLayoutManager(
                 itemView.context,

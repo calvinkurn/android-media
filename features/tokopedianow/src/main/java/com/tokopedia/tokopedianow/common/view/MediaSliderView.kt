@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
 import com.tokopedia.tokopedianow.common.activity.TokoNowMediaGalleryActivity
+import com.tokopedia.tokopedianow.common.analytics.MediaSliderAnalytics
 import com.tokopedia.tokopedianow.common.model.MediaGalleryUiModel
 import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -36,6 +37,7 @@ class MediaSliderView @JvmOverloads constructor(
 
     private var mediaCarousel: CarouselUnify? = null
     private var pageControl: PageControl? = null
+    private var analytics: MediaSliderAnalytics? = null
 
     init {
         val view = View.inflate(context, R.layout.layout_recipe_media_slider, this)
@@ -46,6 +48,10 @@ class MediaSliderView @JvmOverloads constructor(
     fun init(items: List<MediaItemUiModel>) {
         setupCarousel(items)
         setupIndicator(items)
+    }
+
+    fun setAnalytics(analytics: MediaSliderAnalytics?) {
+        this.analytics = analytics
     }
 
     private fun setupCarousel(mediaList: List<MediaItemUiModel>) {
@@ -59,12 +65,12 @@ class MediaSliderView @JvmOverloads constructor(
             addItems(R.layout.item_tokopedianow_media_view, ArrayList(mediaList)) { view, data ->
                 with(view) {
                     val media = data as MediaItemUiModel
-                    val position = mediaList.indexOf(media)
+                    val index = mediaList.indexOf(media)
 
                     if(media.type == MediaType.VIDEO) {
-                        renderVideo(position, mediaList)
+                        renderVideo(index, mediaList)
                     } else {
-                        renderImage(position, mediaList)
+                        renderImage(index, mediaList)
                     }
                 }
             }
@@ -72,27 +78,38 @@ class MediaSliderView @JvmOverloads constructor(
             onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
                     pageControl?.setCurrentIndicator(current)
+                    trackMediaImpression(mediaList[current])
                 }
             }
         }
     }
 
-    private fun View.renderVideo(position: Int, mediaList: List<MediaItemUiModel>) {
+    private fun trackMediaImpression(media: MediaItemUiModel) {
+        val position = media.position
+
+        when(media.type) {
+            MediaType.IMAGE -> analytics?.trackImageImpression(position)
+            MediaType.VIDEO -> analytics?.trackVideoImpression(position)
+        }
+    }
+
+    private fun View.renderVideo(index: Int, mediaList: List<MediaItemUiModel>) {
         showShimmer()
+        val media = mediaList[index]
 
         findViewById<VideoPlayerView>(R.id.video_player).apply {
-            val media = mediaList[position]
             setVideoURI(Uri.parse(media.url))
         }.setOnPreparedListener { player ->
             val durationMillis = player.duration.toLong()
             player.seekTo(SEEK_TO_MS)
 
             setOnClickListener {
-                openMediaGallery(position, mediaList)
+                openMediaGallery(index, mediaList)
+                analytics?.trackClickVideo(media.position)
             }
 
-            renderFullScreenBtn(position, mediaList)
-            renderPlayBtn(position, mediaList)
+            renderFullScreenBtn(index, mediaList)
+            renderPlayBtn(index, mediaList)
             renderDuration(durationMillis)
             hideShimmer()
         }
@@ -110,13 +127,14 @@ class MediaSliderView @JvmOverloads constructor(
         findViewById<ImageUnify>(R.id.video_duration_bg).show()
     }
 
-    private fun View.renderImage(position: Int, mediaList: List<MediaItemUiModel>) {
+    private fun View.renderImage(index: Int, mediaList: List<MediaItemUiModel>) {
         findViewById<ImageUnify>(R.id.image_view).apply {
-            val media = mediaList[position]
+            val media = mediaList[index]
             loadImage(media.thumbnailUrl)
 
             setOnClickListener {
-                openMediaGallery(position, mediaList)
+                openMediaGallery(index, mediaList)
+                analytics?.trackClickImage(media.position)
             }
         }
         hideVideoPlayer()
@@ -156,6 +174,7 @@ class MediaSliderView @JvmOverloads constructor(
 
         fullScreenBtn?.setOnClickListener {
             openMediaGallery(position, mediaList)
+            analytics?.trackClickFullscreen()
         }
 
         btnBg?.show()

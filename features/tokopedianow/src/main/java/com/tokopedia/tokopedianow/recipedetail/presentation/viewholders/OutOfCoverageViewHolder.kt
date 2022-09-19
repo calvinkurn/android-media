@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ConstantUrl.LEARN_MORE_TOKOPEDIA_NOW_URL
@@ -24,7 +25,8 @@ class OutOfCoverageViewHolder(
 
     private var binding: ItemTokopedianowRecipeOutOfCoverageBinding? by viewBinding()
 
-    override fun bind(uiModel: OutOfCoverageUiModel) {
+    override fun bind(item: OutOfCoverageUiModel) {
+        addImpressionListener(item)
         renderImageIllustration()
         renderChangeAddressBtn()
         renderTextLearnMore()
@@ -36,7 +38,7 @@ class OutOfCoverageViewHolder(
 
     private fun renderChangeAddressBtn() {
         binding?.btnChangeAddress?.setOnClickListener {
-            listener?.onCLickChangeAddress()
+            listener?.onClickChangeAddress()
         }
     }
 
@@ -45,10 +47,19 @@ class OutOfCoverageViewHolder(
         binding?.textLearnMore?.text = MethodChecker.fromHtml(text)
         binding?.textLearnMore?.setOnClickListener {
             RouteManager.route(itemView.context, ApplinkConst.WEBVIEW, LEARN_MORE_TOKOPEDIA_NOW_URL)
+            listener?.onClickLearnMore()
+        }
+    }
+
+    private fun addImpressionListener(item: OutOfCoverageUiModel) {
+        itemView.addOnImpressionListener(item) {
+            listener?.onImpressOutOfCoverage()
         }
     }
 
     interface OutOfCoverageListener {
-        fun onCLickChangeAddress()
+        fun onClickChangeAddress()
+        fun onClickLearnMore()
+        fun onImpressOutOfCoverage()
     }
 }

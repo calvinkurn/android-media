@@ -30,6 +30,10 @@ import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOpt
 import com.tokopedia.tokopedianow.common.view.ToolbarHeaderView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeDetailBinding
+import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder.TagListener
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeDetailAnalytics
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeMediaSliderAnalytics
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeProductAnalytics
 import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailComponent
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapter
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapterTypeFactory
@@ -49,7 +53,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidgetListener,
-    ServerErrorListener {
+    ServerErrorListener, TagListener {
 
     companion object {
         private const val KEY_PARAM_RECIPE_ID = "recipe_id"
@@ -79,7 +83,9 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         RecipeDetailAdapter(
             RecipeDetailAdapterTypeFactory(
                 view = this,
-                serverErrorListener = this
+                tagListener = this,
+                serverErrorListener = this,
+                mediaSliderAnalytics = RecipeMediaSliderAnalytics(userSession)
             )
         )
     }
@@ -88,6 +94,10 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     private var toolbarHeader: ToolbarHeaderView? = null
     private var shareBottomSheet: UniversalShareBottomSheet? = null
+
+    private val analytics by lazy { RecipeDetailAnalytics(userSession) }
+
+    private val productAnalytics by lazy { RecipeProductAnalytics(userSession) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -173,7 +183,19 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         viewModel.refreshPage()
     }
 
+    override fun onClickOtherTags() {
+        analytics.trackClickOtherTags()
+    }
+
+    override fun onImpressOtherTags() {
+        analytics.trackImpressionOtherTags()
+    }
+
     override fun getFragmentActivity() = activity
+
+    override fun getProductTracker() = productAnalytics
+
+    override fun getTracker() = analytics
 
     private fun setRecipeData() {
         val recipeId = activity?.intent?.data
@@ -218,6 +240,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
             shareBtn?.setOnClickListener {
                 showShareBottomSheet()
+                trackClickShareBtn()
             }
 
             setNavBtnClickListener()
@@ -237,6 +260,11 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         } else {
             goToLoginPage()
         }
+        analytics.trackClickBookmark()
+    }
+
+    private fun trackClickShareBtn() {
+        analytics.trackClickShare()
     }
 
     private fun setNavBtnClickListener() {
@@ -438,6 +466,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         val message = data.errorMessage.joinToString(separator = ", ")
         val actionText = getString(R.string.tokopedianow_lihat)
         showToaster(message = message, actionText = actionText, onClickAction = {
+            trackClickSeeAddToCartToaster()
             showMiniCartBottomSheet()
         })
         getMiniCart()
@@ -487,6 +516,10 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         showToaster(message = message, type = Toaster.TYPE_ERROR, actionText = actionText) {
             viewModel.removeRecipeBookmark()
         }
+    }
+
+    private fun trackClickSeeAddToCartToaster() {
+        analytics.trackClickSeeAddToCartToaster()
     }
 
     private fun checkAddressData() {

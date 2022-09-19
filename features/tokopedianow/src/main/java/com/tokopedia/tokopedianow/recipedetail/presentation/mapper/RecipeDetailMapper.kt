@@ -27,7 +27,10 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.SectionTitle
 
 object RecipeDetailMapper {
 
+    private const val MAX_LABEL_COUNT = 3
+    private const val TAKE_LABEL_COUNT = 4
     private const val PRODUCT_DEFAULT_QTY = 0
+
     private const val MEDIA_TYPE_IMAGE = "Image"
 
     fun MutableList<Visitable<*>>.updateProductQuantity(miniCart: MiniCartSimplifiedData) {
@@ -92,15 +95,16 @@ object RecipeDetailMapper {
     }
 
     fun mapToMediaSlider(response: RecipeResponse): MediaSliderUiModel {
-        val mediaItems = response.medias.map {
+        val mediaItems = response.medias.mapIndexed { index, media ->
             MediaItemUiModel(
-                url = it.url,
-                thumbnailUrl = it.url,
-                type = if(it.type == MEDIA_TYPE_IMAGE) {
+                url = media.url,
+                thumbnailUrl = media.url,
+                type = if(media.type == MEDIA_TYPE_IMAGE) {
                     MediaType.IMAGE
                 } else {
                     MediaType.VIDEO
-                }
+                },
+                position = index + 1
             )
         }
         return MediaSliderUiModel(mediaItems)
@@ -109,15 +113,21 @@ object RecipeDetailMapper {
     fun mapToRecipeInfo(response: RecipeResponse): RecipeInfoUiModel {
         val thumbnail = response.images.first().urlThumbnail
         val imageUrls = response.images.map { it.urlThumbnail }
-        val recipeLabels = response.tags.map {
-            it.name
+        val tags = response.tags.take(TAKE_LABEL_COUNT).mapIndexed { index, tag ->
+            val position = index + 1
+            if (position > MAX_LABEL_COUNT) {
+                val otherLabelCount = (response.tags.count() - MAX_LABEL_COUNT).toString()
+                TagUiModel(tag = otherLabelCount, shouldFormatTag = true)
+            } else {
+                TagUiModel(tag = tag.name, shouldFormatTag = false)
+            }
         }
 
         return RecipeInfoUiModel(
             title = response.title,
             portion = response.portion,
             duration = response.duration.orZero(),
-            labels = recipeLabels,
+            tags = tags,
             thumbnail = thumbnail,
             imageUrls = imageUrls
         )

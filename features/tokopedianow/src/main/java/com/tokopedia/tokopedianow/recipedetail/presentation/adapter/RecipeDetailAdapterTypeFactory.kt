@@ -5,9 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowServerErrorTypeFactory
+import com.tokopedia.tokopedianow.common.analytics.MediaSliderAnalytics
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
+import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder.TagListener
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeDetailLoadingUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.MediaSliderUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
@@ -20,7 +22,9 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeTa
 
 class RecipeDetailAdapterTypeFactory(
     private val view: RecipeDetailView,
+    private val tagListener: TagListener,
     private val serverErrorListener: ServerErrorListener,
+    private val mediaSliderAnalytics: MediaSliderAnalytics
 ): BaseAdapterTypeFactory(), RecipeDetailTypeFactory, TokoNowServerErrorTypeFactory {
 
     override fun type(uiModel: MediaSliderUiModel): Int = MediaSliderViewHolder.LAYOUT
@@ -35,8 +39,8 @@ class RecipeDetailAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            MediaSliderViewHolder.LAYOUT -> MediaSliderViewHolder(parent)
-            RecipeInfoViewHolder.LAYOUT -> RecipeInfoViewHolder(parent)
+            MediaSliderViewHolder.LAYOUT -> MediaSliderViewHolder(parent, mediaSliderAnalytics)
+            RecipeInfoViewHolder.LAYOUT -> RecipeInfoViewHolder(parent, tagListener)
             RecipeTabViewHolder.LAYOUT -> RecipeTabViewHolder(parent, view)
             RecipeDetailLoadingViewHolder.LAYOUT -> RecipeDetailLoadingViewHolder(parent)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(parent, serverErrorListener)
