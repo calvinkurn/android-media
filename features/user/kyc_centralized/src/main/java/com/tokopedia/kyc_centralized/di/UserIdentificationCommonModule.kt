@@ -77,7 +77,7 @@ open class UserIdentificationCommonModule {
 
     @Provides
     @ActivityScope
-    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
     @ActivityScope
