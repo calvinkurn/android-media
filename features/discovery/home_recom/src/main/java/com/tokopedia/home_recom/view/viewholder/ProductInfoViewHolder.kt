@@ -9,7 +9,12 @@ import com.tokopedia.home_recom.databinding.FragmentProductInfoBinding
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.util.RecomServerLogger
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.RECOM_PAGE_DISABLE_VIEWPORT_DS_TOPADS
 import com.tokopedia.utils.view.binding.viewBinding
