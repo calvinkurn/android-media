@@ -6,6 +6,9 @@ import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.*
 
+private const val DECIMAL_FORMAT_PATTERN = "#,###,###"
+private const val PERCENT_SYMBOL = "%"
+
 val IDRLocale = NumberFormat.getCurrencyInstance(Locale("in", "id"))
 val decimalFormat = DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale("in", "id")))
 
@@ -56,8 +59,6 @@ fun Number.getNumberFormatted(): String {
     return format.replace(",", ".")
 }
 
-private const val DECIMAL_FORMAT_PATTERN = "#,###,###"
-
 /**
  * Input: 1_000_000
  * Output: 1.000.000 (if locale is Indonesia)
@@ -69,4 +70,8 @@ fun Number.splitByThousand(
     val symbol = DecimalFormatSymbols(locale)
     val formatter = DecimalFormat(desiredOutputFormat, symbol)
     return formatter.format(this)
+}
+
+fun Number.getPercentFormatted(): String {
+    return toString() + PERCENT_SYMBOL
 }
