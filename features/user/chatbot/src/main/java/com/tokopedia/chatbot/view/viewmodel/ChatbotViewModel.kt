@@ -47,8 +47,3 @@ class ChatbotViewModel @Inject constructor(
     }
 }
 
-sealed class TicketListState {
-    object ShowContactUs : TicketListState()
-    data class BottomSheetData(val noticeData: InboxTicketListResponse.Ticket.Data.NoticeItem) :
-        TicketListState()
-}
