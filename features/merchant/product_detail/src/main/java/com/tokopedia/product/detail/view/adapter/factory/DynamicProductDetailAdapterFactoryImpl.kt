@@ -269,7 +269,8 @@ class DynamicProductDetailAdapterFactoryImpl(
                         view, PlayWidgetViewHolder(
                             itemView = playWidgetView,
                             coordinator = playWidgetCoordinator
-                        )
+                        ),
+                        listener
                     )
                 } else super.createViewHolder(view, type)
             }
