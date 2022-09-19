@@ -3160,7 +3160,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private String getFormattedCurrency(int price) {
+    private String getFormattedCurrency(Long price) {
         if (price == 0) {
             return "";
         }

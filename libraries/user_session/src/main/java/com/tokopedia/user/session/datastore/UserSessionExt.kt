@@ -8,7 +8,7 @@ suspend fun Flow<String>.value(): String {
     return this.first()
 }
 
-fun Flow<Any>.toBlocking(): Any {
+fun <T> Flow<T>.toBlocking(): T {
     return runBlocking {
         first()
     }

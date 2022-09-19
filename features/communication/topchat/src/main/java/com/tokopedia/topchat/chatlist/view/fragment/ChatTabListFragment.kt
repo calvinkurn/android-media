@@ -52,7 +52,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
-open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment,
+open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment,
     SellerHomeFragmentListener {
 
     override fun getScreenName(): String = "/new-inbox/chat"

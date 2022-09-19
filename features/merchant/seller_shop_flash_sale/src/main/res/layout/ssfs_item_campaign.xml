@@ -44,6 +44,31 @@
             tools:text="Serba Diskon 1" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgPackageInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tpgCampaignName"
+            app:layout_constraintTop_toBottomOf="@+id/tpgCampaignName"
+            app:typographyType="body_3"
+            tools:text="@string/sfs_placeholder_quota_resource" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgEventRegistered"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:textColor="@color/Unify_NN600"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tpgCampaignName"
+            app:layout_constraintTop_toBottomOf="@+id/tpgPackageInfo"
+            app:typographyType="body_3"
+            tools:text="@string/sfs_placeholder_quota_resource" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +76,7 @@
             android:text="@string/sfs_start"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toStartOf="@+id/tpgCampaignName"
-            app:layout_constraintTop_toBottomOf="@+id/tpgCampaignName"
+            app:layout_constraintTop_toBottomOf="@+id/barrier"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -78,12 +103,11 @@
             android:id="@+id/tpgEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_12"
             android:text="@string/sfs_finish"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tpgStart"
-            app:layout_constraintTop_toBottomOf="@+id/tpgCampaignName"
+            app:layout_constraintTop_toTopOf="@+id/tpgStart"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -216,6 +240,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tpgPackageInfo, tpgCampaignName, tpgEventRegistered"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
