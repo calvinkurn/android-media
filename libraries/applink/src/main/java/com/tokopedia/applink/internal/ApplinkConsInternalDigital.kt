@@ -25,7 +25,6 @@ object ApplinkConsInternalDigital {
     const val CREDIT_CARD_TEMPLATE = "$INTERNAL_RECHARGE/cc"
     const val SMART_BILLS = "$INTERNAL_RECHARGE/bayarsekaligus"
     const val ADD_TELCO = "$INTERNAL_RECHARGE/add_telco?template={template}"
-    const val SUBHOMEPAGE = "$INTERNAL_RECHARGE/home"
     const val DYNAMIC_SUBHOMEPAGE = "$INTERNAL_RECHARGE/home/dynamic"
     const val DYNAMIC_SUBHOMEPAGE_WITHOUT_PERSONALIZE = "$INTERNAL_RECHARGE/home/dynamic?platform_id={platform_id}"
     const val DYNAMIC_SUBHOMEPAGE_WITH_PARAM = "$INTERNAL_RECHARGE/home/dynamic?platform_id={platform_id}&personalize={bool_personalize}"
