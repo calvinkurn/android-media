@@ -115,7 +115,7 @@ internal class PlayBroadcastViewModelRobot(
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
 
-    fun getConfig() = viewModel.getConfiguration()
+    fun getConfig() = viewModel.submitAction(PlayBroadcastAction.GetAccountList)
 
     fun startLive() = viewModel.submitAction(
         PlayBroadcastAction.BroadcastStateChanged(

@@ -1,12 +1,12 @@
 package com.tokopedia.play.broadcaster.model
 
 import com.google.gson.Gson
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
-import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizChoiceDetailResponse
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
