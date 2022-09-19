@@ -11,14 +11,15 @@ import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleCompone
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapter
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapterListener
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantMultilocAdapter
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantActivity.Companion.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import javax.inject.Inject
 
 class ManageProductNonVariantMultilocFragment :
-    BaseCampaignManageProductDetailFragment<ManageProductNonVariantAdapter>(),
-    ManageProductNonVariantAdapter.ManageProductNonVariantAdapterListener {
+    BaseCampaignManageProductDetailFragment<ManageProductNonVariantMultilocAdapter>(),
+    ManageProductNonVariantAdapterListener {
 
     companion object {
         @JvmStatic
@@ -64,9 +65,9 @@ class ManageProductNonVariantMultilocFragment :
         }
     }
 
-    override fun createAdapterInstance() = ManageProductNonVariantAdapter().apply {
+    override fun createAdapterInstance() = ManageProductNonVariantMultilocAdapter().apply {
         product?.let {
-            setDataList(listOf(it))
+            setDataList(it)
             setListener(this@ManageProductNonVariantMultilocFragment)
         }
     }
@@ -81,7 +82,7 @@ class ManageProductNonVariantMultilocFragment :
         activity?.finish()
     }
 
-    override fun onDataInputChanged(criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
+    override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
         return viewModel.validateInput(criteria, discountSetup)
     }
 

@@ -58,7 +58,7 @@ data class ReservedProduct(
             val price: Long,
             val discountSetup: DiscountSetup,
             val isDilayaniTokopedia: Boolean,
-            val isToggleOn: Boolean,
+            var isToggleOn: Boolean,
             val isDisabled: Boolean,
             val disabledReason: String
         ) : Parcelable {

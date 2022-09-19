@@ -12,13 +12,14 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapter
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapterListener
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantActivity.Companion.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import javax.inject.Inject
 
 class ManageProductNonVariantFragment :
     BaseCampaignManageProductDetailFragment<ManageProductNonVariantAdapter>(),
-    ManageProductNonVariantAdapter.ManageProductNonVariantAdapterListener {
+    ManageProductNonVariantAdapterListener {
 
     companion object {
         private const val MULTILOC_FRAGMENT_TAG = "multiloc"
@@ -71,7 +72,7 @@ class ManageProductNonVariantFragment :
         activity?.finish()
     }
 
-    override fun onDataInputChanged(criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
+    override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
         return viewModel.validateInput(criteria, discountSetup)
     }
 

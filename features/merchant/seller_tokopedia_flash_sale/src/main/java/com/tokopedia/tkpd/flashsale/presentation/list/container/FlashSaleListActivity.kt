@@ -61,6 +61,21 @@ class FlashSaleListActivity : BaseSimpleActivity() {
                     isToggleOn = true,
                     isDisabled = false,
                     disabledReason = "",
+                ),
+                ReservedProduct.Product.Warehouse(
+                    warehouseId = 122,
+                    name = "JKTSEL",
+                    stock = 10,
+                    price = 200,
+                    discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
+                        discount = 0,
+                        price = 0,
+                        stock = 0,
+                    ),
+                    isDilayaniTokopedia = false,
+                    isToggleOn = true,
+                    isDisabled = false,
+                    disabledReason = "",
                 )
             ),
         ))

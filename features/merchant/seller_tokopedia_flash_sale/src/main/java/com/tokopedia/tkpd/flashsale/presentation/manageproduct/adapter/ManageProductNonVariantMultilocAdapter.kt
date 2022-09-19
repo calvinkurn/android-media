@@ -5,36 +5,37 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailInformationBinding
+import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailLocationItemBinding
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemManageProductNonvariantBinding
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 
-class ManageProductNonVariantAdapter: RecyclerView.Adapter<ManageProductNonVariantAdapter.CriteriaViewHolder>() {
+class ManageProductNonVariantMultilocAdapter: RecyclerView.Adapter<ManageProductNonVariantMultilocAdapter.CriteriaViewHolder>() {
 
-    private var data: List<ReservedProduct.Product> = emptyList()
-    private var listener: ManageProductNonVariantAdapterListener? =null
+    private var product: ReservedProduct.Product? = null
+    private var listener: ManageProductNonVariantAdapterListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
-        val binding = StfsItemManageProductNonvariantBinding.inflate(LayoutInflater.from(parent.context),
+        val binding = LayoutCampaignManageProductDetailLocationItemBinding.inflate(LayoutInflater.from(parent.context),
             parent, false)
         return CriteriaViewHolder(binding, listener)
     }
 
-    override fun getItemCount() = data.size
+    override fun getItemCount() = product?.warehouses?.size.orZero()
 
     override fun onBindViewHolder(holder: CriteriaViewHolder, position: Int) {
-        data.getOrNull(position)?.let { menu ->
-            holder.bind(menu)
+        product?.let {
+            it.warehouses.getOrNull(position)?.let { selectedWarehouse ->
+                holder.bind(it, selectedWarehouse)
+            }
         }
     }
 
-    fun setDataList(newData: List<ReservedProduct.Product>) {
-        data = newData
-        notifyItemRangeChanged(Int.ZERO, newData.size)
+    fun setDataList(newData: ReservedProduct.Product) {
+        product = newData
+        notifyItemRangeChanged(Int.ZERO, newData.warehouses.size)
     }
 
     fun setListener(listener: ManageProductNonVariantAdapterListener) {
@@ -42,13 +43,9 @@ class ManageProductNonVariantAdapter: RecyclerView.Adapter<ManageProductNonVaria
     }
 
     inner class CriteriaViewHolder(
-        private val binding: StfsItemManageProductNonvariantBinding,
+        private val binding: LayoutCampaignManageProductDetailLocationItemBinding,
         private val listener: ManageProductNonVariantAdapterListener?
     ) : RecyclerView.ViewHolder(binding.root) {
-
-        private fun Number?.toStringOrEmpty(): String {
-            return this?.toString().orEmpty()
-        }
 
         private fun LayoutCampaignManageProductDetailInformationBinding.triggerListener(
             criteria: ProductCriteria,
@@ -88,15 +85,31 @@ class ManageProductNonVariantAdapter: RecyclerView.Adapter<ManageProductNonVaria
             }
         }
 
-        fun bind(item: ReservedProduct.Product) {
-            binding.mainLayout.apply {
-                val discount = item.warehouses.firstOrNull()?.discountSetup
-                val criteria = item.productCriteria
+        fun bind(
+            product: ReservedProduct.Product,
+            selectedWarehouse: ReservedProduct.Product.Warehouse,
+        ) {
+            binding.containerLayoutProductParent.apply {
+                textParentErrorMessage.gone()
+                imageParentError.gone()
+                textParentTitle.text = selectedWarehouse.name
+                textParentOriginalPrice.text = selectedWarehouse.price.getCurrencyFormatted()
+                textParentTotalStock.text = root.context.getString(R.string.manageproductnonvar_stock_total_format, selectedWarehouse.stock)
+                switcherToggleParent.isChecked = selectedWarehouse.isToggleOn
+                switcherToggleParent.setOnClickListener {
+                    selectedWarehouse.isToggleOn = switcherToggleParent.isChecked
+                    binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
+                }
+            }
+            binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
+            binding.containerLayoutProductInformation.apply {
+                val discount = selectedWarehouse.discountSetup
+                val criteria = product.productCriteria
                 periodSection.gone()
                 tickerPriceError.gone()
-                textFieldPriceDiscountNominal.editText.setText(discount?.price?.toStringOrEmpty())
-                textFieldPriceDiscountPercentage.editText.setText(discount?.discount?.toStringOrEmpty())
-                quantityEditor.editText.setText(discount?.stock?.orZero().toString())
+                textFieldPriceDiscountNominal.editText.setText(discount.price.toString())
+                textFieldPriceDiscountPercentage.editText.setText(discount.discount.toString())
+                quantityEditor.editText.setText(discount.stock.toString())
                 textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
                 textQuantityEditorSubTitle.text = root.context.getString(R.string.manageproductnonvar_stock_subtitle, criteria.minCustomStock, criteria.maxCustomStock)
                 setupListener(criteria, discount)
