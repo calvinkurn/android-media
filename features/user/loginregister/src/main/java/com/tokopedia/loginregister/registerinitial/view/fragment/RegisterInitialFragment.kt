@@ -88,7 +88,7 @@ import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodB
 import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodState
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialRouter
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
-import com.tokopedia.loginregister.registerinitial.view.util.isOnlyRegisterWithNumber
+import com.tokopedia.loginregister.registerinitial.view.util.isRedefineRegisterEmailActivated
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.network.exception.MessageErrorException
@@ -158,6 +158,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private var activityShouldEnd: Boolean = true
     private var enableOvoRegister: Boolean = false
     private var validateToken: String = ""
+
+    private var isRedefineRegisterEmailRequiredPhone: Boolean? = null
 
     @Inject
     lateinit var externalRegisterPreference: ExternalRegisterPreference
@@ -255,6 +257,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
+        isUsingRedefineRegisterEmail()
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_initial_register, parent, false)
         optionTitle = view.findViewById(R.id.register_option_title)
@@ -288,21 +291,33 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initInputType()
         fetchRemoteConfig()
         initObserver()
         initData()
         setupToolbar()
-        initInputType()
     }
 
     private fun initInputType() {
         fieldUnifyInputEmailPhone?.apply {
-            if (isOnlyRegisterWithNumber(requireActivity())) {
+            if (isRedefineRegisterEmailRequiredPhone != null) {
                 setInputType(InputType.TYPE_CLASS_PHONE)
                 setLabel(requireActivity().getString(R.string.text_field_label_phone_number))
             } else {
                 setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE)
                 setLabel(requireActivity().getString(R.string.phone_or_email_input))
+            }
+        }
+    }
+
+    private fun isUsingRedefineRegisterEmail() {
+        if (isRedefineRegisterEmailActivated(requireActivity())) {
+            val rollenceRedefineRegisterEmail = RemoteConfigInstance.getInstance().abTestPlatform.getString(ABTEST_REDEFINE_REGISTER_EMAIL_KEY)
+
+            isRedefineRegisterEmailRequiredPhone = when (rollenceRedefineRegisterEmail) {
+                ABTEST_REDEFINE_REGISTER_EMAIL_VARIANT_MANDATORY -> true
+                ABTEST_REDEFINE_REGISTER_EMAIL_VARIANT_OPTIONAL -> false
+                else -> null
             }
         }
     }
@@ -356,7 +371,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     @SuppressLint("RtlHardcoded")
     private fun prepareView() {
         activity?.let { act ->
-            if (!isOnlyRegisterWithNumber(requireActivity())) {
+            if (isRedefineRegisterEmailRequiredPhone == null) {
                 bottomSheet = SocmedBottomSheet(context)
                 socmedButtonsContainer = bottomSheet?.getSocmedButtonContainer()
                 bottomSheet?.setCloseClickListener {
@@ -367,7 +382,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
             socmedButton.setOnClickListener {
                 registerAnalytics.trackClickSocmedButton()
-                if (!isOnlyRegisterWithNumber(requireActivity())) {
+                if (isRedefineRegisterEmailRequiredPhone == null) {
                     bottomSheet?.show(act.supportFragmentManager, getString(R.string.bottom_sheet_show))
                 } else {
                     showOtherMethodBottomSheet()
@@ -407,8 +422,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         }
         bottomSheetOtherMethod?.setOnEmailClickedListener {
             bottomSheetOtherMethod?.dismiss()
-            //TODO("CHANGE VALUE IS REQUIRED PHONE WHEN KEY AB TEST IS READY")
-            registerInitialRouter.goToRedefineRegisterEmailPageWithParams(this, source, true)
+            registerInitialRouter.goToRedefineRegisterEmailPageWithParams(this, source, isRedefineRegisterEmailRequiredPhone == true)
         }
         bottomSheetOtherMethod?.show(childFragmentManager, getString(R.string.bottom_sheet_show))
     }
@@ -590,7 +604,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetProvider(discoverData: DiscoverData) {
-        if (isOnlyRegisterWithNumber(requireActivity())) {
+        if (isRedefineRegisterEmailRequiredPhone != null) {
             //set button email
             val emailProvider = ProviderData(
                 id = LoginConstants.DiscoverLoginId.EMAIL,
@@ -630,7 +644,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedGetProvider(throwable: Throwable) {
-        if (isOnlyRegisterWithNumber(requireActivity())) {
+        if (isRedefineRegisterEmailRequiredPhone != null) {
             registerInitialViewModel.setOtherMethodState(
                 OtherMethodState.Failed(context?.getString(R.string.default_request_error_unknown))
             )
@@ -1513,6 +1527,11 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     companion object {
+
+        private const val ABTEST_REDEFINE_REGISTER_EMAIL_KEY = "android_newregister"
+        private const val ABTEST_REDEFINE_REGISTER_EMAIL_VARIANT_MANDATORY = "mandatory_variant"
+        private const val ABTEST_REDEFINE_REGISTER_EMAIL_VARIANT_OPTIONAL = "optional_variant"
+
         private const val PHONE_NUMBER = "phonenumber"
 
         private const val REGISTER_BUTTON_CORNER_SIZE = 10
