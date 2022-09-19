@@ -140,15 +140,6 @@ object GetPromoListDataProvider {
         return promoRequest
     }
 
-    fun providePromoRequestWithBoPromo(): PromoRequest {
-        val response = provideGetPromoListResponseSuccessWithBoPromo()
-        val promoRequest = provideGetPromoListRequest()
-        val boData = response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0].additionalBoData[0]
-        promoRequest.orders = listOf(Order(uniqueId = boData.uniqueId, codes = mutableListOf(boData.code)))
-
-        return promoRequest
-    }
-
     fun provideNoCurrentSelectedExpandedMerchantPromoData(): ArrayList<Visitable<*>> {
         val promoListUiModelList = ArrayList<Visitable<*>>()
         val response = provideGetPromoListResponseSuccessAllExpanded()

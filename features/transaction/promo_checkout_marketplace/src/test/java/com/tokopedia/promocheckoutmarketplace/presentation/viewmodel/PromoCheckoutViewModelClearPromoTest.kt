@@ -296,27 +296,6 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
         assert(clearPromoParam.orderData.orders.isEmpty())
     }
 
-//    @Test
-//    fun `WHEN clear promo and order not in promo list nor in apply promo param THEN should include order code in get promo param to clear promo param`() {
-//        // given
-//        val promoList = provideCurrentSelectedExpandedMerchantPromoData()
-//        val response = provideClearPromoResponseSuccess()
-//        val clearPromoParam = ClearPromoRequest()
-//        val getPromoParam = provideGetPromoListRequest()
-//        viewModel.setPromoListValue(promoList)
-//        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
-//        coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
-//            firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
-//        }
-//
-//        //when
-//        viewModel.clearPromo(getPromoParam, ValidateUsePromoRequest(), ArrayList(), clearPromoParam)
-//
-//        //then
-//        assert(clearPromoParam.orderData.codes.isEmpty())
-//        assert(clearPromoParam.orderData.orders.isNotEmpty())
-//    }
-
     @Test
     fun `WHEN clear promo error THEN should set state to error state`() {
         // given

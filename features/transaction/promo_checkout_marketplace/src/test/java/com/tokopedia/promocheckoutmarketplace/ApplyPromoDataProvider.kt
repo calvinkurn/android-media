@@ -1,7 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace
 
 import com.google.gson.Gson
-import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 
@@ -20,10 +19,6 @@ object ApplyPromoDataProvider {
 
     fun provideApplyPromoMerchantRequest(): ValidateUsePromoRequest {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_merchant_request.json"), ValidateUsePromoRequest::class.java)
-    }
-
-    fun provideApplyPromoBoRequest(): ValidateUsePromoRequest {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_bo_request.json"), ValidateUsePromoRequest::class.java)
     }
 
     fun provideApplyPromoGlobalAndMerchantRequest(): ValidateUsePromoRequest {
