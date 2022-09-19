@@ -1,8 +1,8 @@
 package com.tokopedia.tkpd.flashsale.presentation.avp
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -17,6 +17,7 @@ import com.tokopedia.tkpd.flashsale.presentation.avp.adapter.item.ManageProductV
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import timber.log.Timber
 
 class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<CompositeAdapter>() {
 
@@ -56,20 +57,25 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         product?.let {
-            setupProductHeaderData(
-                productImageUrl = it.picture,
-                productName = it.name,
-                productOriginalPriceFormatted = it.price.price.getCurrencyFormatted(),
-                productTotalVariantFormatted = it.childProducts.count().toString(),
-                productStockTextFormatted = it.stock.toString(),
-                isShowWidgetBulkApply = true
-            )
+            viewModel.setupInitiateProductData(it)
+            setupHeaderData(it)
         }
         setupWidgetBulkApply(
             getString(R.string.stfs_inactive_variant_bulk_apply_place_holder),
             false
         )
-        toItem()?.let { adapter?.submit(it) }
+    }
+
+    private fun setupHeaderData(product: ReservedProduct.Product) {
+        setupProductHeaderData(
+            productImageUrl = product.picture,
+            productName = product.name,
+            productOriginalPriceFormatted = product.price.price.getCurrencyFormatted(),
+            productTotalVariantFormatted = product.childProducts.count().toString(),
+            productStockTextFormatted = product.stock.toString(),
+            isShowWidgetBulkApply = true
+        )
+        product.toItem()?.let { adapter?.submit(it) }
     }
 
     private fun setupWidgetBulkApply(title: String, isReadyToBulkApply: Boolean) {
@@ -98,6 +104,10 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
             .add(ManageProductVariantDelegateAdapter(
                 onToggleSwitched = { position, isChecked ->
                     onToggleSwitched(position, isChecked)
+                    viewModel.setItemToggleValue(position, isChecked)
+                },
+                onDiscountAmountChanged = { position, value ->
+                    viewModel.setDiscountAmount(position, value)
                 }
             ))
             .build()
@@ -141,8 +151,8 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
         }
     }
 
-    private fun toItem(): List<ManageProductVariantItem>? {
-        return product?.childProducts?.map { child ->
+    private fun ReservedProduct.Product.toItem(): List<ManageProductVariantItem>? {
+        return this.childProducts.map { child ->
             ManageProductVariantItem(
                 disabledReason = child.disabledReason,
                 isDisabled = child.isDisabled,

@@ -27,7 +27,7 @@ data class ReservedProduct(
             val disabledReason: String,
             val isDisabled: Boolean,
             val isMultiwarehouse: Boolean,
-            val isToggleOn: Boolean,
+            var isToggleOn: Boolean,
             val name: String,
             val picture: String,
             val price: Price,
@@ -40,7 +40,7 @@ data class ReservedProduct(
             @Parcelize
             data class Price(
                 val lowerPrice: String,
-                val price: String,
+                var price: String,
                 val upperPrice: String
             ):Parcelable
         }
