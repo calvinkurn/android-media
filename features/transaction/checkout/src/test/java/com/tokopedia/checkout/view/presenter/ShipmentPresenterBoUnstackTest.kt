@@ -799,46 +799,6 @@ class ShipmentPresenterBoUnstackTest {
     }
 
     @Test
-    fun `WHEN validate BO promo has no green state orders and cart item with voucher logistic empty THEN don't apply and unapply BO promo`() {
-        // Given
-        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "111-111-111",
-                        code = "TEST1",
-                        shippingId = 2,
-                        spId = 2,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "222-222-222",
-                        code = "TEST2",
-                        shippingId = 1,
-                        spId = 1,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                )
-            )
-        )
-        presenter.shipmentCartItemModelList = listOf()
-
-        every { presenter.doApplyBo(any()) } just runs
-        every { presenter.doUnapplyBo(any(), any()) } just runs
-
-        // When
-        presenter.validateBoPromo(validateUsePromoRevampUiModel)
-
-        // Then
-        verify(inverse = true) {
-            presenter.doApplyBo(any()) // validate doApplyBo() not called
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
-        }
-    }
-
-    @Test
     fun `WHEN validate BO promo has empty logistic voucher order and cart item with voucher logistic not empty THEN do unapply BO promo`() {
         // Given
         val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
@@ -877,7 +837,7 @@ class ShipmentPresenterBoUnstackTest {
     }
 
     @Test
-    fun `WHEN validate BO promo has no logistic voucher order and cart item with voucher logistic empty THEN don't apply and unapply BO promo`() {
+    fun `WHEN validate BO promo logistic voucher order with red state promo and cart item voucher logistic empty THEN don't apply and unapply BO promo`() {
         // Given
         val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
@@ -885,10 +845,10 @@ class ShipmentPresenterBoUnstackTest {
                     PromoCheckoutVoucherOrdersItemUiModel(
                         uniqueId = "111-111-111",
                         code = "TEST1",
-                        shippingId = 0,
-                        spId = 0,
-                        type = "merchant",
-                        messageUiModel = MessageUiModel(state = "green")
+                        shippingId = 1,
+                        spId = 1,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "red")
                     ),
                     PromoCheckoutVoucherOrdersItemUiModel(
                         uniqueId = "222-222-222",
@@ -896,14 +856,6 @@ class ShipmentPresenterBoUnstackTest {
                         shippingId = 1,
                         spId = 1,
                         type = "logistic",
-                        messageUiModel = MessageUiModel(state = "red")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "333-333-333",
-                        code = "TEST3",
-                        shippingId = 0,
-                        spId = 0,
-                        type = "merchant",
                         messageUiModel = MessageUiModel(state = "red")
                     ),
                 )
@@ -925,7 +877,103 @@ class ShipmentPresenterBoUnstackTest {
     }
 
     @Test
-    fun `WHEN validate BO promo has empty logistic voucher order and cart item with voucher logistic empty THEN don't apply and unapply BO promo`() {
+    fun `WHEN validate BO promo with voucher order promo shippingId 0 THEN don't apply and unapply BO promo`() {
+        // Given
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "111-111-111",
+                        code = "TEST1",
+                        shippingId = 0,
+                        spId = 1,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    ),
+                )
+            )
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        every { presenter.doApplyBo(any()) } just runs
+        every { presenter.doUnapplyBo(any(), any()) } just runs
+
+        // When
+        presenter.validateBoPromo(validateUsePromoRevampUiModel)
+
+        // Then
+        verify(inverse = true) {
+            presenter.doApplyBo(any()) // validate doApplyBo() not called
+            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+        }
+    }
+
+    @Test
+    fun `WHEN validate BO promo with voucher order promo spId 0 THEN don't apply and unapply BO promo`() {
+        // Given
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "111-111-111",
+                        code = "TEST1",
+                        shippingId = 1,
+                        spId = 0,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    ),
+                )
+            )
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        every { presenter.doApplyBo(any()) } just runs
+        every { presenter.doUnapplyBo(any(), any()) } just runs
+
+        // When
+        presenter.validateBoPromo(validateUsePromoRevampUiModel)
+
+        // Then
+        verify(inverse = true) {
+            presenter.doApplyBo(any()) // validate doApplyBo() not called
+            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+        }
+    }
+
+    @Test
+    fun `WHEN validate BO promo with voucher order non logistic promo THEN don't apply and unapply BO promo`() {
+        // Given
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "111-111-111",
+                        code = "TEST1",
+                        shippingId = 1,
+                        spId = 1,
+                        type = "merchant",
+                        messageUiModel = MessageUiModel(state = "green")
+                    ),
+                )
+            )
+        )
+        presenter.shipmentCartItemModelList = listOf()
+
+        every { presenter.doApplyBo(any()) } just runs
+        every { presenter.doUnapplyBo(any(), any()) } just runs
+
+        // When
+        presenter.validateBoPromo(validateUsePromoRevampUiModel)
+
+        // Then
+        verify(inverse = true) {
+            presenter.doApplyBo(any()) // validate doApplyBo() not called
+            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+        }
+    }
+
+    @Test
+    fun `WHEN validate BO promo with empty voucher order and empty cart items THEN don't apply and unapply BO promo`() {
         // Given
         val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
@@ -943,6 +991,75 @@ class ShipmentPresenterBoUnstackTest {
         // Then
         verify(inverse = true) {
             presenter.doApplyBo(any()) // validate doApplyBo() not called
+            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+        }
+    }
+
+    @Test
+    fun `WHEN validate BO with cart item empty voucher logistic THEN don't unapply BO promo`() {
+        // Given
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf()
+            )
+        )
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "111-111-111",
+                voucherLogisticItemUiModel = null
+            ),
+        )
+
+        every { presenter.doApplyBo(any()) } just runs
+        every { presenter.doUnapplyBo(any(), any()) } just runs
+
+        // When
+        presenter.validateBoPromo(validateUsePromoRevampUiModel)
+
+        // Then
+        verify(inverse = true) {
+            presenter.doApplyBo(any()) // validate doApplyBo() not called
+            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+        }
+    }
+
+    @Test
+    fun `WHEN validate BO with voucher order and cart item has same promo THEN apply BO and don't unapply BO promo`() {
+        // Given
+        val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+            promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                    PromoCheckoutVoucherOrdersItemUiModel(
+                        uniqueId = "111-111-111",
+                        code = "TEST1",
+                        shippingId = 1,
+                        spId = 1,
+                        type = "logistic",
+                        messageUiModel = MessageUiModel(state = "green")
+                    ),
+                )
+            )
+        )
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "111-111-111",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TEST1"
+                )
+            ),
+        )
+
+        every { presenter.doApplyBo(any()) } just runs
+        every { presenter.doUnapplyBo(any(), any()) } just runs
+
+        // When
+        presenter.validateBoPromo(validateUsePromoRevampUiModel)
+
+        // Then
+        verify(exactly = 1) {
+            presenter.doApplyBo(any()) // validate doApplyBo() called 1 times
+        }
+        verify(inverse = true) {
             presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
         }
     }
