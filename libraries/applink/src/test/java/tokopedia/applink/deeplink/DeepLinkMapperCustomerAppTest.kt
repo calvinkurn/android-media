@@ -734,6 +734,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check search universal search page applink then should return tokopedia internal universal search in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/universal"
+        assertEqualsDeepLinkMapper(ApplinkConst.DISCOVERY_SEARCH_UNIVERSAL, expectedDeepLink)
+    }
+
+    @Test
     fun `check hotlist detail appLink then should return tokopedia internal hotlist detail in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=baju"
