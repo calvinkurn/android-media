@@ -111,8 +111,8 @@ object RecipeDetailMapper {
     }
 
     fun mapToRecipeInfo(response: RecipeResponse): RecipeInfoUiModel {
-        val thumbnail = response.images.first().urlThumbnail
-        val imageUrls = response.images.map { it.urlThumbnail }
+        val thumbnail = response.images.first().urlOriginal
+        val imageUrls = response.images.map { it.urlOriginal }
         val tags = response.tags.take(TAKE_LABEL_COUNT).mapIndexed { index, tag ->
             val position = index + 1
             if (position > MAX_LABEL_COUNT) {
@@ -129,7 +129,8 @@ object RecipeDetailMapper {
             duration = response.duration.orZero(),
             tags = tags,
             thumbnail = thumbnail,
-            imageUrls = imageUrls
+            imageUrls = imageUrls,
+            shareUrl = response.url
         )
     }
 

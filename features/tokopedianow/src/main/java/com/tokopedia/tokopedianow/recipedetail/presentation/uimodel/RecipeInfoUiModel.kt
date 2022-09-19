@@ -10,7 +10,8 @@ data class RecipeInfoUiModel(
     val duration: Int,
     val tags: List<TagUiModel>,
     val thumbnail: String,
-    val imageUrls: List<String>
+    val imageUrls: List<String>,
+    val shareUrl: String
 ): Visitable<RecipeDetailTypeFactory> {
 
     override fun type(typeFactory: RecipeDetailTypeFactory): Int {

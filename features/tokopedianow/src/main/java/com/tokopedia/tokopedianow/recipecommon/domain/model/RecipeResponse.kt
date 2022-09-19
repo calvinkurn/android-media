@@ -30,5 +30,7 @@ data class RecipeResponse(
     @SerializedName("products")
     val products: List<RecipeProductResponse>,
     @SerializedName("isBookmarked")
-    val isBookmarked: Boolean
+    val isBookmarked: Boolean,
+    @SerializedName("url")
+    val url: String
 )

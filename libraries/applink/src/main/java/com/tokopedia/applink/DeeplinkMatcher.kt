@@ -17,6 +17,7 @@ import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
 import com.tokopedia.applink.DeepLinkChecker.INVOICE
 import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR
 import com.tokopedia.applink.DeepLinkChecker.NATIVE_THANK_YOU
+import com.tokopedia.applink.DeepLinkChecker.NOW_RECIPE
 import com.tokopedia.applink.DeepLinkChecker.ORDER_LIST
 import com.tokopedia.applink.DeepLinkChecker.OTHER
 import com.tokopedia.applink.DeepLinkChecker.PLAY
@@ -101,6 +102,7 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 1, mapOf(0 to "snapshot_product")) to SNAPSHOT)
         add(Pattern(EQ, 3, mapOf(1 to "voucher")) to SHOP)
         add(Pattern(GT, 0, mapOf(0 to "gofood")) to TOKOFOOD)
+        add(Pattern(EQ, 3, mapOf(1 to "recipe")) to NOW_RECIPE)
         add(Pattern(EQ, 1, null) to SHOP) // This pattern needs to be on the second last position
         add(Pattern(EQ, 2, null) to PRODUCT) // This pattern needs to be on the last position
     }

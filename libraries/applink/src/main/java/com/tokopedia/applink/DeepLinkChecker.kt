@@ -63,6 +63,7 @@ object DeepLinkChecker {
     const val SALDO_DEPOSIT = 41
     const val SNAPSHOT = 42
     const val TOKOFOOD = 43
+    const val NOW_RECIPE = 44
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
