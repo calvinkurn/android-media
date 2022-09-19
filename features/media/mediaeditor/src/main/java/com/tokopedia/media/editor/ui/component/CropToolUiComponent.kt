@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
@@ -24,7 +24,7 @@ class CropToolUiComponent constructor(
     private val activeColor = ContextCompat.getColor(this.context, unifyR.color.Unify_GN500)
     private val inactiveColor = ContextCompat.getColor(this.context, unifyR.color.Unify_NN950)
 
-    fun setupView(editorParam: EditorParam?, detailRotateCrop: EditorCropRotateModel) {
+    fun setupView(editorParam: EditorParam?, detailUiModel: EditorDetailUiModel) {
         (container() as LinearLayout).apply {
             editorParam?.autoCropRatio?.let {
                 addView(
@@ -36,9 +36,9 @@ class CropToolUiComponent constructor(
                 )
             } ?: kotlin.run {
                 editorParam?.ratioList?.forEachIndexed { index, ratio ->
-                    val isSelected = if(detailRotateCrop.getRatio() != null){
-                        detailRotateCrop.getRatio()?.toInt() == ratio.getRatio().toInt()
-                    } else index == 0
+                    val isSelected = if(detailUiModel.cropRotateValue.getRatio() != null){
+                        detailUiModel.cropRotateValue.getRatio()?.toInt() == ratio.getRatio().toInt()
+                    } else (index == 0 && detailUiModel.isToolCrop())
 
                     addView(
                         generateCropButton(

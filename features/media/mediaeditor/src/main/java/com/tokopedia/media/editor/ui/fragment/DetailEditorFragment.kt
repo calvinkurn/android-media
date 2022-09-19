@@ -47,6 +47,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.util.FastBitmapDrawable
 import java.io.File
 import javax.inject.Inject
+import kotlin.math.max
 
 class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
@@ -343,7 +344,45 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeEditorParamModel() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            if (data.isToolCrop()) cropComponent.setupView(it, data.cropRotateValue)
+            if(data.isToolCrop() || data.isToolRotate()){
+                // needed to trigger crop tools draw and get the highest height between rotate & crop
+                // crop item is dynamic according to the editor param
+                cropComponent.setupView(it, data)
+                rotateComponent.setupView(data)
+
+                viewBinding?.ucToolContainer?.post {
+                    val rotateHeight = rotateComponent.container().height
+                    val cropHeight = cropComponent.container().height
+
+                    val cropRotateHeight = max(rotateHeight, cropHeight)
+
+                    // set both rotate & crop view height same for using cross state value
+                    cropComponent.container().apply {
+                        val lp = layoutParams
+                        lp.height = cropRotateHeight
+                        layoutParams = lp
+                    }
+                    rotateComponent.container().apply {
+                        val lp = layoutParams
+                        lp.height = cropRotateHeight
+                        layoutParams = lp
+                    }
+
+                    val url = data.removeBackgroundUrl ?: data.originalUrl
+                    val uri = Uri.fromFile(File(url))
+
+                    if(data.isToolCrop()) {
+                        rotateComponent.container().hide()
+                        viewBinding?.imgUcropPreview?.initializeCrop(uri, this@DetailEditorFragment)
+                    } else {
+                        cropComponent.container().hide()
+                        viewBinding?.imgUcropPreview?.initializeRotate(uri, this@DetailEditorFragment, data)
+                    }
+                }
+            } else {
+                rotateComponent.container().hide()
+                cropComponent.container().hide()
+            }
         }
     }
 
@@ -361,8 +400,8 @@ class DetailEditorFragment @Inject constructor(
 
     private fun renderUiComponent(@EditorToolType type: Int) {
         val url = data.removeBackgroundUrl ?: data.originalUrl
-        val uri = Uri.fromFile(File(url))
 
+        // UI crop & rotate initialize on editor param observe
         viewBinding?.imgUcropPreview?.apply {
             when (type) {
                 EditorToolType.BRIGHTNESS -> {
@@ -386,15 +425,6 @@ class DetailEditorFragment @Inject constructor(
                 EditorToolType.WATERMARK -> {
                     setImageView(url, true)
                     watermarkComponent.setupView()
-                }
-                // ==========
-                EditorToolType.ROTATE -> {
-                    initializeRotate(uri, this@DetailEditorFragment, data)
-                    rotateComponent.setupView(data)
-                }
-                // ==========
-                EditorToolType.CROP -> {
-                    initializeCrop(uri, this@DetailEditorFragment)
                 }
             }
         }
