@@ -61,18 +61,7 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeLiveData()
-        val title = getString(R.string.tokopedianow_recipe_similar_product_title)
-        val productList = arguments
-            ?.getParcelableArrayList<RecipeProductUiModel>(EXTRA_SIMILAR_PRODUCT_LIST).orEmpty()
-
-        val bottomSheet = TokoNowRecipeProductBottomSheet.newInstance().apply {
-            productListener = this@TokoNowRecipeSimilarProductFragment
-            productAnalytics = analytics
-            items = productList
-            setTitle(title)
-        }
-        bottomSheet.show(childFragmentManager)
-
+        setupBottomSheet()
         trackBottomSheetImpression()
     }
 
@@ -93,6 +82,20 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
 
     override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
         viewModel.addItemToCart(productId, shopId, quantity)
+    }
+
+    private fun setupBottomSheet() {
+        val title = getString(R.string.tokopedianow_recipe_similar_product_title)
+        val productList = arguments
+            ?.getParcelableArrayList<RecipeProductUiModel>(EXTRA_SIMILAR_PRODUCT_LIST).orEmpty()
+
+        val bottomSheet = TokoNowRecipeProductBottomSheet.newInstance().apply {
+            productListener = this@TokoNowRecipeSimilarProductFragment
+            productAnalytics = analytics
+            items = productList
+            setTitle(title)
+        }
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun observeLiveData() {
