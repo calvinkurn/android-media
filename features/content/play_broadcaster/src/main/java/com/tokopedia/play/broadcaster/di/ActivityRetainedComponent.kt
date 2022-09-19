@@ -37,7 +37,6 @@ import dagger.Component
         PlayBroadcastBindModule::class,
         PlayBroadcastModule::class,
         ContentCreationProductTagBindModule::class,
-        PlayBroadcastModule::class,
         UGCOnboardingModule::class
     ]
 )
