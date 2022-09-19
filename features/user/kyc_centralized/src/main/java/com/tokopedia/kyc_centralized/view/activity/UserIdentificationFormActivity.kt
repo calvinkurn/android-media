@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
@@ -58,7 +59,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
         intent?.data?.let {
             projectId = it.getQueryParameter(
                 ApplinkConstInternalGlobal.PARAM_PROJECT_ID
-            )?.toIntOrNull() ?: KycStatus.DEFAULT.code
+            )?.toIntOrZero() ?: KycStatus.DEFAULT.code
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         }
