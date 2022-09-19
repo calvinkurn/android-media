@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
@@ -123,4 +125,6 @@ interface PlayBroadcastMapper {
         authorId: String,
         channelId: String,
     ): PlayBroadcasterMetric
+
+    fun mapAuthorList(response: WhitelistQuery): List<ContentAccountUiModel>
 }

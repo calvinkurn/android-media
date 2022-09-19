@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
@@ -9,6 +10,8 @@ import java.util.*
  * Created by jegul on 01/10/21
  */
 interface PlayBroadcastChannelRepository {
+
+    suspend fun getAccountList(): List<ContentAccountUiModel>
 
     suspend fun getChannelConfiguration(authorId: String, authorType: String): ConfigurationUiModel
 

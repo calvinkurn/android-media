@@ -11,8 +11,6 @@ import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet.Warnin
 import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -92,7 +90,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val getChannelUseCase: GetChannelUseCase,
     private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
     private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
-    private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val playBroadcastWebSocket: PlayWebSocket,
@@ -1475,19 +1472,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 
-            val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
-
-            val accountList = response.whitelist.authors.map {
-                ContentAccountUiModel(
-                    id = it.id,
-                    name = it.name,
-                    iconUrl = it.thumbnail,
-                    badge = it.badge,
-                    type = it.type,
-                    hasUsername = it.livestream.hasUsername,
-                    hasAcceptTnc = it.livestream.hasAcceptTnc,
-                )
-            }
+            val accountList = repo.getAccountList()
 
             _accountListState.value = accountList
 
