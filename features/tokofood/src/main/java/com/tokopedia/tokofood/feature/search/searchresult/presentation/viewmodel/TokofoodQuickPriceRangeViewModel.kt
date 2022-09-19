@@ -74,7 +74,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
     ) {
         val appliedOptions = getCurrentAppliedOptions().toMutableList()
         val newAppliedOptions = appliedOptions.map {
-            it.copy().apply {
+            it.clone().apply {
                 if (uiModel.option.value == it.value) {
                     inputState = isSelected.toString()
                 }
@@ -87,7 +87,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
                               isInitialSet: Boolean = false) {
         val updatedOptions =
             uiModels.map {
-                it.option.copy().apply {
+                it.option.clone().apply {
                     inputState = it.isSelected.toString()
                 }
             }
