@@ -158,7 +158,7 @@ object WishlistCollectionAnalytics {
     private const val CLICK_LIHAT_BARANG_BUTTON_ON_CLEANER_BOTTOMSHEET_TRACKER_ID = "32706"
     private const val CLICK_HAPUS_BUTTON_ON_CONFIRMATION_DELETION_POPUP_TRACKER_ID = "32707"
     private const val VIEW_MAX_QTY_TICKER_ON_WISHLIST_PAGE_TRACKER_ID = "32708"
-    private const val VIEW_BOTTOMSHEET_ADD_COLLECTION_TRACKER_ID = "36182"
+    private const val CLICK_CHECK_WISHLIST_ON_ADD_BOTTOMSHEET_TRACKER_ID = "36182"
     private const val CLICK_COLLECTION_FOLDER_BOTTOMSHEET_TRACKER_ID = "36183"
     private const val CLICK_NEW_COLLECTION_BOTTOMSHEET_TRACKER_ID = "36184"
 
@@ -738,7 +738,7 @@ object WishlistCollectionAnalytics {
             .setEventAction(CLICK_CHECK_WISHLIST)
             .setEventCategory("$source $COLLECTION_BOTTOMSHEET")
             .setEventLabel("")
-            .setCustomProperty(TRACKER_ID, VIEW_BOTTOMSHEET_ADD_COLLECTION_TRACKER_ID)
+            .setCustomProperty(TRACKER_ID, CLICK_CHECK_WISHLIST_ON_ADD_BOTTOMSHEET_TRACKER_ID)
             .setCustomProperty(PRODUCT_ID, productId)
             .build()
             .send()
