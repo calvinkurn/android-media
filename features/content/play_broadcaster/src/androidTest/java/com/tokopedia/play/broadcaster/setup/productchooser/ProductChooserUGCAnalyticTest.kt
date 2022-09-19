@@ -436,34 +436,36 @@ class ProductChooserUGCAnalyticTest {
         )
     }
 
-    @Test
-    fun testAnalytic_clickProductCard_inLastPurchased() {
-        val robot = createRobot()
+    //TODO("uncomment if last tagged product is enabled")
+//    @Test
+//    fun testAnalytic_clickProductCard_inLastPurchased() {
+//        val robot = createRobot()
+//
+//        robot
+//            .selectProductSource()
+//            .selectProductSourceOptionLastPurchased()
+//            .selectProductInLastPurchasedProduct(0)
+//
+//        ViewMatchers.assertThat(
+//            cassavaTestRule.validate(analyticFile),
+//            containsEventAction("click - product card terakhir dibeli")
+//        )
+//    }
 
-        robot
-            .selectProductSource()
-            .selectProductSourceOptionLastPurchased()
-            .selectProductInLastPurchasedProduct(0)
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - product card terakhir dibeli")
-        )
-    }
-
-    @Test
-    fun testAnalytic_clickSaveButton_inLastPurchased() {
-        val robot = createRobot()
-
-        robot
-            .selectProductSource()
-            .selectProductSourceOptionLastPurchased()
-            .selectProductInLastPurchasedProduct(0)
-            .clickSaveButton()
-
-        ViewMatchers.assertThat(
-            cassavaTestRule.validate(analyticFile),
-            containsEventAction("click - simpan produk terakhir dibeli")
-        )
-    }
+    //TODO("uncomment if last tagged product is enabled")
+//    @Test
+//    fun testAnalytic_clickSaveButton_inLastPurchased() {
+//        val robot = createRobot()
+//
+//        robot
+//            .selectProductSource()
+//            .selectProductSourceOptionLastPurchased()
+//            .selectProductInLastPurchasedProduct(0)
+//            .clickSaveButton()
+//
+//        ViewMatchers.assertThat(
+//            cassavaTestRule.validate(analyticFile),
+//            containsEventAction("click - simpan produk terakhir dibeli")
+//        )
+//    }
 }

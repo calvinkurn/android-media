@@ -161,10 +161,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
             classLoader = requireActivity().classLoader,
             argumentBuilder = ContentProductTagArgument.Builder()
                 .setAuthorType(selectedAccount.type)
-                .setProductTagSource(
-                    listOf(ProductTagSource.GlobalSearch, ProductTagSource.LastPurchase, ProductTagSource.MyShop)
-                        .joinToString { it.tag }
-                )
+                .setProductTagSource(ProductTagSource.GlobalSearch.tag)
                 .setAuthorId(selectedAccount.id)
                 .setShopBadge(selectedAccount.badge)
                 .setMultipleSelectionProduct(true, viewModel.maxProduct)
