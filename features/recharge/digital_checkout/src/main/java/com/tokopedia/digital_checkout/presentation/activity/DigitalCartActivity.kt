@@ -25,6 +25,8 @@ import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponentInstance
 import com.tokopedia.digital_checkout.presentation.fragment.DigitalCartFragment
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.user.session.UserSession
 
 /**
  * @author by jessica on 07/01/21
@@ -57,7 +59,7 @@ open class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheck
         passData.operatorId = uriData.getQueryParameter(PARAM_OPERATOR_ID)
         passData.productId = uriData.getQueryParameter(PARAM_PRODUCT_ID)
         passData.isPromo = uriData.getQueryParameter(PARAM_IS_PROMO)
-        passData.deviceId = uriData.getQueryParameter(PARAM_DEVICE_ID)?.toIntOrNull() ?: DigitalCheckoutPassData.DEFAULT_DEVICE_ID
+        passData.deviceId = uriData.getQueryParameter(PARAM_DEVICE_ID)?.toIntSafely() ?: DigitalCheckoutPassData.DEFAULT_DEVICE_ID
         passData.atcSource = uriData.getQueryParameter(PARAM_ATC_SOURCE)
         val instantCheckoutParam = uriData.getQueryParameter(PARAM_INSTANT_CHECKOUT)
         passData.instantCheckout = instantCheckoutParam ?: "0"

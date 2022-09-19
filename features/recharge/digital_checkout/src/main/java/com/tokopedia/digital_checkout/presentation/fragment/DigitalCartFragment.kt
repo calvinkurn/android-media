@@ -55,6 +55,7 @@ import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -768,8 +769,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun sendGetCartAndCheckoutAnalytics() {
         digitalAnalytics.sendCartScreen()
         rechargeAnalytics.trackAddToCartRechargePushEventRecommendation(
-            cartPassData?.categoryId?.toIntOrNull()
-                ?: 0
+            cartPassData?.categoryId?.toIntSafely() ?: 0
         )
     }
 

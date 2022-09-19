@@ -87,6 +87,11 @@ import com.tokopedia.recharge_component.model.client_number.RechargeClientNumber
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
+import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
+import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -103,6 +108,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 /**
@@ -116,7 +122,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     DigitalHistoryIconListener,
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
-    ClientNumberAutoCompleteListener {
+    ClientNumberAutoCompleteListener,
+    DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl()
+{
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -130,8 +138,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
-
-    private val keyboardWatcher = DigitalKeyboardWatcher()
 
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
@@ -187,15 +193,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun setupKeyboardWatcher() {
         binding?.root?.let {
-            keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
-                override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-                    // do nothing
-                }
-
-                override fun onKeyboardHidden() {
-                    // do nothing
-                }
-            })
+            registerLifecycleOwner(viewLifecycleOwner)
+            registerKeyboard(WeakReference(it))
         }
     }
 
@@ -1083,9 +1082,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun isKeyboardShown(): Boolean {
-        return keyboardWatcher.isKeyboardOpened
-    }
+    override fun isKeyboardShown(): Boolean = isSoftKeyboardShown()
     //endregion
 
     //region ClientNumberFilterChipListener
@@ -1321,13 +1318,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         )
     }
     //endregion
-
-    override fun onDestroyView() {
-        binding?.root?.let {
-            keyboardWatcher.unlisten(it)
-        }
-        super.onDestroyView()
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

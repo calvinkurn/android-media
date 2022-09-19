@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/chatcommon_1dp"
         android:includeFontPadding="false"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintLeft_toRightOf="@id/iv_typing"
         app:layout_constraintTop_toTopOf="@id/iv_typing"
         app:layout_constraintBottom_toBottomOf="@id/iv_typing"

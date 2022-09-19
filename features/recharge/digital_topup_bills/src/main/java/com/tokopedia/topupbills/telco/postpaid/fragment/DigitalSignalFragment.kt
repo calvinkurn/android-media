@@ -24,7 +24,7 @@ import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
@@ -56,7 +56,7 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
         set(value) {
             field = value
             value?.run {
-                productId = operator.attributes.defaultProductId.toIntOrZero()
+                productId = operator.attributes.defaultProductId.toIntSafely()
             }
         }
 
@@ -229,10 +229,10 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
                     ?: TopupBillsExtraParam()
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                    menuId = digitalTelcoExtraParam.menuId.toIntOrZero()
+                    menuId = digitalTelcoExtraParam.menuId.toIntSafely()
                 }
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                    categoryId = digitalTelcoExtraParam.categoryId.toIntOrZero()
+                    categoryId = digitalTelcoExtraParam.categoryId.toIntSafely()
                 }
             }
         } else {
@@ -435,10 +435,6 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun setFavNumbers(data: TopupBillsFavNumber) {
-        // do nothing
-    }
-
     override fun errorSetFavNumbers() {
         // do nothing
     }
@@ -458,6 +454,10 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
         view?.run {
             Toaster.build(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
+    }
+
+    override fun setFavNumbers(data: TopupBillsFavNumber) {
+        // do nothing
     }
 
     override fun onDestroy() {
