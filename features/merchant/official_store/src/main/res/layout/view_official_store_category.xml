@@ -15,12 +15,12 @@
         app:currentState="@+id/start"
         app:layoutDescription="@xml/view_official_store_category_scene">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image_view_category_icon"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="4dp"
             android:contentDescription="@string/content_desc_category_icon"
             app:layout_constraintBottom_toTopOf="@+id/text_view_category_title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +32,7 @@
             android:id="@+id/text_view_category_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_lvl2"
+            android:layout_margin="4dp"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"

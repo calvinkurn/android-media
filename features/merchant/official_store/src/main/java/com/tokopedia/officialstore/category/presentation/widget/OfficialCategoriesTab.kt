@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.officialstore.R
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
@@ -167,7 +168,7 @@ class OfficialCategoriesTab(context: Context,
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                R.color.Unify_P600
+                                com.tokopedia.unifyprinciples.R.color.Unify_P600
                             )
                         )
                         setWeight(Typography.BOLD)
@@ -182,7 +183,7 @@ class OfficialCategoriesTab(context: Context,
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                R.color.Unify_N700_96
+                                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
                             )
                         )
                         setWeight(Typography.REGULAR)
@@ -192,12 +193,12 @@ class OfficialCategoriesTab(context: Context,
 
             override fun onTabSelected(tab: Tab) {
                 tab.customView?.apply {
-                    this.findViewById<ImageView>(R.id.image_view_category_icon)?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
+                    this.findViewById<ImageUnify>(R.id.image_view_category_icon)?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
                     this.findViewById<Typography>(R.id.text_view_category_title)?.apply {
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                R.color.Unify_P600
+                                com.tokopedia.unifyprinciples.R.color.Unify_P600
                             )
                         )
                         setWeight(Typography.BOLD)
@@ -208,11 +209,12 @@ class OfficialCategoriesTab(context: Context,
         })
     }
 
+    @SuppressLint("ResourcePackage")
     private fun getTabView(context: Context, position: Int): View {
         val view = LayoutInflater.from(context).inflate(R.layout.view_official_store_category, null)
         with(view) {
             val image_view_category_icon =
-                view?.findViewById<ImageView>(R.id.image_view_category_icon)
+                view?.findViewById<ImageUnify>(R.id.image_view_category_icon)
             val text_view_category_title =
                 view?.findViewById<Typography>(R.id.text_view_category_title)
             val tab_category_container =

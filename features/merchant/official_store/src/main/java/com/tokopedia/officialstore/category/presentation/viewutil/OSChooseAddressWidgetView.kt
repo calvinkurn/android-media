@@ -13,10 +13,12 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isDeviceAnimationDisabled
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.category.presentation.listener.OSContainerListener
+import com.tokopedia.officialstore.category.presentation.widget.dp
 import com.tokopedia.officialstore.category.presentation.widget.getValueAnimator
 import com.tokopedia.officialstore.official.presentation.listener.OSChooseAddressWidgetCallback
 
@@ -96,7 +98,9 @@ class OSChooseAddressWidgetView : FrameLayout {
             totalScrollUp = 0
         }
 
-        adjustCollapseExpandView(totalScrollUp in 0..10, whenWidgetShow, whenWidgetGone)
+//        totalScrollUp += dy
+
+        adjustCollapseExpandView(totalScrollUp in 0 .. 10, whenWidgetShow, whenWidgetGone)
     }
 
 
@@ -121,7 +125,7 @@ class OSChooseAddressWidgetView : FrameLayout {
         if (itemContext.isDeviceAnimationDisabled()) {
             this.show()
         } else {
-            if (this.measuredHeight == 0) {
+            if (this.measuredHeight < viewMaxHeight) {
                 animationExpand?.start()
                 isExpand = true
                 motionlayout_choose_address?.setTransitionListener(object : MotionLayout.TransitionListener {
