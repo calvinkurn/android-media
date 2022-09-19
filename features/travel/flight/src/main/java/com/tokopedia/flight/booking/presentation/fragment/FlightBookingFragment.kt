@@ -29,6 +29,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
@@ -75,6 +76,7 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
@@ -1000,7 +1002,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun showErrorFullPage(e: FlightError) {
-        val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
+        val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toIntSafely())
         binding?.layoutFullPageError?.root?.visibility = View.VISIBLE
         binding?.layoutFullPageError?.ivErrorPage?.setImageResource(
             FlightBookingErrorCodeMapper.getErrorIcon(
@@ -1019,7 +1021,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         if (activity != null) {
             if (flightError.id.isNotEmpty()) {
                 val errorCode =
-                    FlightBookingErrorCodeMapper.mapToFlightErrorCode(flightError.id.toInt())
+                    FlightBookingErrorCodeMapper.mapToFlightErrorCode(flightError.id.toIntSafely())
                 when (errorCode) {
                     FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME -> renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
                     FlightErrorConstant.FLIGHT_SOLD_OUT -> {
@@ -1214,7 +1216,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         startActivityForResult(
             RouteManager.getIntent(
                 context,
-                ApplinkConstInternalGlobal.ADD_PHONE
+                ApplinkConstInternalUserPlatform.ADD_PHONE
             ), REQUEST_CODE_OTP
         )
     }

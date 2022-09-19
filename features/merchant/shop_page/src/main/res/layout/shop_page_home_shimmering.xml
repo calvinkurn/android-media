@@ -11,7 +11,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageMultipleImageColumn"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_110"
+        android:layout_height="110dp"
         app:loader_corner_radius="0dp"
         app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageOneSliderSquare"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_128"
+        android:layout_height="128dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="20dp"
@@ -85,7 +85,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageTwoSliderSquare"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_128"
+        android:layout_height="128dp"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="20dp"
@@ -137,7 +137,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageThreeSliderSquare"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_128"
+        android:layout_height="128dp"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="20dp"
@@ -240,7 +240,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageOneListProduct"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_140"
+        android:layout_height="140dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="12dp"
@@ -292,7 +292,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderImageTwoListProduct"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_140"
+        android:layout_height="140dp"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="12dp"

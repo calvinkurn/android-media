@@ -89,7 +89,9 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -327,8 +329,9 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideHomeDynamicChannelRepository(graphqlRepository: GraphqlRepository): HomeDynamicChannelsRepository {
-        return HomeDynamicChannelsRepository(graphqlRepository)
+    fun provideHomeDynamicChannelRepository(graphqlRepository: GraphqlRepository, remoteConfig: RemoteConfig): HomeDynamicChannelsRepository {
+        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_DC_USE_QUERY_V2, true)
+        return HomeDynamicChannelsRepository(graphqlRepository, isUsingV2)
     }
 
     @HomeScope
@@ -373,4 +376,10 @@ class HomeUseCaseModule {
     @HomeScope
     @Provides
     fun provideBestSellerMapper(@ApplicationContext context: Context) = BestSellerMapper(context)
+
+    @Provides
+    @HomeScope
+    fun provideTopAdsHeadlineUseCase(graphqlRepository: GraphqlRepository): GetTopAdsHeadlineUseCase {
+        return GetTopAdsHeadlineUseCase(graphqlRepository)
+    }
 }

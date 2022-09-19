@@ -21,6 +21,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
+import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
@@ -156,7 +157,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             ) {
                 productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
             }
-        })
+
+            override fun onPinClicked(product: ProductUiModel) {
+                analytic.onClickPinProductLiveRoom(product.id)
+                parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
+            }
+
+            override fun onImpressPinnedProduct(product: ProductUiModel) {
+                analytic.onImpressPinProductLiveRoom(product.id)
+            }
+        }, scope = this.lifecycleScope)
     }
 
     /** Game */
@@ -166,6 +176,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 analytic.onClickInteractiveTool(channelId = parentViewModel.channelId)
                 analytic.onClickGameIconButton(channelId = parentViewModel.channelId, channelTitle = parentViewModel.channelTitle)
                 openSelectInteractiveSheet()
+                productTagView.hideCoachMark()
             }
         })
     }
@@ -221,6 +232,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         return if (::parentViewModel.isInitialized) parentViewModel.productSectionList
                         else emptyList()
                     }
+
+                    override fun isEligibleForPin(): Boolean = true
                 })
             }
             is InteractiveSetupDialogFragment -> {
@@ -257,6 +270,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             gameIconView.cancelCoachMark()
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
+            productTagView.hideCoachMark()
         }
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
             parentViewModel.submitAction(PlayBroadcastAction.EditPinnedMessage)
@@ -368,7 +382,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         if (isPausedFragment) {
-            resumeBroadcast()
+            resumeBroadcast(false)
             isPausedFragment = false
         }
     }
@@ -378,11 +392,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         isPausedFragment = true
         pauseBroadcast()
         productTagAnalyticHelper.sendTrackingProduct()
-    }
-
-    override fun onDestroy() {
-        try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
-        super.onDestroy()
     }
 
     /**
@@ -488,6 +497,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (!forceStopDialog.isShowing) {
             analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
             forceStopDialog.show()
+            dismissPauseDialog()
         }
     }
 
@@ -504,7 +514,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         parentViewModel.channelId,
                         parentViewModel.channelTitle
                     )
-                    broadcaster.resume(shouldContinue = true)
+                    resumeBroadcast(shouldContinue = true)
                 },
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
@@ -519,6 +529,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             pauseLiveDialog?.show()
             analytic.viewDialogContinueBroadcastOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
+    }
+
+    private fun dismissPauseDialog() {
+        if (pauseLiveDialog?.isShowing == true) pauseLiveDialog?.dismiss()
     }
 
     private fun showErrorToaster(
@@ -744,8 +758,24 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget(event.showCoachMark)
                     PlayBroadcastEvent.DismissGameResultCoachMark -> dismissGameResultCoachMark()
+                    is PlayBroadcastEvent.FailPinUnPinProduct -> {
+                        if (event.isPinned) analytic.onImpressFailUnPinProductLiveRoom()
+                        else analytic.onImpressFailPinProductLiveRoom()
+
+                        if(event.throwable is PinnedProductException) {
+                            analytic.onImpressColdDownPinProductSecondEvent(true)
+                            showToaster(
+                                message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
+                                type = Toaster.TYPE_ERROR
+                            )
+                        }
+                        else showErrorToaster(event.throwable)
+                    }
                     PlayBroadcastEvent.ShowLoading -> showLoading(true)
-                    PlayBroadcastEvent.ShowLiveEndedDialog -> showForceStopDialog()
+                    PlayBroadcastEvent.ShowLiveEndedDialog -> {
+                        stopBroadcast()
+                        showForceStopDialog()
+                    }
                     PlayBroadcastEvent.ShowResumeLiveDialog -> showDialogContinueLive()
                     is PlayBroadcastEvent.ShowError -> {
                         if (event.onRetry == null) showErrorToaster(event.error)
@@ -832,9 +862,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prevState == state) return
 
+        val sortedList = mutableListOf<ProductUiModel>()
+        val newList = state.flatMap { tagSectionUiModel ->
+                tagSectionUiModel.products
+        }
+
+        val pinnedProduct = newList.filter { it.pinStatus.isPinned }
+        if (pinnedProduct.isNotEmpty()) {
+            sortedList.add(pinnedProduct.first())
+        }
+        sortedList.addAll(newList.filterNot { it.pinStatus.isPinned })
+
         productTagView.setProducts(
-            state.filterNot { it.campaignStatus.isUpcoming() }
-                .flatMap { it.products }
+            sortedList
         )
     }
 
@@ -1107,13 +1147,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun pauseBroadcast() {
+        if (parentViewModel.isBroadcastStopped) return
         showLoading(false)
         errorLiveNetworkLossView.hide()
         broadcaster.pause()
     }
 
-    private fun resumeBroadcast() {
-        broadcaster.resume(shouldContinue = false)
+    private fun resumeBroadcast(shouldContinue: Boolean) {
+        if (parentViewModel.isBroadcastStopped) return
+        broadcaster.resume(shouldContinue)
     }
 
     private fun reconnectLiveStreaming() {

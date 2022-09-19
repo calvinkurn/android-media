@@ -299,7 +299,6 @@ val List<GraphqlError>.defaultErrorMessage: String
 
 
 fun dismissToaster() {
-    try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 }
 
 fun SpannableStringBuilder.append(
@@ -329,6 +328,11 @@ fun Fragment.hideKeyboard() {
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+}
+
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
 }
 
 fun EditText.showKeyboard(isShow: Boolean) {

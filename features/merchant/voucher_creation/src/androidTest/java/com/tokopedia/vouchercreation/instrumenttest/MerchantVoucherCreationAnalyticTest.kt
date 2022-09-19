@@ -5,20 +5,18 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.contrib.RecyclerViewActions.*
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.mock.MerchantVoucherCreationMockModelConfig
+import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
@@ -40,12 +38,11 @@ class MerchantVoucherCreationAnalyticTest {
     @get:Rule
     var activityRule: IntentsTestRule<CreateMerchantVoucherStepsActivity> = IntentsTestRule(CreateMerchantVoucherStepsActivity::class.java, false, false)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     @Before
     fun beforeTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(MerchantVoucherCreationMockModelConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         activityRule.launchActivity(Intent())
@@ -53,7 +50,6 @@ class MerchantVoucherCreationAnalyticTest {
 
     @After
     fun afterTest() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
@@ -91,7 +87,7 @@ class MerchantVoucherCreationAnalyticTest {
 
     private fun doAnalyticDebuggerTest(fileName: String) {
         MatcherAssert.assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, fileName),
+                cassavaRule.validate(fileName),
                 hasAllSuccess()
         )
     }

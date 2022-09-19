@@ -15,6 +15,7 @@ import io.mockk.slot
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 
 class CategoryGetCategoryGridTest: CategoryTestFixtures() {
 
@@ -50,7 +51,7 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
     }
 
     private fun `Then assert category grid ui model state show`() {
-        val expectedCategoryList = HomeCategoryMapper.mapToCategoryList(categoryList.response.data, warehouseId)
+        val expectedCategoryList = HomeCategoryMapper.mapToCategoryList(categoryList.response.data, warehouseId, CATEGORY_GRID_TITLE)
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         val categoryGridUiModel = visitableList.findIndexedCategoryGridUIModel()
 
