@@ -29,10 +29,10 @@
         tools:text="es teh indonesia"
         android:textColor="@color/Unify_N700_96"
         android:layout_marginStart="8dp"
-        app:layout_constraintStart_toEndOf="@id/icInitialStateHistory"
+        app:layout_constraintStart_toEndOf="@id/ivInitialStateHistory"
         app:layout_constraintEnd_toStartOf="@id/ivDeleteRecentSearch"
-        app:layout_constraintTop_toTopOf="@id/icInitialStateHistory"
-        app:layout_constraintBottom_toBottomOf="@id/icInitialStateHistory"/>
+        app:layout_constraintTop_toTopOf="@id/ivInitialStateHistory"
+        app:layout_constraintBottom_toBottomOf="@id/ivInitialStateHistory"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivDeleteRecentSearch"
@@ -44,7 +44,7 @@
         app:unify_image_corner_radius="0"
         app:layout_constraintStart_toEndOf="@id/tvLabelRecentSearch"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/icInitialStateHistory"
-        app:layout_constraintBottom_toBottomOf="@id/icInitialStateHistory"/>
+        app:layout_constraintTop_toTopOf="@id/ivInitialStateHistory"
+        app:layout_constraintBottom_toBottomOf="@id/ivInitialStateHistory"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
