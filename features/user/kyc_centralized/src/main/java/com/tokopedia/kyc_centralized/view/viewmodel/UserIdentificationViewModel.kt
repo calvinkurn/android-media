@@ -16,7 +16,7 @@ import javax.inject.Inject
 class UserIdentificationViewModel @Inject constructor (
         private val getUserProjectInfoUseCase: GetUserProjectInfoUseCase,
         dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.io) {
+): BaseViewModel(dispatcher.main) {
 
     private val _userProjectInfo = MutableLiveData<Result<KycUserProjectInfoPojo>>()
     val userProjectInfo: LiveData<Result<KycUserProjectInfoPojo>>
