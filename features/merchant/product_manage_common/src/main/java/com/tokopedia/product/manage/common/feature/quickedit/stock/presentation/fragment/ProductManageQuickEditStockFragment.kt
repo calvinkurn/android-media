@@ -97,7 +97,8 @@ class ProductManageQuickEditStockFragment(
                 product = this
             }
         } else {
-            product = cacheManager.get<ProductUiModel>(KEY_PRODUCT, ProductUiModel::class.java, null)
+            product =
+                cacheManager.get<ProductUiModel>(KEY_PRODUCT, ProductUiModel::class.java, null)
         }
     }
 
@@ -110,9 +111,9 @@ class ProductManageQuickEditStockFragment(
     override fun getComponent(): ProductManageQuickEditStockComponent? {
         return activity?.run {
             DaggerProductManageQuickEditStockComponent
-                    .builder()
-                    .productManageCommonComponent(ProductManageCommonInstance.getComponent(application))
-                    .build()
+                .builder()
+                .productManageCommonComponent(ProductManageCommonInstance.getComponent(application))
+                .build()
         }
     }
 
@@ -161,6 +162,9 @@ class ProductManageQuickEditStockFragment(
         binding?.quickEditStockQuantityEditor?.hide()
         binding?.textStock?.show()
         binding?.textStock?.text = stock.toString()
+        if (product.haveNotifyMeBuyer()) {
+            setNotifyMeBuyerBehavior()
+        }
     }
 
     private fun setupStatusSwitch() {
@@ -178,7 +182,10 @@ class ProductManageQuickEditStockFragment(
                     if (isChecked) {
                         ProductManageTracking.eventEditStockToggle(TOGGLE_ACTIVE, product.getId())
                     } else {
-                        ProductManageTracking.eventEditStockToggle(TOGGLE_NOT_ACTIVE, product.getId())
+                        ProductManageTracking.eventEditStockToggle(
+                            TOGGLE_NOT_ACTIVE,
+                            product.getId()
+                        )
                     }
                 }
             }
@@ -188,7 +195,7 @@ class ProductManageQuickEditStockFragment(
     }
 
     private fun setupSaveButton() {
-        if(product.hasEditStockAccess() || product.hasEditProductAccess()) {
+        if (product.hasEditStockAccess() || product.hasEditProductAccess()) {
             binding?.quickEditStockSaveButton?.setOnClickListener {
                 onClickSaveBtn()
             }
@@ -240,9 +247,15 @@ class ProductManageQuickEditStockFragment(
     }
 
     private fun setupBottomSheet() {
-        val horizontalSpacing = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
-        val topSpacing = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
-        val bottomSpacing = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).orZero()
+        val horizontalSpacing =
+            context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                .orZero()
+        val topSpacing =
+            context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                .orZero()
+        val bottomSpacing =
+            context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+                .orZero()
         bottomSheetHeader.setMargin(horizontalSpacing, topSpacing, horizontalSpacing, bottomSpacing)
         bottomSheetWrapper.setPadding(0, 0, 0, 0)
     }
@@ -250,7 +263,10 @@ class ProductManageQuickEditStockFragment(
     private fun setupCampaignInfo(view: View) {
         binding?.tvProductManageSingleStockCountVariant?.run {
             product?.campaignTypeList?.let { campaignList ->
-                text = String.format(getString(R.string.product_manage_campaign_count), campaignList.count().orZero())
+                text = String.format(
+                    getString(R.string.product_manage_campaign_count),
+                    campaignList.count().orZero()
+                )
                 setOnClickListener {
                     campaignListener?.onClickCampaignInfo(campaignList)
                 }
@@ -277,7 +293,7 @@ class ProductManageQuickEditStockFragment(
     private fun observeStockTicker() {
         observe(viewModel.stockTicker) {
             val ticker = binding?.tickerStockLayout?.root
-            if(it.shouldShow()) {
+            if (it.shouldShow()) {
                 val tickerList = ProductManageTickerMapper.mapToTickerData(context, listOf(it))
                 val adapter = TickerPagerAdapter(context, tickerList)
                 ticker?.addPagerView(adapter, tickerList)
@@ -299,7 +315,8 @@ class ProductManageQuickEditStockFragment(
                         binding?.quickEditStockQuantityEditor?.setValue(MINIMUM_STOCK)
                     }
                     binding?.quickEditStockQuantityEditor?.clearFocus()
-                    val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val imm =
+                        activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     binding?.quickEditStockQuantityEditor?.editText?.windowToken?.let { windowToken ->
                         imm.hideSoftInputFromWindow(windowToken, 0)
                     }
@@ -322,7 +339,12 @@ class ProductManageQuickEditStockFragment(
                     }
                 }
 
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                     // No Op
                 }
 
@@ -348,10 +370,10 @@ class ProductManageQuickEditStockFragment(
             stock > getMaxStock() -> setAboveMaxStockBehavior()
             stock == getMaxStock() -> setMaxStockBehavior()
             stock <= MINIMUM_STOCK -> {
-                if (product.suspendAccess()) {
-                    setZeroStockSuspendBehavior()
-                } else if (product.haveNotifyMeBuyer()) {
+                if (product.haveNotifyMeBuyer()) {
                     setNotifyMeBuyerBehavior()
+                }else if (product.suspendAccess()) {
+                    setZeroStockSuspendBehavior()
                 } else {
                     setZeroStockBehavior()
                 }
@@ -359,7 +381,7 @@ class ProductManageQuickEditStockFragment(
             else -> setNormalBehavior()
         }
     }
-    
+
     private fun setZeroStockBehavior() {
         binding?.zeroStockInfo?.visible()
         binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = false
@@ -375,8 +397,10 @@ class ProductManageQuickEditStockFragment(
 
     private fun setNotifyMeBuyerBehavior() {
         binding?.notifyMeBuyer?.visible()
-        binding?.notifyMeBuyer?.text = context?.getString(R.string.product_manage_notify_me_buyer_info_in_edit_stock,
-            product?.notifyMeOOSCount.orEmpty()).orEmpty().parseAsHtml()
+        binding?.notifyMeBuyer?.text = context?.getString(
+            R.string.product_manage_notify_me_buyer_info_in_edit_stock,
+            product?.notifyMeOOSCount.orEmpty()
+        ).orEmpty().parseAsHtml()
         binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = false
         binding?.quickEditStockSaveButton?.isEnabled = true
     }
@@ -413,7 +437,7 @@ class ProductManageQuickEditStockFragment(
             addButton.setOnClickListener {
                 val input = editText.text.toString()
 
-                var stock = if(input.isNotEmpty()) {
+                var stock = if (input.isNotEmpty()) {
                     input.toInt()
                 } else {
                     MINIMUM_STOCK
@@ -421,7 +445,7 @@ class ProductManageQuickEditStockFragment(
 
                 stock++
 
-                if(stock <= getMaxStock()) {
+                if (stock <= getMaxStock()) {
                     editText.setText(stock.getNumberFormatted())
                 }
             }
@@ -433,7 +457,7 @@ class ProductManageQuickEditStockFragment(
             subtractButton.setOnClickListener {
                 val input = editText.text.toString()
 
-                var stock = if(input.isNotEmpty()) {
+                var stock = if (input.isNotEmpty()) {
                     input.toInt()
                 } else {
                     MINIMUM_STOCK
@@ -441,7 +465,7 @@ class ProductManageQuickEditStockFragment(
 
                 stock--
 
-                if(stock >= MINIMUM_STOCK) {
+                if (stock >= MINIMUM_STOCK) {
                     editText.setText(stock.getNumberFormatted())
                 }
             }

@@ -640,21 +640,6 @@ open class ProductManageFragment :
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
 
-    private fun setCoachMarkFlagStockReminder() {
-        coachMarkStockReminder?.setStepListener(object : CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                if (currentIndex == Int.ONE) {
-                    CoachMarkPreference.setShown(
-                        requireContext(),
-                        SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK,
-                        true
-                    )
-                }
-            }
-
-        })
-    }
-
     private fun setupProgressDialogVariant() {
         progressDialog = ProgressDialog(requireContext())
         progressDialog?.setMessage(getString(R.string.message_loading_progress_dialog))
@@ -2063,7 +2048,9 @@ open class ProductManageFragment :
     }
 
     override fun onImpressionNotifyMe() {
-        manageShowCoachMark(isNotifyMe = true)
+        recyclerView?.post {
+            manageShowCoachMark(isNotifyMe = true)
+        }
     }
 
     private fun showCoachMarkNotifyMe() {
@@ -3337,11 +3324,11 @@ open class ProductManageFragment :
             getProductWithStockReminder(adapter.data.filterIsInstance<ProductUiModel>())
 
 
-        val visibleStockReminder = if(haveSetReminder != -1){
+        val visibleStockReminder = if (haveSetReminder != -1) {
             val itemReminder = productManageLayoutManager?.findViewByPosition(haveSetReminder)
                 ?.findViewById<IconUnify>(R.id.imageStockReminder)
             itemReminder?.let { getVisiblePercent(it) }
-        }else{
+        } else {
             -1
         }
 
@@ -3390,11 +3377,17 @@ open class ProductManageFragment :
                         .orEmpty()
 
                 val itemCoachMark = getCoachMarkFlagStockReminder(item)
-                setCoachMarkFlagStockReminder()
                 coachMarkStockReminder?.showCoachMark(
                     step = itemCoachMark,
                     index = 0
                 )
+                coachMarkStockReminder?.setOnDismissListener {
+                    CoachMarkPreference.setShown(
+                        requireContext(),
+                        SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK,
+                        true
+                    )
+                }
                 recyclerView?.addOnScrollListener(recyclerViewScrollListener)
             }
         }
