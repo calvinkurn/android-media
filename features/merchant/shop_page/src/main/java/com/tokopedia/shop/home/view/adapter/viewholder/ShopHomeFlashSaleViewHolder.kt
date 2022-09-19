@@ -144,8 +144,8 @@ class ShopHomeFlashSaleViewHolder(
     private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>, startBackGroundColor: String?, endBackGroundColor: String?) {
         // set flash sale background color
         val colors = intArrayOf(
-            getBackGroundColor(startBackGroundColor, R.color.fs_toko_bg_start_dms_gradient_color),
-            getBackGroundColor(endBackGroundColor, R.color.fs_toko_bg_end_dms_gradient_color)
+            getBackGroundColor(startBackGroundColor, R.color.clr_dms_icon_white),
+            getBackGroundColor(endBackGroundColor, R.color.clr_dms_icon_white)
         )
         val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
         singleBackGroundView?.background = gradientDrawable
