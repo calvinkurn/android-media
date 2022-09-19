@@ -71,7 +71,13 @@
     <string name="tm_premium_kupon">Premium</string>
     <string name="tm_share_bottomsheet_title">Bagikan ke pembeli kamu</string>
     <string name="tm_share_coupon_string">%1$s. Yuk, pakai kuponnya di aplikasi Tokopedia, sekarang!  %2$s</string>
-    <string name="tm_coupon_cashback_idr">Rupiah (RP)</string>
+    <string name="tm_coupon_cashback_idr">Rupiah (Rp)</string>
     <string name="tm_coupon_cashback_percent">Persentase </string>
     <string name="tm_currency">Rp%1$s</string>
+    <string name="tm_ubah_kupon">Ubah Kupon</string>
+    <string name="tm_share_text">Bagikan</string>
+    <string name="tm_coupon_informasi_text">Informasi Kupon</string>
+    <string name="tm_quota_progress_text">Kupon terpakai</string>
+    <string name="tm_current_release_text_1">"Pengeluaran saat ini"</string>
+    <string name="tm_current_release_text_2">Dipotong dari transaksi selesai</string>
 </resources>

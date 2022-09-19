@@ -3,7 +3,6 @@
 <com.tokopedia.unifycomponents.ContainerUnify
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:container_color="GREEN"
@@ -55,9 +54,9 @@
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bagikan"
                     app:typographyType="small"
                     app:typographyWeight="bold"
+                    android:text="@string/tm_share_text"
                     android:layout_marginStart="7dp"
                     android:textColor="@color/Unify_N0"
                     />
@@ -106,14 +105,13 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="display_3"
-                app:typographyWeight="bold"
                 />
 
-            <com.tokopedia.unifyprinciples.Typography
+            <View
                 android:id="@+id/date_delimiter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="-"
+                android:layout_width="10dp"
+                android:layout_height="1dp"
+                android:background="@color/Unify_N700_96"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/coupon_detail_start_period"
@@ -127,8 +125,7 @@
                 app:typographyType="display_3"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/date_delimiter"
-                app:typographyWeight="bold"
-                android:layout_marginStart="11dp"
+                android:layout_marginStart="8dp"
                 />
 
 
@@ -141,7 +138,6 @@
             app:typographyType="small"
             android:padding="4dp"
             android:background="@drawable/tm_bg_coupon_membership"
-            android:textColor="@color/Unify_YN500"
             app:typographyWeight="bold"
             app:layout_constraintTop_toBottomOf="@+id/coupon_detail_period_container"
             app:layout_constraintStart_toEndOf="@+id/coupon_detail_image_container"

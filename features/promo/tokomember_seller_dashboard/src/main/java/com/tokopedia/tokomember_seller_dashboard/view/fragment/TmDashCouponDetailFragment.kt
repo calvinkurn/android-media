@@ -2,11 +2,11 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.content.res.ColorStateList
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +16,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
@@ -25,14 +24,16 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.tokomember_common_widget.TokomemberMultiTextView
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponDetailData
 import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponDetailViewModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -117,8 +118,6 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
     private fun observeViewModel(){
         tmCouponDetailVm.couponDetailResult.observe(viewLifecycleOwner){
             it?.let {
-                val gson=Gson()
-                Log.i("from coupon detail","data -> ${gson.toJson(it.data)}")
                 when(it.status){
                     TokoLiveDataResult.STATUS.LOADING -> {
                        flipper.displayedChild = 0
@@ -127,6 +126,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
                         flipper.displayedChild = 1
                         initViews()
                     }
+                    else -> {}
                 }
             }
         }
@@ -159,8 +159,9 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             currExpenseTv = it.findViewById(R.id.curr_expense_tv)
             shareCouponBtn = it.findViewById(R.id.coupon_detail_share_btn)
             cashbackPercentTv = it.findViewById(R.id.coupon_cashback_percent_tv)
-            cta.setOnClickListener { openQuotaBottomSheet() }
+
             renderCouponDetails()
+            setupCtaButton()
         }
     }
 
@@ -181,7 +182,6 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             val finishTime = it.merchantPromotionGetMVDataByID?.data?.voucherFinishTime
             TmDateUtil.getDateFromISO(finishTime)?.let{ it1 ->
                 val calender = Calendar.getInstance(locale)
-                Log.i("from coupon frag","dateeee -? $it1")
                 calender.time = it1
                 couponTimerBadge.isShowClockIcon = true
                 couponTimerBadge.targetDate = calender
@@ -275,12 +275,14 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
 
     private fun renderCouponStatus(){
         tmCouponDetailVm.couponDetailResult.value?.data?.merchantPromotionGetMVDataByID?.data?.let{
-                if(it.remaningQuota==null || it.remaningQuota==0) setCouponStateToEmpty()
+                if((it.remaningQuota==null || it.remaningQuota==0) && it.voucherStatus == COUPON_ON_GOING) setCouponStateToEmpty()
                 else{
                     when(it.voucherStatus){
-                        COUPON_ON_GOING -> {setCouponStateToActive()}
-                        COUPON_ENDED -> {setCouponStateToEnded()}
-                        COUPON_NOT_STARTED -> {setCouponStateToNotStarted()}
+                        COUPON_ON_GOING -> setCouponStateToActive()
+                        COUPON_ENDED, COUPON_STOPPED -> setCouponStateToEnded()
+                        COUPON_NOT_STARTED -> setCouponStateToNotStarted()
+                        COUPON_DELETED -> setCouponStateToDeleted()
+                        COUPON_PROCESSING -> setCouponStateToProcessing()
                     }
                 }
         }
@@ -297,6 +299,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
                 )
             )
         )
+        showShareButton()
     }
 
     //Set the coupon to active state
@@ -310,6 +313,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
                 )
             )
         )
+        showShareButton()
     }
 
     //Set the coupon to active state
@@ -323,10 +327,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
                 )
             )
         )
-        couponTimerBadge.visibility=View.GONE
-        val params = couponStatusTv.layoutParams as ConstraintLayout.LayoutParams
-        params.topMargin = dpToPx(16).toInt()
-        couponStatusTv.layoutParams = params
+        removeCouponTimer()
+        hideShareButton()
     }
 
     //Set the coupon to ended state
@@ -340,19 +342,61 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
                 )
             )
         )
+        removeCouponTimer()
+        cta.visibility = View.GONE
+        hideShareButton()
+    }
+
+    //Set the coupon to deleted state
+    private fun setCouponStateToDeleted(){
+        couponStatusTv.text = COUPON_STATE_DELETED_LABEL
+        couponStatusTv.setTextColor(
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                )
+            )
+        )
+        removeCouponTimer()
+        cta.visibility = View.GONE
+        hideShareButton()
+    }
+
+
+    //Set the coupon to processing state
+    private fun setCouponStateToProcessing(){
+        couponStatusTv.text = COUPON_STATE_PROCESSING_LABEL
+        couponStatusTv.setTextColor(
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                )
+            )
+        )
+        showShareButton()
+    }
+
+
+    private fun removeCouponTimer(){
         couponTimerBadge.visibility=View.GONE
         val params = couponStatusTv.layoutParams as ConstraintLayout.LayoutParams
         params.topMargin = dpToPx(16).toInt()
         couponStatusTv.layoutParams = params
-        cta.visibility = View.GONE
     }
 
     //Set the quota progress
     private fun setupQuotaProgressBar(){
         tmCouponDetailVm.couponDetailResult.value.let {
+            val usedQuota = it?.data?.merchantPromotionGetMVDataByID?.data?.confirmedGlobalQuota ?: 0
+            val totalQuota = it?.data?.merchantPromotionGetMVDataByID?.data?.voucherQuota ?: 0
            usedQuotaTv.text = it?.data?.merchantPromotionGetMVDataByID?.data?.confirmedGlobalQuota.toString()
             totalQuotaTv.text = "/${it?.data?.merchantPromotionGetMVDataByID?.data?.voucherQuota.toString()}"
-            progressBar.setValue(it?.data?.merchantPromotionGetMVDataByID?.data?.confirmedGlobalQuota?:0,true)
+            if(totalQuota!=0){
+                progressBar.setValue((usedQuota*1.0/totalQuota).toInt(),true)
+            }
+            else progressBar.setValue(0)
         }
     }
 
@@ -430,11 +474,37 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             Glide.with(requireContext())
                 .load(it.voucherImageSquare)
                 .into(couponImage)
+
         }
+   }
+
+
+    private fun setupCtaButton(){
+        tmCouponDetailVm.couponDetailResult.value?.data.let{
+            val status = it?.merchantPromotionGetMVDataByID?.data?.voucherStatus
+            if(status == COUPON_NOT_STARTED){
+                cta.text = requireContext().resources.getString(R.string.tm_ubah_kupon)
+                cta.setOnClickListener {
+                    TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, voucherId, this, edit = true)
+                }
+            }
+            else{
+                cta.text = requireContext().resources.getString(R.string.tm_tambah_kuota)
+                cta.setOnClickListener { openQuotaBottomSheet() }
+            }
+        }
+    }
+
+    private fun hideShareButton(){
+        shareCouponBtn.visibility= View.GONE
+    }
+
+    private fun showShareButton(){
+        shareCouponBtn.visibility = View.VISIBLE
         shareCouponBtn.setOnClickListener {
             showShareBottomSheet()
         }
-   }
+    }
 
 
     private fun showShareBottomSheet(){
@@ -465,16 +535,20 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
         val couponData = tmCouponDetailVm.couponDetailResult.value?.data?.merchantPromotionGetMVDataByID?.data
-       val linkerShareData = linkerDataMapper(couponData)
-        linkerShareData.linkerData.apply {
-            feature = shareModel.feature
-            channel = shareModel.channel
-            campaign = shareModel.campaign
-            isThrowOnError = false
-            if (shareModel.ogImgUrl?.isNotEmpty() == true) {
-                ogImageUrl = shareModel.ogImgUrl
-            }
-        }
+       val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+           id = couponData?.galadrielVoucherId.toString()
+           type = LinkerData.PROMO_TYPE
+           name = couponData?.voucherName ?: ""
+           uri  = createVoucherWeblink(couponData?.weblink ?: "")
+           description = couponData?.voucherName ?: ""
+           feature = shareModel.feature
+           channel = shareModel.channel
+           campaign = shareModel.campaign
+           if (shareModel.ogImgUrl?.isNotEmpty() == true) {
+               ogImageUrl = shareModel.ogImgUrl
+           }
+           isThrowOnError = true
+       })
         LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(
             0,linkerShareData,object : ShareCallback{
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
@@ -491,7 +565,6 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
 
                 override fun onError(linkerError: LinkerError?) {
                     shareBottomSheet?.dismiss()
-                    showShareBottomSheet()
                 }
             }
         ))
@@ -501,21 +574,17 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
         shareBottomSheet?.dismiss()
     }
 
-    private fun linkerDataMapper(couponData:TmCouponDetailData?): LinkerShareData {
-        val linkerData = LinkerData()
-        linkerData.id = couponData?.voucherId.toString()
-        linkerData.type = LinkerData.PROMO_TYPE
-        linkerData.name = couponData?.voucherName ?: ""
-        linkerData.uri  = couponData?.weblink
-        linkerData.description = couponData?.voucherName ?: ""
-        linkerData.isThrowOnError = true
-        val linkerShareData = LinkerShareData()
-        linkerShareData.linkerData = linkerData
-        return linkerShareData
+
+    private fun createVoucherWeblink(weblink:String):String{
+        val url = Uri.parse(weblink)
+        val segments = url.pathSegments
+        if(segments.size>0){
+            val shopDomain = segments[0]
+            val voucherId = segments[2]
+            return "${url.scheme}://${url.host}/${shopDomain}/voucher-detail/${voucherId}"
+        }
+        return ""
     }
-
-
-
 
     companion object{
         fun newInstance(voucherId:Int) : TmDashCouponDetailFragment {

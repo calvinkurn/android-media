@@ -3,7 +3,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,7 +16,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/coupon_detail_main_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <include
                 android:id="@+id/coupon_detail_top_section"
                 app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +28,7 @@
                 android:id="@+id/coupon_detail_progress_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kupon terpakai"
+                android:text="@string/tm_quota_progress_text"
                 app:typographyType="display_3"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintTop_toBottomOf="@+id/coupon_detail_top_section"
@@ -70,14 +69,12 @@
                     android:layout_height="wrap_content"
                     app:typographyType="heading_3"
                     app:typographyWeight="bold"
-                    android:text="30"
                     />
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/coupon_detail_total_quota"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:typographyType="display_3"
-                    android:text="/100"
                     />
             </LinearLayout>
 
@@ -99,7 +96,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/coupon_detail_divider"
                 android:layout_marginTop="24dp"
                 android:layout_marginStart="16dp"
-                android:text="Informasi Kupon"
+                android:text="@string/tm_coupon_informasi_text"
                 app:typographyWeight="bold"
                 />
 
@@ -192,7 +189,7 @@
                     <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pengeluaran saat ini"
+                        android:text="@string/tm_current_release_text_1"
                         app:typographyType="display_3"
                         app:typographyWeight="bold"
                         />
@@ -208,7 +205,7 @@
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dipotong dari transaksi selesai"
+                    android:text="@string/tm_current_release_text_2"
                     app:layout_constraintTop_toBottomOf="@+id/current_release_container"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -243,7 +240,6 @@
             android:id="@+id/coupon_detail_cta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tambah Kuota"
             app:unifyButtonSize="large"
             app:unifyButtonVariant="filled" />
     </FrameLayout>

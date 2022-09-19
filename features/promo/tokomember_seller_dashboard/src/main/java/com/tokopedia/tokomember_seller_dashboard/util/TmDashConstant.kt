@@ -215,6 +215,8 @@ const val COUPON_STATE_EMPTY_LABEL = "Kuota Habis"
 const val COUPON_STATE_ACTIVE_LABEL = "Kupon Aktif"
 const val COUPON_STATE_NOT_STARTED_LABEL = "Belum Aktif"
 const val COUPON_STATE_ENDED_LABEL = "Berakhir"
+const val COUPON_STATE_DELETED_LABEL = "Dihapus"
+const val COUPON_STATE_PROCESSING_LABEL = "Pengolahan"
 
 const val TOKOMEMBER_SCREEN = "tokomember screen"
 const val PATH_TOKOMEMBER_PROGRAM_LIST = "program-list"
