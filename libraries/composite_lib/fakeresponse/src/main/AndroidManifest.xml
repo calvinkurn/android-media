@@ -24,7 +24,7 @@
             android:launchMode="singleTask"
             android:taskAffinity="fakeresponse.gqlTesting"
             android:theme="@style/FakeNoActionBar"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.tokopedia.tkpd.fakeresponse.gqlTesting" />
                 <category android:name="android.intent.category.DEFAULT" />
