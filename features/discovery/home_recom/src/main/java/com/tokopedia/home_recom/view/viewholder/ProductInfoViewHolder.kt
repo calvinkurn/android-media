@@ -4,7 +4,6 @@ import android.graphics.Paint
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.databinding.FragmentProductInfoBinding
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
@@ -211,10 +210,8 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
     private fun onClickWishlist(productInfoDataModel: ProductInfoDataModel){
         binding?.fabDetail?.setOnClickListener {
             val fabDetailActivated = binding?.fabDetail?.isActivated == true
-            listener?.onProductAnchorClickWishlist(productInfoDataModel, !fabDetailActivated) { state, throwable ->
-                if (state) {
-                    binding?.fabDetail?.isActivated = !fabDetailActivated
-                }
+            binding?.fabDetail?.isActivated = !fabDetailActivated
+            listener?.onProductAnchorClickWishlist(productInfoDataModel, !fabDetailActivated) { state, _ ->
                 updateWishlist(state)
             }
         }
