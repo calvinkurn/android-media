@@ -1,31 +1,42 @@
-package com.tokopedia.shop.flashsale.presentation.creation.information
+package com.tokopedia.shop.flashsale.presentation.creation.information.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
+import com.tokopedia.shop.flashsale.common.extension.decreaseMinuteBy
+import com.tokopedia.shop.flashsale.common.extension.epochToDate
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
+import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
-import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignWithVpsPackages
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignPackageListUseCase
+import com.tokopedia.shop.flashsale.presentation.creation.information.defaultGradientColor
+import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.async
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -35,6 +46,7 @@ class CampaignInformationViewModel @Inject constructor(
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
     private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
+    private val getSellerCampaignPackageListUseCase: GetSellerCampaignPackageListUseCase,
     private val dateManager: DateManager,
     private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
@@ -43,6 +55,10 @@ class CampaignInformationViewModel @Inject constructor(
         private const val MIN_HEX_COLOR_LENGTH = 6
         private const val MIN_CAMPAIGN_NAME_LENGTH = 5
         private const val ONE_HOUR = 1
+        private const val SHOP_TIER_BENEFIT_PACKAGE_ID: Long= -1
+        private const val EMPTY_QUOTA = 0
+        private const val VPS_PACKAGE_ID_NOT_SELECTED: Long = 0
+        private const val THIRTY_MINUTE = 30
     }
 
     private val _currentMonthRemainingQuota = MutableLiveData<Result<Int>>()
@@ -61,8 +77,8 @@ class CampaignInformationViewModel @Inject constructor(
     val campaignUpdate: LiveData<Result<CampaignCreationResult>>
         get() = _campaignUpdate
 
-    private val _campaignDetail= MutableLiveData<Result<CampaignUiModel>>()
-    val campaignDetail: LiveData<Result<CampaignUiModel>>
+    private val _campaignDetail= MutableLiveData<Result<CampaignWithVpsPackages>>()
+    val campaignDetail: LiveData<Result<CampaignWithVpsPackages>>
         get() = _campaignDetail
 
     private val _saveDraft= MutableLiveData<Result<CampaignCreationResult>>()
@@ -72,6 +88,16 @@ class CampaignInformationViewModel @Inject constructor(
     private val _campaignQuota = MutableLiveData<Result<Int>>()
     val campaignQuota: LiveData<Result<Int>>
         get() = _campaignQuota
+
+    private val _vpsPackages = MutableLiveData<Result<List<VpsPackageUiModel>>>()
+    val vpsPackages: LiveData<Result<List<VpsPackageUiModel>>>
+        get() = _vpsPackages
+
+    private val _emptyQuotaVpsPackage = MutableLiveData<Result<VpsPackageUiModel>>()
+    val emptyQuotaVpsPackage: LiveData<Result<VpsPackageUiModel>>
+        get() = _emptyQuotaVpsPackage
+
+    private var vpsPackage : VpsPackageUiModel? = null
 
     private var selectedColor = defaultGradientColor
     private var selectedStartDate = Date()
@@ -83,6 +109,7 @@ class CampaignInformationViewModel @Inject constructor(
     private var campaignId: Long = CAMPAIGN_NOT_CREATED_ID
     private var relatedCampaigns: List<RelatedCampaign> = emptyList()
     private var isCampaignRuleSubmit = false
+    private var storedVpsPackages: List<VpsPackageUiModel> = emptyList()
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -121,7 +148,8 @@ class CampaignInformationViewModel @Inject constructor(
         val firstColor: String,
         val secondColor: String,
         val paymentType: PaymentType,
-        val remainingQuota: Int
+        val remainingQuota: Int,
+        val vpsPackageId: Long
     )
 
     fun validateCampaignName(campaignName: String) : CampaignNameValidationResult {
@@ -135,7 +163,7 @@ class CampaignInformationViewModel @Inject constructor(
         }
 
         if (campaignName.lowercase() in forbiddenWords) {
-            return  CampaignNameValidationResult.CampaignNameHasForbiddenWords
+            return CampaignNameValidationResult.CampaignNameHasForbiddenWords
 
         }
 
@@ -176,7 +204,8 @@ class CampaignInformationViewModel @Inject constructor(
             block = {
                 val campaignAttribute = getSellerCampaignAttributeUseCase.execute(
                     month = dateManager.getCurrentMonth(),
-                    year = dateManager.getCurrentYear()
+                    year = dateManager.getCurrentYear(),
+                    vpsPackageId = VPS_PACKAGE_ID_NOT_SELECTED
                 )
 
                 _currentMonthRemainingQuota.postValue(Success(campaignAttribute.remainingCampaignQuota))
@@ -210,7 +239,8 @@ class CampaignInformationViewModel @Inject constructor(
                         showTeaser = selection.showTeaser,
                         firstColor = selection.firstColor,
                         secondColor = selection.secondColor,
-                        paymentType = selection.paymentType
+                        paymentType = selection.paymentType,
+                        packageId = selection.vpsPackageId
                     )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignCreation.postValue(Success(result))
@@ -242,6 +272,7 @@ class CampaignInformationViewModel @Inject constructor(
                         paymentType = selection.paymentType,
                         campaignRelation = relatedCampaigns.map { it.id },
                         isCampaignRuleSubmit = isCampaignRuleSubmit,
+                        packageId = selection.vpsPackageId
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignUpdate.postValue(Success(result))
@@ -275,6 +306,7 @@ class CampaignInformationViewModel @Inject constructor(
                     paymentType = selection.paymentType,
                     campaignRelation = relatedCampaigns.map { it.id },
                     isCampaignRuleSubmit = isCampaignRuleSubmit,
+                    packageId = selection.vpsPackageId
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _saveDraft.postValue(Success(result))
@@ -291,10 +323,20 @@ class CampaignInformationViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = getSellerCampaignDetailUseCase.execute(campaignId)
-                relatedCampaigns = result.relatedCampaigns
-                isCampaignRuleSubmit = result.isCampaignRuleSubmit
-                _campaignDetail.postValue(Success(result))
+                val campaignDetailDeferred = async { getSellerCampaignDetailUseCase.execute(campaignId) }
+                val vpsPackagesDeferred = async { getSellerCampaignPackageListUseCase.execute() }
+
+                val campaignDetail = campaignDetailDeferred.await()
+                val vpsPackages = vpsPackagesDeferred.await()
+
+                val updatedVpsPackage = formatToUiModel(campaignDetail.packageInfo.packageId, vpsPackages)
+                val sortedVpsPackages = applySortRule(updatedVpsPackage)
+
+                relatedCampaigns = campaignDetail.relatedCampaigns
+                isCampaignRuleSubmit = campaignDetail.isCampaignRuleSubmit
+
+                val combinedCampaignData = CampaignWithVpsPackages(campaignDetail, sortedVpsPackages)
+                _campaignDetail.postValue(Success(combinedCampaignData))
             },
             onError = { error ->
                 _campaignDetail.postValue(Fail(error))
@@ -303,13 +345,14 @@ class CampaignInformationViewModel @Inject constructor(
 
     }
 
-    fun getCampaignQuota(month : Int, year: Int) {
+    fun getCampaignQuotaOfSelectedMonth(month : Int, year: Int, vpsPackageId: Long) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val campaignAttribute = getSellerCampaignAttributeUseCase.execute(
                     month = month,
-                    year = year
+                    year = year,
+                    vpsPackageId = vpsPackageId
                 )
 
                 _campaignQuota.postValue(Success(campaignAttribute.remainingCampaignQuota))
@@ -424,5 +467,132 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun isDataChanged(previousData: Selection, currentData: Selection): Boolean {
         return previousData != currentData
+    }
+
+    fun getVpsPackages(selectedPackageId : Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getSellerCampaignPackageListUseCase.execute()
+                val vpsPackages = formatToUiModel(selectedPackageId, result)
+                val sortedVpsPackages = applySortRule(vpsPackages)
+                _vpsPackages.postValue(Success(sortedVpsPackages))
+            },
+            onError = { error ->
+                _vpsPackages.postValue(Fail(error))
+            }
+        )
+
+    }
+
+    private fun formatToUiModel(
+        selectedPackageId: Long,
+        vpsPackages: List<VpsPackage>
+    ): List<VpsPackageUiModel> {
+        return vpsPackages
+            .map { vpsPackage ->
+                VpsPackageUiModel(
+                    vpsPackage.remainingQuota,
+                    vpsPackage.currentQuota,
+                    vpsPackage.originalQuota,
+                    vpsPackage.packageEndTime.epochToDate().removeTimeZone(),
+                    vpsPackage.packageId.toLongOrZero(),
+                    vpsPackage.packageName,
+                    vpsPackage.packageStartTime.epochToDate().removeTimeZone(),
+                    vpsPackage.isSelected(selectedPackageId),
+                    vpsPackage.isDisabled,
+                    vpsPackage.isShopTierBenefit()
+                )
+            }
+    }
+
+    private fun applySortRule(vpsPackages: List<VpsPackageUiModel>) : List<VpsPackageUiModel> {
+        val nonEmptyVpsPackages = vpsPackages
+            .filter { vpsPackage -> !vpsPackage.isShopTierBenefit  && vpsPackage.remainingQuota.isMoreThanZero() }
+            .sortedBy { vpsPackage -> vpsPackage.packageEndTime }
+        val shopTierBenefit = vpsPackages.filter { vpsPackage -> vpsPackage.isShopTierBenefit }
+        val emptyVpsPackages = vpsPackages.filter { vpsPackage -> !vpsPackage.isShopTierBenefit && vpsPackage.remainingQuota == EMPTY_QUOTA }
+        return nonEmptyVpsPackages + shopTierBenefit + emptyVpsPackages
+    }
+
+    private fun VpsPackage.isSelected(selectedPackageId: Long) : Boolean {
+        return selectedPackageId == packageId.toLong()
+    }
+
+    private fun VpsPackage.isShopTierBenefit() : Boolean {
+        return packageId.toLongOrZero() == SHOP_TIER_BENEFIT_PACKAGE_ID
+    }
+
+    fun setSelectedVpsPackage(vpsPackage: VpsPackageUiModel) {
+        this.vpsPackage = vpsPackage
+    }
+
+    fun getSelectedVpsPackage(): VpsPackageUiModel? {
+        return this.vpsPackage
+    }
+
+    fun storeVpsPackage(vpsPackages: List<VpsPackageUiModel>) {
+        this.storedVpsPackages = vpsPackages
+    }
+
+    fun getStoredVpsPackages(): List<VpsPackageUiModel> {
+        return this.storedVpsPackages
+    }
+
+    fun findDefaultQuotaSourceOnEditMode(selectedVpsPackageId: Long, vpsPackages: List<VpsPackageUiModel>): VpsPackageUiModel? {
+        val selectedVpsPackage: VpsPackageUiModel? = vpsPackages.find { vpsPackage ->  vpsPackage.packageId == selectedVpsPackageId}
+        val shouldUseShopTierBenefit = shouldUseShopTierBenefit(selectedVpsPackage)
+        return if (shouldUseShopTierBenefit) {
+             vpsPackages.firstOrNull()
+        } else {
+            selectedVpsPackage
+        }
+    }
+
+    private fun shouldUseShopTierBenefit(vpsPackage : VpsPackageUiModel?): Boolean {
+        return vpsPackage == null
+    }
+
+    fun findCampaignMaxEndDateByVpsRule(selectedVpsPackage : VpsPackageUiModel, endDate: Date): Date {
+        val isUsingVpsPackage = selectedVpsPackage.packageId != SHOP_TIER_BENEFIT_PACKAGE_ID
+
+        return if (isUsingVpsPackage) {
+            selectedVpsPackage.packageEndTime.decreaseMinuteBy(THIRTY_MINUTE)
+        } else {
+            endDate
+        }
+    }
+
+    fun shouldEnableProceedButton(campaignName : String, selectedVpsPackage: VpsPackageUiModel): Boolean {
+        return when {
+            campaignName.length < MIN_CAMPAIGN_NAME_LENGTH -> false
+            selectedVpsPackage.isShopTierBenefit -> true
+            !selectedVpsPackage.isShopTierBenefit && selectedVpsPackage.remainingQuota.isMoreThanZero() -> true
+            else -> false
+        }
+    }
+
+    fun recheckLatestSelectedVpsPackageQuota() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val vpsPackages = getSellerCampaignPackageListUseCase.execute()
+                val currentlySelectedVpsPackageId = vpsPackage?.packageId.orZero()
+                val updatedVpsPackage = formatToUiModel(currentlySelectedVpsPackageId, vpsPackages)
+                val sortedVpsPackages = applySortRule(updatedVpsPackage)
+                this.storedVpsPackages = sortedVpsPackages
+
+                val matchedVpsPackage = sortedVpsPackages.find { vpsPackage -> vpsPackage.packageId == currentlySelectedVpsPackageId } ?: return@launchCatchError
+                _emptyQuotaVpsPackage.postValue(Success(matchedVpsPackage))
+            },
+            onError = { error ->
+                _emptyQuotaVpsPackage.postValue(Fail(error))
+            }
+        )
+    }
+
+    fun isTodayInVpsPeriod(selectedVpsPackage : VpsPackageUiModel): Boolean {
+        val now = Date()
+        return now.after(selectedVpsPackage.packageStartTime) && now.before(selectedVpsPackage.packageEndTime)
     }
 }
