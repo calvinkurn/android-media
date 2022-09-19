@@ -19,7 +19,7 @@ class HomeRecommendationActivityTest : AppCompatActivity(), HasComponent<HomeRec
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_recom_test)
 
-        val homeRecommendation: Fragment = RecommendationFragment.newInstance("4925773114", "ref=recompush", "", "")
+        val homeRecommendation: Fragment = RecommendationFragment.newInstance("1950650734", "ref=cart", "", "")
 
         val fragmentTransaction = supportFragmentManager
                 .beginTransaction()
