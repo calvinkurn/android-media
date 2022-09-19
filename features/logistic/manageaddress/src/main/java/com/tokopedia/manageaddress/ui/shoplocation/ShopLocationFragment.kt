@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui.shoplocation
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -108,8 +112,10 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                         fetchData()
                     } else {
                         activity?.finish()
-                        val intent = context?.let { context -> ShopSettingsAddressActivity.createIntent(context) }
-                        startActivityForResult(intent, INTENT_SHOP_SETTING_ADDRESS_OLD)
+                        context?.let { ctx ->
+                            val intent = getSellerSettingsIntent(ctx)
+                            startActivityForResult(intent, INTENT_SHOP_SETTING_ADDRESS_OLD)
+                        }
                     }
                 }
 
@@ -179,6 +185,15 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     private fun updateData(data: List<Warehouse>) {
         adapter.clearData()
         adapter.addList(data)
+    }
+
+    private fun getSellerSettingsIntent(context: Context) : Intent {
+        return if (GlobalConfig.isSellerApp()) {
+                RouteManager.getIntent(context, ApplinkConstInternalSellerapp.MENU_SETTING)
+            } else {
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID, userSession.shopId)
+            }
+
     }
 
     private fun setGeneralTicker(data: GeneralTickerModel) {
