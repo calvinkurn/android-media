@@ -211,28 +211,32 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check amp find appLink then should return tokopedia internal home find in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result"
-        assertEqualsDeepLinkMapper(ApplinkConst.AMP_FIND, expectedDeepLink)
-    }
-
-    @Test
-    fun `check find appLink then should return tokopedia internal home find in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result"
-        assertEqualsDeepLinkMapper(ApplinkConst.FIND, expectedDeepLink)
-    }
-
-    @Test
-    fun `check find appLink with search query then should return tokopedia internal home find in customerapp`() {
+    fun `check amp find appLink with search query should return tokopedia internal search in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker&navsource=find"
+            ApplinkConstInternalDiscovery.SEARCH_RESULT +
+                "?q=3%20ply%20masker" +
+                "&navsource=find"
+
+        assertEqualsDeepLinkMapper(ApplinkConst.AMP_FIND + "/3-ply-masker", expectedDeepLink)
+    }
+
+    @Test
+    fun `check find appLink with search query then should return tokopedia internal search in customerapp`() {
+        val expectedDeepLink =
+            ApplinkConstInternalDiscovery.SEARCH_RESULT +
+                "?q=3%20ply%20masker" +
+                "&navsource=find"
+
         assertEqualsDeepLinkMapper(ApplinkConst.FIND + "/3-ply-masker", expectedDeepLink)
     }
 
     @Test
-    fun `check find appLink with search and city query then should return tokopedia internal home find in customerapp`() {
+    fun `check find appLink with query and city then should return tokopedia internal search in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker%20di%20dki%20jakarta&navsource=find"
+            ApplinkConstInternalDiscovery.SEARCH_RESULT +
+                "?q=3%20ply%20masker%20di%20dki%20jakarta" +
+                "&navsource=find"
+
         assertEqualsDeepLinkMapper(
             ApplinkConst.FIND + "/3-ply-masker-di-dki-jakarta",
             expectedDeepLink
@@ -240,16 +244,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check amp find appLink with search query then should return tokopedia internal home find in customerapp`() {
+    fun `check amp find appLink with query and city then should return tokopedia internal search in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker&navsource=find"
-        assertEqualsDeepLinkMapper(ApplinkConst.AMP_FIND + "/3-ply-masker", expectedDeepLink)
-    }
+            ApplinkConstInternalDiscovery.SEARCH_RESULT +
+                "?q=3%20ply%20masker%20di%20dki%20jakarta" +
+                "&navsource=find"
 
-    @Test
-    fun `check amp find appLink with search and city query then should return tokopedia internal home find in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker%20di%20dki%20jakarta&navsource=find"
         assertEqualsDeepLinkMapper(
             ApplinkConst.AMP_FIND + "/3-ply-masker-di-dki-jakarta",
             expectedDeepLink
