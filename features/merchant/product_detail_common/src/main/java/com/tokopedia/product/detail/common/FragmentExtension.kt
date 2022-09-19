@@ -25,9 +25,9 @@ fun showImmediately(
     // has already been saved by its host
     if (!dialog.isStateSaved) {
         try {
-            dialog.showNow(fragmentManager, tag)
+            dialog.show(fragmentManager, tag)
         } catch (e: Throwable) {
-
+            e.printStackTrace()
         }
     }
 }

@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductEducationalHelper
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
@@ -326,9 +327,12 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             productInfo = listener?.getPdpDataSource(),
             userId = userSession.userId.orEmpty()
         )
-        val bs = ProductAnnotationBottomSheet()
-        bs.getData(annotation)
-        bs.show(childFragmentManager, "specBs")
+        showImmediately(childFragmentManager, "specBs") {
+            ProductAnnotationBottomSheet.create(
+                title = bottomSheetTitle.text.toString(),
+                annotation = annotation
+            )
+        }
     }
 
     override fun goToImagePreview(url: String) {
