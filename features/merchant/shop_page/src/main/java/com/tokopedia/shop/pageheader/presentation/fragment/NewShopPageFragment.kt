@@ -2858,7 +2858,9 @@ class NewShopPageFragment :
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     context?.let{
-                        checkUsingCustomBranchLinkDomain(linkerShareData)
+                        if (!shareModel.isAffiliate) {
+                            checkUsingCustomBranchLinkDomain(linkerShareData)
+                        }
                         var shareString = getString(
                                 R.string.shop_page_share_text_with_link,
                                 shopPageHeaderDataModel?.shopName,
