@@ -13,7 +13,6 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -28,12 +27,6 @@ class ContentDetailModule {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @ContentDetailScope
-    @Provides
-    fun provideAddWishListUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
-        return AddWishListUseCase(context)
     }
 
     @ContentDetailScope

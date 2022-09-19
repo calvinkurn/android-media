@@ -320,11 +320,16 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     private fun toggleWishlist(isWishListAction: Boolean, productId: String, pos: Int){
         if (mediaPreviewViewModel.isSessionActive){
             context?.let {
-                if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                    mediaPreviewViewModel.toggleWishlistV2(isWishListAction, productId, pos, object: WishlistV2ActionListener {
+                mediaPreviewViewModel.toggleWishlistV2(
+                    isWishListAction,
+                    productId,
+                    pos,
+                    object : WishlistV2ActionListener {
                         override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                            Toaster.build(requireView(), ErrorHandler.getErrorMessage(context, throwable),
-                                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                            Toaster.build(
+                                requireView(), ErrorHandler.getErrorMessage(context, throwable),
+                                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR
+                            ).show()
                         }
 
                         override fun onSuccessAddWishlist(
@@ -333,7 +338,11 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                         ) {
                             context?.let { context ->
                                 view?.let { v ->
-                                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
+                                        result,
+                                        context,
+                                        v
+                                    )
                                 }
                             }
                         }
@@ -354,34 +363,21 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                         ) {
                             context?.let { context ->
                                 view?.let { v ->
-                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(
+                                        result,
+                                        context,
+                                        v
+                                    )
                                 }
                             }
                         }
-                    }, it)
-                } else {
-                    mediaPreviewViewModel.toggleWishlist(isWishListAction, productId, pos, this::onErrorToggleWishlist, it) }
-                }
-
+                    },
+                    it
+                )
+            }
         } else {
             context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
         }
-    }
-
-    private fun onErrorToggleWishlist(message: String) {
-        showToastError(message)
-    }
-
-    private fun onErrorToggleWishlistV2(message: String, ctaText: String, ctaAction: String) {
-        view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText) {
-                if (ctaAction == OPEN_WISHLIST) goToWishList()
-            }.show()
-        }
-    }
-
-    private fun goToWishList() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun bindToolbar(dynamicPost: DynamicPostViewModel) {
