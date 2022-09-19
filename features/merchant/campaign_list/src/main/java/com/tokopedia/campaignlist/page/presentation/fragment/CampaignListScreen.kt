@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -59,10 +58,11 @@ fun CampaignListScreen(
 
         SearchBar(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            onSearchClicked = { searchQuery ->
+            onKeywordSubmit = { searchQuery ->
                 viewModel.setCampaignName(searchQuery)
                 viewModel.getCampaignList(campaignName = searchQuery)
-            }
+            },
+            onSearchbarCleared = { viewModel.getCampaignList() }
         )
 
         if (meta.value is Success) {
@@ -87,9 +87,7 @@ fun CampaignListScreen(
         if (!isTickerDismissed) {
             CampaignTicker(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                onDismissed = {
-                    isTickerDismissed = true
-                }
+                onDismissed = { isTickerDismissed = true }
             )
         }
 
@@ -112,11 +110,15 @@ fun List(campaigns: List<ActiveCampaign>) {
 }
 
 @Composable
-private fun SearchBar(modifier: Modifier = Modifier, onSearchClicked : (String) -> Unit) {
-    val editorAction: (TextView, Int, KeyEvent) -> Boolean = { textView, actionId, event ->
-        if (actionId == EditorInfo.IME_ACTION_SEARCH || event.keyCode == KeyEvent.KEYCODE_ENTER) {
-            val query = textView.text.toString()
-            onSearchClicked(query)
+private fun SearchBar(
+    modifier: Modifier = Modifier,
+    onKeywordSubmit: (String) -> Unit,
+    onSearchbarCleared: () -> Unit
+) {
+    val editorAction: (TextView?, Int?, KeyEvent?) -> Boolean = { textView, actionId, event ->
+        if (actionId == EditorInfo.IME_ACTION_SEARCH || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
+            val query = textView?.text.toString()
+            onKeywordSubmit(query)
             true
         } else {
             false
@@ -126,6 +128,7 @@ private fun SearchBar(modifier: Modifier = Modifier, onSearchClicked : (String) 
     UnifySearchBar(
         modifier = modifier.fillMaxWidth(),
         placeholderText = stringResource(id = R.string.search_active_campaign),
+        onSearchBarCleared = onSearchbarCleared,
         onEditorAction = editorAction
     )
 }
@@ -296,13 +299,15 @@ fun CampaignItem(campaign: ActiveCampaign) {
                 colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
             )
 
-            Text(
+            UnifyTypography(
                 "-",
                 modifier = Modifier.constrainAs(separator) {
                     top.linkTo(campaignStartDate.top)
                     bottom.linkTo(campaignStartTime.bottom)
                     start.linkTo(campaignStartDate.end, margin = 12.dp)
-                }
+                },
+                type = Typography.DISPLAY_3,
+                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
             )
 
             UnifyTypography(

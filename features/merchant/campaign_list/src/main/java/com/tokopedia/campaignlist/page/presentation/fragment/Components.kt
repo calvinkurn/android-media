@@ -4,16 +4,10 @@ import android.content.res.ColorStateList
 import android.view.KeyEvent
 import android.widget.TextView
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.tokopedia.campaignlist.common.util.onTextChanged
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Label
@@ -49,7 +43,8 @@ fun UnifySearchBar(
     modifier: Modifier = Modifier,
     placeholderText: String,
     onTextChanged: (String) -> Unit = { _ -> },
-    onEditorAction: (TextView, Int, KeyEvent) -> Boolean
+    onSearchBarCleared: () -> Unit = {},
+    onEditorAction: (TextView?, Int?, KeyEvent?) -> Boolean
 ) {
     AndroidView(
         modifier = modifier,
@@ -59,6 +54,7 @@ fun UnifySearchBar(
                 searchBarTextField.setOnEditorActionListener(onEditorAction)
                 showIcon = false
                 searchBarPlaceholder = placeholderText
+                clearListener = onSearchBarCleared
             }
         }
     )
