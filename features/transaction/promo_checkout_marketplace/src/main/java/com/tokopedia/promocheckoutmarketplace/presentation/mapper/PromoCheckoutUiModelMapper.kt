@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.mapper
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.promocheckoutmarketplace.data.response.BenefitDetail
 import com.tokopedia.promocheckoutmarketplace.data.response.BottomSheet
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
@@ -140,7 +141,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 uiData = PromoListItemUiModel.UiData().apply {
                     promoId = couponItem.promoId
                     uniqueId = couponItem.uniqueId
-                    shopId = couponItem.shopId.toInt()
+                    shopId = couponItem.shopId.toIntOrZero()
                     title = couponItem.title
                     benefitAmount = couponItem.benefitAmount
                     parentIdentifierId = headerIdentifierId
