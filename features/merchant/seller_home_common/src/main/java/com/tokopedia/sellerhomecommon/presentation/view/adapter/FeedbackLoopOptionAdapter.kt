@@ -1,11 +1,10 @@
 package com.tokopedia.sellerhomecommon.presentation.view.adapter
 
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.databinding.ShcItemFeedbackLoopOptionBinding
@@ -65,24 +64,10 @@ class FeedbackLoopOptionAdapter(
                 if (item.isSelected) {
                     edtShcFeedbackOption.visible()
                     edtShcFeedbackOption.setCounter(MAX_CHAR)
-                    edtShcFeedbackOption.textFieldInput.addTextChangedListener(object :
-                        TextWatcher {
-                        override fun beforeTextChanged(
-                            p0: CharSequence?,
-                            p1: Int,
-                            p2: Int,
-                            p3: Int
-                        ) {
-                        }
-
-                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                        }
-
-                        override fun afterTextChanged(text: Editable) {
-                            item.value = text.toString()
-                            onCheckedListener(item)
-                        }
-                    })
+                    edtShcFeedbackOption.textFieldInput.afterTextChanged { text ->
+                        item.value = text
+                        onCheckedListener(item)
+                    }
                 } else {
                     edtShcFeedbackOption.gone()
                     item.value = String.EMPTY

@@ -80,6 +80,7 @@ class SubmitWidgetDismissUseCase @Inject constructor(
         private const val FEEDBACK_ID_PARENT = "feedbackWidgetIDParent"
         private const val SHOP_ID = "shopID"
         private const val POSITIVE_FEEDBACK = "feedbackPositive"
+        private const val NULL_PARAM_ERROR = "Parameter is null, please invoke setParam(...) method"
 
         internal const val QUERY = """
             mutation dashboardDismissWithFeedback($$ACTION: String!, $$DISMISS_KEY: String!, $$DISMISS_OBJECT_ID_LIST: [String!]!, $$DISMISS_SIGN: String!, $$FEEDBACK_REASON_1: Boolean!, $$FEEDBACK_REASON_2: Boolean!, $$FEEDBACK_REASON_3: Boolean!, $$FEEDBACK_REASON_OTHER: String!, $$FEEDBACK_ID_PARENT: String!, $$SHOP_ID: Int!, $$DISMISS_TOKEN: String!, $$POSITIVE_FEEDBACK: Boolean!) {
@@ -90,7 +91,5 @@ class SubmitWidgetDismissUseCase @Inject constructor(
               }
             }
         """
-
-        private const val NULL_PARAM_ERROR = "Parameter is null, please invoke setParam(...) method"
     }
 }

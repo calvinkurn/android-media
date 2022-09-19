@@ -44,7 +44,7 @@ class PostListPagerAdapter(
         this.pagers.addAll(pagers)
     }
 
-    class PostListPagerViewHolder(
+    inner class PostListPagerViewHolder(
         private val binding: ShcItemPostListPagerBinding,
         private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
