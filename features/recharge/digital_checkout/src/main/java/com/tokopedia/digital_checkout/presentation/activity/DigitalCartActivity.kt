@@ -26,7 +26,6 @@ import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponentInstance
 import com.tokopedia.digital_checkout.presentation.fragment.DigitalCartFragment
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.user.session.UserSession
 
 /**
  * @author by jessica on 07/01/21

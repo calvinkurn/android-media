@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
@@ -454,10 +453,6 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
         view?.run {
             Toaster.build(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
-    }
-
-    override fun setFavNumbers(data: TopupBillsFavNumber) {
-        // do nothing
     }
 
     override fun onDestroy() {
