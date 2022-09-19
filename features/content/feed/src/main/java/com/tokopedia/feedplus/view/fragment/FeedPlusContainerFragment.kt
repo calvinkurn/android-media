@@ -80,6 +80,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.feedcomponent.R as feedComponentR
 
 
@@ -145,6 +146,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     /** View */
     private lateinit var fabFeed: FloatingButtonUnify
     private lateinit var feedFloatingButton: FeedFloatingButton
+    private lateinit var ivFeedUser: ImageUnify
 
     private val keyIsLightThemeStatusBar = "is_light_theme_status_bar"
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
@@ -229,6 +231,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun setupView(view: View) {
         fabFeed = view.findViewById(R.id.fab_feed)
         feedFloatingButton = view.findViewById(R.id.feed_floating_button)
+        ivFeedUser = view.findViewById(R.id.iv_feed_user)
     }
 
     private fun initNavRevampAbTest() {
@@ -610,6 +613,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         authorList.addAll(whitelistDomain.authors)
 
         renderCompleteFab()
+        renderUserProfileEntryPoint(whitelistDomain.userAccount)
     }
 
     private fun renderCompleteFab() {
@@ -667,6 +671,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         } else {
             feedFloatingButton.hide()
         }
+    }
+
+    private fun renderUserProfileEntryPoint(userAccount: Author?) {
+        if(userAccount == null) {
+            ivFeedUser.hide()
+            return
+        }
+
+        ivFeedUser.show()
+        ivFeedUser.setImageUrl(userAccount.thumbnail)
     }
 
     private fun createCreateLiveFab(): FloatingButtonItem {
