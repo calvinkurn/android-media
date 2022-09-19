@@ -94,6 +94,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String ENV_VALUE = "android";
     private static final String TOP_ADS_REDIRECTION = "TOP_ADS_REDIRECTION";
 
+    private final int ONE = 1;
+
     private final Activity context;
     private final DeepLinkView viewListener;
     private final FirebaseCrashlytics crashlytics;
@@ -460,8 +462,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openFlight(Uri uri, Bundle bundle) {
         List<String> linkSegment = uri.getPathSegments();
-        if (linkSegment.size() > 1) {
-            if (linkSegment.get(1).equals("invoice")) {
+        if (linkSegment.size() > ONE) {
+            if (linkSegment.get(ONE).equals("invoice")) {
                 // eg : https://www.tokopedia.com/flight/invoice?id=xxxx
                 String applink = ApplinkConstInternalTravel.FLIGHT_ORDER_DETAIL.replace("{orderId}", uri.getQueryParameter("id"));
                 RouteManager.route(context, applink + "?" + "open_invoice=1");
