@@ -247,7 +247,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         if (contentAccount.id == parentViewModel.authorId) return
                         if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
                         else parentViewModel.submitAction(SwitchAccount)
-                        viewModel.isFromSwitchAccount = true
+                        viewModel.setFromSwitchAccount(true)
                     }
                 })
             }
@@ -267,7 +267,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
                     override fun clickCloseIcon() {
                         if (!viewModel.isFromSwitchAccount) activity?.finish()
-                        viewModel.isFromSwitchAccount = false
+                        viewModel.setFromSwitchAccount(false)
                     }
                 })
             }
@@ -276,7 +276,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setListener(object : WarningInfoBottomSheet.Listener {
                     override fun clickCloseIcon() {
                         if (!viewModel.isFromSwitchAccount) activity?.finish()
-                        viewModel.isFromSwitchAccount = false
+                        viewModel.setFromSwitchAccount(false)
                     }
                 })
             }
@@ -931,7 +931,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             bottomSheet.setOnDismissListener {
                 if (viewModel.isFromSwitchAccount) bottomSheet.dismiss()
                 else activity?.finish()
-                viewModel.isFromSwitchAccount = false
+                viewModel.setFromSwitchAccount(false)
             }
             bottomSheet.show(childFragmentManager, TERMS_AND_CONDITION_TAG)
         }

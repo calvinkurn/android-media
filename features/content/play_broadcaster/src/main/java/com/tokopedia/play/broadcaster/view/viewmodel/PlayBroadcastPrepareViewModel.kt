@@ -19,6 +19,8 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
 import com.tokopedia.play_common.util.event.Event
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 /**
@@ -60,7 +62,9 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         }
     }
 
-    var isFromSwitchAccount: Boolean = false
+    private var _isFromSwitchAccount = MutableStateFlow(false)
+    val isFromSwitchAccount
+        get() = _isFromSwitchAccount.value
 
     private val ingestUrlObserver = object : Observer<String> {
         override fun onChanged(t: String?) {}
@@ -139,6 +143,10 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
 
     private fun setIngestUrl(ingestUrl: String) {
         channelConfigStore.setIngestUrl(ingestUrl)
+    }
+
+    fun setFromSwitchAccount(value: Boolean) {
+        _isFromSwitchAccount.update { value }
     }
 
     companion object {
