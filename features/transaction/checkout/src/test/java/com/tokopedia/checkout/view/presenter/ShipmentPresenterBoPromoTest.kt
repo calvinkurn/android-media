@@ -141,7 +141,8 @@ class ShipmentPresenterBoPromoTest {
     @Test
     fun `WHEN initialize presenter THEN cart data should be filled`() {
         // Given
-        val cartData = "{\\\"data\\\":{\\\"codes\\\":null,\\\"grand_total\\\":3.14,\\\"book\\\":false,\\\"service_id\\\":123,\\\"secret_key\\\":\\\"123\\\",\\\"user_data\\\":{\\\"user_id\\\":123,\\\"email\\\":\\\"test@test.com\\\",\\\"msisdn\\\":\\\"08123\\\",\\\"msisdn_verified\\\":false,\\\"is_qc_acc\\\":false,\\\"app_version\\\":\\\"1.23\\\",\\\"ip_address\\\":\\\"test\\\",\\\"user_agent\\\":\\\"test\\\",\\\"advertisement_id\\\":\\\"test\\\",\\\"device_type\\\":\\\"android\\\",\\\"device_id\\\":\\\"test\\\"},\\\"meta_data\\\":{\\\"orders\\\":[{\\\"shop_id\\\":1,\\\"shop_name\\\":\\\"test\\\",\\\"codes\\\":null,\\\"unique_id\\\":\\\"1-1-1-1\\\",\\\"is_po\\\":false,\\\"duration\\\":\\\"0\\\",\\\"warehouse_id\\\":1,\\\"address_id\\\":1}]},\\\"state\\\":\\\"checkout\\\"}}"
+        val cartData =
+            "{\\\"data\\\":{\\\"codes\\\":null,\\\"grand_total\\\":3.14,\\\"book\\\":false,\\\"service_id\\\":123,\\\"secret_key\\\":\\\"123\\\",\\\"user_data\\\":{\\\"user_id\\\":123,\\\"email\\\":\\\"test@test.com\\\",\\\"msisdn\\\":\\\"08123\\\",\\\"msisdn_verified\\\":false,\\\"is_qc_acc\\\":false,\\\"app_version\\\":\\\"1.23\\\",\\\"ip_address\\\":\\\"test\\\",\\\"user_agent\\\":\\\"test\\\",\\\"advertisement_id\\\":\\\"test\\\",\\\"device_type\\\":\\\"android\\\",\\\"device_id\\\":\\\"test\\\"},\\\"meta_data\\\":{\\\"orders\\\":[{\\\"shop_id\\\":1,\\\"shop_name\\\":\\\"test\\\",\\\"codes\\\":null,\\\"unique_id\\\":\\\"1-1-1-1\\\",\\\"is_po\\\":false,\\\"duration\\\":\\\"0\\\",\\\"warehouse_id\\\":1,\\\"address_id\\\":1}]},\\\"state\\\":\\\"checkout\\\"}}"
         val cartShipmentAddressFormData = CartShipmentAddressFormData(
             cartData = cartData
         )
@@ -171,7 +172,14 @@ class ShipmentPresenterBoPromoTest {
             shopShipmentList = listOf(),
             voucherLogisticItemUiModel = null
         )
-        every { ratesStatesConverter.fillState(any(), any(), any(), any()) } returns ShippingRecommendationData()
+        every {
+            ratesStatesConverter.fillState(
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns ShippingRecommendationData()
         every { getRatesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
         every { presenter.cancelAutoApplyPromoStackLogistic(any(), any(), any()) } just runs
         every { presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any()) } just runs
@@ -204,7 +212,14 @@ class ShipmentPresenterBoPromoTest {
             shopShipmentList = listOf(),
             voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "PROMOCODE")
         )
-        every { ratesStatesConverter.fillState(any(), any(), any(), any()) } returns ShippingRecommendationData()
+        every {
+            ratesStatesConverter.fillState(
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns ShippingRecommendationData()
         every { getRatesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
         every { presenter.cancelAutoApplyPromoStackLogistic(any(), any(), any()) } just runs
         every { presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any()) } just runs
@@ -1082,139 +1097,6 @@ class ShipmentPresenterBoPromoTest {
         }
     }
 
-    // Test ShipmentPresenter.hitClearAllBo()
-
-    @Test
-    fun `WHEN hit clear all BO with cart list with valid voucher logistic promo THEN call clear cache auto apply use case`() {
-        // Given
-        presenter.shipmentCartItemModelList = listOf(
-            ShipmentCartItemModel(
-                cartString = "111-111-111",
-                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
-                    code = "TEST1"
-                ),
-                shipmentCartData = ShipmentCartData(
-                    boMetadata = BoMetadata(
-                        boType = 1
-                    )
-                ),
-                cartItemModels = listOf(
-                    CartItemModel(
-                        preOrderDurationDay = 10
-                    )
-                ),
-            ),
-            ShipmentCartItemModel(
-                cartString = "222-222-222",
-                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
-                    code = "TEST2"
-                ),
-                shipmentCartData = ShipmentCartData(
-                    boMetadata = BoMetadata(
-                        boType = 1
-                    )
-                ),
-                cartItemModels = listOf(
-                    CartItemModel(
-                        preOrderDurationDay = 10
-                    )
-                ),
-            ),
-        )
-
-        every { compositeSubscription.add(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
-            ClearPromoUiModel(
-                successDataModel = SuccessDataUiModel(
-                    success = true,
-                    tickerMessage = ""
-                )
-            )
-        )
-
-        // When
-        presenter.hitClearAllBo()
-
-        // Then
-        verify {
-            clearCacheAutoApplyStackUseCase.setParams(any())
-            compositeSubscription.add(any())
-            clearCacheAutoApplyStackUseCase.createObservable(any())
-        }
-    }
-
-    @Test
-    fun `WHEN hit clear all BO with invalid cart item THEN don't call clear cache auto apply use case`() {
-        // Given
-        // Test negative branch
-        presenter.shipmentCartItemModelList = listOf(
-            // Test shipmentCartItemModel == null
-            null,
-            // Test shipmentCartData == null
-            ShipmentCartItemModel(
-                cartString = "111-111-111",
-                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "TEST1"),
-                shipmentCartData = null,
-                cartItemModels = listOf(
-                    CartItemModel(
-                        preOrderDurationDay = 10
-                    )
-                ),
-            ),
-            // Test voucherLogisticItemUiModel.code == ""
-            ShipmentCartItemModel(
-                cartString = "111-111-111",
-                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = ""),
-                shipmentCartData = ShipmentCartData(
-                    boMetadata = BoMetadata(
-                        boType = 1
-                    )
-                ),
-                cartItemModels = listOf(
-                    CartItemModel(
-                        preOrderDurationDay = 10
-                    )
-                ),
-            ),
-            // Test voucherLogisticItemUiModel == null
-            ShipmentCartItemModel(
-                cartString = "111-111-111",
-                voucherLogisticItemUiModel = null,
-                shipmentCartData = ShipmentCartData(
-                    boMetadata = BoMetadata(
-                        boType = 1
-                    )
-                ),
-                cartItemModels = listOf(
-                    CartItemModel(
-                        preOrderDurationDay = 10
-                    )
-                ),
-            ),
-        )
-
-        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
-        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
-            ClearPromoUiModel(
-                successDataModel = SuccessDataUiModel(
-                    success = true,
-                    tickerMessage = ""
-                )
-            )
-        )
-
-        // When
-        presenter.hitClearAllBo()
-
-        // Then
-        verify(inverse = true) {
-            clearCacheAutoApplyStackUseCase.setParams(any())
-            compositeSubscription.add(any())
-            clearCacheAutoApplyStackUseCase.createObservable(any())
-        }
-    }
-
     // Test ShipmentPresenter.getProductForRatesRequest(...)
 
     @Test
@@ -1311,12 +1193,5 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         assert(result.isEmpty())
-    }
-
-    // Test ShipmentPresenter.cancelAutoApplyPromoStackAfterClash(ClashingInfoDetailUiModel(...)
-
-    @Test
-    fun `WHEN THEN`() {
-
     }
 }
