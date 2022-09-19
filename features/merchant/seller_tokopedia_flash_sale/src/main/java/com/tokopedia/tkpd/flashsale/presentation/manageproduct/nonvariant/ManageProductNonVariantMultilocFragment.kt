@@ -16,15 +16,14 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.Manage
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import javax.inject.Inject
 
-class ManageProductNonVariantFragment :
+class ManageProductNonVariantMultilocFragment :
     BaseCampaignManageProductDetailFragment<ManageProductNonVariantAdapter>(),
     ManageProductNonVariantAdapter.ManageProductNonVariantAdapterListener {
 
     companion object {
-        private const val MULTILOC_FRAGMENT_TAG = "multiloc"
         @JvmStatic
-        fun newInstance(product: ReservedProduct.Product?): ManageProductNonVariantFragment {
-            val fragment = ManageProductNonVariantFragment()
+        fun newInstance(product: ReservedProduct.Product?): ManageProductNonVariantMultilocFragment {
+            val fragment = ManageProductNonVariantMultilocFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
             fragment.arguments = bundle
@@ -38,7 +37,7 @@ class ManageProductNonVariantFragment :
         arguments?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
     }
 
-    override fun getScreenName(): String = ManageProductNonVariantFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = ManageProductNonVariantMultilocFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
         DaggerTokopediaFlashSaleComponent.builder()
@@ -51,13 +50,24 @@ class ManageProductNonVariantFragment :
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         setupPage()
-        setupObserver()
+    }
+
+    private fun setupPage() {
+        product?.let {
+            setupProductHeaderData(
+                productImageUrl = it.picture,
+                productName = it.name,
+                productOriginalPriceFormatted = it.price.price.getCurrencyFormatted(),
+                productStockTextFormatted = getString(R.string.manageproductnonvar_stock_total_format, it.stock)
+            )
+            buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
+        }
     }
 
     override fun createAdapterInstance() = ManageProductNonVariantAdapter().apply {
         product?.let {
             setDataList(listOf(it))
-            setListener(this@ManageProductNonVariantFragment)
+            setListener(this@ManageProductNonVariantMultilocFragment)
         }
     }
 
@@ -73,32 +83,6 @@ class ManageProductNonVariantFragment :
 
     override fun onDataInputChanged(criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
         return viewModel.validateInput(criteria, discountSetup)
-    }
-
-    private fun setupObserver() {
-        viewModel.isMultiloc.observe(viewLifecycleOwner) {
-            moveToMultilocPage()
-        }
-    }
-
-    private fun moveToMultilocPage() {
-        val multilocPage = ManageProductNonVariantMultilocFragment.newInstance(product)
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.container, multilocPage, MULTILOC_FRAGMENT_TAG)
-            .commit()
-    }
-
-    private fun setupPage() {
-        product?.let {
-            setupProductHeaderData(
-                productImageUrl = it.picture,
-                productName = it.name,
-                productOriginalPriceFormatted = it.price.price.getCurrencyFormatted(),
-                productStockTextFormatted = getString(R.string.manageproductnonvar_stock_total_format, it.stock)
-            )
-            buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
-            viewModel.checkMultiloc(it)
-        }
     }
 
 }
