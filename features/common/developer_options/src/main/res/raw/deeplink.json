@@ -480,6 +480,11 @@
           "deeplink_variable": "ApplinkConstInternalTokopediaNow.HOME"
      }, 
      {
+          "destination_activity": "com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity",
+          "deeplink": "tokopedia-android-internal://digital/favoritenumber", 
+          "deeplink_variable": "ApplinkConsInternalDigital.FAVORITE_NUMBER"
+     },
+     {
           "destination_activity": "com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity", 
           "deeplink": "tokopedia-android-internal://now/category-list", 
           "deeplink_variable": ""
