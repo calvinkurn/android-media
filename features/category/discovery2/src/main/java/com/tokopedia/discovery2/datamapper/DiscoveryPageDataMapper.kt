@@ -261,6 +261,9 @@ class DiscoveryPageDataMapper(
     }
 
     private fun addBannerTimerComp(component: ComponentsItem): Boolean {
+        if(component.data?.firstOrNull()?.endDate.isNullOrEmpty() || component.data?.firstOrNull()?.startDate.isNullOrEmpty()){
+            return false
+        }
         return getElapsedTime(component.data?.firstOrNull()?.endDate ?: "") > 0
     }
 
