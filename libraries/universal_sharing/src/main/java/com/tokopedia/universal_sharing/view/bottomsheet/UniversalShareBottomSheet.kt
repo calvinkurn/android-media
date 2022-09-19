@@ -1035,6 +1035,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     override fun dismiss() {
         try {
+            onViewReadyAction = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if(gqlCallJob?.isActive == true) {
@@ -1051,6 +1052,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         try {
+            onViewReadyAction = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if(gqlCallJob?.isActive == true) {
