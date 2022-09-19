@@ -37,7 +37,7 @@ class TransactionInvoiceListViewModel @Inject constructor(
             block = {
                 getFilteredInvoiceListUseCase.setParams(filteredEvent, page, messageId.toString())
                 val response = getFilteredInvoiceListUseCase.executeOnBackground()
-                if (response.getInvoiceList.isNullOrEmpty()) {
+                if (response.getInvoiceList.isEmpty()) {
                     filteredInvoiceLiveData.value = Success(mapEmptyResponse(filteredEvent))
                 } else {
                     filteredInvoiceLiveData.value = Success(mapResponse(response))

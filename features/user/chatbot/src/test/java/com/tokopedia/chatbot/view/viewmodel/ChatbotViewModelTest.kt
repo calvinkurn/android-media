@@ -138,7 +138,6 @@ class ChatbotViewModelTest {
     fun `getTicketList success if ticket data is null`() {
         val response = mockk<InboxTicketListResponse>(relaxed = true)
 
-
         every {
             response.ticket?.TicketData
         } returns null
@@ -160,7 +159,6 @@ class ChatbotViewModelTest {
     fun `getTicketList success if ticket is null`() {
         val response = mockk<InboxTicketListResponse>(relaxed = true)
 
-
         every {
             response.ticket
         } returns null
@@ -177,7 +175,6 @@ class ChatbotViewModelTest {
             (viewModel.ticketList.value is TicketListState.ShowContactUs)
         )
     }
-
 
     @Test
     fun `getTicketList failure`() {
