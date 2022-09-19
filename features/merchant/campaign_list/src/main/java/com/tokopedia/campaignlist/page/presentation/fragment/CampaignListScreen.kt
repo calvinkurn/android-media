@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
+import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
+import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
 import com.tokopedia.campaignlist.common.data.model.response.GetSellerCampaignSellerAppMetaResponse
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
@@ -49,12 +51,15 @@ import com.tokopedia.usecase.coroutines.Success
 @Composable
 fun CampaignListScreen(
     viewModel: CampaignListViewModel,
-    onCampaignStatusTap: (List<CampaignStatusSelection>) -> Unit,
-    onCampaignTypeTap: (List<CampaignTypeSelection>) -> Unit,
+    onTapCampaignStatusFilter: (List<CampaignStatusSelection>) -> Unit,
+    onTapCampaignTypeFilter: (List<CampaignTypeSelection>) -> Unit,
+    onTapShareCampaignButton : (ActiveCampaign) -> Unit,
+    onDisplayShareBottomSheet: (GetMerchantCampaignBannerGeneratorData) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         val response = viewModel.getCampaignListResult.observeAsState()
         val meta = viewModel.getSellerMetaDataResult.observeAsState()
+        val banner = viewModel.getMerchantBannerResult.observeAsState()
 
         SearchBar(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -76,8 +81,8 @@ fun CampaignListScreen(
             SortFilter(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 defaultCampaignType = defaultCampaignType,
-                onCampaignStatusTap = { onCampaignStatusTap(campaignStatus) },
-                onCampaignTypeTap = { onCampaignTypeTap(campaignType) },
+                onTapCampaignStatusFilter = { onTapCampaignStatusFilter(campaignStatus) },
+                onTapCampaignTypeFilter = { onTapCampaignTypeFilter(campaignType) },
                 onClearFilter = { viewModel.getCampaignList() }
             )
         }
@@ -95,16 +100,21 @@ fun CampaignListScreen(
             val items =
                 (response.value as Success<GetCampaignListV2Response>).data.getCampaignListV2.campaignList
             val formattedCampaigns = viewModel.mapCampaignListDataToActiveCampaignList(items)
-            List(campaigns = formattedCampaigns)
+            List(campaigns = formattedCampaigns, onTapShareCampaignButton)
+        }
+
+        if (banner.value is Success) {
+            val bannerData = (banner.value as Success<GetMerchantCampaignBannerGeneratorDataResponse>).data.getMerchantCampaignBannerGeneratorData
+            onDisplayShareBottomSheet(bannerData)
         }
     }
 }
 
 @Composable
-fun List(campaigns: List<ActiveCampaign>) {
+fun List(campaigns: List<ActiveCampaign>, onTapShareButton: (ActiveCampaign) -> Unit) {
     LazyColumn {
         items(campaigns) {
-            CampaignItem(it)
+            CampaignItem(it, onTapShareButton)
         }
     }
 }
@@ -137,26 +147,26 @@ private fun SearchBar(
 private fun SortFilter(
     modifier: Modifier = Modifier,
     defaultCampaignType : String,
-    onCampaignStatusTap: () -> Unit,
-    onCampaignTypeTap: () -> Unit,
+    onTapCampaignStatusFilter: () -> Unit,
+    onTapCampaignTypeFilter: () -> Unit,
     onClearFilter: () -> Unit
 ) {
     val campaignStatus = SortFilterItem(
         stringResource(id = R.string.campaign_list_label_status),
         ChipsUnify.TYPE_NORMAL,
         ChipsUnify.TYPE_NORMAL,
-        onCampaignStatusTap
+        onTapCampaignStatusFilter
     ).apply {
-        chevronListener = onCampaignStatusTap
+        chevronListener = onTapCampaignStatusFilter
     }
 
     val campaignType = SortFilterItem(
         defaultCampaignType,
         ChipsUnify.TYPE_SELECTED,
         ChipsUnify.TYPE_NORMAL,
-        onCampaignTypeTap
+        onTapCampaignTypeFilter
     ).apply {
-        chevronListener = onCampaignTypeTap
+        chevronListener = onTapCampaignTypeFilter
     }
 
     UnifySortFilter(
@@ -180,7 +190,7 @@ private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed : () -> Un
 }
 
 @Composable
-fun CampaignItem(campaign: ActiveCampaign) {
+fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -> Unit) {
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
@@ -269,7 +279,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
             )
 
             UnifyTypography(
-                stringResource(id = R.string.campaign_list_product_quantity_label, campaign.productQty),
+                text = stringResource(id = R.string.campaign_list_product_quantity_label, campaign.productQty),
                 modifier = Modifier.constrainAs(productQty) {
                     top.linkTo(campaignName.bottom, margin = 12.dp)
                     start.linkTo(campaignName.start)
@@ -279,7 +289,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
             )
 
             UnifyTypography(
-                campaign.startDate,
+                text = campaign.startDate,
                 modifier = Modifier.constrainAs(campaignStartDate) {
                     top.linkTo(productQty.bottom, margin = 12.dp)
                     start.linkTo(productQty.start)
@@ -290,7 +300,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
 
 
             UnifyTypography(
-                campaign.startTime,
+                text = campaign.startTime,
                 modifier = Modifier.constrainAs(campaignStartTime) {
                     top.linkTo(campaignStartDate.bottom)
                     start.linkTo(campaignStartDate.start)
@@ -300,7 +310,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
             )
 
             UnifyTypography(
-                "-",
+                text = "-",
                 modifier = Modifier.constrainAs(separator) {
                     top.linkTo(campaignStartDate.top)
                     bottom.linkTo(campaignStartTime.bottom)
@@ -311,7 +321,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
             )
 
             UnifyTypography(
-                campaign.endDate,
+                text = campaign.endDate,
                 modifier = Modifier.constrainAs(campaignEndDate) {
                     top.linkTo(campaignStartDate.top)
                     bottom.linkTo(campaignStartDate.bottom)
@@ -322,7 +332,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
             )
 
             UnifyTypography(
-                campaign.endTime,
+                text = campaign.endTime,
                 modifier = Modifier.constrainAs(campaignEndTime) {
                     top.linkTo(campaignStartTime.top)
                     bottom.linkTo(campaignStartTime.bottom)
@@ -346,7 +356,7 @@ fun CampaignItem(campaign: ActiveCampaign) {
                 buttonSize = UnifyButton.Size.SMALL,
                 buttonType = UnifyButton.Type.MAIN,
                 buttonVariant = UnifyButton.Variant.FILLED,
-                onClick = {}
+                onClick = { onTapShareButton(campaign) }
             )
 
 
@@ -369,7 +379,7 @@ fun CampaignItemPreview() {
         endTime = "22:00 WIB"
     )
 
-    CampaignItem(campaign)
+    CampaignItem(campaign, {})
 }
 
 @Composable
