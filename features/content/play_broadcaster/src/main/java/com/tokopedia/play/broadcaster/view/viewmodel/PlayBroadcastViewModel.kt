@@ -397,7 +397,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             setChannelId(configUiModel.channelId)
             _configInfo.value = configUiModel
 
-            if (!checkSelectedAccountConfiguration(configUiModel, selectedAccount)) {
+            if (!isAccountEligible(configUiModel, selectedAccount)) {
                 if (isFirstOpen && isAllowChangeAccount) {
                     handleSwitchAccount(false)
                     isFirstOpen = false
@@ -1529,7 +1529,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return _accountListState.value.first { it.type == selectedType }
     }
 
-    private fun checkSelectedAccountConfiguration(
+    private fun isAccountEligible(
         configUiModel: ConfigurationUiModel,
         selectedAccount: ContentAccountUiModel,
     ): Boolean {
