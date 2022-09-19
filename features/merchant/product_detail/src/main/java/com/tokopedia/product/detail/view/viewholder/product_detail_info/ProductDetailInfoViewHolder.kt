@@ -122,7 +122,7 @@ class ProductDetailInfoViewHolder(
 
         productDetailInfoDescription.apply {
             if (descFormatted.isNotEmpty()) {
-                text = descFormatted.parseAsHtmlLink(root.context)
+                text = descFormatted.parseAsHtmlLink(root.context, replaceNewLine = false)
 
                 setOnClickListener {
                     listener.onSeeMoreDescriptionClicked(
