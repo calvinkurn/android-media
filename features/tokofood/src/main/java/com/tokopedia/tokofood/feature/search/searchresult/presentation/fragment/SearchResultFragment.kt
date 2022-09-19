@@ -190,7 +190,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
             sortValue = viewModel.getCurrentSortValue(),
             index = position
         )
-        goToMerchantPage(merchant)
+        goToMerchantPage(merchant.applink)
     }
 
     override fun onBranchButtonClicked(merchant: Merchant) {
@@ -411,8 +411,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                     this
                 )
             }
-        } else {
-            // TODO: Create method to change tab values
         }
         tokofoodSearchFilterTab?.setQuickFilter(uiModels)
     }
@@ -538,9 +536,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         return context?.getString(com.tokopedia.tokofood.R.string.search_srp_filter_apply).orEmpty()
     }
 
-    private fun goToMerchantPage(merchant: Merchant) {
-        val merchantApplink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchant.id, String.EMPTY)
-        TokofoodRouteManager.routePrioritizeInternal(context, merchantApplink)
+    private fun goToMerchantPage(applink: String) {
+        TokofoodRouteManager.routePrioritizeInternal(context, applink)
     }
 
     private fun goToDiscoverySearchPage() {

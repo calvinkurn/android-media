@@ -165,7 +165,7 @@
     <string name="search_srp_empty_with_filter_title">Nggak ada restoran yang sesuai dari filter ini</string>
     <string name="search_srp_empty_with_filter_description">Coba kurangi filter yang lagi aktif atau reset filter.</string>
     <string name="search_srp_empty_without_filter_title">Oops, restorannya nggak ketemu</string>
-    <string name="search_srp_empty_without_filter_description">&quot;%s&quot; kayaknya belum ada di GoFood.</string>
+    <string name="search_srp_empty_without_filter_description">\"%s\" kayaknya belum ada di GoFood.</string>
     <string name="search_srp_reset_filter">Reset Filter</string>
     <string name="search_srp_find_in_tokopedia">Cari di Tokopedia</string>
     <string name="search_srp_check_keyword">Periksa Kata Kunci</string>
