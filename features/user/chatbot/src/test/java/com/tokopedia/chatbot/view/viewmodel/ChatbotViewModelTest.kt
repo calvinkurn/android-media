@@ -135,6 +135,51 @@ class ChatbotViewModelTest {
     }
 
     @Test
+    fun `getTicketList success if ticket data is null`() {
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+
+
+        every {
+            response.ticket?.TicketData
+        } returns null
+
+        coEvery {
+            ticketListContactUsUsecase.getTicketList(captureLambda(), any())
+        } coAnswers {
+            firstArg<(InboxTicketListResponse) -> Unit>().invoke(response)
+        }
+
+        viewModel.getTicketList()
+
+        assertTrue(
+            (viewModel.ticketList.value is TicketListState.ShowContactUs)
+        )
+    }
+
+    @Test
+    fun `getTicketList success if ticket is null`() {
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+
+
+        every {
+            response.ticket
+        } returns null
+
+        coEvery {
+            ticketListContactUsUsecase.getTicketList(captureLambda(), any())
+        } coAnswers {
+            firstArg<(InboxTicketListResponse) -> Unit>().invoke(response)
+        }
+
+        viewModel.getTicketList()
+
+        assertTrue(
+            (viewModel.ticketList.value is TicketListState.ShowContactUs)
+        )
+    }
+
+
+    @Test
     fun `getTicketList failure`() {
         coEvery {
             ticketListContactUsUsecase.getTicketList(any(), captureLambda())
