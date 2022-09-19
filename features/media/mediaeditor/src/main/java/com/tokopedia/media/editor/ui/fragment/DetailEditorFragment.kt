@@ -648,7 +648,7 @@ class DetailEditorFragment @Inject constructor(
             dialogSecondaryLongCTA.apply {
                 text = getString(editorR.string.editor_remove_bg_dialog_secondary_button_text)
                 setOnClickListener {
-                    hide()
+                    dismiss()
                 }
             }
 
