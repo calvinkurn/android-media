@@ -1,4 +1,4 @@
-package com.tokopedia.autocompletecomponent.analytics
+package com.tokopedia.autocompletecomponent.universal.analytics
 
 interface UniversalEventTracking {
     interface Event {

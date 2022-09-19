@@ -1,4 +1,4 @@
-package com.tokopedia.autocompletecomponent.analytics
+package com.tokopedia.autocompletecomponent.universal.analytics
 
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel.CarouselTrackingUnification

@@ -2,7 +2,7 @@ package com.tokopedia.autocompletecomponent.universal.presentation.widget.carous
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.autocompletecomponent.analytics.UniversalTracking.getCarouselUnificationListName
+import com.tokopedia.autocompletecomponent.universal.analytics.UniversalTracking.getCarouselUnificationListName
 import com.tokopedia.autocompletecomponent.universal.presentation.BaseUniversalDataView
 import com.tokopedia.autocompletecomponent.universal.presentation.typefactory.UniversalSearchTypeFactory
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking

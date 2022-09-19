@@ -3,7 +3,7 @@ package com.tokopedia.autocompletecomponent.universal.presentation.widget.carous
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.autocompletecomponent.analytics.CarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
+import com.tokopedia.autocompletecomponent.universal.analytics.CarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.autocompletecomponent.universal.di.UniversalSearchContext
 import com.tokopedia.autocompletecomponent.util.contextprovider.ContextProvider
 import com.tokopedia.autocompletecomponent.util.contextprovider.WeakReferenceContextProvider

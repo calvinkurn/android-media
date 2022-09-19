@@ -1,6 +1,6 @@
 package com.tokopedia.autocompletecomponent.universal.presentation.widget.carousel
 
-import com.tokopedia.autocompletecomponent.analytics.UniversalTracking
+import com.tokopedia.autocompletecomponent.universal.analytics.UniversalTracking
 import com.tokopedia.autocompletecomponent.universal.presentation.BaseUniversalDataView
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
