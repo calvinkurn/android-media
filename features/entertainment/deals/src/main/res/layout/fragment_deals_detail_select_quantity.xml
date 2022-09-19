@@ -76,7 +76,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_brand_name"
                 android:textColor="@color/Unify_N700_44"
-                app:typographyType="body_2"
+                app:typographyType="display_2"
                 app:typographyWeight="reguler"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_quantity"
                 android:textColor="@color/Unify_N700_68"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -135,7 +135,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_price"
                 android:textColor="@color/Unify_N700_68"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -146,7 +146,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_mrp"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -160,7 +160,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_sales_price"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 android:textColor="@color/Unify_N700_68"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -194,7 +194,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_total_amount"
-                app:typographyType="body_1"
+                app:typographyType="display_1"
                 app:typographyWeight="reguler"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -24,7 +24,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_mrp"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="reguler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_favourite"
         android:textColor="@color/Unify_N700_44"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="reguler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:layout_constraintBottom_toBottomOf="@+id/iv_clock"
         app:layout_constraintLeft_toRightOf="@+id/iv_clock"
         app:layout_constraintTop_toTopOf="@+id/iv_clock"
@@ -173,7 +173,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_see_all_locations"
             android:textColor="@color/Unify_G400"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -219,7 +219,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_brand_name"
-            app:typographyType="body_1"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             android:textColor="@color/Unify_N700_96"
             android:layout_width="0dp"
@@ -233,7 +233,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_brand_venue"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             android:textColor="@color/Unify_N700_68"
             android:layout_width="0dp"
@@ -247,7 +247,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_brand_address"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -262,7 +262,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_view_map"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             android:textColor="@color/Unify_G400"
             android:layout_width="wrap_content"
@@ -305,7 +305,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_expandable_description"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             app:typographyWeight="reguler"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -320,7 +320,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seemorebutton_description"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler"
             android:textColor="@color/Unify_G400"
             android:layout_width="wrap_content"
@@ -360,7 +360,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_expandable_tnc"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -374,7 +374,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seemorebutton_tnc"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler"
             android:textColor="@color/Unify_G400"
             android:layout_width="wrap_content"

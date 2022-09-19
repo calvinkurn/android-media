@@ -22,18 +22,6 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
 
     var productId: String? = null
 
-    override fun getLayoutRes(): Int {
-        return com.tokopedia.deals.R.layout.activity_base_deals_detail
-    }
-
-    override fun getToolbarResourceID(): Int {
-        return com.tokopedia.deals.R.id.toolbar_base_deals_detail
-    }
-
-    override fun getParentViewResourceID(): Int {
-        return com.tokopedia.deals.R.id.deals_detail_parent_view
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null) {
@@ -76,7 +64,7 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
             com.tokopedia.deals.R.anim.deals_slide_out_down,
             com.tokopedia.deals.R.anim.deals_slide_out_up
         )
-        transaction.add(com.tokopedia.deals.R.id.deals_detail_parent_view, DealsPDPDescFragment.createInstance(title, text))
+        transaction.add(com.tokopedia.abstraction.R.id.parent_view, DealsPDPDescFragment.createInstance(title, text))
         transaction.addToBackStack(null)
         transaction.commit()
     }
@@ -89,7 +77,7 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
             com.tokopedia.deals.R.anim.deals_slide_out_down,
             com.tokopedia.deals.R.anim.deals_slide_out_up
         )
-        transaction.add(com.tokopedia.deals.R.id.deals_detail_parent_view, DealsPDPAllLocationFragment.createInstance(outlets))
+        transaction.add(com.tokopedia.abstraction.R.id.parent_view, DealsPDPAllLocationFragment.createInstance(outlets))
         transaction.addToBackStack(null)
         transaction.commit()
     }
@@ -102,7 +90,7 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
             com.tokopedia.deals.R.anim.deals_slide_out_down,
             com.tokopedia.deals.R.anim.deals_slide_out_up
         )
-        transaction.add(com.tokopedia.deals.R.id.deals_detail_parent_view, DealsPDPSelectDealsQuantityFragment.createInstance(data))
+        transaction.add(com.tokopedia.abstraction.R.id.parent_view, DealsPDPSelectDealsQuantityFragment.createInstance(data))
         transaction.addToBackStack(null)
         transaction.commit()
     }
