@@ -98,10 +98,8 @@ class Filter(@SerializedName("title")
     val isKeywordFilter: Boolean
         get() = TEMPLATE_NEGATIVE_KEYWORD == templateName
 
-    //TODO will update by template_name
-    val isPriceRangeCbFilter: Boolean
-        get() = options.firstOrNull()?.inputType == Option.INPUT_TYPE_CHECKBOX &&
-                options.firstOrNull()?.key == Option.KEY_PRICING
+    val isPriceRangeCheckboxFilter: Boolean
+        get() = TEMPLATE_PRICING_FOOD.equals(templateName)
 
     fun getFlattenedOptions() : List<Option> {
         return options.flatMap { option ->
@@ -130,5 +128,6 @@ class Filter(@SerializedName("title")
         const val TEMPLATE_NAME_BRAND = "template_brand"
         const val TEMPLATE_NAME_OFFERING = "template_offer"
         const val TEMPLATE_NEGATIVE_KEYWORD = "template_negative_keyword"
+        const val TEMPLATE_PRICING_FOOD = "template_pricing_food"
     }
 }

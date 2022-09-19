@@ -171,7 +171,9 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener {
                 is Success -> {
                     setInitialStateData(it.data.initialStateList)
                 }
-                is Fail -> {}
+                is Fail -> {
+                    //TODO send server logger
+                }
             }
         }
     }
@@ -179,8 +181,9 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener {
     private fun observeRemoveRecentSearch() {
         observe(viewModel.removeSearchHistory) {
             when (it) {
-                is Success -> {}
-                is Fail -> {}
+                is Fail -> {
+                    //TODO send server logger
+                }
             }
         }
     }

@@ -189,7 +189,7 @@ internal class SortFilterBottomSheetViewModel {
             when {
                 filter.isPriceFilter -> sortFilterList.add(createPriceFilterViewModel(filter))
                 filter.isKeywordFilter -> sortFilterList.add(createKeywordFilterDataView(filter))
-                filter.isPriceRangeCbFilter -> sortFilterList.add(createPriceRangeFilterCheckbox(filter))
+                filter.isPriceRangeCheckboxFilter -> sortFilterList.add(createPriceRangeFilterCheckbox(filter))
                 else -> sortFilterList.add(createFilterViewModel(filter))
             }
         }
