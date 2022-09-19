@@ -10,12 +10,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icInitialStateHistory"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivInitialStateHistory"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:icon_name="SEARCH"
         android:layout_margin="4dp"
+        app:unify_image_corner_radius="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvLabelRecentSearch"

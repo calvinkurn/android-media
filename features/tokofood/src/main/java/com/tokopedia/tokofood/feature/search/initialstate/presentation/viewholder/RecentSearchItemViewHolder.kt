@@ -4,10 +4,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.databinding.RecentSearchItemInitialStateBinding
-import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.CuisineItemUiModel
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.RecentSearchItemUiModel
 
 class RecentSearchItemViewHolder(view: View,
@@ -25,6 +25,7 @@ class RecentSearchItemViewHolder(view: View,
         bindImpressionRecentSearchListener(element, adapterPosition)
         setRecentSearchItem(element.title)
         setRecentSearchLabel(element.title)
+        setRecentSearchImageUrl(element.imageUrl)
         setRecentSearchAction(element)
     }
 
@@ -36,10 +37,19 @@ class RecentSearchItemViewHolder(view: View,
                     setRecentSearchLabel(newItem.title)
                     setRecentSearchItem(newItem.title)
                 }
+                if (oldItem.imageUrl != newItem.imageUrl) {
+                    setRecentSearchImageUrl(newItem.imageUrl)
+                }
                 if (oldItem != newItem) {
                     setRecentSearchAction(newItem)
                 }
             }
+        }
+    }
+
+    private fun setRecentSearchImageUrl(imageUrl: String) {
+        with(binding) {
+            ivDeleteRecentSearch.loadImage(imageUrl)
         }
     }
 
@@ -51,7 +61,7 @@ class RecentSearchItemViewHolder(view: View,
 
     private fun setRecentSearchAction(element: RecentSearchItemUiModel) {
         with(binding) {
-            ivDeleteRecentSearch.setImageUrl(element.imageActionUrl)
+            ivDeleteRecentSearch.loadImage(element.imageActionUrl)
             ivDeleteRecentSearch.setOnClickListener {
                 actionListener.onDeleteRecentSearchClicked(element.itemId, adapterPosition)
             }
