@@ -179,8 +179,9 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener {
     private fun observeRemoveRecentSearch() {
         observe(viewModel.removeSearchHistory) {
             when (it) {
-                is Success -> {}
-                is Fail -> {}
+                is Fail -> {
+                    //
+                }
             }
         }
     }
