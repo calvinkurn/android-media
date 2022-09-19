@@ -1,7 +1,11 @@
 package com.tokopedia.kyc_centralized.util
 
 import android.view.View
-import androidx.test.espresso.*
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.util.TreeIterables
 import org.hamcrest.Matcher
