@@ -32,6 +32,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentSearchResultBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
@@ -55,6 +56,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
@@ -77,6 +79,9 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     @Inject
     lateinit var analytics: TokofoodSearchResultAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(TokofoodSearchResultPageViewModel::class.java)
@@ -330,6 +335,11 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                         applySearchFilterTab(result.data)
                     }
                     is Fail -> {
+                        logErrorException(
+                            result.throwable,
+                            TokofoodErrorLogger.ErrorType.ERROR_LOAD_FILTER,
+                            TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_FILTER
+                        )
                         showToasterError(result.throwable.message.orEmpty())
                     }
                 }
@@ -346,6 +356,11 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                         updateAdapterVisitables(result.data)
                     }
                     is Fail -> {
+                        logErrorException(
+                            result.throwable,
+                            TokofoodErrorLogger.ErrorType.ERROR_LOAD_SEARCH_RESULT_PAGE,
+                            TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_SEARCH_RESULT_PAGE
+                        )
                         showToasterError(result.throwable.message.orEmpty())
                     }
                 }
@@ -378,6 +393,24 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                     }
                     TokofoodSearchUiEvent.EVENT_FAILED_LOAD_MORE -> {
                         onShowLoadMoreErrorToaster(event.throwable)
+                    }
+                    TokofoodSearchUiEvent.EVENT_FAILED_LOAD_SEARCH_RESULT -> {
+                        event.throwable?.let {
+                            logErrorException(
+                                it,
+                                TokofoodErrorLogger.ErrorType.ERROR_LOAD_SEARCH_RESULT_PAGE,
+                                TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_SEARCH_RESULT_PAGE
+                            )
+                        }
+                    }
+                    TokofoodSearchUiEvent.EVENT_FAILED_LOAD_FILTER -> {
+                        event.throwable?.let {
+                            logErrorException(
+                                it,
+                                TokofoodErrorLogger.ErrorType.ERROR_LOAD_SEARCH_RESULT_PAGE,
+                                TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_SEARCH_RESULT_PAGE
+                            )
+                        }
                     }
                 }
             }
@@ -479,6 +512,15 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun onFailedLoadDetailFilter(throwable: Throwable?) {
         sortFilterBottomSheet?.dismiss()
+
+        throwable?.let {
+            logErrorException(
+                it,
+                TokofoodErrorLogger.ErrorType.ERROR_LOAD_FILTER,
+                TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_FILTER
+            )
+        }
+
         throwable?.message?.let {
             showToasterError(it)
         }
@@ -513,6 +555,13 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun onShowLoadMoreErrorToaster(throwable: Throwable?) {
         val errorMessage = throwable?.message.orEmpty()
+        throwable?.let {
+            logErrorException(
+                it,
+                TokofoodErrorLogger.ErrorType.ERROR_LOAD_SEARCH_RESULT_PAGE,
+                TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_SEARCH_RESULT_PAGE
+            )
+        }
         showToasterError(errorMessage)
     }
 
@@ -571,6 +620,20 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun getDestinationId(): String {
         return localCacheModel?.district_id.orEmpty()
+    }
+
+    private fun logErrorException(
+        throwable: Throwable,
+        errorType: String,
+        description: String
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.SEARCH,
+            throwable,
+            errorType,
+            userSession.deviceId.orEmpty(),
+            description
+        )
     }
 
     private fun navigateToNewFragment(fragment: Fragment) {
