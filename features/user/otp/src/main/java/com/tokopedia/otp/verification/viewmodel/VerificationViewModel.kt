@@ -230,7 +230,7 @@ open class VerificationViewModel @Inject constructor(
         code: String,
         msisdn: String = "",
         userId: Int,
-        usePinV2: Boolean = false
+        usePinV2: Boolean = true
     ) {
         launchCatchError(coroutineContext, {
             TkpdIdlingResource.increment()
@@ -294,7 +294,7 @@ open class VerificationViewModel @Inject constructor(
         signature: String,
         timeUnix: String,
         userId: Int,
-        usePinV2: Boolean = false
+        usePinV2: Boolean = true
     ) {
         launchCatchError(coroutineContext, {
             TkpdIdlingResource.increment()
@@ -396,7 +396,4 @@ open class VerificationViewModel @Inject constructor(
         super.onCleared()
     }
 
-    companion object {
-        const val VALIDATE_PIN_V2_ROLLENCE = "pdh_val_and"
-    }
 }

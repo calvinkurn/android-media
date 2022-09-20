@@ -51,7 +51,6 @@ import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -250,8 +249,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     mode = modeListData.modeText,
                     userIdEnc = otpData.userIdEnc,
                     validateToken = otpData.accessToken,
-                    userId = otpData.userId.toIntOrZero(),
-                    usePinV2 = isEnableValidateV2()
+                    userId = otpData.userId.toIntOrZero()
             )
         } else {
             viewModel.otpValidate(
@@ -264,14 +262,10 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     fpData = "",
                     getSL = "",
                     signature = "",
-                    timeUnix = "",
-                    usePinV2 = isEnableValidateV2()
+                    timeUnix = ""
             )
         }
     }
-
-    private fun isEnableValidateV2(): Boolean =
-        RemoteConfigInstance.getInstance().abTestPlatform.getString(VerificationViewModel.VALIDATE_PIN_V2_ROLLENCE, "").isNotEmpty()
 
     private fun initObserver() {
         viewModel.sendOtpResult.observe(viewLifecycleOwner, Observer {
