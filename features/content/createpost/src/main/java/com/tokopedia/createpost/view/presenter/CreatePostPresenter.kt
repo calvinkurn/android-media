@@ -110,7 +110,7 @@ class CreatePostPresenter @Inject constructor(
     override fun getFollowersCount(isAffiliateType: Boolean) {
         if (isAffiliateType) {
             getProfileHeaderUseCase.execute(
-                    GetProfileHeaderUseCase.createRequestParams(userSession.userId.toInt()),
+                    GetProfileHeaderUseCase.createRequestParams(userSession.userId.toIntOrZero()),
                     object : Subscriber<GraphqlResponse>() {
                         override fun onNext(t: GraphqlResponse?) {
                             followersCount = t?.let(::getFollowersCount)
