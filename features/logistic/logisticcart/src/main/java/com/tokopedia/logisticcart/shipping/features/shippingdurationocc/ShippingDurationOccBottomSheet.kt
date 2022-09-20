@@ -72,8 +72,6 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
         return shippingCourierUiModel.productData.isRecommend && !shippingCourierUiModel.productData.isUiRatesHidden
     }
 
-
-
     override fun isToogleYearEndPromotionOn(): Boolean {
         return false
     }
