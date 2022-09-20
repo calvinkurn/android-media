@@ -1815,6 +1815,24 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(OccState.Failed(expected), orderSummaryPageViewModel.eligibleForAnaRevamp.value)
     }
 
+    // todo
+    @Test
+    fun `Get normal shipping duration param`() {
+        orderSummaryPageViewModel.getShippingBottomsheetParam()
+    }
+
+    // todo
+    @Test
+    fun `Get shipping duration param overweight`() {
+        orderSummaryPageViewModel.getShippingBottomsheetParam()
+    }
+
+    // todo
+    @Test
+    fun `Get shipping duration param after choose BO`() {
+        orderSummaryPageViewModel.getShippingBottomsheetParam()
+    }
+
     private fun onCheckEligibility_thenReturn(keroAddrIsEligibleForAddressFeatureResponse: KeroAddrIsEligibleForAddressFeatureData) {
         coEvery {
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
