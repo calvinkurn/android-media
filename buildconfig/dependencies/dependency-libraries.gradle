@@ -116,5 +116,6 @@ ext {
             screenRecorder          : ":libraries:screen_recorder",
             unitTest                : ":libraries:unit_test",
             telemetry               : ":libraries:telemetry",
+            sse                     : ":libraries:sse",
     ]
 }
