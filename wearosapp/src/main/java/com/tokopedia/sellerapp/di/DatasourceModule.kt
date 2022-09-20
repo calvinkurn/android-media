@@ -6,13 +6,11 @@ import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerapp.data.datasource.local.OrderRoomDatasource
+import com.tokopedia.sellerapp.data.datasource.local.SummaryRoomDatasource
 import com.tokopedia.sellerapp.data.datasource.local.dao.OrderDao
+import com.tokopedia.sellerapp.data.datasource.local.dao.SummaryDao
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
-import com.tokopedia.sellerapp.data.repository.NewOrderRepository
-import com.tokopedia.sellerapp.data.repository.ReadyToDeliverOrderRepository
 import com.tokopedia.sellerapp.data.repository.WearCacheActionImpl
-import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
-import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,10 +19,15 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-class WearModule {
+class DatasourceModule {
     @Provides
     fun provideOrderRoomDatasource(orderDao: OrderDao): OrderRoomDatasource {
         return OrderRoomDatasource(orderDao)
+    }
+
+    @Provides
+    fun provideSummaryRoomDatasource(summaryDao: SummaryDao): SummaryRoomDatasource {
+        return SummaryRoomDatasource(summaryDao)
     }
 
     @Provides
@@ -40,8 +43,9 @@ class WearModule {
     @Provides
     fun provideWearCacheActionImpl(
         orderRoomDatasource: OrderRoomDatasource,
+        summaryRoomDatasource: SummaryRoomDatasource,
         dispatchers: CoroutineDispatchers
-    ) = WearCacheActionImpl(dispatchers, orderRoomDatasource)
+    ) = WearCacheActionImpl(dispatchers, orderRoomDatasource, summaryRoomDatasource)
 
     @Provides
     fun provideClientMessageDatasource(
@@ -49,34 +53,4 @@ class WearModule {
         nodeClient: NodeClient,
         messageClient: MessageClient
     ) = ClientMessageDatasource(nodeClient, messageClient, wearCacheActionImpl)
-
-    @Provides
-    fun provideNewOrderRepository(
-        datasource: ClientMessageDatasource,
-        orderRoomDatasource: OrderRoomDatasource
-    ): NewOrderRepository {
-        return NewOrderRepository(datasource, orderRoomDatasource)
-    }
-
-    @Provides
-    fun provideReadyToDeliverOrderRepository(
-        datasource: ClientMessageDatasource,
-        orderRoomDatasource: OrderRoomDatasource
-    ): ReadyToDeliverOrderRepository {
-        return ReadyToDeliverOrderRepository(datasource, orderRoomDatasource)
-    }
-
-    @Provides
-    fun provideNewOrderUseCase(
-        newOrderRepository: NewOrderRepository
-    ): NewOrderUseCase {
-        return NewOrderUseCase(newOrderRepository)
-    }
-
-    @Provides
-    fun provideReadyToDeliverOrderUseCase(
-        readyToDeliverOrderRepository: ReadyToDeliverOrderRepository
-    ): ReadyToDeliverOrderUseCase {
-        return ReadyToDeliverOrderUseCase(readyToDeliverOrderRepository)
-    }
 }

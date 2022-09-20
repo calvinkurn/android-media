@@ -4,9 +4,12 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
 import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCase
+import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.UiState
@@ -18,7 +21,8 @@ import javax.inject.Inject
 class SharedViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val newOrderUseCase: NewOrderUseCase,
-    private val readyToDeliverOrderUseCase: ReadyToDeliverOrderUseCase
+    private val readyToDeliverOrderUseCase: ReadyToDeliverOrderUseCase,
+    private val getSummaryUseCase: GetSummaryUseCase,
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -26,11 +30,8 @@ class SharedViewModel @Inject constructor(
         private const val INDEX_NOT_FOUND = -1
     }
 
-    val homeMenu: StateFlow<List<MenuItem>> = merge(
-        newOrderUseCase.getCount(),
-        readyToDeliverOrderUseCase.getCount()
-    ).map {
-        getUpdatedMenuCounter(it.first, it.second)
+    val homeMenu: StateFlow<List<MenuItem>> = getSummaryUseCase.getMenuItemCounter().map {
+        getUpdatedMenuCounter(it)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
@@ -71,11 +72,13 @@ class SharedViewModel @Inject constructor(
         })
     }
 
-    private fun getUpdatedMenuCounter(title: String, count: Int) : List<MenuItem> {
+    private fun getUpdatedMenuCounter(listSummary: List<SummaryModel>) : List<MenuItem> {
         return homeMenu.value.toMutableList().apply {
-            val index = indexOfFirst { it.title == title }
-            if(index != INDEX_NOT_FOUND){
-                this[index] = this[index].copy(unreadCount = count)
+            listSummary.forEach { summaryModel ->
+                val index = indexOfFirst { it.title == summaryModel.title }
+                if(index != INDEX_NOT_FOUND){
+                    this[index] = this[index].copy(unreadCount = summaryModel.counter.toIntOrZero())
+                }
             }
         }
     }

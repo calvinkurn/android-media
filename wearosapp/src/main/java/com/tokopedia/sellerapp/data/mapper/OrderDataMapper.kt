@@ -6,8 +6,8 @@ import com.tokopedia.sellerapp.data.datasource.local.entity.ProductEntity
 import com.tokopedia.sellerapp.data.datasource.remote.OrderListModel
 
 object OrderDataMapper {
-    fun String.mapMessageDataToModel() : OrderListModel {
-        return Gson().fromJson(this, OrderListModel::class.java)
+    fun mapMessageDataToModel(message: String) : OrderListModel {
+        return Gson().fromJson(message, OrderListModel::class.java)
     }
 
     fun OrderListModel.mapModelToOrderEntity() : List<OrderEntity> {

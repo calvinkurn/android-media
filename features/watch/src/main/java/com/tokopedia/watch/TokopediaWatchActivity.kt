@@ -23,6 +23,9 @@ import com.tokopedia.watch.listenerservice.DataLayerServiceListener
 import com.tokopedia.watch.orderlist.mapper.OrderListMapper
 import com.tokopedia.watch.orderlist.model.OrderListModel
 import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
+import com.tokopedia.watch.ordersummary.mapper.SummaryMapper
+import com.tokopedia.watch.ordersummary.model.SummaryDataModel
+import com.tokopedia.watch.ordersummary.usecase.GetSummaryUseCase
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -102,6 +105,7 @@ class TokopediaWatchActivity : AppCompatActivity(),
             }
         }
 
+        getSummaryData()
         getOrderList()
     }
 
@@ -243,6 +247,19 @@ class TokopediaWatchActivity : AppCompatActivity(),
         useCase.execute(RequestParams(), getLoadOrderListDataSubscriber())
     }
 
+    private fun getSummaryData() {
+        if (!userSession.isLoggedIn) {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 123)
+        }
+
+        val useCase = GetSummaryUseCase(
+            GraphqlUseCase(),
+            SummaryMapper()
+        )
+
+        useCase.execute(RequestParams(), getLoadSummaryDataSubscriber())
+    }
+
     private fun getLoadOrderListDataSubscriber(): Subscriber<OrderListModel> {
         return object: Subscriber<OrderListModel>() {
             override fun onCompleted() {
@@ -262,4 +279,23 @@ class TokopediaWatchActivity : AppCompatActivity(),
         }
     }
 
+    private fun getLoadSummaryDataSubscriber(): Subscriber<SummaryDataModel> {
+        return object: Subscriber<SummaryDataModel>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+
+            }
+
+            override fun onNext(summaryDataModel: SummaryDataModel) {
+                Log.d(TAG, "SUMMARY DATA: ${Gson().toJson(summaryDataModel)}")
+                sendMessageToWatch(
+                    DataLayerServiceListener.GET_SUMMARY_PATH,
+                    Gson().toJson(summaryDataModel)
+                )
+            }
+        }
+    }
 }

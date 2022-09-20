@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.data.datasource.remote
 
+import android.util.Log
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.NodeClient
@@ -17,8 +18,10 @@ open class ClientMessageDatasource @Inject constructor(
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
         val data = messageEvent.data.decodeToString()
+        Log.d("TokopediaWearOS", "onMessageReceived: $data")
         when(messageEvent.path) {
             MessageConstant.GET_ORDER_LIST_PATH -> wearCacheAction.saveOrderListToCache(data)
+            MessageConstant.GET_SUMMARY_PATH -> wearCacheAction.saveSummaryToCache(data)
             else -> { }
         }
     }
