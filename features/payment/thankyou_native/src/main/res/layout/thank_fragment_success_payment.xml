@@ -58,7 +58,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_payment_success"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl3"
@@ -133,22 +133,6 @@
                     tools:text="Rp10000fgfgfgf"
                     tools:visibility="visible" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tvTotalAmount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/spacing_lvl3"
-                    android:gravity="center"
-                    android:paddingStart="@dimen/spacing_lvl3"
-                    android:textColor="@color/Unify_NN950"
-                    app:layout_constraintBottom_toTopOf="@id/tvInstallmentInfo"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="display_2"
-                    app:typographyWeight="bold"
-                    tools:text="Rp 100.676786"
-                    tools:visibility="visible" />
-
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/ivPayment"
                     android:layout_width="@dimen/layout_lvl3"
@@ -161,20 +145,48 @@
                     app:unify_image_type="rect" />
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvTotalAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/unify_space_16"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/spacing_lvl3"
+                    android:textColor="@color/Unify_NN950"
+                    app:layout_constraintBottom_toTopOf="@id/tvInstallmentInfo"
+                    app:layout_constraintEnd_toEndOf="@id/ivPaymentDetailIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="display_2"
+                    app:typographyWeight="bold"
+                    tools:text="Rp 100.676786"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvInstallmentInfo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_marginEnd="@dimen/unify_space_16"
                     android:maxLines="1"
                     android:paddingStart="@dimen/spacing_lvl3"
                     android:textColor="@color/Unify_NN600"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/bottomBarrier"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/ivPaymentDetailIcon"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintTop_toBottomOf="@+id/tvTotalAmount"
                     app:typographyType="paragraph_3"
                     tools:text="Cicilan X3" />
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/ivPaymentDetailIcon"
+                    android:layout_width="10dp"
+                    android:layout_height="20dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintStart_toEndOf="@id/tvTotalAmount"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tvTotalAmount"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvInstallmentInfo"
+                    app:icon_name="CHEVRON_RIGHT"
+                     />
 
                 <androidx.constraintlayout.widget.Barrier
                     android:id="@+id/bottomBarrier"
