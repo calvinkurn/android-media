@@ -62,22 +62,18 @@ class PlayPreference @Inject constructor(
     /**
      * check last visit
      */
-    private var countDay: Long = 0L
-        set(value) {
-            field = value
-        }
-        get() {
-            val current = System.currentTimeMillis()
-            return current - field
-        }
+
+    private fun countDays(time: Long) : Long  {
+        return System.currentTimeMillis() - time
+    }
 
     fun setCoachMark() {
-        countDay = sharedPref.getLong(SWIPE_ONBOARDING, 0L)
-        if (countDay >= DAY) sharedPref.edit().putLong(SWIPE_ONBOARDING, System.currentTimeMillis()).apply()
+        if (countDays(sharedPref.getLong(SWIPE_ONBOARDING, 0L)) >= DAY) {
+            sharedPref.edit().putLong(SWIPE_ONBOARDING, System.currentTimeMillis()).apply()
+        }
     }
 
     fun isCoachMark(): Boolean {
-        countDay = sharedPref.getLong(SWIPE_ONBOARDING, 0L)
-        return countDay >= DAY
+        return countDays(sharedPref.getLong(SWIPE_ONBOARDING, 0L)) >= DAY
     }
 }
