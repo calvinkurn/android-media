@@ -432,8 +432,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         var hasUnApply = false
         var hasApply = false
         validateUsePromoRevampUiModel?.let {
-            it.promoUiModel.voucherOrderUiModels.let {
-                for (voucherOrderUiModel in it) {
+            it.promoUiModel.voucherOrderUiModels.let { voucherOrders ->
+                for (voucherOrderUiModel in voucherOrders) {
                     if (voucherOrderUiModel.shippingId > 0
                         && voucherOrderUiModel.spId > 0
                         && voucherOrderUiModel.type == "logistic"
@@ -474,9 +474,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun displayingAdjustmentPromoToaster(hasUnApply: Boolean) {
         validateUsePromoRevampUiModel?.let {
-            it.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message.let {
-                if (it.isNotBlank())
-                    globalEvent.value = OccGlobalEvent.ToasterInfo(it)
+            it.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message.let { errMessage ->
+                if (errMessage.isNotBlank())
+                    globalEvent.value = OccGlobalEvent.ToasterInfo(errMessage)
                 else if (hasUnApply)
                     globalEvent.value = OccGlobalEvent.AdjustShippingToaster
             }
