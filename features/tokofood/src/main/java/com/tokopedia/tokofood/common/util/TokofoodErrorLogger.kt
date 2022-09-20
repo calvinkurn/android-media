@@ -45,6 +45,8 @@ object TokofoodErrorLogger {
         internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error of eligible for address"
         internal const val ERROR_INITIAL_SEARCH_STATE = "error of initial search state"
         internal const val ERROR_REMOVE_RECENT_SEARCH = "error of remove recent search"
+        internal const val ERROR_LOAD_SEARCH_RESULT_PAGE = "error load search result page"
+        internal const val ERROR_LOAD_FILTER = "error load filter"
     }
 
     object ErrorType {
@@ -63,6 +65,8 @@ object TokofoodErrorLogger {
         internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error_eligible_for_address"
         internal const val ERROR_INITIAL_SEARCH_STATE = "error_initial_search_state"
         internal const val ERROR_REMOVE_RECENT_SEARCH = "error_remove_recent_search"
+        internal const val ERROR_LOAD_SEARCH_RESULT_PAGE = "error_load_srp"
+        internal const val ERROR_LOAD_FILTER = "error_load_filter"
     }
 
     fun logExceptionToServerLogger(
