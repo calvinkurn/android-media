@@ -43,6 +43,8 @@ object TokofoodErrorLogger {
         internal const val ERROR_CHOOSE_ADDRESS_MERCHANT_PAGE = "error of choose_address in merchant page"
         internal const val ERROR_CHECK_DELIVERY_COVERAGE = "error of deliverage coverage"
         internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error of eligible for address"
+        internal const val ERROR_INITIAL_SEARCH_STATE = "error load initial search state"
+        internal const val ERROR_REMOVE_RECENT_SEARCH = "error of remove recent search"
         internal const val ERROR_LOAD_SEARCH_RESULT_PAGE = "error load search result page"
         internal const val ERROR_LOAD_FILTER = "error load filter"
     }
@@ -61,6 +63,8 @@ object TokofoodErrorLogger {
         internal const val ERROR_CHOOSE_ADDRESS = "error_choose_address"
         internal const val ERROR_CHECK_DELIVERY_COVERAGE = "error_check_delivery_coverage"
         internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error_eligible_for_address"
+        internal const val ERROR_INITIAL_SEARCH_STATE = "error_load_initial_search_state"
+        internal const val ERROR_REMOVE_RECENT_SEARCH = "error_remove_recent_search"
         internal const val ERROR_LOAD_SEARCH_RESULT_PAGE = "error_load_srp"
         internal const val ERROR_LOAD_FILTER = "error_load_filter"
     }

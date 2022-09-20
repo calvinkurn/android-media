@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.tokofood.feature.search.common.presentation.uimodel.TokofoodSearchErrorStateUiModel
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.diffutil.InitialSearchStateDiffUtil
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.BaseInitialStateVisitable
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.HeaderRecentSearchUiModel
@@ -22,6 +24,20 @@ class TokoFoodInitStateAdapter(private val initialSearchAdapterFactoryImpl: Init
         visitables.clear()
         visitables.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun showErrorState(errorType: Int) {
+        if (visitables.getOrNull(Int.ZERO) !is TokofoodSearchErrorStateUiModel) {
+            visitables.add(TokofoodSearchErrorStateUiModel(errorType))
+            notifyItemInserted(Int.ZERO)
+        }
+    }
+
+    fun removeErrorState() {
+        if (visitables.getOrNull(lastIndex) is TokofoodSearchErrorStateUiModel) {
+            visitables.removeAt(lastIndex)
+            notifyItemRemoved(lastIndex)
+        }
     }
 
     inline fun <reified T : Visitable<*>> expandInitialStateItem(newInitialStateList: List<T>) {
