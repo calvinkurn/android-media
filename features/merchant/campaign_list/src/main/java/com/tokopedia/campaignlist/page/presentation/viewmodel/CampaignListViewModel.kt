@@ -76,10 +76,13 @@ class CampaignListViewModel @Inject constructor(
     }
 
     data class UiState(
-        val campaignStatus : List<CampaignStatusSelection> = emptyList(),
+        val campaigns: List<ActiveCampaign> = listOf(),
+        val banner: GetMerchantCampaignBannerGeneratorData? = null,
+        val campaignStatus: List<CampaignStatusSelection> = emptyList(),
         val campaignType: List<CampaignTypeSelection> = emptyList(),
         val selectedCampaignStatus: CampaignStatusSelection? = null,
-        val selectedCampaignType: CampaignTypeSelection?= null
+        val selectedCampaignType: CampaignTypeSelection? = null,
+        val isTickerDismissed: Boolean = false
     )
 
     private val _uiState = MutableStateFlow(UiState())
@@ -146,6 +149,10 @@ class CampaignListViewModel @Inject constructor(
                 getCampaignListUseCase.executeOnBackground()
             }
             getCampaignListResultLiveData.value = Success(result)
+
+            _uiState.update {
+                it.copy(campaigns = mapCampaignListDataToActiveCampaignList(result.getCampaignListV2.campaignList))
+            }
         }, onError = {
             getCampaignListResultLiveData.value = Fail(it)
         })
@@ -159,7 +166,10 @@ class CampaignListViewModel @Inject constructor(
                 getMerchantBannerUseCase.executeOnBackground()
             }
             getMerchantBannerResultLiveData.value = Success(result)
+
+            _uiState.update { it.copy(banner = result.getMerchantCampaignBannerGeneratorData) }
         }, onError = {
+            _uiState.update { it.copy(banner = null) }
             getMerchantBannerResultLiveData.value = Fail(it)
         })
     }

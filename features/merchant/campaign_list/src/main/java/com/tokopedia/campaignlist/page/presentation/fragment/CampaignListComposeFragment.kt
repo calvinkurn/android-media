@@ -76,7 +76,6 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
         private const val OFFICIAL_STORE = "Official Store"
         private const val POWER_MERCHANT_PRO = "Power Merchant PRO"
         private const val VALUE_SHARE_RS = "ShopRS" // Rilisan Spesial
-        private const val DEFAULT_SELECTED_CAMPAIGN_TYPE_ID = 0
     }
 
     override fun getScreenName(): String {
@@ -107,6 +106,12 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
                     onTapShareCampaignButton = { campaign ->
                         viewModel.setSelectedActiveCampaign(campaign)
                         viewModel.getSellerBanner(campaign.campaignId.toIntOrZero())
+                    },
+                    onClearFilter = {
+                        viewModel.getCampaignList(statusId = GetCampaignListUseCase.statusId)
+                    },
+                    onSearchbarCleared = {
+                        viewModel.getCampaignList(statusId = GetCampaignListUseCase.statusId)
                     },
                     onDisplayShareBottomSheet = { banner ->
                         viewModel.setMerchantBannerData(banner)
