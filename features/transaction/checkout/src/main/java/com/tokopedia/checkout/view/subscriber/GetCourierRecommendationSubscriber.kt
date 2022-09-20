@@ -76,10 +76,15 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                                         view.logOnErrorLoadCourier(MessageErrorException(shippingCourierUiModel.productData.error?.errorMessage), itemPosition)
                                         return
                                     } else {
+                                        val courierItemData = generateCourierItemData(shippingCourierUiModel, shippingRecommendationData)
+                                        if (shippingCourierUiModel.productData.isUiRatesHidden && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
+                                            view.logOnErrorLoadCourier(MessageErrorException("rates ui hidden but no promo"), itemPosition)
+                                            return
+                                        }
                                         shippingCourierUiModel.isSelected = true
                                         presenter.setShippingCourierViewModelsState(shippingDurationUiModel.shippingCourierViewModelList, shipmentCartItemModel.orderNumber)
-                                        view.renderCourierStateSuccess(generateCourierItemData(shippingCourierUiModel, shippingRecommendationData),
-                                                itemPosition, isTradeInDropOff, isForceReloadRates)
+                                        view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff, isForceReloadRates)
                                         return
                                     }
                                 }

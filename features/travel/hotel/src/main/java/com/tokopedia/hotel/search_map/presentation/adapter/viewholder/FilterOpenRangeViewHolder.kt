@@ -6,6 +6,7 @@ import com.tokopedia.hotel.search_map.data.model.FilterV2
 import com.tokopedia.hotel.search_map.presentation.adapter.HotelSearchResultFilterV2Adapter
 import com.tokopedia.hotel.search_map.presentation.widget.HotelFilterPriceRangeSlider
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import kotlinx.android.synthetic.main.layout_hotel_filter_open_range.view.*
 
 /**
@@ -22,7 +23,7 @@ class FilterOpenRangeViewHolder(view: View, val onSelectedFilterChangedListener:
         filterName = filter.name
 
         if (filter.options.isEmpty()) filter.options = listOf(MIN_PRICE, MAX_PRICE)
-        initialMaxPrice = filter.options.lastOrNull().toIntOrZero()
+        initialMaxPrice = filter.options.lastOrNull().toIntSafely()
 
         val selectedFilterOnlyOne = filter.optionSelected.size == 1
 
@@ -31,10 +32,10 @@ class FilterOpenRangeViewHolder(view: View, val onSelectedFilterChangedListener:
 
             if (selectedFilterOnlyOne) {
                 hotel_filter_open_range_slider.initView( 0,
-                        (filter.optionSelected.getOrNull(0) ?: initialMaxPrice.toString()).toIntOrZero() , initialMaxPrice)
+                        (filter.optionSelected.getOrNull(0) ?: initialMaxPrice.toString()).toIntSafely() , initialMaxPrice)
             } else {
-                hotel_filter_open_range_slider.initView((filter.optionSelected.firstOrNull() ?: "0").toIntOrZero(),
-                        (filter.optionSelected.getOrNull(1) ?: initialMaxPrice.toString()).toIntOrZero() , initialMaxPrice)
+                hotel_filter_open_range_slider.initView((filter.optionSelected.firstOrNull() ?: "0").toIntSafely(),
+                        (filter.optionSelected.getOrNull(1) ?: initialMaxPrice.toString()).toIntSafely() , initialMaxPrice)
             }
 
             hotel_filter_open_range_slider.onValueChangedListener = object: HotelFilterPriceRangeSlider.OnValueChangedListener{

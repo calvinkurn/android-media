@@ -51,6 +51,10 @@ class PmsAnalytics @Inject constructor(
             is PmsEvents.InvokeChangeAccountDetailsEvent -> prepareCommonMap(
                 ACTION_CLICK_CHANGE_BANK_DETAIL
             )
+            is PmsEvents.CompletePayment -> prepareCommonMap(
+                ACTION_COMPLETE_PAYMENT,
+                event.gatewayName
+            )
         }
     }
 
@@ -84,7 +88,6 @@ class PmsAnalytics @Inject constructor(
         const val SCREEN_NAME = "PMS page"
         const val EVENT_NAME = "clickPMS"
         const val ACTION_TAP_THREE_DOTS = "tap three dots"
-
         const val ACTION_CLICK_CANCEL_TRANSACTION = "click batalkan transaksi"
         const val ACTION_CLICK_CONFIRM_CANCEL_TRANSACTION = "click confirm batalkan transaksi"
         const val ACTION_CLICK_CANCEL_ON_TRANSACTION_DETAIL = "click batalkan on detail"
@@ -97,6 +100,7 @@ class PmsAnalytics @Inject constructor(
 
         const val ACTION_CLICK_CHANGE_BANK_DETAIL = "click ubah detail rekening"
         const val ACTION_CLICK_CONFIRM_BANK_DETAIL = "click confirm ubah detail rekening"
+        const val ACTION_COMPLETE_PAYMENT = "click lanjut bayar"
 
         const val ACTION_CLICK_SELECT_IMAGE = "click pilih gambar"
         const val ACTION_CLICK_SELECT_ANOTHER_IMAGE = "click pilih gambar lain"

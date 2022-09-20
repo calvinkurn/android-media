@@ -38,18 +38,18 @@ data class DealsMetaDataCheckout(
         @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Int = 0
+        val totalPrice: Long = 0
 )
 
 data class ItemMapCheckout(
         @SuppressLint("Invalid Data Type")
         @SerializedName("base_price")
         @Expose
-        val basePrice:Int = 0,
+        val basePrice:Long = 0,
         @SuppressLint("Invalid Data Type")
         @SerializedName("category_id")
         @Expose
-        val categoryId: Int = 0,
+        val categoryId: Long = 0,
         @SerializedName("child_category_ids")
         @Expose
         val childCategoryIds:String = "",
@@ -62,7 +62,7 @@ data class ItemMapCheckout(
         @SuppressLint("Invalid Data Type")
         @SerializedName("currency_price")
         @Expose
-        val currencyPrice: Int = 0,
+        val currencyPrice: Long = 0,
         @SerializedName("description")
         @Expose
         val description:String = "",
@@ -78,19 +78,19 @@ data class ItemMapCheckout(
         @SuppressLint("Invalid Data Type")
         @SerializedName("flag_id")
         @Expose
-        val flagId:Int = 0,
+        val flagId:Long = 0,
         @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
-        val id:Int = 0,
+        val id:Long = 0,
         @SuppressLint("Invalid Data Type")
         @SerializedName("invoice_id")
         @Expose
-        val invoiceId:Int = 0,
+        val invoiceId:Long = 0,
         @SuppressLint("Invalid Data Type")
         @SerializedName("invoice_item_id")
         @Expose
-        val invoiceItemId:Int = 0,
+        val invoiceItemId:Long = 0,
         @SerializedName("invoice_status")
         @Expose
         val invoiceStatus:String = "",
@@ -112,7 +112,7 @@ data class ItemMapCheckout(
         @SuppressLint("Invalid Data Type")
         @SerializedName("package_id")
         @Expose
-        val packageId:Int = 0,
+        val packageId:Long = 0,
         @SerializedName("package_name")
         @Expose
         val packageName:String = "",
@@ -122,14 +122,14 @@ data class ItemMapCheckout(
         @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
-        val price: Int = 0,
+        val price: Long = 0,
         @SerializedName("product_app_url")
         @Expose
         val productAppUrl:String = "",
         @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
         @Expose
-        val productId: Int = 0,
+        val productId: Long = 0,
         @SerializedName("product_image")
         @Expose
         val productImage:String = "",
@@ -139,7 +139,7 @@ data class ItemMapCheckout(
         @SuppressLint("Invalid Data Type")
         @SerializedName("provider_id")
         @Expose
-        val providerId:Int = 0,
+        val providerId:Long = 0,
         @SerializedName("provider_invoice_code")
         @Expose
         val providerInvoiceCode:String = "",
@@ -167,7 +167,7 @@ data class ItemMapCheckout(
         @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Int = 0,
+        val totalPrice: Long = 0,
         @SerializedName("product_web_url")
         @Expose
         val productWebUrl:String = "",
