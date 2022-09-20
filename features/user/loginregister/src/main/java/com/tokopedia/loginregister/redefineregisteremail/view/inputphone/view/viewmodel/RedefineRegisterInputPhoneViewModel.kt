@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
-import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoUseCase
-import com.tokopedia.sessioncommon.data.register.Register
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileUpdateUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileValidateUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateModel
@@ -16,6 +14,7 @@ import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileValidateModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileValidateParam
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.data.register.Register
 import com.tokopedia.sessioncommon.data.register.RegisterV2Param
 import com.tokopedia.sessioncommon.domain.usecase.GetRegisterCheckUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetRegisterV2AndSaveSessionUseCase
@@ -148,8 +147,6 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
             )
 
             val result = getRegisterV2AndSaveSessionUseCase(param)
-
-            if (result is Success) getUserInfo()
 
             _registerV2.value = result
             _submitRegisterLoading.value = false
