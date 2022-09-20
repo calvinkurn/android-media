@@ -20,6 +20,7 @@ import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
 import com.tokopedia.media.editor.ui.component.DrawerUiComponent
+import com.tokopedia.media.editor.ui.component.EditorViewPager
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
@@ -95,6 +96,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             viewBinding?.viewPager?.let {
                 val stateList = viewModel.editStateList.values.toList()
                 it.setAdapter(stateList)
+                setPagerPageChangeListener(it)
             }
 
             return
@@ -279,14 +281,18 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             } else {
                 viewBinding?.viewPager?.apply {
                     setAdapter(viewModel.editStateList.values.toList())
-                    setOnPageChanged { position, isVideo ->
-                        thumbnailDrawerComponent.clickIndex(position)
-
-                        editorToolComponent.container().apply {
-                            if (isVideo) hide() else visible()
-                        }
-                    }
+                    setPagerPageChangeListener(this)
                 }
+            }
+        }
+    }
+
+    private fun setPagerPageChangeListener(viewPager: EditorViewPager){
+        viewPager.setOnPageChanged { position, isVideo ->
+            thumbnailDrawerComponent.clickIndex(position)
+
+            editorToolComponent.container().apply {
+                if (isVideo) hide() else visible()
             }
         }
     }
