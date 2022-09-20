@@ -94,7 +94,6 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.chips
-    implementation project(rootProject.ext.features.homeWishlist)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
     testImplementation rootProject.ext.testDependencies.robolectric

@@ -1,4 +1,0 @@
-query getProductIsWishlisted($productID: String!){
-    status
-    ProductWishlistQuery(productID: $productID)
-}
