@@ -68,7 +68,6 @@ import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
-import com.tokopedia.home_wishlist.view.fragment.WishlistFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -203,7 +202,6 @@ public class MainParentActivity extends BaseActivity implements
     public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
     public static final String PARAM_HOME = "home";
     public static final String PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2";
-    private static final String ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2";
     private static final String ENABLE_WISHLIST_COLLECTION = "android_enable_wishlist_collection";
     public static final String PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection";
     private static final String SUFFIX_ALPHA = "-alpha";
