@@ -2785,6 +2785,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             productIds = listSelectedProductIds
         )
         bottomSheetCollection.saveToCollection(addWishlistParam)
+        WishlistCollectionAnalytics.sendClickCollectionFolderEvent(id, listSelectedProductIds.toString(), SRC_WISHLIST)
     }
 
     override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {

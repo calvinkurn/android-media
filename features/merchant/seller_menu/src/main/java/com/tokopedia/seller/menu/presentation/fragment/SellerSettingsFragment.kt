@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
@@ -16,25 +17,47 @@ import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.presentation.util.SellerSettingsList
+import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
+import com.tokopedia.seller.menu.presentation.viewmodel.SellerSettingViewModel
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class SellerSettingsFragment: Fragment(), SettingTrackingListener {
+class SellerSettingsFragment : Fragment(), SettingTrackingListener {
 
     @Inject
     lateinit var sellerMenuTracker: SellerMenuTracker
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var viewModel: SellerSettingViewModel
+
     private var binding by autoClearedNullable<FragmentSellerSettingsBinding>()
+
+    private val sellerMenuAdapter by lazy {
+        SellerMenuAdapter(
+            SellerMenuAdapterTypeFactory(
+                this,
+                sellerMenuTracker = sellerMenuTracker,
+                userSession = userSession
+            )
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentSellerSettingsBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -42,6 +65,8 @@ class SellerSettingsFragment: Fragment(), SettingTrackingListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupSettingsList()
+        viewModel.getShopLocEligible(userSession.shopId.toLong())
+        observe(viewModel.shopLocEligible, ::setupLocationSettings)
         startShopActiveService()
     }
 
@@ -57,21 +82,25 @@ class SellerSettingsFragment: Fragment(), SettingTrackingListener {
     private fun setupSettingsList() {
         context?.let { context ->
             val settingsList = SellerSettingsList.create(context)
-            val adapter = SellerMenuAdapter(
-                SellerMenuAdapterTypeFactory(
-                    this,
-                    sellerMenuTracker = sellerMenuTracker,
-                    userSession = userSession
-                )
-            )
 
             binding?.listSettings?.run {
-                this.adapter = adapter
+                this.adapter = sellerMenuAdapter
                 layoutManager = LinearLayoutManager(context)
             }
 
-            adapter.addElement(settingsList)
-            adapter.notifyDataSetChanged()
+            sellerMenuAdapter.addElement(settingsList)
+            sellerMenuAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
+        when (isEligibleMultiloc) {
+            is Success -> {
+                val settingsList = context?.let { SellerSettingsList.create(it,isEligibleMultiloc.data) }
+                sellerMenuAdapter.clearAllElements()
+                sellerMenuAdapter.addElement(settingsList)
+                sellerMenuAdapter.notifyDataSetChanged()
+            }
         }
     }
 

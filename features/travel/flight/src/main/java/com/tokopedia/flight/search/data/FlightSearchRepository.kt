@@ -18,6 +18,7 @@ import com.tokopedia.flight.search.domain.FlightSearchMapper.Companion.getAirpor
 import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
 import com.tokopedia.flight.search.presentation.model.FlightAirportModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import javax.inject.Inject
 
 /**
@@ -33,8 +34,8 @@ class FlightSearchRepository @Inject constructor(
         with(flightSearchDataCloudSource.getSearchCombineData(combineParam)) {
             data.combos.map {
                 val journeyIndexs = it.combination.split(",")
-                val onwardJourneyId = data.journeys[ONWARD_JOURNEY_INDEX][journeyIndexs[ONWARD_JOURNEY_INDEX].toInt()].journeyId
-                val returnJourneyId = data.journeys[RETURN_JOURNEY_INDEX][journeyIndexs[RETURN_JOURNEY_INDEX].toInt()].journeyId
+                val onwardJourneyId = data.journeys[ONWARD_JOURNEY_INDEX][journeyIndexs[ONWARD_JOURNEY_INDEX].toIntSafely()].journeyId
+                val returnJourneyId = data.journeys[RETURN_JOURNEY_INDEX][journeyIndexs[RETURN_JOURNEY_INDEX].toIntSafely()].journeyId
 
                 val comboTable = FlightComboTable(
                         it.comboKey,
