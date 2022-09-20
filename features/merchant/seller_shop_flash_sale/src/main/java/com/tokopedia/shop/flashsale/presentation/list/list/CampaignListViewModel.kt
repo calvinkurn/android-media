@@ -104,11 +104,11 @@ class CampaignListViewModel @Inject constructor(
 
     }
 
-    fun getCampaignPrerequisiteData(vpsPackageId: Long) {
+    fun getCampaignPrerequisiteData() {
         launchCatchError(
             dispatchers.io,
             block = {
-                val prerequisiteData = getCampaignPrerequisiteDataUseCase.execute(vpsPackageId)
+                val prerequisiteData = getCampaignPrerequisiteDataUseCase.execute()
                 _campaignPrerequisiteData.postValue(Success(prerequisiteData))
             },
             onError = { error ->
@@ -264,4 +264,12 @@ class CampaignListViewModel @Inject constructor(
         tracker.sendClickEditPopupEvent(campaign)
     }
 
+    fun findActiveVpsPackagesCount(): Int {
+        val vpsPackages = if (_vpsPackages.value is Success) {
+            (_vpsPackages.value as Success<List<VpsPackage>>).data
+        } else {
+            emptyList()
+        }
+        return vpsPackages.size
+    }
 }

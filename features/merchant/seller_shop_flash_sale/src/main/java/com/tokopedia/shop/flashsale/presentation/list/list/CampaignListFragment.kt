@@ -8,8 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -17,7 +15,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
@@ -64,7 +61,6 @@ import com.tokopedia.shop.flashsale.presentation.list.list.bottomsheet.MoreMenuB
 import com.tokopedia.shop.flashsale.presentation.list.list.dialog.ShopDecorationDialog
 import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.QuotaMonitoringActivity
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -183,7 +179,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
     override fun onResume() {
         super.onResume()
-        viewModel.getCampaignPrerequisiteData(VPS_PACKAGE_ID_NOT_SELECTED)
+        viewModel.getCampaignPrerequisiteData()
         viewModel.getVpsPackages()
     }
 
@@ -271,10 +267,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                 is Success -> {
                     binding?.loader?.gone()
                     viewModel.setCampaignDrafts(result.data.drafts)
-                    handleCampaignPrerequisiteData(
-                        result.data.drafts.size,
-                        result.data.remainingQuota
-                    )
+                    handleCampaignPrerequisiteData(result.data.drafts.size)
                 }
                 is Fail -> {
                     binding?.loader?.gone()
@@ -564,7 +557,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         adapter?.hideLoading()
     }
 
-    private fun handleCampaignPrerequisiteData(draftCount: Int, remainingQuota: Int) {
+    private fun handleCampaignPrerequisiteData(draftCount: Int) {
         val hasDraft = draftCount.isMoreThanZero()
         val hasCampaign = totalCampaign.isMoreThanZero()
         val draftWording = String.format(getString(R.string.sfs_placeholder_draft), draftCount)
@@ -573,32 +566,16 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.btnDraft?.isVisible = hasDraft
         binding?.cardView?.isVisible = hasDraft || hasCampaign
 
-        val quotaCounter = if (remainingQuota.isMoreThanZero()) {
-            remainingQuota
-        } else {
-            ZERO
-        }
-
         if (tabPosition == TAB_POSITION_FIRST) {
-            handleFirstTabEmptyState(hasCampaign, hasDraft, quotaCounter)
+            handleFirstTabEmptyState(hasCampaign, hasDraft)
         } else {
             handleSecondTabEmptyState(hasCampaign)
         }
 
     }
 
-    private fun handleFirstTabEmptyState(
-        hasCampaign: Boolean,
-        hasDraft: Boolean,
-        remainingQuota: Int
-    ) {
+    private fun handleFirstTabEmptyState(hasCampaign: Boolean, hasDraft: Boolean) {
         binding?.btnNavigateToFirstActiveCampaign?.gone()
-
-        val quotaCounter = if (remainingQuota.isMoreThanZero()) {
-            remainingQuota
-        } else {
-            ZERO
-        }
 
         if (hasCampaign || hasDraft) {
             binding?.btnCreateCampaignEmptyState?.gone()
@@ -641,7 +618,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         val drafts = viewModel.getCampaignDrafts()
 
         if (!data.isEligible) {
-            showIneligibleAccess(activity ?: return)
+            showCreateCampaignNotAllowedError(activity ?: return)
             return
         }
 
@@ -723,11 +700,17 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         //Add some spare time caused by Backend write operation delay
         doOnDelayFinished(DRAFT_SERVER_SAVING_DURATION) {
-            viewModel.getCampaignPrerequisiteData(VPS_PACKAGE_ID_NOT_SELECTED)
+            viewModel.getCampaignPrerequisiteData()
         }
     }
 
     private fun onDraftClicked(draft: DraftItemModel) {
+        val activeVpsPackageCount = viewModel.findActiveVpsPackagesCount()
+        if (activeVpsPackageCount == 0) {
+            showUpdateDraftNotAllowedError(activity ?: return)
+            return
+        }
+
         launchCampaignInformationPageWitheEditDraftMode(draft.id)
     }
 
@@ -786,21 +769,32 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         bottomSheet.show(childFragmentManager)
     }
 
-    private fun showIneligibleAccess(context: Context) {
+    private fun showCreateCampaignNotAllowedError(context: Context) {
         val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(context.getString(R.string.sfs_empty_quota_title))
-        dialog.setDescription(context.getString(R.string.sfs_empty_quota_description))
-        dialog.setPrimaryCTAText(context.getString(R.string.sfs_no_campaign_quota_primary_cta_text))
-        dialog.setSecondaryCTAText(context.getString(R.string.sfs_no_campaign_quota_secondary_cta_text))
+        dialog.setTitle(context.getString(R.string.sfs_cannot_create_campaign_title))
+        dialog.setDescription(context.getString(R.string.sfs_cannot_create_campaign_description))
 
-        dialog.setPrimaryCTAClickListener {
-            routeToPmSubscribePage()
-        }
-        dialog.setSecondaryCTAClickListener {
-            dialog.dismiss()
-        }
+        dialog.setPrimaryCTAText(context.getString(R.string.sfs_learn_pm_pro))
+        dialog.setSecondaryCTAText(context.getString(R.string.sfs_understand))
+
+        dialog.setPrimaryCTAClickListener { routeToPmSubscribePage() }
+        dialog.setSecondaryCTAClickListener { dialog.dismiss() }
         dialog.show()
     }
+
+    private fun showUpdateDraftNotAllowedError(context: Context) {
+        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(context.getString(R.string.sfs_cannot_update_campaign_title))
+        dialog.setDescription(context.getString(R.string.sfs_cannot_create_campaign_description))
+
+        dialog.setPrimaryCTAText(context.getString(R.string.sfs_learn_pm_pro))
+        dialog.setSecondaryCTAText(context.getString(R.string.sfs_understand))
+
+        dialog.setPrimaryCTAClickListener { routeToPmSubscribePage() }
+        dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
 
     private fun showDraftListBottomSheet(drafts: List<CampaignUiModel>) {
         DraftListBottomSheet.showUsingCampaignUiModel(
@@ -831,11 +825,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         } else {
             getString(R.string.sfs_campaign_cancelled)
         }
-    }
-
-    private fun routeToPmSubscribePage() {
-        val intent = RouteManager.getIntent(context, POWER_MERCHANT_SUBSCRIBE)
-        startActivity(intent)
     }
 
     fun setOnCancelCampaignSuccess(onCancelCampaignSuccess: () -> Unit) {
@@ -943,5 +932,13 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     private fun routeToYourShopFlashSaleQuotaPage() {
         QuotaMonitoringActivity.start(activity ?: return)
     }
+
+    private fun routeToPmSubscribePage() {
+        val intent = RouteManager.getIntent(context,
+            ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE
+        )
+        startActivity(intent)
+    }
+
 }
 

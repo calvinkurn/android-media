@@ -56,7 +56,6 @@ class CampaignInformationViewModel @Inject constructor(
         private const val MIN_CAMPAIGN_NAME_LENGTH = 5
         private const val ONE_HOUR = 1
         private const val SHOP_TIER_BENEFIT_PACKAGE_ID: Long= -1
-        private const val EMPTY_QUOTA = 0
         private const val VPS_PACKAGE_ID_NOT_SELECTED: Long = 0
         private const val THIRTY_MINUTE = 30
     }
@@ -171,8 +170,6 @@ class CampaignInformationViewModel @Inject constructor(
     }
 
     fun validateInput(mode: PageMode, selection: Selection, now: Date) {
-        tracker.sendClickButtonProceedOnCampaignInfoPageEvent()
-
         if (mode == PageMode.CREATE && selection.remainingQuota == Int.ZERO) {
             _areInputValid.value = ValidationResult.NoRemainingQuota
             return
@@ -248,6 +245,8 @@ class CampaignInformationViewModel @Inject constructor(
                 if (result.isSuccess) {
                     campaignId = result.campaignId
                 }
+
+                tracker.sendClickButtonProceedOnCampaignInfoPageEvent(result.campaignId, selection.vpsPackageId)
             },
             onError = { error ->
                 _campaignCreation.postValue(Fail(error))
@@ -330,12 +329,11 @@ class CampaignInformationViewModel @Inject constructor(
                 val vpsPackages = vpsPackagesDeferred.await()
 
                 val updatedVpsPackage = formatToUiModel(campaignDetail.packageInfo.packageId, vpsPackages)
-                val sortedVpsPackages = applySortRule(updatedVpsPackage)
 
                 relatedCampaigns = campaignDetail.relatedCampaigns
                 isCampaignRuleSubmit = campaignDetail.isCampaignRuleSubmit
 
-                val combinedCampaignData = CampaignWithVpsPackages(campaignDetail, sortedVpsPackages)
+                val combinedCampaignData = CampaignWithVpsPackages(campaignDetail, updatedVpsPackage)
                 _campaignDetail.postValue(Success(combinedCampaignData))
             },
             onError = { error ->
@@ -475,8 +473,7 @@ class CampaignInformationViewModel @Inject constructor(
             block = {
                 val result = getSellerCampaignPackageListUseCase.execute()
                 val vpsPackages = formatToUiModel(selectedPackageId, result)
-                val sortedVpsPackages = applySortRule(vpsPackages)
-                _vpsPackages.postValue(Success(sortedVpsPackages))
+                _vpsPackages.postValue(Success(vpsPackages))
             },
             onError = { error ->
                 _vpsPackages.postValue(Fail(error))
@@ -506,15 +503,6 @@ class CampaignInformationViewModel @Inject constructor(
             }
     }
 
-    private fun applySortRule(vpsPackages: List<VpsPackageUiModel>) : List<VpsPackageUiModel> {
-        val nonEmptyVpsPackages = vpsPackages
-            .filter { vpsPackage -> !vpsPackage.isShopTierBenefit  && vpsPackage.remainingQuota.isMoreThanZero() }
-            .sortedBy { vpsPackage -> vpsPackage.packageEndTime }
-        val shopTierBenefit = vpsPackages.filter { vpsPackage -> vpsPackage.isShopTierBenefit }
-        val emptyVpsPackages = vpsPackages.filter { vpsPackage -> !vpsPackage.isShopTierBenefit && vpsPackage.remainingQuota == EMPTY_QUOTA }
-        return nonEmptyVpsPackages + shopTierBenefit + emptyVpsPackages
-    }
-
     private fun VpsPackage.isSelected(selectedPackageId: Long) : Boolean {
         return selectedPackageId == packageId.toLong()
     }
@@ -539,18 +527,20 @@ class CampaignInformationViewModel @Inject constructor(
         return this.storedVpsPackages
     }
 
-    fun findDefaultQuotaSourceOnEditMode(selectedVpsPackageId: Long, vpsPackages: List<VpsPackageUiModel>): VpsPackageUiModel? {
-        val selectedVpsPackage: VpsPackageUiModel? = vpsPackages.find { vpsPackage ->  vpsPackage.packageId == selectedVpsPackageId}
-        val shouldUseShopTierBenefit = shouldUseShopTierBenefit(selectedVpsPackage)
-        return if (shouldUseShopTierBenefit) {
-             vpsPackages.firstOrNull()
+    fun findSelectedVpsPackage(selectedVpsPackageId: Long, vpsPackages: List<VpsPackageUiModel>): VpsPackageUiModel? {
+        return vpsPackages.find { vpsPackage ->  vpsPackage.packageId == selectedVpsPackageId }
+    }
+
+    fun findSuggestedVpsPackage(
+        currentDate: Date,
+        selectedVpsPackage: VpsPackageUiModel?,
+        vpsPackages: List<VpsPackageUiModel>
+    ): VpsPackageUiModel? {
+        return if (currentDate.after(selectedVpsPackage?.packageEndTime)) {
+            vpsPackages.firstOrNull()
         } else {
             selectedVpsPackage
         }
-    }
-
-    private fun shouldUseShopTierBenefit(vpsPackage : VpsPackageUiModel?): Boolean {
-        return vpsPackage == null
     }
 
     fun findCampaignMaxEndDateByVpsRule(selectedVpsPackage : VpsPackageUiModel, endDate: Date): Date {
@@ -579,10 +569,9 @@ class CampaignInformationViewModel @Inject constructor(
                 val vpsPackages = getSellerCampaignPackageListUseCase.execute()
                 val currentlySelectedVpsPackageId = vpsPackage?.packageId.orZero()
                 val updatedVpsPackage = formatToUiModel(currentlySelectedVpsPackageId, vpsPackages)
-                val sortedVpsPackages = applySortRule(updatedVpsPackage)
-                this.storedVpsPackages = sortedVpsPackages
+                this.storedVpsPackages = updatedVpsPackage
 
-                val matchedVpsPackage = sortedVpsPackages.find { vpsPackage -> vpsPackage.packageId == currentlySelectedVpsPackageId } ?: return@launchCatchError
+                val matchedVpsPackage = updatedVpsPackage.find { vpsPackage -> vpsPackage.packageId == currentlySelectedVpsPackageId } ?: return@launchCatchError
                 _emptyQuotaVpsPackage.postValue(Success(matchedVpsPackage))
             },
             onError = { error ->

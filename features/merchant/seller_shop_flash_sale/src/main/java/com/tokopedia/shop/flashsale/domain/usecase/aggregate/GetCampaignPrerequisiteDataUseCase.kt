@@ -16,16 +16,14 @@ import javax.inject.Inject
 
 class GetCampaignPrerequisiteDataUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
-    private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
-    private val dateManager: DateManager
+    private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase
 ) : GraphqlUseCase<ShareComponentMetadata>(repository) {
 
     companion object {
         private const val DRAFT_COUNT_TO_FETCH = 50
     }
 
-    suspend fun execute(vpsPackageId : Long): CampaignPrerequisiteData {
+    suspend fun execute(): CampaignPrerequisiteData {
         return coroutineScope {
             val campaignDraftDeferred = async {
                 getSellerCampaignListUseCase.execute(
@@ -34,21 +32,10 @@ class GetCampaignPrerequisiteDataUseCase @Inject constructor(
                     statusId = listOf(CampaignStatus.DRAFT.id)
                 )
             }
-            val remainingQuotaDeferred = async {
-                getSellerCampaignAttributeUseCase.execute(
-                    month = dateManager.getCurrentMonth(),
-                    year = dateManager.getCurrentYear(),
-                    vpsPackageId = vpsPackageId
-                )
-            }
 
             val campaignDrafts = campaignDraftDeferred.await()
-            val remainingQuota = remainingQuotaDeferred.await()
 
-            CampaignPrerequisiteData(
-                campaignDrafts.campaigns,
-                remainingQuota.remainingCampaignQuota,
-            )
+            CampaignPrerequisiteData(campaignDrafts.campaigns)
         }
     }
 
