@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -76,7 +77,7 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
     }
 
     private fun PartialWidgetReviewDetailSupplementaryInfoBinding.setupReviewText(
-        review: CharSequence,
+        review: String,
         source: Source
     ) {
         val colorRes = when(source) {
@@ -93,7 +94,7 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
                 viewTreeObserver.addOnGlobalLayoutListener(reviewOnGlobalLayoutListener)
             }
             this.maxLines = maxLines
-            text = review
+            text = MethodChecker.fromHtml(review)
             setTextColor(ContextCompat.getColor(context, colorRes))
             showWithCondition(review.isNotBlank())
         }

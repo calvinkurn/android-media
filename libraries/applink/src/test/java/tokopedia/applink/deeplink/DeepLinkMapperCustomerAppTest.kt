@@ -23,7 +23,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 197
+        const val SIZE_MAPPER = 199
     }
 
     override fun setup() {
@@ -611,7 +611,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check digital subhome page appLink then should return tokopedia internal recharge home in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://recharge/home"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://recharge/home/dynamic?platform_id=53&personalize=false"
         assertEqualsDeepLinkMapper(ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME, expectedDeepLink)
     }
 
@@ -725,6 +725,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check search autocomplete appLink then should return tokopedia internal search autocomplete in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/autocomplete"
         assertEqualsDeepLinkMapper(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE, expectedDeepLink)
+    }
+
+    @Test
+    fun `check search universal search page applink then should return tokopedia internal universal search in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/universal"
+        assertEqualsDeepLinkMapper(ApplinkConst.DISCOVERY_SEARCH_UNIVERSAL, expectedDeepLink)
     }
 
     @Test
@@ -2200,6 +2206,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
         val expectedDeepLink2 = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/help"
         assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_HELP, expectedDeepLink2)
+
+        val expectedDeepLink3 = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/transaction-history"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_TRANSACTION_HISTORY, expectedDeepLink3)
     }
 
     @Test
