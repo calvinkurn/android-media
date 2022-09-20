@@ -100,7 +100,7 @@ class OSChooseAddressWidgetView : FrameLayout {
 
 //        totalScrollUp += dy
 
-        adjustCollapseExpandView(totalScrollUp in 0 .. 10, whenWidgetShow, whenWidgetGone)
+        adjustCollapseExpandView(totalScrollUp <= 10, whenWidgetShow, whenWidgetGone)
     }
 
 
@@ -125,7 +125,7 @@ class OSChooseAddressWidgetView : FrameLayout {
         if (itemContext.isDeviceAnimationDisabled()) {
             this.show()
         } else {
-            if (this.measuredHeight < viewMaxHeight) {
+            if (this.measuredHeight <= 10) {
                 animationExpand?.start()
                 isExpand = true
                 motionlayout_choose_address?.setTransitionListener(object : MotionLayout.TransitionListener {

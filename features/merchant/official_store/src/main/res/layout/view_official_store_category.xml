@@ -34,6 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

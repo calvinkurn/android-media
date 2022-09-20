@@ -31,11 +31,16 @@ class OfficialCategoriesTab(context: Context,
     private var totalScrollUp: Int = 0
     private var tabMaxHeight: Int = 0
     private var tabMinHeight: Int = 0
+    private var viewMaxHeight: Int = 0
 
     private var animationExpand: ValueAnimator ?= null
     private var animationCollapse: ValueAnimator ?= null
 
     private var isExpand = true
+
+    fun setMeasuredHeight() {
+        viewMaxHeight = this.measuredHeight
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     fun setup(viewPager: ViewPager, tabItemDataList: List<CategoriesItemTab>) {
@@ -87,7 +92,7 @@ class OfficialCategoriesTab(context: Context,
 
     private fun expandAllTab() {
         if(animationExpand == null)
-            animationExpand = getValueAnimator(32.dp.toFloat(), 64.dp.toFloat(), 300, AccelerateDecelerateInterpolator()) {
+            animationExpand = getValueAnimator(32.dp.toFloat(), viewMaxHeight.toFloat(), 300, AccelerateDecelerateInterpolator()) {
                 if (this.layoutParams != null) {
                     val params: ViewGroup.LayoutParams = layoutParams
                     params.height = it.toInt()
@@ -120,14 +125,14 @@ class OfficialCategoriesTab(context: Context,
 
     private fun collapseAllTab() {
         if(animationCollapse == null) animationCollapse =
-            getValueAnimator(64.dp.toFloat(), 32.dp.toFloat(), 300, AccelerateDecelerateInterpolator()) {
+            getValueAnimator(viewMaxHeight.toFloat(), 32.dp.toFloat(), 300, AccelerateDecelerateInterpolator()) {
                 if (this.layoutParams != null) {
                     val params: ViewGroup.LayoutParams = layoutParams
                     params.height = it.toInt()
                     requestLayout()
                 }
             }
-        if(this.measuredHeight == 64.dp) {
+        if(this.measuredHeight >= viewMaxHeight) {
             animationCollapse?.start()
             isExpand = false
             for (i in 0 until tabCount) {

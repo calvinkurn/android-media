@@ -305,6 +305,7 @@ class OfficialHomeContainerFragment
         tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
         val categorySelected = getSelectedCategoryId(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
+        tabLayout?.setMeasuredHeight()
         selectedCategory = tabAdapter.categoryList.getOrNull(tabLayout?.getTabAt(categorySelected)?.position.toZeroIfNull())
 
         if(!officialStoreCategories.isCache){
