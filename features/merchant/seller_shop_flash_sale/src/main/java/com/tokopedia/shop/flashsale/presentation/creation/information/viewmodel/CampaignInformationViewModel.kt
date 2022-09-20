@@ -170,8 +170,6 @@ class CampaignInformationViewModel @Inject constructor(
     }
 
     fun validateInput(mode: PageMode, selection: Selection, now: Date) {
-        tracker.sendClickButtonProceedOnCampaignInfoPageEvent()
-
         if (mode == PageMode.CREATE && selection.remainingQuota == Int.ZERO) {
             _areInputValid.value = ValidationResult.NoRemainingQuota
             return
@@ -247,6 +245,8 @@ class CampaignInformationViewModel @Inject constructor(
                 if (result.isSuccess) {
                     campaignId = result.campaignId
                 }
+
+                tracker.sendClickButtonProceedOnCampaignInfoPageEvent(result.campaignId, selection.vpsPackageId)
             },
             onError = { error ->
                 _campaignCreation.postValue(Fail(error))
