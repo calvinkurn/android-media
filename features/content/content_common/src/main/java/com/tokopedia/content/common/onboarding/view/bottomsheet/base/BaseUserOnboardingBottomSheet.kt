@@ -15,7 +15,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.R
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.KEY_ONBOARDING_TYPE
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_UNKNOWN
 import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -27,8 +28,8 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
 
     protected var mListener: Listener? = null
 
-    protected val usernameArg: String
-        get() = arguments?.getString(UGCOnboardingParentFragment.KEY_USERNAME).orEmpty()
+    protected val onboardingType: Int
+        get() = arguments?.getInt(KEY_ONBOARDING_TYPE, VALUE_UNKNOWN) ?: VALUE_UNKNOWN
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {
@@ -74,15 +75,21 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
 
-        showCloseIcon = false
-        showKnob = true
-        showHeader = false
-        isDragable = true
+        showCloseIcon = true
+        showHeader = true
+        isDragable = false
         isSkipCollapseState = true
-        isHideable = true
+        isHideable = false
+        isCancelable = false
+        overlayClickDismiss = false
         clearContentPadding = true
 
         dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+        setCloseClickListener {
+            dismiss()
+            mListener?.clickCloseIcon()
+        }
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -111,5 +118,6 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun onSuccess()
+        fun clickCloseIcon()
     }
 }

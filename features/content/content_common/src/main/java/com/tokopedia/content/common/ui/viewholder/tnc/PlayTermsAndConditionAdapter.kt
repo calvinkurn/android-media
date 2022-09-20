@@ -1,12 +1,12 @@
-package com.tokopedia.play.broadcaster.ui.viewholder.tnc
+package com.tokopedia.content.common.ui.viewholder.tnc
 
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.R
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -35,7 +35,7 @@ class PlayTermsAndConditionAdapter : BaseDiffUtilAdapter<TermsAndConditionUiMode
 
     private class AdapterDelegate :
         TypedAdapterDelegate<TermsAndConditionUiModel, TermsAndConditionUiModel, ViewHolder>(
-        ViewHolder.LAYOUT
+            ViewHolder.LAYOUT
     ) {
         override fun onBindViewHolder(item: TermsAndConditionUiModel, holder: ViewHolder) {
             holder.bind(item)

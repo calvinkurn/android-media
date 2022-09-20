@@ -15,7 +15,7 @@ import dagger.assisted.AssistedInject
  */
 class UGCOnboardingViewModelFactory @AssistedInject constructor(
     @Assisted owner: SavedStateRegistryOwner,
-    @Assisted private val username: String,
+    @Assisted private val onboardingType: Int,
     @Assisted private val onboardingStrategy: UGCOnboardingStrategy,
     private val UGCOnboardingViewModelFactory: UGCOnboardingViewModel.Factory,
 ) : AbstractSavedStateViewModelFactory(owner, null) {
@@ -24,7 +24,7 @@ class UGCOnboardingViewModelFactory @AssistedInject constructor(
     interface Creator {
         fun create(
             owner: SavedStateRegistryOwner,
-            username: String,
+            onboardingType: Int,
             onboardingStrategy: UGCOnboardingStrategy,
         ): UGCOnboardingViewModelFactory
     }
@@ -34,6 +34,6 @@ class UGCOnboardingViewModelFactory @AssistedInject constructor(
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
-        return UGCOnboardingViewModelFactory.create(username, onboardingStrategy) as T
+        return UGCOnboardingViewModelFactory.create(onboardingType, onboardingStrategy) as T
     }
 }

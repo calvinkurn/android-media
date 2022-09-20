@@ -34,7 +34,7 @@ import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.user.session.UserSessionInterface
@@ -71,10 +71,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     override fun onAttachFragment(fragment: Fragment) {
         super.onAttachFragment(fragment)
         when(fragment) {
-            is FeedAccountTypeBottomSheet -> {
+            is ContentAccountTypeBottomSheet -> {
                 fragment.setData(mFeedAccountList)
                 fragment.setAnalytic(feedAccountAnalytic)
-                fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+                fragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if(contentAccount.type != selectedContentAccount.type && contentAccount.isShop) {
                             showSwitchAccountDialog(contentAccount)
@@ -355,7 +355,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
                 if (!it.isEditState && isAllowSwitchAccount)
                     setOnAccountClickListener {
                         feedAccountAnalytic.clickAccountInfo()
-                        FeedAccountTypeBottomSheet
+                        ContentAccountTypeBottomSheet
                             .getFragment(supportFragmentManager, classLoader)
                             .showNow(supportFragmentManager)
                     }

@@ -48,7 +48,6 @@ internal class PlayBroadcastViewModelRobot(
     getChannelUseCase: GetChannelUseCase = mockk(relaxed = true),
     getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true),
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
-    getWhiteListNewUseCase: GetWhiteListNewUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastWebSocket: PlayWebSocket = mockk(relaxed = true),
     playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser()),
@@ -67,7 +66,6 @@ internal class PlayBroadcastViewModelRobot(
         getChannelUseCase,
         getAddedChannelTagsUseCase,
         getSocketCredentialUseCase,
-        getWhiteListNewUseCase,
         dispatchers,
         userSession,
         playBroadcastWebSocket,
@@ -115,7 +113,7 @@ internal class PlayBroadcastViewModelRobot(
         viewModel.viewModelScope.coroutineContext.cancelChildren()
     }
 
-    fun getConfig() = viewModel.getConfiguration()
+    fun getAccountConfiguration() = viewModel.submitAction(PlayBroadcastAction.GetAccountList)
 
     fun startLive() = viewModel.submitAction(
         PlayBroadcastAction.BroadcastStateChanged(

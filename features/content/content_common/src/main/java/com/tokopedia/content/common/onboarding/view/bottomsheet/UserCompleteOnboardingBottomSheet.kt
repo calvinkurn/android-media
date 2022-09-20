@@ -21,6 +21,7 @@ import com.tokopedia.content.common.onboarding.view.uimodel.state.FeedUGCOnboard
 import com.tokopedia.content.common.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
 import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -49,8 +50,8 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
             this,
             viewModelFactoryCreator.create(
                 this,
-                usernameArg,
-                strategyFactory.create(usernameArg),
+                onboardingType,
+                strategyFactory.create(onboardingType),
             )
         )[UGCOnboardingViewModel::class.java]
     }
@@ -83,6 +84,7 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         binding.textFieldUsername.isClearable = false
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
         binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
+        setTitle(getString(R.string.ugc_complete_onboarding_title))
     }
 
     private fun setupListener() {

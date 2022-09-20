@@ -1,18 +1,18 @@
-package com.tokopedia.play.broadcaster.view.custom
+package com.tokopedia.content.common.ui.custom
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.widget.NestedScrollView
+import com.tokopedia.content.common.databinding.ViewPlayBroadcastTncBinding
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.databinding.ViewPlayBroadcastTncBinding
-import com.tokopedia.play.broadcaster.ui.itemdecoration.DefaultVerticalItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
-import com.tokopedia.play.broadcaster.ui.model.tnc.TermsAndConditionBenefitUiModel
-import com.tokopedia.play.broadcaster.ui.viewholder.tnc.PlayTermsAndConditionAdapter
-import com.tokopedia.play.broadcaster.ui.viewholder.tnc.PlayTermsAndConditionBenefitAdapter
+import com.tokopedia.content.common.R
+import com.tokopedia.content.common.ui.itemdecoration.DefaultVerticalItemDecoration
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.ui.model.tnc.TermsAndConditionBenefitUiModel
+import com.tokopedia.content.common.ui.viewholder.tnc.PlayTermsAndConditionAdapter
+import com.tokopedia.content.common.ui.viewholder.tnc.PlayTermsAndConditionBenefitAdapter
 
 /**
  * Created by jegul on 04/10/21
@@ -48,12 +48,12 @@ class PlayTermsAndConditionView : NestedScrollView {
 
         binding.rvTnc.addItemDecoration(
             DefaultVerticalItemDecoration(
-                resources.getDimensionPixelOffset(R.dimen.play_dp_12)
+                resources.getDimensionPixelOffset(R.dimen.content_common_space_12)
             )
         )
         binding.rvTncBenefit.addItemDecoration(
             DefaultVerticalItemDecoration(
-                resources.getDimensionPixelOffset(R.dimen.play_dp_12)
+                resources.getDimensionPixelOffset(R.dimen.content_common_space_12)
             )
         )
 

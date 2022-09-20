@@ -22,6 +22,7 @@ import io.mockk.coJustRun
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -79,6 +80,11 @@ class PlayBroQuizViewModelTest {
 
     private val mockBroadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
 
+    @Before
+    fun setUp() {
+        coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
+    }
+
     @Test
     fun `when user successfully create new quiz, it should return quiz model`() {
         coJustRun {
@@ -99,7 +105,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.SubmitQuizForm)
             }
             Assertions.assertThat(state.interactive)
@@ -116,7 +122,7 @@ class PlayBroQuizViewModelTest {
         )
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 it.getViewModel().submitAction(PlayBroadcastAction.QuizEnded)
             }
             Assertions.assertThat(state.interactive).isInstanceOf(InteractiveUiModel.Unknown::class.java)
@@ -133,7 +139,7 @@ class PlayBroQuizViewModelTest {
         )
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.InputQuizTitle(question))
             }
             state.quizForm.quizFormData.title.assertEqualTo(question)
@@ -149,7 +155,7 @@ class PlayBroQuizViewModelTest {
         )
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.ClickBackOnChoiceDetail)
             }
             Assertions.assertThat(state.quizBottomSheetUiState.quizChoiceDetailState).isInstanceOf(
@@ -167,7 +173,7 @@ class PlayBroQuizViewModelTest {
         )
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.DismissQuizDetailBottomSheet)
             }
             Assertions.assertThat(state.quizBottomSheetUiState.quizChoiceDetailState).isInstanceOf(
@@ -188,7 +194,7 @@ class PlayBroQuizViewModelTest {
         )
         robot.use {
             val events = it.recordEvent {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.ClickGameResultWidget)
             }
             events.last().assertEqualTo(PlayBroadcastEvent.ShowLeaderboardBottomSheet)
@@ -206,7 +212,7 @@ class PlayBroQuizViewModelTest {
         )
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().getQuizDetailData()
                 getViewModel().submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
             }
@@ -235,7 +241,7 @@ class PlayBroQuizViewModelTest {
         )
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().getLeaderboardWithSlots()
                 getViewModel().submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
             }
@@ -273,7 +279,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(
                     PlayBroadcastAction.ClickQuizChoiceOption(
                         mockQuizChoicesUiModel
@@ -314,7 +320,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(
                     PlayBroadcastAction.ClickQuizChoiceOption(mockQuizChoicesUiModel)
                 )
@@ -335,7 +341,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.ClickGameOption(GameType.Quiz))
             }
             Assertions.assertThat(state.quizForm.quizFormState).isInstanceOf(QuizFormStateUiModel.Preparation::class.java)
@@ -352,7 +358,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.ClickGameOption(GameType.Giveaway))
             }
             Assertions.assertThat(state.interactiveSetup.type).isEqualTo(GameType.Giveaway)
@@ -371,7 +377,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.InputQuizGift(reward))
             }
             Assertions.assertThat(state.quizForm.quizFormData.gift).isEqualTo(reward)
@@ -395,7 +401,7 @@ class PlayBroQuizViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
                 startLive()
                 inputQuizOption(0, "AAA")
             }

@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.viewholder.tnc
+package com.tokopedia.content.common.ui.viewholder.tnc
 
 import android.view.View
 import android.view.ViewGroup
@@ -6,8 +6,8 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.tnc.TermsAndConditionBenefitUiModel
+import com.tokopedia.content.common.R
+import com.tokopedia.content.common.ui.model.tnc.TermsAndConditionBenefitUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 /**

@@ -1,39 +1,27 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet.WarningType
+import com.tokopedia.content.common.ui.model.AccountStateInfo
+import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
-import com.tokopedia.play.broadcaster.domain.model.GetSocketCredentialResponse
-import com.tokopedia.play.broadcaster.domain.model.NewMetricList
-import com.tokopedia.play.broadcaster.domain.model.Banned
-import com.tokopedia.play.broadcaster.domain.model.Chat
-import com.tokopedia.play.broadcaster.domain.model.Freeze
-import com.tokopedia.play.broadcaster.domain.model.TotalLike
-import com.tokopedia.play.broadcaster.domain.model.TotalView
-import com.tokopedia.play.broadcaster.domain.model.LiveDuration
+import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
@@ -55,14 +43,6 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiMod
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
-import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
-import com.tokopedia.play.broadcaster.ui.state.QuizBottomSheetUiState
-import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
-import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
-import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
-import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
-import com.tokopedia.play.broadcaster.ui.state.ScheduleConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
@@ -95,29 +75,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.getAndUpdate
-import java.util.Date
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -131,7 +91,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val getChannelUseCase: GetChannelUseCase,
     private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
     private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
-    private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val playBroadcastWebSocket: PlayWebSocket,
@@ -230,15 +189,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
+    private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
+    lateinit var warningInfoType: WarningType
+    lateinit var tncList: List<TermsAndConditionUiModel>
+
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
-    val contentAccountListState: Flow<List<ContentAccountUiModel>>
-        get() = _accountListState
+
+    private var isFirstOpen: Boolean = true
 
     val contentAccountList: List<ContentAccountUiModel>
         get() = _accountListState.value
 
     val isAllowChangeAccount: Boolean
-        get() = contentAccountList.size > 1 && contentAccountList.find { it.isUserPostEligible } != null
+        get() = _accountListState.value.size > 1
 
     val authorId: String
         get() = _selectedAccount.value.id
@@ -306,6 +269,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _onboarding,
         _quizBottomSheetUiState,
         _selectedAccount,
+        _accountStateInfo,
     ) { channelState,
         pinnedMessage,
         productMap,
@@ -318,7 +282,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         quizDetail,
         onBoarding,
         quizBottomSheetUiState,
-        selectedFeedAccount ->
+        selectedFeedAccount,
+        accountStateInfo ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -332,7 +297,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             quizDetail = quizDetail,
             onBoarding = onBoarding,
             quizBottomSheetUiState = quizBottomSheetUiState,
-            selectedContentAccount = selectedFeedAccount
+            selectedContentAccount = selectedFeedAccount,
+            accountStateInfo = accountStateInfo
         )
     }.stateIn(
         viewModelScope,
@@ -385,7 +351,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
             is PlayBroadcastAction.GetAccountList -> handleGetAccountList()
-            is PlayBroadcastAction.SelectAccount -> handleSelectedAccount(event.contentAccount)
+            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount()
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -426,57 +392,62 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return mDataStore.getSetupDataStore()
     }
 
-    fun getConfiguration() {
+    private fun getConfiguration(selectedAccount: ContentAccountUiModel) {
         viewModelScope.launchCatchError(block = {
 
-            val configUiModel = repo.getChannelConfiguration(authorId, authorType)
+            val configUiModel = repo.getChannelConfiguration(selectedAccount.id, selectedAccount.type)
             setChannelId(configUiModel.channelId)
-
             _configInfo.value = configUiModel
 
-            if (!configUiModel.streamAllowed) {
-                _observableConfigInfo.value = NetworkResult.Success(configUiModel)
-            } else {
-                // create channel when there are no channel exist
-                if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
+            if (!isAccountEligible(configUiModel, selectedAccount)) {
+                if (isFirstOpen && isAllowChangeAccount) {
+                    isFirstOpen = false
+                    handleSwitchAccount(false)
+                }
+                else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+                return@launchCatchError
+            }
 
-                // get channel when channel status is paused
-                if (configUiModel.channelStatus == ChannelStatus.Pause
+            // create channel when there are no channel exist
+            if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
+
+            // get channel when channel status is paused
+            if (configUiModel.channelStatus == ChannelStatus.Pause
                 // also when complete draft is true
                 || configUiModel.channelStatus == ChannelStatus.CompleteDraft
                 || configUiModel.channelStatus == ChannelStatus.Draft
-            ) {        val deferredChannel = asyncCatchError(block = {
-                            getChannelById(configUiModel.channelId)
-                    }) { it }
-                        val deferredProductMap = asyncCatchError(block = {
-                        repo.getProductTagSummarySection(channelID = configUiModel.channelId)
-                    }) { emptyList() }
+            ) {
+                val deferredChannel = asyncCatchError(block = {
+                    getChannelById(configUiModel.channelId)
+                }) { it }
+                val deferredProductMap = asyncCatchError(block = {
+                    repo.getProductTagSummarySection(channelID = configUiModel.channelId)
+                }) { emptyList() }
 
-                    val error = deferredChannel.await()
-                    val productMap = deferredProductMap.await()
+                val error = deferredChannel.await()
+                val productMap = deferredProductMap.await()
 
-                    if (error != null) throw error
-                    setSelectedProduct(productMap.orEmpty())
-                }
-
-                _observableConfigInfo.value = NetworkResult.Success(configUiModel)
-
-                setProductConfig(configUiModel.productTagConfig)
-                setCoverConfig(configUiModel.coverConfig)
-                setDurationConfig(configUiModel.durationConfig)
-                setScheduleConfig(configUiModel.scheduleConfig)
-
-                broadcastTimer.setupDuration(
-                    configUiModel.durationConfig.remainingDuration,
-                    configUiModel.durationConfig.maxDuration
-                )
-                broadcastTimer.setupPauseDuration(
-                    configUiModel.durationConfig.pauseDuration
-                )
+                if (error != null) throw error
+                setSelectedProduct(productMap.orEmpty())
             }
 
+            setProductConfig(configUiModel.productTagConfig)
+            setCoverConfig(configUiModel.coverConfig)
+            setDurationConfig(configUiModel.durationConfig)
+            setScheduleConfig(configUiModel.scheduleConfig)
+
+            broadcastTimer.setupDuration(
+                configUiModel.durationConfig.remainingDuration,
+                configUiModel.durationConfig.maxDuration
+            )
+            broadcastTimer.setupPauseDuration(
+                configUiModel.durationConfig.pauseDuration
+            )
+
+            updateSelectedAccount(selectedAccount)
+            _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
-            _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
+            _observableConfigInfo.value = NetworkResult.Fail(it) { handleSwitchAccount() }
         }
     }
 
@@ -486,7 +457,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private suspend fun getChannelById(channelId: String): Throwable? {
-        _observableChannelInfo.value = NetworkResult.Loading
         return try {
             val (channel, tags) = supervisorScope {
                 val channelDeferred = async(dispatcher.io) {
@@ -1503,36 +1473,126 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 
-            val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
+            val accountList = repo.getAccountList()
 
-            val feedAccountList = response.whitelist.authors.map {
-                ContentAccountUiModel(
-                    id = it.id,
-                    name = it.name,
-                    iconUrl = it.thumbnail,
-                    badge = it.badge,
-                    type = it.type,
-                    hasUsername = it.livestream.hasUsername,
-                    hasAcceptTnc = it.livestream.hasAcceptTnc,
+            _accountListState.value = accountList
+
+            if (accountList.isNotEmpty()) {
+                updateSelectedAccount(
+                    getSelectedAccount(
+                        cacheSelectedType = sharedPref.getLastSelectedAccount(),
+                        accountList = accountList
+                    )
                 )
-            }
-
-            _accountListState.value = feedAccountList
-
-            //TODO can't force to select first account need to check it first (eligible/last)
-            if(feedAccountList.isNotEmpty()) {
-                _selectedAccount.value = feedAccountList.first()
-                getConfiguration()
+                getConfiguration(_selectedAccount.value)
             }
         }, onError = {
-            _observableConfigInfo.value = NetworkResult.Fail(it)
+            _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList() }
         })
     }
 
-    private fun handleSelectedAccount(contentAccount: ContentAccountUiModel) {
-        _observableConfigInfo.value = NetworkResult.Loading
-        _selectedAccount.value = contentAccount
-        getConfiguration()
+    // TODO need to refactor this for entry point from user profile
+    private fun getSelectedAccount(
+        cacheSelectedType: String,
+        accountList: List<ContentAccountUiModel>,
+    ): ContentAccountUiModel {
+        return accountList.firstOrNull {
+            it.type == when {
+                GlobalConfig.isSellerApp() -> TYPE_SHOP
+                cacheSelectedType.isNotEmpty() -> cacheSelectedType
+                else -> null
+            }
+        } ?: getDefaultSelectedAccount(accountList)
+    }
+
+    private fun getDefaultSelectedAccount(accountList: List<ContentAccountUiModel>): ContentAccountUiModel {
+        val sellerAccount = accountList.firstOrNull { it.type == TYPE_SHOP }
+        val nonSellerAccount = accountList.firstOrNull { it.type == TYPE_USER }
+        return if (sellerAccount != null) {
+            if (sellerAccount.hasAcceptTnc) sellerAccount
+            else if (nonSellerAccount != null) {
+                if (nonSellerAccount.hasUsername && nonSellerAccount.hasAcceptTnc) nonSellerAccount
+                else sellerAccount
+            }
+            else sellerAccount
+        } else nonSellerAccount ?: ContentAccountUiModel.Empty
+    }
+
+    private fun handleSwitchAccount(needLoading: Boolean = true) {
+        if (needLoading) _observableConfigInfo.value = NetworkResult.Loading
+
+        val currentSelected = switchAccount(
+            when (_selectedAccount.value.type) {
+                TYPE_SHOP -> TYPE_USER
+                else -> TYPE_SHOP
+            }
+        )
+        getConfiguration(currentSelected)
+    }
+
+    private fun switchAccount(selectedType: String): ContentAccountUiModel {
+        return _accountListState.value.first { it.type == selectedType }
+    }
+
+    private fun isAccountEligible(
+        configUiModel: ConfigurationUiModel,
+        selectedAccount: ContentAccountUiModel,
+    ): Boolean {
+        return when {
+            !configUiModel.streamAllowed -> {
+                if (isFirstOpen && isAllowChangeAccount) return false
+                _accountStateInfo.update { AccountStateInfo() }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.Banned,
+                        selectedAccount = selectedAccount,
+                    )
+                }
+                warningInfoType = WarningType.BANNED
+                false
+            }
+            configUiModel.channelStatus == ChannelStatus.Live -> {
+                if (isFirstOpen && isAllowChangeAccount) return false
+                _accountStateInfo.update { AccountStateInfo() }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.Live,
+                        selectedAccount = selectedAccount,
+                    )
+                }
+                warningInfoType = WarningType.LIVE
+                false
+            }
+            selectedAccount.isUser && !selectedAccount.hasUsername -> {
+                if (isFirstOpen && isAllowChangeAccount) return false
+                _accountStateInfo.update { AccountStateInfo() }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.NoUsername,
+                        selectedAccount = selectedAccount,
+                    )
+                }
+                false
+            }
+            !selectedAccount.hasAcceptTnc -> {
+                if (isFirstOpen && isAllowChangeAccount) return false
+                _accountStateInfo.update { AccountStateInfo() }
+                _accountStateInfo.update {
+                    AccountStateInfo(
+                        type = AccountStateInfoType.NotAcceptTNC,
+                        selectedAccount = selectedAccount,
+                    )
+                }
+                if (selectedAccount.isShop) tncList = configUiModel.tnc
+                false
+            }
+            else -> true
+        }
+    }
+
+    private fun updateSelectedAccount(selectedAccount: ContentAccountUiModel) {
+        _selectedAccount.update { selectedAccount }
+        sharedPref.setLastSelectedAccount(selectedAccount.type)
     }
 
     /**

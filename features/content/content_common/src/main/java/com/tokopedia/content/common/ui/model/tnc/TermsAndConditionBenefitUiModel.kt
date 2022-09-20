@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.model.tnc
+package com.tokopedia.content.common.ui.model.tnc
 
 import androidx.annotation.StringRes
 
