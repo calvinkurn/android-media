@@ -53,9 +53,23 @@ class EditorUiModel(
 
     fun getFilteredStateList(): List<EditorDetailUiModel>{
         val maxStateLimit = (editList.size - 1) - backValue
-        val minStateLimit = removeBackgroundStartState?.let {
-            if(maxStateLimit < it) 0 else removeBackgroundStartState
-        } ?: 0
+        var minStateLimit = 0
+        removeBackgroundStartState?.let {
+            if(maxStateLimit < it) {
+                // get bottom limit from another remove background state if any.
+                editList.subList(0, maxStateLimit+1).apply {
+                    val list = this
+                    if (list.isEmpty()) return@let
+
+                    for (i in (list.size - 1) downTo 0){
+                        if(this[i].isToolRemoveBackground()){
+                            minStateLimit = i
+                            return@let
+                        }
+                    }
+                }
+            } else minStateLimit = it
+        }
 
         return editList.filterIndexed { index, _ ->
             index in minStateLimit..maxStateLimit
