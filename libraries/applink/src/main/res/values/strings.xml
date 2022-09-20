@@ -172,7 +172,4 @@
 <!--    Tokomember seller dashboard-->
     <string name="title_tokomember" translatable="false">Tokomember</string>
 
-    <!-- Toko Chat -->
-    <string name="title_applink_toko_chat">Toko Chat</string>
-
 </resources>
