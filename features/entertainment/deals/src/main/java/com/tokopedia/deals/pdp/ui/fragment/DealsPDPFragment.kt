@@ -225,7 +225,6 @@ class DealsPDPFragment : BaseDaggerFragment() {
         observeRecommendation()
         observeRating()
         observeUpdateRating()
-        observeTracker()
     }
 
     private fun observePDP() {
@@ -322,16 +321,6 @@ class DealsPDPFragment : BaseDaggerFragment() {
                     }
                 }
             }
-        }
-    }
-
-    private fun observeTracker() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.flowRecommendationTracking.collect {}
-        }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.flowRecentSearchTracking.collect {}
         }
     }
 
