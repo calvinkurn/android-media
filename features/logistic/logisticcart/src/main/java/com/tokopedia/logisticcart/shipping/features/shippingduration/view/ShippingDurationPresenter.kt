@@ -168,8 +168,8 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
 
     override fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): CourierItemData? {
         for (shippingCourierUiModel in shippingCourierUiModels) {
-            if (shippingCourierUiModel.productData.isRecommend
-                && !shippingCourierUiModel.productData.isUiRatesHidden
+            if (shippingCourierUiModel.productData.isRecommend &&
+                !shippingCourierUiModel.productData.isUiRatesHidden
             ) {
                 return shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
             }
