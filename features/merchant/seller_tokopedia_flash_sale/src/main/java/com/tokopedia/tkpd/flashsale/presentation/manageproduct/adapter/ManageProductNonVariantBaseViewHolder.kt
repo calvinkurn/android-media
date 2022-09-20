@@ -64,15 +64,15 @@ open class ManageProductNonVariantBaseViewHolder(
         discount: ReservedProduct.Product.Warehouse.DiscountSetup?
     ) {
         textFieldPriceDiscountNominal.editText.afterTextChanged {
-            discount?.price = it.toLongOrZero()
+            discount?.price = it.digitsOnly()
             triggerListener(criteria, discount)
         }
         textFieldPriceDiscountPercentage.editText.afterTextChanged {
-            discount?.discount = it.toIntSafely()
+            discount?.discount = it.digitsOnly().toInt()
             triggerListener(criteria, discount)
         }
         quantityEditor.editText.afterTextChanged {
-            discount?.stock = it.toLongOrZero()
+            discount?.stock = it.digitsOnly()
             triggerListener(criteria, discount)
         }
     }
@@ -88,6 +88,8 @@ open class ManageProductNonVariantBaseViewHolder(
         quantityEditor.editText.setText(discount?.stock?.orZero().toString())
         textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
 
+        textFieldPriceDiscountNominal.editText.setModeToNumberDelimitedInput()
+        textFieldPriceDiscountPercentage.editText.setModeToNumberDelimitedInput(2)
         setupInitialFieldMessage(criteria)
     }
 }

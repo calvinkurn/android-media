@@ -51,18 +51,7 @@ class ManageProductNonVariantMultilocFragment :
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         setupPage()
-    }
-
-    private fun setupPage() {
-        product?.let {
-            setupProductHeaderData(
-                productImageUrl = it.picture,
-                productName = it.name,
-                productOriginalPriceFormatted = it.price.price.getCurrencyFormatted(),
-                productStockTextFormatted = getString(R.string.manageproductnonvar_stock_total_format, it.stock)
-            )
-            buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
-        }
+        setupObservers()
     }
 
     override fun createAdapterInstance() = ManageProductNonVariantMultilocAdapter().apply {
@@ -83,7 +72,29 @@ class ManageProductNonVariantMultilocFragment :
     }
 
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
+        product?.productCriteria?.let {
+            val warehouses = (adapter as ManageProductNonVariantMultilocAdapter).getDataList()
+            viewModel.validateInputPage(warehouses, it)
+        }
         return viewModel.validateInput(criteria, discountSetup)
+    }
+
+    private fun setupObservers() {
+        viewModel.isInputPageValid.observe(viewLifecycleOwner) {
+            buttonSubmit?.isEnabled = it
+        }
+    }
+
+    private fun setupPage() {
+        product?.let {
+            setupProductHeaderData(
+                productImageUrl = it.picture,
+                productName = it.name,
+                productOriginalPriceFormatted = it.price.price.getCurrencyFormatted(),
+                productStockTextFormatted = getString(R.string.manageproductnonvar_stock_total_format, it.stock)
+            )
+            buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
+        }
     }
 
 }

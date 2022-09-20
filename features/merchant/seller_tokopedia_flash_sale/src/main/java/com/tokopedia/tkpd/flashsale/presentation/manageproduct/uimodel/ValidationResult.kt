@@ -6,4 +6,6 @@ data class ValidationResult(
     val isStockError: Boolean = false,
     val priceMessage: String,
     val pricePercentMessage: String
-)
+) {
+    fun isAllFieldValid() = !isPriceError && !isPricePercentError && !isStockError
+}

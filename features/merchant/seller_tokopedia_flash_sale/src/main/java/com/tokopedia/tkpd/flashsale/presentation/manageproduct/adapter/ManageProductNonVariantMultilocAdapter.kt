@@ -34,6 +34,8 @@ class ManageProductNonVariantMultilocAdapter: RecyclerView.Adapter<ManageProduct
         notifyItemRangeChanged(Int.ZERO, newData.warehouses.size)
     }
 
+    fun getDataList() = product?.warehouses.orEmpty()
+
     fun setListener(listener: ManageProductNonVariantAdapterListener) {
         this.listener = listener
     }
@@ -46,6 +48,8 @@ class ManageProductNonVariantMultilocAdapter: RecyclerView.Adapter<ManageProduct
             product: ReservedProduct.Product,
             selectedWarehouse: ReservedProduct.Product.Warehouse,
         ) {
+            val discount = selectedWarehouse.discountSetup
+            val criteria = product.productCriteria
             binding.containerLayoutProductParent.apply {
                 textParentErrorMessage.gone()
                 imageParentError.gone()
@@ -56,12 +60,11 @@ class ManageProductNonVariantMultilocAdapter: RecyclerView.Adapter<ManageProduct
                 switcherToggleParent.setOnClickListener {
                     selectedWarehouse.isToggleOn = switcherToggleParent.isChecked
                     binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
+                    listener?.onDataInputChanged(adapterPosition, criteria, discount)
                 }
             }
             binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
             binding.containerLayoutProductInformation.apply {
-                val discount = selectedWarehouse.discountSetup
-                val criteria = product.productCriteria
                 setupInputField(criteria, discount)
                 setupListener(criteria, discount)
             }

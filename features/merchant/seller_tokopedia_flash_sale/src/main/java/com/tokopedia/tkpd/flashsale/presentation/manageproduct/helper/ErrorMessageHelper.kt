@@ -41,7 +41,7 @@ class ErrorMessageHelper @Inject constructor(@ApplicationContext private val con
         } else if (discountSetup.discount > criteria.maxDiscount) {
             getString(R.string.manageproductnonvar_max_message_format, criteria.maxDiscount.getPercentFormatted())
         } else {
-            getString(R.string.manageproductnonvar_range_message_format, criteria.maxDiscount.getPercentFormatted(), criteria.maxDiscount.getPercentFormatted())
+            getString(R.string.manageproductnonvar_range_message_format, criteria.minDiscount.getPercentFormatted(), criteria.maxDiscount.getPercentFormatted())
         }
     }
 }

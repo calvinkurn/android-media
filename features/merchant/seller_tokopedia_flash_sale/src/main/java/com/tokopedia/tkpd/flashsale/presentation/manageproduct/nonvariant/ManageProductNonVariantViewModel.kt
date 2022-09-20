@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
@@ -18,6 +19,9 @@ class ManageProductNonVariantViewModel @Inject constructor(
 
     private val _isMultiloc: MutableLiveData<Boolean> = MutableLiveData()
     val isMultiloc: LiveData<Boolean> get() = _isMultiloc
+
+    private val _isInputPageValid: MutableLiveData<Boolean> = MutableLiveData()
+    val isInputPageValid: LiveData<Boolean> get() = _isInputPageValid
 
     fun validateInput(
         criteria: ProductCriteria,
@@ -34,5 +38,11 @@ class ManageProductNonVariantViewModel @Inject constructor(
 
     fun checkMultiloc(product: ReservedProduct.Product) {
         _isMultiloc.value = product.isMultiWarehouse
+    }
+
+    fun validateInputPage(warehouses: List<Warehouse>, criteria: ProductCriteria) {
+        _isInputPageValid.value = warehouses
+            .filter { it.isToggleOn }
+            .all { validateInput(criteria, it.discountSetup).isAllFieldValid() }
     }
 }

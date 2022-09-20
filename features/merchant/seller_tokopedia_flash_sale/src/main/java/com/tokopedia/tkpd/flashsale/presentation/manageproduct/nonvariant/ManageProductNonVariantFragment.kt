@@ -80,6 +80,9 @@ class ManageProductNonVariantFragment :
         viewModel.isMultiloc.observe(viewLifecycleOwner) {
             moveToMultilocPage()
         }
+        viewModel.isInputPageValid.observe(viewLifecycleOwner) {
+            buttonSubmit?.isEnabled = it
+        }
     }
 
     private fun moveToMultilocPage() {
