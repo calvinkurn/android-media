@@ -2,6 +2,8 @@ package com.tokopedia.product.info.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationReadMoreDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoCardDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoCatalogDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoDiscussionDataModel
@@ -27,5 +29,7 @@ interface ProductDetailInfoAdapterFactory {
     fun type(data: ProductDetailInfoCatalogDataModel): Int
     fun type(data: ProductDetailInfoLoadingSpecificationDataModel): Int
     fun type(data: ProductDetailInfoLoadingDescriptionDataModel): Int
+    fun type(data: ProductDetailInfoAnnotationReadMoreDataModel): Int
+    fun type(data: ProductDetailInfoAnnotationDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

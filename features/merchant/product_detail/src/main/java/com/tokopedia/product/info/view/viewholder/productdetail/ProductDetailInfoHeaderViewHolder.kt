@@ -1,31 +1,17 @@
 package com.tokopedia.product.info.view.viewholder.productdetail
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.extensions.getColorChecker
-import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.databinding.BsItemProductDetailHeaderBinding
-import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
-import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel
-import com.tokopedia.product.share.ekstensions.layoutInflater
-import com.tokopedia.unifyprinciples.Typography
-import java.util.*
 
 /**
  * Created by Yehezkiel on 12/10/20
  */
 class ProductDetailInfoHeaderViewHolder(
-    private val view: View,
-    private val listener: ProductDetailInfoListener
+    view: View,
 ) : AbstractViewHolder<ProductDetailInfoHeaderDataModel>(view) {
 
     companion object {
@@ -34,89 +20,8 @@ class ProductDetailInfoHeaderViewHolder(
 
     private val binding = BsItemProductDetailHeaderBinding.bind(view)
 
-    override fun bind(element: ProductDetailInfoHeaderDataModel) {
-        binding.pdpHeaderProductTitle.text = element.productTitle
-        binding.pdpHeaderImg.loadImage(element.img)
-        setupItemList(element.listOfInfo)
-        setupSpecification(element.listOfAnnotation, element.needToShowSpecification())
-    }
-
-    private fun setupSpecification(
-        annotation: List<ProductDetailInfoContent>,
-        showSpecification: Boolean
-    ) = with(binding) {
-        if (showSpecification) {
-            pdpHeaderProductSeeMore.show()
-            pdpHeaderProductSeeMore.setOnClickListener {
-                listener.goToSpecification(annotation)
-            }
-        } else {
-            pdpHeaderProductSeeMore.hide()
-            pdpHeaderProductSeeMore.setOnClickListener {}
-        }
-    }
-
-    private fun setupItemList(listOfInfo: List<ProductDetailInfoContent>) = with(view) {
-        val rootView = findViewById<ViewGroup>(R.id.pdp_header_list_container)
-        val inflater: LayoutInflater = context.layoutInflater
-        rootView.removeAllViews()
-
-        listOfInfo.forEach { data ->
-            val socProofView: View = inflater.inflate(R.layout.item_info_product_detail, null)
-            val socProofBinding = ItemInfoProductDetailBinding.bind(socProofView)
-            setupItem(socProofBinding, data)
-            rootView.addView(socProofView)
-        }
-    }
-
-    private fun setupItem(
-        socProofBinding: ItemInfoProductDetailBinding,
-        data: ProductDetailInfoContent
-    ) = with(socProofBinding) {
-        val bindingPosition = bindingAdapterPosition + Int.ONE
-        infoDetailTitle.text = data.title
-        infoDetailValue.text = data.subtitle
-
-        infoDetailValue.run {
-            if (data.applink.isNotEmpty()) {
-                setTextColor(context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-                setWeight(Typography.BOLD)
-
-                infoDetailClickArea.setOnClickListener {
-                    when (data.title.lowercase(Locale.getDefault())) {
-                        ProductDetailCommonConstant.KEY_CATEGORY -> {
-                            listener.goToCategory(data.applink)
-                        }
-                        ProductDetailCommonConstant.KEY_ETALASE -> {
-                            listener.goToEtalase(data.applink)
-                        }
-                        ProductDetailCommonConstant.KEY_CATALOG -> {
-                            listener.goToCatalog(data.applink, data.subtitle)
-                        }
-                        else -> {
-                            listener.goToApplink(data.applink)
-                        }
-                    }
-                }
-            }
-
-            if (data.infoLink.isNotEmpty()) {
-                infoDetailIcon.show()
-                infoDetailClickArea.setOnClickListener {
-                    listener.goToEducational(
-                        data.infoLink,
-                        data.title,
-                        data.subtitle,
-                        bindingPosition
-                    )
-                }
-
-                data.icon.toIntOrNull()?.let { icon ->
-                    infoDetailIcon.setImage(icon)
-                }
-            }
-
-            listener.onImpressInfo(data.title, data.subtitle, bindingPosition)
-        }
+    override fun bind(element: ProductDetailInfoHeaderDataModel) = with(binding) {
+        pdpHeaderProductTitle.text = element.title
+        pdpHeaderImg.loadImage(element.image)
     }
 }

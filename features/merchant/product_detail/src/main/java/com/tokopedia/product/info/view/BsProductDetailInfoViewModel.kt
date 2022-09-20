@@ -12,12 +12,12 @@ import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.info.data.response.PdpGetDetailBottomSheet
+import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
+import com.tokopedia.product.info.util.ProductDetailInfoMapper
 import com.tokopedia.product.info.view.models.ProductDetailInfoLoadingDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoLoadingDescriptionDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoLoadingSpecificationDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoVisitable
-import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
-import com.tokopedia.product.info.util.ProductDetailInfoMapper
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject

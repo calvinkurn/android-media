@@ -3,6 +3,16 @@ package com.tokopedia.product.info.util
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.info.data.response.PdpGetDetailBottomSheet
+import com.tokopedia.product.info.util.ProductDetailInfoConstant.CATALOG
+import com.tokopedia.product.info.util.ProductDetailInfoConstant.CUSTOM_INFO_KEY
+import com.tokopedia.product.info.util.ProductDetailInfoConstant.DESCRIPTION_DETAIL_KEY
+import com.tokopedia.product.info.util.ProductDetailInfoConstant.DETAIL_KEY
+import com.tokopedia.product.info.util.ProductDetailInfoConstant.GUIDELINE_DETAIL_KEY
+import com.tokopedia.product.info.util.ProductDetailInfoConstant.HEADER_KEY
+import com.tokopedia.product.info.util.ProductDetailInfoConstant.SHOP_NOTES_DETAIL_KEY
+import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationReadMoreDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationReadMoreDataModel.Companion.SPECIFICATION_SIZE_THRESHOLD
 import com.tokopedia.product.info.view.models.ProductDetailInfoCardDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoCatalogDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoDiscussionDataModel
@@ -10,14 +20,7 @@ import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableDataMod
 import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableImageDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel
-import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel.Companion.SPECIFICATION_SIZE_THRESHOLD
 import com.tokopedia.product.info.view.models.ProductDetailInfoVisitable
-import com.tokopedia.product.info.util.ProductDetailInfoConstant.CATALOG
-import com.tokopedia.product.info.util.ProductDetailInfoConstant.CUSTOM_INFO_KEY
-import com.tokopedia.product.info.util.ProductDetailInfoConstant.DESCRIPTION_DETAIL_KEY
-import com.tokopedia.product.info.util.ProductDetailInfoConstant.GUIDELINE_DETAIL_KEY
-import com.tokopedia.product.info.util.ProductDetailInfoConstant.HEADER_DETAIL_KEY
-import com.tokopedia.product.info.util.ProductDetailInfoConstant.SHOP_NOTES_DETAIL_KEY
 
 /**
  * Created by Yehezkiel on 20/10/20
@@ -28,17 +31,10 @@ object ProductDetailInfoMapper {
         responseData: PdpGetDetailBottomSheet,
         parcelData: ProductInfoParcelData
     ): List<ProductDetailInfoVisitable> {
-        val components = if (parcelData.isOpenSpecification) {
-            generateVisitableSpecification(
-                responseData = responseData,
-                parcelData = parcelData
-            )
-        } else {
-            generateVisitableDescription(
-                responseData = responseData,
-                parcelData = parcelData
-            )
-        }
+        val components = generateComponents(
+            responseData = responseData,
+            parcelData = parcelData
+        )
 
         if (!parcelData.isTokoNow) {
             components.add(
@@ -54,7 +50,7 @@ object ProductDetailInfoMapper {
         return components
     }
 
-    private fun generateVisitableDescription(
+    private fun generateComponents(
         responseData: PdpGetDetailBottomSheet,
         parcelData: ProductInfoParcelData
     ): MutableList<ProductDetailInfoVisitable> {
@@ -63,11 +59,16 @@ object ProductDetailInfoMapper {
 
         responseData.bottomsheetData.forEachIndexed { index, it ->
             when (it.componentName) {
-                HEADER_DETAIL_KEY -> listOfComponent.add(
-                    generateHeaderDetailDescription(
+                HEADER_KEY -> {
+                    val header = ProductDetailInfoHeaderDataModel(
                         componentId = index,
-                        parcelData = parcelData
+                        image = parcelData.productImageUrl,
+                        title = parcelData.productTitle
                     )
+                    listOfComponent.add(header)
+                }
+                DETAIL_KEY -> listOfComponent.addAll(
+                    generateDetailAnnotations(parcelData = parcelData)
                 )
                 DESCRIPTION_DETAIL_KEY -> {
                     val descriptionValue = dataContent.firstOrNull {
@@ -123,9 +124,13 @@ object ProductDetailInfoMapper {
                     )
                 }
                 CATALOG -> {
-                    /**
-                     * ignore this block, bcz render at [generateVisitableSpecification]
-                     */
+                    listOfComponent.add(
+                        ProductDetailInfoCatalogDataModel(
+                            componentName = index,
+                            title = it.title,
+                            items = it.row
+                        )
+                    )
                 }
                 else -> {
                     if (it.value.isNotEmpty()) {
@@ -146,72 +151,8 @@ object ProductDetailInfoMapper {
         return listOfComponent
     }
 
-    private fun generateHeaderDetailDescription(
-        componentId: Int,
-        parcelData: ProductInfoParcelData
-    ): ProductDetailInfoHeaderDataModel {
-        val isCatalog = parcelData.isOpenCatalogDescription
-        val productInfoItems = mutableListOf<ProductDetailInfoContent>()
-        val annotationItems = mutableListOf<ProductDetailInfoContent>()
-        val dataContent = parcelData.productInfo.dataContent
-
-        dataContent.forEach { data ->
-            if (data.title.lowercase() != DESCRIPTION_DETAIL_KEY) {
-                val notShownMax = isInfoUnderMax(currentSize = productInfoItems.size)
-
-                if (data.showAtBottomSheet && !isCatalog && notShownMax) {
-                    productInfoItems.add(data)
-                }
-
-                if (data.isAnnotation) {
-                    annotationItems.add(data)
-                }
-            }
-        }
-
-        return ProductDetailInfoHeaderDataModel(
-            componentId = componentId,
-            img = parcelData.productImageUrl,
-            productTitle = parcelData.productTitle,
-            listOfInfo = productInfoItems,
-            listOfAnnotation = annotationItems
-        )
-    }
-
-    private fun generateVisitableSpecification(
-        responseData: PdpGetDetailBottomSheet,
-        parcelData: ProductInfoParcelData
-    ): MutableList<ProductDetailInfoVisitable> {
-        val listOfComponent: MutableList<ProductDetailInfoVisitable> = mutableListOf()
-
-        responseData.bottomsheetData.forEachIndexed { index, it ->
-            when (it.componentName) {
-                HEADER_DETAIL_KEY -> listOfComponent.add(
-                    generateHeaderDetailSpecification(
-                        componentId = index,
-                        parcelData = parcelData
-                    )
-                )
-                CATALOG -> {
-                    listOfComponent.add(
-                        ProductDetailInfoCatalogDataModel(
-                            componentName = index,
-                            title = it.title,
-                            items = it.row
-                        )
-                    )
-                }
-            }
-        }
-
-        return listOfComponent
-    }
-
-    private fun generateHeaderDetailSpecification(
-        componentId: Int,
-        parcelData: ProductInfoParcelData
-    ): ProductDetailInfoHeaderDataModel {
-        val productInfoItems = mutableListOf<ProductDetailInfoContent>()
+    private fun generateDetailAnnotations(parcelData: ProductInfoParcelData): List<ProductDetailInfoVisitable> {
+        val productInfoItems = mutableListOf<ProductDetailInfoVisitable>()
         val annotationItems = mutableListOf<ProductDetailInfoContent>()
         val dataContent = parcelData.productInfo.dataContent
 
@@ -220,7 +161,11 @@ object ProductDetailInfoMapper {
                 val notShownMax = isInfoUnderMax(currentSize = productInfoItems.size)
 
                 if (data.showAtBottomSheet && notShownMax) {
-                    productInfoItems.add(data)
+                    val info = ProductDetailInfoAnnotationDataModel(
+                        componentId = data.hashCode(),
+                        data = data
+                    )
+                    productInfoItems.add(info)
                 }
 
                 if (data.isAnnotation) {
@@ -229,15 +174,19 @@ object ProductDetailInfoMapper {
             }
         }
 
-        return ProductDetailInfoHeaderDataModel(
-            componentId = componentId,
-            img = parcelData.productImageUrl,
-            productTitle = parcelData.productTitle,
-            listOfInfo = productInfoItems,
-            listOfAnnotation = annotationItems
-        )
+        return if (productInfoItems.size + annotationItems.size > SPECIFICATION_SIZE_THRESHOLD) {
+            // add to read more view-holder
+            val annotation = ProductDetailInfoAnnotationReadMoreDataModel(
+                componentId = annotationItems.hashCode(),
+                data = annotationItems
+            )
+            productInfoItems.apply {
+                add(annotation)
+            }
+        } else {
+            productInfoItems
+        }
     }
-
 
     private fun isInfoUnderMax(currentSize: Int) = currentSize < SPECIFICATION_SIZE_THRESHOLD
 }

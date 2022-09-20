@@ -3,6 +3,9 @@ package com.tokopedia.product.info.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.info.view.ProductDetailInfoListener
+import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationReadMoreDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoCardDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoCatalogDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoDiscussionDataModel
@@ -13,7 +16,8 @@ import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoLoadingDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoLoadingDescriptionDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoLoadingSpecificationDataModel
-import com.tokopedia.product.info.view.ProductDetailInfoListener
+import com.tokopedia.product.info.view.viewholder.productdetail.ProductDetailInfoAnnotationReadMoreViewHolder
+import com.tokopedia.product.info.view.viewholder.productdetail.ProductDetailInfoAnnotationViewHolder
 import com.tokopedia.product.info.view.viewholder.productdetail.ProductDetailInfoCardViewHolder
 import com.tokopedia.product.info.view.viewholder.productdetail.ProductDetailInfoCatalogViewHolder
 import com.tokopedia.product.info.view.viewholder.productdetail.ProductDetailInfoDiscussionViewHolder
@@ -72,10 +76,17 @@ class ProductDetailInfoAdapterFactoryImpl(
         return ProductDetailInfoLoadingDescriptionViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductDetailInfoAnnotationReadMoreDataModel): Int {
+        return ProductDetailInfoAnnotationReadMoreViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductDetailInfoAnnotationDataModel): Int {
+        return ProductDetailInfoAnnotationViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> = when (type) {
         ProductDetailInfoHeaderViewHolder.LAYOUT -> ProductDetailInfoHeaderViewHolder(
             view = view,
-            listener = listener
         )
         ProductDetailInfoLoadingViewHolder.LAYOUT -> ProductDetailInfoLoadingViewHolder(view)
         ProductDetailInfoExpandableViewHolder.LAYOUT -> ProductDetailInfoExpandableViewHolder(
@@ -107,6 +118,14 @@ class ProductDetailInfoAdapterFactoryImpl(
         )
         ProductDetailInfoLoadingDescriptionViewHolder.LAYOUT -> ProductDetailInfoLoadingDescriptionViewHolder(
             view = view
+        )
+        ProductDetailInfoAnnotationReadMoreViewHolder.LAYOUT -> ProductDetailInfoAnnotationReadMoreViewHolder(
+            view = view,
+            listener = listener
+        )
+        ProductDetailInfoAnnotationViewHolder.LAYOUT -> ProductDetailInfoAnnotationViewHolder(
+            view = view,
+            listener = listener
         )
         else -> super.createViewHolder(view, type)
     }
