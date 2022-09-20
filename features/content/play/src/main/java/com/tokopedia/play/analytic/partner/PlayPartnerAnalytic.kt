@@ -10,4 +10,8 @@ interface PlayPartnerAnalytic {
     fun clickFollowShop(channelId: String, channelType: PlayChannelType, shopId: String, action: String)
 
     fun clickShop(channelId: String, channelType: PlayChannelType, shopId: String)
+
+    fun clickFollowUniversal(channelId: String)
+
+    fun impressFollow(channelId: String)
 }

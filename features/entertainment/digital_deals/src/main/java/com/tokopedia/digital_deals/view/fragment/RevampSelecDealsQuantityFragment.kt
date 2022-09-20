@@ -132,17 +132,17 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
         maxQuantity = if(dealsDetail.maxQty > 0) dealsDetail.maxQty else 1
         currentQuantity = minQuantity
 
-        if (dealsDetail.mrp != 0 && dealsDetail.mrp != dealsDetail.salesPrice) {
+        if (dealsDetail.mrp != 0L && dealsDetail.mrp != dealsDetail.salesPrice) {
             tv_mrp_revamped?.show()
-            tv_mrp_revamped?.text = Utils.convertToCurrencyString(dealsDetail.mrp.toLong())
+            tv_mrp_revamped?.text = Utils.convertToCurrencyString(dealsDetail.mrp)
             tv_mrp_revamped?.paintFlags = tv_mrp_revamped.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG
         } else {
             tv_mrp_revamped?.gone()
         }
 
         tv_no_quantity?.text = String.format(context?.resources?.getString(com.tokopedia.digital_deals.R.string.quantity_of_deals).orEmpty(), currentQuantity)
-        tv_sales_price?.text = Utils.convertToCurrencyString(dealsDetail.salesPrice.toLong())
-        tv_total_amount?.text = Utils.convertToCurrencyString(dealsDetail.salesPrice.toLong())
+        tv_sales_price?.text = Utils.convertToCurrencyString(dealsDetail.salesPrice)
+        tv_total_amount?.text = Utils.convertToCurrencyString(dealsDetail.salesPrice)
 
         iv_subtract?.setOnClickListener {
             if (currentQuantity > minQuantity) {

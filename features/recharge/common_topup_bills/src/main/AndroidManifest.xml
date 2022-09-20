@@ -11,10 +11,14 @@
             android:windowSoftInputMode="stateAlwaysVisible"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".view.activity.TopupBillsFavoriteNumberActivity"
+            android:name="com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
-            android:launchMode="singleTask"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name="com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
             <intent-filter>
@@ -29,21 +33,5 @@
                     android:path="@string/path_digital_favorite_number" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.activity.TopupBillsSavedNumberActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.WhiteUnify" />
-        <activity
-            android:name="com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.WhiteUnify" />
-        <activity
-            android:name="com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.WhiteUnify"
-            android:exported="false" />
     </application>
 </manifest>
