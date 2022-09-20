@@ -1644,7 +1644,7 @@ class InboxDetailPresenterTest {
         assertEquals(true, actualResult is InboxDetailPresenter)
     }
 
-    @Test
+    /*@Test
     fun `run on Options Item Selected is action search`() {
         presenter.attachView(view)
         val menu = mockk<MenuItem>(relaxed = true)
@@ -1653,9 +1653,9 @@ class InboxDetailPresenterTest {
         val actualResult = presenter.onOptionsItemSelected(menu)
         assertTrue(actualResult)
         verify { view.toggleSearch(any()) }
-    }
+    }*/
 
-    @Test
+    /*@Test
     fun `run on Options Item Selected is action search but view empty`() {
         val menu = mockk<MenuItem>(relaxed = true)
         every { menu.itemId } returns 2131296681
@@ -1663,7 +1663,7 @@ class InboxDetailPresenterTest {
         val actualResult = presenter.onOptionsItemSelected(menu)
         assertTrue(actualResult)
         verify(exactly = 0) { view.toggleSearch(any()) }
-    }
+    }*/
 
     @Test
     fun `run on Options Item Selected not action search or home`() {

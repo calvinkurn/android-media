@@ -678,14 +678,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         ViewGroup.MarginLayoutParams tvOptionalNoteToSellerLayoutParams = (ViewGroup.MarginLayoutParams) tvOptionalNoteToSeller.getLayoutParams();
         ViewGroup.MarginLayoutParams productContainerLayoutParams = (ViewGroup.MarginLayoutParams) llFrameItemProductContainer.getLayoutParams();
         ViewGroup.MarginLayoutParams productInfoLayoutParams = (ViewGroup.MarginLayoutParams) rlProductInfo.getLayoutParams();
-        int bottomMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_8);
+        int bottomMargin = itemView.getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8);
 
         if (cartItemModel.isBundlingItem()) {
             if (!TextUtils.isEmpty(cartItemModel.getBundleIconUrl())) {
                 ImageHandler.loadImage2(imageBundle, cartItemModel.getBundleIconUrl(), com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder);
             }
-            ivProductImageLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_14);
-            tvOptionalNoteToSellerLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(R.dimen.dp_14);
+            ivProductImageLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14);
+            tvOptionalNoteToSellerLayoutParams.leftMargin = itemView.getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_14);
             vBundlingProductSeparator.setVisibility(View.VISIBLE);
             if (cartItemModel.getBundlingItemPosition() == ShipmentMapper.BUNDLING_ITEM_HEADER) {
                 productBundlingInfo.setVisibility(View.VISIBLE);
@@ -785,7 +785,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderProductPrice(CartItemModel cartItemModel) {
         tvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                 (long) cartItemModel.getPrice(), false)));
-        int dp4 = tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4);
+        int dp4 = tvProductPrice.getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4);
         if (cartItemModel.getOriginalPrice() > 0) {
             tvProductPrice.setPadding(0, dp4, 0, 0);
             tvProductOriginalPrice.setPadding(0, dp4, 0, 0);

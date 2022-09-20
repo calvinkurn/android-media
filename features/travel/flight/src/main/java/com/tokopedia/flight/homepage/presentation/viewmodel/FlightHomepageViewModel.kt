@@ -24,6 +24,7 @@ import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassenge
 import com.tokopedia.flight.search.domain.FlightSearchDeleteAllDataUseCase
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -127,18 +128,18 @@ class FlightHomepageViewModel @Inject constructor(
             }
 
             // transform passenger
-            if (!passengerValidator.validateInfantNotGreaterThanAdult(extrasAdult.toInt(), extrasInfant.toInt())) {
+            if (!passengerValidator.validateInfantNotGreaterThanAdult(extrasAdult.toIntSafely(), extrasInfant.toIntSafely())) {
                 errorStringResourceId = R.string.select_passenger_infant_greater_than_adult_error_message
-            } else if (!passengerValidator.validateTotalPassenger(extrasAdult.toInt(), extrasChild.toInt())) {
+            } else if (!passengerValidator.validateTotalPassenger(extrasAdult.toIntSafely(), extrasChild.toIntSafely())) {
                 errorStringResourceId = R.string.select_passenger_total_passenger_error_message
             } else {
-                dashboardCache.putPassengerCount(extrasAdult.toInt(), extrasChild.toInt(), extrasInfant.toInt())
+                dashboardCache.putPassengerCount(extrasAdult.toIntSafely(), extrasChild.toIntSafely(), extrasInfant.toIntSafely())
             }
 
             // transform class
-            dashboardCache.putClassCache(extrasClass.toInt())
+            dashboardCache.putClassCache(extrasClass.toIntSafely())
 
-            if (extrasAutoSearch.toInt() == 1) {
+            if (extrasAutoSearch.toIntSafely() == 1) {
                 mutableAutoSearch.postValue(true)
             }
         } catch (t: Throwable) {
