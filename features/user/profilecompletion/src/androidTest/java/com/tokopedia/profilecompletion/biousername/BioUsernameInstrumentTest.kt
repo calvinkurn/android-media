@@ -4,11 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.home_account.common.idling.FragmentTransactionIdle
 import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameActivity
 import com.tokopedia.profilecompletion.di.ActivityComponentFactory
 import com.tokopedia.profilecompletion.common.stub.di.TestComponentActivityFactory
-import com.tokopedia.profilecompletion.profileinfo.view.activity.ProfileInfoActivity
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.common.helper.checkMessageText
 import com.tokopedia.profilecompletion.common.helper.checkTextOnEditText
@@ -117,11 +115,6 @@ class BioUsernameInstrumentTest {
         else Intent().apply {
             putExtra(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM, ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO) }
         activity = activityTestRule.launchActivity(intent)
-        FragmentTransactionIdle(
-                activity.supportFragmentManager,
-                ProfileInfoActivity.TAG
-
-        )
         test.invoke()
     }
 

@@ -102,23 +102,24 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
 
     suspend fun saveAddress(model: SaveAddressDataModel, source: String): AddAddressResponse {
         val param = AddAddressParam(
-            addr_name = model.addressName,
-            receiver_name = model.receiverName,
-            address_1 = model.address1,
-            address_2 = model.address2,
-            postal_code = model.postalCode,
+            addrName = model.addressName,
+            receiverName = model.receiverName,
+            address1 = model.address1,
+            address2 = model.address2,
+            postalCode = model.postalCode,
             phone = model.phone,
             province = model.provinceId.toString(),
             city = model.cityId.toString(),
             district = model.districtId.toString(),
             latitude = model.latitude,
             longitude = model.longitude,
-            is_ana_positive = model.isAnaPositive,
-            set_as_primary_address = model.setAsPrimaryAddresss,
-            apply_name_as_new_user_fullname = model.applyNameAsNewUserFullname,
-            source = source
+            isAnaPositive = model.isAnaPositive,
+            setAsPrimaryAddress = model.setAsPrimaryAddresss,
+            applyNameAsNewUserFullname = model.applyNameAsNewUserFullname,
+            source = source,
+            isTokonowRequest = model.isTokonowRequest
         )
-        val gqlParam = mapOf("input" to param.toMap())
+        val gqlParam = mapOf("input" to param)
         val request = GraphqlRequest(KeroLogisticQuery.kero_add_address_query,
                 AddAddressResponse::class.java, gqlParam)
         return gql.getResponse(request)
@@ -139,7 +140,8 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
             phone = model.phone,
             latitude = model.latitude,
             longitude = model.longitude,
-            source = source
+            source = source,
+            isTokonowRequest = model.isTokonowRequest
         )
         val gqlParam = mapOf("input" to param)
         val request = GraphqlRequest(KeroLogisticQuery.kero_edit_address,

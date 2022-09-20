@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/cl_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/spacing_lvl4"
+    android:layout_marginBottom="@dimen/spacing_lvl4"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.buyerorder.detail.view.customview.CustomTicketView
+        android:id="@+id/customView1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_alignBottom="@+id/divider1"
+        android:layout_alignParentTop="true"
+        app:borderColor="@color/Unify_N50"
+        app:borderWidth="@dimen/deals_voucher_border_width_ticket_view"
+        app:cornerRadius="@dimen/deals_voucher_corner_ticket_view"
+        app:cornerType="roundedscallop"
+        app:scallopRadius="@dimen/layout_lvl1"
+        app:showBorder="true"
+        app:showTopShadow="true"
+        app:ticketElevation="@dimen/deals_voucher_elevation_ticket_view" />
+
+    <View
+        android:layout_width="@dimen/deals_voucher_right_line_width"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_alignBottom="@+id/divider1"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1.5dp"
+        android:layout_marginBottom="7dp"
+        android:background="@drawable/rd_line_green" />
+
+    <com.tokopedia.buyerorder.detail.view.customview.CustomTicketView
+        android:id="@+id/customView2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_alignTop="@+id/divider1"
+        android:layout_alignBottom="@+id/progress_bar_layout"
+        app:borderColor="@color/Unify_N50"
+        app:borderWidth="@dimen/deals_voucher_border_width_ticket_view"
+        app:cornerRadius="@dimen/deals_voucher_corner_ticket_view"
+        app:cornerType="scalloprounded"
+        app:scallopRadius="@dimen/layout_lvl1"
+        app:showBorder="false"
+        app:showBottomShadow="true"
+        app:ticketElevation="@dimen/deals_voucher_elevation_ticket_view" />
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/deals_voucher_divider_size"
+        android:layout_below="@+id/ll_valid"
+        android:layout_marginHorizontal="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@drawable/dash_line_grey" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_brand_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4">
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_deal"
+            android:layout_width="@dimen/layout_lvl7"
+            android:layout_height="@dimen/layout_lvl7"
+            android:background="@color/Unify_N50"
+            android:scaleType="centerCrop"
+            app:unify_image_type="circle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_lvl3"
+            app:layout_constraintTop_toTopOf="@id/iv_deal"
+            app:layout_constraintBottom_toBottomOf="@id/iv_deal"
+            app:layout_constraintStart_toEndOf="@id/iv_deal"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical">
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_brand_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_lvl3"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="display_3"
+                tools:text="Go Food Voucher"/>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_deal_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_lvl3"
+                android:lines="2"
+                android:maxLines="2"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                tools:text="Voucher makan sepuasnya "/>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_redeem_locations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_lvl3"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:visibility="gone"
+                android:textColor="@color/Unify_N700_44"
+                app:typographyType="display_3"
+                tools:text="mall nipah"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_valid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/container_brand_detail"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:background="@drawable/rect_grey"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/spacing_lvl3">
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_valid_till"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/text_valid_till"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="display_3"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_valid_till_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="@dimen/spacing_lvl1"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/divider1"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl5"
+            android:layout_gravity="center"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/tapAction_deals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_lvl3"
+            android:background="@color/Unify_Background"
+            android:orientation="vertical"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/voucerCodeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_lvl3"
+            android:background="@color/Unify_Background"
+            android:orientation="vertical"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            tools:ignore="UselessLeaf" />
+    </LinearLayout>
+</RelativeLayout>
