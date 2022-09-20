@@ -61,7 +61,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageFitCenter
@@ -775,8 +774,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     override fun onInputPriceByUserFilled(paymentAmount: Long?) {
-        viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble() ?: 0.0)
-        viewModel.setSubtotalPaymentSummaryOnUserInput(paymentAmount?.toDouble() ?: 0.0)
+        viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble() ?: ZERO_DOUBLE)
+        viewModel.setSubtotalPaymentSummaryOnUserInput(paymentAmount?.toDouble() ?: ZERO_DOUBLE)
     }
 
     override fun enableCheckoutButton() {
@@ -870,8 +869,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                     ?: emptyArray()
             descriptionArray.forEachIndexed { index, text ->
                 val simpleWidget = DigitalCheckoutSimpleWidget(it)
-                simpleWidget.setContent("${index + Int.ONE}.", text)
-
+                val leftContent = "${index + Int.ONE}."
+                simpleWidget.setContent(leftContent, text)
                 linearLayout.addView(simpleWidget)
             }
 
@@ -929,6 +928,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16
 
         private const val DEFAULT_ANDROID_DEVICE_ID = 5
+        private const val ZERO_DOUBLE = 0.0
 
         private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
         private const val MORE_INFO_BOTTOM_SHEET_TAG = "E-gold more info bottom sheet"
