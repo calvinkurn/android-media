@@ -69,6 +69,7 @@ data class PromoListItemUiModel(
     data class UiState(
             var isParentEnabled: Boolean = false,
             var isSelected: Boolean = false,
+            var isPreSelected: Boolean = false,
             var isAttempted: Boolean = false,
             var isCausingOtherPromoClash: Boolean = false,
             var isRecommended: Boolean = false,
