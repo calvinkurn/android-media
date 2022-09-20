@@ -1011,6 +1011,24 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
 
         if (toBeRemovedPromoCodes.isEmpty()) {
+            // if there are no promo to be removed, try removing preselected codes
+            promoListUiModel.value?.forEach { visitable ->
+                if (visitable is PromoListItemUiModel && !visitable.uiState.isBebasOngkir && visitable.uiState.isParentEnabled && visitable.uiState.isPreSelected) {
+                    if (visitable.uiData.shopId > 0) {
+                        val order = orders.firstOrNull { it.uniqueId == visitable.uiData.uniqueId }
+                        if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
+                            order.codes.add(visitable.uiData.promoCode)
+                            toBeRemovedPromoCodes.add(visitable.uiData.promoCode)
+                        }
+                    } else if (!globalPromo.contains(visitable.uiData.promoCode)) {
+                        globalPromo.add(visitable.uiData.promoCode)
+                        toBeRemovedPromoCodes.add(visitable.uiData.promoCode)
+                    }
+                }
+            }
+        }
+
+        if (toBeRemovedPromoCodes.isEmpty()) {
             // if there are no promo to be removed, try removing attempted codes
             promoListUiModel.value?.forEach { visitable ->
                 if (visitable is PromoListItemUiModel && !visitable.uiState.isBebasOngkir && visitable.uiState.isParentEnabled && visitable.uiState.isAttempted) {
