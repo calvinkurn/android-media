@@ -68,7 +68,7 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
         bottomSheetUnify.dismiss()
     }
 
-    private fun isRecommend(shippingCourierUiModel :ShippingCourierUiModel ): Boolean {
+    private fun isRecommend(shippingCourierUiModel: ShippingCourierUiModel): Boolean {
         return shippingCourierUiModel.productData.isRecommend && !shippingCourierUiModel.productData.isUiRatesHidden
     }
 
