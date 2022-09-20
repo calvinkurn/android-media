@@ -98,6 +98,8 @@ data class ThanksPageData(
     var paymentMethodCount: Int,
     // parse config flag json
     var configFlagData: ConfigFlag? = null,
+    // parse gyro data json
+    var gyroData: GyroData? = null,
 ) : Parcelable
 
 
@@ -138,7 +140,9 @@ data class CustomDataOther(
     @SerializedName("is_enjoy_plus_benefit")
     val isEnjoyPLus: String?,
     @SerializedName("custom_illustration")
-    val customIllustration: String?
+    val customIllustration: String?,
+    @SerializedName("gyro_data")
+    val gyroData: String?
 ) : Parcelable
 
 @Parcelize
@@ -500,6 +504,16 @@ data class ConfigFlag(
     val shouldHideProductRecom: Boolean?,
     @SerializedName("hide_dg_recom")
     val shouldHideDigitalRecom: Boolean?
+) : Parcelable
+
+@Parcelize
+data class GyroData(
+    @SerializedName("is_TokoNOW")
+    val isTokoNow: Boolean,
+    @SerializedName("isUDC")
+    val isUDC: Boolean?,
+    @SerializedName("isRollence")
+    val isRollence: Boolean?,
 ) : Parcelable
 
 data class Tickers(
