@@ -5,12 +5,16 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.register.Register
 import com.tokopedia.sessioncommon.data.register.RegisterV2Model
 import com.tokopedia.sessioncommon.data.register.RegisterV2Param
-import com.tokopedia.sessioncommon.domain.commonaction.RegisterV2SaveSession
+import com.tokopedia.sessioncommon.util.TokenGenerator
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.util.EncoderDecoder
 import javax.inject.Inject
 
 class GetRegisterV2AndSaveSessionUseCase @Inject constructor(
@@ -52,8 +56,29 @@ class GetRegisterV2AndSaveSessionUseCase @Inject constructor(
         """.trimIndent()
 
     override suspend fun execute(params: RegisterV2Param): Result<Register> {
+
+        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
         val response: RegisterV2Model = repository.request(graphqlQuery(), params)
 
-        return object : RegisterV2SaveSession(response, userSession) {}.data()
+        return onSuccessRegisterV2Request(response.register)
+    }
+
+    private fun onSuccessRegisterV2Request(result: Register): Result<Register> {
+        userSession.clearToken()
+        return if (result.accessToken.isNotEmpty() && result.refreshToken.isNotEmpty() && result.tokenType.isNotEmpty()) {
+            setSession(result)
+            Success(result)
+        } else {
+            userSession.clearToken()
+            Fail(MessageErrorException(result.errors[0].message))
+        }
+    }
+
+    private fun setSession(result: Register) {
+        userSession.setToken(
+            result.accessToken,
+            result.tokenType,
+            EncoderDecoder.Encrypt(result.refreshToken, userSession.refreshTokenIV)
+        )
     }
 }
