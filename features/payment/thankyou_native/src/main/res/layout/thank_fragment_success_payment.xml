@@ -178,8 +178,8 @@
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/ivPaymentDetailIcon"
-                    android:layout_width="10dp"
-                    android:layout_height="20dp"
+                    android:layout_width="@dimen/thank_dp_10"
+                    android:layout_height="@dimen/thank_dp_20"
                     android:scaleType="centerCrop"
                     app:layout_constraintStart_toEndOf="@id/tvTotalAmount"
                     app:layout_constraintEnd_toEndOf="parent"
