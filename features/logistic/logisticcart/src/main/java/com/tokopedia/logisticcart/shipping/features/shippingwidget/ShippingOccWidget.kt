@@ -119,12 +119,11 @@ class ShippingOccWidget: ConstraintLayout {
     }
 
     fun renderBboTicker(
-        shippingRecommendationData: ShippingRecommendationData?,
+        logisticPromo: LogisticPromoUiModel?,
         logisticPromoTickerMessage: String?,
         onTickerClickListener: () -> Unit
     ) {
         binding?.apply {
-            val logisticPromo = shippingRecommendationData?.logisticPromo
             if (logisticPromoTickerMessage?.isNotEmpty() == true && logisticPromo != null) {
                 val formattedLogisticPromoTickerMessage = HtmlLinkHelper(
                     tickerShippingPromoTitle.context,

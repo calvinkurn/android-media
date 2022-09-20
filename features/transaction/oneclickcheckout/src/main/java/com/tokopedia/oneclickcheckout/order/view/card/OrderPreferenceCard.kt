@@ -136,7 +136,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
     private fun renderBboTicker(shipping: OrderShipment) {
         binding.shippingOccWidget.renderBboTicker(
-            shippingRecommendationData = shipping.shippingRecommendationData,
+            logisticPromo = shipping.shippingRecommendationData?.logisticPromo,
             logisticPromoTickerMessage = shipping.logisticPromoTickerMessage,
             onTickerClickListener = {
                 if (profile.enable) {
