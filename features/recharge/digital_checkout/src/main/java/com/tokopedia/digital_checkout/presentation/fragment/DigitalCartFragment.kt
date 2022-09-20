@@ -51,6 +51,7 @@ import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckou
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
@@ -716,8 +717,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun sendGetCartAndCheckoutAnalytics() {
         digitalAnalytics.sendCartScreen()
         rechargeAnalytics.trackAddToCartRechargePushEventRecommendation(
-            cartPassData?.categoryId?.toIntOrNull()
-                ?: 0
+            cartPassData?.categoryId?.toIntSafely() ?: 0
         )
     }
 

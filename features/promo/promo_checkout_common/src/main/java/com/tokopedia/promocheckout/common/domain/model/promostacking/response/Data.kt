@@ -16,16 +16,16 @@ data class Data(
         val voucherOrders: List<VoucherOrdersItem> = ArrayList(),
 
         @field:SerializedName("cashback_advocate_referral_amount")
-        val cashbackAdvocateReferralAmount: Int = 0,
+        val cashbackAdvocateReferralAmount: Long = 0L,
 
         @field:SerializedName("clashing_info_detail")
         val clashingInfoDetail: ClashingInfoDetail = ClashingInfoDetail(),
 
         @field:SerializedName("cashback_wallet_amount")
-        val cashbackWalletAmount: Int = 0,
+        val cashbackWalletAmount: Long = 0L,
 
         @field:SerializedName("discount_amount")
-        val discountAmount: Int = 0,
+        val discountAmount: Long = 0L,
 
         @field:SerializedName("title_description")
         val titleDescription: String = "",
