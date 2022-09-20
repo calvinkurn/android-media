@@ -4,9 +4,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
-import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.common_entertainment.data.Brand;
 import com.tokopedia.digital_deals.view.model.ProductItem;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 

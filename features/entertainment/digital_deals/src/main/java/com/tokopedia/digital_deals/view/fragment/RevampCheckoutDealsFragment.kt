@@ -21,7 +21,6 @@ import com.tokopedia.digital_deals.di.DealsComponent
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity.EXTRA_DEALDETAIL
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity.EXTRA_VERIFY
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics
 import com.tokopedia.digital_deals.view.utils.Utils
@@ -34,6 +33,7 @@ import javax.inject.Inject
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse
 import com.tokopedia.common_entertainment.data.EventVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMapResponse
 import com.tokopedia.digital_deals.data.DealsGeneral
@@ -222,7 +222,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
                 Utils.convertEpochToString(dealsDetail.saleEndDate)
         ) ?: ""
 
-        if (dealsDetail.outlets == null || dealsDetail.outlets.isEmpty()) {
+        if (dealsDetail.outlets.isNullOrEmpty()) {
             tv_available_locations?.text = context?.resources?.getString(com.tokopedia.digital_deals.R.string.deals_all_indonesia) ?: ""
         }
 
@@ -249,8 +249,8 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         tv_total_amount?.text = Utils.convertToCurrencyString(itemMap.price.toLong() * itemMap.quantity.toLong() + itemMap.commission.toLong())
         tv_number_vouchers?.text = context?.resources?.getString(com.tokopedia.digital_deals.R.string.number_of_vouchers, itemMap.quantity) ?: ""
 
-        if (dealsDetail.outlets != null && dealsDetail.outlets.size > 0) {
-            tv_no_locations?.text = context?.resources?.getString(com.tokopedia.digital_deals.R.string.number_of_locations, dealsDetail.outlets.size) ?: ""
+        if (dealsDetail.outlets.isNullOrEmpty()) {
+            tv_no_locations?.text = context?.resources?.getString(com.tokopedia.digital_deals.R.string.number_of_locations, dealsDetail.outlets?.size) ?: ""
         }
 
         tv_email?.setText(userSession.email)

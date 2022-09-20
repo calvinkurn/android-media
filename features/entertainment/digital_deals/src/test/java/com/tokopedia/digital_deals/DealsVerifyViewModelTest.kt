@@ -2,9 +2,9 @@ package com.tokopedia.digital_deals
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse
 import com.tokopedia.common_entertainment.data.DealsVerifyRequest
 import com.tokopedia.common_entertainment.data.DealsVerifyResponse
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.viewmodel.DealsVerifyViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError

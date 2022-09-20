@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.model;
 import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.tokopedia.common_entertainment.data.Brand;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

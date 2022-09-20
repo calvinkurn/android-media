@@ -19,7 +19,7 @@ import com.tokopedia.digital_deals.data.DealsGeneral
 import com.tokopedia.digital_deals.data.DealsInstant
 import com.tokopedia.digital_deals.data.DealsMetaDataCheckout
 import com.tokopedia.digital_deals.data.ItemMapCheckout
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealsQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

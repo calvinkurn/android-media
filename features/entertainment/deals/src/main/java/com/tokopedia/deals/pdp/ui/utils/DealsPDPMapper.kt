@@ -1,8 +1,8 @@
 package com.tokopedia.deals.pdp.ui.utils
 
 import com.tokopedia.common_entertainment.data.CartData
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse
 import com.tokopedia.common_entertainment.data.DealsVerifyRequest
-import com.tokopedia.common_entertainment.data.EventVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMap
 import com.tokopedia.common_entertainment.data.MetaData
 import com.tokopedia.deals.common.utils.DealsUtils
@@ -20,7 +20,6 @@ import com.tokopedia.deals.pdp.data.Outlet
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.data.RecentData
 import com.tokopedia.deals.pdp.data.TravelRecentSearch
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import java.text.SimpleDateFormat
@@ -192,10 +191,10 @@ object DealsPDPMapper {
         return images
     }
 
-    private fun mappedOutlet(outlets: List<Outlet>): List<com.tokopedia.digital_deals.view.model.Outlet> {
-        val mappedOutlets = mutableListOf<com.tokopedia.digital_deals.view.model.Outlet>()
+    private fun mappedOutlet(outlets: List<Outlet>): List<com.tokopedia.common_entertainment.data.Outlet> {
+        val mappedOutlets = mutableListOf<com.tokopedia.common_entertainment.data.Outlet>()
         outlets.forEach {
-            val outlet = com.tokopedia.digital_deals.view.model.Outlet()
+            val outlet = com.tokopedia.common_entertainment.data.Outlet()
             outlet.id = it.id
             outlet.productId = it.productId
             outlet.locationId = it.locationId
@@ -217,10 +216,10 @@ object DealsPDPMapper {
         return mappedOutlets.toList()
     }
 
-    private fun mappedMediaUrl(media: List<Media>): List<com.tokopedia.digital_deals.view.model.Media> {
-        val mappedMedias = mutableListOf<com.tokopedia.digital_deals.view.model.Media>()
+    private fun mappedMediaUrl(media: List<Media>): List<com.tokopedia.common_entertainment.data.Media> {
+        val mappedMedias = mutableListOf<com.tokopedia.common_entertainment.data.Media>()
         media.forEach {
-            val media = com.tokopedia.digital_deals.view.model.Media()
+            val media = com.tokopedia.common_entertainment.data.Media()
             media.id = it.id
             media.productId = it.productId
             media.title = it.title
@@ -236,8 +235,8 @@ object DealsPDPMapper {
         return mappedMedias.toList()
     }
 
-    private fun mappedBrand(brand: Brand, brandId: String): com.tokopedia.digital_deals.view.model.Brand {
-        val mappedBrand = com.tokopedia.digital_deals.view.model.Brand()
+    private fun mappedBrand(brand: Brand, brandId: String): com.tokopedia.common_entertainment.data.Brand {
+        val mappedBrand = com.tokopedia.common_entertainment.data.Brand()
         mappedBrand.id = brandId
         mappedBrand.title = brand.title
         mappedBrand.seoUrl = brand.seoUrl
@@ -246,8 +245,8 @@ object DealsPDPMapper {
         return mappedBrand
     }
 
-    private fun mappedCatalog(catalog: Catalog): com.tokopedia.digital_deals.view.model.Catalog {
-        val mappedCatalog = com.tokopedia.digital_deals.view.model.Catalog()
+    private fun mappedCatalog(catalog: Catalog): com.tokopedia.common_entertainment.data.Catalog {
+        val mappedCatalog = com.tokopedia.common_entertainment.data.Catalog()
         mappedCatalog.digitalCategoryId = catalog.digitalCategoryId
         mappedCatalog.digitalProductId = catalog.digitalProductId
         mappedCatalog.digitalProductCode = catalog.digitalProductCode

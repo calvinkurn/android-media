@@ -5,7 +5,7 @@ import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.usecase.RequestParams;
 

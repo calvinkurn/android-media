@@ -9,7 +9,7 @@ import com.tokopedia.common_entertainment.data.DealsVerifyRequest
 import com.tokopedia.common_entertainment.data.DealsVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMap
 import com.tokopedia.common_entertainment.data.MetaData
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealsQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
