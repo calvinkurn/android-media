@@ -6,13 +6,13 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.EthicalDrugResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.EthicalDrugResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
@@ -69,6 +69,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSA
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfo
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
@@ -682,6 +683,7 @@ class ShipmentMapper @Inject constructor() {
             promoSpIds = mapPromoSpId(additionalInfo)
             usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo.listUsageSummaries)
             pomlAutoApplied = additionalInfo.pomlAutoApplied
+            bebasOngkirInfo = LastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo.isBoUnstackEnabled)
         }
     }
 
