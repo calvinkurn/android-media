@@ -54,7 +54,7 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
         var selectedShippingCourierUiModel = shippingCourierUiModelList[0]
         for (shippingCourierUiModel in shippingCourierUiModelList) {
             val recommend =
-                if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else shippingCourierUiModel.productData.isRecommend
+                if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else isRecommend(shippingCourierUiModel)
             if (recommend) {
                 selectedShippingCourierUiModel = shippingCourierUiModel
             }
@@ -67,6 +67,12 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
         listener.onDurationChosen(serviceData, selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
         bottomSheetUnify.dismiss()
     }
+
+    private fun isRecommend(shippingCourierUiModel :ShippingCourierUiModel ): Boolean {
+        return shippingCourierUiModel.productData.isRecommend && !shippingCourierUiModel.productData.isUiRatesHidden
+    }
+
+
 
     override fun isToogleYearEndPromotionOn(): Boolean {
         return false
