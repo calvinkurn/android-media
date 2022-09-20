@@ -7,7 +7,11 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fl_open"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -167,17 +171,52 @@
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 />
 
-            <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btn_open"
-                android:layout_width="match_parent"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_is_auto_handle_back_pressed_label"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Open"
+                android:text="Auto Handle Back Pressed"
+                android:layout_marginTop="@dimen/spacing_lvl6"
+                />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cbx_is_auto_handle_back_pressed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Auto Handle Back Pressed"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cbx_use_bottom_sheet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Use Bottom Sheet"
                 android:layout_marginTop="@dimen/spacing_lvl5"
                 />
 
         </LinearLayout>
 
     </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/fl_open"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_NN0"
+        android:elevation="@dimen/spacing_lvl4"
+        android:padding="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_open"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open" />
+
+    </FrameLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"

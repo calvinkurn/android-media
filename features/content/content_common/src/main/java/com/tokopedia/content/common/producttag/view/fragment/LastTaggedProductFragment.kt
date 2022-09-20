@@ -207,7 +207,7 @@ class LastTaggedProductFragment @Inject constructor(
 
     private fun impressProduct() {
         if(this::layoutManager.isInitialized) {
-            val visibleProducts = layoutManager.getVisibleItems(adapter)
+            val visibleProducts = layoutManager.getVisibleItems(adapter, viewModel.isMultipleSelectionProduct)
             if(visibleProducts.isNotEmpty())
                 impressionCoordinator.saveProductImpress(visibleProducts)
         }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -59,6 +60,10 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun getScreenName(): String = "ProductTagParentFragment"
 
+    private val fragmentArgument: ContentProductTagArgument by lazy(LazyThreadSafetyMode.NONE) {
+        getProductTagArgument()
+    }
+
     private lateinit var viewModel: ProductTagViewModel
 
     private var mListener: Listener? = null
@@ -70,6 +75,18 @@ class ProductTagParentFragment @Inject constructor(
         get() = _binding!!
 
     private var coachmark: CoachMark2? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(fragmentArgument.isAutoHandleBackPressed) {
+                override fun handleOnBackPressed() {
+                    onBackPressed()
+                }
+            }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -293,7 +310,7 @@ class ProductTagParentFragment @Inject constructor(
 
             childFragmentManager.beginTransaction()
                 .replace(binding.flCcProductTagContainer.id, fragment, tag)
-                .commit()
+                .commitNow()
         }
     }
 
@@ -379,23 +396,21 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun createViewModelProvider(): ViewModelProvider {
-        val productTagArgument = getProductTagArgument()
-
         return ViewModelProvider(
             this,
             viewModelFactoryCreator.create(
                 this,
-                productTagSourceRaw = productTagArgument.productTagSource,
-                shopBadge = productTagArgument.shopBadge,
-                authorId = productTagArgument.authorId,
-                authorType = productTagArgument.authorType,
+                productTagSourceRaw = fragmentArgument.productTagSource,
+                shopBadge = fragmentArgument.shopBadge,
+                authorId = fragmentArgument.authorId,
+                authorType = fragmentArgument.authorType,
                 initialSelectedProduct = mDataSource?.getInitialSelectedProduct() ?: emptyList(),
                 productTagConfig = ContentProductTagConfig(
-                    isMultipleSelectionProduct = productTagArgument.isMultipleSelectionProduct,
-                    isFullPageAutocomplete = productTagArgument.isFullPageAutocomplete,
-                    maxSelectedProduct = productTagArgument.maxSelectedProduct,
-                    backButton = productTagArgument.backButton,
-                    isShowActionBarDivider = productTagArgument.isShowActionBarDivider,
+                    isMultipleSelectionProduct = fragmentArgument.isMultipleSelectionProduct,
+                    isFullPageAutocomplete = fragmentArgument.isFullPageAutocomplete,
+                    maxSelectedProduct = fragmentArgument.maxSelectedProduct,
+                    backButton = fragmentArgument.backButton,
+                    isShowActionBarDivider = fragmentArgument.isShowActionBarDivider,
                 )
             )
         )
