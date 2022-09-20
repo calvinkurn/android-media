@@ -657,7 +657,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         ) {
                             val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
                             view?.let { v ->
-                                callback(true, Throwable())AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                                callback(true, Throwable())
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
                             }
                         }
 
@@ -667,7 +668,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         ) {
                             context?.let { context ->
                                 view?.let { v ->
-                                    callback(false, Throwable())AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                                    callback(false, Throwable())
+                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
                                 }
                             }
                         }
@@ -688,7 +690,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         ) {
                             context?.let { context ->
                                 view?.let { v ->
-                                    callback(true, Throwable())AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                                    callback(true, Throwable())
+                                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                                 }
                             }
                             if (productDetailData.isTopads) {
