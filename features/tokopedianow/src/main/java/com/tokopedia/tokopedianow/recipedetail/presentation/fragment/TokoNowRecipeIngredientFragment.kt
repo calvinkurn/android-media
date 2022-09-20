@@ -37,6 +37,10 @@ class TokoNowRecipeIngredientFragment : Fragment(), RecipeProductListener, OutOf
     private var adapter: RecipeIngredientAdapter? = null
     private var recipeDetailView: RecipeDetailView? = null
 
+    private val productAnalytics by lazy { recipeDetailView?.getProductTracker() }
+
+    private val analytics by lazy { recipeDetailView?.getTracker() }
+
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeIngredientBinding>()
 
     override fun onCreateView(
@@ -72,8 +76,17 @@ class TokoNowRecipeIngredientFragment : Fragment(), RecipeProductListener, OutOf
         recipeDetailView?.addItemToCart(productId, shopId, quantity)
     }
 
-    override fun onCLickChangeAddress() {
+    override fun onClickChangeAddress() {
         recipeDetailView?.showChooseAddressBottomSheet()
+        analytics?.trackClickChangeAddress()
+    }
+
+    override fun onClickLearnMore() {
+        analytics?.trackClickLearnMore()
+    }
+
+    override fun onImpressOutOfCoverage() {
+        analytics?.trackImpressionOutOfCoverage()
     }
 
     fun setRecipeDetailView(recipeDetailView: RecipeDetailView) {
@@ -88,7 +101,8 @@ class TokoNowRecipeIngredientFragment : Fragment(), RecipeProductListener, OutOf
         adapter = RecipeIngredientAdapter(
             RecipeIngredientAdapterTypeFactory(
                 productListener = this,
-                outOfCoverageListener = this
+                outOfCoverageListener = this,
+                productAnalytics = productAnalytics
             )
         )
 

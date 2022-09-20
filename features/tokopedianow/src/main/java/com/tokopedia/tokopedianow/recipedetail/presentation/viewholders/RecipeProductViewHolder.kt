@@ -7,20 +7,23 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeProductBinding
+import com.tokopedia.tokopedianow.recipedetail.analytics.ProductAnalytics
+import com.tokopedia.tokopedianow.recipedetail.presentation.activity.TokoNowRecipeSimilarProductActivity
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeProductUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeProductViewHolder(
     itemView: View,
-    private val listener: RecipeProductListener?
+    private val listener: RecipeProductListener?,
+    private val analytics: ProductAnalytics?
 ) : AbstractViewHolder<RecipeProductUiModel>(itemView) {
 
     companion object {
@@ -34,12 +37,14 @@ class RecipeProductViewHolder(
     private var qtyEditorListener: TextWatcher? = null
 
     override fun bind(product: RecipeProductUiModel) {
+        addImpressionListener(product)
         renderProductInfo(product)
         renderSlashedPrice(product)
         renderDiscountLabel(product)
         renderProductButton(product)
         renderQuantityEditor(product)
         renderDeleteBtn(product)
+        renderSimilarProductBtn(product)
         setOnClickListener(product)
     }
 
@@ -95,6 +100,7 @@ class RecipeProductViewHolder(
                         shopId = product.shopId,
                         quantity = product.minOrder
                     )
+                    analytics?.trackClickAddToCart(product)
                 }
             }
         }
@@ -116,6 +122,14 @@ class RecipeProductViewHolder(
                 quantityEditor.maxValue = product.maxOrder
                 quantityEditor.setValue(quantity)
                 addTextChangeListener(qtyEditorListener)
+
+                quantityEditor.addButton.setOnClickListener {
+                    analytics?.trackClickIncreaseQuantity()
+                }
+
+                quantityEditor.subtractButton.setOnClickListener {
+                    analytics?.trackClickDecreaseQuantity()
+                }
             } else {
                 btnDeleteCart.hide()
                 btnProductCta.show()
@@ -134,19 +148,62 @@ class RecipeProductViewHolder(
             ?.removeTextChangedListener(qtyEditorListener)
     }
 
-    private fun renderDeleteBtn(product: RecipeProductUiModel) {
-        binding?.btnDeleteCart?.setOnClickListener {
-            listener?.deleteCartItem(product.id)
+    private fun renderSimilarProductBtn(product: RecipeProductUiModel) {
+        if(product.similarProducts.isNotEmpty()) {
+            binding?.textSimilarProduct?.setOnClickListener {
+                openSimilarProductBottomSheet(product)
+                trackClickSimilarProductBtn()
+            }
+
+            binding?.textSimilarProduct?.show()
+            binding?.imageChevron?.show()
+            trackImpressionSimilarProductBtn()
+        } else {
+            binding?.textSimilarProduct?.hide()
+            binding?.imageChevron?.hide()
         }
     }
 
-    private fun setOnClickListener(item: RecipeProductUiModel) {
-        binding?.root?.setOnClickListener {
-            goToProductDetailPage(item)
+    private fun renderDeleteBtn(product: RecipeProductUiModel) {
+        binding?.btnDeleteCart?.setOnClickListener {
+            listener?.deleteCartItem(product.id)
+            analytics?.trackClickRemoveProduct()
         }
+    }
 
-        binding?.textSimilarProduct?.setOnClickListener {
-            openSimilarProductBottomSheet()
+    private fun setOnClickListener(product: RecipeProductUiModel) {
+        binding?.root?.setOnClickListener {
+            goToProductDetailPage(product)
+            trackClickProduct(product)
+        }
+    }
+
+    private fun addImpressionListener(product: RecipeProductUiModel) {
+        itemView.addOnImpressionListener(product.impressHolder) {
+            trackProductImpression(product)
+            trackOutOfStockProduct(product)
+        }
+    }
+
+    private fun trackProductImpression(product: RecipeProductUiModel) {
+        analytics?.trackImpressionProduct(product)
+    }
+
+    private fun trackClickProduct(product: RecipeProductUiModel) {
+        analytics?.trackClickProduct(product)
+    }
+
+    private fun trackClickSimilarProductBtn() {
+        analytics?.trackClickSimilarProductBtn()
+    }
+
+    private fun trackImpressionSimilarProductBtn() {
+        analytics?.trackImpressionSimilarProductBtn()
+    }
+
+    private fun trackOutOfStockProduct(product: RecipeProductUiModel) {
+        if(product.stock == 0) {
+            analytics?.trackImpressionOutOfStockProduct(product)
         }
     }
 
@@ -154,8 +211,10 @@ class RecipeProductViewHolder(
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.id)
     }
 
-    private fun openSimilarProductBottomSheet() {
-        RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_SIMILAR_PRODUCT_BOTTOM_SHEET)
+    private fun openSimilarProductBottomSheet(product: RecipeProductUiModel) {
+        val products = product.similarProducts
+        val intent = TokoNowRecipeSimilarProductActivity.createNewIntent(context, products)
+        context.startActivity(intent)
     }
 
     private fun qtyEditorListener(product: RecipeProductUiModel): TextWatcher {

@@ -101,6 +101,42 @@ internal object GetRecipe: GqlQueryInterface {
                         hexColor
                       }
                     }
+                    similarProducts {
+                        id
+                        quantity
+                        detail {
+                          name
+                          url
+                          imageUrl
+                          fmtPrice
+                          appUrl
+                          slashedPrice
+                          discountPercentage
+                          parentProductID
+                          minOrder
+                          stock
+                          categoryName
+                          countReview
+                          rating
+                          ratingAverage
+                          shopID
+                          maxOrder
+                          categoryID
+                          redirectLink
+                          labelGroups {
+                            title
+                            type
+                            position
+                            url
+                          }
+                          labelGroupVariants {
+                            title
+                            type
+                            typeVariant
+                            hexColor
+                          }
+                       }
+                    }
                   }
                 }
             }

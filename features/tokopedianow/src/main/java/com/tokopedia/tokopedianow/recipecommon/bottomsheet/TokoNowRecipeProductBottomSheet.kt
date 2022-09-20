@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowRecipeProductBinding
+import com.tokopedia.tokopedianow.recipedetail.analytics.ProductAnalytics
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeProductAdapter
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeProductAdapterTypeFactory
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
@@ -29,13 +30,15 @@ class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
 
     var items: List<Visitable<*>> = emptyList()
     var productListener: RecipeProductListener? = null
+    var productAnalytics: ProductAnalytics? = null
 
     private var binding by autoClearedNullable<BottomsheetTokopedianowRecipeProductBinding>()
 
     private val adapter by lazy {
         RecipeProductAdapter(
             RecipeProductAdapterTypeFactory(
-                productListener = productListener
+                productListener = productListener,
+                productAnalytics = productAnalytics
             )
         )
     }

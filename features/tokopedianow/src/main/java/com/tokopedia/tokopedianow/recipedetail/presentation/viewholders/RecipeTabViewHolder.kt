@@ -21,9 +21,14 @@ class RecipeTabViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_tokopedianow_recipe_tab
+
+        private const val INDEX_BUY_INGREDIENT_TAB = 0
+        private const val INDEX_HOW_TO_TAB = 1
     }
 
     private var binding: ItemTokopedianowRecipeTabBinding? by viewBinding()
+
+    private val analytics by lazy { recipeDetailView.getTracker() }
 
     override fun bind(tab: RecipeTabUiModel) {
         recipeDetailView.getFragmentActivity()?.let {
@@ -58,6 +63,9 @@ class RecipeTabViewHolder(
                 adapter = recipeTabAdapter
                 registerPageChangeCallback(recipeTab)
             }
+
+            analytics.trackImpressionBuyIngredientsTab()
+            analytics.trackImpressionHowToTab()
         }
     }
 
@@ -65,6 +73,7 @@ class RecipeTabViewHolder(
         getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager?.setCurrentItem(tab.position, true)
+                trackClickRecipeTab(tab.position)
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
@@ -81,5 +90,12 @@ class RecipeTabViewHolder(
                 recipeTab?.getUnifyTabLayout()?.getTabAt(position)?.select()
             }
         })
+    }
+
+    private fun trackClickRecipeTab(position: Int) {
+        when (position) {
+            INDEX_BUY_INGREDIENT_TAB -> analytics.trackClickBuyIngredientsTab()
+            INDEX_HOW_TO_TAB -> analytics.trackClickHowToTab()
+        }
     }
 }

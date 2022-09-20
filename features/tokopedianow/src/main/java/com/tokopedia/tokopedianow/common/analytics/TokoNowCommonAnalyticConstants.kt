@@ -20,6 +20,8 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
         const val EVENT_CAMPAIGN_CODE = "campaignCode"
         const val EVENT_WAREHOUSE_ID = "warehouseId"
+        const val EVENT_PROMO_VIEW = "promoView"
+        const val EVENT_PROMO_CLICK = "promoClick"
     }
 
     object CATEGORY{
@@ -91,6 +93,7 @@ object TokoNowCommonAnalyticConstants {
         const val PAGE_NAME_TOKOPEDIA_NOW = "tokopedia now"
         const val DEFAULT_NULL_VALUE = "null"
         const val DEFAULT_CATEGORY_ID = "0"
+        const val DEFAULT_EMPTY_VALUE = ""
     }
 
     object ACTION{

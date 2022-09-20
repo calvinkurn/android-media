@@ -13,22 +13,32 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.recipecommon.bottomsheet.TokoNowRecipeProductBottomSheet
 import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailComponent
+import com.tokopedia.tokopedianow.recipedetail.analytics.RecipeSimilarProductAnalytics
+import com.tokopedia.tokopedianow.recipedetail.presentation.activity.TokoNowRecipeSimilarProductActivity.Companion.EXTRA_SIMILAR_PRODUCT_LIST
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeProductUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewmodel.TokoNowRecipeSimilarProductViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
 
     companion object {
 
-        fun newInstance(): TokoNowRecipeSimilarProductFragment {
-            return TokoNowRecipeSimilarProductFragment()
+        fun newInstance(products: List<RecipeProductUiModel>): TokoNowRecipeSimilarProductFragment {
+            return TokoNowRecipeSimilarProductFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelableArrayList(EXTRA_SIMILAR_PRODUCT_LIST, ArrayList(products))
+                }
+            }
         }
     }
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -37,6 +47,8 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
         ViewModelProvider(requireActivity(), viewModelFactory)
             .get(TokoNowRecipeSimilarProductViewModel::class.java)
     }
+
+    private val analytics by lazy { RecipeSimilarProductAnalytics(userSession) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,36 +61,8 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeLiveData()
-        val title = getString(R.string.tokopedianow_recipe_similar_product_title)
-        val bottomSheet = TokoNowRecipeProductBottomSheet.newInstance().apply {
-            val productList = mutableListOf<RecipeProductUiModel>()
-
-            for (i in 0..12) {
-                val position = i + 1
-
-                productList.add(
-                    RecipeProductUiModel(
-                        id = position.toString(),
-                        shopId = (i * 1).toString(),
-                        name = "Product Name $position",
-                        quantity = i * 2,
-                        stock = i * 3,
-                        minOrder = 0,
-                        maxOrder = i * 3,
-                        priceFmt = "Rp 50.000",
-                        weight = "500g",
-                        imageUrl = "",
-                        slashedPrice = "",
-                        discountPercentage = "",
-                    )
-                )
-            }
-
-            productListener = this@TokoNowRecipeSimilarProductFragment
-            items = productList
-            setTitle(title)
-        }
-        bottomSheet.show(childFragmentManager)
+        setupBottomSheet()
+        trackBottomSheetImpression()
     }
 
     override fun onAttach(context: Context) {
@@ -98,6 +82,20 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
 
     override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
         viewModel.addItemToCart(productId, shopId, quantity)
+    }
+
+    private fun setupBottomSheet() {
+        val title = getString(R.string.tokopedianow_recipe_similar_product_title)
+        val productList = arguments
+            ?.getParcelableArrayList<RecipeProductUiModel>(EXTRA_SIMILAR_PRODUCT_LIST).orEmpty()
+
+        val bottomSheet = TokoNowRecipeProductBottomSheet.newInstance().apply {
+            productListener = this@TokoNowRecipeSimilarProductFragment
+            productAnalytics = analytics
+            items = productList
+            setTitle(title)
+        }
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun observeLiveData() {
@@ -158,6 +156,10 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
                 toaster.show()
             }
         }
+    }
+
+    private fun trackBottomSheetImpression() {
+        analytics.trackImpressionBottomSheet()
     }
 
     private fun injectDependencies() {
