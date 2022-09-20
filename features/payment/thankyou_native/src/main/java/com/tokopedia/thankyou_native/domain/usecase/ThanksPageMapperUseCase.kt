@@ -3,7 +3,6 @@ package com.tokopedia.thankyou_native.domain.usecase
 import com.google.gson.Gson
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey
 import com.tokopedia.thankyou_native.domain.model.ConfigFlag
-import com.tokopedia.thankyou_native.domain.model.GyroData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -35,15 +34,12 @@ class ThanksPageMapperUseCase @Inject constructor() : UseCase<ThanksPageData>() 
         }
         thanksPageData.configFlagData = configFlagData
 
-        val gyroData: GyroData? = thanksPageData.customDataOther?.gyroData?.let {
-            Gson().fromJson(it, GyroData::class.java)
+        val gyroData: Map<String, Any?>? = thanksPageData.customDataOther?.gyroData?.let {
+            val map: Map<String, Any?> = HashMap()
+            Gson().fromJson(it, map.javaClass)
         }
         thanksPageData.gyroData = gyroData
 
         return thanksPageData
     }
-
 }
-
-
-

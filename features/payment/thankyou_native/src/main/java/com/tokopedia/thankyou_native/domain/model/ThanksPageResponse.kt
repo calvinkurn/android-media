@@ -5,6 +5,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 
 
 data class ThanksPageResponse(
@@ -99,7 +100,7 @@ data class ThanksPageData(
     // parse config flag json
     var configFlagData: ConfigFlag? = null,
     // parse gyro data json
-    var gyroData: GyroData? = null,
+    var gyroData: @RawValue Map<String,Any?>? = null,
 ) : Parcelable
 
 
@@ -504,16 +505,6 @@ data class ConfigFlag(
     val shouldHideProductRecom: Boolean?,
     @SerializedName("hide_dg_recom")
     val shouldHideDigitalRecom: Boolean?
-) : Parcelable
-
-@Parcelize
-data class GyroData(
-    @SerializedName("is_TokoNOW")
-    val isTokoNow: Boolean?,
-    @SerializedName("isUDC")
-    val isUDC: Boolean?,
-    @SerializedName("isRollence")
-    val isRollence: Boolean?,
 ) : Parcelable
 
 data class Tickers(
