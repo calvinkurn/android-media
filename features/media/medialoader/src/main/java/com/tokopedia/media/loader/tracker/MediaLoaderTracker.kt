@@ -96,7 +96,7 @@ object MediaLoaderTracker {
             fileSize = CDN_IMG_SIZE_NOT_AVAILBLE // as this is for failed case, then size will not available.
         )
 
-        if (!data.url.contains(CDN_URL)) return
+        //if (!data.url.contains(CDN_URL)) return
 
         val map = data.toMap(context.applicationContext).toMutableMap()
 
