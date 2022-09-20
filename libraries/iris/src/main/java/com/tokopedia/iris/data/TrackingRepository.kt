@@ -204,6 +204,6 @@ class TrackingRepository(
 
     companion object {
         const val ERROR_MAX_LENGTH = 1000
-        const val EMBRACE_CUSTOMER_TAG = "android_customerapp_log_config_embrace"
+        const val EMBRACE_CUSTOMER_TAG = "CURSOR_INDEX_OUTOFBOUND"
     }
 }
