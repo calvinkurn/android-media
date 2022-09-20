@@ -4,15 +4,15 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
+import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
+import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData;
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
@@ -109,11 +109,12 @@ public class ShipmentDataConverter {
     public ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         ArrayList<ShipmentCrossSellModel> listCrossSellModel = new ArrayList<>();
         if (!cartShipmentAddressFormData.getCrossSell().isEmpty()) {
-            for (int i = 0; i<cartShipmentAddressFormData.getCrossSell().size(); i++) {
+            for (int i = 0; i < cartShipmentAddressFormData.getCrossSell().size(); i++) {
                 ShipmentCrossSellModel shipmentCrossSellModel = new ShipmentCrossSellModel();
                 shipmentCrossSellModel.setChecked(cartShipmentAddressFormData.getCrossSell().get(i).isChecked());
                 shipmentCrossSellModel.setEnabled(!cartShipmentAddressFormData.getCrossSell().get(i).getCheckboxDisabled());
                 shipmentCrossSellModel.setCrossSellModel(cartShipmentAddressFormData.getCrossSell().get(i));
+                shipmentCrossSellModel.setIndex(i);
                 listCrossSellModel.add(shipmentCrossSellModel);
             }
             return listCrossSellModel;

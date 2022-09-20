@@ -111,7 +111,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean isShowOnboarding;
     private int lastChooseCourierItemPosition;
     private int lastServiceId;
-    private int counterCrossSell;
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -234,7 +233,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentDonationViewHolder.ITEM_VIEW_DONATION) {
             ((ShipmentDonationViewHolder) holder).bindViewHolder(shipmentDonationModel);
         } else if (viewType == ShipmentCrossSellViewHolder.ITEM_VIEW_CROSS_SELL) {
-            ((ShipmentCrossSellViewHolder) holder).bindViewHolder(shipmentCrossSellModelList.get(getIndexCrossSell()), getIndexCrossSell());
+            ((ShipmentCrossSellViewHolder) holder).bindViewHolder((ShipmentCrossSellModel) data);
         } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_EMAS) {
             ((ShipmentEmasViewHolder) holder).bindViewHolder(egoldAttributeModel);
         } else if (viewType == ShipmentButtonPaymentViewHolder.getITEM_VIEW_PAYMENT_BUTTON()) {
@@ -503,14 +502,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.shipmentCrossSellModelList = shipmentCrossSellModelList;
             shipmentDataList.addAll(shipmentCrossSellModelList);
         }
-    }
-
-    private int getIndexCrossSell() {
-        int existingIndex = counterCrossSell;
-        if (existingIndex < shipmentCrossSellModelList.size() - 1) {
-            counterCrossSell += 1;
-        }
-        return existingIndex;
     }
 
     public void updateCrossSell(boolean checked, CrossSellModel crossSellModel) {
@@ -1025,7 +1016,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             CrossSellModel crossSellModel = new CrossSellModel();
             crossSellModel.setOrderSummary(new CrossSellOrderSummaryModel(shipmentNewUpsellModel.getSummaryInfo(), ""));
             crossSellModel.setPrice(shipmentNewUpsellModel.getPrice());
-            upsellCost = new ShipmentCrossSellModel(crossSellModel, true, true);
+            upsellCost = new ShipmentCrossSellModel(crossSellModel, true, true, -1);
         }
         ArrayList<ShipmentCrossSellModel> listCheckedCrossModel = new ArrayList<>();
         if (shipmentCrossSellModelList != null && !shipmentCrossSellModelList.isEmpty()) {

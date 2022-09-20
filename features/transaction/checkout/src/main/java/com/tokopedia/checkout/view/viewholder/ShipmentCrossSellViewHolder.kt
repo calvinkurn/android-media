@@ -7,8 +7,8 @@ import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
@@ -23,7 +23,7 @@ class ShipmentCrossSellViewHolder(itemView: View, private val shipmentAdapterAct
     private val llContainer: ViewGroup = itemView.findViewById(R.id.ll_container)
 
     @SuppressLint("ClickableViewAccessibility", "NewApi")
-    fun bindViewHolder(shipmentCrossSellModel: ShipmentCrossSellModel, index: Int) {
+    fun bindViewHolder(shipmentCrossSellModel: ShipmentCrossSellModel) {
         llContainer.setOnClickListener {
             if (shipmentCrossSellModel.isEnabled) {
                 cbCrossSell.isChecked = !cbCrossSell.isChecked
@@ -43,7 +43,7 @@ class ShipmentCrossSellViewHolder(itemView: View, private val shipmentAdapterAct
             cbCrossSell.isEnabled = true
             llContainer.alpha = 1.0f
             cbCrossSell.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-                shipmentAdapterActionListener.onCrossSellItemChecked(isChecked, shipmentCrossSellModel.crossSellModel, index)
+                shipmentAdapterActionListener.onCrossSellItemChecked(isChecked, shipmentCrossSellModel.crossSellModel, shipmentCrossSellModel.index)
             }
         } else {
             cbCrossSell.gone()
