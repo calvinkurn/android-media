@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import kotlin.math.roundToInt
 
 /**
  * @author by nisie on 5/18/17.
@@ -142,6 +143,8 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
         )
         itemView.run {
             progressBar.progressBarColor = progressBarColor
+            val value = (((item.product.stockSoldPercentage) * 100) / 100).roundToInt()
+            progressBar.setValue(value, true)
             stockText.text = item.product.stockWording
             stockProgressBarLayout.visible()
         }

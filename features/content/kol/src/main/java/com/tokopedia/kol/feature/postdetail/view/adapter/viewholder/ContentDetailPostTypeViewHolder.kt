@@ -974,12 +974,14 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             card.isAsgcColorChangedAsPerWidgetColor = true
 
             if (card.isTypeProductHighlight) {
-                if (card.isRilisanSpl || card.isFlashSaleToko) {
+                if ((card.isRilisanSpl || card.isFlashSaleToko) && colorGradient.isNotEmpty()) {
                     changeCTABtnColorAsPerColorGradientFromBE(colorGradient.map { colorGradient ->
                         colorGradient.color
                     } as? ArrayList<String>)
-                } else {
+                } else if (card.cta.color.isNotEmpty()) {
                     changeCTABtnColorAsPerColorCodeFromBE(card.cta.color)
+                } else{
+                    changeCTABtnColorToGreen()
                 }
             } else
                 changeCTABtnColorToGreen()

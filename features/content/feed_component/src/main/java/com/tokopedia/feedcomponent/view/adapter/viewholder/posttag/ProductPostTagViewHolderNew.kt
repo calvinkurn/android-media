@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import kotlin.math.roundToInt
 
 private const val RATING_FORMAT = 20.0
 
@@ -149,6 +150,8 @@ class ProductPostTagViewHolderNew(
             ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
         )
 
+        val value = (((item.product.stockSoldPercentage) * 100) / 100).roundToInt()
+        stockProgressBar.setValue(value, true)
         stockProgressBar.progressBarColor = progressBarColor
         stockText.text = item.product.stockWording
         stockBarLayout.visible()
