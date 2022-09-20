@@ -1,12 +1,15 @@
 package com.tokopedia.chatbot.domain.subscriber
 
 import com.tokopedia.chat_common.util.handleError
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
+import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
 
-class TickerDataSubscriber(val onTickerError: (Throwable) -> Unit,
+class TickerDataSubscriber(val messageId : String,
+                           val onTickerError: (Throwable) -> Unit,
                            val onSuccess: (TickerData) -> Unit)
     : Subscriber<GraphqlResponse>() {
 
@@ -28,6 +31,12 @@ class TickerDataSubscriber(val onTickerError: (Throwable) -> Unit,
 
     override fun onError(e: Throwable) {
         onTickerError(e)
+        ChatbotNewRelicLogger.logNewRelic(
+            false,
+            messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_TICKER,
+            e
+        )
     }
 
 }
