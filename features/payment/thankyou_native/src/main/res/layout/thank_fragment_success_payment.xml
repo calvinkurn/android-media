@@ -181,12 +181,11 @@
                     android:layout_width="@dimen/thank_dp_10"
                     android:layout_height="@dimen/thank_dp_20"
                     android:scaleType="centerCrop"
-                    app:layout_constraintStart_toEndOf="@id/tvTotalAmount"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tvTotalAmount"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvInstallmentInfo"
                     app:icon_name="CHEVRON_RIGHT"
-                     />
+                    app:layout_constraintBottom_toBottomOf="@+id/tvInstallmentInfo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tvTotalAmount"
+                    app:layout_constraintTop_toTopOf="@+id/tvTotalAmount" />
 
                 <androidx.constraintlayout.widget.Barrier
                     android:id="@+id/bottomBarrier"
