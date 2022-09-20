@@ -30,7 +30,6 @@ import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
-import com.tokopedia.campaignlist.common.data.model.response.GetSellerCampaignSellerAppMetaResponse
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
@@ -251,15 +250,14 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                 campaignStatusId = campaign.campaignStatusId.toIntOrZero()
             )
 
-            Image(
-                painter = painterResource(id = R.drawable.ic_rocket),
-                contentDescription = null,
+            RemoteImage(
                 modifier = Modifier
                     .size(62.dp)
                     .constrainAs(campaignImage) {
                         start.linkTo(parent.start, margin = 12.dp)
                         top.linkTo(campaignType.bottom, margin = 12.dp)
-                    }
+                    },
+                imageUrl = campaign.campaignPictureUrl
             )
 
             UnifyTypography(

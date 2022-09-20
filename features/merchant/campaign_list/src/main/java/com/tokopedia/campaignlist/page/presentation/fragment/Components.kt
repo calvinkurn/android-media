@@ -3,10 +3,14 @@ package com.tokopedia.campaignlist.page.presentation.fragment
 import android.content.res.ColorStateList
 import android.view.KeyEvent
 import android.widget.TextView
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import com.tokopedia.campaignlist.common.util.onTextChanged
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -157,5 +161,17 @@ fun UnifyTypography(
                 setTextColor(colorStateList)
             }
         }
+    )
+}
+
+@OptIn(ExperimentalCoilApi::class)
+@Composable
+fun RemoteImage(modifier: Modifier = Modifier, imageUrl : String) {
+    val painter = rememberImagePainter(data = imageUrl)
+    Image(
+        painter = painter,
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = modifier
     )
 }

@@ -5,7 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.campaignlist.common.data.model.response.*
+import com.tokopedia.campaignlist.common.data.model.response.Campaign
+import com.tokopedia.campaignlist.common.data.model.response.CampaignListV2
+import com.tokopedia.campaignlist.common.data.model.response.CampaignStatus
+import com.tokopedia.campaignlist.common.data.model.response.CampaignTypeData
+import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
+import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
+import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
+import com.tokopedia.campaignlist.common.data.model.response.GetSellerCampaignSellerAppMetaResponse
+import com.tokopedia.campaignlist.common.data.model.response.ShopData
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companion.NPL_CAMPAIGN_TYPE
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companion.NPL_LIST_TYPE
@@ -22,6 +30,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -56,6 +67,23 @@ class CampaignListViewModel @Inject constructor(
 
     private val getSellerMetaDataResultLiveData = MutableLiveData<Result<GetSellerCampaignSellerAppMetaResponse>>()
     val getSellerMetaDataResult: LiveData<Result<GetSellerCampaignSellerAppMetaResponse>> get() = getSellerMetaDataResultLiveData
+
+
+    sealed class UiEvent {
+        data class CampaignStatusFilterApplied(val selectedCampaignStatus: CampaignStatusSelection) : UiEvent()
+        data class CampaignTypeFilterApplied(val selectedCampaignType: CampaignTypeSelection) : UiEvent()
+        object NoCampaignStatusFilterApplied : UiEvent()
+    }
+
+    data class UiState(
+        val campaignStatus : List<CampaignStatusSelection> = emptyList(),
+        val campaignType: List<CampaignTypeSelection> = emptyList(),
+        val selectedCampaignStatus: CampaignStatusSelection? = null,
+        val selectedCampaignType: CampaignTypeSelection?= null
+    )
+
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState = _uiState.asStateFlow()
 
     fun setCampaignName(campaignName : String) {
         this.campaignName = campaignName
@@ -110,7 +138,7 @@ class CampaignListViewModel @Inject constructor(
     fun getCampaignList(campaignName: String = "",
                         campaignTypeId: Int = NPL_CAMPAIGN_TYPE,
                         listTypeId: Int = NPL_LIST_TYPE,
-                        statusId: List<Int> = GetCampaignListUseCase.statusId) {
+                        statusId: List<Int> = listOf()) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val params = GetCampaignListUseCase.createParams(campaignName, campaignTypeId, listTypeId, statusId)
@@ -142,6 +170,18 @@ class CampaignListViewModel @Inject constructor(
                 getSellerMetaDataUseCase.executeOnBackground()
             }
             getSellerMetaDataResultLiveData.value = Success(result)
+
+            val campaignType = mapCampaignTypeDataToCampaignTypeSelections(result.getSellerCampaignSellerAppMeta.campaignTypeData)
+            val campaignStatus = mapCampaignStatusToCampaignStatusSelections(result.getSellerCampaignSellerAppMeta.campaignStatus)
+            setDefaultCampaignTypeSelection(campaignType)
+
+            _uiState.update {
+                it.copy(
+                    campaignStatus = campaignStatus,
+                    campaignType = campaignType,
+                    selectedCampaignType = getSelectedCampaignTypeSelection()
+                )
+            }
         }, onError = {
             getSellerMetaDataResultLiveData.value = Fail(it)
         })
@@ -280,4 +320,19 @@ class CampaignListViewModel @Inject constructor(
             NO_PRODUCT
         }
     }
+
+    fun onEvent(event: UiEvent) {
+        when(event) {
+            is UiEvent.CampaignStatusFilterApplied -> {
+                _uiState.update { it.copy(selectedCampaignStatus = event.selectedCampaignStatus) }
+            }
+            is UiEvent.CampaignTypeFilterApplied -> {
+                _uiState.update { it.copy(selectedCampaignType = event.selectedCampaignType) }
+            }
+            UiEvent.NoCampaignStatusFilterApplied -> {
+                _uiState.update { it.copy(selectedCampaignStatus = null) }
+            }
+        }
+    }
+
 }
