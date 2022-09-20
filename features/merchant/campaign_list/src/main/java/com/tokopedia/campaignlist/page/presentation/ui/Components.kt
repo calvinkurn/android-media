@@ -110,7 +110,7 @@ fun UnifyLabel(
         factory = { context ->
             Label(context).apply {
                 setLabelType(labelType)
-                text = labelText
+                setLabel(labelText.toString())
             }
         }
     )

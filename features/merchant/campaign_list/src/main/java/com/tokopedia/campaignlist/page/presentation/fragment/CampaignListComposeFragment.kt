@@ -65,8 +65,6 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
         fun createInstance() = CampaignListComposeFragment()
         private const val SHARE = "share"
         private const val EMPTY_SEARCH_KEYWORD = ""
-        private const val TICKER_STATE_PREFERENCE = "TICKER_STATE_PREFERENCE"
-        private const val IS_DISMISS_TICKER = "IS_DISMISS_TICKER"
         private const val INDEX_ZERO = 0
         private const val INDEX_ONE = 1
         private const val INDEX_TWO = 2
@@ -91,8 +89,9 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        initViewTreeOwners()
+        setupViewTreeOwners()
 
+        viewModel.checkTickerState()
         viewModel.getSellerMetaData()
         viewModel.getCampaignList()
 
@@ -107,15 +106,24 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
                         viewModel.setSelectedActiveCampaign(campaign)
                         viewModel.getSellerBanner(campaign.campaignId.toIntOrZero())
                     },
-                    onClearFilter = {
-                        viewModel.getCampaignList(statusId = GetCampaignListUseCase.statusId)
+                    onClearFilter = { viewModel.getCampaignList() },
+                    onSearchBarKeywordSubmit = { searchQuery ->
+                        viewModel.setCampaignName(searchQuery)
+                        val campaignTypeId = viewModel.getCampaignTypeId()
+                        val campaignStatusId = viewModel.getCampaignStatusId()
+                        viewModel.getCampaignList(
+                            campaignName = searchQuery,
+                            campaignTypeId = campaignTypeId,
+                            statusId = campaignStatusId
+                        )
                     },
-                    onSearchbarCleared = {
-                        viewModel.getCampaignList(statusId = GetCampaignListUseCase.statusId)
-                    },
+                    onSearchbarCleared = { viewModel.getCampaignList() },
                     onDisplayShareBottomSheet = { banner ->
                         viewModel.setMerchantBannerData(banner)
                         showShareBottomSheet(banner)
+                    },
+                    onTickerDismissed = {
+                        viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker)
                     }
                 )
             }
@@ -123,13 +131,11 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
     }
 
 
-    private fun initViewTreeOwners() {
-        // Set the view tree owners before setting the content view so that the inflation process
-        // and attach listeners will see them already present
-        val decoderView = requireActivity().window.decorView
-        ViewTreeLifecycleOwner.set(decoderView, this)
-        ViewTreeViewModelStoreOwner.set(decoderView, this)
-        ViewTreeSavedStateRegistryOwner.set(decoderView, this)
+    private fun setupViewTreeOwners() {
+        val decorView = requireActivity().window.decorView
+        ViewTreeLifecycleOwner.set(decorView, this)
+        ViewTreeViewModelStoreOwner.set(decorView, this)
+        ViewTreeSavedStateRegistryOwner.set(decorView, this)
     }
 
     private fun showCampaignStatusBottomSheet(campaignStatusSelections: List<CampaignStatusSelection>) {

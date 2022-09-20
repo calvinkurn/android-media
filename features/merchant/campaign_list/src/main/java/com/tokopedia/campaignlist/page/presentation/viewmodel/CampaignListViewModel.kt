@@ -19,6 +19,7 @@ import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companio
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companion.NPL_LIST_TYPE
 import com.tokopedia.campaignlist.common.usecase.GetMerchantBannerUseCase
 import com.tokopedia.campaignlist.common.usecase.GetSellerMetaDataUseCase
+import com.tokopedia.campaignlist.common.util.PreferenceDataStore
 import com.tokopedia.campaignlist.common.util.ResourceProvider
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
@@ -41,7 +42,8 @@ class CampaignListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getCampaignListUseCase: GetCampaignListUseCase,
     private val getMerchantBannerUseCase: GetMerchantBannerUseCase,
-    private val getSellerMetaDataUseCase: GetSellerMetaDataUseCase
+    private val getSellerMetaDataUseCase: GetSellerMetaDataUseCase,
+    private val preferenceDataStore: PreferenceDataStore
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -73,6 +75,7 @@ class CampaignListViewModel @Inject constructor(
         data class CampaignStatusFilterApplied(val selectedCampaignStatus: CampaignStatusSelection) : UiEvent()
         data class CampaignTypeFilterApplied(val selectedCampaignType: CampaignTypeSelection) : UiEvent()
         object NoCampaignStatusFilterApplied : UiEvent()
+        object DismissTicker: UiEvent()
     }
 
     data class UiState(
@@ -138,13 +141,26 @@ class CampaignListViewModel @Inject constructor(
         return merchantBannerData
     }
 
-    fun getCampaignList(campaignName: String = "",
-                        campaignTypeId: Int = NPL_CAMPAIGN_TYPE,
-                        listTypeId: Int = NPL_LIST_TYPE,
-                        statusId: List<Int> = listOf()) {
+    fun checkTickerState() {
+        _uiState.update {
+            it.copy(isTickerDismissed = preferenceDataStore.isTickerDismissed())
+        }
+    }
+
+    fun getCampaignList(
+        campaignName: String = "",
+        campaignTypeId: Int = NPL_CAMPAIGN_TYPE,
+        listTypeId: Int = NPL_LIST_TYPE,
+        statusId: List<Int> = GetCampaignListUseCase.statusId
+    ) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val params = GetCampaignListUseCase.createParams(campaignName, campaignTypeId, listTypeId, statusId)
+                val params = GetCampaignListUseCase.createParams(
+                    campaignName,
+                    campaignTypeId,
+                    listTypeId,
+                    statusId
+                )
                 getCampaignListUseCase.setRequestParams(params = params.parameters)
                 getCampaignListUseCase.executeOnBackground()
             }
@@ -341,6 +357,10 @@ class CampaignListViewModel @Inject constructor(
             }
             UiEvent.NoCampaignStatusFilterApplied -> {
                 _uiState.update { it.copy(selectedCampaignStatus = null) }
+            }
+            UiEvent.DismissTicker -> {
+                preferenceDataStore.markTickerAsDismissed()
+                _uiState.update { it.copy(isTickerDismissed = true) }
             }
         }
     }

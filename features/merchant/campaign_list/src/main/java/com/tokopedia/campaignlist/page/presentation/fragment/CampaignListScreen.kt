@@ -15,11 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,9 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.campaignlist.R
-import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
-import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
@@ -46,59 +39,47 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Success
 
 @Composable
 fun CampaignListScreen(
     viewModel: CampaignListViewModel,
     onTapCampaignStatusFilter: (List<CampaignStatusSelection>) -> Unit,
     onTapCampaignTypeFilter: (List<CampaignTypeSelection>) -> Unit,
+    onClearFilter: () -> Unit,
+    onSearchBarKeywordSubmit: (String) -> Unit,
+    onSearchbarCleared: () -> Unit,
+    onTickerDismissed: () -> Unit,
     onTapShareCampaignButton : (ActiveCampaign) -> Unit,
     onDisplayShareBottomSheet: (GetMerchantCampaignBannerGeneratorData) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        val response = viewModel.getCampaignListResult.observeAsState()
-        val banner = viewModel.getMerchantBannerResult.observeAsState()
         val uiState = viewModel.uiState.collectAsState()
 
         SearchBar(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            onKeywordSubmit = { searchQuery ->
-                viewModel.setCampaignName(searchQuery)
-                viewModel.getCampaignList(campaignName = searchQuery)
-            },
-            onSearchbarCleared = { viewModel.getCampaignList() }
+            onSearchBarKeywordSubmit = onSearchBarKeywordSubmit,
+            onSearchbarCleared = onSearchbarCleared
         )
 
         SortFilter(
             modifier = Modifier.padding(horizontal = 16.dp),
-            uiState.value.selectedCampaignStatus?.statusText.orEmpty(),
-            uiState.value.selectedCampaignType?.campaignTypeName.orEmpty(),
+            selectedCampaignStatus = uiState.value.selectedCampaignStatus?.statusText.orEmpty(),
+            selectedCampaignType = uiState.value.selectedCampaignType?.campaignTypeName.orEmpty(),
             onTapCampaignStatusFilter = { onTapCampaignStatusFilter(uiState.value.campaignStatus) },
             onTapCampaignTypeFilter = { onTapCampaignTypeFilter(uiState.value.campaignType) },
-            onClearFilter = { viewModel.getCampaignList() }
+            onClearFilter = onClearFilter
         )
 
-        var isTickerDismissed by remember { mutableStateOf(false) }
-
-        if (!isTickerDismissed) {
+        if (!uiState.value.isTickerDismissed) {
             CampaignTicker(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                onDismissed = { isTickerDismissed = true }
+                onDismissed = onTickerDismissed
             )
         }
 
-        if (response.value is Success) {
-            val items =
-                (response.value as Success<GetCampaignListV2Response>).data.getCampaignListV2.campaignList
-            val formattedCampaigns = viewModel.mapCampaignListDataToActiveCampaignList(items)
-            List(campaigns = formattedCampaigns, onTapShareCampaignButton)
-        }
+        List(campaigns = uiState.value.campaigns, onTapShareCampaignButton)
 
-        if (banner.value is Success) {
-            val bannerData = (banner.value as Success<GetMerchantCampaignBannerGeneratorDataResponse>).data.getMerchantCampaignBannerGeneratorData
-            onDisplayShareBottomSheet(bannerData)
-        }
+        uiState.value.banner?.run { onDisplayShareBottomSheet(this) }
     }
 }
 
@@ -114,13 +95,13 @@ fun List(campaigns: List<ActiveCampaign>, onTapShareButton: (ActiveCampaign) -> 
 @Composable
 private fun SearchBar(
     modifier: Modifier = Modifier,
-    onKeywordSubmit: (String) -> Unit,
+    onSearchBarKeywordSubmit: (String) -> Unit,
     onSearchbarCleared: () -> Unit
 ) {
     val editorAction: (TextView?, Int?, KeyEvent?) -> Boolean = { textView, actionId, event ->
         if (actionId == EditorInfo.IME_ACTION_SEARCH || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
             val query = textView?.text.toString()
-            onKeywordSubmit(query)
+            onSearchBarKeywordSubmit(query)
             true
         } else {
             false
@@ -363,7 +344,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
 fun CampaignItemPreview() {
     val campaign = ActiveCampaign(
         campaignType = "Rilisan Spesial",
-        campaignStatus = "Berlangsung",
+        campaignStatus = "Ditolak",
         campaignName = "Flash Sale 9.9",
         productQty = "9000 Product",
         startDate = "17/01/2020",
@@ -381,7 +362,7 @@ fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: 
         ONGOING_STATUS_ID.toIntOrZero() -> Label.HIGHLIGHT_LIGHT_GREEN
         UPCOMING_STATUS_ID.toIntOrZero(), UPCOMING_IN_NEAR_TIME_STATUS_ID.toIntOrZero() -> Label.HIGHLIGHT_LIGHT_ORANGE
         AVAILABLE_STATUS_ID.toIntOrZero() -> Label.HIGHLIGHT_LIGHT_GREY
-        else -> Label.HIGHLIGHT_LIGHT_GREEN
+        else -> Label.HIGHLIGHT_LIGHT_RED
     }
     UnifyLabel(modifier = modifier, labelText = campaignStatus, labelType = labelType)
 }
