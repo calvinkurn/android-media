@@ -43,20 +43,7 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
                     isFullSpan = true
                 }
                 binding.root.layoutParams = params
-                binding.wishlistTdnBanner.apply {
-                    clickWithDebounce {
-                        actionListener?.onBannerTopAdsClick(item.dataObject, adapterPosition)
-                    }
-                    loadImage(item.dataObject, RADIUS_TOPADS)
-
-                    setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
-                        override fun onTopAdsImageViewImpression(viewUrl: String) {
-                            actionListener?.onBannerTopAdsImpression(item.dataObject, adapterPosition)
-                        }
-
-                    })
-                }
-                /*binding.wishlistTdnBanner.run {
+                binding.wishlistTdnBanner.run {
                     setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
                         override fun onTopAdsImageViewClicked(applink: String?) {
                             actionListener?.onBannerTopAdsClick(item.dataObject, adapterPosition)
@@ -71,7 +58,7 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
                         }
 
                     })
-                }*/
+                }
             }
         }
     }

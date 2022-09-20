@@ -1947,13 +1947,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
-        TopAdsUrlHitter(context).hitClickUrl(
-            this::class.java.simpleName,
-            topAdsImageViewModel.adClickUrl,
-            "",
-            "",
-            topAdsImageViewModel.imageUrl
-        )
         RouteManager.route(context, topAdsImageViewModel.applink)
     }
 
