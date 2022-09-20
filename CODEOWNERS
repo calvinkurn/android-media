@@ -371,6 +371,7 @@
 /libraries/tokopatch                                    @tokopedia/android-core-dev
 /libraries/macrobenchmark/								@tokopedia/android-core-dev
 /libraries/universal_sharing/							@tokopedia/android-core-dev
+/libraries/sse/                                         @tokopedia/android-minionlance-dev
 
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev
