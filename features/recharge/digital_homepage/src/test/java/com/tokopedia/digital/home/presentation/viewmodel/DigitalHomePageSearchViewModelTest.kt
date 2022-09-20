@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.domain.DigitalHomepageSearchByDynamicIconUseCase
 import com.tokopedia.digital.home.domain.SearchAutoCompleteHomePageUseCase
 import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
@@ -9,24 +10,28 @@ import com.tokopedia.digital.home.model.Tracking
 import com.tokopedia.digital.home.presentation.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class DigitalHomePageSearchViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var searchCategoryHomePageUseCase: SearchCategoryHomePageUseCase
@@ -37,11 +42,14 @@ class DigitalHomePageSearchViewModelTest {
     @RelaxedMockK
     lateinit var searchAutoCompleteHomePageUseCase: SearchAutoCompleteHomePageUseCase
 
-    lateinit var digitalHomePageSearchViewModel: DigitalHomePageSearchViewModel
+    @RelaxedMockK
+    lateinit var job: Job
 
-    val searchParam = "navsource=tnb&q=paket&source=search&categoryid="
-    val searchQuery = "paket"
-    val mapSearchParam = mapOf(DigitalHomePageSearchViewModel.PARAM to searchParam)
+    private lateinit var digitalHomePageSearchViewModel: DigitalHomePageSearchViewModel
+    private val coroutineTestDispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
+    private val searchParam = "navsource=tnb&q=paket&source=search&categoryid="
+    private val searchQuery = "paket"
+    private val mapSearchParam = mapOf(DigitalHomePageSearchViewModel.PARAM to searchParam)
 
     @Before
     fun setUp() {
@@ -49,8 +57,11 @@ class DigitalHomePageSearchViewModelTest {
 
         digitalHomePageSearchViewModel =
             DigitalHomePageSearchViewModel(
-                searchCategoryHomePageUseCase, searchCategoryByDynamicIconUseCase,
-                searchAutoCompleteHomePageUseCase, CoroutineTestDispatchersProvider
+                searchCategoryHomePageUseCase,
+                searchCategoryByDynamicIconUseCase,
+                searchAutoCompleteHomePageUseCase,
+                coroutineTestDispatcher,
+                job
             )
     }
 
@@ -197,7 +208,7 @@ class DigitalHomePageSearchViewModelTest {
 
     @Test
     fun cancelSearchAutoComplete_NotActive() {
-        GlobalScope.launch {
+        coroutineRule.runBlockingTest {
             //given
             val job = Job()
             digitalHomePageSearchViewModel.job = job
@@ -225,15 +236,5 @@ class DigitalHomePageSearchViewModelTest {
 
         //then
         assertEquals(job, digitalHomePageSearchViewModel.job)
-    }
-
-    @Test(expected = UninitializedPropertyAccessException::class)
-    fun getJobUninitialized() {
-        //given
-
-        //when
-        digitalHomePageSearchViewModel.job
-
-        //then
     }
 }

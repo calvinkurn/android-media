@@ -39,6 +39,20 @@ data class Shop (
     var isPM: Boolean = false
     )
 
+data class PageDetail(
+        @SerializedName("PageType")
+        val pageType: String = "",
+
+        @SerializedName("PageID")
+        val pageId: String = "",
+
+        @SerializedName("SiteID")
+        val siteId: String = "",
+
+        @SerializedName("VerticalID")
+        val verticalId: String = ""
+)
+
 data class AffiliatePDPInput (
     @SerializedName("PageType")
     var pageType: String? = "",
@@ -47,5 +61,8 @@ data class AffiliatePDPInput (
     var product: Product? = null,
 
     @SerializedName("Shop")
-    var shop: Shop? = null
+    var shop: Shop? = null,
+
+    @SerializedName("PageDetail")
+    var pageDetail: PageDetail? = null
 )
