@@ -14,7 +14,11 @@ open class ManageProductNonVariantBaseViewHolder(
 ): RecyclerView.ViewHolder(view) {
 
     private fun Number?.toStringOrEmpty(): String {
-        return this?.toString().orEmpty()
+        return if (this == null || this == Int.ZERO) {
+            ""
+        } else {
+            toString()
+        }
     }
 
     private fun LayoutCampaignManageProductDetailInformationBinding.triggerListener(
@@ -35,6 +39,7 @@ open class ManageProductNonVariantBaseViewHolder(
                 }
             ))
             textFieldPriceDiscountNominal.setMessage(validationResult?.priceMessage.orEmpty())
+            textFieldPriceDiscountPercentage.setMessage(validationResult?.pricePercentMessage.orEmpty())
         }
     }
 
@@ -78,8 +83,8 @@ open class ManageProductNonVariantBaseViewHolder(
     ) {
         periodSection.gone()
         tickerPriceError.gone()
-        textFieldPriceDiscountNominal.editText.setText(discount?.price?.toStringOrEmpty())
-        textFieldPriceDiscountPercentage.editText.setText(discount?.discount?.toStringOrEmpty())
+        textFieldPriceDiscountNominal.editText.setText(discount?.price.toStringOrEmpty())
+        textFieldPriceDiscountPercentage.editText.setText(discount?.discount.toStringOrEmpty())
         quantityEditor.editText.setText(discount?.stock?.orZero().toString())
         textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
 

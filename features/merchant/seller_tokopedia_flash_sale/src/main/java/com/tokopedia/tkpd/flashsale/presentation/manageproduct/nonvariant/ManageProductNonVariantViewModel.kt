@@ -27,7 +27,8 @@ class ManageProductNonVariantViewModel @Inject constructor(
             isPriceError = discountSetup.price !in criteria.minFinalPrice..criteria.maxFinalPrice,
             isPricePercentError = discountSetup.discount !in criteria.minDiscount..criteria.maxDiscount,
             isStockError = discountSetup.stock !in criteria.minCustomStock..criteria.maxCustomStock,
-            priceMessage = errorMessageHelper.getPriceMessage(criteria, discountSetup)
+            priceMessage = errorMessageHelper.getPriceMessage(criteria, discountSetup),
+            pricePercentMessage = errorMessageHelper.getDiscountMessage(criteria, discountSetup)
         )
     }
 

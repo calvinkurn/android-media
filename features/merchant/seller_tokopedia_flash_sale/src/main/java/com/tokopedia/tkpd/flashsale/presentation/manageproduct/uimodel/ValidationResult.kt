@@ -4,5 +4,6 @@ data class ValidationResult(
     val isPriceError: Boolean = false,
     val isPricePercentError: Boolean = false,
     val isStockError: Boolean = false,
-    val priceMessage: String
+    val priceMessage: String,
+    val pricePercentMessage: String
 )
