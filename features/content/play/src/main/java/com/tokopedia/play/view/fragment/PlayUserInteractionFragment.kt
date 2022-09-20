@@ -1895,9 +1895,10 @@ class PlayUserInteractionFragment @Inject constructor(
                 )
             }
             is ProductCarouselUiComponent.Event.OnClicked -> {
-                RouteManager.route(
-                    context,
+                if (event.product.applink == null) return
+                openPageByApplink(
                     event.product.applink,
+                    pipMode = true,
                 )
             }
             else -> {}
