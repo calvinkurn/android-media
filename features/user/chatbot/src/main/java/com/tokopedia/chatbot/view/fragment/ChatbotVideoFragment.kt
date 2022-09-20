@@ -66,7 +66,7 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
         videoScreenHeader.layoutParams = param
     }
 
-    fun getStatusBarHeight(context: Context): Int {
+    private fun getStatusBarHeight(context: Context): Int {
         var result =
             (DEFAULT_STATUS_BAR_HEIGHT * context.resources.displayMetrics.density + 0.5f).toInt()
         val resourceId = context.resources.getIdentifier(

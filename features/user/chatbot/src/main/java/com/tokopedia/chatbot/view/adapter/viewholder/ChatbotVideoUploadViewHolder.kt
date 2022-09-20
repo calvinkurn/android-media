@@ -1,9 +1,10 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
+import android.graphics.Outline
 import android.net.Uri
 import android.text.TextUtils
-import android.view.Gravity
 import android.view.View
+import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -56,17 +57,13 @@ class ChatbotVideoUploadViewHolder(
     override val dateId: Int
         get() = R.id.date
 
-    private val bgSender = ViewUtil.generateBackgroundWithShadow(
+    private val bgSender = ViewUtil.generateBackgroundWithoutShadow(
         chatBalloon,
-        com.tokopedia.unifyprinciples.R.color.Unify_Static_Black,
+        com.tokopedia.unifyprinciples.R.color.Unify_N75,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_chatbot_2,
-        R.dimen.dp_chatbot_1,
-        Gravity.CENTER,
         com.tokopedia.unifyprinciples.R.color.Unify_G200,
         getStrokeWidthSenderDimenRes()
     )
@@ -85,21 +82,30 @@ class ChatbotVideoUploadViewHolder(
         setHeaderDate(element)
         setUpChatbotExoPlayer(element)
         setUpExoPlayerListener()
+        setUpExoPlayerRadius()
     }
 
+    private fun setUpExoPlayerRadius() {
+        videoPlayerView?.outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline) {
+                outline.setRoundRect(SIDE_VALUE_VIDEO_PLACEHOLDER, SIDE_VALUE_VIDEO_PLACEHOLDER, view.width, view.height, RADIUS_FOR_VIDEO)
+            }
+        }
+
+        videoPlayerView?.clipToOutline = true
+    }
     private fun setUpChatReadStatus(element: VideoUploadUiModel) {
         chatStatus?.let {
             bindChatReadStatus(element, it)
         }
     }
 
-    //TODO where to release it
     private fun setUpExoPlayerListener() {
         chatbotExoPlayer.getExoPlayer().addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 super.onPlayerStateChanged(playWhenReady, playbackState)
                 if (playbackState == Player.STATE_READY) {
-                    var duration = chatbotExoPlayer.getExoPlayer().duration.orZero()
+                    val duration = chatbotExoPlayer.getExoPlayer().duration.orZero()
                     setTimeData(duration)
                 }
             }
@@ -111,7 +117,7 @@ class ChatbotVideoUploadViewHolder(
         videoPlayerView?.player = chatbotExoPlayer.getExoPlayer()
         val mediaSource =
             chatbotExoPlayer.getMediaSourceBySource(itemView.context, Uri.parse(element.videoUrl))
-        chatbotExoPlayer?.getExoPlayer().prepare(mediaSource)
+        chatbotExoPlayer.getExoPlayer().prepare(mediaSource)
     }
 
     private fun setDefaultVideoDuration() {
@@ -124,9 +130,9 @@ class ChatbotVideoUploadViewHolder(
     }
 
     private fun convertVideoLength(totalLength: Long): String {
-        var hours = TimeUnit.MILLISECONDS.toHours(totalLength) % HOURS
-        var minutes = TimeUnit.MILLISECONDS.toMinutes(totalLength) % MINUTES
-        var seconds = TimeUnit.MILLISECONDS.toSeconds(totalLength) % SECONDS
+        val hours = TimeUnit.MILLISECONDS.toHours(totalLength) % HOURS
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(totalLength) % MINUTES
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(totalLength) % SECONDS
 
         return when {
             hours == 0L -> String.format("%02d:%02d", minutes, seconds)
@@ -139,7 +145,7 @@ class ChatbotVideoUploadViewHolder(
         chatBalloon?.background = bgSender
     }
 
-    fun bindVideoAttachment(element: VideoUploadUiModel) {
+    private fun bindVideoAttachment(element: VideoUploadUiModel) {
         changeHourColor(
             MethodChecker.getColor(
                 itemView.context,
@@ -154,7 +160,7 @@ class ChatbotVideoUploadViewHolder(
         }
     }
 
-    fun getStrokeWidthSenderDimenRes(): Int {
+    private fun getStrokeWidthSenderDimenRes(): Int {
         return R.dimen.dp_chatbot_3
     }
 
@@ -197,7 +203,7 @@ class ChatbotVideoUploadViewHolder(
     }
 
     private fun bindClickListener(element: VideoUploadUiModel) {
-        view?.setOnClickListener { view ->
+        chatBalloon?.setOnClickListener { view ->
             if (element.videoUrl != null && element.replyTime != null) {
                 listener.onUploadedVideoClicked(element.videoUrl ?: "")
             }
@@ -267,5 +273,7 @@ class ChatbotVideoUploadViewHolder(
         const val HOURS = 24
         const val MINUTES = 60
         const val SECONDS = 60
+        const val RADIUS_FOR_VIDEO = 40f
+        const val SIDE_VALUE_VIDEO_PLACEHOLDER = 0
     }
 }
