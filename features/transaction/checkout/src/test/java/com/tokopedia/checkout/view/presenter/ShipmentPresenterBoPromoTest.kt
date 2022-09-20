@@ -167,12 +167,14 @@ class ShipmentPresenterBoPromoTest {
         val voucherOrder = PromoCheckoutVoucherOrdersItemUiModel(
             uniqueId = "111-111-111"
         )
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
-        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
+        val itemAdapterPosition = 0
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns itemAdapterPosition
+        val shipmentCartItemModel = ShipmentCartItemModel(
             cartString = "111-111-111",
             shopShipmentList = listOf(),
             voucherLogisticItemUiModel = null
         )
+        every { view.getShipmentCartItemModel(any()) } returns shipmentCartItemModel
         every { presenter.processBoPromoCourierRecommendation(any(), any(), any()) } just runs
 
         // When
@@ -180,7 +182,7 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify {
-            presenter.processBoPromoCourierRecommendation(any(), any(), any())
+            presenter.processBoPromoCourierRecommendation(itemAdapterPosition, voucherOrder, shipmentCartItemModel)
         }
     }
 
@@ -191,12 +193,14 @@ class ShipmentPresenterBoPromoTest {
             uniqueId = "111-111-111",
             code = "BOCODE"
         )
-        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 0
-        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
+        val itemAdapterPosition = 0
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns itemAdapterPosition
+        val shipmentCartItemModel = ShipmentCartItemModel(
             cartString = "111-111-111",
             shopShipmentList = listOf(),
             voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = "PROMOCODE")
         )
+        every { view.getShipmentCartItemModel(any()) } returns shipmentCartItemModel
         every { presenter.processBoPromoCourierRecommendation(any(), any(), any()) } just runs
 
         // When
@@ -204,7 +208,7 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify {
-            presenter.processBoPromoCourierRecommendation(any(), any(), any())
+            presenter.processBoPromoCourierRecommendation(itemAdapterPosition, voucherOrder, shipmentCartItemModel)
         }
     }
 
@@ -443,7 +447,12 @@ class ShipmentPresenterBoPromoTest {
         presenter.validateClearAllBoPromo()
 
         // Then
-        verify(exactly = 2) { presenter.doUnapplyBo(any(), any()) }
+        verify(exactly = 2) {
+            presenter.doUnapplyBo(
+                or("111-111-111", "222-222-222"),
+                or("TESTBO1", "TESTBO2")
+            )
+        }
     }
 
     @Test
@@ -474,7 +483,9 @@ class ShipmentPresenterBoPromoTest {
         presenter.validateClearAllBoPromo()
 
         // Then
-        verify(inverse = true) { presenter.doUnapplyBo(any(), any()) }
+        verify(inverse = true) {
+            presenter.doUnapplyBo(any(), any())
+        }
     }
 
     @Test
@@ -503,7 +514,9 @@ class ShipmentPresenterBoPromoTest {
         presenter.validateClearAllBoPromo()
 
         // Then
-        verify(inverse = true) { presenter.doUnapplyBo(any(), any()) }
+        verify(inverse = true) {
+            presenter.doUnapplyBo(any(), any())
+        }
     }
 
     @Test
@@ -532,7 +545,9 @@ class ShipmentPresenterBoPromoTest {
         presenter.validateClearAllBoPromo()
 
         // Then
-        verify(inverse = true) { presenter.doUnapplyBo(any(), any()) }
+        verify(inverse = true) {
+            presenter.doUnapplyBo(any(), any())
+        }
     }
 
     @Test
@@ -561,7 +576,9 @@ class ShipmentPresenterBoPromoTest {
         presenter.validateClearAllBoPromo()
 
         // Then
-        verify(inverse = true) { presenter.doUnapplyBo(any(), any()) }
+        verify(inverse = true) {
+            presenter.doUnapplyBo(any(), any())
+        }
     }
 
     @Test
@@ -621,13 +638,13 @@ class ShipmentPresenterBoPromoTest {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        val order = presenter.lastValidateUseRequest.orders.first { it.uniqueId == uniqueId }
-        assert(order.codes.size == 0)
-        assert(!order.codes.contains(promoCode))
+        assert(presenter.lastValidateUseRequest.orders.size == 1)
+        assert(presenter.lastValidateUseRequest.orders[0].uniqueId == "111-111-111")
+        assert(presenter.lastValidateUseRequest.orders[0].codes.isEmpty())
     }
 
     @Test
-    fun `WHEN clear order from last validate use with valid unique id with invalid promo code THEN do nothing`() {
+    fun `WHEN clear order from last validate use with valid unique id with invalid promo code THEN clear last validate use promo code`() {
         // Given
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
@@ -647,9 +664,10 @@ class ShipmentPresenterBoPromoTest {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        val order = presenter.lastValidateUseRequest.orders.first { it.uniqueId == uniqueId }
-        assert(order.codes.size > 0)
-        assert(!order.codes.contains(promoCode))
+        assert(presenter.lastValidateUseRequest.orders.size == 1)
+        assert(presenter.lastValidateUseRequest.orders[0].uniqueId == "111-111-111")
+        assert(presenter.lastValidateUseRequest.orders[0].codes.size == 1)
+        assert(presenter.lastValidateUseRequest.orders[0].codes.contains("TESTNONBO"))
     }
 
     @Test
@@ -673,8 +691,8 @@ class ShipmentPresenterBoPromoTest {
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
-        val order = presenter.lastValidateUseRequest.orders.firstOrNull { it.uniqueId == uniqueId }
-        assert(order == null)
+        assert(presenter.lastValidateUseRequest.orders.size == 1)
+        assert(presenter.lastValidateUseRequest.orders[0].uniqueId == "222-222-222")
     }
 
     @Test
@@ -712,26 +730,25 @@ class ShipmentPresenterBoPromoTest {
     @Test
     fun `WHEN validate BO promo has multiple green state orders and cart item with voucher logistic empty THEN do apply BO promo`() {
         // Given
+        val appliedVoucherOrder1 = PromoCheckoutVoucherOrdersItemUiModel(
+            uniqueId = "111-111-111",
+            code = "TEST1",
+            shippingId = 2,
+            spId = 2,
+            type = "logistic",
+            messageUiModel = MessageUiModel(state = "green")
+        )
+        val appliedVoucherOrder2 = PromoCheckoutVoucherOrdersItemUiModel(
+            uniqueId = "222-222-222",
+            code = "TEST2",
+            shippingId = 1,
+            spId = 1,
+            type = "logistic",
+            messageUiModel = MessageUiModel(state = "green")
+        )
         val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "111-111-111",
-                        code = "TEST1",
-                        shippingId = 2,
-                        spId = 2,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "222-222-222",
-                        code = "TEST2",
-                        shippingId = 1,
-                        spId = 1,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                )
+                voucherOrderUiModels = listOf(appliedVoucherOrder1, appliedVoucherOrder2)
             )
         )
         presenter.shipmentCartItemModelList = listOf<ShipmentCartItemModel>()
@@ -744,35 +761,37 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify(exactly = 2) {
-            presenter.doApplyBo(any())
+            presenter.doApplyBo(or(appliedVoucherOrder1, appliedVoucherOrder2))
         }
         verify(inverse = true) {
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+            presenter.doUnapplyBo(any(), any())
         }
     }
 
     @Test
     fun `WHEN validate BO promo has multiple green state orders and cart item with voucher logistic not empty THEN do apply and unapply BO promo`() {
         // Given
+        val appliedVoucherOrder1 = PromoCheckoutVoucherOrdersItemUiModel(
+            uniqueId = "111-111-111",
+            code = "TEST1",
+            shippingId = 2,
+            spId = 2,
+            type = "logistic",
+            messageUiModel = MessageUiModel(state = "green")
+        )
+        val appliedVoucherOrder2 = PromoCheckoutVoucherOrdersItemUiModel(
+            uniqueId = "222-222-222",
+            code = "TEST2",
+            shippingId = 1,
+            spId = 1,
+            type = "logistic",
+            messageUiModel = MessageUiModel(state = "green")
+        )
         val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
             promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "111-111-111",
-                        code = "TEST1",
-                        shippingId = 2,
-                        spId = 2,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "222-222-222",
-                        code = "TEST2",
-                        shippingId = 1,
-                        spId = 1,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
+                    appliedVoucherOrder1,
+                    appliedVoucherOrder2,
                 )
             )
         )
@@ -793,10 +812,10 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify(exactly = 2) {
-            presenter.doApplyBo(any()) // validate doApplyBo() called 2 times
+            presenter.doApplyBo(or(appliedVoucherOrder1, appliedVoucherOrder2))
         }
         verify(exactly = 1) {
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() called 1 times
+            presenter.doUnapplyBo("333-333-333", "TEST3")
         }
     }
 
@@ -808,7 +827,7 @@ class ShipmentPresenterBoPromoTest {
                 voucherOrderUiModels = listOf()
             )
         )
-        presenter.shipmentCartItemModelList = listOf(
+        val shipmentCartItemModels = listOf(
             ShipmentCartItemModel(
                 cartString = "333-333-333",
                 voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
@@ -822,6 +841,7 @@ class ShipmentPresenterBoPromoTest {
                 )
             ),
         )
+        presenter.shipmentCartItemModelList = shipmentCartItemModels
 
         every { presenter.doApplyBo(any()) } just runs
         every { presenter.doUnapplyBo(any(), any()) } just runs
@@ -831,10 +851,13 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify(inverse = true) {
-            presenter.doApplyBo(any()) // validate doApplyBo() not called
+            presenter.doApplyBo(any())
         }
         verify(exactly = 2) {
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() called 2 times
+            presenter.doUnapplyBo(
+                or("333-333-333", "555-555-555"),
+                or("TEST3", "TEST5")
+            )
         }
     }
 
@@ -873,8 +896,8 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify(inverse = true) {
-            presenter.doApplyBo(any()) // validate doApplyBo() not called
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+            presenter.doApplyBo(any())
+            presenter.doUnapplyBo(any(), any())
         }
     }
 
@@ -905,8 +928,8 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify(inverse = true) {
-            presenter.doApplyBo(any()) // validate doApplyBo() not called
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+            presenter.doApplyBo(any())
+            presenter.doUnapplyBo(any(), any())
         }
     }
 
@@ -937,8 +960,8 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify(inverse = true) {
-            presenter.doApplyBo(any()) // validate doApplyBo() not called
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+            presenter.doApplyBo(any())
+            presenter.doUnapplyBo(any(), any())
         }
     }
 
@@ -969,8 +992,8 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify(inverse = true) {
-            presenter.doApplyBo(any()) // validate doApplyBo() not called
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+            presenter.doApplyBo(any())
+            presenter.doUnapplyBo(any(), any())
         }
     }
 
@@ -992,8 +1015,8 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify(inverse = true) {
-            presenter.doApplyBo(any()) // validate doApplyBo() not called
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+            presenter.doApplyBo(any())
+            presenter.doUnapplyBo(any(), any())
         }
     }
 
@@ -1020,27 +1043,24 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify(inverse = true) {
-            presenter.doApplyBo(any()) // validate doApplyBo() not called
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+            presenter.doApplyBo(any())
+            presenter.doUnapplyBo(any(), any())
         }
     }
 
     @Test
     fun `WHEN validate BO with voucher order and cart item has same promo THEN apply BO and don't unapply BO promo`() {
         // Given
+        val appliedVoucherOrder = PromoCheckoutVoucherOrdersItemUiModel(
+            uniqueId = "111-111-111",
+            code = "TEST1",
+            shippingId = 1,
+            spId = 1,
+            type = "logistic",
+            messageUiModel = MessageUiModel(state = "green")
+        )
         val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(
-                    PromoCheckoutVoucherOrdersItemUiModel(
-                        uniqueId = "111-111-111",
-                        code = "TEST1",
-                        shippingId = 1,
-                        spId = 1,
-                        type = "logistic",
-                        messageUiModel = MessageUiModel(state = "green")
-                    ),
-                )
-            )
+            promoUiModel = PromoUiModel(voucherOrderUiModels = listOf(appliedVoucherOrder))
         )
         presenter.shipmentCartItemModelList = listOf(
             ShipmentCartItemModel(
@@ -1059,10 +1079,10 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verify(exactly = 1) {
-            presenter.doApplyBo(any()) // validate doApplyBo() called 1 times
+            presenter.doApplyBo(appliedVoucherOrder)
         }
         verify(inverse = true) {
-            presenter.doUnapplyBo(any(), any()) // validate doUnapplyBo() not called
+            presenter.doUnapplyBo(any(), any())
         }
     }
 
@@ -1094,6 +1114,7 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         assert(result.size == 2)
+        assert(result.map { it.productId }.containsAll(listOf(1, 2)))
     }
 
     @Test
@@ -1122,6 +1143,7 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         assert(result.size == 1)
+        assert(result.map { it.productId }.contains(2))
     }
 
     @Test
@@ -1174,7 +1196,8 @@ class ShipmentPresenterBoPromoTest {
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
         every { presenter.getProductForRatesRequest(any()) } returns listOf()
-        every { view.isTradeInByDropOff } returns false
+        val isTradeInByDropOff = false
+        every { view.isTradeInByDropOff } returns isTradeInByDropOff
         val itemPosition = 0
         val voucherOrdersItemUiModel = PromoCheckoutVoucherOrdersItemUiModel(
             code = "WGOIN",
@@ -1204,7 +1227,7 @@ class ShipmentPresenterBoPromoTest {
         // Then
         verifyOrder {
             getRatesUseCase.execute(any())
-            view.renderCourierStateSuccess(any(), any(), any(), any())
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff, any())
         }
     }
 
@@ -1216,7 +1239,8 @@ class ShipmentPresenterBoPromoTest {
         every { getRatesApiUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
         every { presenter.getProductForRatesRequest(any()) } returns listOf()
-        every { view.isTradeInByDropOff } returns true
+        val isTradeInByDropOff = true
+        every { view.isTradeInByDropOff } returns isTradeInByDropOff
         val itemPosition = 0
         val voucherOrdersItemUiModel = PromoCheckoutVoucherOrdersItemUiModel(
             code = "WGOIN",
@@ -1246,7 +1270,7 @@ class ShipmentPresenterBoPromoTest {
         // Then
         verifyOrder {
             getRatesApiUseCase.execute(any())
-            view.renderCourierStateSuccess(any(), any(), any(), any())
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff, any())
         }
     }
 
@@ -1258,7 +1282,8 @@ class ShipmentPresenterBoPromoTest {
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
         every { presenter.getProductForRatesRequest(any()) } returns listOf()
-        every { view.isTradeInByDropOff } returns false
+        val isTradeInByDropOff = false
+        every { view.isTradeInByDropOff } returns isTradeInByDropOff
         val itemPosition = 0
         val voucherOrdersItemUiModel = PromoCheckoutVoucherOrdersItemUiModel(
             code = "WGOIN",
@@ -1271,7 +1296,8 @@ class ShipmentPresenterBoPromoTest {
             shopShipmentList = listOf(),
             selectedShipmentDetailData = null
         )
-        presenter.recipientAddressModel = RecipientAddressModel()
+        val recipientAddressModel = RecipientAddressModel()
+        presenter.recipientAddressModel = recipientAddressModel
         every { view.getShipmentDetailData(any(), any()) } returns ShipmentDetailData(
             shipmentCartData = ShipmentCartData(
                 originDistrictId = "1",
@@ -1288,9 +1314,9 @@ class ShipmentPresenterBoPromoTest {
 
         // Then
         verifyOrder {
-            view.getShipmentDetailData(any(), any())
+            view.getShipmentDetailData(shipmentCartItemModel, recipientAddressModel)
             getRatesUseCase.execute(any())
-            view.renderCourierStateSuccess(any(), any(), any(), any())
+            view.renderCourierStateSuccess(any(), itemPosition, isTradeInByDropOff, any())
         }
     }
 }
