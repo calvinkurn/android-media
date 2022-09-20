@@ -40,6 +40,7 @@ class OfficialCategoriesTab(context: Context,
 
     fun setMeasuredHeight() {
         viewMaxHeight = this.measuredHeight
+        tabMaxHeight = this.measuredHeight
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -71,7 +72,7 @@ class OfficialCategoriesTab(context: Context,
 
 
     private fun initResources() {
-        tabMaxHeight = resources.getDimensionPixelSize(R.dimen.os_tab_max_height)
+//        tabMaxHeight = resources.getDimensionPixelSize(R.dimen.os_tab_max_height)
         tabMinHeight = resources.getDimensionPixelSize(R.dimen.os_tab_min_height)
     }
 
@@ -164,7 +165,6 @@ class OfficialCategoriesTab(context: Context,
     }
 
     private fun setupListener() {
-
         addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabReselected(tab: Tab) {
                 tab.customView?.apply {
