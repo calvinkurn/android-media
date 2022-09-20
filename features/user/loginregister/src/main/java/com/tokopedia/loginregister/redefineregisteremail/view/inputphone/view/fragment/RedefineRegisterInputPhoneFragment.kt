@@ -236,6 +236,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         viewModel.registerV2.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    viewModel.getUserInfo()
                     onEntireScreenLoading()
                 }
                 is Fail -> {
