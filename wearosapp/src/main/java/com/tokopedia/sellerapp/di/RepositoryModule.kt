@@ -3,7 +3,7 @@ package com.tokopedia.sellerapp.di
 import com.tokopedia.sellerapp.data.datasource.local.OrderRoomDatasource
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.data.repository.NewOrderRepository
-import com.tokopedia.sellerapp.data.repository.ReadyToDeliverOrderRepository
+import com.tokopedia.sellerapp.data.repository.ReadyToShipOrderRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,10 +21,10 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideReadyToDeliverOrderRepository(
+    fun provideReadyToShipOrderRepository(
         datasource: ClientMessageDatasource,
         orderRoomDatasource: OrderRoomDatasource
-    ): ReadyToDeliverOrderRepository {
-        return ReadyToDeliverOrderRepository(datasource, orderRoomDatasource)
+    ): ReadyToShipOrderRepository {
+        return ReadyToShipOrderRepository(datasource, orderRoomDatasource)
     }
 }

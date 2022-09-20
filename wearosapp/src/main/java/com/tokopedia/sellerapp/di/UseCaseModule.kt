@@ -1,9 +1,9 @@
 package com.tokopedia.sellerapp.di
 
 import com.tokopedia.sellerapp.data.repository.NewOrderRepository
-import com.tokopedia.sellerapp.data.repository.ReadyToDeliverOrderRepository
+import com.tokopedia.sellerapp.data.repository.ReadyToShipOrderRepository
 import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
-import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCase
+import com.tokopedia.sellerapp.domain.interactor.ReadyToShipOrderUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,9 +20,9 @@ class UseCaseModule {
     }
 
     @Provides
-    fun provideReadyToDeliverOrderUseCase(
-        readyToDeliverOrderRepository: ReadyToDeliverOrderRepository
-    ): ReadyToDeliverOrderUseCase {
-        return ReadyToDeliverOrderUseCase(readyToDeliverOrderRepository)
+    fun provideReadyToShipOrderUseCase(
+        readyToShipOrderRepository: ReadyToShipOrderRepository
+    ): ReadyToShipOrderUseCase {
+        return ReadyToShipOrderUseCase(readyToShipOrderRepository)
     }
 }

@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
-import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCase
+import com.tokopedia.sellerapp.domain.interactor.ReadyToShipOrderUseCase
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class SharedViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val newOrderUseCase: NewOrderUseCase,
-    private val readyToDeliverOrderUseCase: ReadyToDeliverOrderUseCase,
+    private val readyToShipOrderUseCase: ReadyToShipOrderUseCase,
     private val getSummaryUseCase: GetSummaryUseCase,
 ) : BaseViewModel(dispatchers.io) {
 
@@ -46,7 +46,7 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
-    val readyToDeliverOrderList: StateFlow<UiState<List<OrderModel>>> = readyToDeliverOrderUseCase.getOrderList().map {
+    val readyToShipOrderList: StateFlow<UiState<List<OrderModel>>> = readyToShipOrderUseCase.getOrderList().map {
         UiState.Success(data = it)
     }.stateIn(
         scope = viewModelScope,

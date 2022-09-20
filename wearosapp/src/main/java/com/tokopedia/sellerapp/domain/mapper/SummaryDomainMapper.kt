@@ -3,7 +3,7 @@ package com.tokopedia.sellerapp.domain.mapper
 import com.tokopedia.sellerapp.data.datasource.local.entity.SummaryEntity
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.TITLE_NEW_ORDER
-import com.tokopedia.sellerapp.presentation.model.TITLE_READY_TO_DELIVER
+import com.tokopedia.sellerapp.presentation.model.TITLE_READY_TO_SHIP
 
 object SummaryDomainMapper {
     const val DATAKEY_UNREAD_CHAT = "unreadChat"
@@ -36,7 +36,7 @@ object SummaryDomainMapper {
     private fun SummaryEntity.getTitleByDataKey() : String {
         return when(dataKey) {
             DATAKEY_NEW_ORDER -> TITLE_NEW_ORDER
-            DATAKEY_READY_TO_SHIP -> TITLE_READY_TO_DELIVER
+            DATAKEY_READY_TO_SHIP -> TITLE_READY_TO_SHIP
             else -> ""
         }
     }

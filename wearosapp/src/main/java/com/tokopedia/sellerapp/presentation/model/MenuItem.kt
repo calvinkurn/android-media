@@ -11,11 +11,11 @@ data class MenuItem(
 const val TITLE_NOTIF = "Notifikasi"
 const val TITLE_CHAT = "Chat"
 const val TITLE_NEW_ORDER = "Pesanan Baru"
-const val TITLE_READY_TO_DELIVER = "Siap Dikirim"
+const val TITLE_READY_TO_SHIP = "Siap Dikirim"
 val ICON_NOTIF = iconR.iconunify_bell
 val ICON_CHAT = iconR.iconunify_chat
 val ICON_NEW_ORDER = iconR.iconunify_product
-val ICON_READY_TO_DELIVER = iconR.iconunify_product_move
+val ICON_READY_TO_SHIP = iconR.iconunify_product_move
 
 fun generateInitialMenu() = listOf(
     MenuItem(
@@ -31,7 +31,7 @@ fun generateInitialMenu() = listOf(
         icon = ICON_NEW_ORDER,
     ),
     MenuItem(
-        title = TITLE_READY_TO_DELIVER,
-        icon = ICON_READY_TO_DELIVER,
+        title = TITLE_READY_TO_SHIP,
+        icon = ICON_READY_TO_SHIP,
     )
 )
