@@ -18,6 +18,9 @@ import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
+import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.kotlin.extensions.view.*
@@ -54,7 +57,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         private const val REGISTERED_TAB = "registered"
         private const val ONGOING_TAB = "ongoing"
         private const val FINISHED_TAB = "finished"
-        private const val PAGE_SIZE = 10
+        private const val PAGE_SIZE = 3
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
         private const val EMPTY_SUBMITTED_PRODUCT_URL =
@@ -157,6 +160,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeCampaignDetail()
+        observeProductReserveResult()
+        observeDeletedProductResult()
         loadCampaignDetailData()
         setupChooseProductRedirection()
     }
@@ -180,23 +185,63 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             hideLoading()
             when (submittedProduct) {
                 is Success -> {
-                    productAdapter.addItems(submittedProduct.data)
+                    if (viewModel.isTriggeredFromDelete()) {
+                        productAdapter.submit(submittedProduct.data)
+                    } else {
+                        productAdapter.addItems(submittedProduct.data)
+                    }
                     setupSubmittedProductListData()
                 }
                 is Fail -> {
                     showGlobalError()
                 }
             }
+            viewModel.removeAllSelectedItems()
         }
     }
 
     private fun observeSelectedProductData() {
-        viewModel.selectedItemsId.observe(viewLifecycleOwner) { ids ->
+        viewModel.selectedProducts.observe(viewLifecycleOwner) { products ->
             cdpBodyBinding?.tpgSelectedProductCount?.text =
                 getString(
                     R.string.stfs_choosen_product_count_placeholder,
-                    ids.count()
+                    products.count()
                 )
+        }
+    }
+
+    private fun observeProductReserveResult() {
+        viewModel.productReserveResult.observe(viewLifecycleOwner) { result ->
+            val campaignId = flashSaleId
+            val reservationId = result.second
+            binding?.btnEdit?.isLoading = false
+            if (result.first.isSuccess) {
+                //TODO: Navigate to atur product page
+            } else {
+                showErrorToaster(result.first.errorMessage)
+            }
+        }
+    }
+
+    private fun observeDeletedProductResult() {
+        viewModel.productDeleteResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    loadSubmittedProductListData(Int.ZERO)
+                    val selectedProductCount = viewModel.selectedProducts.value?.count()
+                    binding?.run {
+                        cardBottomButtonGroup.showToaster(
+                            getString(
+                                R.string.stfs_success_delete_product_message,
+                                selectedProductCount
+                            )
+                        )
+                    }
+                }
+                is Fail -> {
+                    showErrorToaster()
+                }
+            }
         }
     }
 
@@ -682,8 +727,18 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             cardProductEligible.gone()
             cardBottomButtonGroup.isVisible = viewModel.getAddProductButtonVisibility()
             btnRegister.text = getString(R.string.stfs_add_product)
-            btnDelete.text = getString(R.string.stfs_label_delete)
-            btnEdit.text = getString(R.string.stfs_label_edit)
+            btnDelete.apply {
+                text = getString(R.string.stfs_label_delete)
+                setOnClickListener {
+                    deleteProduct()
+                }
+            }
+            btnEdit.apply {
+                text = getString(R.string.stfs_label_edit)
+                setOnClickListener {
+                    reserveProduct()
+                }
+            }
             if (isShown) {
                 btnRegister.gone()
                 btnDelete.visible()
@@ -697,13 +752,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onCheckBoxClicked(itemPosition: Int, isCheckBoxChecked: Boolean) {
-        val selectedProduct = productAdapter.getItems()[itemPosition]
-        val selectedProductId = selectedProduct.id() as Long
+        val selectedProduct = productAdapter.getItems().filterIsInstance<WaitingForSelectionItem>()
+        val selectedProductId = selectedProduct[itemPosition].productId
+        val selectedProductCriteriaId = selectedProduct[itemPosition].productCriteria.criteriaId
+        val param = Pair(selectedProductId, selectedProductCriteriaId)
 
         if (isCheckBoxChecked) {
-            viewModel.setSelectedItem(selectedProductId)
+            viewModel.setSelectedItem(param)
         } else {
-            viewModel.removeSelectedItem(selectedProductId)
+            viewModel.removeSelectedItem(param)
         }
     }
 
@@ -1052,6 +1109,33 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         viewModel.getSubmittedProduct(flashSaleId, offset)
     }
 
+    private fun reserveProduct() {
+        binding?.btnEdit?.isLoading = true
+        viewModel.reserveProduct(flashSaleId)
+    }
+
+    private fun deleteProduct() {
+        val context = context ?: return
+        val selectedProductCount = viewModel.selectedProducts.value?.count()
+        val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.run {
+            setTitle(getString(R.string.stfs_delete_dialog_title, selectedProductCount))
+            setDescription(getString(R.string.stfs_delete_dialog_description))
+            setPrimaryCTAText(getString(R.string.stfs_delete_dialog_primary_cta_text))
+            setSecondaryCTAText(getString(R.string.stfs_delete_dialog_secondary_cta_text))
+            setPrimaryCTAClickListener {
+                dismiss()
+                showLoading()
+                viewModel.setDeleteStateStatus(true)
+                viewModel.deleteProduct(flashSaleId)
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+            show()
+        }
+    }
+
     private fun setHeaderCampaignPeriod(
         binding: StfsCdpHeaderBinding,
         flashSale: FlashSale
@@ -1104,6 +1188,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 else -> true
             }
 
+            tpgSelectedProductCount.invisible()
+            tpgProductCount.visible()
+            btnSelectAllProduct.text = getString(R.string.stfs_choose_all_product_label)
             btnSelectAllProduct.isVisible = isShowButtonToggle
             tpgProductCount.isVisible = isShowProductListHeader
             tpgRegisterBodyTitle.isVisible = isShowProductListHeader
@@ -1163,7 +1250,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             adapter = productAdapter
         }
 
-        binding?.nsvContent?.enablePaging() {
+        binding?.nsvContent?.enablePaging {
             val isInCheckBoxState = viewModel.isOnCheckBoxState()
             val hasNextPage = productAdapter.itemCount >= PAGE_SIZE
             if (hasNextPage && !isInCheckBoxState) {
@@ -1200,6 +1287,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     loadCampaignDetailData()
                 }
             }
+        }
+    }
+
+    private fun showErrorToaster(msg: String = getString(R.string.stfs_global_error_message)) {
+        binding?.run {
+            cardBottomButtonGroup.showToasterError(msg)
         }
     }
 
