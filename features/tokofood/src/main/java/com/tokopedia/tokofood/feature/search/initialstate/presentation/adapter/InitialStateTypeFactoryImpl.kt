@@ -4,6 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokofood.feature.search.common.presentation.adapter.TokofoodSearchTypeFactory
+import com.tokopedia.tokofood.feature.search.common.presentation.uimodel.TokofoodSearchErrorStateUiModel
+import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.TokofoodSearchErrorStateViewHolder
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.listener.InitialStateListener
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.ChipsListUiModel
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.CuisineItemUiModel
@@ -21,8 +24,9 @@ import com.tokopedia.tokofood.feature.search.initialstate.presentation.viewholde
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.viewholder.SeeMoreRecentSearchViewHolder
 
 class InitialStateTypeFactoryImpl(
-    private val initialStateListener: InitialStateListener
-): BaseAdapterTypeFactory(), InitialStateTypeFactory {
+    private val initialStateListener: InitialStateListener,
+    private val tokoFoodSearchStateListener: TokofoodSearchErrorStateViewHolder.Listener
+): BaseAdapterTypeFactory(), InitialStateTypeFactory, TokofoodSearchTypeFactory {
 
     override fun type(type: HeaderItemInitialStateUiModel): Int {
         return HeaderItemInitStateViewHolder.LAYOUT
@@ -52,6 +56,10 @@ class InitialStateTypeFactoryImpl(
         return CuisineItemViewHolder.LAYOUT
     }
 
+    override fun type(uiModel: TokofoodSearchErrorStateUiModel): Int {
+        return TokofoodSearchErrorStateViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             HeaderItemInitStateViewHolder.LAYOUT -> HeaderItemInitStateViewHolder(parent)
@@ -61,6 +69,7 @@ class InitialStateTypeFactoryImpl(
             SeeMoreRecentSearchViewHolder.LAYOUT -> SeeMoreRecentSearchViewHolder(parent, initialStateListener)
             ChipsListViewHolder.LAYOUT -> ChipsListViewHolder(parent, initialStateListener)
             CuisineItemViewHolder.LAYOUT -> CuisineItemViewHolder(parent, initialStateListener)
+            TokofoodSearchErrorStateViewHolder.LAYOUT -> TokofoodSearchErrorStateViewHolder(parent, tokoFoodSearchStateListener)
             else ->  super.createViewHolder(parent, type)
         }
     }
