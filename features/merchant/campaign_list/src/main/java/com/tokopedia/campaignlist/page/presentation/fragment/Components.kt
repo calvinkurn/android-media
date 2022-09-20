@@ -34,6 +34,9 @@ fun UnifySortFilter(
                 this.filterType = filterType
                 dismissListener = onClearFilter
             }
+        },
+        update = {
+            it.addItem(items)
         }
     )
 }

@@ -19,6 +19,7 @@ import com.tokopedia.campaignlist.common.constant.CampaignStatusIdTypeDef
 import com.tokopedia.campaignlist.common.constant.ShopTypeDef
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
+import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
 import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignStatusBottomSheet
 import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignTypeBottomSheet
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
@@ -129,11 +130,20 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
     private fun showCampaignStatusBottomSheet(campaignStatusSelections: List<CampaignStatusSelection>) {
         val bottomSheet = CampaignStatusBottomSheet.createInstance(campaignStatusSelections, object : CampaignStatusBottomSheet.OnApplyButtonClickListener {
             override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
-
+                viewModel.onEvent(CampaignListViewModel.UiEvent.CampaignStatusFilterApplied(selectedCampaignStatus))
+                viewModel.setCampaignStatusId(selectedCampaignStatus.statusId)
+                viewModel.getCampaignList(statusId = selectedCampaignStatus.statusId)
+                tracker.sendSelectCampaignStatusClickEvent(selectedCampaignStatus.statusId, userSession.shopId)
             }
 
             override fun onNoCampaignStatusSelected() {
-
+                viewModel.onEvent(CampaignListViewModel.UiEvent.NoCampaignStatusFilterApplied)
+                viewModel.getCampaignList(
+                    EMPTY_SEARCH_KEYWORD,
+                    viewModel.getCampaignTypeId(),
+                    GetCampaignListUseCase.NPL_LIST_TYPE,
+                    GetCampaignListUseCase.statusId
+                )
             }
 
         })
@@ -143,7 +153,13 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
     private fun showCampaignTypeBottomSheet(campaignTypeSelection: List<CampaignTypeSelection>) {
         val bottomSheet = CampaignTypeBottomSheet.createInstance(campaignTypeSelection, object : CampaignTypeBottomSheet.OnApplyButtonClickListener {
             override fun onApplyCampaignTypeFilter(selectedCampaignType: CampaignTypeSelection) {
+                viewModel.onEvent(CampaignListViewModel.UiEvent.CampaignTypeFilterApplied(selectedCampaignType))
 
+                val campaignTypeId = selectedCampaignType.campaignTypeId.toIntOrZero()
+
+                viewModel.setCampaignTypeId(campaignTypeId)
+                viewModel.getCampaignList(campaignTypeId = campaignTypeId)
+                tracker.sendSelectCampaignTypeFilterClickEvent(selectedCampaignType.campaignTypeName, userSession.shopId)
             }
         })
         bottomSheet.show(childFragmentManager)
@@ -253,35 +269,42 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
             POWER_MERCHANT -> ShopTypeDef.POWER_MERCHANT
             POWER_MERCHANT_PRO -> ShopTypeDef.POWER_MERCHANT_PRO
             OFFICIAL_STORE -> ShopTypeDef.OFFICIAL_STORE
-            else -> ShopTypeDef.REGULAR_MERCHANT // REGULAR MERCHANT
+            else -> ShopTypeDef.REGULAR_MERCHANT
         }
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        val banner = viewModel.getMerchantBannerData()
-        banner?.run {
-            val shopData = banner.shopData
-            val campaignData = banner.campaign
-            val campaignStatusId = viewModel.getSelectedActiveCampaign()?.campaignStatusId ?: return
-            val linkerShareData = viewModel.generateLinkerShareData(shopData, campaignData, shareModel, campaignStatusId)
-            LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
-                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        val shareWording = viewModel.getShareDescriptionWording(
-                            shopData = shopData,
-                            campaignData = campaignData,
-                            merchantBannerData = banner,
-                            shareUri = linkerShareData?.shareUri,
-                            campaignStatusId = campaignStatusId
-                        )
-                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareWording)
-                        universalShareBottomSheet?.dismiss()
-                    }
+        val banner = viewModel.getMerchantBannerData() ?: return
 
-                    override fun onError(linkerError: LinkerError?) {}
-                })
-            )
-        }
+        val shopData = banner.shopData
+        val campaignData = banner.campaign
+        val campaignStatusId = viewModel.getSelectedActiveCampaign()?.campaignStatusId ?: return
+        val linkerShareData = viewModel.generateLinkerShareData(shopData, campaignData, shareModel, campaignStatusId)
+
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    val shareWording = viewModel.getShareDescriptionWording(
+                        shopData = shopData,
+                        campaignData = campaignData,
+                        merchantBannerData = banner,
+                        shareUri = linkerShareData?.shareUri,
+                        campaignStatusId = campaignStatusId
+                    )
+                    SharingUtil.executeShareIntent(
+                        shareModel,
+                        linkerShareData,
+                        activity,
+                        view,
+                        shareWording
+                    )
+                    universalShareBottomSheet?.dismiss()
+                }
+
+                override fun onError(linkerError: LinkerError?) {}
+            })
+        )
+
     }
 
     override fun onCloseOptionClicked() {

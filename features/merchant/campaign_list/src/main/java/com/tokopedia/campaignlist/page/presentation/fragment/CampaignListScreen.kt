@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -58,8 +59,8 @@ fun CampaignListScreen(
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         val response = viewModel.getCampaignListResult.observeAsState()
-        val meta = viewModel.getSellerMetaDataResult.observeAsState()
         val banner = viewModel.getMerchantBannerResult.observeAsState()
+        val uiState = viewModel.uiState.collectAsState()
 
         SearchBar(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -70,22 +71,14 @@ fun CampaignListScreen(
             onSearchbarCleared = { viewModel.getCampaignList() }
         )
 
-        if (meta.value is Success) {
-            val metadataResponse = (meta.value as Success<GetSellerCampaignSellerAppMetaResponse>).data.getSellerCampaignSellerAppMeta
-            val campaignType = viewModel.mapCampaignTypeDataToCampaignTypeSelections(metadataResponse.campaignTypeData)
-            val campaignStatus = viewModel.mapCampaignStatusToCampaignStatusSelections(metadataResponse.campaignStatus)
-
-            viewModel.setDefaultCampaignTypeSelection(campaignType)
-            val defaultCampaignType = viewModel.getSelectedCampaignTypeSelection()?.campaignTypeName.orEmpty()
-
-            SortFilter(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                defaultCampaignType = defaultCampaignType,
-                onTapCampaignStatusFilter = { onTapCampaignStatusFilter(campaignStatus) },
-                onTapCampaignTypeFilter = { onTapCampaignTypeFilter(campaignType) },
-                onClearFilter = { viewModel.getCampaignList() }
-            )
-        }
+        SortFilter(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            uiState.value.selectedCampaignStatus?.statusText.orEmpty(),
+            uiState.value.selectedCampaignType?.campaignTypeName.orEmpty(),
+            onTapCampaignStatusFilter = { onTapCampaignStatusFilter(uiState.value.campaignStatus) },
+            onTapCampaignTypeFilter = { onTapCampaignTypeFilter(uiState.value.campaignType) },
+            onClearFilter = { viewModel.getCampaignList() }
+        )
 
         var isTickerDismissed by remember { mutableStateOf(false) }
 
@@ -146,25 +139,27 @@ private fun SearchBar(
 @Composable
 private fun SortFilter(
     modifier: Modifier = Modifier,
-    defaultCampaignType : String,
+    selectedCampaignStatus: String,
+    selectedCampaignType: String,
     onTapCampaignStatusFilter: () -> Unit,
     onTapCampaignTypeFilter: () -> Unit,
     onClearFilter: () -> Unit
 ) {
+
     val campaignStatus = SortFilterItem(
-        stringResource(id = R.string.campaign_list_label_status),
-        ChipsUnify.TYPE_NORMAL,
-        ChipsUnify.TYPE_NORMAL,
-        onTapCampaignStatusFilter
+        title = if (selectedCampaignStatus.isEmpty()) stringResource(id = R.string.campaign_list_label_status) else selectedCampaignStatus,
+        type = if (selectedCampaignStatus.isEmpty()) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED,
+        size = ChipsUnify.TYPE_NORMAL,
+        listener = onTapCampaignStatusFilter
     ).apply {
         chevronListener = onTapCampaignStatusFilter
     }
 
     val campaignType = SortFilterItem(
-        defaultCampaignType,
-        ChipsUnify.TYPE_SELECTED,
-        ChipsUnify.TYPE_NORMAL,
-        onTapCampaignTypeFilter
+        title = if (selectedCampaignType.isEmpty()) stringResource(id = R.string.campaign_type) else selectedCampaignType,
+        type = if (selectedCampaignType.isEmpty()) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED,
+        size = ChipsUnify.TYPE_NORMAL,
+        listener = onTapCampaignTypeFilter
     ).apply {
         chevronListener = onTapCampaignTypeFilter
     }
