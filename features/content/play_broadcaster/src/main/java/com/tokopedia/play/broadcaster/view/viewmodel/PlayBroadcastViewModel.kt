@@ -11,6 +11,7 @@ import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet.Warnin
 import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -190,6 +191,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
     lateinit var warningInfoType: WarningType
+    lateinit var tncList: List<TermsAndConditionUiModel>
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
 
@@ -1576,9 +1578,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     AccountStateInfo(
                         type = AccountStateInfoType.NotAcceptTNC,
                         selectedAccount = selectedAccount,
-                        tnc = configUiModel.tnc,
                     )
                 }
+                if (selectedAccount.isShop) tncList = configUiModel.tnc
                 false
             }
             else -> true

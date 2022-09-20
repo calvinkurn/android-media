@@ -14,6 +14,7 @@ import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParent
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.AccountStateInfo
@@ -34,7 +35,6 @@ import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccoun
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
@@ -42,7 +42,6 @@ import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
@@ -64,7 +63,6 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collect
@@ -274,6 +272,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             is WarningInfoBottomSheet -> {
                 childFragment.setData(parentViewModel.warningInfoType)
                 childFragment.setListener(object : WarningInfoBottomSheet.Listener {
+                    override fun clickCloseIcon() {
+                        if (!viewModel.isFromSwitchAccount) activity?.finish()
+                        viewModel.setFromSwitchAccount(false)
+                    }
+                })
+            }
+            is SellerTncBottomSheet -> {
+                childFragment.initViews(parentViewModel.tncList)
+                childFragment.setListener(object : SellerTncBottomSheet.Listener {
                     override fun clickCloseIcon() {
                         if (!viewModel.isFromSwitchAccount) activity?.finish()
                         viewModel.setFromSwitchAccount(false)
@@ -616,7 +623,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         when(state.type) {
             AccountStateInfoType.Live, AccountStateInfoType.Banned -> showWaringInfoBottomSheet()
             AccountStateInfoType.NotAcceptTNC -> {
-                if (state.selectedAccount.isShop) showTermsAndConditionBottomSheet(state.tnc)
+                if (state.selectedAccount.isShop) showTermsAndConditionBottomSheet()
                 else showUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_TNC)
             }
             AccountStateInfoType.NoUsername -> showUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_COMPLETE)
@@ -899,42 +906,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         } catch (e: Exception) { }
     }
 
-    private fun showTermsAndConditionBottomSheet(tncList: List<TermsAndConditionUiModel>) {
-        val existingFragment = childFragmentManager.findFragmentByTag(TERMS_AND_CONDITION_TAG)
-
-        val (bottomSheet, view) = if (existingFragment is BottomSheetUnify) {
-            existingFragment to existingFragment.requireView().findViewWithTag(
-                TERMS_AND_CONDITION_TAG
-            )
-        } else {
-            val bottomSheet = BottomSheetUnify().apply {
-                clearContentPadding = true
-                setTitle(this@PlayBroadcastPreparationFragment.getString(R.string.play_bro_tnc_title))
-            }
-
-            val view = PlayTermsAndConditionView(requireContext())
-                .apply {
-                    tag = TERMS_AND_CONDITION_TAG
-                    setListener(object : PlayTermsAndConditionView.Listener {
-                        override fun onOkButtonClicked(view: PlayTermsAndConditionView) {
-                            bottomSheet.dismiss()
-                        }
-                    })
-                }
-
-            bottomSheet.setChild(view)
-
-            bottomSheet to view
-        }
-        if (!bottomSheet.isVisible) {
-            view.setTermsAndConditions(tncList)
-            bottomSheet.setOnDismissListener {
-                if (viewModel.isFromSwitchAccount) bottomSheet.dismiss()
-                else activity?.finish()
-                viewModel.setFromSwitchAccount(false)
-            }
-            bottomSheet.show(childFragmentManager, TERMS_AND_CONDITION_TAG)
-        }
+    private fun showTermsAndConditionBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment = childFragmentManager.findFragmentByTag(SellerTncBottomSheet.TAG)
+        if (existingFragment is SellerTncBottomSheet && existingFragment.isVisible) return
+        try {
+            SellerTncBottomSheet
+                .getFragment(childFragmentManager, requireActivity().classLoader)
+                .showNow(childFragmentManager)
+        } catch (e: Exception) { }
     }
 
     private fun showLoading(isShow: Boolean) {
@@ -956,7 +936,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     companion object {
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
-        private const val TERMS_AND_CONDITION_TAG = "TNC_BOTTOM_SHEET"
     }
 
     sealed interface Event {

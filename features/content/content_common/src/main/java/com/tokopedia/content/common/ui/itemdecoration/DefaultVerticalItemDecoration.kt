@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.itemdecoration
+package com.tokopedia.content.common.ui.itemdecoration
 
 import android.graphics.Rect
 import android.view.View

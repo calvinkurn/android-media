@@ -22,6 +22,8 @@
             android:text="@string/play_bro_tnc_condition_title"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -34,6 +36,8 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_play_bro_tnc"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifycomponents.DividerUnify
@@ -41,6 +45,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifyprinciples.Typography
