@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingwidget
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface.BOLD
 import android.text.SpannableString
@@ -8,9 +9,9 @@ import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.CycleInterpolator
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -62,6 +63,8 @@ class ShippingWidget : ConstraintLayout {
             shipmentCartItemModel: ShipmentCartItemModel,
             recipientAddressModel: RecipientAddressModel
         )
+
+        fun onViewErrorInCourierSection(logPromoDesc: String)
     }
 
     fun setupListener(shippingWidgetListener: ShippingWidgetListener) {
@@ -126,7 +129,7 @@ class ShippingWidget : ConstraintLayout {
         }
     }
 
-    fun showLayoutSingleShippingCourier() {
+    private fun showLayoutSingleShippingCourier() {
         binding?.apply {
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
@@ -137,11 +140,7 @@ class ShippingWidget : ConstraintLayout {
         }
     }
 
-    fun getLabelSelectedSingleShippingTitle(): TextView? {
-        return binding?.labelSelectedSingleShippingTitle
-    }
-
-    fun showLabelSingleShippingEta(selectedCourierItemData: CourierItemData) {
+    private fun showLabelSingleShippingEta(selectedCourierItemData: CourierItemData) {
         binding?.apply {
             labelSingleShippingEta.visibility = VISIBLE
             labelSingleShippingEta.text =
@@ -153,14 +152,14 @@ class ShippingWidget : ConstraintLayout {
         }
     }
 
-    fun showLabelSingleShippingMessage(text: CharSequence) {
+    private fun showLabelSingleShippingMessage(text: CharSequence) {
         binding?.apply {
             labelSingleShippingMessage.visible()
             labelSingleShippingMessage.text = text
         }
     }
 
-    fun hideLabelSingleShippingMessage() {
+    private fun hideLabelSingleShippingMessage() {
         binding?.labelSingleShippingMessage?.gone()
     }
 
@@ -332,7 +331,7 @@ class ShippingWidget : ConstraintLayout {
     fun showLabelDescCourier(labelText: String?, urlLink: String?) {
         binding?.apply {
             labelDescriptionCourier.text = labelText
-            labelDescriptionCourierTnc.setOnClickListener { _ ->
+            labelDescriptionCourierTnc.setOnClickListener {
                 mListener?.onOnTimeDeliveryClicked(urlLink ?: "")
             }
             labelDescriptionCourier.visible()
@@ -381,9 +380,51 @@ class ShippingWidget : ConstraintLayout {
             layoutStateFailedShipping.visible()
             containerShippingExperience.visible()
 
-            layoutStateFailedShipping.setOnClickListener { _ ->
+            layoutStateFailedShipping.setOnClickListener {
                 mListener?.onClickLayoutFailedShipping(shipmentCartItemModel, recipientAddressModel)
             }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun renderSingleShippingCourier(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        selectedCourierItemData: CourierItemData
+    ) {
+        showLayoutSingleShippingCourier()
+
+        binding?.labelSelectedSingleShippingTitle?.apply {
+            text = if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+                // Change duration to promo title after promo is applied
+                val htmlLinkHelper = HtmlLinkHelper(
+                    context, selectedCourierItemData.freeShippingChosenCourierTitle
+                )
+                htmlLinkHelper.spannedString
+            } else {
+                val price = removeDecimalSuffix(
+                    convertPriceValueToIdrFormat(
+                        selectedCourierItemData.shipperPrice,
+                        false
+                    )
+                )
+                selectedCourierItemData.name + " (" + price + ")"
+            }
+        }
+
+        showLabelSingleShippingEta(selectedCourierItemData)
+
+        if (selectedCourierItemData.logPromoDesc != null && selectedCourierItemData.logPromoDesc?.isNotEmpty() == true) {
+            showLabelSingleShippingMessage(
+                MethodChecker.fromHtml(
+                    selectedCourierItemData.logPromoDesc
+                )
+            )
+            if (shipmentCartItemModel.voucherLogisticItemUiModel == null && !shipmentCartItemModel.isHasShownCourierError) {
+                mListener?.onViewErrorInCourierSection(selectedCourierItemData.logPromoDesc.orEmpty())
+                shipmentCartItemModel.isHasShownCourierError = true
+            }
+        } else {
+            hideLabelSingleShippingMessage()
         }
     }
 
@@ -494,7 +535,7 @@ class ShippingWidget : ConstraintLayout {
                 labelSingleShippingMessage.visible()
             }
 
-            layoutStateHasSelectedSingleShipping.setOnClickListener { _ ->
+            layoutStateHasSelectedSingleShipping.setOnClickListener {
                 mListener?.onClickSetPinpoint()
             }
             layoutStateHasSelectedSingleShipping.visible()

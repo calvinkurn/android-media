@@ -29,7 +29,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.checkout.utils.WeightFormatterUtil;
@@ -59,7 +58,6 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsD
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.CardUnify;
-import com.tokopedia.unifycomponents.HtmlLinkHelper;
 import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.TextFieldUnify;
@@ -810,7 +808,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         if (shipmentCartItemModel.isDisableChangeCourier()) {
             // Is single shipping only
-            renderSingleShippingCourier(shipmentCartItemModel, selectedCourierItemData);
+            shippingWidget.renderSingleShippingCourier(shipmentCartItemModel, selectedCourierItemData);
         } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             // Is free ongkir shipping
             renderFreeShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
@@ -859,6 +857,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
+    @Override
+    public void onViewErrorInCourierSection(@NonNull String logPromoDesc) {
+        mActionListener.onViewErrorInCourierSection(logPromoDesc);
+    }
+
     private void renderNormalShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
         shippingWidget.showNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         shippingWidget.setLabelSelectedShippingCourier(selectedCourierItemData);
@@ -892,35 +895,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         shippingWidget.renderFreeShippingCourier(selectedCourierItemData);
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void renderSingleShippingCourier(ShipmentCartItemModel shipmentCartItemModel, CourierItemData selectedCourierItemData) {
-        shippingWidget.showLayoutSingleShippingCourier();
-
-        TextView labelSelectedSingleShippingTitle = shippingWidget.getLabelSelectedSingleShippingTitle();
-        if (labelSelectedSingleShippingTitle != null) {
-            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                // Change duration to promo title after promo is applied
-                HtmlLinkHelper htmlLinkHelper = new HtmlLinkHelper(labelSelectedSingleShippingTitle.getContext(), selectedCourierItemData.getFreeShippingChosenCourierTitle());
-                labelSelectedSingleShippingTitle.setText(htmlLinkHelper.getSpannedString());
-            } else {
-                String price = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(selectedCourierItemData.getShipperPrice(), false));
-                labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getName() + " (" + price + ")");
-            }
-        }
-
-        shippingWidget.showLabelSingleShippingEta(selectedCourierItemData);
-
-        if (selectedCourierItemData.getLogPromoDesc() != null && !selectedCourierItemData.getLogPromoDesc().isEmpty()) {
-            shippingWidget.showLabelSingleShippingMessage(MethodChecker.fromHtml(selectedCourierItemData.getLogPromoDesc()));
-            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() == null && !shipmentCartItemModel.isHasShownCourierError()) {
-                mActionListener.onViewErrorInCourierSection(selectedCourierItemData.getLogPromoDesc());
-                shipmentCartItemModel.setHasShownCourierError(true);
-            }
-        } else {
-            shippingWidget.hideLabelSingleShippingMessage();
-        }
     }
 
     private void prepareLoadCourierState(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter, boolean isTradeInDropOff) {
