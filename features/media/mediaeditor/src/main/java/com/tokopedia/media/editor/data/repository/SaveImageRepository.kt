@@ -32,6 +32,7 @@ interface SaveImageRepository {
         context: Context,
         bitmapParam: Bitmap,
         filename: String? = null,
+        sourcePath: String
     ): File?
 
     fun clearEditorCache()
@@ -46,11 +47,13 @@ class SaveImageRepositoryImpl @Inject constructor() : SaveImageRepository {
     override fun saveToCache(
         context: Context,
         bitmapParam: Bitmap,
-        filename: String?
+        filename: String?,
+        sourcePath: String
     ): File? {
+        val isPng = ImageProcessingUtil.isPng(sourcePath)
         return ImageProcessingUtil.writeImageToTkpdPath(
             bitmapParam,
-            Bitmap.CompressFormat.JPEG,
+            if (isPng) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG,
             getEditorSaveFolderPath()
         )
     }
@@ -73,7 +76,7 @@ class SaveImageRepositoryImpl @Inject constructor() : SaveImageRepository {
             val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
             var resultFile: File? = null
-            var fileName = fileName(file.name)
+            var fileName = fileName(file.nameWithoutExtension)
 
             val contentValues = ContentValues()
             contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
@@ -108,8 +111,13 @@ class SaveImageRepositoryImpl @Inject constructor() : SaveImageRepository {
                             outputStream.close()
                         }
 
-                        FileUtil.getPath(context.contentResolver, uriResult)?.let {
-                            resultFile = File(it)
+                        FileUtil.getPath(context.contentResolver, uriResult)?.let { resultPath ->
+                            val tempResultFile = File(resultPath)
+                            val renamedResultFile = File(fileName)
+
+                            tempResultFile.renameTo(renamedResultFile)
+
+                            resultFile = tempResultFile
                         }
                     }
                 }

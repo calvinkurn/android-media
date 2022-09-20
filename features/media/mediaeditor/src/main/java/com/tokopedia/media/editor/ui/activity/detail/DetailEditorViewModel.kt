@@ -180,10 +180,11 @@ class DetailEditorViewModel @Inject constructor(
     fun saveImageCache(
         context: Context,
         bitmapParam: Bitmap,
-        filename: String? = null
+        filename: String? = null,
+        sourcePath: String
     ): File? {
         return saveImageRepository.saveToCache(
-            context, bitmapParam, filename
+            context, bitmapParam, filename, sourcePath
         )
     }
 }

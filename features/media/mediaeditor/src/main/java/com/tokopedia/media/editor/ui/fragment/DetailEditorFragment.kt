@@ -107,7 +107,8 @@ class DetailEditorFragment @Inject constructor(
             ) {
                 data.resultUrl = viewModel.saveImageCache(
                     requireContext(),
-                    it
+                    it,
+                    sourcePath = data.originalUrl
                 )?.path
 
                 finishPage()
@@ -116,7 +117,8 @@ class DetailEditorFragment @Inject constructor(
             getBitmap()?.let {
                 data.resultUrl = viewModel.saveImageCache(
                     requireContext(),
-                    it
+                    it,
+                    sourcePath = data.originalUrl
                 )?.path
 
                 if (data.isToolRemoveBackground()) {

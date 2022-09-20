@@ -11,6 +11,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 import javax.inject.Inject
 
@@ -129,7 +130,7 @@ class EditorViewModel @Inject constructor(
 
             val bitmapResult = Bitmap.createBitmap(it, leftMargin, topMargin, newWidth, newHeight)
             val savedFile = saveImageRepository.saveToCache(
-                context, bitmapResult
+                context, bitmapResult, sourcePath = editorDetailUiModel.getOriginalUrl()
             )?.absolutePath ?: ""
 
             val newEditorDetailUiModel = EditorDetailUiModel(
