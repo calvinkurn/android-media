@@ -102,7 +102,7 @@ class OSChooseAddressWidgetView : FrameLayout {
             totalScrollUp = 0
         }
 
-        adjustCollapseExpandView(totalScrollUp <= 10, whenWidgetShow, whenWidgetGone)
+        adjustCollapseExpandView(totalScrollUp <= HEIGHT_SCROLL_CHOOSE_ADDRESS, whenWidgetShow, whenWidgetGone)
     }
 
 
@@ -127,6 +127,7 @@ class OSChooseAddressWidgetView : FrameLayout {
         if (itemContext.isDeviceAnimationDisabled()) {
             this.show()
         } else {
+            Log.d("dhabalog", "${this.measuredHeight}")
             if (this.measuredHeight <= HEIGHT_SCROLL_CHOOSE_ADDRESS) {
                 animationExpand?.start()
                 isExpand = true
