@@ -3,7 +3,6 @@ package com.tokopedia.officialstore.category.presentation.viewutil
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,12 +12,10 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isDeviceAnimationDisabled
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.category.presentation.listener.OSContainerListener
-import com.tokopedia.officialstore.category.presentation.widget.dp
 import com.tokopedia.officialstore.category.presentation.widget.getValueAnimator
 import com.tokopedia.officialstore.official.presentation.listener.OSChooseAddressWidgetCallback
 
@@ -42,7 +39,7 @@ class OSChooseAddressWidgetView : FrameLayout {
     private val itemContext: Context
     private var animationExpand: ValueAnimator?= null
     private var animationCollapse: ValueAnimator?= null
-    private var isExpand = true
+    var isExpand = true
     private var totalScrollUp: Int = 0
     private var itemView: View
     private var viewMaxHeight: Int = 0
@@ -63,6 +60,8 @@ class OSChooseAddressWidgetView : FrameLayout {
     fun setMeasuredHeight() {
         viewMaxHeight = this.measuredHeight
     }
+
+    fun getMeasureHeight() : Int = viewMaxHeight
 
     fun initChooseAddressWidget(needToShowChooseAddress: Boolean,
                                 listener: OSContainerListener,
@@ -127,7 +126,6 @@ class OSChooseAddressWidgetView : FrameLayout {
         if (itemContext.isDeviceAnimationDisabled()) {
             this.show()
         } else {
-            Log.d("dhabalog", "${this.measuredHeight}")
             if (this.measuredHeight <= HEIGHT_SCROLL_CHOOSE_ADDRESS) {
                 animationExpand?.start()
                 isExpand = true

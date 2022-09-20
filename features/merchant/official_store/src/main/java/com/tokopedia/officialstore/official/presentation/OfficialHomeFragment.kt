@@ -52,11 +52,7 @@ import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.listener.*
@@ -73,9 +69,8 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
-import com.tokopedia.wishlist_common.R as Rwishlist
-import java.util.*
 import javax.inject.Inject
+import com.tokopedia.wishlist_common.R as Rwishlist
 
 class OfficialHomeFragment :
         BaseDaggerFragment(),
@@ -120,6 +115,7 @@ class OfficialHomeFragment :
     private var isScrolling = false
     private var localChooseAddress: OSChooseAddressData? = null
     private var recommendationWishlistItem: RecommendationItem? = null
+    private var totalScrollRecyclerView = 0
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -945,9 +941,10 @@ class OfficialHomeFragment :
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
 
+                        totalScrollRecyclerView += dy
                         if (!isScrolling) {
                             isScrolling = true
-                            scrollListener.onContentScrolled(dy)
+                            scrollListener.onContentScrolled(dy, totalScrollRecyclerView)
                             Handler().postDelayed({
                                 isScrolling = false
                             }, DELAY_200L)

@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.officialstore.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import java.util.*
 
 
 class OfficialCategoriesTab(context: Context,
@@ -38,6 +37,10 @@ class OfficialCategoriesTab(context: Context,
 
     fun setMeasuredHeight() {
         tabMaxHeight = this.measuredHeight
+    }
+
+    fun getMeasureHeight() : Int {
+        return tabMaxHeight
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -221,15 +224,6 @@ class OfficialCategoriesTab(context: Context,
                 R.drawable.ic_loading_image
             )
             text_view_category_title?.text = categoriesItemTab[position].title
-//            tab_category_container?.afterMeasured {
-//                categoriesItemTab[position].currentWidth = width
-//                categoriesItemTab[position].minWidth = width
-//                categoriesItemTab[position].maxWidth = width + 32.dp
-//
-//                categoriesItemTab[position].currentHeight = height
-//                categoriesItemTab[position].minHeight = height - 32.dp
-//                categoriesItemTab[position].maxHeight = height
-//            }
         }
         return view
     }
@@ -261,11 +255,5 @@ class OfficialCategoriesTab(context: Context,
             val title: String,
             val iconUrl: String,
             val inactiveIconUrl: String,
-            var currentWidth: Int = 64.dp,
-            var currentHeight: Int = 64.dp,
-            var minWidth: Int = 64.dp,
-            var maxWidth: Int = 64.dp,
-            var minHeight: Int = 64.dp,
-            var maxHeight: Int = 64.dp
     )
 }
