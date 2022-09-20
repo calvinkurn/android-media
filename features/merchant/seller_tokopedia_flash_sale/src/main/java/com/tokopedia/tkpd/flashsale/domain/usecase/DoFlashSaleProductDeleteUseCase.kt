@@ -65,8 +65,7 @@ class DoFlashSaleProductDeleteUseCase @Inject constructor(
         val payload = DoFlashSaleProductDeleteRequest(
             requestHeader,
             param.campaignId,
-            param.productIds,
-            param.reservationId
+            param.productIds
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
 
@@ -79,7 +78,6 @@ class DoFlashSaleProductDeleteUseCase @Inject constructor(
 
     data class Param(
         val campaignId: Long,
-        val productIds: List<Long>,
-        val reservationId: String
+        val productIds: List<Long>
     )
 }

@@ -60,8 +60,8 @@ class CampaignDetailViewModel @Inject constructor(
     val productReserveResult: LiveData<Pair<ProductReserveResult, String>>
         get() = _productReserveResult
 
-    private var _productDeleteResult = MutableLiveData<Result<ProductDeleteResult>>()
-    val productDeleteResult: LiveData<Result<ProductDeleteResult>>
+    private var _productDeleteResult = MutableLiveData<ProductDeleteResult>()
+    val productDeleteResult: LiveData<ProductDeleteResult>
         get() = _productDeleteResult
 
     private val _error = MutableLiveData<Throwable>()
@@ -141,17 +141,15 @@ class CampaignDetailViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val reservationId = userSession.shopId + Date().time.toString()
                 val params = DoFlashSaleProductDeleteUseCase.Param(
                     campaignId = campaignId,
-                    productIds = selectedItems.map { it.first },
-                    reservationId = reservationId
+                    productIds = selectedItems.map { it.first }
                 )
                 val result = doFlashSaleProductDeleteUseCase.execute(params)
-                _productDeleteResult.postValue(Success(result))
+                _productDeleteResult.postValue(result)
             },
             onError = { error ->
-                _productDeleteResult.postValue(Fail(error))
+                _error.postValue(error)
             }
         )
     }

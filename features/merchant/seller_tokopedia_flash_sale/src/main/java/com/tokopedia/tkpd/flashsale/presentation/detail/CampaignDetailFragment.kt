@@ -18,6 +18,7 @@ import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
+import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.dialog.DialogUnify
@@ -58,6 +59,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         private const val ONGOING_TAB = "ongoing"
         private const val FINISHED_TAB = "finished"
         private const val PAGE_SIZE = 3
+        private const val DELAY = 1000L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
         private const val EMPTY_SUBMITTED_PRODUCT_URL =
@@ -225,9 +227,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun observeDeletedProductResult() {
         viewModel.productDeleteResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    loadSubmittedProductListData(Int.ZERO)
+            doOnDelayFinished(DELAY) {
+                if (result.isSuccess) {
                     val selectedProductCount = viewModel.selectedProducts.value?.count()
                     binding?.run {
                         cardBottomButtonGroup.showToaster(
@@ -237,10 +238,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                             )
                         )
                     }
+                } else {
+                    showErrorToaster(result.errorMessage)
                 }
-                is Fail -> {
-                    showErrorToaster()
-                }
+                loadSubmittedProductListData(Int.ZERO)
             }
         }
     }
