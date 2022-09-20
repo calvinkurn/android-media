@@ -117,7 +117,10 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                         )
                         cropAll(listData, currentProcess + 1)
                     },
-                    onCleared = {}
+                    onCleared = {},
+                    onFailed = {
+                        cropAll(listData, currentProcess + 1)
+                    }
                 ))
         } else {
             cropAll(listData, currentProcess + 1)
