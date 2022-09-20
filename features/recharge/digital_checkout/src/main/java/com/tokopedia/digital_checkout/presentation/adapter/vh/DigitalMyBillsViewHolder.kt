@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.show
  */
 
 class DigitalMyBillsViewHolder(
-    view: View, val
-    listener: MyBillsActionListener
+    view: View,
+    val listener: MyBillsActionListener
 ) : RecyclerView.ViewHolder(view) {
 
     fun bindSubscription(subscription: FintechProduct) {
