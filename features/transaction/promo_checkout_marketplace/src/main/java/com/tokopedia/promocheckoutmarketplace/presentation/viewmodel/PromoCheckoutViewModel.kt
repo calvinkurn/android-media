@@ -1013,8 +1013,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         if (toBeRemovedPromoCodes.isEmpty()) {
             // if there are no promo to be removed, try removing preselected codes
             promoListUiModel.value?.forEach { visitable ->
-                if (visitable is PromoListItemUiModel && !visitable.uiState.isBebasOngkir && visitable.uiState.isParentEnabled && visitable.uiState.isPreSelected) {
-                    if (visitable.uiData.shopId > 0) {
+                if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && visitable.uiState.isPreSelected) {
+                    if (visitable.uiState.isBebasOngkir) {
+                        visitable.uiData.boAdditionalData.forEach { boData ->
+                            val order = orders.firstOrNull { it.uniqueId == boData.uniqueId }
+                            if (order != null && !order.codes.contains(boData.code)) {
+                                order.codes.add(boData.code)
+                                toBeRemovedPromoCodes.add(boData.code)
+                            }
+                        }
+                    } else if (visitable.uiData.shopId > 0) {
                         val order = orders.firstOrNull { it.uniqueId == visitable.uiData.uniqueId }
                         if (order != null && !order.codes.contains(visitable.uiData.promoCode)) {
                             order.codes.add(visitable.uiData.promoCode)
