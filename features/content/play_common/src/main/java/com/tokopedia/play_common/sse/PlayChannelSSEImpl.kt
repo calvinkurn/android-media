@@ -5,11 +5,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.debugger.SSELogger
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.play_common.sse.base.OkSse
-import com.tokopedia.play_common.sse.base.ServerSentEvent
 import com.tokopedia.play_common.sse.model.SSEAction
 import com.tokopedia.play_common.sse.model.SSECloseReason
 import com.tokopedia.play_common.sse.model.SSEResponse
+import com.tokopedia.sse.OkSse
+import com.tokopedia.sse.ServerSentEvent
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.*
