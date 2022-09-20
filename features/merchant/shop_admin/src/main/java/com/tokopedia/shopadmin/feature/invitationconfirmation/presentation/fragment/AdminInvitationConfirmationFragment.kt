@@ -23,6 +23,7 @@ import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.analytics.ShopAdminTrackers
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.constants.AdminStatus
+import com.tokopedia.shopadmin.common.presentation.navigator.goToPlayStoreOrSellerApp
 import com.tokopedia.shopadmin.common.utils.ShopAdminErrorLogger
 import com.tokopedia.shopadmin.common.utils.getGlobalErrorType
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationConfirmationBinding
@@ -316,7 +317,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun showAdminType(adminStatus: String, shopId: String) {
         when (adminStatus) {
-            AdminStatus.ACTIVE -> navigator.goToShopAccount()
+            AdminStatus.ACTIVE -> activity?.goToPlayStoreOrSellerApp()
             AdminStatus.WAITING_CONFIRMATION, AdminStatus.REJECT -> {
                 setShopId(shopId)
                 invitationConfirmationParam.setAdminType(adminStatus)
