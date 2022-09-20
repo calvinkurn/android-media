@@ -28,7 +28,7 @@ class TopAdsImageViewUseCaseTest {
     private val userId = "001"
 
     private val useCase =
-        spyk<TopAdsImageViewUseCase>(TopAdsImageViewUseCase(userId, repository, irisSessionId))
+        spyk(TopAdsImageViewUseCase(userId, repository, irisSessionId))
 
     @Before
     fun setup() {
@@ -47,24 +47,30 @@ class TopAdsImageViewUseCaseTest {
 
     @Test
     fun `test getQueryMap when some values are empty`() {
-        val actual = useCase.getQueryMap("", "", "", 2, 3, "", "", "")
-        assertEquals(userId, actual["user_id"])
-        assertEquals("banner", actual["ep"])
-        assertEquals("android", actual["device"])
-        assertEquals(2, actual["item"])
-        assertEquals(3, actual["dimen_id"])
-
+        val queryMap = useCase.getQueryMap("", "source", "", 2, 3, "", "", "")
+        assertEquals(queryMap["user_id"], userId)
+        assertEquals( queryMap["ep"], "banner")
+        assertEquals(queryMap["inventory_id"], "source")
+        assertEquals(queryMap["device"], "android")
+        assertEquals(queryMap["item"], 2)
+        assertEquals( queryMap["dimen_id"], 3)
     }
 
     @Test
     fun `test getQueryMap when  values are not empty`() {
 
-        val actual = useCase.getQueryMap("query", "", "page_token", 2, 3, "dep_01", "prod_02", "0")
-        assertEquals("0", actual["page"])
-        assertEquals("query", actual["q"])
-        assertEquals("page_token", actual["page_token"])
-        assertEquals("dep_01", actual["dep_id"])
-        assertEquals("prod_02", actual["product_id"])
+        val queryMap = useCase.getQueryMap("query", "source", "page_token", 2, 3, "dep_01", "prod_02", "0")
+        assertEquals(queryMap["user_id"], userId)
+        assertEquals( queryMap["ep"], "banner")
+        assertEquals(queryMap["inventory_id"], "source")
+        assertEquals(queryMap["device"], "android")
+        assertEquals(queryMap["item"], 2)
+        assertEquals( queryMap["dimen_id"], 3)
+        assertEquals(queryMap["page"], "0")
+        assertEquals(queryMap["q"], "query")
+        assertEquals( queryMap["page_token"], "page_token")
+        assertEquals(queryMap["dep_id"], "dep_01")
+        assertEquals(queryMap["product_id"], "prod_02")
 
     }
 

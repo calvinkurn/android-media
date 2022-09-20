@@ -32,34 +32,22 @@ class TopAdsImageViewViewModelTest {
     }
 
     @Test
-    fun `test get_query_params`() {
-        val actual = "query"
-        every {
-            topAdsImageViewUseCase.getQueryMap(any(), any(), any(), any(), any(), any())
-        } returns mutableMapOf("q" to actual)
-
-        val result = viewModel.getQueryParams("query", "", "", 4, 5, "", "", "")
-        Assert.assertEquals(result["q"], actual)
-
-    }
-
-    @Test
     fun `test get_query_params verify`() {
         every {
             topAdsImageViewUseCase.getQueryMap(any(), any(), any(), any(), any(), any())
         } returns mutableMapOf()
 
-        val result = viewModel.getQueryParams("query", "", "", 4, 5, "", "", "1")
+        viewModel.getQueryParams("query", "source", "page_token", 4, 5, "2", "pid", "1")
 
         verify {
             topAdsImageViewUseCase.getQueryMap(
                 "query",
-                "",
-                "",
+                "source",
+                "page_token",
                 4,
                 5,
-                "",
-                "",
+                "2",
+                "pid",
                 "1"
             )
         }
@@ -68,22 +56,34 @@ class TopAdsImageViewViewModelTest {
 
     @Test
     fun `test get_query_params default`() {
-        val actual = "query"
         every {
             topAdsImageViewUseCase.getQueryMap(any(), any(), any(), any(), any(), any())
-        } returns mutableMapOf("q" to actual)
+        } returns mutableMapOf()
 
-        val result = viewModel.getQueryParams("query", "", "", 4, 5, "", "")
-        Assert.assertEquals(result["q"], actual)
+        viewModel.getQueryParams("query", "source", "page_token", 4, 5, "2", "pid")
+
+        verify {
+            topAdsImageViewUseCase.getQueryMap(
+                "query",
+                "source",
+                "page_token",
+                4,
+                5,
+                "2",
+                "pid"
+            )
+        }
     }
 
     @Test
     fun `test getImageData with success`() {
-        val actual = "my_banner"
-        val data = arrayListOf(TopAdsImageViewModel(bannerName = actual))
+        val data = arrayListOf(TopAdsImageViewModel(bannerName = "my_banner"))
         coEvery { topAdsImageViewUseCase.getImageData(any()) } returns data
         viewModel.getImageData(mutableMapOf())
-        Assert.assertEquals((viewModel.getResponse().value as Success).data.first().bannerName, actual)
+        Assert.assertEquals(
+            (viewModel.getResponse().value as Success).data.first().bannerName,
+            "my_banner"
+        )
     }
 
     @Test

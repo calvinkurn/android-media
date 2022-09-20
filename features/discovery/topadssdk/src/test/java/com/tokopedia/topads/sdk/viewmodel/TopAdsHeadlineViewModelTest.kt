@@ -38,26 +38,25 @@ class TopAdsHeadlineViewModelTest {
 
     @Test
     fun `getTopAdsHeadlineData is success`() {
-        val expected = "applink"
-        var actual = ""
+        var result = ""
         every { topAdsAddressHelper.getAddressData() } returns mockk(relaxed = true)
         every { topAdsHeadlineUseCase.setParams(any(), any()) } just Runs
         coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
             displayAds = CpmModel(
-                data = mutableListOf(CpmData(applinks = expected))
+                data = mutableListOf(CpmData(applinks = "applink"))
             )
         )
         viewModel.getTopAdsHeadlineData(
             "",
-            onSuccess = { actual = it.data.first().applinks },
+            onSuccess = { result = it.data.first().applinks },
             onError = {})
 
-        Assert.assertEquals(expected, actual)
+        Assert.assertEquals(result, "applink")
     }
 
     @Test
     fun `getTopAdsHeadlineData is empty`() {
-        var actual = false
+        var result = false
         every { topAdsAddressHelper.getAddressData() } returns mockk(relaxed = true)
         every { topAdsHeadlineUseCase.setParams(any(), any()) } just Runs
         coEvery { topAdsHeadlineUseCase.executeOnBackground() } returns TopAdsHeadlineResponse(
@@ -68,23 +67,23 @@ class TopAdsHeadlineViewModelTest {
         viewModel.getTopAdsHeadlineData(
             "",
             onSuccess = {},
-            onError = {actual = true})
+            onError = {result = true})
 
-        Assert.assertTrue(actual)
+        Assert.assertTrue(result)
     }
 
     @Test()
     fun `getTopAdsHeadlineData is failed`() {
-        var expected = false
+        var result = false
         every { topAdsAddressHelper.getAddressData() } returns mockk(relaxed = true)
         every { topAdsHeadlineUseCase.setParams(any(), any()) } just Runs
         coEvery { topAdsHeadlineUseCase.executeOnBackground() } throws Exception()
         viewModel.getTopAdsHeadlineData(
             "",
             onSuccess = {},
-            onError = {expected = true})
+            onError = {result = true})
 
-        Assert.assertTrue(expected)
+        Assert.assertTrue(result)
     }
 
 
