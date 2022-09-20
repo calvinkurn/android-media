@@ -57,7 +57,7 @@ class EditorViewModel @Inject constructor(
                 state.backValue = 0
             }
 
-            if (newValue.removeBackgroundUrl != null && state.removeBackgroundStartState == null) {
+            if (!newValue.removeBackgroundUrl.equals(state.removedBackgroundUrl)) {
                 state.removedBackgroundUrl = newValue.removeBackgroundUrl
                 state.removeBackgroundStartState = state.editList.size
             }
