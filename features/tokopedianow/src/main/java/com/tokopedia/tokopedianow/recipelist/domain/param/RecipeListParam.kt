@@ -24,6 +24,10 @@ class RecipeListParam {
     var toPortion: String? = null
     var sortBy: RecipeSortBy? = null
     var queryParams = ""
+        set(value) {
+            field = value
+            breakDownQueryParams()
+        }
     
     companion object {
         private const val DEFAULT_PAGE = 1
@@ -115,7 +119,7 @@ class RecipeListParam {
         return stringBuilder.toString()
     }
 
-    fun breakDownQueryParams() {
+    private fun breakDownQueryParams() {
         val uri = Uri.parse("?$queryParams")
 
         uri.getQueryParameter(PARAM_TITLE)?.let {

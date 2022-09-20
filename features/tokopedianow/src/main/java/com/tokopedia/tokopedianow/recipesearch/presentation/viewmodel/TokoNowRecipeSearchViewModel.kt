@@ -22,10 +22,7 @@ class TokoNowRecipeSearchViewModel @Inject constructor(
         val queryParams = if (query.isNullOrEmpty()) "" else query
 
         getRecipeListParam.queryParams = queryParams
-        getRecipeListParam.breakDownQueryParams()
-
         getRecipeList()
-
         setKeywordToSearchbar()
     }
 }
