@@ -201,7 +201,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _accountListState.value
 
     val isAllowChangeAccount: Boolean
-        get() = _accountListState.value.size > 1 && _accountListState.value.find { it.isUserPostEligible } != null
+        get() = _accountListState.value.size > 1
 
     val authorId: String
         get() = _selectedAccount.value.id
@@ -401,8 +401,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             if (!isAccountEligible(configUiModel, selectedAccount)) {
                 if (isFirstOpen && isAllowChangeAccount) {
-                    handleSwitchAccount(false)
                     isFirstOpen = false
+                    handleSwitchAccount(false)
                 }
                 else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
                 return@launchCatchError
@@ -457,7 +457,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private suspend fun getChannelById(channelId: String): Throwable? {
-        _observableChannelInfo.value = NetworkResult.Loading
         return try {
             val (channel, tags) = supervisorScope {
                 val channelDeferred = async(dispatcher.io) {
@@ -1511,7 +1510,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         val nonSellerAccount = accountList.firstOrNull { it.type == TYPE_USER }
         return if (sellerAccount != null) {
             if (sellerAccount.hasAcceptTnc) sellerAccount
-            else nonSellerAccount ?: sellerAccount
+            else if (nonSellerAccount != null) {
+                if (nonSellerAccount.hasUsername && nonSellerAccount.hasAcceptTnc) nonSellerAccount
+                else sellerAccount
+            }
+            else sellerAccount
         } else nonSellerAccount ?: ContentAccountUiModel.Empty
     }
 

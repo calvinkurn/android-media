@@ -15,8 +15,11 @@ import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
@@ -186,30 +189,56 @@ class UiModelBuilder {
     fun buildAccountListModel(
         idShop: String = "1234",
         idBuyer: String = "5678",
-        tncShop: Boolean = false,
+        tncShop: Boolean = true,
         usernameShop: Boolean = true,
-        tncBuyer: Boolean = false,
-        usernameBuyer: Boolean = false,
+        tncBuyer: Boolean = true,
+        usernameBuyer: Boolean = true,
+        onlyShop: Boolean = false,
+        onlyBuyer: Boolean = false
     ): List<ContentAccountUiModel> {
-        return listOf(
-            ContentAccountUiModel(
-                id = idShop,
-                type = TYPE_SHOP,
-                name = "Shop",
-                iconUrl = "icon.url.shop",
-                badge = "icon.badge",
-                hasUsername = usernameShop,
-                hasAcceptTnc = tncShop
-            ),
-            ContentAccountUiModel(
-                id = idBuyer,
-                type = TYPE_USER,
-                name = "Buyer",
-                iconUrl = "icon.url.shop",
-                badge = "icon.badge",
-                hasUsername = usernameBuyer,
-                hasAcceptTnc = tncBuyer
-            ),
-        )
+        return when {
+            onlyShop -> listOf(
+                ContentAccountUiModel(
+                    id = idShop,
+                    type = TYPE_SHOP,
+                    name = "Shop",
+                    iconUrl = "icon.url.shop",
+                    badge = "icon.badge",
+                    hasUsername = usernameShop,
+                    hasAcceptTnc = tncShop
+                )
+            )
+            onlyBuyer -> listOf(
+                ContentAccountUiModel(
+                    id = idBuyer,
+                    type = TYPE_USER,
+                    name = "Buyer",
+                    iconUrl = "icon.url.buyer",
+                    badge = "icon.badge",
+                    hasUsername = usernameBuyer,
+                    hasAcceptTnc = tncBuyer
+                )
+            )
+            else -> listOf(
+                ContentAccountUiModel(
+                    id = idShop,
+                    type = TYPE_SHOP,
+                    name = "Shop",
+                    iconUrl = "icon.url.shop",
+                    badge = "icon.badge",
+                    hasUsername = usernameShop,
+                    hasAcceptTnc = tncShop
+                ),
+                ContentAccountUiModel(
+                    id = idBuyer,
+                    type = TYPE_USER,
+                    name = "Buyer",
+                    iconUrl = "icon.url.buyer",
+                    badge = "icon.badge",
+                    hasUsername = usernameBuyer,
+                    hasAcceptTnc = tncBuyer
+                ),
+            )
+        }
     }
 }
