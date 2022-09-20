@@ -104,6 +104,7 @@ import com.tokopedia.search.result.product.inspirationcarousel.analytics.Inspira
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
+import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
@@ -162,7 +163,6 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT"
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
         private const val REQUEST_CODE_LOGIN = 561
-        private const val ON_BOARDING_DELAY_MS: Long = 200
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
@@ -203,7 +203,12 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var filterController: FilterController
 
-    private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
+    @Inject
+    lateinit var onBoardingListenerDelegate: OnBoardingListenerDelegate
+
+    @Inject
+    lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
+
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -342,7 +347,6 @@ class ProductListFragment: BaseDaggerFragment(),
         initSearchQuickSortFilter(view)
         initShimmeringView(view)
 
-        initLayoutManager()
         initLoadMoreListener()
         setupRecyclerView(view)
 
@@ -362,15 +366,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun initShimmeringView(view: View) {
         shimmeringView = view.findViewById(R.id.shimmeringView)
-    }
-
-    private fun initLayoutManager() {
-        staggeredGridLayoutManager = StaggeredGridLayoutManager(
-            smallGridSpanCount(),
-            StaggeredGridLayoutManager.VERTICAL
-        ).apply {
-            gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-        }
     }
 
     private fun initLoadMoreListener() {
@@ -394,6 +389,7 @@ class ProductListFragment: BaseDaggerFragment(),
             rootView.findViewById(R.id.recyclerview),
             staggeredGridLayoutManager,
             staggeredGridLayoutLoadMoreTriggerListener,
+            onBoardingListenerDelegate.createScrollListener(),
             createProductListTypeFactory(),
         )
 
@@ -571,15 +567,15 @@ class ProductListFragment: BaseDaggerFragment(),
 
         when (layoutType) {
             SearchConstant.ViewType.LIST -> {
-                staggeredGridLayoutManager?.spanCount = 1
+                staggeredGridLayoutManager.spanCount = 1
                 productListAdapter.changeListView()
             }
             SearchConstant.ViewType.SMALL_GRID -> {
-                staggeredGridLayoutManager?.spanCount = smallGridSpanCount()
+                staggeredGridLayoutManager.spanCount = smallGridSpanCount()
                 productListAdapter.changeDoubleGridView()
             }
             SearchConstant.ViewType.BIG_GRID -> {
-                staggeredGridLayoutManager?.spanCount = 1
+                staggeredGridLayoutManager.spanCount = 1
                 productListAdapter.changeSingleGridView()
             }
         }
@@ -1161,14 +1157,14 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun switchSearchNavigationLayoutTypeToListView(position: Int) {
         if (!userVisibleHint) return
 
-        staggeredGridLayoutManager?.spanCount = 1
+        staggeredGridLayoutManager.spanCount = 1
         recyclerViewUpdater.productListAdapter?.changeSearchNavigationListView(position)
     }
 
     override fun switchSearchNavigationLayoutTypeToBigGridView(position: Int) {
         if (!userVisibleHint) return
 
-        staggeredGridLayoutManager?.spanCount = 1
+        staggeredGridLayoutManager.spanCount = 1
         recyclerViewUpdater.productListAdapter?.changeSearchNavigationSingleGridView(position)
     }
 
@@ -1176,7 +1172,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun switchSearchNavigationLayoutTypeToSmallGridView(position: Int) {
         if (!userVisibleHint) return
 
-        staggeredGridLayoutManager?.spanCount = smallGridSpanCount()
+        staggeredGridLayoutManager.spanCount = smallGridSpanCount()
         recyclerViewUpdater.productListAdapter?.changeSearchNavigationDoubleGridView(position)
     }
     //endregion
@@ -1662,50 +1658,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     //region on boarding / coachmark
     override fun showOnBoarding(firstProductPosition: Int) {
-        val productWithBOELabel = getFirstProductWithBOELabel(firstProductPosition)
-
-        recyclerViewUpdater.recyclerView?.postDelayed({
-            buildCoachMark2(productWithBOELabel)
-        }, ON_BOARDING_DELAY_MS)
-    }
-
-    private fun getFirstProductWithBOELabel(firstProductPositionWithBOELabel: Int): View? {
-        val viewHolder = recyclerViewUpdater
-            .recyclerView
-            ?.findViewHolderForAdapterPosition(firstProductPositionWithBOELabel)
-            ?: return null
-
-        return if (viewHolder.itemView is IProductCardView) viewHolder.itemView
-        else null
-    }
-
-    private fun buildCoachMark2(view: View?) {
-        val context = context ?: return
-        val coachMark2ItemList = createCoachMark2ItemList(view)
-        if (coachMark2ItemList.isEmpty()) return
-
-        coachMark = CoachMark2(context).apply {
-            setOnDismissListener { coachMark = null }
-            showCoachMark(coachMark2ItemList, null, 0)
-        }
-    }
-
-    private fun createCoachMark2ItemList(boeLabelProductCard: View?): ArrayList<CoachMark2Item> {
-        val coachMarkItemList = ArrayList<CoachMark2Item>()
-
-        if (boeLabelProductCard != null)
-            coachMarkItemList.add(createBOELabelCoachMark2Item(boeLabelProductCard))
-
-        return coachMarkItemList
-    }
-
-    private fun createBOELabelCoachMark2Item(boeLabelProductCard: View): CoachMark2Item {
-        return CoachMark2Item(
-                boeLabelProductCard,
-                getString(R.string.search_product_boe_label_onboarding_title),
-                getString(R.string.search_product_boe_label_onboarding_description),
-                CoachMark2.POSITION_TOP
-        )
+        onBoardingListenerDelegate.showOnBoarding(firstProductPosition)
     }
     //endregion
 

@@ -820,7 +820,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 productId: String
             ) {
                 val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it) }
+                viewContent?.rootView?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it) }
             }
 
             override fun onSuccessAddWishlist(
@@ -828,7 +828,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 productId: String
             ) {
                 context?.let { context ->
-                    view?.let { v ->
+                    viewContent?.rootView?.let { v ->
                         AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                     }
                 }

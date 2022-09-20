@@ -11,14 +11,36 @@ warn("@#{github.pr_author} please provide a JIRA ticket link or type /create jir
 # Give a warning when a PR is over expected size
 warn("This PR is quite a big one! Try splitting this into separate tasks next time 🙂") if git.lines_of_code > 2000
 
+# Rollence Report
+if File.exists?("rollence_report.txt")
+   File.open("rollence_report.txt") do |f|
+      markdown(f.read)
+   end
+end
+
+# Darkmode Report
+if File.exists?("fileOutputReport.txt")
+   File.open("fileOutputReport.txt") do |f|
+      markdown(f.read)
+   end
+end
+
+# Duplicate Query Report
+if File.exists?("duplicate_query_report.txt")
+   File.open("duplicate_query_report.txt") do |f|
+      markdown(f.read)
+   end
+end
+
 # AndroidLint
 android_lint.report_file = "report-result.xml"
+android_lint.correction_file = "lint-correction.json"
 android_lint.skip_gradle_task = true
 android_lint.severity = "Warning"
 android_lint.filtering = true
 android_lint.filtering_lines = true
 android_lint.lint(inline_mode: true)
-
+#
 # Kotlin Detekt
 kotlin_detekt.filtering = true
 kotlin_detekt.filtering_lines = true
@@ -30,5 +52,6 @@ kotlin_detekt.detekt(inline_mode: true)
 ktlint.skip_lint = true
 ktlint.filtering = true
 ktlint.filtering_lines = true
+ktlint.correction = true
 ktlint.report_file = 'ktlint-report.json'
 ktlint.lint(inline_mode: true)

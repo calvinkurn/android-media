@@ -613,6 +613,7 @@ object DynamicProductDetailTracking {
 
         fun eventProductImageOnSwipe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel, trackingQueue: TrackingQueue?, type: String, imageUrl: String, position: Int) {
             val productId = productInfo?.basic?.productID ?: ""
+            val containerType = productInfo?.data?.containerType.orEmpty()
             val mapEvent = DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.MerchantVoucher.PROMO_VIEW,
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
@@ -626,7 +627,7 @@ object DynamicProductDetailTracking {
                     DataLayer.mapOf(
                             "id", imageUrl,
                             "name", "product detail page - $productId - pdp",
-                            "creative", "media type:$type;",
+                            "creative", "media type:$type;container_type:$containerType;",
                             "creative_url", imageUrl,
                             "position", position
                     )
@@ -1684,7 +1685,9 @@ object DynamicProductDetailTracking {
                                               ratesEstimateData: P2RatesEstimateData?,
                                               buyerDistrictId: String,
                                               sellerDistrictId: String,
-                                              lcaWarehouseId: String ->
+                                              lcaWarehouseId: String,
+                                              campaignId: String,
+                                              variantId: String ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1753,7 +1756,9 @@ object DynamicProductDetailTracking {
                         productInfo?.getFinalStock(),
                         trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
                         lcaWarehouseId,
-                        shopInfo?.shopCore?.ownerId
+                        shopInfo?.shopCore?.ownerId,
+                        campaignId,
+                        variantId
                 )
     }
 
@@ -1773,14 +1778,17 @@ object DynamicProductDetailTracking {
                          ratesEstimateData: P2RatesEstimateData?,
                          buyerDistrictId: String,
                          sellerDistrictId: String,
-                         lcaWarehouseId: String) {
+                         lcaWarehouseId: String,
+                         campaignId: String,
+                         variantId: String
+    ) {
         productInfo?.let {
             if (shopInfo?.isShopInfoNotEmpty() == true) {
                 val sentBundle = generateProductViewBundle(
                         irisSessionId, trackerListName, it, shopInfo,
                         trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
                         isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData,
-                        buyerDistrictId, sellerDistrictId, lcaWarehouseId
+                        buyerDistrictId, sellerDistrictId, lcaWarehouseId, campaignId, variantId
                 )
                 sendTrackingBundle(
                         ProductDetailViewsBundler.KEY,

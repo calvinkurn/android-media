@@ -61,6 +61,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
@@ -271,6 +272,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private val _toolbarTransparentState = MutableLiveData<Boolean>()
     val toolbarTransparentState: LiveData<Boolean> get() = _toolbarTransparentState
+
+    private val _verticalRecommendation = MutableLiveData<Result<RecommendationWidget>>()
+    val verticalRecommendation: LiveData<Result<RecommendationWidget>> = _verticalRecommendation
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -1145,5 +1149,24 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         } catch (throwable: Throwable) {
             _toolbarTransparentState.value = false
         }
+    }
+
+    fun getVerticalRecommendationData(pageName: String, page: Int? = DEFAULT_PAGE_NUMBER, productId: String?) {
+        val nonNullPage = page ?: DEFAULT_PAGE_NUMBER
+        val nonNullProductId = productId.orEmpty()
+        launchCatchError(block = {
+            val requestParams = GetRecommendationRequestParam(
+                pageNumber = nonNullPage,
+                pageName = pageName,
+                productIds = arrayListOf(nonNullProductId)
+            )
+            val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
+            val dataResponse = recommendationResponse.firstOrNull()
+            if (dataResponse == null)
+                _verticalRecommendation.value = Fail(Throwable())
+            else _verticalRecommendation.value = dataResponse.asSuccess()
+        }, onError = {
+            _verticalRecommendation.value = Fail(it)
+        })
     }
 }

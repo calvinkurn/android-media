@@ -82,6 +82,9 @@ open class RecommendationPageViewModel @Inject constructor(
         const val POS_CPM = 1
         const val HEADLINE_PARAM_RECOM = "device=android&ep=cpm&headline_product_count=3&item=3&src=recom_google&st=product&template_id=2%2C3%2C4&page=1&q=&user_id="
         const val QUERY_PARAMS_GOOGLE_SHOPPING = "ref=googleshopping"
+        const val PARAM_RECOMPUSH = "recompush"
+        const val PARAM_RECOMPUSH_ANCHOR = "recom_1_recompush_anchor"
+        const val PARAM_RECOM_WIDGET = "recom_widget"
     }
     /**
      * public variable
@@ -193,6 +196,8 @@ open class RecommendationPageViewModel @Inject constructor(
                 GetTopadsIsAdsUseCase.TIMEOUT_REMOTE_CONFIG_KEY,
                 PARAM_JOB_TIMEOUT_DEFAULT
             )
+            var pageNameParam = ""
+            var srcParam = GetTopadsIsAdsUseCase.DEFAULT_SRC
 
             RecomServerLogger.logServer(
                 tag = TOPADS_RECOM_PAGE_HIT_DYNAMIC_SLOTTING,
@@ -200,29 +205,37 @@ open class RecommendationPageViewModel @Inject constructor(
                 queryParam = queryParam
             )
 
+            if (queryParam.contains(PARAM_RECOMPUSH)) {
+                pageNameParam = PARAM_RECOMPUSH_ANCHOR
+                srcParam = PARAM_RECOM_WIDGET
+            }
+
             val job = withTimeoutOrNull(timeout) {
                 getTopadsIsAdsUseCase.setParams(
                         productId = productId,
                         productKey = "",
                         shopDomain = "",
                         urlParam = queryParam,
-                        pageName = ""
+                        pageName = pageNameParam,
+                        src = srcParam
                 )
                 adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
                 val dataList = recommendationListLiveData.value?.toMutableList()
                 val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
                 val errorCode = adsStatus.data.status.error_code
                 if (errorCode in PARAM_SUCCESS_200..PARAM_SUCCESS_300) {
-                    (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
-                        val topadsProduct = adsStatus.data.productList[0]
-                        it.isTopads = topadsProduct.isCharge
-                        it.clickUrl = topadsProduct.clickUrl
-                        it.trackerImageUrl = topadsProduct.product.image.m_url
-
-                        val itemIndex = dataList.indexOf(productRecom)
-                        dataList[itemIndex] = productRecom
-
-                        _recommendationListLiveData.postValue(dataList)
+                    (productRecom as? ProductInfoDataModel)?.let {
+                        it.isGetTopAds = true
+                        it.productDetailData?.let { productDetailData ->
+                            if (adsStatus.data.productList.isNotEmpty()) {
+                                val topadsProduct = adsStatus.data.productList[0]
+                                productDetailData.isTopads = topadsProduct.isCharge
+                                productDetailData.clickUrl = topadsProduct.clickUrl
+                                productDetailData.trackerImageUrl =
+                                    topadsProduct.product.image.m_url
+                                _recommendationListLiveData.postValue(dataList)
+                            }
+                        }
                     }
                 } else {
                     RecomServerLogger.logServer(

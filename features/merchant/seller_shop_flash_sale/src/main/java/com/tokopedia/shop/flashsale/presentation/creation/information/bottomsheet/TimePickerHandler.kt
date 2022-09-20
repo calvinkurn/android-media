@@ -29,7 +29,8 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
         val maximumDate: Date,
         val title: String,
         val info: String,
-        val buttonWording: String
+        val buttonWording: String,
+        val isUsingVpsPackage: Boolean
     )
 
     fun show(
@@ -39,7 +40,7 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     ) {
         val minTime = buildMinTime()
         val defaultTime = buildDefaultTime()
-        val maxTime = buildMaxTime()
+        val maxTime = buildMaxTime(param.isUsingVpsPackage)
 
         val dateTimePicker = DateTimePickerUnify(
             context,
@@ -77,10 +78,17 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     }
 
     private fun buildMinTime(): GregorianCalendar {
-        return if (param.mode == TimePickerSelectionMode.START_TIME) {
-            applyCampaignMinDateRule(param)
+        val isSameDay = isSameDay(param.minimumDate, param.selectedDateFromCalendar)
+        return if (isSameDay) {
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
+                set(Calendar.MINUTE, param.minimumDate.extractMinute())
+            }
         } else {
-            applyCampaignMaxEndDateRule(param)
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+            }
         }
     }
 
@@ -93,44 +101,31 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
         }
     }
 
-    private fun buildMaxTime(): Calendar {
-        return GregorianCalendar(LocaleConstant.INDONESIA).apply {
-            set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
-            set(Calendar.MINUTE, LAST_MINUTE)
-        }
-    }
+    private fun buildMaxTime(isUsingVpsPackage: Boolean): Calendar {
+         if (param.mode == TimePickerSelectionMode.CAMPAIGN_START_DATE) {
+             return if (isUsingVpsPackage) {
+                 val maxHour = param.maximumDate.extractHour()
+                 val maxMinute = param.maximumDate.extractMinute()
+                 GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                     set(Calendar.HOUR_OF_DAY, maxHour)
+                     set(Calendar.MINUTE, maxMinute)
+                 }
+             } else {
+                 GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                     set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
+                     set(Calendar.MINUTE, LAST_MINUTE)
+                 }
+             }
 
-    private fun applyCampaignMinDateRule(param: Param): GregorianCalendar {
-        val isSameDay = isSameDay(param.minimumDate, param.selectedDateFromCalendar)
-        return if (isSameDay) {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
-                set(Calendar.MINUTE, param.minimumDate.extractMinute())
-            }
         } else {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
+            return GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
+                set(Calendar.MINUTE, LAST_MINUTE)
             }
         }
     }
 
-    private fun applyCampaignMaxEndDateRule(param: Param): GregorianCalendar {
-        val isSameDay = isSameDay(param.minimumDate, param.selectedDateFromCalendar)
-        return if (isSameDay) {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, param.minimumDate.extractHour())
-                set(Calendar.MINUTE, param.minimumDate.extractMinute())
-            }
-        } else {
-            GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
-            }
-        }
-    }
-
-    private fun isSameDay(startDate : Date, endDate :Date) : Boolean {
+    private fun isSameDay(startDate: Date, endDate: Date): Boolean {
         val startDateCalendar = Calendar.getInstance()
         startDateCalendar.time = startDate
         val startDateDayOfYear = startDateCalendar.get(Calendar.DAY_OF_YEAR)
