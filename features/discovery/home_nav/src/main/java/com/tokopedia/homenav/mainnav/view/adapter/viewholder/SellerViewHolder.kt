@@ -38,13 +38,15 @@ class SellerViewHolder(
     }
 
     private fun shopClicked(profileSeller: ProfileSellerDataModel, context: Context) {
+        //if canGotoSellerAccount is false, then equals location admin
+        if (!profileSeller.canGoToSellerAccount) {
+            LocationAdminDialog(itemView.context).show()
+            return
+        }
+
         if (profileSeller.hasShop) {
             TrackingProfileSection.onClickShopAndAffiliate(TrackingProfileSection.CLICK_SHOP_ACCOUNT)
-            if (profileSeller.canGoToSellerAccount) {
-                RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
-            } else {
-                LocationAdminDialog(itemView.context).show()
-            }
+            RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
         } else {
             TrackingProfileSection.onClickShopAndAffiliate(TrackingProfileSection.CLICK_OPEN_SHOP)
             RouteManager.route(context, ApplinkConst.CREATE_SHOP)
@@ -90,7 +92,10 @@ class SellerViewHolder(
                 shimmerBtnTryAgain.gone()
 
                 val shopInfo: CharSequence
-                if (!element.hasShop) {
+
+                if (!element.canGoToSellerAccount) {
+                    shopInfo = getString(R.string.account_header_location_admin).orEmpty()
+                } else if (!element.hasShop) {
                     shopInfo =
                         itemView.context?.getString(R.string.account_header_register_store)
                             .orEmpty()

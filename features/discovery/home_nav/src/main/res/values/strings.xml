@@ -91,6 +91,7 @@
     <string name="account_header_store_title">Toko saya:</string>
     <string name="account_header_register_store">Buka Toko Gratis</string>
     <string name="account_header_register_affiliate">Daftar Affiliate</string>
+    <string name="account_header_location_admin">Admin Lokasi</string>
 
     <string name="mainnav_wallet_app_format">%s • %s</string>
     <string name="mainnav_tokopoint_format">%s (%s)</string>
