@@ -5,6 +5,7 @@ import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
+import android.annotation.SuppressLint;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -71,6 +72,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
+import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.constant.AddressConstant;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -1496,7 +1498,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             cornerData = new TokopediaCornerData(
                     true,
                     getRecipientAddressModel().getUserCornerId(),
-                    Integer.parseInt(getRecipientAddressModel().getCornerId())
+                    Utils.toIntOrZero(getRecipientAddressModel().getCornerId())
             );
         }
 
@@ -1571,7 +1573,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         if (leasingId != null && !leasingId.isEmpty()) {
-            checkoutRequest.setLeasingId(Integer.parseInt(leasingId));
+            checkoutRequest.setLeasingId(Utils.toIntOrZero(leasingId));
         }
 
         if (prescriptionsIds != null && !prescriptionsIds.isEmpty()) {
@@ -1721,7 +1723,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         ShipmentStateRequestData shipmentStateRequestData = new ShipmentStateRequestData();
-        shipmentStateRequestData.setAddressId(Integer.parseInt(recipientAddressModel.getId()));
+        shipmentStateRequestData.setAddressId(Utils.toIntOrZero(recipientAddressModel.getId()));
         shipmentStateRequestData.setShopProductDataList(shipmentStateShopProductDataList);
         shipmentStateRequestDataList.add(shipmentStateRequestData);
 

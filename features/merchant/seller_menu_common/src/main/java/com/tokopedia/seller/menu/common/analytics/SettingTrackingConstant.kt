@@ -18,7 +18,6 @@ object SettingTrackingConstant {
     const val OTHERS_TAB = "others tab"
     const val VIEW_STATISTIC_IRIS = "viewStatistikIris"
     const val CLICK_STATISTIC = "clickStatistik"
-    const val CLICK_PRINTING = "clickPrinting"
     const val CLICK_SHOP_PAGE = "clickShopPage"
     const val CLICK_PG = "clickPG"
 
@@ -84,9 +83,6 @@ object SettingTrackingConstant {
     const val TOKOPEDIASELLER = "tokopediaseller"
     const val SHARING_EXPERIENCE = "sharingexperience"
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
-
-    const val ACTION_CLICK_PRINTING = "click printing"
-    const val LABEL_CLICK_PRINTING = "local services - printing"
 
     const val TOKO_PLUS_CLICK_TRACKER_ID = "32360"
     const val TOKO_PLUS_IMPRESSION_TRACKER_ID = "32359"

@@ -90,7 +90,11 @@
                       "shipping_id": 11,
                       "sp_id": 18,
                       "benefit_amount": 30000,
-                      "promo_id": 0
+                      "promo_id": 0,
+                      "shipping_subsidy": 20000,
+                      "shipping_price": 10000,
+                      "benefit_class": "",
+                      "bo_campaign_id": 3
                     },
                     {
                       "code": "PLUSAA",

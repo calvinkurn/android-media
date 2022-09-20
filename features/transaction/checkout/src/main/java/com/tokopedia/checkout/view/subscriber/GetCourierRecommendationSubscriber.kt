@@ -76,10 +76,15 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                                         view.logOnErrorLoadCourier(MessageErrorException(shippingCourierUiModel.productData.error?.errorMessage), itemPosition)
                                         return
                                     } else {
+                                        val courierItemData = generateCourierItemData(shippingCourierUiModel, shippingRecommendationData)
+                                        if (shippingCourierUiModel.productData.isUiRatesHidden && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
+                                            view.logOnErrorLoadCourier(MessageErrorException("rates ui hidden but no promo"), itemPosition)
+                                            return
+                                        }
                                         shippingCourierUiModel.isSelected = true
                                         presenter.setShippingCourierViewModelsState(shippingDurationUiModel.shippingCourierViewModelList, shipmentCartItemModel.orderNumber)
-                                        view.renderCourierStateSuccess(generateCourierItemData(shippingCourierUiModel, shippingRecommendationData),
-                                                itemPosition, isTradeInDropOff, isForceReloadRates)
+                                        view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff, isForceReloadRates)
                                         return
                                     }
                                 }
@@ -130,6 +135,11 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
         // Auto apply Promo Stacking Logistic
         var logisticPromoChosen = logisticPromo
         if (shipmentCartItemModel.isDisableChangeCourier) {
+            // set error log
+            shippingRecommendationData.listLogisticPromo.firstOrNull()?.let {
+                courierItemData.logPromoMsg = it.disableText
+                courierItemData.logPromoDesc = it.description
+            }
             // must get promo for tokonow
             logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
                 it.promoCode.isNotEmpty() && !it.disabled
@@ -148,8 +158,6 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
             courierItemData = shippingCourierConverter.convertToCourierItemData(courierUiModel)
         }
         logisticPromoChosen?.let {
-            courierItemData.logPromoMsg = it.disableText
-            courierItemData.logPromoDesc = it.description
             courierItemData.logPromoCode = it.promoCode
             courierItemData.discountedRate = it.discountedRate
             courierItemData.shippingRate = it.shippingRate

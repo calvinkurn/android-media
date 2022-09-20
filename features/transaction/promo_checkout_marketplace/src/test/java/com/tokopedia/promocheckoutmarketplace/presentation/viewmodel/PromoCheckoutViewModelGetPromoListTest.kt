@@ -18,6 +18,7 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGe
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessWithBoPromo
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessWithBoPromoNotSelected
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessWithPreSelectedPromo
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessWithSelectedPromoBoClashing
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithBoPlusAsRecommendedPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
@@ -652,5 +653,37 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
         //then
         assert(viewModel.boInfoBottomSheetUiModel.value?.uiState?.isVisible == false)
+    }
+
+    @Test
+    fun `WHEN get promo list and show selected promo with bo clashing THEN show ticker BO Clashing`() {
+        // given
+        val response = provideGetPromoListResponseSuccessWithSelectedPromoBoClashing()
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+
+        //when
+        viewModel.getPromoList(PromoRequest(), "")
+
+        //then
+        assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == true)
+    }
+
+    @Test
+    fun `WHEN get promo list and show selected promo without bo clashing THEN dont show ticker BO Clashing`() {
+        // given
+        val response = provideGetPromoListResponseSuccessWithBoPromo()
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+
+        //when
+        viewModel.getPromoList(PromoRequest(), "")
+
+        //then
+        assert(viewModel.fragmentUiModel.value?.uiState?.shouldShowTickerBoClashing == false)
     }
 }

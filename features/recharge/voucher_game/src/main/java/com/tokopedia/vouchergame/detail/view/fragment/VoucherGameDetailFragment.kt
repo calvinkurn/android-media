@@ -38,7 +38,7 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARA
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -87,9 +87,9 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         set(value) {
             field = value
             if (value != null) {
-                productId = value.id.toIntOrNull() ?: 0
+                productId = value.id.toIntSafely()
                 productName = value.attributes.desc
-                price = value.attributes.pricePlain.toIntOrNull() ?: 0
+                price = value.attributes.pricePlain.toIntSafely()
                 checkVoucherWithDelay()
             }
         }
@@ -126,9 +126,9 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME)
                     ?: VoucherGameExtraParam()
             // Initalize variables of base topup bills fragment
-            menuId = voucherGameExtraParam.menuId.toIntOrNull() ?: 0
-            categoryId = voucherGameExtraParam.categoryId.toIntOrNull() ?: 0
-            productId = voucherGameExtraParam.productId.toIntOrNull() ?: 0
+            menuId = voucherGameExtraParam.menuId.toIntSafely()
+            categoryId = voucherGameExtraParam.categoryId.toIntSafely()
+            productId = voucherGameExtraParam.productId.toIntSafely()
 
             voucherGameOperatorData =
                     it.getParcelable(EXTRA_PARAM_OPERATOR_DATA) ?: CatalogOperatorAttributes()
@@ -192,7 +192,7 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
 
         if (voucherGameOperatorData.name.isEmpty()) {
             voucherGameViewModel.getVoucherGameOperators(VoucherGameGqlQuery.voucherGameProductList,
-                    voucherGameViewModel.createMenuDetailParams(voucherGameExtraParam.menuId.toIntOrZero()), false, voucherGameExtraParam.operatorId)
+                    voucherGameViewModel.createMenuDetailParams(voucherGameExtraParam.menuId.toIntSafely()), false, voucherGameExtraParam.operatorId)
         }
 
         adapter.showLoading()
@@ -591,11 +591,10 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
     }
 
     override fun loadData() {
-        voucherGameExtraParam.menuId.toIntOrNull()?.let {
-            getMenuDetail(it)
-            voucherGameViewModel.getVoucherGameProducts(
-                    voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
-        }
+        val menuId = voucherGameExtraParam.menuId.toIntSafely()
+        getMenuDetail(menuId)
+        voucherGameViewModel.getVoucherGameProducts(
+                voucherGameViewModel.createParams(menuId, voucherGameExtraParam.operatorId))
     }
 
     override fun onItemClicked(item: Visitable<*>) {

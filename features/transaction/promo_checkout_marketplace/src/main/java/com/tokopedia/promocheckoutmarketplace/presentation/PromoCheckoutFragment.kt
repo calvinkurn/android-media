@@ -32,7 +32,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
@@ -64,9 +63,36 @@ import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarP
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutSuggestionListener
-import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
-import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.*
-import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEligibilityHeaderUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoInputUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListHeaderUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionItemUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.ApplyPromoResponseAction
+import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.ClearPromoResponseAction
+import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.Delete
+import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.GetPromoListResponseAction
+import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.GetPromoSuggestionAction
+import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.Insert
+import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.PromoCheckoutViewModel
+import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.Update
+import com.tokopedia.purchase_platform.common.constant.ARGS_APPLIED_MVC_CART_STRINGS
+import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
+import com.tokopedia.purchase_platform.common.constant.ARGS_CHOSEN_ADDRESS
+import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_FINISH_ERROR
+import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_ERROR
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_MVC_LOCK_COURIER_FLOW
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -76,7 +102,10 @@ import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -687,12 +716,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
                 // Determine available space height for bottomsheet if soft keyboard open
                 val promoInputHeight = viewModel.promoInputUiModel.value?.uiState?.viewHeight ?: 0
-                val promoInputMargin = resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_8).dpToPx()
+                val promoInputMargin = context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_8)?.dpToPx() ?: 0f
                 val availableSpaceHeight = getDeviceHeight(it) - keyboardHeight - promoInputHeight - promoInputMargin
 
                 // Determine total space, in pixel, needed to show all promo last seen item
-                val headerPromoSuggestionHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
-                val itemPromoSuggestionHeight = resources.getDimensionPixelSize(R.dimen.dp_68)
+                val headerPromoSuggestionHeight = context?.resources?.getDimensionPixelSize(R.dimen.dp_56) ?: 0
+                val itemPromoSuggestionHeight = context?.resources?.getDimensionPixelSize(R.dimen.dp_68) ?: 0
                 val totalSpaceNeededForPromoSuggestionItems = (data.uiData.promoSuggestionItemUiModelList.size * itemPromoSuggestionHeight) + headerPromoSuggestionHeight
 
                 // If available space is not sufficient to show all promo item, then set max available height for the bottomsheet
