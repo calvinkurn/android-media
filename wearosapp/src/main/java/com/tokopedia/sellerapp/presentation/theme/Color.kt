@@ -26,5 +26,6 @@ val TextYellowColor = Color(0xFFFDE293)
 val TextGrayColor = Color(0xFFBDC1C6)
 val ActionButtonGrayColor = Color(0xFF202124)
 val ChipGrayColor = Color(0xFF202124)
+val Text_DADCE0_Color = Color(0xFFDADCE0)
 
 
