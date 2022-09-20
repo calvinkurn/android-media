@@ -70,16 +70,21 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                             }
                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                 if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == spId &&
-                                                shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden && !shippingCourierUiModel.productData.isUiRatesHidden)) {
+                                                shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden)) {
                                     if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                         view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
                                         view.logOnErrorLoadCourier(MessageErrorException(shippingCourierUiModel.productData.error?.errorMessage), itemPosition)
                                         return
                                     } else {
+                                        val courierItemData = generateCourierItemData(shippingCourierUiModel, shippingRecommendationData)
+                                        if (shippingCourierUiModel.productData.isUiRatesHidden && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
+                                            view.logOnErrorLoadCourier(MessageErrorException("rates ui hidden but no promo"), itemPosition)
+                                            return
+                                        }
                                         shippingCourierUiModel.isSelected = true
                                         presenter.setShippingCourierViewModelsState(shippingDurationUiModel.shippingCourierViewModelList, shipmentCartItemModel.orderNumber)
-                                        view.renderCourierStateSuccess(generateCourierItemData(shippingCourierUiModel, shippingRecommendationData),
-                                                itemPosition, isTradeInDropOff, isForceReloadRates)
+                                        view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff, isForceReloadRates)
                                         return
                                     }
                                 }
