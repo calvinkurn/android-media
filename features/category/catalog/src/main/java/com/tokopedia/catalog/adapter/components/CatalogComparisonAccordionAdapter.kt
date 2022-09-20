@@ -2,7 +2,7 @@ package com.tokopedia.catalog.adapter.components
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.model.raw.ComponentData
@@ -24,17 +24,17 @@ class CatalogComparisonAccordionAdapter(var subcard: ArrayList<ComponentData.Spe
     override fun onBindViewHolder(holder: CatalogAccordionItemViewHolder, position: Int) {
         holder.bind(subcard[position])
 
-        when {
-            subcard.size == 1 -> {
-                holder.view.findViewById<Typography>(R.id.subcategory_title).setBackgroundResource(R.drawable.catalog_subtitle_background)
-                holder.view.findViewById<LinearLayout>(R.id.comparison_content_layout).setBackgroundResource(R.drawable.catalog_content_border)
-            }
-            position == 0 -> {
-                holder.view.findViewById<Typography>(R.id.subcategory_title).setBackgroundResource(R.drawable.catalog_subtitle_background)
-            }
-            position == subcard.size-1 -> {
-                holder.view.findViewById<LinearLayout>(R.id.comparison_content_layout).setBackgroundResource(R.drawable.catalog_content_border)
-            }
+        val subcategoryTitle = holder.view.findViewById<Typography>(R.id.subcategory_title)
+        val comparisonContentLayout = holder.view.findViewById<ConstraintLayout>(R.id.comparison_content_layout)
+
+        if(position == 0){
+            subcategoryTitle.setBackgroundResource(R.drawable.catalog_subtitle_background)
+        }
+        else if(position == subcard.size-1){
+            comparisonContentLayout.setBackgroundResource(R.drawable.catalog_content_border)
+        } else{
+            subcategoryTitle.setBackgroundResource(R.drawable.catalog_subtitle_bg_default)
+            comparisonContentLayout.setBackgroundResource(R.drawable.catalog_content_bg_default)
         }
     }
 
