@@ -61,7 +61,7 @@ class VoucherGameListViewModel @Inject constructor(private val voucherGameUseCas
 
     companion object {
         const val PARAM_MENU_ID = "menuID"
-        private const val PARAM_PLATFORM_ID = "platformID"
+        const val PARAM_PLATFORM_ID = "platformID"
         private const val PLATFORM_ID = 5
     }
 
