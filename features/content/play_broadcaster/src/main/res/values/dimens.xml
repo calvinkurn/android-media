@@ -134,7 +134,7 @@
     <dimen name="play_bro_quiz_option_choice_size">28dp</dimen>
 
     <!-- Interactive -->
-    <dimen name="play_interactive_preview_width">320dp</dimen>
-    <dimen name="play_interactive_preview_height">240dp</dimen>
+    <dimen name="play_interactive_preview_width">200dp</dimen>
+    <dimen name="play_interactive_preview_height">280dp</dimen>
     <dimen name="play_bro_pinned_img_size">104dp</dimen>
 </resources>
