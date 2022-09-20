@@ -19,6 +19,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.deals.R.dimen as dimenDeals
+import com.tokopedia.unifyprinciples.R.dimen as dimenUnify
 
 class WidgetDealsPDPCarousel @JvmOverloads constructor(
     context: Context,
@@ -67,10 +69,10 @@ class WidgetDealsPDPCarousel @JvmOverloads constructor(
             for (count in Int.ZERO until imageUrls.size) {
                 val pointView = ImageView(context)
                 pointView.setPadding(
-                    resources.getDimensionPixelSize(com.tokopedia.deals.R.dimen.deals_dp_5),
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
-                    resources.getDimensionPixelSize(com.tokopedia.deals.R.dimen.deals_dp_5),
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0)
+                    resources.getDimensionPixelSize(dimenDeals.deals_dp_5),
+                    resources.getDimensionPixelSize(dimenUnify.layout_lvl0),
+                    resources.getDimensionPixelSize(dimenDeals.deals_dp_5),
+                    resources.getDimensionPixelSize(dimenUnify.layout_lvl0)
                 )
                 if (count == Int.ZERO) {
                     pointView.setImageDrawable(

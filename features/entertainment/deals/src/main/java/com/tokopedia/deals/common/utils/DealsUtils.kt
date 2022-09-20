@@ -22,6 +22,9 @@ object DealsUtils {
     private const val DOT_HTML = "\u2022"
     private const val TIME_MS = 1000L
     private val locale = Locale("in", "ID")
+    private const val SPACE = " "
+    private const val DOUBLE_SPACE = "  "
+    private const val LINE_TRIM = ' '
 
     fun screenWidthDp() = Resources.getSystem().displayMetrics.run { widthPixels / density }
     fun screenWidthPx() = Resources.getSystem().displayMetrics.widthPixels
@@ -37,10 +40,10 @@ object DealsUtils {
             for (i in splitArray.indices) {
                 val line = splitArray[i]
                 if (i < splitArray.size - Int.ONE) {
-                    tncBuffer.append(" ").append(DOT_HTML).append("  ")
-                        .append(line.trim { it <= ' ' }).append(ENTER_HTML)
+                    tncBuffer.append(SPACE).append(DOT_HTML).append(DOUBLE_SPACE)
+                        .append(line.trim { it <= LINE_TRIM }).append(ENTER_HTML)
                 } else {
-                    tncBuffer.append(" ").append(DOT_HTML).append("  ").append(line.trim { it <= ' ' })
+                    tncBuffer.append(SPACE).append(DOT_HTML).append(DOUBLE_SPACE).append(line.trim { it <= LINE_TRIM })
                 }
             }
             tncBuffer.toString()

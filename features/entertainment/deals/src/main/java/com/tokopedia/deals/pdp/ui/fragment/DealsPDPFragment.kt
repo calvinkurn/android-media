@@ -21,6 +21,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +33,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.deals.R
+import com.tokopedia.deals.R.string as stringDeals
+import com.tokopedia.deals.R.drawable as drawableDeals
+import com.tokopedia.deals.R.id as idDeals
+import com.tokopedia.abstraction.R.drawable as abstractionDrawables
+import com.tokopedia.unifyprinciples.R.color as colorUnify
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_LOCATION_PRODUCT_DETAIL
@@ -49,6 +55,7 @@ import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.deals.pdp.ui.adapter.DealsRecommendationAdapter
 import com.tokopedia.deals.pdp.ui.callback.DealsPDPCallbacks
+import com.tokopedia.deals.pdp.ui.utils.DealsPDPMapper
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPViewModel
 import com.tokopedia.deals.pdp.widget.WidgetDealsPDPCarousel
 import com.tokopedia.globalerror.GlobalError
@@ -89,9 +96,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
 
     private var productId: String? = null
     private var binding by autoClearedNullable<FragmentDealsDetailBinding>()
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(DealsPDPViewModel::class.java)
-    }
+    private val viewModel by viewModels<DealsPDPViewModel> { viewModelFactory }
     private var dealsPDPCallbacks: DealsPDPCallbacks? = null
 
     private var progressBar: LoaderUnify? = null
@@ -350,14 +355,10 @@ class DealsPDPFragment : BaseDaggerFragment() {
             viewModel.updateRating(productId, userSession.userId, isLiked)
         } else {
             context?.let { context ->
-                view?.let { view ->
-                    Toaster.build(
-                        view,
-                        context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_login_likes),
-                        Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL
-                    ).show()
-                }
+                showToaster(
+                    context.resources.getString(stringDeals.deals_pdp_login_likes),
+                    Toaster.TYPE_NORMAL
+                )
             }
         }
     }
@@ -455,7 +456,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
             if (outlet.coordinates.isNullOrEmpty()) {
                 tgViewMap?.hide()
             } else {
-                val imgMaps = context?.resources?.getDrawable(com.tokopedia.deals.R.drawable.ic_see_location)
+                val imgMaps = context?.resources?.getDrawable(drawableDeals.ic_see_location)
                 tgViewMap?.show()
                 tgViewMap?.setCompoundDrawablesWithIntrinsicBounds(imgMaps, null, null, null)
             }
@@ -465,7 +466,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
             tgBrandName?.text = data.brand.title
             tgNumberOfLocation?.text = String.format(
                 getString(
-                    com.tokopedia.deals.R.string.deals_pdp_number_of_items,
+                    stringDeals.deals_pdp_number_of_items,
                     data.outlets.size
                 )
             )
@@ -513,7 +514,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
                 analytics.pdpClick(EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL, data.brand.title, data.displayName)
                 dealsPDPCallbacks?.onShowMoreDesc(
                     getString(
-                        com.tokopedia.deals.R.string.deals_pdp_show_description
+                        stringDeals.deals_pdp_show_description
                     ),
                     data.longRichDesc
                 )
@@ -539,7 +540,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
             seeMoreButtonTnc?.setOnClickListener {
                 analytics.pdpClick(EVENT_CLICK_CHECK_TNC_PRODUCT_DETAIL, data.brand.title, data.displayName)
                 dealsPDPCallbacks?.onShowMoreDesc(
-                    getString(com.tokopedia.deals.R.string.deals_pdp_show_tnc),
+                    getString(stringDeals.deals_pdp_show_tnc),
                     data.tnc
                 )
             }
@@ -562,14 +563,14 @@ class DealsPDPFragment : BaseDaggerFragment() {
             cardCheckout?.show()
             val currentTime = Calendar.getInstance().time
             if (data.saleStartDate.toIntSafely() > (currentTime.time / TIME_DIVIDER)) {
-                btnCheckout?.text = context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_product_not_started)
+                btnCheckout?.text = context.resources.getString(stringDeals.deals_pdp_product_not_started)
                 btnCheckout?.setClickable(false)
             } else if (data.saleEndDate.toIntSafely() < (currentTime.time / TIME_DIVIDER)) {
-                btnCheckout?.text = context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_product_ended)
+                btnCheckout?.text = context.resources.getString(stringDeals.deals_pdp_product_ended)
                 btnCheckout?.setClickable(false)
             } else {
                 btnCheckout?.setClickable(true)
-                btnCheckout?.text = context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_buy_now)
+                btnCheckout?.text = context.resources.getString(stringDeals.deals_pdp_buy_now)
                 btnCheckout?.setOnClickListener {
                     analytics.pdpCheckout(
                         data.id,
@@ -619,7 +620,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
     private fun updateExpiredDate(maxEndDate: String) {
         tgExpiredDate?.text = String.format(
             getString(
-                com.tokopedia.deals.R.string.deals_pdp_valid_through,
+                stringDeals.deals_pdp_valid_through,
                 DealsUtils.convertEpochToString(maxEndDate.toIntSafely()
             )
             )
@@ -642,9 +643,9 @@ class DealsPDPFragment : BaseDaggerFragment() {
         }
 
         if (getIsLiked()) {
-            imgFavorite?.setImageResource(com.tokopedia.deals.R.drawable.ic_wishlist_filled)
+            imgFavorite?.setImageResource(drawableDeals.ic_wishlist_filled)
         } else {
-            imgFavorite?.setImageResource(com.tokopedia.deals.R.drawable.ic_wishlist_unfilled)
+            imgFavorite?.setImageResource(drawableDeals.ic_wishlist_unfilled)
         }
 
         if (likeCount.isZero()) {
@@ -656,7 +657,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
     }
 
     private fun showImageCarousel(data: ProductDetailData) {
-        imageCarousel?.setImages(viewModel.productImagesMapper(data))
+        imageCarousel?.setImages(DealsPDPMapper.productImagesMapper(data))
         imageCarousel?.buildView()
     }
 
@@ -676,7 +677,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
                 (activity as DealsPDPActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
                 (activity as DealsPDPActivity).supportActionBar?.title = ""
                 context?.let {
-                    toolbar.navigationIcon = ContextCompat.getDrawable(it, com.tokopedia.abstraction.R.drawable.ic_action_back)
+                    toolbar.navigationIcon = ContextCompat.getDrawable(it, abstractionDrawables.ic_action_back)
                 }
             }
             mainAppBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
@@ -694,13 +695,13 @@ class DealsPDPFragment : BaseDaggerFragment() {
                                 }
                                 colorInt = ContextCompat.getColor(
                                     context,
-                                    com.tokopedia.unifyprinciples.R.color.Unify_N400
+                                    colorUnify.Unify_N400
                                 )
                             } else {
                                 headerTitle = ""
                                 colorInt = ContextCompat.getColor(
                                     context,
-                                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                                    colorUnify.Unify_N0
                                 )
                             }
 
@@ -722,7 +723,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
 
     private fun showShareButton() {
         if (menuPDP != null) {
-            val item = menuPDP?.findItem(com.tokopedia.deals.R.id.action_menu_share)
+            val item = menuPDP?.findItem(idDeals.action_menu_share)
             item?.setVisible(true)
         }
     }
@@ -734,14 +735,10 @@ class DealsPDPFragment : BaseDaggerFragment() {
         if (mapIntent.resolveActivity(context.packageManager) != null) {
             context.startActivity(mapIntent)
         } else {
-            view?.let { view ->
-                Toaster.build(
-                    view,
-                    context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_cannot_find_application),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL
-                ).show()
-            }
+            showToaster(
+                context.resources.getString(stringDeals.deals_pdp_cannot_find_application),
+                Toaster.TYPE_NORMAL
+            )
         }
     }
 
@@ -816,14 +813,21 @@ class DealsPDPFragment : BaseDaggerFragment() {
 
     private fun showErrorRedeem() {
         context?.let { context ->
-            view?.let { view ->
-                Toaster.build(
-                    view,
-                    context.resources.getString(com.tokopedia.deals.R.string.deals_pdp_how_to_redeem_error),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-                ).show()
-            }
+            showToaster(
+                context.resources.getString(stringDeals.deals_pdp_how_to_redeem_error),
+                Toaster.TYPE_ERROR
+            )
+        }
+    }
+
+    private fun showToaster(text: String, type: Int) {
+        view?.let { view ->
+            Toaster.build(
+                view,
+                text,
+                Toaster.LENGTH_LONG,
+                type
+            ).show()
         }
     }
 

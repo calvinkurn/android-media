@@ -329,7 +329,7 @@ data class Group(
     @SerializedName("name")
     val name: String = "",
     @SerializedName("packages")
-    val packages: MutableList<Package> = mutableListOf(),
+    val packages: List<Package> = emptyList(),
     @SerializedName("product_id")
     val productId: String = "",
     @SerializedName("product_schedule_id")

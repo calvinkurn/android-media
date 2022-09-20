@@ -26,7 +26,7 @@ class DealsPDPShare(private val activity: WeakReference<Activity>) {
         private const val APP_LINK_PATH = "tokopedia://deals/"
     }
 
-    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity.get()) }
+    private val remoteConfig by lazy(LazyThreadSafetyMode.NONE) { FirebaseRemoteConfigImpl(activity.get()) }
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
 
     fun shareEvent(data: ProductDetailData, titleShare: String, context: Context, loadShare: () -> Unit, doneLoadShare: () -> Unit) {

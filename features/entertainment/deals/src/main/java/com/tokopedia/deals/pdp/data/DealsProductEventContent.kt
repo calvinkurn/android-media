@@ -16,12 +16,12 @@ data class EventContentById(
 
 data class EventContentInnerData(
     @SerializedName("section_data")
-    val sectionDatas: List<EventContentSectionData> = listOf()
+    val sectionDatas: List<EventContentSectionData> = emptyList()
 )
 
 data class EventContentSectionData(
     @SerializedName("content")
-    val contents: List<EventContent> = listOf()
+    val contents: List<EventContent> = emptyList()
 )
 
 data class EventContent(

@@ -32,19 +32,19 @@ data class MetaDataResponse(
     @SerializedName("error")
     val error: String = "",
     @SerializedName("item_ids")
-    val itemIds: List<String> = arrayListOf(),
+    val itemIds: List<String> = emptyList(),
     @SerializedName("item_map")
-    val itemMap: List<ItemMapResponse> = arrayListOf(),
+    val itemMap: List<ItemMapResponse> = emptyList(),
     @SerializedName("order_subTitle")
     val orderSubTitle: String = "",
     @SerializedName("order_title")
     val orderTitle: String = "",
     @SerializedName("product_ids")
-    val productIds: List<String> = arrayListOf(),
+    val productIds: List<String> = emptyList(),
     @SerializedName("product_names")
-    val productNames: List<String> = arrayListOf(),
+    val productNames: List<String> = emptyList(),
     @SerializedName("provider_ids")
-    val providerIds: List<String> = arrayListOf(),
+    val providerIds: List<String> = emptyList(),
     @SerializedName("quantity")
     val quantity: Int = 0,
     @SuppressLint("Invalid Data Type")
@@ -138,13 +138,13 @@ data class ItemMapResponse(
     @SerializedName("product_web_url")
     val productWebUrl: String = "",
     @SerializedName("passenger_forms")
-    var passengerForms: MutableList<PassengerForm> = arrayListOf()
+    var passengerForms: List<PassengerForm> = emptyList()
 ) : Parcelable
 
 @Parcelize
 data class PassengerForm(
     @SerializedName("passenger_informations")
-    var passengerInformation: List<PassengerInformation> = arrayListOf()
+    var passengerInformation: List<PassengerInformation> = emptyList()
 ) : Parcelable
 
 @Parcelize

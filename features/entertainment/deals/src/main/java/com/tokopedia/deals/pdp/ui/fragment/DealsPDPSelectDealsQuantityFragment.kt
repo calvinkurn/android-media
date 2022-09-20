@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -20,7 +21,9 @@ import com.tokopedia.deals.databinding.FragmentDealsDetailSelectQuantityBinding
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
+import com.tokopedia.deals.pdp.ui.utils.DealsPDPMapper
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPSelectQuantityViewModel
+import com.tokopedia.deals.R.string as stringDeals
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -46,10 +49,7 @@ class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(DealsPDPSelectQuantityViewModel::class.java)
-    }
-
+    private val viewModel by viewModels<DealsPDPSelectQuantityViewModel> { viewModelFactory }
     private var productDetailData: ProductDetailData? = null
     private var binding by autoClearedNullable<FragmentDealsDetailSelectQuantityBinding>()
     private var toolbar: HeaderUnify? = null
@@ -120,7 +120,7 @@ class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
     }
 
     private fun setupHeader() {
-        toolbar?.headerTitle = context?.resources?.getString(com.tokopedia.deals.R.string.deals_pdp_select_number_of_voucher).orEmpty()
+        toolbar?.headerTitle = context?.resources?.getString(stringDeals.deals_pdp_select_number_of_voucher).orEmpty()
         (activity as DealsPDPActivity).setSupportActionBar(toolbar)
         (activity as DealsPDPActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -205,9 +205,9 @@ class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
                         context?.let { context ->
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CHECKOUT)
                             productDetailData?.let { productDetailData ->
-                                intent.putExtra(EXTRA_DEAL_DETAIL_REVAMPED, viewModel.mapOldProductDetailData(productDetailData))
+                                intent.putExtra(EXTRA_DEAL_DETAIL_REVAMPED, DealsPDPMapper.mapOldProductDetailData(productDetailData))
                             }
-                            intent.putExtra(EXTRA_VERIFY_REVAMPED, viewModel.mapperOldVerify(it.data.eventVerify))
+                            intent.putExtra(EXTRA_VERIFY_REVAMPED, DealsPDPMapper.mapperOldVerify(it.data.eventVerify))
                             startActivity(intent)
                         }
                     }

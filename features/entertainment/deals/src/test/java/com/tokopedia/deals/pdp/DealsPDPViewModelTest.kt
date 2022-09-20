@@ -418,28 +418,4 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
 
         Assert.assertEquals(isLiked, viewModel.isLiked)
     }
-
-    @Test
-    fun `when getting images return images from list media`() {
-        val pdpData = createPDPData().eventProductDetail.productDetailData
-        val expectedImages = listOf(
-            "https://ecs7.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef-lala.jpg"
-        )
-
-        val images = viewModel.productImagesMapper(pdpData)
-
-        Assert.assertEquals(expectedImages, images)
-    }
-
-    @Test
-    fun `when getting images return images from image app`() {
-        val pdpData = createPDPEmptyMediaData().eventProductDetail.productDetailData
-        val expectedImages = listOf(
-            "https://ecs7.tokopedia.net/img/ANWSwT/2021/4/7/dc49ceca-c0fd-46a0-8bf2-73020c96f3ef.jpg"
-        )
-
-        val images = viewModel.productImagesMapper(pdpData)
-
-        Assert.assertEquals(expectedImages, images)
-    }
 }

@@ -4,22 +4,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.deals.common.model.response.SearchData
-import com.tokopedia.deals.common.utils.DealsUtils
-import com.tokopedia.deals.pdp.data.DealRatingRequest
 import com.tokopedia.deals.pdp.data.DealsProductDetail
 import com.tokopedia.deals.pdp.data.DealsProductEventContent
 import com.tokopedia.deals.pdp.data.DealsRatingResponse
 import com.tokopedia.deals.pdp.data.DealsRatingUpdateRequest
 import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
-import com.tokopedia.deals.pdp.data.DealsRecommendMessage
 import com.tokopedia.deals.pdp.data.DealsRecommendTrackingRequest
 import com.tokopedia.deals.pdp.data.DealsTrackingResponse
-import com.tokopedia.deals.pdp.data.DealsTravelMessage
 import com.tokopedia.deals.pdp.data.DealsTravelRecentSearchTrackingRequest
-import com.tokopedia.deals.pdp.data.Entertainment
 import com.tokopedia.deals.pdp.data.ProductDetailData
-import com.tokopedia.deals.pdp.data.RecentData
-import com.tokopedia.deals.pdp.data.TravelRecentSearch
 import com.tokopedia.deals.pdp.domain.DealsPDPDetailUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPEventContentUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPGetRatingUseCase
@@ -27,9 +20,9 @@ import com.tokopedia.deals.pdp.domain.DealsPDPRecentSearchTrackingUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPRecommendTrackingUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPRecommendationUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPUpdateRatingUseCase
+import com.tokopedia.deals.pdp.ui.utils.DealsPDPMapper
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -174,29 +167,15 @@ class DealsPDPViewModel @Inject constructor(
     }
 
     fun updateRating(productId: String, userId: String, isLiked: Boolean) {
-        _inputUpdateRatingState.tryEmit(mapperParamUpdateRating(productId, userId, isLiked))
+        _inputUpdateRatingState.tryEmit(DealsPDPMapper.mapperParamUpdateRating(productId, userId, isLiked))
     }
 
     fun setTrackingRecommendation(productId: String, userId: String) {
-        _inputTrackingRecommend.tryEmit(mapperParamTrackingRecommendation(productId, userId))
+        _inputTrackingRecommend.tryEmit(DealsPDPMapper.mapperParamTrackingRecommendation(productId, userId))
     }
 
     fun setTrackingRecentSearch(productDetailData: ProductDetailData, userId: String) {
-        _inputTrackingRecentSearch.tryEmit(mapperParamTrackingRecentSearch(productDetailData, userId))
-    }
-
-    fun productImagesMapper(productDetail: ProductDetailData): List<String> {
-        val images = mutableListOf<String>()
-        if (productDetail.media.isNotEmpty()) {
-            images.addAll(
-                productDetail.media.map {
-                    it.url
-                }
-            )
-        } else {
-            images.add(productDetail.imageApp)
-        }
-        return images
+        _inputTrackingRecentSearch.tryEmit(DealsPDPMapper.mapperParamTrackingRecentSearch(productDetailData, userId))
     }
 
     private suspend fun getPDP(productId: String): Result<DealsProductDetail> {
@@ -259,53 +238,6 @@ class DealsPDPViewModel @Inject constructor(
         return Success(dealsRecentSearchTrackingResponse)
     }
 
-    private fun mapperParamUpdateRating(productId: String, userId: String, isLiked: Boolean): DealsRatingUpdateRequest {
-        return DealsRatingUpdateRequest(
-            DealRatingRequest(
-                feedback = "",
-                isLiked = isLiked.toString(),
-                productId = productId.toIntSafely().toLong(),
-                rating = Int.ZERO,
-                userId = userId.toIntSafely().toLong()
-            )
-        )
-    }
-
-    private fun mapperParamTrackingRecommendation(productId: String, userId: String): DealsRecommendTrackingRequest {
-        return DealsRecommendTrackingRequest(
-            message = DealsRecommendMessage(
-                action = ACTION_TRACKING_RECOMMENDATION,
-                productId = productId.toIntSafely().toLong(),
-                useCase = NSQ_USE_CASE,
-                userId = userId.toIntSafely().toLong()
-            ),
-            service = SERVICE_TRACKING_RECOMMENDATION
-        )
-    }
-
-    private fun mapperParamTrackingRecentSearch(productDetailData: ProductDetailData, userId: String): DealsTravelRecentSearchTrackingRequest {
-        return DealsTravelRecentSearchTrackingRequest(
-            message = DealsTravelMessage(
-                userId = userId.toIntSafely().toLong()
-            ),
-            service = SERVICE_TRACKING_RECENT_SEARCH,
-            travelRecentSearch = TravelRecentSearch(
-                dataType = DEALS_DATA_TYPE,
-                recentData = RecentData(
-                    entertainment = Entertainment(
-                        appUrl = productDetailData.appUrl,
-                        value = productDetailData.displayName,
-                        price = DealsUtils.convertToCurrencyString(productDetailData.salesPrice.toIntSafely().toLong()),
-                        imageUrl = if (productDetailData.media.isNotEmpty()) productDetailData.media.first().url else "",
-                        id = productDetailData.brand.title,
-                        pricePrefix = DealsUtils.convertToCurrencyString(productDetailData.mrp.toIntSafely().toLong()),
-                        url = productDetailData.webUrl
-                    )
-                )
-            )
-        )
-    }
-
     private fun convertToRatingResponse(typeRestResponseMap: Map<Type, RestResponse?>): DealsRatingResponse {
         return typeRestResponseMap[DealsRatingResponse::class.java]?.getData() as DealsRatingResponse
     }
@@ -321,10 +253,5 @@ class DealsPDPViewModel @Inject constructor(
     companion object {
         private const val SHARED_FLOW_STOP_TIMEOUT_MILLIS = 5000L
         private const val TYPE_ID = "4"
-        private const val ACTION_TRACKING_RECOMMENDATION = "product-detail"
-        private const val SERVICE_TRACKING_RECOMMENDATION = "Recommendation_For_You"
-        private const val SERVICE_TRACKING_RECENT_SEARCH = "travel_recent_search"
-        private const val NSQ_USE_CASE = "24"
-        private const val DEALS_DATA_TYPE = "deal"
     }
 }

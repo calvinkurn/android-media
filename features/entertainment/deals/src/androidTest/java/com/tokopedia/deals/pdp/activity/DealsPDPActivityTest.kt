@@ -31,6 +31,7 @@ import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.deals.test.R
+import com.tokopedia.test.application.annotations.CassavaTest
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.junit.After
@@ -40,6 +41,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @UiTest
+@CassavaTest
 class DealsPDPActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext

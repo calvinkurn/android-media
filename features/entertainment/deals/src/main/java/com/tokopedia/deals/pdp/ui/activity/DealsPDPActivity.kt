@@ -17,6 +17,8 @@ import com.tokopedia.deals.pdp.ui.fragment.DealsPDPAllLocationFragment
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPDescFragment
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPFragment
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPSelectDealsQuantityFragment
+import com.tokopedia.deals.R.anim as animDeals
+import com.tokopedia.abstraction.R.id as idAbstraction
 
 class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, DealsPDPCallbacks {
 
@@ -59,12 +61,12 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
     override fun onShowMoreDesc(title: String, text: String) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(
-            com.tokopedia.deals.R.anim.deals_slide_in_up,
-            com.tokopedia.deals.R.anim.deals_slide_in_down,
-            com.tokopedia.deals.R.anim.deals_slide_out_down,
-            com.tokopedia.deals.R.anim.deals_slide_out_up
+            animDeals.deals_slide_in_up,
+            animDeals.deals_slide_in_down,
+            animDeals.deals_slide_out_down,
+            animDeals.deals_slide_out_up
         )
-        transaction.add(com.tokopedia.abstraction.R.id.parent_view, DealsPDPDescFragment.createInstance(title, text))
+        transaction.add(idAbstraction.parent_view, DealsPDPDescFragment.createInstance(title, text))
         transaction.addToBackStack(null)
         transaction.commit()
     }
@@ -72,12 +74,12 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
     override fun onShowAllLocation(outlets: List<Outlet>) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(
-            com.tokopedia.deals.R.anim.deals_slide_in_up,
-            com.tokopedia.deals.R.anim.deals_slide_in_down,
-            com.tokopedia.deals.R.anim.deals_slide_out_down,
-            com.tokopedia.deals.R.anim.deals_slide_out_up
+            animDeals.deals_slide_in_up,
+            animDeals.deals_slide_in_down,
+            animDeals.deals_slide_out_down,
+            animDeals.deals_slide_out_up
         )
-        transaction.add(com.tokopedia.abstraction.R.id.parent_view, DealsPDPAllLocationFragment.createInstance(outlets))
+        transaction.add(idAbstraction.parent_view, DealsPDPAllLocationFragment.createInstance(outlets))
         transaction.addToBackStack(null)
         transaction.commit()
     }
@@ -85,12 +87,12 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
     override fun onSelectQuantityProduct(data: ProductDetailData) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setCustomAnimations(
-            com.tokopedia.deals.R.anim.deals_slide_in_up,
-            com.tokopedia.deals.R.anim.deals_slide_in_down,
-            com.tokopedia.deals.R.anim.deals_slide_out_down,
-            com.tokopedia.deals.R.anim.deals_slide_out_up
+            animDeals.deals_slide_in_up,
+            animDeals.deals_slide_in_down,
+            animDeals.deals_slide_out_down,
+            animDeals.deals_slide_out_up
         )
-        transaction.add(com.tokopedia.abstraction.R.id.parent_view, DealsPDPSelectDealsQuantityFragment.createInstance(data))
+        transaction.add(idAbstraction.parent_view, DealsPDPSelectDealsQuantityFragment.createInstance(data))
         transaction.addToBackStack(null)
         transaction.commit()
     }

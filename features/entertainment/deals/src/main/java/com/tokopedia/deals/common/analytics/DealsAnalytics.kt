@@ -20,10 +20,15 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_ID
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_LIST
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_NAME
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_VARIANT
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Item.none
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.FOUR_STRING_PATTERN
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.THREE_STRING_PATTERN
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.TWO_STRING_PATTERN
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRICE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRODUCT_CARD
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.QUANTITY
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_PDP
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SLASH_DEALS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TOKOPEDIA_DIGITAL_DEALS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TRAVELENTERTAINMENT_BU
 import com.tokopedia.deals.common.model.response.Brand
@@ -916,7 +921,7 @@ class DealsAnalytics @Inject constructor(
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PRODUCT_VIEW,
                 DealsAnalyticsConstants.Action.IMPRESSION_PRODUCT_BRAND,
-                String.format(DealsAnalyticsConstants.Label.BRAND_DETAIL_IMPRESSION, brandName, position.toString())
+                String.format(TWO_STRING_PATTERN, brandName, position.toString())
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
                 DealsAnalyticsConstants.CURRENCY_CODE, DealsAnalyticsConstants.IDR,
@@ -931,7 +936,7 @@ class DealsAnalytics @Inject constructor(
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PRODUCT_CLICK,
                 DealsAnalyticsConstants.Action.CLICK_PRODUCT_BRAND,
-                String.format(DealsAnalyticsConstants.Label.BRAND_DETAIL_IMPRESSION, product.displayName, position.toString())
+                String.format(TWO_STRING_PATTERN, product.displayName, position.toString())
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
                 DealsAnalyticsConstants.CLICK, DataLayer.mapOf(DealsAnalyticsConstants.ACTION_FIELD,
@@ -1000,11 +1005,11 @@ class DealsAnalytics @Inject constructor(
             Bundle().apply {
                 putString(ITEM_ID, id)
                 putLong(PRICE, salesPrice)
-                putString(DIMENSION_40, String.format("%s - %s - %s", DEALS, BRAND, displayName))
+                putString(DIMENSION_40, String.format(THREE_STRING_PATTERN, DEALS, BRAND, displayName))
                 putInt(INDEX, Int.ONE)
                 putString(ITEM_NAME, displayName)
                 putString(ITEM_BRAND, brandTitle)
-                putString(ITEM_VARIANT, "none")
+                putString(ITEM_VARIANT, none)
                 putString(ITEM_CATEGORY, DEALS)
             }
         )
@@ -1015,7 +1020,7 @@ class DealsAnalytics @Inject constructor(
     }
 
     fun pdpClick(action: String, brandName: String, displayName: String) {
-        val label = String.format("%s - %s", brandName, displayName)
+        val label = String.format(TWO_STRING_PATTERN, brandName, displayName)
         val map = TrackAppUtils.gtmData(
             EVENT_DEALS_CLICK,
             DealsAnalyticsConstants.Category.DIGITAL_DEALS,
@@ -1042,7 +1047,7 @@ class DealsAnalytics @Inject constructor(
                 putString(CATEGORY_ID, categoryId)
                 putLong(PRICE, salesPrice)
                 putString(ITEM_NAME, displayName)
-                putString(ITEM_VARIANT, "none")
+                putString(ITEM_VARIANT, none)
                 putString(ITEM_CATEGORY, DEALS)
             }
         )
@@ -1055,13 +1060,13 @@ class DealsAnalytics @Inject constructor(
     fun pdpRecommendationClick(id: String, index: Int, salesPrice: Long, displayName: String, brandTitle: String) {
         val eventDataLayer = Bundle()
         val label = String.format(
-            "%s - %s",
+            TWO_STRING_PATTERN,
             displayName,
             index.toString()
         )
         val list = String.format(
-            "%s - %s - %s - %s",
-            "/" + DEALS,
+            FOUR_STRING_PATTERN,
+            SLASH_DEALS,
             brandTitle,
             index,
             displayName
@@ -1081,7 +1086,7 @@ class DealsAnalytics @Inject constructor(
                 putInt(INDEX, index)
                 putString(ITEM_NAME, displayName)
                 putString(ITEM_BRAND, brandTitle)
-                putString(ITEM_VARIANT, "none")
+                putString(ITEM_VARIANT, none)
                 putString(ITEM_CATEGORY, DEALS)
             }
         )
@@ -1094,13 +1099,13 @@ class DealsAnalytics @Inject constructor(
     fun pdpRecommendationImpression(id: String, index: Int, salesPrice: Long, displayName: String, brandTitle: String, categoryName: String?) {
         val eventDataLayer = Bundle()
         val label = String.format(
-            "%s - %s",
+            TWO_STRING_PATTERN,
             categoryName,
             index.toString()
         )
         val list = String.format(
-            "%s - %s - %s - %s",
-            "/" + DEALS,
+            FOUR_STRING_PATTERN,
+            SLASH_DEALS,
             brandTitle,
             index,
             displayName
@@ -1120,7 +1125,7 @@ class DealsAnalytics @Inject constructor(
                 putInt(INDEX, index)
                 putString(ITEM_NAME, displayName)
                 putString(ITEM_BRAND, brandTitle)
-                putString(ITEM_VARIANT, "none")
+                putString(ITEM_VARIANT, none)
                 putString(ITEM_CATEGORY, DEALS)
             }
         )

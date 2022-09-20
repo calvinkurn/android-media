@@ -98,7 +98,9 @@ object DealsAnalyticsConstants {
         const val POPULAR_LANDMARK_CLICK = "deals - %s - %s"
         const val CURATED_CARD_VIEW = "deals - %s - %s"
         const val SEARCH_RESULT_CASE_SHOWN = "deals - %s - %s"
-        const val BRAND_DETAIL_IMPRESSION = "%s - %s"
+        const val TWO_STRING_PATTERN = "%s - %s"
+        const val THREE_STRING_PATTERN = "%s - %s - %s"
+        const val FOUR_STRING_PATTERN = "%s - %s - %s - %s"
     }
 
     object Item {
@@ -111,6 +113,7 @@ object DealsAnalyticsConstants {
         const val list = "list"
         const val position = "position"
         const val attribution = "attribution"
+        const val none = "none"
     }
 
     object Promotions {
@@ -155,6 +158,7 @@ object DealsAnalyticsConstants {
     const val TRAVELENTERTAINMENT_BU = "travel & entertainment"
     const val CATEGORY_LABEL = "category"
     const val DEALS = "deals"
+    const val SLASH_DEALS = "/deals"
     const val BRAND = "brand"
     const val ECOMMERCE_LABEL = "ecommerce"
     const val CURRENCY_CODE = "currencyCode"
