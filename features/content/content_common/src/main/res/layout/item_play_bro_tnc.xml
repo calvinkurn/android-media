@@ -9,12 +9,6 @@
     android:orientation="horizontal"
     >
 
-    <View
-        android:layout_width="@dimen/play_dp_12"
-        android:layout_height="@dimen/play_dp_12"
-        android:background="@drawable/bg_play_point"
-        />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_tnc"
         android:layout_width="match_parent"
