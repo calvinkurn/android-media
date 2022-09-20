@@ -13,7 +13,13 @@ import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,18 +42,25 @@ class SharedViewModel @Inject constructor(
         initialValue = generateInitialMenu()
     )
 
+    private val _orderList = MutableStateFlow<UiState<List<OrderModel>>>(UiState.Loading())
+    val orderList : StateFlow<UiState<List<OrderModel>>> = _orderList.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
+
     private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
     val action: StateFlow<UiState<Boolean>>
         get() = _action
 
-    fun getOrderList(dataKey: String) : StateFlow<UiState<List<OrderModel>>> {
-        return orderUseCaseImpl.getOrderList(dataKey).map {
-            UiState.Success(data = it)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
-            initialValue = UiState.Idle()
-        )
+    fun getOrderList(dataKey: String) {
+        viewModelScope.launch {
+            _orderList.emitAll(
+                orderUseCaseImpl.getOrderList(dataKey).map {
+                    UiState.Success(data = it)
+                }
+            )
+        }
     }
 
     fun sendRequest() {
