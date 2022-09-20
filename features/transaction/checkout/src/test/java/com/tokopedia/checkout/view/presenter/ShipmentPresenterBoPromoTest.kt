@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
@@ -20,6 +21,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
@@ -1191,6 +1193,9 @@ class ShipmentPresenterBoPromoTest {
     @Test
     fun `WHEN get shipping rates success THEN should render success`() {
         // Given
+        presenter.initializePresenterData(CartShipmentAddressFormData(
+            cod = CodModel(counterCod = 1)
+        ))
         val response = DataProvider.provideRatesV3WithEnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
@@ -1248,7 +1253,6 @@ class ShipmentPresenterBoPromoTest {
             spId = 1,
         )
         val shipmentCartItemModel = ShipmentCartItemModel(
-            cartString = "1",
             isLeasingProduct = true,
             shopShipmentList = listOf(),
             selectedShipmentDetailData = ShipmentDetailData(
