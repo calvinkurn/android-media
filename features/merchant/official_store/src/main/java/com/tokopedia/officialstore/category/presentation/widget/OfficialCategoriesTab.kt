@@ -12,7 +12,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -31,7 +30,6 @@ class OfficialCategoriesTab(context: Context,
     private var totalScrollUp: Int = 0
     private var tabMaxHeight: Int = 0
     private var tabMinHeight: Int = 0
-    private var viewMaxHeight: Int = 0
 
     private var animationExpand: ValueAnimator ?= null
     private var animationCollapse: ValueAnimator ?= null
@@ -39,7 +37,6 @@ class OfficialCategoriesTab(context: Context,
     private var isExpand = true
 
     fun setMeasuredHeight() {
-        viewMaxHeight = this.measuredHeight
         tabMaxHeight = this.measuredHeight
     }
 
@@ -72,7 +69,6 @@ class OfficialCategoriesTab(context: Context,
 
 
     private fun initResources() {
-//        tabMaxHeight = resources.getDimensionPixelSize(R.dimen.os_tab_max_height)
         tabMinHeight = resources.getDimensionPixelSize(R.dimen.os_tab_min_height)
     }
 
@@ -84,16 +80,9 @@ class OfficialCategoriesTab(context: Context,
         }
     }
 
-    private fun startTabHeightExpandAnimation(appBarLayout: AppBarLayout) {
-        expandAllTab()
-        if (layoutParams.height != tabMaxHeight) {
-            appBarLayout.setExpanded(true)
-        }
-    }
-
     private fun expandAllTab() {
         if(animationExpand == null)
-            animationExpand = getValueAnimator(32.dp.toFloat(), viewMaxHeight.toFloat(), 300, AccelerateDecelerateInterpolator()) {
+            animationExpand = getValueAnimator(32.dp.toFloat(), tabMaxHeight.toFloat(), 300, AccelerateDecelerateInterpolator()) {
                 if (this.layoutParams != null) {
                     val params: ViewGroup.LayoutParams = layoutParams
                     params.height = it.toInt()
@@ -126,14 +115,14 @@ class OfficialCategoriesTab(context: Context,
 
     private fun collapseAllTab() {
         if(animationCollapse == null) animationCollapse =
-            getValueAnimator(viewMaxHeight.toFloat(), 32.dp.toFloat(), 300, AccelerateDecelerateInterpolator()) {
+            getValueAnimator(tabMaxHeight.toFloat(), 32.dp.toFloat(), 300, AccelerateDecelerateInterpolator()) {
                 if (this.layoutParams != null) {
                     val params: ViewGroup.LayoutParams = layoutParams
                     params.height = it.toInt()
                     requestLayout()
                 }
             }
-        if(this.measuredHeight >= viewMaxHeight) {
+        if(this.measuredHeight >= tabMaxHeight) {
             animationCollapse?.start()
             isExpand = false
             for (i in 0 until tabCount) {
@@ -232,15 +221,15 @@ class OfficialCategoriesTab(context: Context,
                 R.drawable.ic_loading_image
             )
             text_view_category_title?.text = categoriesItemTab[position].title
-            tab_category_container?.afterMeasured {
-                categoriesItemTab[position].currentWidth = width
-                categoriesItemTab[position].minWidth = width
-                categoriesItemTab[position].maxWidth = width + 32.dp
-
-                categoriesItemTab[position].currentHeight = height
-                categoriesItemTab[position].minHeight = height - 32.dp
-                categoriesItemTab[position].maxHeight = height
-            }
+//            tab_category_container?.afterMeasured {
+//                categoriesItemTab[position].currentWidth = width
+//                categoriesItemTab[position].minWidth = width
+//                categoriesItemTab[position].maxWidth = width + 32.dp
+//
+//                categoriesItemTab[position].currentHeight = height
+//                categoriesItemTab[position].minHeight = height - 32.dp
+//                categoriesItemTab[position].maxHeight = height
+//            }
         }
         return view
     }
