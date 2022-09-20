@@ -10,5 +10,5 @@ data class WidgetDismissalResultUiModel(
     val widgetId: String = String.EMPTY,
     val itemIds: List<String> = emptyList(),
     val dismissToken: String = String.EMPTY,
-    val action: SubmitWidgetDismissUiModel.Action
+    val action: SubmitWidgetDismissUiModel.Action = SubmitWidgetDismissUiModel.Action.DISMISS
 )

@@ -10,6 +10,7 @@ import com.tokopedia.sellerhomecommon.domain.model.WidgetDismissWithFeedbackResp
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
@@ -21,37 +22,34 @@ import javax.inject.Inject
 class SubmitWidgetDismissUseCase @Inject constructor(
     private val mapper: SubmitWidgetDismissalMapper,
     private val gqlRepository: GraphqlRepository
-) : BaseGqlUseCase<WidgetDismissalResultUiModel>() {
+) : UseCase<WidgetDismissalResultUiModel>() {
 
-    private var param: SubmitWidgetDismissUiModel? = null
+    private var param: SubmitWidgetDismissUiModel = SubmitWidgetDismissUiModel()
 
     override suspend fun executeOnBackground(): WidgetDismissalResultUiModel {
-        param?.let {
-            val typeClass = WidgetDismissWithFeedbackResponse::class.java
-            val gqlRequest = GraphqlRequest(
-                SubmitWidgetDismissalGqlMutation(),
-                typeClass,
-                params.parameters
-            )
-            val response = gqlRepository.response(listOf(gqlRequest))
-            val result = response.getData<WidgetDismissWithFeedbackResponse>(typeClass)
-            if (result.data.isError) {
-                throw MessageErrorException(result.data.errorMsg)
-            } else {
-                return mapper.mapRemoteModelToUiModel(it, result)
-            }
+        val params = getRequestParam(param)
+        val typeClass = WidgetDismissWithFeedbackResponse::class.java
+        val gqlRequest = GraphqlRequest(
+            SubmitWidgetDismissalGqlMutation(),
+            typeClass,
+            params.parameters
+        )
+        val response = gqlRepository.response(listOf(gqlRequest))
+        val result = response.getData<WidgetDismissWithFeedbackResponse>(typeClass)
+        if (result.data.isError) {
+            throw MessageErrorException(result.data.errorMsg)
+        } else {
+            return mapper.mapRemoteModelToUiModel(param, result)
         }
-        throw MessageErrorException(NULL_PARAM_ERROR)
     }
 
     suspend fun execute(param: SubmitWidgetDismissUiModel): WidgetDismissalResultUiModel {
         this.param = param
-        setRequestParam(param)
         return executeOnBackground()
     }
 
-    private fun setRequestParam(data: SubmitWidgetDismissUiModel) {
-        val gqlParams = RequestParams().apply {
+    private fun getRequestParam(data: SubmitWidgetDismissUiModel): RequestParams {
+        return RequestParams().apply {
             putString(ACTION, data.action.actionName)
             putString(DISMISS_KEY, data.dismissKey)
             putObject(DISMISS_OBJECT_ID_LIST, data.dismissObjectIDs)
@@ -65,7 +63,6 @@ class SubmitWidgetDismissUseCase @Inject constructor(
             putLong(SHOP_ID, data.shopId.toLongOrZero())
             putBoolean(POSITIVE_FEEDBACK, data.isFeedbackPositive)
         }
-        params = gqlParams
     }
 
     companion object {

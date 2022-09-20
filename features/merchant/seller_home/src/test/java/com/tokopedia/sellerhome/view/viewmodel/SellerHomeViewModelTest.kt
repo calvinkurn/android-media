@@ -75,6 +75,7 @@ import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -87,11 +88,14 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
+import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
 
@@ -1451,12 +1455,8 @@ class SellerHomeViewModelTest {
     @Test
     fun `when submit feedback dismissal widget should return success result`() {
         coroutineTestRule.runBlockingTest {
-            val param = SubmitWidgetDismissUiModel(
-                action = SubmitWidgetDismissUiModel.Action.DISMISS
-            )
-            val mockResult = WidgetDismissalResultUiModel(
-                action = SubmitWidgetDismissUiModel.Action.DISMISS
-            )
+            val param = SubmitWidgetDismissUiModel()
+            val mockResult = WidgetDismissalResultUiModel()
 
             coEvery {
                 submitWidgetDismissUseCase.execute(any())
@@ -1465,16 +1465,13 @@ class SellerHomeViewModelTest {
             viewModel.submitWidgetDismissal(param)
 
             coVerify {
-                submitWidgetDismissUseCase.execute(any())
-            }
-            coVerify {
-                viewModel.submitWidgetDismissal(any())
+                submitWidgetDismissUseCase.execute(param)
             }
 
             assert(param.action == mockResult.action)
 
-            val expectedResult = Success(mockResult)
-            Assertions.assertEquals(expectedResult, viewModel.submitWidgetDismissal.value)
+            val expected = Success(mockResult)
+            viewModel.submitWidgetDismissal.verifySuccessEquals(expected)
         }
     }
 
@@ -1484,23 +1481,20 @@ class SellerHomeViewModelTest {
             val param = SubmitWidgetDismissUiModel(
                 action = SubmitWidgetDismissUiModel.Action.DISMISS
             )
-            val exception = Throwable()
+            val exception = MessageErrorException()
 
             coEvery {
-                submitWidgetDismissUseCase.execute(param)
+                submitWidgetDismissUseCase.execute(any())
             } throws exception
 
             viewModel.submitWidgetDismissal(param)
 
             coVerify {
-                submitWidgetDismissUseCase.execute(any())
-            }
-            coVerify {
-                viewModel.submitWidgetDismissal(any())
+                submitWidgetDismissUseCase.execute(param)
             }
 
             val expectedResult = Fail(exception)
-            viewModel.submitWidgetDismissal.verifyErrorEquals(expectedResult)
+            viewModel.submitWidgetDismissal.verifyValueEquals(expectedResult)
         }
     }
 

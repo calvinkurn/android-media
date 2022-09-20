@@ -456,14 +456,12 @@ class SellerHomeViewModel @Inject constructor(
     }
 
     fun submitWidgetDismissal(param: SubmitWidgetDismissUiModel) {
-        launchCatchError(block = {
+        launchCatchError(context = dispatcher.io, block = {
             val useCase = submitWidgetDismissUseCase.get()
-            val result = withContext(dispatcher.io) {
-                useCase.execute(param)
-            }
-            _submitWidgetDismissal.value = Success(result)
+            val result = useCase.execute(param)
+            _submitWidgetDismissal.postValue(Success(result))
         }, onError = {
-            _submitWidgetDismissal.value = Fail(it)
+            _submitWidgetDismissal.postValue(Fail(it))
         })
     }
 
