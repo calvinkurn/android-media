@@ -12,7 +12,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HomeNavItemSellerBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
-import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -93,9 +92,7 @@ class SellerViewHolder(
 
                 val shopInfo: CharSequence
 
-                if (!element.canGoToSellerAccount) {
-                    shopInfo = getString(R.string.account_header_location_admin).orEmpty()
-                } else if (!element.hasShop) {
+                if (!element.hasShop) {
                     shopInfo =
                         itemView.context?.getString(R.string.account_header_register_store)
                             .orEmpty()
