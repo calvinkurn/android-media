@@ -817,7 +817,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             shippingWidget.renderNormalShippingWithoutChooseCourierCard(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         } else {
             // Is normal shipping
-            renderNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
+            shippingWidget.renderNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         }
     }
 
@@ -860,29 +860,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     @Override
     public void onViewErrorInCourierSection(@NonNull String logPromoDesc) {
         mActionListener.onViewErrorInCourierSection(logPromoDesc);
-    }
-
-    private void renderNormalShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
-        shippingWidget.showNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
-        shippingWidget.setLabelSelectedShippingCourier(selectedCourierItemData);
-
-        OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
-        CashOnDeliveryProduct codProductData = selectedCourierItemData.getCodProductData();
-        MerchantVoucherProductModel merchantVoucherProductModel = selectedCourierItemData.getMerchantVoucherProductModel();
-
-        if (merchantVoucherProductModel != null && merchantVoucherProductModel.isMvc() == 1) {
-            shippingWidget.showImageMerchantVoucher(merchantVoucherProductModel.getMvcLogo());
-        } else {
-            shippingWidget.hideImageMerchantVoucher();
-        }
-
-        if (ontimeDelivery != null && ontimeDelivery.getAvailable()) {
-            shippingWidget.showLabelDescCourier(ontimeDelivery.getTextLabel(), ontimeDelivery.getUrlDetail());
-        } else if (codProductData != null && codProductData.isCodAvailable() == 1) {
-            shippingWidget.showLabelDescCourier(codProductData.getCodText(), codProductData.getTncLink());
-        } else {
-            shippingWidget.hideLabelDescCourier();
-        }
     }
 
     private void renderFreeShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {

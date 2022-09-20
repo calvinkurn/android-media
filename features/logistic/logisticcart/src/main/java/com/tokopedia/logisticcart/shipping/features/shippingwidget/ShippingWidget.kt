@@ -225,7 +225,7 @@ class ShippingWidget : ConstraintLayout {
         binding?.labelFreeShippingEta?.gone()
     }
 
-    fun showNormalShippingCourier(
+    private fun showNormalShippingCourier(
         shipmentCartItemModel: ShipmentCartItemModel,
         currentAddress: RecipientAddressModel,
         selectedCourierItemData: CourierItemData
@@ -317,18 +317,18 @@ class ShippingWidget : ConstraintLayout {
         }
     }
 
-    fun showImageMerchantVoucher(urlImage: String) {
+    private fun showImageMerchantVoucher(urlImage: String) {
         binding?.apply {
             imgMvc.visible()
             imgMvc.loadImage(urlImage)
         }
     }
 
-    fun hideImageMerchantVoucher() {
+    private fun hideImageMerchantVoucher() {
         binding?.imgMvc?.gone()
     }
 
-    fun showLabelDescCourier(labelText: String?, urlLink: String?) {
+    private fun showLabelDescCourier(labelText: String?, urlLink: String?) {
         binding?.apply {
             labelDescriptionCourier.text = labelText
             labelDescriptionCourierTnc.setOnClickListener {
@@ -339,7 +339,7 @@ class ShippingWidget : ConstraintLayout {
         }
     }
 
-    fun hideLabelDescCourier() {
+    private fun hideLabelDescCourier() {
         binding?.apply {
             labelDescriptionCourier.gone()
             labelDescriptionCourierTnc.gone()
@@ -462,6 +462,32 @@ class ShippingWidget : ConstraintLayout {
             } else {
                 labelFreeShippingEta.gone()
             }
+        }
+    }
+
+    fun renderNormalShippingCourier(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        currentAddress: RecipientAddressModel,
+        selectedCourierItemData: CourierItemData
+    ) {
+        showNormalShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData)
+        setLabelSelectedShippingCourier(selectedCourierItemData)
+
+        val ontimeDelivery = selectedCourierItemData.ontimeDelivery
+        val codProductData = selectedCourierItemData.codProductData
+        val merchantVoucherProductModel = selectedCourierItemData.merchantVoucherProductModel
+
+        if (merchantVoucherProductModel != null && merchantVoucherProductModel.isMvc == 1) {
+            showImageMerchantVoucher(merchantVoucherProductModel.mvcLogo)
+        } else {
+            hideImageMerchantVoucher()
+        }
+        if (ontimeDelivery != null && ontimeDelivery.available) {
+            showLabelDescCourier(ontimeDelivery.textLabel, ontimeDelivery.urlDetail)
+        } else if (codProductData != null && codProductData.isCodAvailable == 1) {
+            showLabelDescCourier(codProductData.codText, codProductData.tncLink)
+        } else {
+            hideLabelDescCourier()
         }
     }
 
