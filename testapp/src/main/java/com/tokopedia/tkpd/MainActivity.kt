@@ -125,6 +125,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia://chat-service"
+        return "tokopedia://tokochat"
     }
 }

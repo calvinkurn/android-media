@@ -436,6 +436,6 @@
     <!-- Shop Admin -->
     <string name="title_shop_admin">Shop Admin</string>
 
-    <!-- Chat Service -->
-    <string name="df_title_chat_service">Chat Service</string>
+    <!-- Toko Chat -->
+    <string name="df_title_tokochat">Toko Chat</string>
 </resources>

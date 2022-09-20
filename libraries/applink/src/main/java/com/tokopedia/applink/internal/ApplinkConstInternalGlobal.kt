@@ -293,6 +293,6 @@ object ApplinkConstInternalGlobal {
 
     const val COMMISSION_BREAKDOWN = "$INTERNAL_GLOBAL/transaction-fee-download"
 
-    //ChatServiceActivity
-    const val CHAT_SERVICE = "$INTERNAL_GLOBAL/chat-service"
+    //TokoChatActivity
+    const val TOKO_CHAT = "$INTERNAL_GLOBAL/tokochat"
 }

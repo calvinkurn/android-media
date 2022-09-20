@@ -162,7 +162,7 @@ public interface ApplinkConst {
             "?customMessage={customMessage}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
-    String CHAT_SERVICE = "tokopedia://chat-service";
+    String TOKO_CHAT = "tokopedia://tokochat";
 
     String CHATBOT_HOST = "chatbot";
     String CHATBOT = "tokopedia://chatbot/{message_id}";

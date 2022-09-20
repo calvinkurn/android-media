@@ -71,6 +71,6 @@
     <string name="up_path_user_profile_follower">/people/followers/</string>
     <string name="path_data_explorer">/data-explorer</string>
 
-    <!-- Chat Service -->
-    <string name="path_chat_service">/chat-service</string>
+    <!-- Toko Chat -->
+    <string name="path_toko_chat">/tokochat</string>
 </resources>

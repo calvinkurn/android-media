@@ -517,7 +517,7 @@ object DeeplinkMapper {
             }),
             DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
             DLP.matchPattern(ApplinkConst.RESOLUTION_SUCCESS) { _, uri, _, _ -> ApplinkConstInternalOperational.buildApplinkResolution(uri)},
-            DLP.exact(ApplinkConst.CHAT_SERVICE, ApplinkConstInternalGlobal.CHAT_SERVICE),
+            DLP.exact(ApplinkConst.TOKO_CHAT, ApplinkConstInternalGlobal.TOKO_CHAT),
         )
 
     fun getTokopediaSchemeList():List<DLP>{
