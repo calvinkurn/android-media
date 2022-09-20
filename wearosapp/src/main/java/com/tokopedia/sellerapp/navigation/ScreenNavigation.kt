@@ -1,8 +1,6 @@
 package com.tokopedia.sellerapp.navigation
 
 import androidx.navigation.NavController
-import com.tokopedia.sellerapp.util.ScreenConstant
-import com.tokopedia.sellerapp.util.ScreenConstant.DATAKEY_ARGS
 import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH
 import com.tokopedia.sellerapp.util.ScreenConstant.HOME_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_DETAIL_SCREEN

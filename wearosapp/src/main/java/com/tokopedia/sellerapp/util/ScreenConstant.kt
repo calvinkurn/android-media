@@ -6,6 +6,7 @@ object ScreenConstant {
     const val DATAKEY_ARGS = "dataKey"
     const val NEW_ORDER_SUMMARY_SCREEN = "new_order_summary_screen"
     const val NEW_ORDER_LIST_SCREEN = "new_order_list_screen"
-    const val FORMAT_NAVIGATION_PATH = "%s/{%s}"
+    const val FORMAT_NAVIGATION_PATH = "%s/%s"
+    const val FORMAT_NAVIGATION_PATH_PARAM = "%s/{%s}"
     const val NEW_ORDER_DETAIL_SCREEN = "new_order_detail_screen"
 }

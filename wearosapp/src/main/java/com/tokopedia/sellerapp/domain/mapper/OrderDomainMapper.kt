@@ -6,8 +6,8 @@ import com.tokopedia.sellerapp.domain.mapper.SummaryDomainMapper.DATAKEY_READY_T
 import com.tokopedia.sellerapp.domain.model.OrderModel
 
 object OrderDomainMapper {
-    val STATUS_NEW_ORDER = arrayOf("0") // Actual value should be 220, but temporary hardcoded to 0 for testing purpose
-    val STATUS_READY_TO_SHIP = arrayOf("10") // temporary, to be confirmed later
+    private val STATUS_NEW_ORDER = arrayOf("0") // Temporary hardcoded into 0 to get data. Actual: arrayOf("220", "221")
+    private val STATUS_READY_TO_SHIP = arrayOf("10") // Temporary hardcoded into 10 to get data. Actual: arrayOf("400", "501", "520")
 
     fun List<OrderWithProduct>.mapToDomainModel() : List<OrderModel> {
         return map { obj ->
