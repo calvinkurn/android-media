@@ -369,6 +369,12 @@ class ProductSheetViewComponent(
         rootView.requestApplyInsetsWhenAttached()
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        rvProductList.removeItemDecoration(itemDecoration)
+        itemDecoration.release()
+    }
+
     companion object {
         private const val PLACEHOLDER_COUNT = 5
     }

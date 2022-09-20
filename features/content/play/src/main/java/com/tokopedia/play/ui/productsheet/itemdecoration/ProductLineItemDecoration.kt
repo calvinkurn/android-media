@@ -41,6 +41,10 @@ class ProductLineItemDecoration(
         mGuidelines = guidelines
     }
 
+    fun release() {
+        mGuidelines = emptyList()
+    }
+
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
 
