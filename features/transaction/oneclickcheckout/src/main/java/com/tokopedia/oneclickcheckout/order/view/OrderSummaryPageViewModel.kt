@@ -484,9 +484,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun autoUnApplyBBO() {
-        lastValidateUsePromoRequest?.let {
-            it.orders.firstOrNull { it.uniqueId == orderCart.cartString }?.let {
-                if (it.codes.isEmpty()) {
+        lastValidateUsePromoRequest?.let { validateUsePromo ->
+            validateUsePromo.orders.firstOrNull { it.uniqueId == orderCart.cartString }?.let { orderItem ->
+                if (orderItem.codes.isEmpty()) {
                     orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
                 }
             }
