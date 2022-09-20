@@ -19,9 +19,11 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
+import com.tokopedia.tokofood.feature.search.common.presentation.uimodel.TokofoodSearchErrorStateUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodFilterSortUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodSearchMerchantUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodFilterSortMapper
@@ -137,6 +139,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                     _sortFilterUiModel.emit(Success(uiModels))
                 },
                 onError = {
+                    sendFailureEvent(TokofoodSearchUiEvent.EVENT_FAILED_LOAD_FILTER, it)
                     _sortFilterUiModel.emit(Fail(it))
                 }
             )
@@ -169,6 +172,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                         throwable = it
                     )
                 )
+                sendFailureEvent(TokofoodSearchUiEvent.EVENT_FAILED_LOAD_SEARCH_RESULT, it)
             }
         )
     }
@@ -197,7 +201,9 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                     )
                 )
             },
-            onError = {}
+            onError = {
+                sendFailureEvent(TokofoodSearchUiEvent.EVENT_FAILED_LOAD_FILTER, it)
+            }
         )
         if (dynamicFilterModel.value == null) {
             loadDetailSortFilter()
@@ -388,7 +394,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     private fun getIsVisitableContainOtherStates(): Boolean {
         val layoutList = currentVisitables.value.orEmpty()
         return layoutList.find {
-            it is TokoFoodProgressBarUiModel || it is TokoFoodErrorStateUiModel ||
+            it is TokoFoodProgressBarUiModel || it is TokoFoodErrorStateUiModel || it is TokofoodSearchErrorStateUiModel ||
                     it is MerchantSearchEmptyWithFilterUiModel || it is MerchantSearchEmptyWithoutFilterUiModel
         } != null
     }
@@ -421,9 +427,9 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
     private fun SearchParameter.hasFilterSortApplied(): Boolean {
         return if (contains(SearchApiConst.Q)) {
-            getSearchParameterHashMap().entries.size > Int.ONE
+            getSearchParameterHashMap().entries.filter { it.value.isNotBlank() }.size > Int.ONE
         } else {
-            getSearchParameterMap().entries.size > Int.ZERO
+            getSearchParameterHashMap().entries.filter { it.value.isNotBlank() }.size > Int.ZERO
         }
     }
 
@@ -495,7 +501,8 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
     private fun getErrorSearchResultInitial(uiState: TokofoodSearchUiState): List<Visitable<*>> {
         return uiState.throwable?.let {
-            listOf(TokoFoodErrorStateUiModel(String.EMPTY, it))
+            val globalErrorType = it.getGlobalErrorType()
+            listOf(TokofoodSearchErrorStateUiModel(globalErrorType))
         }.orEmpty()
     }
 
@@ -534,6 +541,15 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
             }
         }
         return DynamicFilterModel(updatedDataValue)
+    }
+
+    private suspend fun sendFailureEvent(state: Int, throwable: Throwable) {
+        _uiEventFlow.emit(
+            TokofoodSearchUiEvent(
+                state = state,
+                throwable = throwable
+            )
+        )
     }
 
     companion object {
