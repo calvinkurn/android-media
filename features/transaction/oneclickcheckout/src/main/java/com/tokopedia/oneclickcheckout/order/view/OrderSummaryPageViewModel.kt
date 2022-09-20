@@ -431,23 +431,24 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun validateBboStacking() {
         var hasUnApply = false
         var hasApply = false
-        validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.let {
-
-            for (voucherOrderUiModel in it) {
-                if (voucherOrderUiModel.shippingId > 0
-                    && voucherOrderUiModel.spId > 0
-                    && voucherOrderUiModel.type == "logistic"
-                )
-                    if (voucherOrderUiModel.messageUiModel.state == "green") {
-                        applyBbo(voucherOrderUiModel.code)
-                        hasApply = true
+        validateUsePromoRevampUiModel?.let {
+            it.promoUiModel.voucherOrderUiModels.let {
+                for (voucherOrderUiModel in it) {
+                    if (voucherOrderUiModel.shippingId > 0
+                        && voucherOrderUiModel.spId > 0
+                        && voucherOrderUiModel.type == "logistic"
+                    )
+                        if (voucherOrderUiModel.messageUiModel.state == "green") {
+                            applyBbo(voucherOrderUiModel.code)
+                            hasApply = true
+                        }
+                }
+                if (orderShipment.value.isApplyLogisticPromo && !hasApply) {
+                    // if use BO but voucher BO didn't exist
+                    orderShipment.value.logisticPromoViewModel?.let { logisticPromo ->
+                        unApplyBbo(logisticPromo.promoCode)
+                        hasUnApply = true
                     }
-            }
-            if (orderShipment.value.isApplyLogisticPromo && !hasApply) {
-                // if use BO but voucher BO didn't exist
-                orderShipment.value.logisticPromoViewModel?.let { logisticPromo ->
-                    unApplyBbo(logisticPromo.promoCode)
-                    hasUnApply = true
                 }
             }
         }
@@ -472,20 +473,22 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun displayingAdjustmentPromoToaster(hasUnApply: Boolean) {
-        validateUsePromoRevampUiModel?.promoUiModel?.additionalInfoUiModel?.errorDetailUiModel?.message?.let {
-            if (it.isNotBlank())
-                globalEvent.value = OccGlobalEvent.ToasterInfo(it)
-            else if (hasUnApply)
-                globalEvent.value = OccGlobalEvent.AdjustShippingToaster
+        validateUsePromoRevampUiModel?.let {
+            it.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message.let {
+                if (it.isNotBlank())
+                    globalEvent.value = OccGlobalEvent.ToasterInfo(it)
+                else if (hasUnApply)
+                    globalEvent.value = OccGlobalEvent.AdjustShippingToaster
+            }
         }
     }
 
     fun autoUnApplyBBO() {
-        lastValidateUsePromoRequest?.orders?.firstOrNull {
-            it.uniqueId == orderCart.cartString
-        }?.let {
-            if (it.codes.isEmpty()) {
-                orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
+        lastValidateUsePromoRequest?.let {
+            it.orders.firstOrNull { it.uniqueId == orderCart.cartString }?.let {
+                if (it.codes.isEmpty()) {
+                    orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
+                }
             }
         }
     }
