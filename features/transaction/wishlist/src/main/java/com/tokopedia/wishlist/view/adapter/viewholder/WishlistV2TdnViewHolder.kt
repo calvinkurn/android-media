@@ -14,6 +14,7 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.wishlist.util.WishlistV2Consts
+import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils.clickWithDebounce
 
 class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) :
     RecyclerView.ViewHolder(binding.root) {
@@ -42,7 +43,20 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
                     isFullSpan = true
                 }
                 binding.root.layoutParams = params
-                binding.wishlistTdnBanner.run {
+                binding.wishlistTdnBanner.apply {
+                    clickWithDebounce {
+                        actionListener?.onBannerTopAdsClick(item.dataObject, adapterPosition)
+                    }
+                    loadImage(item.dataObject, RADIUS_TOPADS)
+
+                    setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+                        override fun onTopAdsImageViewImpression(viewUrl: String) {
+                            actionListener?.onBannerTopAdsImpression(item.dataObject, adapterPosition)
+                        }
+
+                    })
+                }
+                /*binding.wishlistTdnBanner.run {
                     setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
                         override fun onTopAdsImageViewClicked(applink: String?) {
                             actionListener?.onBannerTopAdsClick(item.dataObject, adapterPosition)
@@ -57,7 +71,7 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
                         }
 
                     })
-                }
+                }*/
             }
         }
     }
