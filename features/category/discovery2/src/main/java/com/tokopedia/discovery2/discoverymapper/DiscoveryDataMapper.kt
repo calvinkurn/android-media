@@ -359,7 +359,7 @@ class DiscoveryDataMapper {
                                     minOrderWording = bundleDetails?.minOrderWording ?: "",
                                     isSelected = false,// need to check for this key
                                     totalSold = 0,// need to check for this key
-                                    shopInfo = bundleShopUiModel,
+                                    shopInfo = null , //bundleShopUiModel,
                                     products = bundleProductUiModel.apply {
                                         bundleData.bundleProducts?.forEach { bundleProducts ->
                                             add(BundleProductUiModel(
