@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -456,7 +457,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
             if (outlet.coordinates.isNullOrEmpty()) {
                 tgViewMap?.hide()
             } else {
-                val imgMaps = context?.resources?.getDrawable(drawableDeals.ic_see_location)
+                val imgMaps = MethodChecker.getDrawable(context, drawableDeals.ic_see_location)
                 tgViewMap?.show()
                 tgViewMap?.setCompoundDrawablesWithIntrinsicBounds(imgMaps, null, null, null)
             }
