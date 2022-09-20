@@ -349,8 +349,8 @@ class DetailEditorFragment @Inject constructor(
             if(data.isToolCrop() || data.isToolRotate()){
                 // needed to trigger crop tools draw and get the highest height between rotate & crop
                 // crop item is dynamic according to the editor param
-                cropComponent.setupView(it, data)
                 rotateComponent.setupView(data)
+                cropComponent.setupView(it, data)
 
                 viewBinding?.ucToolContainer?.post {
                     val rotateHeight = rotateComponent.container().height
