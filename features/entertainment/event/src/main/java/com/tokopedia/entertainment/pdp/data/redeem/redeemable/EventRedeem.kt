@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.pdp.data.redeem.redeemable
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -72,9 +73,10 @@ data class Product(
         @SerializedName("provider_product_id")
         @Expose
         val providerProductId: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("sales_price")
         @Expose
-        val salesPrice: Int = 0,
+        val salesPrice: Long = 0,
         @SerializedName("seo_url")
         @Expose
         val seoUrl: String = "",

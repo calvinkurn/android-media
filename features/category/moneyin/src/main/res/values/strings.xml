@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="checkout_module_title_shipping_dest">Tujuan Pengiriman</string>
     <string name="label_button_change_address_new">Ganti Alamat</string>
     <string name="label_main_address">Utama</string>
@@ -45,6 +45,7 @@
     <string name="text_final_price">Harga Jual:  </string>
     <string name="tukar_tambah">Tukar Tambah</string>
     <string name="money_in">Langsung Laku</string>
+    <string name="money_in_courier_service_error">Tidak ada kurir yang mendukung pengiriman ini ke lokasi anda.</string>
     <string name="harga_final">Harga Final</string>
     <string name="total_price">Total Harga Barang</string>
     <string name="buy_now">Beli Sekarang</string>

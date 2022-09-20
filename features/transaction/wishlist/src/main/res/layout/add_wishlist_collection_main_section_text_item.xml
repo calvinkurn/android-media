@@ -12,6 +12,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_N700_68"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

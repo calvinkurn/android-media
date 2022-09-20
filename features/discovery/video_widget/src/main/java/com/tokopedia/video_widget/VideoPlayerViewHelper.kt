@@ -77,6 +77,7 @@ class VideoPlayerViewHelper(
         val defaultTrackSelector = DefaultTrackSelector.ParametersBuilder(context)
             .setMaxVideoBitrate(MAXIMUM_VIDEO_BANDWIDTH)
             .setExceedVideoConstraintsIfNecessary(true)
+            .setRendererDisabled(C.TRACK_TYPE_AUDIO, true)
             .build()
         return DefaultTrackSelector(context).apply {
             parameters = defaultTrackSelector
@@ -91,7 +92,7 @@ class VideoPlayerViewHelper(
             .build()
             .apply {
                 addListener(playerEventListener)
-                setAudioAttributes(initAudioAttributes(), true)
+                setAudioAttributes(initAudioAttributes(), false)
             }
             .also {
                 mute(it)

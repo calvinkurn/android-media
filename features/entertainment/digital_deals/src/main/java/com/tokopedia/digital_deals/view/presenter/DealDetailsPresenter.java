@@ -327,7 +327,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         NsqServiceModel nsqServiceModel = new NsqServiceModel();
         nsqServiceModel.setService(Utils.NSQ_SERVICE);
         NsqMessage nsqMessage = new NsqMessage();
-        nsqMessage.setUserId(Integer.parseInt(userId));
+        nsqMessage.setUserId(Long.parseLong(userId));
         nsqMessage.setProductId(data.getId());
         nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
         nsqMessage.setAction("product-detail");
@@ -360,7 +360,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         NsqServiceModel nsqServiceModel1 = new NsqServiceModel();
         nsqTravelRecentSearchModel.setService("travel_recent_search");
         NsqMessage nsqMessage1 = new NsqMessage();
-        nsqMessage1.setUserId(Integer.parseInt(userId));
+        nsqMessage1.setUserId(Long.parseLong(userId));
         nsqTravelRecentSearchModel.setNsqMessage(nsqMessage1);
         NsqRecentSearchModel nsqRecentSearchModel = new NsqRecentSearchModel();
         nsqRecentSearchModel.setDataType("deal");
