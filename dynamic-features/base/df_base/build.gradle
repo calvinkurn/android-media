@@ -86,7 +86,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.search)
     implementation projectOrAar(rootProject.ext.features.autocomplete)
     implementation projectOrAar(rootProject.ext.features.homeRecom)
-    implementation projectOrAar(rootProject.ext.features.homeWishlist)
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
 
     //Fintech
