@@ -60,6 +60,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageFitCenter
@@ -812,7 +814,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun sendGetCartAndCheckoutAnalytics() {
         digitalAnalytics.sendCartScreen()
-        val categoryId = cartPassData?.categoryId?.toIntOrNull() ?: Int.ZERO
+        val categoryId = cartPassData?.categoryId?.toIntSafely() ?: Int.ZERO
         rechargeAnalytics.trackAddToCartRechargePushEventRecommendation(categoryId)
     }
 

@@ -212,6 +212,31 @@
                 app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_package_info_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:text="@string/package_info_label"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_detail_id"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_package_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:textColor="@color/Unify_N700_96"
+                android:ellipsize="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_detail_id"
+                app:typographyType="body_3"
+                tools:text="[Package Name]" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_campaign_event_name_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -220,7 +245,7 @@
                 android:text="@string/campaign_detail_event_name_label"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_detail_id"
+                app:layout_constraintTop_toBottomOf="@+id/tg_package_info_label"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -231,7 +256,7 @@
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_detail_id"
+                app:layout_constraintTop_toBottomOf="@+id/tg_package_info"
                 app:typographyType="body_3"
                 tools:text="[Nama Event Maks 27 charac]" />
 
@@ -407,6 +432,7 @@
                 tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.core.widget.NestedScrollView>
 
     <com.tokopedia.unifycomponents.LoaderUnify

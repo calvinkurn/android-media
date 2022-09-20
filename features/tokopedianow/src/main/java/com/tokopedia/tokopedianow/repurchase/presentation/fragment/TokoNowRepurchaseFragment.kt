@@ -254,7 +254,7 @@ class TokoNowRepurchaseFragment:
         // TO-DO : analytics
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: String) {
+    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String) {
         // TO-DO : analytics
     }
 

@@ -4,72 +4,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:viewBindingIgnore="true">
+    android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="4dp"
-        android:elevation="3dp"
-        app:cardCornerRadius="4dp">
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:elevation="@dimen/deals_voucher_card_elevation_size"
+        app:cardCornerRadius="@dimen/deals_voucher_corner_ticket_view">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:padding="@dimen/deals_voucher_card_padding">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/img_product"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="8dp"
+                android:layout_width="@dimen/layout_lvl6"
+                android:layout_height="@dimen/layout_lvl6"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_goneMarginTop="10dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_goneMarginTop="@dimen/margin_small"
                 tools:src="@drawable/info_icon" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/txt_product_name"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:maxLines="@integer/int_3"
                 android:textColor="@color/Unify_N700_68"
-                android:textSize="14sp"
-                android:textStyle="bold"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
                 app:layout_constraintLeft_toRightOf="@id/img_product"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/img_product"
                 tools:text="Fujifilm Instax Square SQ6 Instant Film Camera (Stone Grey Color) Polaroid" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/txt_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/deals_voucher_quantity_margin"
                 android:textColor="@color/Unify_N700_44"
-                android:textSize="11sp"
+                app:typographyType="small"
                 app:layout_constraintLeft_toLeftOf="@id/txt_product_name"
                 app:layout_constraintTop_toBottomOf="@id/txt_product_name"
                 tools:text="2 Barang(20kg)" />
 
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/txt_item_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/deals_voucher_quantity_margin"
                 android:textColor="@color/Unify_Y500"
-                android:textSize="14sp"
-                android:textStyle="bold"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
                 app:layout_constraintLeft_toLeftOf="@id/txt_quantity"
                 app:layout_constraintTop_toBottomOf="@id/txt_quantity"
                 tools:text="Rp 2.000.000" />
@@ -82,26 +80,26 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="@dimen/spacing_lvl4">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@color/Unify_N0"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:background="@color/Unify_Background"
             android:orientation="vertical"
-            android:paddingBottom="10dp">
+            android:paddingBottom="@dimen/deals_voucher_card_padding">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/detail_protection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
                 android:text="@string/protection_details"
                 android:textColor="@color/Unify_N700_68"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                app:typographyType="display_1"
+                app:typographyWeight="bold"/>
 
             <LinearLayout
                 android:id="@+id/status_detail"
