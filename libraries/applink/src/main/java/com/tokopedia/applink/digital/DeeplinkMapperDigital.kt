@@ -9,6 +9,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ELEC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_PAKET_DATA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_PULSA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ROAMING
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.DEFAULT_SUBHOMEPAGE_PLATFORM_ID
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_PAKET_DATA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_PULSA
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.NEW_MENU_ID_ROAMING
@@ -92,7 +93,7 @@ object DeeplinkMapperDigital {
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME) -> {
                 if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
-                else ApplinkConsInternalDigital.SUBHOMEPAGE
+                else UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITH_PARAM, DEFAULT_SUBHOMEPAGE_PLATFORM_ID, false.toString())
             }
             deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) -> {
                 if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) {
