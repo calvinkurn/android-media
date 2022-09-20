@@ -196,6 +196,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
                     setInitialStateData(it.data.initialStateList)
                 }
                 is Fail -> {
+                    initialSearchAdapter.removeAllInitialState()
                     initialSearchAdapter.showErrorState(it.throwable.getGlobalErrorType())
                     logExceptionToServerLogger(
                         it.throwable,
