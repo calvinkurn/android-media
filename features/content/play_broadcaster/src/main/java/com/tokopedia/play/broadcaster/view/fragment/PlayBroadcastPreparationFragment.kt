@@ -263,31 +263,27 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
                     override fun clickNextOnCompleteOnboarding() {}
 
-                    override fun clickCloseIcon() {
-                        if (!viewModel.isFromSwitchAccount) activity?.finish()
-                        viewModel.setFromSwitchAccount(false)
-                    }
+                    override fun clickCloseIcon() { closeBottomSheet() }
                 })
             }
             is WarningInfoBottomSheet -> {
                 childFragment.setData(parentViewModel.warningInfoType)
                 childFragment.setListener(object : WarningInfoBottomSheet.Listener {
-                    override fun clickCloseIcon() {
-                        if (!viewModel.isFromSwitchAccount) activity?.finish()
-                        viewModel.setFromSwitchAccount(false)
-                    }
+                    override fun clickCloseIcon() { closeBottomSheet() }
                 })
             }
             is SellerTncBottomSheet -> {
                 childFragment.initViews(parentViewModel.tncList)
                 childFragment.setListener(object : SellerTncBottomSheet.Listener {
-                    override fun clickCloseIcon() {
-                        if (!viewModel.isFromSwitchAccount) activity?.finish()
-                        viewModel.setFromSwitchAccount(false)
-                    }
+                    override fun clickCloseIcon() { closeBottomSheet() }
                 })
             }
         }
+    }
+
+    private fun closeBottomSheet() {
+        if (!viewModel.isFromSwitchAccount) activity?.finish()
+        viewModel.setFromSwitchAccount(false)
     }
 
     /** Setup */
