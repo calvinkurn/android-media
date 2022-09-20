@@ -606,6 +606,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 successMessage
 
             showToasterSuccess(message, ctaText = getString(R.string.atc_variant_see)) {
+                val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+                val productId = adapter.getHeaderDataModel()?.productId ?: ""
+                ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(
+                    message,
+                    productId,
+                    pageSource
+                )
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), "")
             }
             viewModel.updateActivityResult(
@@ -816,7 +823,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 productId: String
             ) {
                 val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it) }
+                viewContent?.rootView?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it) }
             }
 
             override fun onSuccessAddWishlist(
@@ -824,7 +831,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 productId: String
             ) {
                 context?.let { context ->
-                    view?.let { v ->
+                    viewContent?.rootView?.let { v ->
                         AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                     }
                 }

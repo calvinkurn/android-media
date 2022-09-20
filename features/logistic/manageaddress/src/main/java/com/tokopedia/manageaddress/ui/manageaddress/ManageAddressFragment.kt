@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -125,6 +126,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         typeRequest = arguments?.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST)
         prevState = arguments?.getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS) ?: -1
         localChosenAddr = context?.let { ChooseAddressUtils.getLocalizingAddressData(it) }
+        viewModel.source = arguments?.getString(PARAM_SOURCE) ?: ""
         initSearch()
         initSearchView()
     }
@@ -388,6 +390,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
             intent.putExtra(KERO_TOKEN, token)
             intent.putExtra(EXTRA_REF, screenName)
+            intent.putExtra(PARAM_SOURCE, viewModel.source)
             startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
         } else {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
@@ -400,6 +403,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
         if (eligibleForEditRevamp) {
             val intent = RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}")
+            intent.putExtra(PARAM_SOURCE, viewModel.source)
             startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
         } else {
             val token = viewModel.token
@@ -576,7 +580,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 bottomSheetLainnya?.dismiss()
             }
             btnHapusAlamat.setOnClickListener {
-                viewModel.deletePeopleAddress(data.id, prevState, getChosenAddrId(), true)
+                viewModel.deletePeopleAddress(data.id)
                 bottomSheetLainnya?.dismiss()
                 isFromDeleteAddress = true
             }

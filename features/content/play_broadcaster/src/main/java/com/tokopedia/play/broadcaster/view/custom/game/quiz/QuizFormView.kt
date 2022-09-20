@@ -279,7 +279,9 @@ class QuizFormView : ConstraintLayout {
 
     private fun bindOptionData(optionView: QuizOptionView, option: QuizFormDataUiModel.Option): QuizOptionView {
         return optionView.apply {
-            isEditable = option.isEditable
+            /** Open editable to rebind data */
+            isEditable = true
+
             order = option.order
             text = option.text
             textChoice = option.getTextChoice()
@@ -292,6 +294,8 @@ class QuizFormView : ConstraintLayout {
             setFocus(option.isFocus)
 
             showCoachmark(option.isShowCoachmark)
+
+            isEditable = option.isEditable
         }
     }
 

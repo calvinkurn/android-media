@@ -32,6 +32,7 @@ public class RemoteConfigKey {
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
     public static final String APP_SHOW_AFFILIATES_BUTTON = "old_home_account_show_affiliates";
+    public static final String ENABLE_EPHARMACY_UPLOAD_PAGE = "android_main_app_enable_epharmacy_page";
 
     public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
     public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
@@ -162,14 +163,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 
-    public static final String DISABLE_OFFICIAL_STORE_SHOP_WIDGET = "android_disable_officialstore_shop_widget";
-    public static final String DISABLE_OFFICIAL_STORE_BEST_SELLER_WIDGET = "android_disable_officialstore_best_seller_widget";
-    public static final String DISABLE_OFFICIAL_STORE_MAPPING_BANNERS = "android_disable_officialstore_mapping_banners";
-    public static final String DISABLE_OFFICIAL_STORE_REMOVE_BEST_SELLER_WIDGET = "android_disable_officialstore_remove_best_seller_widget";
-    public static final String DISABLE_OFFICIAL_STORE_REMOVE_SHOP_WIDGET = "android_disable_officialstore_remove_shop_widget";
-    public static final String DISABLE_OFFICIAL_STORE_MAPPING_BENEFIT = "android_disable_officialstore_mapping_benefit";
-    public static final String DISABLE_OFFICIAL_STORE_MAPPING_OFFICIAL_FEATURED_SHOP = "android_disable_officialstore_mapping_official_featured_shop";
-
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
@@ -181,6 +174,8 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
     public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
+    public static final String MAINAPP_RECHARGE_ATC_CHECKOUT_GQL = "android_enable_digital_gql";
+    public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
@@ -273,6 +268,7 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_WISHLIST_REVAMP_v2 = "android_revamp_wishlist_v2";
     public static final String ENABLE_ADD_REMOVE_WISHLIST_V2 = "android_enable_add_remove_wishlist_v2";
+    public static final String ENABLE_WISHLIST_COLLECTION = "android_enable_wishlist_collection";
 
     public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";
     public static final String ENABLE_MPC_VIDEO_AUTOPLAY ="android_mainapp_enable_mpc_video_autoplay";
@@ -286,19 +282,18 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
 
-    public static final String ENABLE_NEW_PROFILE_INFO = "android_use_new_profile_revamp";
-
     public static final String DISCOVERY_DISABLE_SINGLE_PROD_CARD = "android_discovery_single_product_disable";
 
     public static final String PRODUCT_CARD_ENABLE_INTERACTION = "android_product_card_enable_interaction";
 
     public static final String ENABLE_PRODUCT_CARD_VIEWSTUB = "android_mainapp_enable_product_card_viewstub";
 
-    public static final String ENABLE_OLD_BUNDLE_SELECTION_PAGE = "android_enable_old_bundle_selection_page";
-
     public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
 
     public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
 
     public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
+
+    public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
+
 }

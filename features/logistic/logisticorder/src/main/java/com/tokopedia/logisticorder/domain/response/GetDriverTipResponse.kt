@@ -11,7 +11,7 @@ data class LogisticDriverTipResponse(
     @SerializedName("status")
     val status: Int = 0,
     @SerializedName("last_driver")
-    val tippingLastDriver: TippingLastDriver = TippingLastDriver(),
+    val lastDriver: LastDriver = LastDriver(),
     val statusSubtitle: String = "",
     @SerializedName("prepayment")
     val prepayment: Prepayment = Prepayment(),

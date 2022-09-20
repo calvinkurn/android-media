@@ -7,7 +7,7 @@ import android.text.TextWatcher
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodExt
 import com.tokopedia.tokofood.common.util.TokofoodExt.setupEditText
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
@@ -37,7 +37,7 @@ class ProductCardViewHolder(
         context = binding.root.context
         binding.root.setOnClickListener {
             // open product bottom sheet
-            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
             productListItem?.let { productListItem ->
                 clickListener.onProductCardClicked(
                     productListItem = productListItem,
@@ -46,7 +46,7 @@ class ProductCardViewHolder(
             }
         }
         binding.atcButton.setOnClickListener {
-            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
             productListItem?.let { productListItem ->
                 clickListener.onAtcButtonClicked(
                     productListItem = productListItem,
@@ -55,8 +55,8 @@ class ProductCardViewHolder(
             }
         }
         binding.addCatatanButton.setOnClickListener {
-            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
-            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
             clickListener.onAddNoteButtonClicked(
                 productId = productUiModel.id,
                 orderNote = productUiModel.orderNote,
@@ -64,8 +64,8 @@ class ProductCardViewHolder(
             )
         }
         binding.removeProductFromCartButton.setOnClickListener {
-            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
-            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
             clickListener.onDeleteButtonClicked(
                 cartId = productUiModel.cartId,
                 productId = productUiModel.id,
@@ -74,14 +74,15 @@ class ProductCardViewHolder(
         }
 
         binding.qeuProductQtyEditor.setupEditText()
+        binding.qeuProductQtyEditor.maxValue = TokofoodExt.MAXIMUM_QUANTITY
         binding.qeuProductQtyEditor.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
-                val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
-                val quantity = p0.toString().toIntOrZero()
+                val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
+                val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
+                val quantity = binding.qeuProductQtyEditor.getValue().orZero()
                 if (quantity != productUiModel.orderQty && quantity >= Int.ONE) {
                     clickListener.onUpdateProductQty(
                             productId = productUiModel.id,
@@ -96,8 +97,8 @@ class ProductCardViewHolder(
         })
 
         binding.qeuProductQtyEditor.setAddClickListener {
-            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
-            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
             val quantity = binding.qeuProductQtyEditor.getValue()
             clickListener.onIncreaseQtyButtonClicked(
                 productId = productUiModel.id,
@@ -106,8 +107,8 @@ class ProductCardViewHolder(
             )
         }
         binding.qeuProductQtyEditor.setSubstractListener {
-            val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
-            val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
+            val productUiModel = binding.root.getTag(com.tokopedia.tokofood.R.id.product_ui_model) as ProductUiModel
+            val dataSetPosition = binding.root.getTag(com.tokopedia.tokofood.R.id.dataset_position) as Int
             val quantity = binding.qeuProductQtyEditor.getValue()
             binding.qeuProductQtyEditor.subtractButton.isEnabled = quantity != Int.ONE
             clickListener.onDecreaseQtyButtonClicked(
@@ -122,8 +123,8 @@ class ProductCardViewHolder(
         // bind product ui model and data set position
         this.productListItem = productListItem
         bindImpressionProductListener(productListItem, dataSetPosition)
-        binding.root.setTag(R.id.product_ui_model, productUiModel)
-        binding.root.setTag(R.id.dataset_position, dataSetPosition)
+        binding.root.setTag(com.tokopedia.tokofood.R.id.product_ui_model, productUiModel)
+        binding.root.setTag(com.tokopedia.tokofood.R.id.dataset_position, dataSetPosition)
 
         // disable atc button if product is out of stock
         binding.atcButton.isEnabled = !productUiModel.isOutOfStock
@@ -171,10 +172,10 @@ class ProductCardViewHolder(
         if (binding.orderDetailLayout.isVisible) {
             context?.run {
                 if (productUiModel.orderNote.isBlank()) {
-                    val addNoteIcon = ContextCompat.getDrawable(this, R.drawable.ic_add_note)
+                    val addNoteIcon = ContextCompat.getDrawable(this, com.tokopedia.tokofood.R.drawable.ic_add_note)
                     binding.iuAddNote.setImageDrawable(addNoteIcon)
                 } else {
-                    val addNoteIcon = ContextCompat.getDrawable(this, R.drawable.ic_edit_note)
+                    val addNoteIcon = ContextCompat.getDrawable(this, com.tokopedia.tokofood.R.drawable.ic_edit_note)
                     binding.iuAddNote.setImageDrawable(addNoteIcon)
                 }
             }

@@ -20,7 +20,7 @@
         />
     <ImageView
         android:id="@+id/product_tag_top_pointer"
-        android:layout_width="@dimen/dp_28"
+        android:layout_width="28dp"
         android:layout_height="@dimen/unify_space_8"
         android:visibility="invisible"
         android:src="@drawable/ic_feed_up"
@@ -31,7 +31,7 @@
         />
     <ImageView
         android:id="@+id/product_tag_bottom_pointer"
-        android:layout_width="@dimen/dp_28"
+        android:layout_width="28dp"
         android:layout_height="@dimen/unify_space_8"
         android:visibility="invisible"
         android:src="@drawable/ic_feed_down"
@@ -43,10 +43,10 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/product_tag_expanded_card"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_52"
+        android:layout_height="52dp"
         android:visibility="invisible"
         android:alpha="0.9"
-        android:maxWidth="@dimen/dp_180"
+        android:maxWidth="180dp"
         app:cardBackgroundColor="@color/feed_dms_produk_tag_background"
         app:cardCornerRadius="8dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="9dp"
                 android:paddingEnd="8dp"
-                android:maxWidth="@dimen/dp_145"
+                android:maxWidth="145dp"
                 android:ellipsize="marquee"
                 android:layout_marginStart="8dp"
                 android:singleLine="true"

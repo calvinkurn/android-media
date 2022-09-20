@@ -19,12 +19,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -42,7 +42,6 @@ import org.junit.Test
 class FlightHomepageActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
@@ -55,7 +54,6 @@ class FlightHomepageActivityTest {
     fun setup() {
         Intents.init()
         graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_CONTAINS_HOMEPAGE_BANNER,
@@ -141,7 +139,7 @@ class FlightHomepageActivityTest {
 
     private fun getBannerItemCount(): Int {
         val carousel = activityRule.activity.findViewById(R.id.flightHomepageBanner) as CarouselUnify
-        return carousel.indicatorCount.toInt()
+        return carousel.indicatorCount.toIntSafely()
     }
 
     @Test

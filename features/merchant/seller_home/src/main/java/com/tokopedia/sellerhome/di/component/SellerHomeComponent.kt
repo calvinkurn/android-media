@@ -32,7 +32,6 @@ interface SellerHomeComponent {
 
     fun inject(otherMenuFragment: OtherMenuFragment)
     fun inject(sellerHomeFragment: CentralizedPromoFragment)
-
     fun inject(freeShippingBottomSheet: SettingsFreeShippingBottomSheet)
     fun inject(firstTimePromoBottomSheetFragment: FirstTimePromoBottomSheetFragment)
 

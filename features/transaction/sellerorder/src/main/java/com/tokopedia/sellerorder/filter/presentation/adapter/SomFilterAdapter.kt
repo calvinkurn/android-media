@@ -2,7 +2,11 @@ package com.tokopedia.sellerorder.filter.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.sellerorder.filter.presentation.model.*
+import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterEmptyUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 
 class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAdapter<SomFilterAdapterTypeFactory>(adapterTypeFactory) {
 

@@ -16,9 +16,9 @@ import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleSingleAdapte
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
-import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -53,8 +53,8 @@ class ProductBundleSingleViewHolder(
 
     init {
         viewBinding?.apply {
-            typographyBundleName = tvBundleName
-            typographyBundlePreOrder = tvBundlePreorder
+            typographyBundleName = bundleWidgetHeaderContainer.tvBundleName
+            typographyBundlePreOrder = bundleWidgetHeaderContainer.tvBundlePreorder
             typographyBundleProductName = tvBundleProductSingleName
             typographyBundleProductDisplayPrice = tvBundleDisplayPrice
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice
@@ -85,7 +85,7 @@ class ProductBundleSingleViewHolder(
 
         initPreorderAndSoldItem(bundleDetail)
         initShopInfo(bundleDetail.shopInfo, bundle.bundleName)
-        initActionButton(bundleDetail.isPreOrder)
+        initActionButton(bundle.actionButtonText, bundleDetail.isPreOrder)
         initListener(bundle, bundleDetail, product)
     }
 
@@ -126,6 +126,8 @@ class ProductBundleSingleViewHolder(
 
         bundleDetailAdapter.setSelectionListener { selectedBundle ->
             renderBundlePriceDetails(selectedBundle)
+            bundle.selectedBundleId = selectedBundle.bundleId
+            bundle.selectedBundleApplink = selectedBundle.applink
             listener?.onTrackSingleVariantChange(
                 product,
                 selectedBundle,
@@ -135,17 +137,16 @@ class ProductBundleSingleViewHolder(
     }
 
     private fun initPreorderAndSoldItem(bundleDetail: BundleDetailUiModel) {
-        if (bundleDetail.isPreOrder) {
-            typographyBundlePreOrder?.text = bundleDetail.preOrderInfo
-        } else {
-            typographyBundlePreOrder?.text =
-                itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
+        typographyBundlePreOrder?.text = when {
+            bundleDetail.useProductSoldInfo -> bundleDetail.productSoldInfo
+            bundleDetail.isPreOrder -> bundleDetail.preOrderInfo
+            else -> itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
         }
     }
 
     private fun initShopInfo(shopInfo: BundleShopUiModel?, bundleName: String) {
         val hasShopInfo = shopInfo != null
-        viewBinding?.apply {
+        viewBinding?.bundleWidgetHeaderContainer?.apply {
             iconShop.isVisible = hasShopInfo
             tvShopName.isVisible = hasShopInfo
             tvBundleName.isVisible = hasShopInfo
@@ -172,8 +173,10 @@ class ProductBundleSingleViewHolder(
         constraintSet.applyTo(widgetContainer)
     }
 
-    private fun initActionButton(isPreOrder: Boolean) {
-        buttonAtc?.text = if (isPreOrder) {
+    private fun initActionButton(atcButtonText: String?, isPreOrder: Boolean) {
+        buttonAtc?.text = if (atcButtonText != null) {
+            atcButtonText
+        } else if (isPreOrder) {
             itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
         } else {
             itemView.context.getString(R.string.product_bundle_action_button_text)
