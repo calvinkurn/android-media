@@ -39,7 +39,6 @@ class PlayToaster(
     }
 
     fun dismissToaster() {
-        try { Toaster.snackBar.dismiss() } catch (e: Throwable) {}
     }
 
     fun showErrorInView(
