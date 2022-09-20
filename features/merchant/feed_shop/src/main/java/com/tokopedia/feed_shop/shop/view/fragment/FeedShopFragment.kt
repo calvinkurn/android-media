@@ -657,9 +657,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         createPostViewModel.editAuthorId = authorId
 
         val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2)
-        intent.putExtra(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE)
-        intent.putExtra(KEY_AUTHOR_TYPE, VALUE_AUTHOR_TYPE)
-        intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
+            .putExtra(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE)
+            .putExtra(KEY_AUTHOR_TYPE, VALUE_AUTHOR_TYPE)
+            .putExtra(CreatePostViewModel.TAG, createPostViewModel)
+
         startActivity(intent)
     }
 
@@ -1017,12 +1018,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun goToCreatePost() {
         val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-
-        intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-        intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
-        intent.putExtra(BundleData.TITLE, BundleData.VALUE_POST_SEBAGAI)
-        intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-        intent.putExtra(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE)
+            .putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+            .putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
+            .putExtra(BundleData.TITLE, BundleData.VALUE_POST_SEBAGAI)
+            .putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+            .putExtra(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE)
 
         startActivityForResult(intent, CREATE_POST)
 
