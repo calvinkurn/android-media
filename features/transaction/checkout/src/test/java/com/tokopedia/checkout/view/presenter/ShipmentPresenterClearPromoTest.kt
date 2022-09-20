@@ -23,6 +23,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -40,6 +41,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.runs
+import io.mockk.spyk
 import io.mockk.verify
 import io.mockk.verifySequence
 import org.junit.Assert.assertNull
@@ -380,6 +382,142 @@ class ShipmentPresenterClearPromoTest {
     }
 
     @Test
+    fun `WHEN clear non eligible promo by unique id success THEN should render success`() {
+        // Given
+        val notEligiblePromos = arrayListOf(
+            NotEligiblePromoHolderdata(
+                promoCode = "code",
+                iconType = -1
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true
+                )
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+
+        val presenterSpy = spyk(presenter)
+        every { presenterSpy.getClearPromoOrderByUniqueId(any(), any()) } returns ClearPromoOrder(uniqueId = "1")
+        presenterSpy.shipmentCartItemModelList = null
+
+        // When
+        presenterSpy.cancelNotEligiblePromo(notEligiblePromos)
+
+        // Then
+        verify {
+            view.removeIneligiblePromo(notEligiblePromos)
+        }
+    }
+
+    @Test
+    fun `WHEN clear non eligible promo from shipment cart list success THEN should render success`() {
+        // Given
+        val notEligiblePromos = arrayListOf(
+            NotEligiblePromoHolderdata(
+                uniqueId = "1",
+                promoCode = "code",
+                iconType = -1
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true
+                )
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "1",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(boType = 1)),
+                shopId = 1,
+                isProductIsPreorder = false,
+                cartItemModels = listOf(CartItemModel(preOrderDurationDay = 10)),
+                fulfillmentId = 1
+            )
+        )
+
+        // When
+        presenter.cancelNotEligiblePromo(notEligiblePromos)
+
+        // Then
+        verify {
+            view.removeIneligiblePromo(notEligiblePromos)
+        }
+    }
+
+    @Test
+    fun `WHEN clear non eligible promo from shipment cart list unique id not found THEN should not update view`() {
+        // Given
+        val notEligiblePromos = arrayListOf(
+            NotEligiblePromoHolderdata(
+                uniqueId = "1",
+                promoCode = "code",
+                iconType = -1
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true
+                )
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartString = "2"
+            )
+        )
+
+        // When
+        presenter.cancelNotEligiblePromo(notEligiblePromos)
+
+        // Then
+        verify(inverse = true) {
+            view.updateTickerAnnouncementMessage()
+            view.removeIneligiblePromo(notEligiblePromos)
+        }
+    }
+
+    @Test
+    fun `WHEN clear non eligible promo from shipment cart list empty THEN should not update view`() {
+        // Given
+        val notEligiblePromos = arrayListOf(
+            NotEligiblePromoHolderdata(
+                uniqueId = "1",
+                promoCode = "code",
+                iconType = -1
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true
+                )
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+
+        presenter.shipmentCartItemModelList = listOf()
+
+        // When
+        presenter.cancelNotEligiblePromo(notEligiblePromos)
+
+        // Then
+        verify(inverse = true) {
+            view.updateTickerAnnouncementMessage()
+            view.removeIneligiblePromo(notEligiblePromos)
+        }
+    }
+
+    @Test
     fun `WHEN clear non eligible promo success with ticker data THEN should render success and update ticker`() {
         // Given
         presenter.tickerAnnouncementHolderData = TickerAnnouncementHolderData("0", "", "message")
@@ -411,6 +549,38 @@ class ShipmentPresenterClearPromoTest {
         verifySequence {
             view.updateTickerAnnouncementMessage()
             view.removeIneligiblePromo(notEligilePromoList)
+        }
+    }
+
+    @Test
+    fun `WHEN clear non eligible not found THEN should not update view`() {
+        // Given
+        val notEligiblePromos = arrayListOf(
+            NotEligiblePromoHolderdata(
+                promoCode = "code",
+                iconType = -1
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+            ClearPromoUiModel(
+                successDataModel = SuccessDataUiModel(
+                    success = true
+                )
+            )
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+
+        val presenterSpy = spyk(presenter)
+        every { presenterSpy.getClearPromoOrderByUniqueId(any(), any()) } returns null
+        presenterSpy.shipmentCartItemModelList = null
+
+        // When
+        presenterSpy.cancelNotEligiblePromo(notEligiblePromos)
+
+        // Then
+        verify(inverse = true) {
+            view.updateTickerAnnouncementMessage()
+            view.removeIneligiblePromo(notEligiblePromos)
         }
     }
 
@@ -454,7 +624,6 @@ class ShipmentPresenterClearPromoTest {
             ),
         )
 
-        every { compositeSubscription.add(any()) } just runs
         every { clearCacheAutoApplyStackUseCase.setParams(any()) } just runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
             ClearPromoUiModel(
@@ -471,7 +640,6 @@ class ShipmentPresenterClearPromoTest {
         // Then
         verify {
             clearCacheAutoApplyStackUseCase.setParams(any())
-            compositeSubscription.add(any())
             clearCacheAutoApplyStackUseCase.createObservable(any())
         }
     }
@@ -542,8 +710,72 @@ class ShipmentPresenterClearPromoTest {
         // Then
         verify(inverse = true) {
             clearCacheAutoApplyStackUseCase.setParams(any())
-            compositeSubscription.add(any())
             clearCacheAutoApplyStackUseCase.createObservable(any())
         }
+    }
+
+    // Test ShipmentPresenter.getClearPromoOrderByUniqueId(...)
+
+    @Test
+    fun `WHEN get clear promo order unique id with valid unique id THEN promo order should not be null`() {
+        // Given
+        val clearPromoOrders = arrayListOf(
+            ClearPromoOrder(uniqueId = "111-111-111"),
+            ClearPromoOrder(uniqueId = "222-222-222"),
+            ClearPromoOrder(uniqueId = "333-333-333"),
+        )
+        val uniqueId = "111-111-111"
+
+        // When
+        val result = presenter.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
+
+        // Then
+        assert(result != null)
+        assert(result?.uniqueId == uniqueId)
+    }
+
+    @Test
+    fun `WHEN get clear promo order unique id with invalid unique id THEN promo order should be null`() {
+        // Given
+        val clearPromoOrders = arrayListOf(
+            ClearPromoOrder(uniqueId = "222-222-222"),
+            ClearPromoOrder(uniqueId = "333-333-333"),
+        )
+        val uniqueId = "111-111-111"
+
+        // When
+        val result = presenter.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
+
+        // Then
+        assert(result == null)
+    }
+
+    @Test
+    fun `WHEN get clear promo order unique id with empty clear promo list THEN promo order should be null`() {
+        // Given
+        val clearPromoOrders = arrayListOf<ClearPromoOrder>()
+        val uniqueId = "111-111-111"
+
+        // When
+        val result = presenter.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
+
+        // Then
+        assert(result == null)
+    }
+
+    @Test
+    fun `WHEN get clear promo order unique id with null unique id THEN promo order should be null`() {
+        // Given
+        val clearPromoOrders = arrayListOf(
+            ClearPromoOrder(uniqueId = "222-222-222"),
+            ClearPromoOrder(uniqueId = "333-333-333"),
+        )
+        val uniqueId = ""
+
+        // When
+        val result = presenter.getClearPromoOrderByUniqueId(clearPromoOrders, uniqueId)
+
+        // Then
+        assert(result == null)
     }
 }

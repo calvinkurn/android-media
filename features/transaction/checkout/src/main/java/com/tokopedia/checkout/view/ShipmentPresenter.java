@@ -1938,7 +1938,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Nullable
-    private ClearPromoOrder getClearPromoOrderByUniqueId(ArrayList<ClearPromoOrder> list, String uniqueId) {
+    public ClearPromoOrder getClearPromoOrderByUniqueId(ArrayList<ClearPromoOrder> list, String uniqueId) {
         for (ClearPromoOrder clearPromoOrder : list) {
             if (clearPromoOrder.getUniqueId().equals(uniqueId)) {
                 return clearPromoOrder;
