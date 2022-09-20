@@ -83,6 +83,7 @@
             android:theme="@style/TokopediaTransparentStatus"
             android:windowSoftInputMode="adjustPan"
             android:resizeableActivity="true"
+            android:exported="true"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="APPS_HOME"
@@ -118,6 +119,7 @@
         </activity>
         <activity
             android:name="com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity"
+            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -180,7 +182,8 @@
                 android:resource="@xml/nfc_tech_filter" />
         </activity>
 
-        <receiver android:name="com.tokopedia.tkpd.receiver.AppMediaButtonReceiver">
+        <receiver android:name="com.tokopedia.tkpd.receiver.AppMediaButtonReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
