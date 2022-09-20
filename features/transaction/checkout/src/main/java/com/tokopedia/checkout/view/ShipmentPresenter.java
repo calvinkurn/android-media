@@ -2640,7 +2640,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    private void processBoPromoCourierRecommendation(int itemPosition, PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel, ShipmentCartItemModel shipmentCartItemModel) {
+    @Override
+    public void processBoPromoCourierRecommendation(int itemPosition, PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel, ShipmentCartItemModel shipmentCartItemModel) {
         ShipmentDetailData selectedShipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         if (selectedShipmentDetailData == null) {
             selectedShipmentDetailData = getView().getShipmentDetailData(shipmentCartItemModel, recipientAddressModel);
@@ -2694,6 +2695,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 )));
     }
 
+    @Override
     public List<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel) {
         ArrayList<Product> products = new ArrayList<>();
         if (shipmentCartItemModel != null) {

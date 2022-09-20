@@ -408,9 +408,13 @@ public interface ShipmentContract {
 
         void validateClearAllBoPromo();
 
-        void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel);
-
         void doUnapplyBo(String uniqueId, String promoCode);
+
+        List<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel);
+
+        void processBoPromoCourierRecommendation(int itemPosition, PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel, ShipmentCartItemModel shipmentCartItemModel);
+
+        void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel);
 
         void hitClearAllBo();
     }
