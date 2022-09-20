@@ -658,8 +658,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.FEEDBACK_FORM) ||
                     it == ApplinkConstInternalGlobal.FEEDBACK_FORM }, DF_ALPHA_TESTING, R.string.internal_feedback))
 
-            //Chat Service
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalGlobal.TOKO_CHAT) }, DF_CHAT_SERVICE, R.string.title_applink_toko_chat))
+            //Toko Chat
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalCommunication.TOKO_CHAT) }, DF_CHAT_SERVICE, R.string.title_applink_toko_chat))
         }
     }
 
