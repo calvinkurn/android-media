@@ -509,7 +509,7 @@ data class ConfigFlag(
 @Parcelize
 data class GyroData(
     @SerializedName("is_TokoNOW")
-    val isTokoNow: Boolean,
+    val isTokoNow: Boolean?,
     @SerializedName("isUDC")
     val isUDC: Boolean?,
     @SerializedName("isRollence")
@@ -542,7 +542,6 @@ data class ThankPageTopTickerData(
             tickerCTAUrl
         }
     }
-
     fun isAppLink(): Boolean {
         return !tickerCTAApplink.isNullOrEmpty()
     }
