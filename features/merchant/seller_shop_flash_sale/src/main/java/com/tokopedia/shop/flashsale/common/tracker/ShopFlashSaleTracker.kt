@@ -34,7 +34,7 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
     //endregion
 
     //region Campaign Info Page Tracker
-    fun sendClickButtonProceedOnCampaignInfoPageEvent() {
+    fun sendClickButtonProceedOnCampaignInfoPageEvent(campaignId: Long, vpsPackageId: Long) {
         Tracker.Builder()
             .setBusinessUnit(BUSINESS_UNIT)
             .setEventCategory("fs toko - creation")
@@ -42,7 +42,7 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .setShopId(userSession.shopId.toString())
             .setEvent(EVENT)
             .setEventAction("click lanjut")
-            .setEventLabel("")
+            .setEventLabel("$campaignId - $vpsPackageId")
             .build()
             .send()
     }
@@ -94,7 +94,7 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
     //endregion
 
     //region Aturan Campaign Page
-    fun sendClickButtonCreateCampaign() {
+    fun sendClickButtonCreateCampaign(campaignId: Long, vpsPackageId: Long) {
         Tracker.Builder()
             .setBusinessUnit(BUSINESS_UNIT)
             .setEventCategory("fs toko - aturan campaign")
@@ -102,7 +102,7 @@ class ShopFlashSaleTracker @Inject constructor(private val userSession : UserSes
             .setShopId(userSession.shopId.toString())
             .setEvent(EVENT)
             .setEventAction("click buat campaign")
-            .setEventLabel("")
+            .setEventLabel("$campaignId - $vpsPackageId")
             .build()
             .send()
     }
