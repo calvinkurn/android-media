@@ -207,7 +207,7 @@ class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
                             productDetailData?.let { productDetailData ->
                                 intent.putExtra(EXTRA_DEAL_DETAIL_REVAMPED, DealsPDPMapper.mapOldProductDetailData(productDetailData))
                             }
-                            intent.putExtra(EXTRA_VERIFY_REVAMPED, DealsPDPMapper.mapperOldVerify(it.data.eventVerify))
+                            intent.putExtra(EXTRA_VERIFY_REVAMPED, it.data.eventVerify)
                             startActivity(intent)
                         }
                     }

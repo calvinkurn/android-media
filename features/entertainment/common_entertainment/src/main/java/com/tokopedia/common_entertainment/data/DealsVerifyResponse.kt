@@ -1,4 +1,4 @@
-package com.tokopedia.deals.pdp.data
+package com.tokopedia.common_entertainment.data
 
 import android.annotation.SuppressLint
 import android.os.Parcelable
@@ -156,3 +156,4 @@ data class PassengerInformation(
     @SerializedName("title")
     var title: String = ""
 ) : Parcelable
+

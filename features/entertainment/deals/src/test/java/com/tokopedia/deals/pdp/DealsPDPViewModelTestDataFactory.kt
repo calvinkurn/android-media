@@ -1,6 +1,7 @@
 package com.tokopedia.deals.pdp
 
 import com.google.gson.Gson
+import com.tokopedia.common_entertainment.data.DealsVerifyResponse
 import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.pdp.data.DealsProductDetail
@@ -8,8 +9,6 @@ import com.tokopedia.deals.pdp.data.DealsProductEventContent
 import com.tokopedia.deals.pdp.data.DealsRatingResponse
 import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
 import com.tokopedia.deals.pdp.data.DealsTrackingResponse
-import com.tokopedia.deals.pdp.data.DealsVerifyResponse
-
 
 fun createPDPData(): DealsProductDetail {
     return Gson().fromJson(
@@ -71,27 +70,6 @@ fun createVerify(): DealsVerifyResponse {
     return Gson().fromJson(
         DealsJsonMapper.getJson("verify.json"),
         DealsVerifyResponse::class.java
-    )
-}
-
-fun createOldVerify(): com.tokopedia.digital_deals.data.DealsVerifyResponse {
-    return Gson().fromJson(
-        DealsJsonMapper.getJson("verify.json"),
-        com.tokopedia.digital_deals.data.DealsVerifyResponse::class.java
-    )
-}
-
-fun createPDPNew(): DealsProductDetail {
-    return Gson().fromJson(
-        DealsJsonMapper.getJson("pdp_new.json"),
-        DealsProductDetail::class.java
-    )
-}
-
-fun createPDPOld(): com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse {
-    return Gson().fromJson(
-        DealsJsonMapper.getJson("pdp_old.json"),
-        com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse::class.java
     )
 }
 

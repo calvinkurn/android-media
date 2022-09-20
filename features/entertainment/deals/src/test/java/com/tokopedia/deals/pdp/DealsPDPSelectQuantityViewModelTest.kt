@@ -1,6 +1,6 @@
 package com.tokopedia.deals.pdp
 
-import com.tokopedia.deals.pdp.data.DealsVerifyResponse
+import com.tokopedia.common_entertainment.data.DealsVerifyResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

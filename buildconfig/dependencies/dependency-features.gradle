@@ -73,6 +73,7 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
+            commonEntertainment             : ":features:entertainment:common_entertainment",
 
             umrah                           : ":features:salam:umrah",
 

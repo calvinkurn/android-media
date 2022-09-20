@@ -1,8 +1,12 @@
 package com.tokopedia.deals.pdp.ui.utils
 
+import com.tokopedia.common_entertainment.data.CartData
+import com.tokopedia.common_entertainment.data.DealsVerifyRequest
+import com.tokopedia.common_entertainment.data.EventVerifyResponse
+import com.tokopedia.common_entertainment.data.ItemMap
+import com.tokopedia.common_entertainment.data.MetaData
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.pdp.data.Brand
-import com.tokopedia.deals.pdp.data.CartData
 import com.tokopedia.deals.pdp.data.Catalog
 import com.tokopedia.deals.pdp.data.DealRatingRequest
 import com.tokopedia.deals.pdp.data.DealsRatingUpdateRequest
@@ -10,20 +14,12 @@ import com.tokopedia.deals.pdp.data.DealsRecommendMessage
 import com.tokopedia.deals.pdp.data.DealsRecommendTrackingRequest
 import com.tokopedia.deals.pdp.data.DealsTravelMessage
 import com.tokopedia.deals.pdp.data.DealsTravelRecentSearchTrackingRequest
-import com.tokopedia.deals.pdp.data.DealsVerifyRequest
 import com.tokopedia.deals.pdp.data.Entertainment
-import com.tokopedia.deals.pdp.data.EventVerifyResponse
-import com.tokopedia.deals.pdp.data.ItemMap
 import com.tokopedia.deals.pdp.data.Media
-import com.tokopedia.deals.pdp.data.MetaData
 import com.tokopedia.deals.pdp.data.Outlet
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.data.RecentData
 import com.tokopedia.deals.pdp.data.TravelRecentSearch
-import com.tokopedia.digital_deals.data.ItemMapResponse
-import com.tokopedia.digital_deals.data.MetaDataResponse
-import com.tokopedia.digital_deals.data.PassengerForm
-import com.tokopedia.digital_deals.data.PassengerInformation
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -42,82 +38,6 @@ object DealsPDPMapper {
     private const val SERVICE_TRACKING_RECENT_SEARCH = "travel_recent_search"
     private const val NSQ_USE_CASE = "24"
     private const val DEALS_DATA_TYPE = "deal"
-
-    fun mapperOldVerify(verifyResponse: EventVerifyResponse): com.tokopedia.digital_deals.data.EventVerifyResponse {
-        return com.tokopedia.digital_deals.data.EventVerifyResponse(
-            error = verifyResponse.error,
-            errorDescription = verifyResponse.errorDescription,
-            status = verifyResponse.status,
-            gatewayCode = verifyResponse.gatewayCode,
-            metadata = MetaDataResponse(
-                categoryName = verifyResponse.metadata.categoryName,
-                error = verifyResponse.metadata.error,
-                itemIds = verifyResponse.metadata.itemIds,
-                orderTitle = verifyResponse.metadata.orderTitle,
-                orderSubTitle = verifyResponse.metadata.orderSubTitle,
-                productIds = verifyResponse.metadata.productIds,
-                productNames = verifyResponse.metadata.productNames,
-                providerIds = verifyResponse.metadata.providerIds,
-                quantity = verifyResponse.metadata.quantity,
-                totalPrice = verifyResponse.metadata.totalPrice,
-                itemMap = verifyResponse.metadata.itemMap.map {
-                    ItemMapResponse(
-                        basePrice = it.basePrice,
-                        categoryId = it.categoryId,
-                        childCategoryIds = it.childCategoryIds,
-                        commission = it.commission,
-                        commissionType = it.commissionType,
-                        currencyPrice = it.currencyPrice,
-                        description = it.description,
-                        email = it.email,
-                        endTime = it.endTime,
-                        error = it.error,
-                        flagId = it.flagId,
-                        id = it.id,
-                        invoiceId = it.invoiceId,
-                        invoiceItemId = it.invoiceItemId,
-                        invoiceStatus = it.invoiceStatus,
-                        locationDesc = it.locationDesc,
-                        locationName = it.locationName,
-                        mobile = it.mobile,
-                        name = it.name,
-                        orderTraceId = it.orderTraceId,
-                        packageId = it.packageId,
-                        packageName = it.packageName,
-                        paymentType = it.paymentType,
-                        price = it.price,
-                        productAppUrl = it.productAppUrl,
-                        productId = it.productId,
-                        productImage = it.productImage,
-                        productName = it.productName,
-                        providerId = it.providerId,
-                        providerInvoiceCode = it.providerInvoiceCode,
-                        providerOrderId = it.providerOrderId,
-                        providerPackageId = it.providerPackageId,
-                        providerScheduleId = it.providerScheduleId,
-                        providerTicketId = it.providerTicketId,
-                        quantity = it.quantity,
-                        scheduleTimestamp = it.scheduleTimestamp,
-                        startTime = it.startTime,
-                        totalPrice = it.totalPrice,
-                        webAppUrl = it.webAppUrl,
-                        productWebUrl = it.productWebUrl,
-                        passengerForms = it.passengerForms.map {
-                            PassengerForm(
-                                passengerInformation = it.passengerInformation.map {
-                                    PassengerInformation(
-                                        name = it.name,
-                                        title = it.title,
-                                        value = it.value
-                                    )
-                                }
-                            )
-                        }.toMutableList()
-                    )
-                }
-            )
-        )
-    }
 
     fun mapOldProductDetailData(productDetailData: ProductDetailData): DealsDetailsResponse {
         val dealsOldProductDetailData = DealsDetailsResponse()

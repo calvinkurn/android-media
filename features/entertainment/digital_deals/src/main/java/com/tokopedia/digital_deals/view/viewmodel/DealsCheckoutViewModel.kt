@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common_entertainment.data.EventVerifyResponse
+import com.tokopedia.common_entertainment.data.ItemMapResponse
+import com.tokopedia.common_entertainment.data.MetaDataResponse
 import com.tokopedia.digital_deals.data.CartInfo
 import com.tokopedia.digital_deals.data.DealCheckoutGeneral
 import com.tokopedia.digital_deals.data.DealCheckoutGeneralInstant
@@ -15,10 +18,7 @@ import com.tokopedia.digital_deals.data.DealsCheckoutResponse
 import com.tokopedia.digital_deals.data.DealsGeneral
 import com.tokopedia.digital_deals.data.DealsInstant
 import com.tokopedia.digital_deals.data.DealsMetaDataCheckout
-import com.tokopedia.digital_deals.data.EventVerifyResponse
 import com.tokopedia.digital_deals.data.ItemMapCheckout
-import com.tokopedia.digital_deals.data.ItemMapResponse
-import com.tokopedia.digital_deals.data.MetaDataResponse
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealsQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData

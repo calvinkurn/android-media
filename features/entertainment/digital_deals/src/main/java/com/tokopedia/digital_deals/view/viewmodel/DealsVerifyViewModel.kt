@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.digital_deals.data.CartData
-import com.tokopedia.digital_deals.data.DealsVerifyRequest
-import com.tokopedia.digital_deals.data.DealsVerifyResponse
-import com.tokopedia.digital_deals.data.ItemMap
-import com.tokopedia.digital_deals.data.MetaData
+import com.tokopedia.common_entertainment.data.CartData
+import com.tokopedia.common_entertainment.data.DealsVerifyRequest
+import com.tokopedia.common_entertainment.data.DealsVerifyResponse
+import com.tokopedia.common_entertainment.data.ItemMap
+import com.tokopedia.common_entertainment.data.MetaData
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealsQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -50,7 +50,7 @@ class DealsVerifyViewModel @Inject constructor(
         }
     }
 
-    fun mapVerifyRequest(currentQuantity: Int, dealsResponse: DealsDetailsResponse): DealsVerifyRequest{
+    fun mapVerifyRequest(currentQuantity: Int, dealsResponse: DealsDetailsResponse): DealsVerifyRequest {
         return DealsVerifyRequest(
                 book = true,
                 checkout = false,

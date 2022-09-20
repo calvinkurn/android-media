@@ -2,8 +2,8 @@ package com.tokopedia.deals.pdp.ui.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.deals.pdp.data.DealsVerifyRequest
-import com.tokopedia.deals.pdp.data.DealsVerifyResponse
+import com.tokopedia.common_entertainment.data.DealsVerifyRequest
+import com.tokopedia.common_entertainment.data.DealsVerifyResponse
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.domain.DealsPDPVerifyUseCase
 import com.tokopedia.deals.pdp.ui.utils.DealsPDPMapper

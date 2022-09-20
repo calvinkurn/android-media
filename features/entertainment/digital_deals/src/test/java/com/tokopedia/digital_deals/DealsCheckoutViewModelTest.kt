@@ -2,13 +2,13 @@ package com.tokopedia.digital_deals
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.common_entertainment.data.DealsVerifyResponse
 import com.tokopedia.digital_deals.data.DealCheckoutGeneral
 import com.tokopedia.digital_deals.data.DealCheckoutGeneralInstant
 import com.tokopedia.digital_deals.data.DealCheckoutGeneralInstantNoPromo
 import com.tokopedia.digital_deals.data.DealCheckoutGeneralNoPromo
 import com.tokopedia.digital_deals.data.DealsCheckoutInstantResponse
 import com.tokopedia.digital_deals.data.DealsCheckoutResponse
-import com.tokopedia.digital_deals.data.DealsVerifyResponse
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.viewmodel.DealsCheckoutViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

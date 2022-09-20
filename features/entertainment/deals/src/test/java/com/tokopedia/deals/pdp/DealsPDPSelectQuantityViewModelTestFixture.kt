@@ -1,7 +1,7 @@
 package com.tokopedia.deals.pdp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.deals.pdp.data.DealsVerifyResponse
+import com.tokopedia.common_entertainment.data.DealsVerifyResponse
 import com.tokopedia.deals.pdp.domain.DealsPDPVerifyUseCase
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPSelectQuantityViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider

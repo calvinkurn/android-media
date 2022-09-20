@@ -17,8 +17,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
 import com.tokopedia.common.payment.PaymentConstant.PAYMENT_SUCCESS
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.digital_deals.data.EventVerifyResponse
-import com.tokopedia.digital_deals.data.ItemMapResponse
 import com.tokopedia.digital_deals.di.DealsComponent
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity.EXTRA_DEALDETAIL
@@ -36,6 +34,8 @@ import javax.inject.Inject
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.common_entertainment.data.EventVerifyResponse
+import com.tokopedia.common_entertainment.data.ItemMapResponse
 import com.tokopedia.digital_deals.data.DealsGeneral
 import com.tokopedia.digital_deals.data.DealsInstant
 import com.tokopedia.kotlin.extensions.view.gone

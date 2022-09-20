@@ -1,7 +1,7 @@
 package com.tokopedia.deals.pdp.domain
 
-import com.tokopedia.deals.pdp.data.DealsVerifyRequest
-import com.tokopedia.deals.pdp.data.DealsVerifyResponse
+import com.tokopedia.common_entertainment.data.DealsVerifyRequest
+import com.tokopedia.common_entertainment.data.DealsVerifyResponse
 import com.tokopedia.deals.pdp.domain.query.VerifyV2Query
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

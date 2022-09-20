@@ -148,6 +148,7 @@
 /features/entertainment/deals               	        @tokopedia/android-minionmark-dev
 /features/entertainment/digital_deals         			@tokopedia/android-minionmark-dev
 /features/entertainment/event                 			@tokopedia/android-minionmark-dev
+/features/entertainment/common_entertainment            @tokopedia/android-minionmark-dev
 
 /features/travel/common_travel                          @tokopedia/android-minionmark-dev
 /features/travel/flight/                                @tokopedia/android-minionmark-dev
