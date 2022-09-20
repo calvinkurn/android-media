@@ -172,14 +172,18 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
 
         if (id <= 0) {
             val  title = UiText.ResourceText(com.tokopedia.report.R.string.product_report_header)
-            _uiState.value = state.copy(title = title, data = allData)
+            _uiState.update {
+                state.copy(title = title, data = allData)
+            }
         } else {
             val reason = allData.firstOrNull {
                 it.categoryId.toIntOrZero() == id
             }
             val title = UiText.StringText(reason?.value.orEmpty())
             val data = reason?.children.orEmpty()
-            _uiState.value = state.copy(title = title, data = data)
+            _uiState.update {
+                state.copy(title = title, data = data)
+            }
         }
     }
 }

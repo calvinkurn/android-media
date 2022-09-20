@@ -23,10 +23,12 @@ fun TextUnify(
             Typography(context).apply {
                 setWeight(weight = weight.value)
                 setType(type = type.value)
-                properties.invoke(this, context)
             }
         },
-        modifier = modifier
+        modifier = modifier,
+        update = {
+            properties.invoke(it, it.context)
+        }
     )
 }
 
