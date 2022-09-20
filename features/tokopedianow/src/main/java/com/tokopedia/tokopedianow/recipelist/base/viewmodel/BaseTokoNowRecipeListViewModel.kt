@@ -47,10 +47,6 @@ abstract class BaseTokoNowRecipeListViewModel(
 
     fun getRecipeList() {
         launchCatchError(block = {
-            getRecipeListParam.breakDownQueryParams()
-
-            setKeywordToSearchbar()
-
             getRecipeListParam.sourcePage = sourcePage
             getRecipeListParam.warehouseID = addressData.getWarehouseId().toString()
             val response = getRecipeListUseCase.execute(getRecipeListParam)
@@ -91,6 +87,10 @@ abstract class BaseTokoNowRecipeListViewModel(
         getRecipeList()
     }
 
+    fun setKeywordToSearchbar() {
+        _searchKeyword.postValue(if (getRecipeListParam.title.isNullOrBlank()) "" else getRecipeListParam.title)
+    }
+
     private fun showError() {
         visitableItems.clear()
         visitableItems.add(TokoNowServerErrorUiModel)
@@ -102,9 +102,6 @@ abstract class BaseTokoNowRecipeListViewModel(
         _visitableList.postValue(visitableItems)
     }
 
-    private fun setKeywordToSearchbar() {
-        _searchKeyword.postValue(if (getRecipeListParam.title.isNullOrBlank()) "" else getRecipeListParam.title)
-    }
     private fun showProgressBar() {
         _showProgressBar.postValue(false)
     }
