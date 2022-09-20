@@ -153,37 +153,33 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
 
     private fun onBackPressed() = viewModelScope.launch {
         val state = _uiState.value
-        var baseParent = state.baseParent
         val filterId = state.filterId.toMutableList()
 
-        filterId.removeLast()
-        baseParent = if (filterId.isEmpty()) null else baseParent
-
-        updateState(
-            state.copy(baseParent = baseParent, filterId = filterId)
-        )
-        _uiEvent.emit(ProductReportUiEvent.OnBackPressed)
+        if (filterId.isEmpty()) {
+            _uiEvent.emit(ProductReportUiEvent.OnBackPressed)
+        } else {
+            filterId.removeLast()
+            updateState(
+                state.copy(filterId = filterId)
+            )
+        }
     }
 
     private fun updateState(state: ProductReportUiState) {
         val allData = state.allData
-        val data = state.data.toMutableList()
         val filterId = state.filterId
         val id = filterId.lastOrNull() ?: -1
-        val title: UiText
-        data.clear()
 
         if (id <= 0) {
-            title = UiText.ResourceText(com.tokopedia.report.R.string.product_report_header)
-            data.addAll(allData)
+            val  title = UiText.ResourceText(com.tokopedia.report.R.string.product_report_header)
+            _uiState.value = state.copy(title = title, data = allData)
         } else {
             val reason = allData.firstOrNull {
                 it.categoryId.toIntOrZero() == id
             }
-            title = UiText.StringText(reason?.value.orEmpty())
-            data.addAll(reason?.children.orEmpty())
+            val title = UiText.StringText(reason?.value.orEmpty())
+            val data = reason?.children.orEmpty()
+            _uiState.value = state.copy(title = title, data = data)
         }
-
-        _uiState.update { it.copy(title = title, data = data) }
     }
 }

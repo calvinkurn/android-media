@@ -1,7 +1,6 @@
 package com.tokopedia.report.view.fragment.models
 
 import androidx.compose.runtime.Stable
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.unify_components.UiText

@@ -77,7 +77,9 @@ private fun composeSpannable(
 @Preview
 @Composable
 fun ProductReportReasonFooterPreview() {
-    ProductReportReasonHeader(
+    ProductReportReasonFooter(
         stringResource(id = com.tokopedia.report.R.string.product_report_see_all_types)
-    )
+    ) {
+
+    }
 }
