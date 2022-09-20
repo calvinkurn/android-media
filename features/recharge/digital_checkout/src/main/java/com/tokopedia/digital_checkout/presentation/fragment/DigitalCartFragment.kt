@@ -119,7 +119,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private var cartPassData: DigitalCheckoutPassData? = null
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
 
-
     override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -183,8 +182,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         super.onSaveInstanceState(outState)
     }
 
-    private fun requestDataWithAuth(){
-        if (userSession.isLoggedIn){
+    private fun requestDataWithAuth() {
+        if (userSession.isLoggedIn) {
             loadData()
         } else {
             RouteManager.getIntent(context, ApplinkConst.LOGIN).apply {
@@ -203,7 +202,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
     }
 
-    private fun requestGetCart(passData: DigitalCheckoutPassData){
+    private fun requestGetCart(passData: DigitalCheckoutPassData) {
         val categoryId = passData.categoryId ?: ""
         viewModel.getCart(
             categoryId,
@@ -212,7 +211,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         )
     }
 
-    private fun requestAddToCart(passData: DigitalCheckoutPassData){
+    private fun requestAddToCart(passData: DigitalCheckoutPassData) {
         hideContent()
         binding?.loaderCheckout?.visible()
         passData.idemPotencyKey = generateATokenRechargeCheckout(requireContext())
@@ -239,7 +238,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        addToCartViewModel.addToCartResult.observe(viewLifecycleOwner){
+        addToCartViewModel.addToCartResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> viewModel.getCart(
                     it.data, isSpecialProduct = cartPassData?.isSpecialProduct
@@ -249,20 +248,20 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             }
         }
 
-        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
+        addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
             showErrorPage(it)
         }
 
-        viewModel.cartDigitalInfoData.observe(viewLifecycleOwner){
+        viewModel.cartDigitalInfoData.observe(viewLifecycleOwner) {
             renderCartDigitalInfoData(it)
             renderCartBasedOnParamState()
         }
 
-        viewModel.errorThrowable.observe(viewLifecycleOwner){
+        viewModel.errorThrowable.observe(viewLifecycleOwner) {
             closeViewWithMessageAlert(it.throwable)
         }
 
-        viewModel.cancelVoucherData.observe(viewLifecycleOwner){
+        viewModel.cancelVoucherData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.defaultEmptyPromoMessage.isNotEmpty()) {
@@ -273,31 +272,31 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             }
         }
 
-        viewModel.totalPrice.observe(viewLifecycleOwner){
+        viewModel.totalPrice.observe(viewLifecycleOwner) {
             it?.let { totalPrice ->
                 binding?.checkoutBottomViewWidget?.totalPayment =
                     getStringIdrFormat((totalPrice - getPromoData().amount))
             }
         }
 
-        viewModel.showContentCheckout.observe(viewLifecycleOwner){ showContent ->
+        viewModel.showContentCheckout.observe(viewLifecycleOwner) { showContent ->
             if (showContent) showContent() else hideContent()
         }
 
-        viewModel.showLoading.observe(viewLifecycleOwner){ showLoader ->
+        viewModel.showLoading.observe(viewLifecycleOwner) { showLoader ->
             if (showLoader) binding?.loaderCheckout?.visible()
             else binding?.loaderCheckout?.gone()
         }
 
-        viewModel.isNeedOtp.observe(viewLifecycleOwner){
+        viewModel.isNeedOtp.observe(viewLifecycleOwner) {
             interruptRequestTokenVerification(it)
         }
 
-        viewModel.paymentPassData.observe(viewLifecycleOwner){
+        viewModel.paymentPassData.observe(viewLifecycleOwner) {
             redirectToTopPayActivity(it)
         }
 
-        viewModel.payment.observe(viewLifecycleOwner){ payment ->
+        viewModel.payment.observe(viewLifecycleOwner) { payment ->
             binding?.checkoutSummaryWidget?.setSummaries(payment)
         }
 
@@ -305,7 +304,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun observePromoData() {
-        viewModel.promoData.observe(viewLifecycleOwner){
+        viewModel.promoData.observe(viewLifecycleOwner) {
             viewModel.applyPromoData(it)
 
             if (getPromoData().state == TickerCheckoutView.State.INACTIVE) {
@@ -399,21 +398,20 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun getDigitalIdentifierParam(): RequestBodyIdentifier =
         DeviceUtil.getDigitalIdentifierParam(requireActivity())
 
-
     private fun initViews() {
         // init recyclerview
         binding?.let {
             cartDetailInfoAdapter = DigitalCartDetailInfoAdapter(object : DigitalCartDetailInfoAdapter.ActionListener {
-                override fun expandAdditionalList() {
-                    it.tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_close_label)
-                    it.ivSeeDetail.loadImage(CommonRes.drawable.ic_system_action_arrow_up_normal_24)
-                }
+                    override fun expandAdditionalList() {
+                        it.tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_close_label)
+                        it.ivSeeDetail.loadImage(CommonRes.drawable.ic_system_action_arrow_up_normal_24)
+                    }
 
-                override fun collapseAdditionalList() {
-                    it.tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_see_detail_label)
-                    it.ivSeeDetail.loadImage(CommonRes.drawable.ic_system_action_arrow_down_normal_24)
-                }
-            })
+                    override fun collapseAdditionalList() {
+                        it.tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_see_detail_label)
+                        it.ivSeeDetail.loadImage(CommonRes.drawable.ic_system_action_arrow_down_normal_24)
+                    }
+                })
             it.rvDetails.layoutManager = LinearLayoutManager(context)
             it.rvDetails.isNestedScrollingEnabled = false
             it.rvDetails.adapter = cartDetailInfoAdapter
@@ -469,7 +467,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
     }
 
-    private fun showErrorPage(error: ErrorAtc){
+    private fun showErrorPage(error: ErrorAtc) {
         binding?.viewEmptyState?.let {
             binding?.loaderCheckout?.gone()
             hideContent()
@@ -587,7 +585,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 }
                 else -> getCartAfterCheckout()
             }
-        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
             loadData()
         } else if (requestCode == REQUEST_CODE_LOGIN) {
             if (resultCode == Activity.RESULT_OK) {
@@ -874,7 +872,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 linearLayout.addView(simpleWidget)
             }
 
-
             val bottomSheetUnify = BottomSheetUnify()
             bottomSheetUnify.setTitle(getString(R.string.subscription_more_info_bottomsheet_title))
             bottomSheetUnify.setChild(linearLayout)
@@ -915,6 +912,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     companion object {
+
         const val ARG_PASS_DATA = "ARG_PASS_DATA"
         const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
 
