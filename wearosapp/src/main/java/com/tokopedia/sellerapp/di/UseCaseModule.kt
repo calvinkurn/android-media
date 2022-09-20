@@ -1,9 +1,7 @@
 package com.tokopedia.sellerapp.di
 
-import com.tokopedia.sellerapp.data.repository.NewOrderRepository
-import com.tokopedia.sellerapp.data.repository.ReadyToShipOrderRepository
-import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
-import com.tokopedia.sellerapp.domain.interactor.ReadyToShipOrderUseCase
+import com.tokopedia.sellerapp.data.repository.OrderRepository
+import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,15 +12,8 @@ import dagger.hilt.components.SingletonComponent
 class UseCaseModule {
     @Provides
     fun provideNewOrderUseCase(
-        newOrderRepository: NewOrderRepository
-    ): NewOrderUseCase {
-        return NewOrderUseCase(newOrderRepository)
-    }
-
-    @Provides
-    fun provideReadyToShipOrderUseCase(
-        readyToShipOrderRepository: ReadyToShipOrderRepository
-    ): ReadyToShipOrderUseCase {
-        return ReadyToShipOrderUseCase(readyToShipOrderRepository)
+        orderRepository: OrderRepository
+    ): OrderUseCaseImpl {
+        return OrderUseCaseImpl(orderRepository)
     }
 }

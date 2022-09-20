@@ -4,13 +4,15 @@ import NewOrderSummaryScreen
 import SplashScreen
 import androidx.navigation.NavGraphBuilder
 import androidx.wear.compose.navigation.composable
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.NodeClient
 import com.tokopedia.sellerapp.presentation.screen.HomeScreen
 import com.tokopedia.sellerapp.presentation.screen.NewOrderDetailScreen
 import com.tokopedia.sellerapp.presentation.screen.NewOrderListScreen
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.ScreenConstant
+import com.tokopedia.sellerapp.util.ScreenConstant.DATAKEY_ARGS
+import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH
+import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_LIST_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_SUMMARY_SCREEN
 
 fun NavGraphBuilder.splashComposable(
     navigateToHomeScreen: () -> Unit
@@ -37,10 +39,11 @@ fun NavGraphBuilder.newOrderListComposable(
     sharedViewModel: SharedViewModel,
 ) {
     composable(
-        route = ScreenConstant.NEW_ORDER_LIST_SCREEN
-    ) {
+        route = FORMAT_NAVIGATION_PATH.format(NEW_ORDER_LIST_SCREEN, DATAKEY_ARGS)
+    ) { backStackEntry ->
         NewOrderListScreen(
             sharedViewModel = sharedViewModel,
+            dataKey = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
         )
     }
 }
@@ -54,11 +57,14 @@ fun NavGraphBuilder.newOrderDetailComposable() {
 }
 
 fun NavGraphBuilder.newOrderSummaryScreenComposable(
-    navigateToNewOrderList: () -> Unit
+    navigateToNewOrderList: (dataKey: String) -> Unit
 ) {
     composable(
-        route = ScreenConstant.NEW_ORDER_SUMMARY_SCREEN
-    ) {
-        NewOrderSummaryScreen(navigateToNewOrderList)
+        route = FORMAT_NAVIGATION_PATH.format(NEW_ORDER_SUMMARY_SCREEN, DATAKEY_ARGS)
+    ) { backStackEntry ->
+        NewOrderSummaryScreen(
+            navigateToNewOrderList = navigateToNewOrderList,
+            dataKey = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
+        )
     }
 }

@@ -12,8 +12,9 @@ import com.tokopedia.sellerapp.util.UiState
 @Composable
 fun NewOrderListScreen(
     sharedViewModel: SharedViewModel,
+    dataKey: String
 ) {
-    val orderList by sharedViewModel.newOrderList.collectAsState()
+    val orderList by sharedViewModel.getOrderList(dataKey).collectAsState()
 
     LazyColumn {
         item {

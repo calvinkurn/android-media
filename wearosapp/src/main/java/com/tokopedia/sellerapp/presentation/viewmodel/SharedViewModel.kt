@@ -7,8 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.model.OrderModel
-import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
-import com.tokopedia.sellerapp.domain.interactor.ReadyToShipOrderUseCase
+import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
@@ -20,8 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
-    private val newOrderUseCase: NewOrderUseCase,
-    private val readyToShipOrderUseCase: ReadyToShipOrderUseCase,
+    private val orderUseCaseImpl: OrderUseCaseImpl,
     private val getSummaryUseCase: GetSummaryUseCase,
 ) : BaseViewModel(dispatchers.io) {
 
@@ -38,25 +36,19 @@ class SharedViewModel @Inject constructor(
         initialValue = generateInitialMenu()
     )
 
-    val newOrderList: StateFlow<UiState<List<OrderModel>>> = newOrderUseCase.getOrderList().map {
-        UiState.Success(data = it)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
-        initialValue = UiState.Idle()
-    )
-
-    val readyToShipOrderList: StateFlow<UiState<List<OrderModel>>> = readyToShipOrderUseCase.getOrderList().map {
-        UiState.Success(data = it)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
-        initialValue = UiState.Idle()
-    )
-
     private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
     val action: StateFlow<UiState<Boolean>>
         get() = _action
+
+    fun getOrderList(dataKey: String) : StateFlow<UiState<List<OrderModel>>> {
+        return orderUseCaseImpl.getOrderList(dataKey).map {
+            UiState.Success(data = it)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+            initialValue = UiState.Idle()
+        )
+    }
 
     fun sendRequest() {
         launchCatchError(block = {
@@ -77,7 +69,10 @@ class SharedViewModel @Inject constructor(
             listSummary.forEach { summaryModel ->
                 val index = indexOfFirst { it.title == summaryModel.title }
                 if(index != INDEX_NOT_FOUND){
-                    this[index] = this[index].copy(unreadCount = summaryModel.counter.toIntOrZero())
+                    this[index] = this[index].copy(
+                        unreadCount = summaryModel.counter.toIntOrZero(),
+                        dataKey = summaryModel.dataKey
+                    )
                 }
             }
         }

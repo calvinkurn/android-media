@@ -12,10 +12,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface OrderDao{
-    companion object {
-        private const val STATUS_NEW_ORDER = 0 // Actual value should be 220, but temporary hardcoded to 0 for testing purpose
-        private const val STATUS_READY_TO_SHIP = 10 // temporary, to be confirmed later
-    }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrderList(list: List<OrderEntity>)
@@ -24,16 +20,10 @@ interface OrderDao{
     fun insertOrderProducts(list: List<ProductEntity>)
 
     @Transaction
-    @Query("SELECT * FROM WearOrder wo WHERE wo.order_status_id = $STATUS_NEW_ORDER")
-    fun getNewOrderList() : Flow<List<OrderWithProduct>>
+    @Query("SELECT * FROM WearOrder wo WHERE wo.order_status_id IN (:status)")
+    fun getOrderList(status: Array<String>) : Flow<List<OrderWithProduct>>
 
-    @Query("SELECT count(*) FROM WearOrder wo WHERE wo.order_status_id = $STATUS_NEW_ORDER")
-    fun getNewOrderCount() : Flow<Int>
+    @Query("SELECT count(*) FROM WearOrder wo WHERE wo.order_status_id IN (:status)")
+    fun getOrderCount(status: Array<String>) : Flow<Int>
 
-    @Transaction
-    @Query("SELECT * FROM WearOrder wo WHERE wo.order_status_id = $STATUS_READY_TO_SHIP")
-    fun getReadyToDeliverOrderList() : Flow<List<OrderWithProduct>>
-
-    @Query("SELECT count(*) FROM WearOrder wo WHERE wo.order_status_id = $STATUS_READY_TO_SHIP")
-    fun getReadyToDeliverOrderCount() : Flow<Int>
 }

@@ -1,6 +1,9 @@
 package com.tokopedia.sellerapp.navigation
 
 import androidx.navigation.NavController
+import com.tokopedia.sellerapp.util.ScreenConstant
+import com.tokopedia.sellerapp.util.ScreenConstant.DATAKEY_ARGS
+import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH
 import com.tokopedia.sellerapp.util.ScreenConstant.HOME_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_DETAIL_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_LIST_SCREEN
@@ -15,11 +18,15 @@ class ScreenNavigation(navController: NavController) {
             }
         }
     }
-    val toNewOrderSummaryScreen: () -> Unit = {
-        navController.navigate(route = NEW_ORDER_SUMMARY_SCREEN)
+    val toNewOrderSummaryScreen: (dataKey: String) -> Unit = {
+        navController.navigate(
+            route = FORMAT_NAVIGATION_PATH.format(NEW_ORDER_SUMMARY_SCREEN, it)
+        )
     }
-    val toNewOrderListScreen: () -> Unit = {
-        navController.navigate(route = NEW_ORDER_LIST_SCREEN)
+    val toNewOrderListScreen: (dataKey: String) -> Unit = {
+        navController.navigate(
+            route = FORMAT_NAVIGATION_PATH.format(NEW_ORDER_LIST_SCREEN, it)
+        )
     }
     val toNewOrderDetailScreen: () -> Unit = {
         navController.navigate(route = NEW_ORDER_DETAIL_SCREEN)

@@ -1,9 +1,13 @@
 package com.tokopedia.sellerapp.presentation.model
 
+import com.tokopedia.sellerapp.domain.mapper.SummaryDomainMapper.DATAKEY_NEW_ORDER
+import com.tokopedia.sellerapp.domain.mapper.SummaryDomainMapper.DATAKEY_READY_TO_SHIP
+import com.tokopedia.sellerapp.domain.mapper.SummaryDomainMapper.DATAKEY_UNREAD_CHAT
 import com.tokopedia.iconunify.R.drawable as iconR
 
 data class MenuItem(
     val title: String = "",
+    val dataKey: String = "",
     val unreadCount: Int = 0,
     val icon: Int = -1,
 )
@@ -25,13 +29,16 @@ fun generateInitialMenu() = listOf(
     MenuItem(
         title = TITLE_CHAT,
         icon = ICON_CHAT,
+        dataKey = DATAKEY_UNREAD_CHAT
     ),
     MenuItem(
         title = TITLE_NEW_ORDER,
         icon = ICON_NEW_ORDER,
+        dataKey = DATAKEY_NEW_ORDER
     ),
     MenuItem(
         title = TITLE_READY_TO_SHIP,
         icon = ICON_READY_TO_SHIP,
+        dataKey = DATAKEY_READY_TO_SHIP
     )
 )

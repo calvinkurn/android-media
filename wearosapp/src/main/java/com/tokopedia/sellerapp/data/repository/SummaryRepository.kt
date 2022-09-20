@@ -12,7 +12,7 @@ class SummaryRepository @Inject constructor(
     private val summaryRoomDatasource: SummaryRoomDatasource
 ): BaseRepository<List<SummaryEntity>> {
 
-    override fun getCachedData(): Flow<List<SummaryEntity>> {
+    override fun getCachedData(params: Array<String>): Flow<List<SummaryEntity>> {
         return summaryRoomDatasource.getSummaryList()
     }
 
