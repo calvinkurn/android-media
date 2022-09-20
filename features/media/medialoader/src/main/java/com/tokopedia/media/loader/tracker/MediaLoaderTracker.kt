@@ -28,6 +28,9 @@ object MediaLoaderTracker {
     private const val TAG_CDN_MONITORING = "DEV_CDN_MONITORING"
 
     private const val PAGE_NAME_NOT_FOUND = "None"
+    private const val CDN_NO_IP_MSG = "not available"
+    private const val CDN_IP_MAP_KEY = "remote_server_ip"
+    private const val CDN_IMG_SIZE_NOT_AVAILBLE = "n/a"
 
     private fun priority() = Priority.P2
 
@@ -90,10 +93,10 @@ object MediaLoaderTracker {
             url = url,
             pageName = pageName,
             loadTime = loadTime,
-            fileSize = "n/a" // as this is for failed case, then size will not available.
+            fileSize = CDN_IMG_SIZE_NOT_AVAILBLE // as this is for failed case, then size will not available.
         )
 
-        if (!data.url.contains(CDN_URL)) return
+       // if (!data.url.contains(CDN_URL)) return
 
         val map = data.toMap(context.applicationContext).toMutableMap()
 
@@ -101,16 +104,13 @@ object MediaLoaderTracker {
             val ipInfo: String = try {
                 ServerIpAddressLocator.fetchServerInfo(url).hostAddress
             } catch (exp: Exception) {
-                "not available"
+                CDN_NO_IP_MSG
             }
 
-            map["remote_server_ip"] = ipInfo
-
-            Log.d("Lavekush", "test " + ipInfo)
-            Toast.makeText(context, "$ipInfo URL is $url", Toast.LENGTH_LONG).show()
+            map[CDN_IP_MAP_KEY] = ipInfo
 
             ServerLogger.log(
-                priority = priority(),
+                priority = Priority.P1,
                 tag = TAG_CDN_MONITORING,
                 message = map
             )
