@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -691,7 +692,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             return
         }
 
-        ivFeedUser.show()
+        ivFeedUser.onUrlLoaded = { isSuccess ->
+            if(!isSuccess) {
+                // Load Default Image
+                ivFeedUser.post {
+                    ivFeedUser.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_user_profile_default))
+                }
+            }
+        }
         ivFeedUser.setImageUrl(userAccount.thumbnail)
         ivFeedUser.setOnClickListener {
             toolBarAnalytics.clickUserProfileIcon(userSession.userId)
@@ -699,6 +707,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
             RouteManager.route(requireContext(), ApplinkConst.PROFILE, userAccount.id)
         }
+        ivFeedUser.show()
 
         if(!affiliatePreference.isUserProfileEntryPointCoachMarkShown(userSession.userId)) {
             coachMarkHelper.showCoachMark(
