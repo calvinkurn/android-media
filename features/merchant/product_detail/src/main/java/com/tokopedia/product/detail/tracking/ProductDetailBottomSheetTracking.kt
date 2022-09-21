@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.tracking
 
-import com.tokopedia.product.detail.common.ProductTrackingConstant
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Category
+import com.tokopedia.product.detail.common.ProductTrackingConstant.TrackerId
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.tracking.TrackingConstant.Hit
 import com.tokopedia.product.detail.tracking.TrackingConstant.Value
@@ -70,9 +71,9 @@ object ProductDetailBottomSheetTracking {
         val mapEvent = hashMapOf<String, Any>(
             Hit.EVENT to Value.PROMO_VIEW,
             Hit.EVENT_ACTION to ACTION_IMPRESSION_SPECIFICATION,
-            Hit.EVENT_CATEGORY to ProductTrackingConstant.Category.PDP,
+            Hit.EVENT_CATEGORY to Category.PDP,
             Hit.EVENT_LABEL to "",
-            Hit.TRACKER_ID to ProductTrackingConstant.TrackerId.TRACKER_ID_IMPRESS_SPECIFICATION,
+            Hit.TRACKER_ID to TrackerId.TRACKER_ID_IMPRESS_SPECIFICATION,
             Hit.BUSINESS_UNIT to Value.PRODUCT_DETAIL_PAGE,
             Hit.COMPONENT to "",
             Hit.CURRENT_SITE to Value.TOKOPEDIA_MARKETPLACE,
