@@ -264,6 +264,7 @@ ext {
             orderhistory                    : ":features:communication:orderhistory",
             attachvoucher                   : ":features:communication:attachvoucher",
             tokochat                        : ":features:communication:tokochat",
+            tokochat_common                 : ":features:communication:tokochat_common",
 
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
