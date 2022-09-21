@@ -7,9 +7,6 @@ data class RegisterV2Param(
     @SerializedName("reg_type")
     val regType: String = "",
 
-    @SerializedName("os_type")
-    val osType: String = "",
-
     @SerializedName("fullname")
     val fullName: String = "",
 
