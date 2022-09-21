@@ -249,7 +249,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         tv_total_amount?.text = Utils.convertToCurrencyString(itemMap.price.toLong() * itemMap.quantity.toLong() + itemMap.commission.toLong())
         tv_number_vouchers?.text = context?.resources?.getString(com.tokopedia.digital_deals.R.string.number_of_vouchers, itemMap.quantity) ?: ""
 
-        if (dealsDetail.outlets.isNullOrEmpty()) {
+        if (!dealsDetail.outlets.isNullOrEmpty()) {
             tv_no_locations?.text = context?.resources?.getString(com.tokopedia.digital_deals.R.string.number_of_locations, dealsDetail.outlets?.size) ?: ""
         }
 
