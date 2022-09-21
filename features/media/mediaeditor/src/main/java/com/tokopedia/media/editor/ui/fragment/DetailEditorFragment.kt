@@ -38,6 +38,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.Toaster
@@ -241,13 +242,19 @@ class DetailEditorFragment @Inject constructor(
         isEdited = true
     }
 
-    override fun onCropRatioClicked(ratio: Float) {
+    override fun onCropRatioClicked(ratio: ImageRatioType) {
         viewBinding?.imgUcropPreview?.let {
             val overlayView = it.overlayView
             val cropView = it.cropImageView
 
-            overlayView.setTargetAspectRatio(ratio)
-            cropView.targetAspectRatio = ratio
+            overlayView.setTargetAspectRatio(ratio.getRatio())
+            cropView.targetAspectRatio = ratio.getRatio()
+
+            val newRatio = Pair(ratio.getRatioX(), ratio.getRatioY())
+            if (data.cropRotateValue.cropRatio != newRatio){
+                data.cropRotateValue.cropRatio = newRatio
+                isEdited = true
+            }
         }
     }
 
@@ -608,15 +615,6 @@ class DetailEditorFragment @Inject constructor(
                     currentMatrix?.let {
                         initialMatrixValue.forEachIndexed { index, value ->
                             if (value != currentMatrix[index]) isEdited = true
-                        }
-                    }
-                }
-
-                // check if current ratio is same as source, works for crop
-                (data.cropRotateValue.getRatio() ?: data.originalRatio).let {
-                    viewBinding?.imgUcropPreview?.overlayView?.let { overlayView ->
-                        if (it != (overlayView.cropViewRect.width() / overlayView.cropViewRect.height())) {
-                            isEdited = true
                         }
                     }
                 }

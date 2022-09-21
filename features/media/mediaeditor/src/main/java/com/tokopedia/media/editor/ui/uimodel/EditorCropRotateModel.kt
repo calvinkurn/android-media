@@ -1,6 +1,7 @@
 package com.tokopedia.media.editor.ui.uimodel
 
 import android.os.Parcelable
+import com.tokopedia.picker.common.ImageRatioType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -19,33 +20,17 @@ data class EditorCropRotateModel(
     var isRotate: Boolean,
     var isCrop: Boolean,
     var isAutoCrop: Boolean = false,
-    var croppedSourceWidth: Int
-): Parcelable {
+    var croppedSourceWidth: Int,
+    var cropRatio: Pair<Int, Int>
+) : Parcelable {
 
-    fun compareValue(data: EditorCropRotateModel): Boolean {
-        return data.offsetX == offsetX
-                && data.offsetY == offsetY
-                && data.imageWidth == imageWidth
-                && data.imageHeight == imageHeight
-                && data.scale == scale
-                && data.translateX == translateX
-                && data.translateY == translateY
-                && data.scaleX == scaleX
-                && data.scaleY == scaleY
-                && data.rotateDegree == rotateDegree
-                && data.orientationChangeNumber == orientationChangeNumber
-                && data.isRotate == isRotate
-                && data.isCrop == isCrop
-                && data.isAutoCrop == isAutoCrop
-                && data.croppedSourceWidth == croppedSourceWidth
+    // cropRatio.first = ratio width || cropRatio.second = ratio height
+    fun getRatio(): Float? {
+        return if (imageWidth == 0 && imageHeight == 0) null else cropRatio.first.toFloat() / cropRatio.second
     }
 
-    fun getRatio(): Float?{
-        return if(imageWidth == 0 && imageHeight == 0) null else imageWidth.toFloat() / imageHeight
-    }
-
-    companion object{
-        fun getEmptyEditorCropRotateModel(): EditorCropRotateModel{
+    companion object {
+        fun getEmptyEditorCropRotateModel(): EditorCropRotateModel {
             return EditorCropRotateModel(
                 0,
                 0,
@@ -61,7 +46,8 @@ data class EditorCropRotateModel(
                 isRotate = false,
                 isCrop = false,
                 isAutoCrop = false,
-                0
+                0,
+                Pair(1, 1)
             )
         }
     }

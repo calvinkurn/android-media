@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.unifycomponents.toPx
@@ -29,21 +30,19 @@ class CropToolUiComponent constructor(
             editorParam?.autoCropRatio?.let {
                 addView(
                     generateCropButton(
-                        it.getRatioX(),
-                        it.getRatioY(),
+                        it,
                         true
                     )
                 )
             } ?: kotlin.run {
                 editorParam?.ratioList?.forEachIndexed { index, ratio ->
                     val isSelected = if(detailUiModel.cropRotateValue.getRatio() != null){
-                        detailUiModel.cropRotateValue.getRatio()?.toInt() == ratio.getRatio().toInt()
+                        detailUiModel.cropRotateValue.getRatio() == ratio.getRatio()
                     } else (index == 0 && detailUiModel.isToolCrop())
 
                     addView(
                         generateCropButton(
-                            ratio.getRatioX(),
-                            ratio.getRatioY(),
+                            ratio,
                             isSelected
                         )
                     )
@@ -54,7 +53,7 @@ class CropToolUiComponent constructor(
         container().show()
     }
 
-    private fun generateCropButton(widthRatio: Int, heightRatio: Int, isSelected: Boolean = false): View {
+    private fun generateCropButton(imageRatio: ImageRatioType, isSelected: Boolean = false): View {
         return View.inflate(container().context, editorR.layout.ui_component_crop_action_layout, null)
             .apply {
                 val boxCrop = findViewById<View>(editorR.id.box_crop).apply {
@@ -63,8 +62,8 @@ class CropToolUiComponent constructor(
 
                     val ls = layoutParams
 
-                    var width = viewDefaultSize * widthRatio
-                    var height = viewDefaultSize * heightRatio
+                    var width = viewDefaultSize * imageRatio.getRatioX()
+                    var height = viewDefaultSize * imageRatio.getRatioY()
 
                     if (width > limitSize || height > limitSize) {
                         width /= 2
@@ -76,14 +75,14 @@ class CropToolUiComponent constructor(
                 }
 
                 val boxCropText = findViewById<Typography>(editorR.id.text_crop)
-                boxCropText.text = "$widthRatio:$heightRatio"
+                boxCropText.text = "${imageRatio.getRatioX()}:${imageRatio.getRatioY()}"
 
                 viewRefList.add(Pair(boxCrop, boxCropText))
 
                 setOnClickListener {
                     setCropInactive()
 
-                    listener.onCropRatioClicked(widthRatio / heightRatio.toFloat())
+                    listener.onCropRatioClicked(imageRatio)
 
                     boxCrop.background.setColorFilter(activeColor, PorterDuff.Mode.SRC_ATOP)
                     boxCropText.setTextColor(activeColor)
@@ -101,7 +100,7 @@ class CropToolUiComponent constructor(
     }
 
     interface Listener {
-        fun onCropRatioClicked(ratio: Float)
+        fun onCropRatioClicked(ratio: ImageRatioType)
     }
 
     companion object {

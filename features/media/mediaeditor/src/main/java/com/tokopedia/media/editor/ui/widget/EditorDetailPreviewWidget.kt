@@ -134,7 +134,8 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                 rotateNumber,
                 isRotate = isRotate,
                 isCrop = isCrop,
-                croppedSourceWidth = bitmap.width
+                croppedSourceWidth = bitmap.width,
+                cropRatio = data.cropRotateValue.cropRatio
             )
 
             onCropFinish(
@@ -250,7 +251,8 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             rotateNumber,
             isRotate = isRotate,
             isCrop = isCrop,
-            croppedSourceWidth = originalWidth
+            croppedSourceWidth = originalWidth,
+            cropRatio = data?.cropRotateValue?.cropRatio ?: Pair(1, 1)
         )
 
         val normalizeX =
