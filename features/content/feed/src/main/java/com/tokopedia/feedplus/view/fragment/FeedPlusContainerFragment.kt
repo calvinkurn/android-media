@@ -683,6 +683,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         ivFeedUser.show()
         ivFeedUser.setImageUrl(userAccount.thumbnail)
         ivFeedUser.setOnClickListener {
+            toolBarAnalytics.clickUserProfileIcon(userSession.userId)
             RouteManager.route(requireContext(), ApplinkConst.PROFILE, userAccount.id)
         }
     }

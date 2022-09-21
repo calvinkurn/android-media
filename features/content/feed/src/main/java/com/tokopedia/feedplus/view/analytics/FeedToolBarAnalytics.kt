@@ -14,6 +14,7 @@ private const val EVENT_ACTION = "eventAction"
 private const val EVENT_LABEL = "eventLabel"
 private const val EVENT_BUSINESSUNIT = "businessUnit"
 private const val EVENT_CURRENTSITE = "currentSite"
+private const val EVENT_SESSION_IRIS = "sessionIris"
 private const val CATEGORY_FEED = "Feed"
 private const val EVENT_CLICK_FEED = "clickFeed"
 private const val CLICK_HOMEPAGE = "clickHomepage"
@@ -118,5 +119,21 @@ class FeedToolBarAnalytics @Inject constructor() {
         )
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, generalData)
 
+    }
+
+
+    fun clickUserProfileIcon(userId: String) {
+        getTracker().sendGeneralEvent(
+            mapOf(
+                EVENT_NAME to CLICK_HOMEPAGE,
+                EVENT_ACTION to "click - user profile icon",
+                EVENT_CATEGORY to CONTENT_FEED_TIMELINE,
+                EVENT_LABEL to "self",
+                EVENT_BUSINESSUNIT to CONTENT,
+                EVENT_CURRENTSITE to MARKETPLACE,
+                EVENT_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                USER_ID to userId
+            )
+        )
     }
 }
