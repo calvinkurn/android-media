@@ -19,7 +19,7 @@ data class OriginalPrice(
 data class DiscountedPrice(
     val originalPrice: String,
     val originalPriceNumber: Double,
-    val discountPercent: Int,
+    val discountPercent: Long,
     val discountedPrice: String,
     val discountedPriceNumber: Double
 ) : ProductPrice()

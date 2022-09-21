@@ -1,5 +1,10 @@
 package com.tokopedia.product_bundle.tracking
 
+import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.ADD_TO_CART_BUNDLING
+import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.CLICK_BACK
+import com.tokopedia.common.ProductServiceWidgetConstant.TrackerId.CLICK_BUNDLE_OPTIONS
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailBundleTracker
+
 object SingleProductBundleTracking: BaseProductBundleTracking() {
 
     private const val BUNDLING_TYPE = "single"
@@ -14,22 +19,36 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
             val productId = selectedProductId ?: parentProductId
             super.trackBundleOptionClick(
                 "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
-                productId
+                productId,
+                CLICK_BUNDLE_OPTIONS
             )
         }
     }
 
     fun trackSingleBuyClick(
-        bundleId: String?,
-        parentProductId: String,
-        selectedProductId: String?
+            userId: String,
+            source: String,
+            parentProductId: String,
+            bundleId: String?,
+            selectedProductId: String?,
+            shopId: String,
+            productIds: String,
+            productDetails: List<ProductDetailBundleTracker>,
     ) {
         if (bundleId != null) {
             // selectedProductId null means variant not selected yet
             val productId = selectedProductId ?: parentProductId
-            super.trackBuyClick(
-                "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
-                productId
+
+            trackBuyClick(
+                    userId = userId,
+                    label = "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
+                    productIds = productIds,
+                    source = source,
+                    bundleType = VALUE_SINGLE_BUNDLING,
+                    trackerId = ADD_TO_CART_BUNDLING,
+                    productDetails = productDetails,
+                    bundleId = bundleId,
+                    shopId = shopId
             )
         }
     }
@@ -44,7 +63,8 @@ object SingleProductBundleTracking: BaseProductBundleTracking() {
             val productId = selectedProductId ?: parentProductId
             super.trackBackClick(
                 "bundling_id:$bundleId; bundling_type:$BUNDLING_TYPE;",
-                productId
+                productId,
+                CLICK_BACK
             )
         }
     }

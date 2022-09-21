@@ -10,9 +10,15 @@ import javax.inject.Inject
 
 class SetDefaultPeopleAddressUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<SetDefaultPeopleAddressGqlResponse>) {
 
-    fun execute(inputAddressId: Int, setAsStateChosenAddress: Boolean, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+    fun execute(inputAddressId: Int, setAsStateChosenAddress: Boolean, isTokonow: Boolean, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to inputAddressId, PARAM_SET_AS_CHOSEN to setAsStateChosenAddress))
+        graphqlUseCase.setRequestParams(
+            mapOf(
+                PARAM_KEY to inputAddressId,
+                PARAM_SET_AS_CHOSEN to setAsStateChosenAddress,
+                PARAM_IS_TOKONOW_REQUEST to isTokonow
+            )
+        )
         graphqlUseCase.setTypeClass(SetDefaultPeopleAddressGqlResponse::class.java)
         graphqlUseCase.execute({ response: SetDefaultPeopleAddressGqlResponse ->
             if(response.response.status.equals(STATUS_OK, true))  {
@@ -32,10 +38,11 @@ class SetDefaultPeopleAddressUseCase @Inject constructor(private val graphqlUseC
     companion object{
         const val PARAM_KEY = "inputAddressId"
         const val PARAM_SET_AS_CHOSEN = "setAsStateChosenAddress"
+        const val PARAM_IS_TOKONOW_REQUEST = "isTokonowRequest"
 
         val QUERY = """
-            mutation defaultAddress(${"$"}inputAddressId : Int!, ${"$"}setAsStateChosenAddress: Boolean) {
-              kero_set_default_address(addr_id: ${"$"}inputAddressId, set_as_state_chosen_address: ${"$"}setAsStateChosenAddress) {
+            mutation defaultAddress(${"$"}inputAddressId : Int!, ${"$"}setAsStateChosenAddress: Boolean, ${"$"}isTokonowRequest: Boolean!) {
+              kero_set_default_address(addr_id: ${"$"}inputAddressId, set_as_state_chosen_address: ${"$"}setAsStateChosenAddress, is_tokonow_request: ${"$"}isTokonowRequest) {
                 data{
                   is_success
                 }

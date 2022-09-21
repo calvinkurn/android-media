@@ -139,7 +139,12 @@ object ShopPageHomeMapper {
                 formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
                 hasAddToCartButton = isHasATC,
                 addToCartButtonType = UnifyButton.Type.MAIN,
-                addToCardText = occButtonText
+                addToCardText = occButtonText,
+                countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
+                freeOngkir = freeOngkirObject,
+                labelGroupList = shopHomeProductViewModel.labelGroupList.map {
+                    mapToProductCardLabelGroup(it)
+                }
             )
         } else {
             ProductCardModel(

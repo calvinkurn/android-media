@@ -147,7 +147,6 @@ object AccountConstants {
     }
 
     object Query {
-        const val NEW_QUERY_BUYER_ACCOUNT_HOME = "new_query_buyer_account_home"
         const val QUERY_USER_REWARDSHORCUT = "query_user_rewardshortcut"
     }
 }

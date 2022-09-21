@@ -245,10 +245,10 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _addressUiState = combine(_partnerInfo, _warehouseInfo) { partnerInfo, warehouseInfo ->
+    private val _addressUiState = combine(_partnerInfo, _warehouseInfo, _bottomInsets) { partnerInfo, warehouseInfo, bottomInset ->
         AddressWidgetUiState(
             warehouseInfo = warehouseInfo,
-            shouldShow = partnerInfo.type == PartnerType.TokoNow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned
+            shouldShow = partnerInfo.type == PartnerType.TokoNow && warehouseInfo.isOOC && (channelType.isLive || channelType.isVod) && !isFreezeOrBanned && !bottomInset.isAnyShown
         )
     }
 
@@ -1433,7 +1433,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {
         if(shouldTrack) {
             viewModelScope.launchCatchError(dispatchers.io, block = {
-                repo.trackVisitChannel(channelId, PlaySource.getBySource(sourceType))
+                repo.trackVisitChannel(channelId, sourceType)
             }) { }
         }
         _channelReport.setValue { copy(shouldTrack = true) }

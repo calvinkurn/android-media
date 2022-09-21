@@ -19,8 +19,10 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
@@ -59,19 +61,18 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
-import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_ERROR
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_GENERAL_ERROR
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_DYNAMIC_SLOTTING
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_TIMEOUT_EXCEEDED
-import com.tokopedia.product.detail.usecase.CreateAffiliateCookieUseCase
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -91,6 +92,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
@@ -111,6 +114,7 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import dagger.Lazy
+import javax.inject.Inject
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -128,7 +132,6 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
-import javax.inject.Inject
 
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
                                                              private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
@@ -156,8 +159,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
                                                              private val playWidgetTools: PlayWidgetTools,
                                                              private val remoteConfig: RemoteConfig,
-                                                             private val createAffiliateCookieUseCase: Lazy<CreateAffiliateCookieUseCase>,
-                                                             val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
+                                                             val userSessionInterface: UserSessionInterface,
+                                                             private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>) : BaseViewModel(dispatcher.main) {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
@@ -272,8 +275,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _playWidgetReminderSwitch = MutableLiveData<Result<PlayWidgetReminderType>>()
     val playWidgetReminderSwitch: LiveData<Result<PlayWidgetReminderType>> = _playWidgetReminderSwitch
 
-    private val _affiliateCookie = MutableLiveData<Result<Boolean>>()
-    val affiliateCookie: LiveData<Result<Boolean>> = _affiliateCookie
+    private val _toolbarTransparentState = MutableLiveData<Boolean>()
+    val toolbarTransparentState: LiveData<Boolean> get() = _toolbarTransparentState
+
+    private val _verticalRecommendation = MutableLiveData<Result<RecommendationWidget>>()
+    val verticalRecommendation: LiveData<Result<RecommendationWidget>> = _verticalRecommendation
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -307,6 +313,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
 
     init {
+        setToolbarState()
         iniQuantityFlow()
     }
 
@@ -608,11 +615,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     productId = it.basic.productID,
                     pdpSession = it.pdpSession,
                     shopId = it.basic.shopID,
-                    isTokoNow = it.basic.isTokoNow)
+                    isTokoNow = it.basic.isTokoNow
+            )
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
-            p2DataDeffered.await().let {
-                _p2Data.postValue(it)
+            p2DataDeffered.await().let { p2 ->
+                val p2Data = p2.copy(isToolbarTransparent = _toolbarTransparentState.value.orFalse())
+                _p2Data.postValue(p2Data)
             }
 
             p2LoginDeferred?.let {
@@ -1033,34 +1042,25 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     }
 
-    fun hitAffiliateCookie(productInfo: DynamicProductInfoP1,
-                           deviceId: String,
-                           affiliateUuid: String,
-                           uuid: String,
-                           affiliateChannel:String) {
-        if (affiliateUuid.isEmpty()) return
+    fun hitAffiliateCookie(
+        productInfo: DynamicProductInfoP1,
+        affiliateUuid: String,
+        uuid: String,
+        affiliateChannel: String
+    ) {
         launchCatchError(block = {
-            val affiliateParam = DynamicProductDetailMapper.generateAffiliateCookieRequest(
-                    productInfo = productInfo,
-                    affiliateUuid = affiliateUuid,
-                    deviceId = deviceId,
-                    uuid = uuid,
-                    affiliateChannel = affiliateChannel
-            )
-            val result = createAffiliateCookieUseCase
-                    .get()
-                    .executeOnBackground(CreateAffiliateCookieUseCase.createParams(affiliateParam))
 
-            if (result.isSuccess()) {
-                _affiliateCookie.postValue(true.asSuccess())
-            } else {
-                _affiliateCookie.postValue(
-                        Throwable(result.response.data.error.errorMessage).asFail()
-                )
-            }
-        }) {
-            _affiliateCookie.postValue(it.asFail())
-        }
+            val affiliatePageDetail = DynamicProductDetailMapper.getAffiliatePageDetail(productInfo)
+
+            affiliateCookieHelper.get().initCookie(
+                affiliateUUID = affiliateUuid,
+                affiliateChannel = affiliateChannel,
+                affiliatePageDetail = affiliatePageDetail,
+                uuid = uuid
+            )
+        }, onError = {
+            // no op, expect to be handled by Affiliate SDK
+        })
     }
 
     private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean = false, recomItem: RecommendationItem = RecommendationItem()) {
@@ -1191,4 +1191,41 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         })
     }
 
+    private fun setToolbarState() {
+        if (!GlobalConfig.isSellerApp()) {
+            setToolbarStateFromRollence()
+        }
+    }
+
+    private fun setToolbarStateFromRollence() {
+        try {
+            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+            val abTestToolbarState = abTestPlatform.getString(
+                key = RollenceKey.PdpToolbar.key,
+                defaultValue = ""
+            )
+            _toolbarTransparentState.value = abTestToolbarState == RollenceKey.PdpToolbar.transparent
+        } catch (throwable: Throwable) {
+            _toolbarTransparentState.value = false
+        }
+    }
+
+    fun getVerticalRecommendationData(pageName: String, page: Int? = DEFAULT_PAGE_NUMBER, productId: String?) {
+        val nonNullPage = page ?: DEFAULT_PAGE_NUMBER
+        val nonNullProductId = productId.orEmpty()
+        launchCatchError(block = {
+            val requestParams = GetRecommendationRequestParam(
+                pageNumber = nonNullPage,
+                pageName = pageName,
+                productIds = arrayListOf(nonNullProductId)
+            )
+            val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
+            val dataResponse = recommendationResponse.firstOrNull()
+            if (dataResponse == null)
+                _verticalRecommendation.value = Fail(Throwable())
+            else _verticalRecommendation.value = dataResponse.asSuccess()
+        }, onError = {
+            _verticalRecommendation.value = Fail(it)
+        })
+    }
 }

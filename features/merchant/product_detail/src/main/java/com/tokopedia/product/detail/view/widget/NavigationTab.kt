@@ -1,17 +1,17 @@
 package com.tokopedia.product.detail.view.widget
 
 import android.content.Context
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.databinding.WidgetNavigationTabBinding
+import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.calculateFirstVisibleItemPosition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,7 +19,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
-
 
 class NavigationTab(
     context: Context, attributeSet: AttributeSet
@@ -53,18 +52,21 @@ class NavigationTab(
     private var impressNavigation = false
     private var isVisible = false
     private var enableBlockingTouch = true
+    private var navTabPositionOffsetY = Int.ZERO
 
     init {
         addView(view)
-        binding.pdpNavTab.tabLayout.addOnTabSelectedListener(onTabSelectedListener)
+        tabLayout.addOnTabSelectedListener(onTabSelectedListener)
     }
 
     fun start(
         recyclerView: RecyclerView,
         items: List<Item>,
         enableBlockingTouch: Boolean,
-        listener: NavigationListener
+        listener: NavigationListener,
+        offsetY: Int = Int.ZERO
     ) {
+        navTabPositionOffsetY = offsetY
         recyclerView.removeOnScrollListener(onScrollListener)
         recyclerView.removeOnScrollListener(onContentScrollListener)
 
@@ -171,9 +173,10 @@ class NavigationTab(
         }
 
         private fun getFirstVisibleItemPosition(recyclerView: RecyclerView): Int {
-            val layoutManager = recyclerView.layoutManager
-            if (layoutManager !is LinearLayoutManager) return -1
-            return layoutManager.findFirstVisibleItemPosition()
+            return calculateFirstVisibleItemPosition(
+                recyclerView,
+                offsetY = navTabPositionOffsetY
+            )
         }
 
         private fun delayedShow() {
@@ -247,29 +250,12 @@ class NavigationTab(
             if (enableContentChangeListener) updateSelectedTab(recyclerView)
         }
 
-        /**
-         * ProductDetailNavigation will render front of recyclerview
-         * layoutManager.findFirstVisibleItemPosition -> is doesn't aware of nav tab
-         *
-         * we should manually determine if the item position if visible in screen
-         * (with nav tab in from of recyclerview)
-         */
-        private fun calculateFirstVisibleItemPosition(recyclerView: RecyclerView): Int {
-            val layoutManager = recyclerView.layoutManager
-            if (layoutManager !is LinearLayoutManager) return -1
-            val position = layoutManager.findFirstVisibleItemPosition()
-            val someItem = layoutManager.findViewByPosition(position)
-            val rectItem = Rect()
-            someItem?.getGlobalVisibleRect(rectItem)
-            val rectRv = Rect()
-            recyclerView.getGlobalVisibleRect(rectRv)
-            return if ((rectItem.bottom - rectRv.top) <= view.height) {
-                position + 1
-            } else position
-        }
-
         private fun updateSelectedTab(recyclerView: RecyclerView) {
-            val firstVisibleItemPosition = calculateFirstVisibleItemPosition(recyclerView)
+            val offsetY = view.height + navTabPositionOffsetY
+            val firstVisibleItemPosition = calculateFirstVisibleItemPosition(
+                recyclerView = recyclerView,
+                offsetY = offsetY
+            )
             val indexTab = if (firstVisibleItemPosition == 0) 0
             else items.indexOfFirst { firstVisibleItemPosition == it.getPosition() }
 
@@ -291,7 +277,7 @@ class NavigationTab(
             return super.calculateDyToMakeVisible(
                 view,
                 snapPreference
-            ) + this@NavigationTab.view.height
+            ) + this@NavigationTab.view.height + navTabPositionOffsetY
         }
 
         override fun getVerticalSnapPreference(): Int {
