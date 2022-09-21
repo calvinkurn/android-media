@@ -15,7 +15,10 @@ data class MembershipGetUserCardMemberList (
     val resultStatus:ResultStatus?= null,
     @Expose
     @SerializedName("userCardMemberList")
-    val userCardMemberList:UserCardMemberList?=null
+    val userCardMemberList:UserCardMemberList?=null,
+    @Expose
+    @SerializedName("paging")
+    val paging: MembershipPaging?=null
 )
 
 data class UserCardMemberList (
@@ -68,3 +71,10 @@ data class UserInfo (
     @SerializedName("profilePicture")
     val profilePicture : String? = null
 )
+
+data class MembershipPaging(
+    @Expose
+    @SerializedName("hasNext")
+    val hasNext:Boolean?=null
+)
+
