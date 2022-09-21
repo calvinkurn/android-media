@@ -48,6 +48,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDeals.DEALS_HOMEPAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.UNIVERSAL
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_PDP
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -301,7 +302,8 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Discovery
             add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DF_BASE, R.string.title_similar_search))
-            add(DFP({ it.startsWith(SEARCH_RESULT) || it.startsWith(AUTOCOMPLETE) }, DF_BASE, R.string.title_search_result))
+            add(DFP({ it.startsWith(SEARCH_RESULT) || it.startsWith(AUTOCOMPLETE) || it.startsWith(
+                UNIVERSAL) }, DF_BASE, R.string.title_search_result))
             add(DFP({ it.startsWith(HOME_WISHLIST) }, DF_BASE, R.string.title_wishlist))
             add(DFP({ it.startsWith(DEFAULT_HOME_RECOMMENDATION) }, DF_BASE, R.string.recom_home_recommendation))
             add(DFP({ it.startsWith(HOME_RECENT_VIEW) }, DF_MERCHANT_LOGIN, R.string.title_recent_view, { DFWebviewFallbackUrl.RECENT_VIEW }))

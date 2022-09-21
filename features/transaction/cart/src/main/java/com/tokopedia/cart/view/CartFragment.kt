@@ -1140,7 +1140,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
 
                     it.voucherOrderUiModels.forEach { voucher ->
-                        if (it.messageUiModel.state == "red" && voucher.code.isNotBlank()) {
+                        if (voucher.messageUiModel.state == "red" && voucher.code.isNotBlank()) {
                             val clearOrder = clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
                             if (clearOrder == null) {
                                 val availableGroup = cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
@@ -1178,7 +1178,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
 
                     it.voucherOrderUiModels.forEach { voucher ->
-                        if (it.messageUiModel.state == "red" && voucher.code.isNotBlank()) {
+                        if (voucher.messageUiModel.state == "red" && voucher.code.isNotBlank()) {
                             val clearOrder = clearOrders.find { order -> order.uniqueId == voucher.uniqueId }
                             if (clearOrder == null) {
                                 val availableGroup = cartListData.availableSection.availableGroupGroups.find { group -> group.cartString == voucher.uniqueId }
