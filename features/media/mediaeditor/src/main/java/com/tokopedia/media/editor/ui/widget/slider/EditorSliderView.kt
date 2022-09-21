@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -71,6 +72,16 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
             initSliderValue()
             moveThumb()
             initSliderTouchListener()
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
+        super.onWindowFocusChanged(hasWindowFocus)
+        if (hasWindowFocus) {
+            initSliderTouchListener()
+        } else {
+            sliderThumb.setOnTouchListener(null)
         }
     }
 
