@@ -20,6 +20,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
@@ -147,6 +148,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @Inject
     lateinit var entryPointAnalytic: FeedEntryPointAnalytic
 
+    @Inject
+    lateinit var dispatchers: CoroutineDispatchers
+
     /** View */
     private lateinit var fabFeed: FloatingButtonUnify
     private lateinit var feedFloatingButton: FeedFloatingButton
@@ -179,7 +183,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private val coachMarkHelper by lazy(LazyThreadSafetyMode.NONE) {
-        CoachMarkHelper(requireContext())
+        CoachMarkHelper(requireContext(), dispatchers)
     }
 
     private var badgeNumberNotification: Int = 0

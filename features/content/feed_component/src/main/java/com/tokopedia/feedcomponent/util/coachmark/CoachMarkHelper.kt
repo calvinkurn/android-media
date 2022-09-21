@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.util.coachmark
 
 import android.content.Context
 import android.view.View
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import kotlinx.coroutines.*
@@ -11,11 +12,10 @@ import kotlinx.coroutines.*
  */
 class CoachMarkHelper(
     private val context: Context,
+    private val dispatcher: CoroutineDispatchers,
 ) {
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(Dispatchers.Main + job)
-
     private val coachMarkMap = mutableMapOf<View, CoachMark2>()
+    private val jobMap = mutableMapOf<View, Job>()
 
     fun showCoachMark(
         config: CoachMarkConfig,
@@ -23,8 +23,8 @@ class CoachMarkHelper(
         if(config.delay == 0L && config.duration == 0L)
             showCoachMark(config.view, config.title, config.subtitle)
         else {
-            job.cancelChildren()
-            scope.launch {
+            jobMap[config.view]?.cancel()
+            jobMap[config.view] = CoroutineScope(dispatcher.main).launch {
                 if(config.delay != 0L) delay(config.delay)
 
                 showCoachMark(config.view, config.title, config.subtitle)
@@ -40,9 +40,12 @@ class CoachMarkHelper(
     }
 
     fun dismissAllCoachMark() {
-        job.cancelChildren()
         coachMarkMap.forEach {
-            hideCoachMark(it.key)
+            coachMarkMap[it.key]?.dismissCoachMark()
+        }
+
+        jobMap.forEach {
+            jobMap[it.key]?.cancelChildren()
         }
     }
 
@@ -63,10 +66,6 @@ class CoachMarkHelper(
                 )
             )
         )
-    }
-
-    private fun hideCoachMark(view: View) {
-        coachMarkMap[view]?.dismissCoachMark()
     }
 
     private fun getOrCreateCoachMark(view: View): CoachMark2 {
