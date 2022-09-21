@@ -9,6 +9,7 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.components.CatalogComparisonAccordionAdapter
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.raw.ComponentData
+import com.tokopedia.unifycomponents.toPx
 
 class ComparisonFeatureNewViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val accordionView = view.findViewById<AccordionUnify>(R.id.comparision_accordion_view)
@@ -48,7 +49,7 @@ class ComparisonFeatureNewViewHolder(val view: View) : RecyclerView.ViewHolder(v
                     expandableView = it,
                     isExpanded = specList?.isExpanded ?: false
                 )
-                accordionUnifyData.setContentPadding(0, 0, 0, 16)
+                accordionUnifyData.setContentPadding(8.toPx(), 0.toPx(), 8.toPx(), 16.toPx())
                 addGroup(accordionUnifyData)
             }
         }
