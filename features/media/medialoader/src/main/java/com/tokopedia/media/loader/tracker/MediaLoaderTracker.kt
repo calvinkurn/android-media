@@ -83,11 +83,11 @@ object MediaLoaderTracker : CoroutineScope {
         )
     }
 
-    fun trackCdnDown(
+    fun trackLoadFailed(
         context: Context,
         url: String,
         loadTime: String = "",
-        e: GlideException?
+        exception: GlideException?
     ) {
 
         val pageName = try {

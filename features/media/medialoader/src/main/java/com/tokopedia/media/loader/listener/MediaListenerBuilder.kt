@@ -30,11 +30,11 @@ object MediaListenerBuilder {
             listener?.onFailed(e)
 
             val loadTime = (System.currentTimeMillis() - startTime).toString()
-            MediaLoaderTracker.trackCdnDown(
+            MediaLoaderTracker.trackLoadFailed(
                 context = context.applicationContext,
                 url = properties.data.toString(),
                 loadTime = loadTime,
-                e = e
+                exception = e
             )
             return false
         }
