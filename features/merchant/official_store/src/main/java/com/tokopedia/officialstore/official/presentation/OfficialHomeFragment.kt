@@ -63,7 +63,15 @@ import com.tokopedia.officialstore.official.presentation.adapter.datamodel.Offic
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
-import com.tokopedia.officialstore.official.presentation.listener.*
+import com.tokopedia.officialstore.official.presentation.listener.RecommendationWidgetCallback
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMixTopComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSFeaturedBrandCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSFeaturedShopDCCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMerchantVoucherCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSSpecialReleaseComponentCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
