@@ -10,7 +10,7 @@ data class RecipeProductResponse(
     @SerializedName("detail")
     val detail: ProductDetailResponse,
     @SerializedName("similarProducts")
-    val similarProducts: List<RecipeProductResponse>
+    val similarProducts: List<RecipeProductResponse>?
 ) {
 
     data class ProductDetailResponse(

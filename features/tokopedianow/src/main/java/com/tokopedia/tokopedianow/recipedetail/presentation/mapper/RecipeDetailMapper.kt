@@ -175,9 +175,9 @@ object RecipeDetailMapper {
         val position = index + 1
         val detail = product.detail
 
-        val similarProducts = product.similarProducts.mapIndexed { idx, similarProduct ->
+        val similarProducts = product.similarProducts?.mapIndexed { idx, similarProduct ->
             mapToProductUiModel(idx, similarProduct)
-        }
+        }.orEmpty()
 
         return RecipeProductUiModel(
             id = product.id,
