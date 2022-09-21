@@ -5,22 +5,19 @@ import com.tokopedia.topads.common.data.model.InsightProductRecommendationModel
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.interfaces.Analytics
 
 const val ON = "on"
 const val OFF = "off"
-const val CLICK_AKTIFKAN_ATUR_MANUAL = "click aktifkan atur manual"
-const val CLICK_BATALKAN_ATUR_MANUAL = "click batalkan atur manual"
-const val CLICK_BATALKAN_ATUR_OTOMATIS = "click batalkan atur otomatis"
-const val CLICK_AKTIFKAN_ATUR_OTOMATIS = "click aktifkan atur otomatis"
-const val CLICK_TOGGLE_ATUR_OTOMATIS = "click toggle atur otomatis"
+const val EVENT_ACTION_CLICK_AKTIFKAN_ATUR_MANUAL = "click aktifkan atur manual"
+const val EVENT_ACTION_CLICK_BATALKAN_ATUR_MANUAL = "click batalkan atur manual"
+const val EVENT_ACTION_CLICK_BATALKAN_ATUR_OTOMATIS = "click batalkan atur otomatis"
+const val EVENT_ACTION_CLICK_AKTIFKAN_ATUR_OTOMATIS = "click aktifkan atur otomatis"
+const val EVENT_ACTION_CLICK_TOGGLE_ATUR_OTOMATIS = "click toggle atur otomatis"
 private const val CLICK_TOP_ADS = "clickTopAds"
-const val KEY_EVENT = "event"
 private const val KEY_EVENT_SCREEN_NAME = "screenName"
 private const val KEY_OPEN_SCREEN_EVENT = "openScreen"
-const val KEY_EVENT_CATEGORY = "eventCategory"
-const val KEY_EVENT_ACTION = "eventAction"
-const val KEY_EVENT_LABEL = "eventLabel"
 private const val KEY_EVENT_CATEGORY_VALUE = "ads creation form"
 private const val KEY_EVENT_CATEGORY_VALUE_EDIT = "edit group form"
 private const val KEY_EVENT_VALUE_EDIT = "clickEditGroup"
@@ -30,7 +27,6 @@ private const val KEY_EVENT_DASHBOARD_CATEGORY_VALUE = "auto ads dashboard"
 private const val KEY_TOP_ADS_SCREEN_NAME = "/topads - home"
 private const val KEY_TOP_ADS_OBAORDING_SCREEN_NAME = "/autoads - onboarding"
 private const val KEY_EVENT_LOGGED_IN_STATUS = "isLoggedInStatus"
-private const val KEY_EVENT_USER_ID = "userId"
 private const val KEY_EVENT_INSIGHT_RECOMMENDATION = "clickShopInsight"
 private const val KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION = "Insight center"
 private const val KEY_EVENT_PDP_BOTTOMSHEET = "clickTopAds"
@@ -45,85 +41,81 @@ private const val KEY_EVENT_CATEGORY_HEADLINE_ADS = "headline ads dashboard"
 private const val KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION = "headline ads creation"
 private const val KEY_BUSINESS_UNIT = "ads solution"
 private const val KEY_CURRENT_SITE = "tokopediamarketplace"
-const val KEY_BUSINESS_UNIT_EVENT = "businessUnit"
-const val KEY_CURRENT_SITE_EVENT = "currentSite"
-private const val KEY_ECOMMERCE_EVENT = "ecommerce"
 private const val KEY_PROMO_CLICK = "promoClick"
 private const val KEY_PROMO_VIEW = "promoView"
-private const val KEY_PROMOTIONS = "promotions"
 private const val KEY_EVENT_GROUP_DETAIL = "topAdsSellerApp"
 private const val KEY_EVENT_CATEGORY_GROUP_DETAIL = "topads detail group iklan"
 private const val KEY_EVENT_CATEGORY_IKLAN_PRODUK = "topads dashboard iklan produk"
 private const val KEY_EVENT_CATEGORY_PRODUCT_CREATE = "topads manage product create form"
 private const val KEY_EVENT_CATEGORY_PRODUCT_EDIT = "topads manage product edit form"
 private const val KEY_EVENT_CATEGORY_ONBOARDING = "onboarding dashboard"
+const val TRACKER_ID_CLICK_TOGGLE_ATUR_OTOMATIS = "33130"
+const val TRACKER_ID_CLICK_AKTIFKAN_ATUR_OTOMATIS = "33131"
+const val TRACKER_ID_CLICK_BATALKAN_ATUR_OTOMATIS = "33132"
+const val TRACKER_ID_CLICK_AKTIFKAN_ATUR_MANUAL = "33133"
+const val TRACKER_ID_CLICK_BATALKAN_ATUR_MANUAL = "33134"
 
-class TopAdsCreateAnalytics {
+class TopAdsCreateAnalytics : BaseTrackerConst() {
 
     companion object {
         val topAdsCreateAnalytics: TopAdsCreateAnalytics by lazy { TopAdsCreateAnalytics() }
     }
 
-    private fun getTracker(): Analytics {
-        return TrackApp.getInstance().gtm
-    }
-
-
     fun sendTopAdsEvent(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_VALUE,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_VALUE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_EVENT_USER_ID to userId)
+                Event.KEY to KEY_EVENT_VALUE,
+                Category.KEY to KEY_EVENT_CATEGORY_VALUE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                UserId.KEY to userId)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsEventEdit(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_VALUE_EDIT,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_VALUE_EDIT,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_EVENT_USER_ID to userId)
+                Event.KEY to KEY_EVENT_VALUE_EDIT,
+                Category.KEY to KEY_EVENT_CATEGORY_VALUE_EDIT,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                UserId.KEY to userId)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_VALUE,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_VALUE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel)
+                Event.KEY to KEY_EVENT_VALUE,
+                Category.KEY to KEY_EVENT_CATEGORY_VALUE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsDashboardEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_DASHBOARD_VALUE,
-                KEY_EVENT_CATEGORY to KEY_EVENT_DASHBOARD_CATEGORY_VALUE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel)
+                Event.KEY to KEY_EVENT_DASHBOARD_VALUE,
+                Category.KEY to KEY_EVENT_DASHBOARD_CATEGORY_VALUE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsOpenOnboardingScreenEvent(isLoggedInStatus: Boolean, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_OPEN_SCREEN_EVENT,
+                Event.KEY to KEY_OPEN_SCREEN_EVENT,
                 KEY_EVENT_SCREEN_NAME to KEY_TOP_ADS_OBAORDING_SCREEN_NAME,
                 KEY_EVENT_LOGGED_IN_STATUS to isLoggedInStatus.toString(),
-                KEY_EVENT_USER_ID to userId)
+                UserId.KEY to userId)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsOpenScreenEvent() {
         val map = mapOf(
-                KEY_EVENT to KEY_OPEN_SCREEN_EVENT,
+                Event.KEY to KEY_OPEN_SCREEN_EVENT,
                 KEY_EVENT_SCREEN_NAME to KEY_TOP_ADS_SCREEN_NAME
         )
 
@@ -132,11 +124,11 @@ class TopAdsCreateAnalytics {
 
     fun sendInsightGtmEvent(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_INSIGHT_RECOMMENDATION,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_EVENT_USER_ID to userId
+                Event.KEY to KEY_EVENT_INSIGHT_RECOMMENDATION,
+                Category.KEY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                UserId.KEY to userId
         )
 
         getTracker().sendGeneralEvent(map)
@@ -144,68 +136,68 @@ class TopAdsCreateAnalytics {
 
     fun sendPdpBottomSheetEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_PDP_BOTTOMSHEET,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_PDP_BOTTOMSHEET,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel)
+                Event.KEY to KEY_EVENT_PDP_BOTTOMSHEET,
+                Category.KEY to KEY_EVENT_CATEGORY_PDP_BOTTOMSHEET,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendEditFormEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_EDIT_FORM,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_EDIT_FORM,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel)
+                Event.KEY to KEY_EVENT_EDIT_FORM,
+                Category.KEY to KEY_EVENT_CATEGORY_EDIT_FORM,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendEditFormSaveEvent(eventAction: String, map: MutableList<MutableMap<String, String>>) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_EDIT_FORM,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_EDIT_FORM,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to map)
+                Event.KEY to KEY_EVENT_EDIT_FORM,
+                Category.KEY to KEY_EVENT_CATEGORY_EDIT_FORM,
+                Action.KEY to eventAction,
+                Label.KEY to map)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendHeadlineAdsEvent(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_HEADLINE_ADS,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_HEADLINE_ADS,
-                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_EVENT_USER_ID to userId)
+                Event.KEY to KEY_EVENT_HEADLINE_ADS,
+                Category.KEY to KEY_EVENT_CATEGORY_HEADLINE_ADS,
+                BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+                CurrentSite.KEY to KEY_CURRENT_SITE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                UserId.KEY to userId)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendHeadlineAdsViewEvent(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_IRIS_ADS,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_HEADLINE_ADS,
-                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_EVENT_USER_ID to userId)
+                Event.KEY to KEY_EVENT_IRIS_ADS,
+                Category.KEY to KEY_EVENT_CATEGORY_HEADLINE_ADS,
+                BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+                CurrentSite.KEY to KEY_CURRENT_SITE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                UserId.KEY to userId)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendViewFormEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
-            KEY_EVENT to KEY_EVENT_IRIS_ADS,
-            KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_PRODUCT_EDIT,
-            KEY_EVENT_LABEL to eventLabel,
-            KEY_BUSINESS_UNIT_EVENT to "",
-            KEY_CURRENT_SITE_EVENT to ""
+            Event.KEY to KEY_EVENT_IRIS_ADS,
+            Action.KEY to eventAction,
+            Category.KEY to KEY_EVENT_CATEGORY_PRODUCT_EDIT,
+            Label.KEY to eventLabel,
+            BusinessUnit.KEY to "",
+            CurrentSite.KEY to ""
         )
 
         getTracker().sendGeneralEvent(map)
@@ -213,60 +205,60 @@ class TopAdsCreateAnalytics {
 
     fun sendHeadlineCreatFormEvent(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_HEADLINE_CREATE_FORM,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
-                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_EVENT_USER_ID to userId)
+                Event.KEY to KEY_EVENT_HEADLINE_CREATE_FORM,
+                Category.KEY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
+                BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+                CurrentSite.KEY to KEY_CURRENT_SITE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                UserId.KEY to userId)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendHeadlineCreatFormClickEvent(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_CLICK_ADS_CREATE,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
-                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_EVENT_USER_ID to userId)
+                Event.KEY to KEY_EVENT_CLICK_ADS_CREATE,
+                Category.KEY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
+                BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+                CurrentSite.KEY to KEY_CURRENT_SITE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                UserId.KEY to userId)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendHeadlineCreatFormEcommerceViewEvent(eventAction: String, eventLabel: String, data: List<TopAdsProductModel>, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_PROMO_VIEW,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
-                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_ECOMMERCE_EVENT to mapOf(
+                Event.KEY to KEY_PROMO_VIEW,
+                Category.KEY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
+                BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+                CurrentSite.KEY to KEY_CURRENT_SITE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                Ecommerce.KEY to mapOf(
                         KEY_PROMO_VIEW to mapOf(
-                                KEY_PROMOTIONS to getProductList(data)
+                                Promotion.KEY to getProductList(data)
                         )),
-                KEY_EVENT_USER_ID to userId)
+                UserId.KEY to userId)
 
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun sendHeadlineCreatFormEcommerceCLickEvent(eventAction: String, eventLabel: String, data: List<TopAdsProductModel>, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_PROMO_CLICK,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
-                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_ECOMMERCE_EVENT to mapOf(
+                Event.KEY to KEY_PROMO_CLICK,
+                Category.KEY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
+                BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+                CurrentSite.KEY to KEY_CURRENT_SITE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                Ecommerce.KEY to mapOf(
                         KEY_PROMO_CLICK to mapOf(
-                                KEY_PROMOTIONS to getProductList(data)
+                                Promotion.KEY to getProductList(data)
                         )),
-                KEY_EVENT_USER_ID to userId)
+                UserId.KEY to userId)
 
         getTracker().sendEnhanceEcommerceEvent(map)
     }
@@ -286,34 +278,34 @@ class TopAdsCreateAnalytics {
 
     fun sendHeadlineCreatFormEcommerceKeywordViewEvent(eventAction: String, eventLabel: String, data: List<KeywordDataItem>, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_PROMO_VIEW,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
-                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_ECOMMERCE_EVENT to mapOf(
+                Event.KEY to KEY_PROMO_VIEW,
+                Category.KEY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
+                BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+                CurrentSite.KEY to KEY_CURRENT_SITE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                Ecommerce.KEY to mapOf(
                         KEY_PROMO_VIEW to mapOf(
-                                KEY_PROMOTIONS to getKeywordList(data)
+                                Promotion.KEY to getKeywordList(data)
                         )),
-                KEY_EVENT_USER_ID to userId)
+                UserId.KEY to userId)
 
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun sendHeadlineCreatFormEcommerceKeywordCLickEvent(eventAction: String, eventLabel: String, data: List<KeywordDataItem>, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_PROMO_CLICK,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
-                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_ECOMMERCE_EVENT to mapOf(
+                Event.KEY to KEY_PROMO_CLICK,
+                Category.KEY to KEY_EVENT_CATEGORY_HEADLINE_ADS_CREATION,
+                BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+                CurrentSite.KEY to KEY_CURRENT_SITE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                Ecommerce.KEY to mapOf(
                         KEY_PROMO_CLICK to mapOf(
-                                KEY_PROMOTIONS to getKeywordList(data)
+                                Promotion.KEY to getKeywordList(data)
                         )),
-                KEY_EVENT_USER_ID to userId)
+                UserId.KEY to userId)
 
         getTracker().sendEnhanceEcommerceEvent(map)
     }
@@ -332,47 +324,47 @@ class TopAdsCreateAnalytics {
 
     fun sendInsightShopEvent(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_EVENT_INSIGHT_RECOMMENDATION,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-                KEY_EVENT_USER_ID to userId)
+                Event.KEY to KEY_EVENT_INSIGHT_RECOMMENDATION,
+                Category.KEY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+                CurrentSite.KEY to KEY_CURRENT_SITE,
+                UserId.KEY to userId)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendInsightSightProductEcommerceViewEvent(eventAction: String, eventLabel: String, data: List<InsightProductRecommendationModel>, position: Int, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_PROMO_VIEW,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
-                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_ECOMMERCE_EVENT to mapOf(
+                Event.KEY to KEY_PROMO_VIEW,
+                Category.KEY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
+                BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+                CurrentSite.KEY to KEY_CURRENT_SITE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                Ecommerce.KEY to mapOf(
                         KEY_PROMO_VIEW to mapOf(
-                                KEY_PROMOTIONS to getInsightProductList(data, position)
+                                Promotion.KEY to getInsightProductList(data, position)
                         )),
-                KEY_EVENT_USER_ID to userId)
+                UserId.KEY to userId)
 
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun sendInsightSightDailyProductEcommerceViewEvent(eventAction: String, eventLabel: String, data: List<InsightDailyBudgetModel>, position: Int, userId: String) {
         val map = mapOf(
-                KEY_EVENT to KEY_PROMO_VIEW,
-                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
-                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_ECOMMERCE_EVENT to mapOf(
+                Event.KEY to KEY_PROMO_VIEW,
+                Category.KEY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
+                BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+                CurrentSite.KEY to KEY_CURRENT_SITE,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                Ecommerce.KEY to mapOf(
                         KEY_PROMO_VIEW to mapOf(
-                                KEY_PROMOTIONS to getInsightDailyBidgetList(data, position)
+                                Promotion.KEY to getInsightDailyBidgetList(data, position)
                         )),
-                KEY_EVENT_USER_ID to userId)
+                UserId.KEY to userId)
 
         getTracker().sendEnhanceEcommerceEvent(map)
     }
@@ -401,86 +393,87 @@ class TopAdsCreateAnalytics {
         return list
     }
 
-    fun sendAutoBidToggleTopAdsGroupDetailEvent(eventAction: String, eventLabel: String) {
+    fun sendAutoBidToggleTopAdsGroupDetailEvent(eventAction: String, eventLabel: String, trackerId: String) {
         val map = mapOf(
-            KEY_EVENT to CLICK_TOP_ADS,
-            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_GROUP_DETAIL,
-            KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_LABEL to eventLabel,
-            KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
-            KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE)
+            Event.KEY to CLICK_TOP_ADS,
+            Category.KEY to KEY_EVENT_CATEGORY_PRODUCT_EDIT,
+            Action.KEY to eventAction,
+            Label.KEY to eventLabel,
+            BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+            CurrentSite.KEY to KEY_CURRENT_SITE,
+            TrackerId.KEY to trackerId)
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsGroupDetailEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
-            KEY_EVENT to KEY_EVENT_GROUP_DETAIL,
-            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_GROUP_DETAIL,
-            KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_LABEL to eventLabel,
-            KEY_BUSINESS_UNIT_EVENT to "",
-            KEY_CURRENT_SITE_EVENT to "")
+            Event.KEY to KEY_EVENT_GROUP_DETAIL,
+            Category.KEY to KEY_EVENT_CATEGORY_GROUP_DETAIL,
+            Action.KEY to eventAction,
+            Label.KEY to eventLabel,
+            BusinessUnit.KEY to "",
+            CurrentSite.KEY to "")
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsGroupEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
-            KEY_EVENT to KEY_EVENT_GROUP_DETAIL,
-            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_IKLAN_PRODUK,
-            KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_LABEL to eventLabel,
-            KEY_BUSINESS_UNIT_EVENT to "",
-            KEY_CURRENT_SITE_EVENT to "")
+            Event.KEY to KEY_EVENT_GROUP_DETAIL,
+            Category.KEY to KEY_EVENT_CATEGORY_IKLAN_PRODUK,
+            Action.KEY to eventAction,
+            Label.KEY to eventLabel,
+            BusinessUnit.KEY to "",
+            CurrentSite.KEY to "")
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendAutoAdsEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
-            KEY_EVENT to KEY_EVENT_DASHBOARD_VALUE,
-            KEY_EVENT_CATEGORY to KEY_EVENT_DASHBOARD_CATEGORY_VALUE,
-            KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_LABEL to eventLabel,
-            KEY_BUSINESS_UNIT_EVENT to "",
-            KEY_CURRENT_SITE_EVENT to "")
+            Event.KEY to KEY_EVENT_DASHBOARD_VALUE,
+            Category.KEY to KEY_EVENT_DASHBOARD_CATEGORY_VALUE,
+            Action.KEY to eventAction,
+            Label.KEY to eventLabel,
+            BusinessUnit.KEY to "",
+            CurrentSite.KEY to "")
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsCreateEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
-            KEY_EVENT to KEY_EVENT_HEADLINE_ADS,
-            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_PRODUCT_CREATE,
-            KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_LABEL to eventLabel,
-            KEY_BUSINESS_UNIT_EVENT to "",
-            KEY_CURRENT_SITE_EVENT to "")
+            Event.KEY to KEY_EVENT_HEADLINE_ADS,
+            Category.KEY to KEY_EVENT_CATEGORY_PRODUCT_CREATE,
+            Action.KEY to eventAction,
+            Label.KEY to eventLabel,
+            BusinessUnit.KEY to "",
+            CurrentSite.KEY to "")
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsEditEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
-            KEY_EVENT to KEY_EVENT_HEADLINE_ADS,
-            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_PRODUCT_EDIT,
-            KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_LABEL to eventLabel,
-            KEY_BUSINESS_UNIT_EVENT to "",
-            KEY_CURRENT_SITE_EVENT to "")
+            Event.KEY to KEY_EVENT_HEADLINE_ADS,
+            Category.KEY to KEY_EVENT_CATEGORY_PRODUCT_EDIT,
+            Action.KEY to eventAction,
+            Label.KEY to eventLabel,
+            BusinessUnit.KEY to "",
+            CurrentSite.KEY to "")
 
         getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsCreateOnboardingEvent(eventAction: String, eventLabel: String) {
         val map = mapOf(
-            KEY_EVENT to KEY_EVENT_HEADLINE_ADS,
-            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_ONBOARDING,
-            KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_LABEL to eventLabel,
-            KEY_BUSINESS_UNIT_EVENT to "",
-            KEY_CURRENT_SITE_EVENT to "")
+            Event.KEY to KEY_EVENT_HEADLINE_ADS,
+            Category.KEY to KEY_EVENT_CATEGORY_ONBOARDING,
+            Action.KEY to eventAction,
+            Label.KEY to eventLabel,
+            BusinessUnit.KEY to "",
+            CurrentSite.KEY to "")
 
         getTracker().sendGeneralEvent(map)
     }
@@ -488,15 +481,15 @@ class TopAdsCreateAnalytics {
 
     fun sendKeywordAddEvent(eventAction: String, eventLabel: String, data: List<KeywordDataItem>) {
         val map = mapOf(
-            KEY_EVENT to KEY_PROMO_CLICK,
-            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_PRODUCT_CREATE,
-            KEY_BUSINESS_UNIT_EVENT to "",
-            KEY_CURRENT_SITE_EVENT to "",
-            KEY_EVENT_ACTION to eventAction,
-            KEY_EVENT_LABEL to eventLabel,
-            KEY_ECOMMERCE_EVENT to mapOf(
+            Event.KEY to KEY_PROMO_CLICK,
+            Category.KEY to KEY_EVENT_CATEGORY_PRODUCT_CREATE,
+            BusinessUnit.KEY to "",
+            CurrentSite.KEY to "",
+            Action.KEY to eventAction,
+            Label.KEY to eventLabel,
+            Ecommerce.KEY to mapOf(
                 KEY_PROMO_CLICK to mapOf(
-                    KEY_PROMOTIONS to getAddedKeywordList(data)
+                    Promotion.KEY to getAddedKeywordList(data)
                 )))
 
         getTracker().sendEnhanceEcommerceEvent(map)
@@ -516,3 +509,5 @@ class TopAdsCreateAnalytics {
     }
 
 }
+
+
