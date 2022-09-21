@@ -40,7 +40,11 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.Finis
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.OnSelectionProcessDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.WaitingForSelectionDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
+import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
+import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
+import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerFragment
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -158,6 +162,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeCampaignDetail()
         loadCampaignDetailData()
+        setupChooseProductRedirection()
     }
 
     private fun observeCampaignDetail() {
@@ -266,6 +271,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         setupUpcomingMid(flashSale, campaignStatus)
         setupUpcomingBody(flashSale)
         setupUpcomingButton()
+        setupChooseProductRedirection()
     }
 
     private fun setupUpcomingHeader(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
@@ -365,7 +371,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 getString(R.string.stfs_title_ticker_upcoming_cdp_registration_close_state)
             tickerHeader.setTextDescription(getString(R.string.stfs_description_ticker_upcoming_cdp_registration_close_state))
             tgCampaignStatus.text = getString(R.string.registration_closed_in_label)
-            timer.gone()
         }
     }
 
@@ -528,6 +533,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 )
                 else -> setDefaultRegisteredMidSection(flashSale)
             }
+        }
+    }
+
+    private fun setupChooseProductRedirection() {
+        binding?.btnRegister?.setOnClickListener {
+            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId)
+        }
+        upcomingCdpMidBinding?.btnCheckReason?.setOnClickListener {
+            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId)
         }
     }
 

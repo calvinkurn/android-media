@@ -26,6 +26,8 @@ import java.util.Date
 class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (Int) -> Unit) : DelegateAdapter<UpcomingFlashSaleItem, UpcomingFlashSaleDelegateAdapter.UpcomingFlashSaleViewHolder>(
     UpcomingFlashSaleItem::class.java) {
 
+    private val now = Date()
+
     companion object{
         private const val QUOTA_USAGE_HALF_FULL = 50
         private const val QUOTA_USAGE_SEVENTY_FIVE_PERCENT_USED = 75
@@ -66,11 +68,11 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
             binding.progressBar.setValue(item.quotaUsagePercentage, isSmooth = false)
             binding.btnRegister.setAppearance(item)
             renderQuotaUsage(item)
-            startTimer(item.distanceMinuteToSubmissionEndDate, item.submissionEndDate)
+            startTimer(item.submissionEndDate)
         }
 
         private fun TextView.setCampaignStatus(item: UpcomingFlashSaleItem) {
-            val wording = if (item.distanceMinuteToSubmissionEndDate < 0) {
+            val wording = if (now.after(item.submissionEndDate)) {
                 context.getString(R.string.stfs_status_registration_closed)
             } else {
                 context.getString(R.string.stfs_status_registration_ended)
@@ -79,7 +81,7 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
         }
 
         private fun UnifyButton.setAppearance(item: UpcomingFlashSaleItem) {
-            if (item.quotaUsagePercentage < QUOTA_USAGE_FULL && item.distanceMinuteToSubmissionEndDate > 0) {
+            if (item.quotaUsagePercentage < QUOTA_USAGE_FULL && now.before(item.submissionEndDate)) {
                 buttonType = UnifyButton.Type.MAIN
                 buttonVariant = UnifyButton.Variant.FILLED
                 text = binding.btnRegister.context.getString(R.string.stfs_register)
@@ -135,10 +137,7 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
             }
         }
 
-        private fun startTimer(
-            distanceMinuteToSubmissionEndDate: Long,
-            submissionEndDate: Date
-        ) {
+        private fun startTimer(submissionEndDate: Date) {
             val onTimerFinished = {
                 binding.timer.gone()
                 binding.tpgCampaignStatus.text = binding.tpgCampaignStatus.context.getString(R.string.stfs_status_registration_closed)
@@ -153,7 +152,8 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
                 binding.tpgRemainingQuota.text = binding.tpgRemainingQuota.context.getString(R.string.stfs_status_registration_closed_alternative)
             }
 
-            if (distanceMinuteToSubmissionEndDate < 0) {
+            if (now.after(submissionEndDate)) {
+                binding.timer.gone()
                 onTimerFinished()
             } else {
                 binding.timer.visible()

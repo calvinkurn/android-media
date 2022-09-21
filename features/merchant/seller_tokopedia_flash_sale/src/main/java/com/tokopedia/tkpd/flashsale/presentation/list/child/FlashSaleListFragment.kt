@@ -31,6 +31,7 @@ import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleCompone
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatusFilter
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
+import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.FinishedFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
@@ -514,8 +515,8 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
 
     private val onAddProductClicked: (Int) -> Unit = { selectedItemPosition ->
         val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
-        val selectedFlashSaleId = selectedFlashSale.id()
-        //TODO: Navigate to add product page
+        val selectedFlashSaleId = selectedFlashSale.id() as? Long
+        ChooseProductActivity.start(context, selectedFlashSaleId.orZero())
     }
 
 }

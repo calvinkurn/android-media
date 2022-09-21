@@ -11,7 +11,6 @@ data class OngoingFlashSaleItem(
     val formattedStartDate: String,
     val formattedEndDate: String,
     val endDate: Date,
-    val distanceMinuteToEndDate: Long,
     val totalStockSold: Int,
     val totalProductStock: Int,
     val status: FlashSaleStatus,
