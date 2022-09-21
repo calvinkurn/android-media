@@ -11,8 +11,7 @@ import com.tokopedia.product.info.util.ProductDetailInfoConstant.GUIDELINE_DETAI
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.HEADER_KEY
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.SHOP_NOTES_DETAIL_KEY
 import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationDataModel
-import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationReadMoreDataModel
-import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationReadMoreDataModel.Companion.SPECIFICATION_SIZE_THRESHOLD
+import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationDataModel.Companion.SPECIFICATION_SIZE_THRESHOLD
 import com.tokopedia.product.info.view.models.ProductDetailInfoCardDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoCatalogDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoDiscussionDataModel
@@ -67,8 +66,8 @@ object ProductDetailInfoMapper {
                     )
                     listOfComponent.add(header)
                 }
-                DETAIL_KEY -> listOfComponent.addAll(
-                    generateDetailAnnotations(parcelData = parcelData)
+                DETAIL_KEY -> listOfComponent.add(
+                    generateDetailAnnotations(componentId = index, parcelData = parcelData)
                 )
                 DESCRIPTION_DETAIL_KEY -> {
                     val descriptionValue = dataContent.firstOrNull {
@@ -151,8 +150,11 @@ object ProductDetailInfoMapper {
         return listOfComponent
     }
 
-    private fun generateDetailAnnotations(parcelData: ProductInfoParcelData): List<ProductDetailInfoVisitable> {
-        val productInfoItems = mutableListOf<ProductDetailInfoVisitable>()
+    private fun generateDetailAnnotations(
+        componentId: Int,
+        parcelData: ProductInfoParcelData
+    ): ProductDetailInfoAnnotationDataModel {
+        val productInfoItems = mutableListOf<ProductDetailInfoContent>()
         val annotationItems = mutableListOf<ProductDetailInfoContent>()
         val dataContent = parcelData.productInfo.dataContent
 
@@ -161,11 +163,7 @@ object ProductDetailInfoMapper {
                 val notShownMax = isInfoUnderMax(currentSize = productInfoItems.size)
 
                 if (data.showAtBottomSheet && notShownMax) {
-                    val info = ProductDetailInfoAnnotationDataModel(
-                        componentId = data.hashCode(),
-                        data = data
-                    )
-                    productInfoItems.add(info)
+                    productInfoItems.add(data)
                 }
 
                 if (data.isAnnotation) {
@@ -174,18 +172,11 @@ object ProductDetailInfoMapper {
             }
         }
 
-        return if (productInfoItems.size + annotationItems.size > SPECIFICATION_SIZE_THRESHOLD) {
-            // add to read more view-holder
-            val annotation = ProductDetailInfoAnnotationReadMoreDataModel(
-                componentId = annotationItems.hashCode(),
-                data = annotationItems
-            )
-            productInfoItems.apply {
-                add(annotation)
-            }
-        } else {
-            productInfoItems
-        }
+        return ProductDetailInfoAnnotationDataModel(
+            componentId = componentId,
+            productInfo = productInfoItems,
+            annotation = annotationItems
+        )
     }
 
     private fun isInfoUnderMax(currentSize: Int) = currentSize < SPECIFICATION_SIZE_THRESHOLD

@@ -8,7 +8,8 @@ import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
  */
 data class ProductDetailInfoAnnotationDataModel(
     val componentId: Int = 0,
-    val data: ProductDetailInfoContent = ProductDetailInfoContent()
+    val productInfo: List<ProductDetailInfoContent> = emptyList(),
+    val annotation: List<ProductDetailInfoContent> = emptyList(),
 ) : ProductDetailInfoVisitable {
 
     override fun newInstance(): ProductDetailInfoVisitable {
@@ -23,13 +24,20 @@ data class ProductDetailInfoAnnotationDataModel(
 
     override fun equalsWith(newData: ProductDetailInfoVisitable): Boolean {
         return if (newData is ProductDetailInfoAnnotationDataModel) {
-            data.title == newData.data.title
-                && data.subtitle == newData.data.subtitle
-                && data.showAtBottomSheet == newData.data.showAtBottomSheet
+            productInfo.size == newData.productInfo.size
+                && annotation.size == newData.annotation.size
         } else false
     }
 
     override fun type(typeFactory: ProductDetailInfoAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    val isShowReadMore: Boolean
+        get() = productInfo.size + annotation.size > SPECIFICATION_SIZE_THRESHOLD
+
+    companion object {
+
+        const val SPECIFICATION_SIZE_THRESHOLD = 11
     }
 }
