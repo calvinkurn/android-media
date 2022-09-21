@@ -18,6 +18,7 @@ ext {
     biometricVersion = "1.1.0"
     appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
+    recyclerViewVersion = '1.2.1'
     dataStoreVersion = '1.0.0'
     protobufLiteVersion = '3.19.1'
     googleTinkVersion = '1.6.1'
@@ -127,7 +128,7 @@ ext {
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.13.2'
     unifyGlobalErrorVersion = '1.0.18.2'
-    unifyHeaderVersion = '1.1.12'
+    unifyHeaderVersion = '1.1.13'
     unifySortFilterVersion = '1.1.4.2'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.10.2'
@@ -167,7 +168,7 @@ ext {
     ]
 
     supportLibDependencies = [
-            recyclerViewV7    : "androidx.recyclerview:recyclerview:${supportLibraryVersion}",
+            recyclerViewV7    : "androidx.recyclerview:recyclerview:${recyclerViewVersion}",
             mediaV7           : "androidx.media:media:${supportLibraryVersion}",
             supportV4         : "androidx.legacy:legacy-support-v4:${supportLegacyLibraryVersion}",
             appCompactV7      : "androidx.appcompat:appcompat:${appCompatVersion}",
