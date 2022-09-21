@@ -15,6 +15,7 @@ import com.google.firebase.FirebaseApp;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -94,6 +95,10 @@ public class MyApplication extends BaseMainApplication
         registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
 
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+            new Cassava.Builder(this).initialize();
+        }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         // apps flyer is dummy
@@ -114,9 +119,7 @@ public class MyApplication extends BaseMainApplication
                 .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
                 .initialize(this, R.raw.dummy_description);
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
+
 
         IrisAnalytics.Companion.getInstance(this).initialize();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));

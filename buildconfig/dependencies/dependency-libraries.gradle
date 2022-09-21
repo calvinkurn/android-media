@@ -26,7 +26,7 @@ ext {
             brizzi                  : "com.tokopedia.brizzi:brizzi:1.3.1@aar",
             larixBroadcaster        : "com.wmspanel.libstream:libstream:1.0@aar",
             logger                  : "com.tokopedia.library:logger:0.0.2",
-            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.0.2"
+            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.0.3-SNAPSHOT"
     ]
 
     // Sort and categorize alphabetically by folder name
