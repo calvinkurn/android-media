@@ -300,7 +300,9 @@ abstract class BaseNotification internal constructor(
         ): Intent {
 
             val intent = if (Build.VERSION.SDK_INT >= sdkLevel31) {
-               Intent(context, CMReceiverActivity::class.java)
+               Intent(context, CMReceiverActivity::class.java).apply {
+                   flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+               }
             } else {
                 Intent(context, CMBroadcastReceiver::class.java)
             }
@@ -312,20 +314,12 @@ abstract class BaseNotification internal constructor(
 
         fun getPendingIntent(context: Context, intent: Intent, reqCode: Int): PendingIntent =
             if (Build.VERSION.SDK_INT >= sdkLevel31) {
-                TaskStackBuilder.create(context).run {
-                    addNextIntentWithParentStack(intent)
-                    getPendingIntent(reqCode,
-                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-                }
-//                TaskStackBuilder.create(context)
-//                    .addNextIntentWithParentStack(intent)
-//                    .getPendingIntent(reqCode, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-//                PendingIntent.getActivity(
-//                    context,
-//                    reqCode,
-//                    intent,
-//                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//                )
+                PendingIntent.getActivity(
+                    context,
+                    reqCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
             } else {
                 PendingIntent.getBroadcast(
                     context,

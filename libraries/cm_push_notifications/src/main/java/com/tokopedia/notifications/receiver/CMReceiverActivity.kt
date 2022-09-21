@@ -10,5 +10,6 @@ class CMReceiverActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cmreceiver)
         CMNotificationHandler.instance.handleIntent(this, intent)
+        finish()
     }
 }
