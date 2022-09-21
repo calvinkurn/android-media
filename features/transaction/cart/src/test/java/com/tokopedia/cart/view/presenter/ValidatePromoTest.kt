@@ -17,6 +17,25 @@ import rx.Observable
 class ValidatePromoTest : BaseCartTest() {
 
     @Test
+    fun `WHEN validate promo with detached view THEN should not clear BO`() {
+        // GIVEN
+        val shopList = listOf(CartShopHolderData(boCode = "asdf"), CartShopHolderData())
+        every { view.getAllShopDataList() } returns shopList
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+
+        // WHEN
+        cartListPresenter.detachView()
+        cartListPresenter.validateBoPromo(ValidateUsePromoRevampUiModel())
+
+        // THEN
+        verify(inverse = true) {
+            clearCacheAutoApplyStackUseCase.setParams(any())
+        }
+        assertEquals("asdf", shopList[0].boCode)
+    }
+
+    @Test
     fun `WHEN validate promo with no BO and preapplied BO THEN should clear BO`() {
         // GIVEN
         val shopList = listOf(CartShopHolderData(boCode = "asdf"), CartShopHolderData())
