@@ -35,9 +35,13 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.*
+import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.OSPerformanceConstant
+import com.tokopedia.officialstore.OfficialStoreInstance
+import com.tokopedia.officialstore.OSFeaturedShopTracking
 import com.tokopedia.officialstore.ApplinkConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_HOME
+import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
@@ -52,7 +56,11 @@ import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.listener.*
