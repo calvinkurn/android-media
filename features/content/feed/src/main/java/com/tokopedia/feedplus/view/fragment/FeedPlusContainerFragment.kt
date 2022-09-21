@@ -31,6 +31,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
@@ -38,6 +39,8 @@ import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
+import com.tokopedia.feedcomponent.util.coachmark.CoachMarkConfig
+import com.tokopedia.feedcomponent.util.coachmark.CoachMarkHelper
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
@@ -123,6 +126,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         private const val BROADCAST_FEED = "BROADCAST_FEED"
         const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
 
+        private const val USER_ICON_COACH_MARK_DURATION = 7000L
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
@@ -172,6 +176,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                         feedFloatingButton.expand()
                     }
                 }
+    }
+
+    private val coachMarkHelper by lazy(LazyThreadSafetyMode.NONE) {
+        CoachMarkHelper(requireContext())
     }
 
     private var badgeNumberNotification: Int = 0
@@ -305,6 +313,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         shouldHitFeedTracker = true
         unRegisterNewFeedReceiver()
         feedFloatingButton.stopTimer()
+        coachMarkHelper.dismissAllCoachMark()
     }
 
     override fun onResume() {
@@ -686,6 +695,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             toolBarAnalytics.clickUserProfileIcon(userSession.userId)
             RouteManager.route(requireContext(), ApplinkConst.PROFILE, userAccount.id)
         }
+        coachMarkHelper.showCoachMark(
+            CoachMarkConfig(ivFeedUser)
+                .setSubtitle(getString(R.string.feed_user_profile_entry_point_coach_mark))
+                .setDuration(USER_ICON_COACH_MARK_DURATION)
+        )
     }
 
     private fun createCreateLiveFab(): FloatingButtonItem {
