@@ -452,7 +452,7 @@ class ShipmentPresenterClearPromoTest {
     }
 
     @Test
-    fun `WHEN clear non eligible promo from shipment cart list unique id not found THEN should not update view`() {
+    fun `WHEN clear non eligible promo from shipment cart list unique id not match THEN should not update view`() {
         // Given
         val notEligiblePromos = arrayListOf(
             NotEligiblePromoHolderdata(

@@ -29,7 +29,7 @@ object DataProvider {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/ratesv3.json"), RatesGqlResponse::class.java)
     }
 
-    fun provideRatesV3WithEnabledBoPromoResponse(): RatesGqlResponse {
+    fun provideRatesV3EnabledBoPromoResponse(): RatesGqlResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/rates_v3_enabled_bo_promo.json"), RatesGqlResponse::class.java)
     }
 
@@ -37,7 +37,7 @@ object DataProvider {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/ratesv3api.json"), RatesApiGqlResponse::class.java)
     }
 
-    fun provideRatesV3ApiWithEnabledBoPromoResponse(): RatesApiGqlResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/rates_v3_api_with_enabled_bo_promo.json"), RatesApiGqlResponse::class.java)
+    fun provideRatesV3ApiEnabledBoPromoResponse(): RatesApiGqlResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/rates_v3_api_enabled_bo_promo.json"), RatesApiGqlResponse::class.java)
     }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
@@ -1196,7 +1195,7 @@ class ShipmentPresenterBoPromoTest {
         presenter.initializePresenterData(CartShipmentAddressFormData(
             cod = CodModel(counterCod = 1)
         ))
-        val response = DataProvider.provideRatesV3WithEnabledBoPromoResponse()
+        val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
@@ -1239,7 +1238,7 @@ class ShipmentPresenterBoPromoTest {
     @Test
     fun `WHEN get shipping rates with isTradeInByDropOff true THEN should call ratesV3Api`() {
         // Given
-        val response = DataProvider.provideRatesV3ApiWithEnabledBoPromoResponse()
+        val response = DataProvider.provideRatesV3ApiEnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesApiUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
@@ -1281,7 +1280,7 @@ class ShipmentPresenterBoPromoTest {
     @Test
     fun `WHEN get shipping rates with cart item shipmentDetailData null THEN should get shipment from view`() {
         // Given
-        val response = DataProvider.provideRatesV3WithEnabledBoPromoResponse()
+        val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
@@ -1302,7 +1301,7 @@ class ShipmentPresenterBoPromoTest {
         )
         val recipientAddressModel = RecipientAddressModel()
         presenter.recipientAddressModel = recipientAddressModel
-        every { view.getShipmentDetailData(any(), any()) } returns ShipmentDetailData(
+        every { view.getShipmentDetailData(shipmentCartItemModel, recipientAddressModel) } returns ShipmentDetailData(
             shipmentCartData = ShipmentCartData(
                 originDistrictId = "1",
                 originPostalCode = "1",
