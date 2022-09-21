@@ -27,7 +27,7 @@ class FragmentUpcomingViewComponent(
         if (isAlreadyInit.get()) return@synchronized
         isAlreadyInit.compareAndSet(false, true)
 
-        fragmentManager.findFragmentByTag(UPCOMING_FRAGMENT_TAG) ?: getPlayUpcomingFragment(channelId).also {
+        getPlayUpcomingFragment(channelId).also {
             fragmentManager.beginTransaction()
                 .replace(rootView.id, it, UPCOMING_FRAGMENT_TAG)
                 .commit()
