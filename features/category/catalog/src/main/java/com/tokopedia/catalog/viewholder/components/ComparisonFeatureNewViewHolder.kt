@@ -48,7 +48,7 @@ class ComparisonFeatureNewViewHolder(val view: View) : RecyclerView.ViewHolder(v
                     expandableView = it,
                     isExpanded = specList?.isExpanded ?: false
                 )
-                accordionUnifyData.setContentPadding(0, 0, 0, 0)
+                accordionUnifyData.setContentPadding(0, 0, 0, 16)
                 addGroup(accordionUnifyData)
             }
         }
