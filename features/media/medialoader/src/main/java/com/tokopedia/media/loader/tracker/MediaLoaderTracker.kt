@@ -5,16 +5,15 @@ import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
 import com.bumptech.glide.load.engine.GlideException
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.media.common.util.NetworkManager
 import com.tokopedia.media.loader.utils.ServerIpAddressLocator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 data class MediaLoaderTrackerParam(
     val url: String,
@@ -23,7 +22,7 @@ data class MediaLoaderTrackerParam(
     val fileSize: String
 )
 
-object MediaLoaderTracker {
+object MediaLoaderTracker : CoroutineScope {
 
     private const val CDN_URL = "https://images.tokopedia.net/img/"
     private const val TAG = "MEDIALOADER_ANALYTIC"
@@ -35,6 +34,9 @@ object MediaLoaderTracker {
     private const val CDN_HOST_NAME_MAP_KEY = "remote_host_name"
     private const val CDN_ERROR_DETAIL = "error_detail"
     private const val CDN_IMG_SIZE_NOT_AVAILBLE = "n/a"
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + Dispatchers.IO
 
     private fun priority() = Priority.P2
 
@@ -103,7 +105,7 @@ object MediaLoaderTracker {
 
         val map = data.toMap(context.applicationContext).toMutableMap()
 
-        CoroutineScope(Dispatchers.IO).launch {
+        launchCatchError(block = {
             var ipInfo: String = NOT_AVAILABLE
             var hostName: String = NOT_AVAILABLE
             try {
@@ -114,14 +116,14 @@ object MediaLoaderTracker {
 
             map[CDN_IP_MAP_KEY] = ipInfo
             map[CDN_HOST_NAME_MAP_KEY] = hostName
-            map[CDN_ERROR_DETAIL] = "localizedMessage=${e.localizedMessage} , cause=${e.cause}, rootCauses=${e.rootCauses}"
+            map[CDN_ERROR_DETAIL] = "localizedMessage=${e?.localizedMessage} , cause=${e?.cause}, rootCauses=${e?.rootCauses}"
 
             ServerLogger.log(
                 priority = Priority.P1,
                 tag = TAG_CDN_MONITORING,
                 message = map
             )
-        }
+        }, onError = {})
     }
 
 
