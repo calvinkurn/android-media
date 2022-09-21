@@ -86,4 +86,5 @@
     <string name="discovery_calendar_push_action">Oke</string>
     <string name="discovery_calendar_line">────</string>
     <string name="discovery_this_section_is_still_empty">Oops, bagian ini masih kosong.</string>
+    <string name="product_bundling_atc_applink">tokopedia://product-bundle/%s?source=discovery&amp;bundleId=%s</string>
 </resources>

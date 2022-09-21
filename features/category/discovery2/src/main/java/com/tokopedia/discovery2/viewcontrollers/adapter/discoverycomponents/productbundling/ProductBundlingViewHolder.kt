@@ -79,6 +79,7 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         with(binding) {
             productRv.show()
             viewErrorState.hide()
+            mProductBundlingViewModel.resetComponent()
             mProductBundlingViewModel.fetchProductBundlingData()
         }
     }
@@ -86,21 +87,25 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-
+            mProductBundlingViewModel.getBundledProductDataList().removeObservers(it)
+            mProductBundlingViewModel.getEmptyBundleData().removeObservers(it)
+            mProductBundlingViewModel.showErrorState().removeObservers(it)
         }
     }
 
     private fun productBundleCallback() = object : ProductBundleListener {
         override fun onBundleProductClicked(bundleType: BundleTypes, bundle: BundleUiModel, selectedMultipleBundle: BundleDetailUiModel, selectedProduct: BundleProductUiModel, productItemPosition: Int) {
-            itemView.context?.let { context ->
-                RouteManager.route(context,selectedProduct.productAppLink)
+            if(selectedProduct.productAppLink.isNotEmpty()) {
+                itemView.context?.let { context ->
+                    RouteManager.route(context, selectedProduct.productAppLink)
+                }
             }
         }
 
         override fun addMultipleBundleToCart(selectedMultipleBundle: BundleDetailUiModel, productDetails: List<BundleProductUiModel>) {
             if(selectedMultipleBundle.bundleId.isNotEmpty()) {
                 itemView.context?.let { context ->
-                    RouteManager.route(context,"tokopedia://product-bundle/${productDetails.firstOrNull()?.productId}?source=discovery&bundleId=${selectedMultipleBundle.bundleId}")
+                    RouteManager.route(context,context.getString(R.string.product_bundling_atc_applink, productDetails.firstOrNull()?.productId, selectedMultipleBundle.bundleId))
                 }
             }
         }
@@ -108,7 +113,7 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         override fun addSingleBundleToCart(selectedBundle: BundleDetailUiModel, bundleProducts: BundleProductUiModel) {
             if(selectedBundle.bundleId.isNotEmpty()) {
                 itemView.context?.let { context ->
-                    RouteManager.route(context,"tokopedia://product-bundle/${bundleProducts.productId}?source=discovery&bundleId=${selectedBundle.bundleId}")
+                    RouteManager.route(context,context.getString(R.string.product_bundling_atc_applink, bundleProducts.productId, selectedBundle.bundleId))
                 }
             }
         }

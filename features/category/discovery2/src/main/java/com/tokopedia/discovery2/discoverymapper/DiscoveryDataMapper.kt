@@ -26,6 +26,8 @@ import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 private const val CHIPS = "Chips"
@@ -330,54 +332,57 @@ class DiscoveryDataMapper {
         )
     }
 
-    fun mapListToBundleProductList(dataItem: List<DataItem>): ArrayList<BundleUiModel> {
+    suspend fun mapListToBundleProductList(dataItem: List<DataItem>): ArrayList<BundleUiModel> {
         val bundleModelList: ArrayList<BundleUiModel> = arrayListOf()
-       dataItem.forEach { bundleData ->
-           val bundleShopUiModel = BundleShopUiModel(
-                   shopId = bundleData.shopId ?: "",
-                   shopName = bundleData.shopName ?: "",
-                   shopIconUrl = bundleData.shopLogo ?: ""
-           )
-            val bundleDetailUiModelList: ArrayList<BundleDetailUiModel> = arrayListOf()
-            val bundleProductUiModel: ArrayList<BundleProductUiModel> = arrayListOf()
-            val bundleModel = BundleUiModel(
+        withContext(Dispatchers.Default) {
+            dataItem.forEach { bundleData ->
+                val bundleShopUiModel = BundleShopUiModel(
+                    shopId = bundleData.shopId ?: "",
+                    shopName = bundleData.shopName ?: "",
+                    shopIconUrl = bundleData.shopLogo ?: ""
+                )
+                val bundleDetailUiModelList: ArrayList<BundleDetailUiModel> = arrayListOf()
+                val bundleProductUiModel: ArrayList<BundleProductUiModel> = arrayListOf()
+                val bundleModel = BundleUiModel(
                     bundleName = bundleData.bundleName ?: "",
                     bundleType = if (bundleData.bundleType == "multiple_bundling") BundleTypes.MULTIPLE_BUNDLE else BundleTypes.SINGLE_BUNDLE,
                     bundleDetails = bundleDetailUiModelList.apply {
                         bundleData.bundleDetails?.forEach { bundleDetails ->
                             add(BundleDetailUiModel(
-                                    bundleId = (bundleDetails?.bundleId ?: "").toString(),
-                                    originalPrice = bundleDetails?.originalPrice ?: "",
-                                    displayPrice = bundleDetails?.displayPrice ?: "",
-                                    displayPriceRaw = bundleDetails?.displayPriceRaw ?: 0,
-                                    discountPercentage = bundleDetails?.discountPercentage?.roundToIntOrZero()
-                                            ?: 0,
-                                    isPreOrder = bundleDetails?.preOrder ?: false,
-                                    preOrderInfo = bundleDetails?.preOrderInfo ?: "",
-                                    savingAmountWording = bundleDetails?.savingAmountWording ?: "",
-                                    minOrder = bundleDetails?.minOrder.toZeroIfNull(),
-                                    minOrderWording = bundleDetails?.minOrderWording ?: "",
-                                    isSelected = false,// need to check for this key
-                                    totalSold = 0,// need to check for this key
-                                    shopInfo = null , //bundleShopUiModel,
-                                    products = bundleProductUiModel.apply {
-                                        bundleData.bundleProducts?.forEach { bundleProducts ->
-                                            add(BundleProductUiModel(
-                                                    productId = (bundleProducts?.productId
-                                                            ?: "").toString(),
-                                                    productName = bundleProducts?.productName.toString(),
-                                                    productImageUrl = bundleProducts?.imageUrl
-                                                            ?: "",
-                                                    productAppLink = bundleProducts?.applink ?: "",
-                                                    hasVariant = bundleDetails?.isProductHaveVariant ?: false
-                                            ))
-                                        }
+                                bundleId = (bundleDetails?.bundleId ?: "").toString(),
+                                originalPrice = bundleDetails?.originalPrice ?: "",
+                                displayPrice = bundleDetails?.displayPrice ?: "",
+                                displayPriceRaw = bundleDetails?.displayPriceRaw ?: 0,
+                                discountPercentage = bundleDetails?.discountPercentage?.roundToIntOrZero()
+                                    ?: 0,
+                                isPreOrder = bundleDetails?.preOrder ?: false,
+                                preOrderInfo = bundleDetails?.preOrderInfo ?: "",
+                                savingAmountWording = bundleDetails?.savingAmountWording ?: "",
+                                minOrder = bundleDetails?.minOrder.toZeroIfNull(),
+                                minOrderWording = bundleDetails?.minOrderWording ?: "",
+                                isSelected = false,// need to check for this key
+                                totalSold = 0,// need to check for this key
+                                shopInfo = null, //bundleShopUiModel,
+                                products = bundleProductUiModel.apply {
+                                    bundleData.bundleProducts?.forEach { bundleProducts ->
+                                        add(BundleProductUiModel(
+                                            productId = (bundleProducts?.productId
+                                                ?: "").toString(),
+                                            productName = bundleProducts?.productName.toString(),
+                                            productImageUrl = bundleProducts?.imageUrl
+                                                ?: "",
+                                            productAppLink = bundleProducts?.applink ?: "",
+                                            hasVariant = bundleDetails?.isProductHaveVariant
+                                                ?: false
+                                        ))
                                     }
+                                }
                             ))
                         }
                     }
-            )
-            bundleModelList.add(bundleModel)
+                )
+                bundleModelList.add(bundleModel)
+            }
         }
         return bundleModelList
     }

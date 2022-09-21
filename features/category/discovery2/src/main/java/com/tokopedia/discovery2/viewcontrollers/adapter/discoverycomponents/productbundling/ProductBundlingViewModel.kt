@@ -13,6 +13,7 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -50,5 +51,10 @@ class ProductBundlingViewModel(val application: Application, val components: Com
         }, onError = {
             _showErrorState.value = true
         })
+    }
+
+    fun resetComponent() {
+        components.noOfPagesLoaded = 0
+        components.pageLoadedCounter = 1
     }
 }
