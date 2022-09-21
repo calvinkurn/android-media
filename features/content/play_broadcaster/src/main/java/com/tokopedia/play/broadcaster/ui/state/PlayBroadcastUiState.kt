@@ -121,7 +121,7 @@ data class QuizFormUiState(
                     quizFormData = QuizFormDataUiModel(),
                     quizFormState = QuizFormStateUiModel.Nothing,
                     isNeedToUpdateUI = false,
-                    isEnableQuizGift = true
+                    isEnableQuizGift = true,
                 )
             }
     }
