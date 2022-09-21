@@ -523,7 +523,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     }
 
     private fun getQuickFilterBottomSheetUiEvent(filter: Filter): TokofoodSearchUiEvent {
-        return if (filter.isPriceRangeCbFilter) {
+        return if (filter.isPriceRangeCheckboxFilter) {
             TokofoodSearchUiEvent(
                 state = TokofoodSearchUiEvent.EVENT_OPEN_QUICK_FILTER_PRICE_RANGE_BOTTOMSHEET,
                 data = tokofoodFilterSortMapper.getQuickFilterPriceRangeUiModels(filter)

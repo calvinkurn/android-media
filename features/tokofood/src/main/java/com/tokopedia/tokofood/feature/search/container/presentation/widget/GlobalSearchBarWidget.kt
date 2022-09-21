@@ -84,10 +84,6 @@ class GlobalSearchBarWidget: ConstraintLayout {
                 searchBarTextField.imeOptions = EditorInfo.IME_ACTION_PREVIOUS
 
                 isClearable = true
-
-                showIcon = true
-                iconDrawable = null
-
                 searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
                         showKeyboard(searchBarTextField)
@@ -110,7 +106,7 @@ class GlobalSearchBarWidget: ConstraintLayout {
                         before: Int,
                         count: Int
                     ) {
-                        searchBarIcon.isVisible = s.toString().isNotBlank()
+                        searchBarIcon.isVisible = s.toString().isNotEmpty()
                         searchKeyword = s.toString().trim()
                         searchTextBoxListener?.onQueryTextChangeListener(searchKeyword)
                     }

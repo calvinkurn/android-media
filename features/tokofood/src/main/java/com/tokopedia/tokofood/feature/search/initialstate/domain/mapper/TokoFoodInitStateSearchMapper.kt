@@ -49,7 +49,12 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
 
     private fun MutableList<BaseInitialStateVisitable>.addRecentSearchSection(section: TokoFoodInitSearchStateResponse.TokofoodInitSearchState.Section) {
         val recentSearchSize = section.items.size
-        val recentSearchLimit = if (section.items.size > MAX_LIMIT_ITEM) section.items.take(MAX_LIMIT_ITEM) else section.items
+
+        val recentSearchLimit = if (recentSearchSize > INIT_LIMIT_ITEM) {
+            section.items.take(INIT_LIMIT_ITEM)
+        } else {
+            section.items
+        }
         add(HeaderRecentSearchUiModel(section.header, section.labelText, section.labelAction))
         addAll(
             recentSearchLimit.map { item ->
@@ -63,8 +68,8 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
                 )
             }
         )
-        if (section.items.size > MAX_LIMIT_ITEM) {
-            val recentSearchSeeMore = section.items.subList(THREE_INDEX, recentSearchSize)
+        if (recentSearchSize > ALL_LIMIT_ITEM) {
+            val recentSearchSeeMore = section.items.subList(THREE_INDEX, ALL_LIMIT_ITEM)
             val recentSearchSeeMoreList = recentSearchSeeMore.map {
                 RecentSearchItemUiModel(
                     sectionId = section.id,
@@ -94,7 +99,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
 
     private fun MutableList<BaseInitialStateVisitable>.addCuisineListSection(section: TokoFoodInitSearchStateResponse.TokofoodInitSearchState.Section) {
         val cuisineListSize = section.items.size
-        val cuisineListLimit = if (section.items.size > MAX_LIMIT_ITEM) section.items.take(MAX_LIMIT_ITEM) else section.items
+        val cuisineListLimit = if (section.items.size > INIT_LIMIT_ITEM) section.items.take(INIT_LIMIT_ITEM) else section.items
 
         add(HeaderItemInitialStateUiModel(section.header, section.labelText, section.labelAction))
         addAll(
@@ -109,7 +114,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
                 )
             }
         )
-        if (section.items.size > MAX_LIMIT_ITEM) {
+        if (section.items.size > INIT_LIMIT_ITEM) {
             val cuisineListSeeMore = section.items.subList(THREE_INDEX, cuisineListSize)
             val cuisineListSeeMoreList = cuisineListSeeMore.map {
                 CuisineItemUiModel(
@@ -129,7 +134,8 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
         const val POPULAR_SEARCH = "popular_search"
         const val RECENT_SEARCH = "recent_search"
         const val CUISINE_LIST = "cuisine_list"
-        const val MAX_LIMIT_ITEM = 3
+        const val INIT_LIMIT_ITEM = 3
+        const val ALL_LIMIT_ITEM = 5
         const val THREE_INDEX = 3
     }
 }
