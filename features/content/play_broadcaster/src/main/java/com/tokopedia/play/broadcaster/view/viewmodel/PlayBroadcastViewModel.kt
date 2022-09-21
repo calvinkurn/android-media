@@ -235,16 +235,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
-    private val _isEnableQuizGift = MutableStateFlow(true)
+    private val _quizEnableQuizGift = MutableStateFlow(true)
 
     private val _quizFormUiState = combine(
-        _quizFormData, _quizFormState, _quizIsNeedToUpdateUI, _isEnableQuizGift
-    ) { quizFormData, quizFormState, quizIsNeedToUpdateUI, isEnableQuizGift  ->
+        _quizFormData, _quizFormState, _quizIsNeedToUpdateUI, _quizEnableQuizGift
+    ) { quizFormData, quizFormState, quizIsNeedToUpdateUI, quizEnableQuizGift  ->
         QuizFormUiState(
             quizFormData = quizFormData,
             quizFormState = quizFormState,
             isNeedToUpdateUI = quizIsNeedToUpdateUI,
-            isEnableQuizGift = isEnableQuizGift
+            isEnableQuizGift = quizEnableQuizGift
         )
     }
 
@@ -550,12 +550,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun setupInteractiveConfig(gameConfig: InteractiveConfigUiModel): InteractiveConfigUiModel {
         return if (authorType == TYPE_USER) {
-            _isEnableQuizGift.value = false
+            _quizEnableQuizGift.value = false
             gameConfig.copy(
                 giveawayConfig = gameConfig.giveawayConfig.copy(isActive = false),
             )
         } else {
-            _isEnableQuizGift.value = true
+            _quizEnableQuizGift.value = true
             gameConfig
         }
     }
