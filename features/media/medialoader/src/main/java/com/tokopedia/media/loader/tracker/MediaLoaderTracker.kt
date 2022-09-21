@@ -10,6 +10,7 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.media.common.util.NetworkManager
 import com.tokopedia.media.loader.utils.ServerIpAddressLocator
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -30,6 +31,7 @@ object MediaLoaderTracker {
     private const val PAGE_NAME_NOT_FOUND = "None"
     private const val CDN_NO_IP_MSG = "not available"
     private const val CDN_IP_MAP_KEY = "remote_server_ip"
+    private const val CDN_HOST_NAME_MAP_KEY = "remote_host_name"
     private const val CDN_IMG_SIZE_NOT_AVAILBLE = "n/a"
 
     private fun priority() = Priority.P2
@@ -96,18 +98,21 @@ object MediaLoaderTracker {
             fileSize = CDN_IMG_SIZE_NOT_AVAILBLE // as this is for failed case, then size will not available.
         )
 
-        //if (!data.url.contains(CDN_URL)) return
-
         val map = data.toMap(context.applicationContext).toMutableMap()
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val ipInfo: String = try {
-                ServerIpAddressLocator.fetchServerInfo(url).hostAddress
+        CoroutineScope(Dispatchers.IO).launch {
+            var ipInfo: String = CDN_NO_IP_MSG
+            var hostName: String = CDN_NO_IP_MSG
+            try {
+                val remoteInfo = ServerIpAddressLocator.fetchServerInfo(url)
+                ipInfo = remoteInfo.hostAddress
+                hostName = remoteInfo.hostName
             } catch (exp: Exception) {
                 CDN_NO_IP_MSG
             }
 
             map[CDN_IP_MAP_KEY] = ipInfo
+            map[CDN_HOST_NAME_MAP_KEY] = hostName
 
             ServerLogger.log(
                 priority = Priority.P1,
