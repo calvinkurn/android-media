@@ -1194,11 +1194,12 @@ open class ProductManageFragment :
 
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    recyclerView?.itemAnimator = null
                     recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
                     showLoadingProgress()
                     isLoadingInitialData = true
-                    getProductList()
                     dismissAllCoachMark()
+                    getProductList()
                     clearFocus()
                     true
                 } else {
@@ -2049,7 +2050,7 @@ open class ProductManageFragment :
 
     override fun onImpressionNotifyMe() {
         recyclerView?.post {
-            manageShowCoachMark(isNotifyMe = true)
+                manageShowCoachMark(isNotifyMe = true)
         }
     }
 

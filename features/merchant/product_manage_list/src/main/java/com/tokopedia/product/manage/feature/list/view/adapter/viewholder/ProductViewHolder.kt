@@ -60,7 +60,7 @@ class ProductViewHolder(
     }
 
     private fun impressionView(product: ProductUiModel){
-        if (adapterPosition == Int.ZERO){
+        if (adapterPosition.orZero() == Int.ZERO){
             binding?.imageNotifyMeBuyer?.addOnImpressionListener(product.impressHolder) {
                 listener.onImpressionNotifyMe()
             }
