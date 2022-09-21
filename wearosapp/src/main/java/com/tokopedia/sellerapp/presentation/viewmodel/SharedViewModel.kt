@@ -110,7 +110,9 @@ class SharedViewModel @Inject constructor(
                 withContext(dispatchers.main) {
                     // There should only ever be one phone in a node set (much less w/ the correct
                     // capability), so I am just grabbing the first one (which should be the only one).
-                    val androidPhoneNodeWithApp = capabilityInfo.nodes.firstOrNull()
+                    val nodes = capabilityInfo.nodes
+                    val androidPhoneNodeWithApp =
+                        nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
                     _ifPhoneHasApp.value = androidPhoneNodeWithApp != null
                 }
             } catch (cancellationException: CancellationException) {
