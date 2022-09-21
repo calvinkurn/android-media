@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.list.domain.usecases
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.list.domain.mapper.OrderListMapper
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
@@ -45,10 +46,10 @@ class SomListGetOrderListUseCase @Inject constructor(
             return if (input is SomListGetOrderListParam) {
                 input.search
             } else {
-                ""
+                String.EMPTY
             }
         }
-        return ""
+        return String.EMPTY
     }
 
     companion object {
