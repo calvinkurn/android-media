@@ -200,4 +200,9 @@
     <string name="manageproductnonvar_max_message_format">Maks. %s</string>
     <string name="manageproductnonvar_range_message_format">%s-%s</string>
 
+    <!-- Bulk Apply -->
+    <string name="bulk_apply_title">Atur Sekaligus</string>
+    <string name="bulk_apply_text_stock">Stok Campaign</string>
+    <string name="bulk_apply_text_stock_description">Stok wajib %1d - %2d</string>
+
 </resources>

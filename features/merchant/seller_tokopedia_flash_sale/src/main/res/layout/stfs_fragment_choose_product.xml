@@ -21,45 +21,37 @@
         android:layout_height="1dp"
         app:layout_constraintTop_toBottomOf="@+id/header" />
 
-    <HorizontalScrollView
-        android:id="@+id/scrollViewCategory"
-        android:layout_width="match_parent"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitleCriteria"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/chooseproduct_category_criteria_title"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@+id/rvCategory"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header">
+        app:layout_constraintTop_toTopOf="@+id/rvCategory"
+        app:typographyType="small"
+        app:typographyWeight="bold" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="@string/chooseproduct_category_criteria_title"
-                android:textColor="@color/Unify_NN600"
-                app:typographyType="small"
-                app:typographyWeight="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tool:itemCount="1"
-                tool:listitem="@layout/stfs_item_criteria_selection"
-                android:layout_marginStart="16dp" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-    </HorizontalScrollView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCategory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvTitleCriteria"
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        tool:itemCount="1"
+        tool:listitem="@layout/stfs_item_criteria_selection" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/scrollViewCategory" />
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/rvCategory" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layoutSearch"
