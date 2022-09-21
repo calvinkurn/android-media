@@ -7,6 +7,7 @@ import com.tokopedia.navigation.domain.subscriber.NotificationSubscriber
 import com.tokopedia.navigation.presentation.view.MainParentView
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
+import io.mockk.called
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
@@ -65,6 +66,32 @@ class MainParentPresenterTest {
             mainParentView.onStartLoading()
             getBottomNavNotificationUseCase.execute(any(), any())
         }
+    }
+
+    @Test
+    fun `given failed start loading when get notification data then not get data notification`() {
+        val notificationEntity = NotificationEntity()
+
+        every {
+            userSession.isLoggedIn
+        } returns true
+
+        every {
+            mainParentView.onStartLoading()
+        } throws NullPointerException()
+
+        every {
+            getBottomNavNotificationUseCase.execute(any(), any())
+        } answers {
+            secondArg<NotificationSubscriber>().onStart()
+            secondArg<NotificationSubscriber>().onCompleted()
+            secondArg<NotificationSubscriber>().onError(Throwable())
+            secondArg<NotificationSubscriber>().onNext(notificationEntity)
+        }
+
+        mainParenPresenter.getNotificationData()
+
+        verify(exactly = 0) { getBottomNavNotificationUseCase.execute(any(), any()) }
     }
 
     @Test
