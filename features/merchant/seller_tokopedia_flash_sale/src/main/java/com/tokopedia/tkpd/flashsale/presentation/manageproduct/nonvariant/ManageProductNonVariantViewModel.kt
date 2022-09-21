@@ -10,6 +10,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Wareho
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.tkpd.flashsale.util.constant.NumericalNormalizationConstant.BULK_APPLY_PERCENT_NORMALIZATION
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -48,10 +49,10 @@ class ManageProductNonVariantViewModel @Inject constructor(
     }
 
     fun calculatePrice(percentInput: Long, originalPrice: Long): String {
-        return (100 - (percentInput * originalPrice / 100)).toString()
+        return (BULK_APPLY_PERCENT_NORMALIZATION - (percentInput * originalPrice / BULK_APPLY_PERCENT_NORMALIZATION)).toString()
     }
 
     fun calculatePercent(priceInput: Long, originalPrice: Long): String {
-        return round(((originalPrice.toDouble() - priceInput.toDouble()) / originalPrice.toDouble()) * 100).toInt().toString()
+        return round(((originalPrice.toDouble() - priceInput.toDouble()) / originalPrice.toDouble()) * BULK_APPLY_PERCENT_NORMALIZATION).toInt().toString()
     }
 }
