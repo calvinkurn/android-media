@@ -63,7 +63,6 @@ internal class HowToPayViewModelTest {
                 thirdArg<(Throwable) -> Unit>().invoke(result)
             }
 
-
         viewModel.getGqlHtpInstructions(appLinkPaymentInfo)
 
         assert(viewModel.howToPayLiveData.value is Fail)
