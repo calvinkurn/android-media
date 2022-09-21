@@ -51,7 +51,15 @@ class ContentAccountToolbar @JvmOverloads constructor(
             mOnClickListener?.invoke()
         }
 
+        mBinding.textComToolbarTitle.setOnClickListener {
+            mOnClickListener?.invoke()
+        }
+
         mBinding.textComToolbarSubtitle.setOnClickListener {
+            mOnClickListener?.invoke()
+        }
+
+        mBinding.imgContentCreatorExpand.setOnClickListener {
             mOnClickListener?.invoke()
         }
     }

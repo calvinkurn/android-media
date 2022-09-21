@@ -14,14 +14,14 @@ import kotlinx.coroutines.flow.Flow
  * Created By : Jonathan Darwin on July 04, 2022
  */
 class UGCOnboardingViewModel @AssistedInject constructor(
-    @Assisted private val username: String,
+    @Assisted private val onboardingType: Int,
     @Assisted private val onboardingStrategy: UGCOnboardingStrategy,
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
         fun create(
-            username: String,
+            onboardingType: Int,
             onboardingStrategy: UGCOnboardingStrategy,
         ): UGCOnboardingViewModel
     }

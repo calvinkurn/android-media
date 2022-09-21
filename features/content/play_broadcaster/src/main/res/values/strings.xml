@@ -190,17 +190,6 @@
 
     <string name="play_interactive_leaderboard_default">0</string>
 
-    <!--Terms and Condition-->
-    <string name="play_bro_tnc_title">Yaah, kamu belum bisa Live</string>
-    <string name="play_bro_tnc_condition_title">Pastikan tokomu memenuhi syarat berikut:</string>
-    <string name="play_bro_tnc_benefit_title">Keuntungan yang bisa kamu dapetin dari bikin Live:</string>
-    <string name="play_bro_tnc_benefit_1">Membangun branding &amp; meningkatkan performa tokomu</string>
-    <string name="play_bro_tnc_benefit_2">Bisa berinteraksi langsung dengan calon pembeli</string>
-    <string name="play_bro_tnc_benefit_3">Bantu meningkatkan penjualanmu</string>
-    <string name="play_bro_tnc_ok">Oke, Mengerti</string>
-
-    <string name="play_cancel_live_stream">Batalkan</string>
-
     <!--Pinned Message-->
     <string name="play_bro_create_pinned_msg">Buat Pin Chat</string>
     <string name="play_bro_pinned_msg_form_title">Pin Chat</string>

@@ -10,8 +10,15 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
-import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
+import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
+import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.AccountStateInfo
+import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
@@ -24,7 +31,7 @@ import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparati
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
-import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SelectAccount
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction.SwitchAccount
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
@@ -35,7 +42,6 @@ import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
@@ -232,17 +238,52 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                 })
             }
-            is FeedAccountTypeBottomSheet -> {
+            is ContentAccountTypeBottomSheet -> {
                 childFragment.setData(parentViewModel.contentAccountList)
-                childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+                childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
                         if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
-                        else parentViewModel.submitAction(SelectAccount(contentAccount))
+                        else parentViewModel.submitAction(SwitchAccount)
+                        viewModel.setFromSwitchAccount(true)
                     }
                 })
             }
+            is UGCOnboardingParentFragment -> {
+                childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
+                    override fun onSuccess() {
+                        parentViewModel.submitAction(SwitchAccount)
+                    }
+
+                    override fun impressTncOnboarding() {}
+
+                    override fun impressCompleteOnboarding() {}
+
+                    override fun clickNextOnTncOnboarding() {}
+
+                    override fun clickNextOnCompleteOnboarding() {}
+
+                    override fun clickCloseIcon() { closeBottomSheet() }
+                })
+            }
+            is WarningInfoBottomSheet -> {
+                childFragment.setData(parentViewModel.warningInfoType)
+                childFragment.setListener(object : WarningInfoBottomSheet.Listener {
+                    override fun clickCloseIcon() { closeBottomSheet() }
+                })
+            }
+            is SellerTncBottomSheet -> {
+                childFragment.initViews(parentViewModel.tncList)
+                childFragment.setListener(object : SellerTncBottomSheet.Listener {
+                    override fun clickCloseIcon() { closeBottomSheet() }
+                })
+            }
         }
+    }
+
+    private fun closeBottomSheet() {
+        if (!viewModel.isFromSwitchAccount) activity?.finish()
+        viewModel.setFromSwitchAccount(false)
     }
 
     /** Setup */
@@ -266,7 +307,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
                 setOnAccountClickListener {
                     hideCoachMarkSwitchAccount()
-                    openFeedAccountBottomSheet()
+                    showAccountBottomSheet()
                 }
             } else setOnAccountClickListener(null)
         }
@@ -438,6 +479,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderProductMenu(prevState?.selectedProduct, state.selectedProduct)
                 renderScheduleMenu(state.schedule)
                 renderSchedulePicker(prevState?.schedule, state.schedule)
+                renderAccountStateInfo(state.accountStateInfo)
             }
         }
     }
@@ -550,8 +592,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun renderScheduleMenu(
         state: ScheduleUiModel
     ) {
-        binding.viewPreparationMenu.showScheduleMenu(state.canSchedule)
-
         binding.viewPreparationMenu.isSetScheduleChecked(
             state.schedule is BroadcastScheduleUiModel.Scheduled
         )
@@ -572,6 +612,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         if (prevState?.state != state.state && state.state == NetworkState.Success) {
             schedulePicker.dismiss()
+        }
+    }
+
+    private fun renderAccountStateInfo(state: AccountStateInfo) {
+        when(state.type) {
+            AccountStateInfoType.Live, AccountStateInfoType.Banned -> showWaringInfoBottomSheet()
+            AccountStateInfoType.NotAcceptTNC -> {
+                if (state.selectedAccount.isShop) showTermsAndConditionBottomSheet()
+                else showUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_TNC)
+            }
+            AccountStateInfoType.NoUsername -> showUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_COMPLETE)
+            AccountStateInfoType.Unknown -> return
         }
     }
 
@@ -625,9 +677,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         )
     }
 
-    private fun openFeedAccountBottomSheet() {
+    private fun showAccountBottomSheet() {
         try {
-            FeedAccountTypeBottomSheet
+            ContentAccountTypeBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
                 .showNow(childFragmentManager)
         }
@@ -820,12 +872,45 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     else getString(R.string.play_bro_switch_account_secondary_cta_buyer_dialog)
                 )
                 setSecondaryCTAClickListener {
-                    parentViewModel.submitAction(SelectAccount(contentAccount))
+                    parentViewModel.submitAction(SwitchAccount)
                     if (switchAccountConfirmationDialog.isShowing) dismiss()
                 }
             }
         }
         return switchAccountConfirmationDialog
+    }
+
+    private fun showUGCOnboardingBottomSheet(onboardingType: Int) {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment = childFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
+        if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
+        try {
+            val bundle = Bundle().apply {
+                putInt(UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE, onboardingType)
+            }
+            childFragmentManager.beginTransaction()
+                .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
+                .commit()
+        } catch (e: Exception) { }
+    }
+
+    private fun showWaringInfoBottomSheet() {
+        try {
+            WarningInfoBottomSheet
+                .getFragment(childFragmentManager, requireActivity().classLoader)
+                .showNow(childFragmentManager)
+        } catch (e: Exception) { }
+    }
+
+    private fun showTermsAndConditionBottomSheet() {
+        childFragmentManager.executePendingTransactions()
+        val existingFragment = childFragmentManager.findFragmentByTag(SellerTncBottomSheet.TAG)
+        if (existingFragment is SellerTncBottomSheet && existingFragment.isVisible) return
+        try {
+            SellerTncBottomSheet
+                .getFragment(childFragmentManager, requireActivity().classLoader)
+                .showNow(childFragmentManager)
+        } catch (e: Exception) { }
     }
 
     private fun showLoading(isShow: Boolean) {

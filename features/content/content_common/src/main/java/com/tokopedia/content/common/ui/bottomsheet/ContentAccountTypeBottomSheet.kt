@@ -16,7 +16,7 @@ import com.tokopedia.content.common.R
 /**
  * Created By : Jonathan Darwin on April 13, 2022
  */
-class FeedAccountTypeBottomSheet : BottomSheetUnify() {
+class ContentAccountTypeBottomSheet : BottomSheetUnify() {
 
     private var _binding: BottomSheetAccountTypeBinding? = null
     private val binding: BottomSheetAccountTypeBinding
@@ -76,7 +76,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
         if(!isAdded) show(fragmentManager, TAG)
     }
 
-    fun setData(contentAccountList: List<ContentAccountUiModel>): FeedAccountTypeBottomSheet {
+    fun setData(contentAccountList: List<ContentAccountUiModel>): ContentAccountTypeBottomSheet {
         mFeedAccountList.clear()
         mFeedAccountList.addAll(contentAccountList)
 
@@ -95,12 +95,12 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): FeedAccountTypeBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedAccountTypeBottomSheet
+        ): ContentAccountTypeBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ContentAccountTypeBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                FeedAccountTypeBottomSheet::class.java.name
-            ) as FeedAccountTypeBottomSheet
+                ContentAccountTypeBottomSheet::class.java.name
+            ) as ContentAccountTypeBottomSheet
         }
     }
 

@@ -12,7 +12,6 @@
     <FrameLayout
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
-        android:background="@drawable/bg_play_bro_tnc_benefit"
         android:padding="@dimen/spacing_lvl2"
         >
 

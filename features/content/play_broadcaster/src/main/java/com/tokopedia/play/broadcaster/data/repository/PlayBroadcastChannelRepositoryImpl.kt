@@ -2,6 +2,9 @@ package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.teleporter.Teleporter.gson
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
+import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
@@ -27,11 +30,17 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val createChannelUseCase: CreateChannelUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
-    private val userSession: UserSessionInterface,
     private val remoteConfig: RemoteConfig,
     private val mapper: PlayBroadcastMapper,
     private val dispatchers: CoroutineDispatchers,
+    private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
 ): PlayBroadcastChannelRepository {
+
+    override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
+        val response = getWhiteListNewUseCase.execute(type = WHITELIST_ENTRY_POINT)
+
+        return@withContext mapper.mapAuthorList(response)
+    }
 
     override suspend fun getChannelConfiguration(authorId: String, authorType: String): ConfigurationUiModel = withContext(dispatchers.io) {
         val response = getConfigurationUseCase.execute(authorId = authorId, authorType = authorType)

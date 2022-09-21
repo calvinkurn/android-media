@@ -18,6 +18,7 @@ import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewM
 import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.databinding.BottomsheetUserTncOnboardingBinding
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import kotlinx.coroutines.flow.collect
@@ -47,8 +48,8 @@ class UserTnCOnboardingBottomSheet @Inject constructor(
             this,
             viewModelFactoryCreator.create(
                 this,
-                usernameArg,
-                strategyFactory.create(usernameArg),
+                onboardingType,
+                strategyFactory.create(onboardingType),
             )
         )[UGCOnboardingViewModel::class.java]
     }
@@ -80,6 +81,7 @@ class UserTnCOnboardingBottomSheet @Inject constructor(
     private fun setupView() {
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
         binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
+        setTitle(getString(R.string.ugc_tnc_onboarding_title))
     }
 
     private fun setupListener() {

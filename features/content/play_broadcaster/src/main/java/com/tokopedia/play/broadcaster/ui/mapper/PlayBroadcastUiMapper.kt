@@ -5,6 +5,9 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
@@ -34,12 +37,10 @@ import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
 import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -560,6 +561,20 @@ class PlayBroadcastUiMapper @Inject constructor(
         videoBufferTimestamp = metric.videoBufferTimestamp,
         audioBufferTimestamp = metric.audioBufferTimestamp,
     )
+
+    override fun mapAuthorList(response: WhitelistQuery): List<ContentAccountUiModel> {
+        return response.whitelist.authors.map {
+            ContentAccountUiModel(
+                id = it.id,
+                name = it.name,
+                iconUrl = it.thumbnail,
+                badge = it.badge,
+                type = it.type,
+                hasUsername = it.livestream.hasUsername,
+                hasAcceptTnc = it.livestream.hasAcceptTnc,
+            )
+        }
+    }
 
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"

@@ -23,8 +23,8 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     override fun getScreenName() = TAG
 
-    private val usernameArg: String
-        get() = arguments?.getString(KEY_USERNAME).orEmpty()
+    private val onboardingType: Int
+        get() = arguments?.getInt(KEY_ONBOARDING_TYPE, VALUE_UNKNOWN) ?: VALUE_UNKNOWN
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,46 +61,56 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
                     override fun onSuccess() {
                         mListener?.onSuccess()
                     }
+
+                    override fun clickCloseIcon() {
+                        mListener?.clickCloseIcon()
+                    }
                 })
             }
             is UserTnCOnboardingBottomSheet -> {
                 childFragment.setListener(object : UserTnCOnboardingBottomSheet.Listener,
                         BaseUserOnboardingBottomSheet.Listener {
-                        override fun clickNextOnTncOnboarding() {
-                            mListener?.clickNextOnTncOnboarding()
-                        }
+                    override fun clickNextOnTncOnboarding() {
+                        mListener?.clickNextOnTncOnboarding()
+                    }
 
-                        override fun onSuccess() {
-                            mListener?.onSuccess()
-                        }
-                    })
+                    override fun onSuccess() {
+                        mListener?.onSuccess()
+                    }
+
+                    override fun clickCloseIcon() {
+                        mListener?.clickCloseIcon()
+                    }
+                })
             }
         }
     }
 
     private fun showBottomSheet() {
-        if(usernameArg.isEmpty()) {
-            mListener?.impressCompleteOnboarding()
-            UserCompleteOnboardingBottomSheet.getFragment(
-                childFragmentManager,
-                requireContext().classLoader
-            ).apply {
-                arguments = createArgument()
-            }.showNow(childFragmentManager)
-        }
-        else {
-            mListener?.impressTncOnboarding()
-            UserTnCOnboardingBottomSheet.getFragment(
-                childFragmentManager,
-                requireContext().classLoader
-            ).apply {
-                arguments = createArgument()
-            }.showNow(childFragmentManager)
+        when (onboardingType) {
+            VALUE_ONBOARDING_TYPE_COMPLETE -> {
+                mListener?.impressCompleteOnboarding()
+                UserCompleteOnboardingBottomSheet.getFragment(
+                    childFragmentManager,
+                    requireContext().classLoader
+                ).apply {
+                    arguments = createArgument()
+                }.showNow(childFragmentManager)
+            }
+            VALUE_ONBOARDING_TYPE_TNC -> {
+                mListener?.impressTncOnboarding()
+                UserTnCOnboardingBottomSheet.getFragment(
+                    childFragmentManager,
+                    requireContext().classLoader
+                ).apply {
+                    arguments = createArgument()
+                }.showNow(childFragmentManager)
+            }
         }
     }
 
     private fun createArgument() = Bundle().apply {
-        putString(KEY_USERNAME, usernameArg)
+        putInt(KEY_ONBOARDING_TYPE, onboardingType)
     }
 
     fun setListener(listener: Listener?) {
@@ -113,10 +123,14 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
         fun impressCompleteOnboarding()
         fun clickNextOnTncOnboarding()
         fun clickNextOnCompleteOnboarding()
+        fun clickCloseIcon()
     }
 
     companion object {
         const val TAG = "FeedUGCOnboardingParentFragment"
-        const val KEY_USERNAME = "username"
+        const val KEY_ONBOARDING_TYPE = "onboarding_type"
+        const val VALUE_ONBOARDING_TYPE_COMPLETE = 1
+        const val VALUE_ONBOARDING_TYPE_TNC = 2
+        const val VALUE_UNKNOWN = 0
     }
 }

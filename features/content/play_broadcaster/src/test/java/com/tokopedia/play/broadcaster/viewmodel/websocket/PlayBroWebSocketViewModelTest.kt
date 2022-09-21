@@ -54,6 +54,7 @@ class PlayBroWebSocketViewModelTest {
 
     @Before
     fun setUp() {
+        coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
     }
 
@@ -129,7 +130,7 @@ class PlayBroWebSocketViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 robot.executeViewModelPrivateFunction("startWebSocket")
                 fakePlayWebSocket.fakeEmitMessage(mockPinnedMessageString)
             }
@@ -223,7 +224,7 @@ class PlayBroWebSocketViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 robot.executeViewModelPrivateFunction("startWebSocket")
                 fakePlayWebSocket.fakeEmitMessage(mockProductTagString)
             }
@@ -272,7 +273,7 @@ class PlayBroWebSocketViewModelTest {
 
         robot.use {
             val state = it.recordState {
-                getConfig()
+                getAccountConfiguration()
 
                 //TODO() = please check
                 //val stateResult = robot.getViewModel().observableInteractiveState.getOrAwaitValue()
@@ -336,7 +337,7 @@ class PlayBroWebSocketViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 this.executeViewModelPrivateFunction("startWebSocket")
                 fakePlayWebSocket.fakeEmitMessage(mockUnknownQuizString)
             }
