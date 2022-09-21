@@ -32,6 +32,11 @@ query FeedXGetActivityProducts(${'$'}req: FeedXGetActivityProductsRequest!){
           priceOriginalFmt
           priceDiscount
           priceDiscountFmt
+          priceMasked
+          priceMaskedFmt
+          stockWording
+          stockSoldPercentage
+          cartable
           totalSold
           isBebasOngkir
           bebasOngkirStatus
