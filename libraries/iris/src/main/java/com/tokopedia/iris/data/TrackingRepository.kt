@@ -90,6 +90,7 @@ class TrackingRepository(
 
 
     private fun setEmbraceLog(queryName: String, queryParam: String) {
+        Log.e("Hii","Inside Embrace")
         val embraceMap = mapOf(
             "queryName" to queryName,
             "detail" to queryParam
