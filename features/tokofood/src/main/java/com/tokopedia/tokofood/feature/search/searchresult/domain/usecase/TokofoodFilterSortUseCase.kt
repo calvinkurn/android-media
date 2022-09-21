@@ -16,6 +16,7 @@ private const val QUERY = """
             filter {
               title
               subtitle
+              template_name
               options {
                 name
                 description
