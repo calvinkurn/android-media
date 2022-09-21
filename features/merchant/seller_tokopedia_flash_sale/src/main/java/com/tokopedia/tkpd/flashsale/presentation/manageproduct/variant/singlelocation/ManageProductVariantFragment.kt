@@ -1,25 +1,26 @@
-package com.tokopedia.tkpd.flashsale.presentation.avp
+package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
-import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.tkpd.flashsale.presentation.avp.adapter.ManageProductVariantDelegateAdapter
-import com.tokopedia.tkpd.flashsale.presentation.avp.adapter.item.ManageProductVariantItem
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantAdapter
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
 import timber.log.Timber
 
-class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<CompositeAdapter>() {
+class ManageProductVariantFragment :
+    BaseCampaignManageProductDetailFragment<ManageProductVariantAdapter>(),
+    ManageProductVariantListener {
 
     companion object {
         fun newInstance(product: ReservedProduct.Product?): ManageProductVariantFragment {
@@ -56,17 +57,16 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        product?.let {
-            viewModel.setupInitiateProductData(it)
-        }
-        setupHeaderData(viewModel.getFinalProductData())
+        product?.let { viewModel.setupInitiateProductData(it) }
+        setupPage(viewModel.getProductData())
         setupWidgetBulkApply(
             getString(R.string.stfs_inactive_variant_bulk_apply_place_holder),
             false
         )
+        setupObservers()
     }
 
-    private fun setupHeaderData(product: ReservedProduct.Product) {
+    private fun setupPage(product: ReservedProduct.Product) {
         setupProductHeaderData(
             productImageUrl = product.picture,
             productName = product.name,
@@ -75,7 +75,13 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
             productStockTextFormatted = product.stock.toString(),
             isShowWidgetBulkApply = true
         )
-        product.toItem()?.let { adapter?.submit(it) }
+        buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
+    }
+
+    private fun setupObservers() {
+        viewModel.isInputPageValid.observe(viewLifecycleOwner) {
+            buttonSubmit?.isEnabled = it
+        }
     }
 
     private fun setupWidgetBulkApply(title: String, isReadyToBulkApply: Boolean) {
@@ -99,31 +105,18 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
 
     }
 
-    override fun createAdapterInstance(): CompositeAdapter {
-        return CompositeAdapter.Builder()
-            .add(ManageProductVariantDelegateAdapter(
-                onToggleSwitched = { position, isChecked ->
-                    onToggleSwitched(position, isChecked)
-                },
-                onDiscountAmountChanged = { position, value ->
-                    viewModel.setDiscountAmount(position, value)
-                    Timber.tag("Masuk").d(value.toString())
-                }
-            ))
-            .build()
-    }
-
-    private fun onToggleSwitched(itemPosition: Int, isChecked: Boolean) {
-        viewModel.setItemToggleValue(itemPosition, isChecked)
-        viewModel.getFinalProductData().toItem()?.let {
-            adapter?.submit(it)
-            setWidgetBulkApplyState(it)
+    override fun createAdapterInstance(): ManageProductVariantAdapter {
+        return ManageProductVariantAdapter().apply {
+            product?.let {
+                setDataList(it)
+                setListener(this@ManageProductVariantFragment)
+            }
         }
     }
 
-    private fun setWidgetBulkApplyState(newItems: List<ManageProductVariantItem>) {
+    private fun setWidgetBulkApplyState(items: List<ReservedProduct.Product.ChildProduct>) {
         var activeVariantCount = Int.ZERO
-        newItems.filter { it.isToggleOn }.map {
+        items.filter { it.isToggleOn }.map {
             activeVariantCount++
         }
 
@@ -142,22 +135,40 @@ class ManageProductVariantFragment : BaseCampaignManageProductDetailFragment<Com
         }
     }
 
-    private fun ReservedProduct.Product.toItem(): List<ManageProductVariantItem>? {
-        return this.childProducts.map { child ->
-            ManageProductVariantItem(
-                disabledReason = child.disabledReason,
-                isDisabled = child.isDisabled,
-                isMultiwarehouse = child.isMultiwarehouse,
-                isToggleOn = child.isToggleOn,
-                name = child.name,
-                picture = child.picture,
-                price = child.price,
-                productId = child.productId,
-                sku = child.sku,
-                stock = child.stock,
-                url = child.url,
-                warehouses = child.warehouses,
-            )
+    override fun onDataInputChanged(
+        index: Int,
+        product: ReservedProduct.Product,
+        discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
+    ): ValidationResult {
+        product.productCriteria.let {
+            val warehouses =
+                (adapter as ManageProductVariantAdapter).getDataList()[index].warehouses
+            viewModel.validateInputPage(warehouses, it)
         }
+        return viewModel.validateInput(product.productCriteria, discountSetup)
+    }
+
+    override fun onToggleSwitch(index: Int, isChecked: Boolean) {
+        viewModel.setItemToggleValue(index, isChecked)
+        val product = viewModel.getProductData()
+        setWidgetBulkApplyState(product.childProducts)
+    }
+
+    override fun onDiscountChange(index: Int, priceValue: Long, discountValue: Int) {
+        viewModel.setDiscountValue(index, priceValue, discountValue)
+    }
+
+    override fun onStockChange(index: Int, stockValue: Long) {
+        viewModel.setStockValue(index, stockValue)
+    }
+
+    override fun calculatePrice(percentInput: Long, adapterPosition: Int): String {
+        val originalPrice = viewModel.getProductData().childProducts[adapterPosition].price.price
+        return viewModel.calculatePrice(percentInput, originalPrice)
+    }
+
+    override fun calculatePercent(priceInput: Long, adapterPosition: Int): String {
+        val originalPrice = viewModel.getProductData().childProducts[adapterPosition].price.price
+        return viewModel.calculatePercent(priceInput, originalPrice)
     }
 }

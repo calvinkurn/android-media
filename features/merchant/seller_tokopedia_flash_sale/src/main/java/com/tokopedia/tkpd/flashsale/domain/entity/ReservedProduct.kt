@@ -9,7 +9,7 @@ data class ReservedProduct(
 ) {
     @Parcelize
     data class Product(
-        val childProducts: List<ChildProduct>,
+        var childProducts: List<ChildProduct>,
         val isMultiWarehouse: Boolean,
         val isParentProduct: Boolean,
         val name: String,

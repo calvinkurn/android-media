@@ -94,6 +94,7 @@
         app:layout_constraintTop_toTopOf="@id/text_field_price_discount_nominal"
         app:unify_text_field_input_type="number"
         app:unify_text_field_label="@string/campaign_common_discount_placeholder"
+        app:unify_text_field_append_text="%"
         app:unify_text_field_placeholder="@string/campaign_common_discount_placeholder"
         tools:unify_text_field_message="10%-50%" />
 

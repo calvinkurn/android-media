@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.avp
+package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation
 
 import android.content.Context
 import android.content.Intent

@@ -42,7 +42,7 @@
             android:exported="false" />
 
         <activity
-            android:name="com.tokopedia.tkpd.flashsale.presentation.avp.ManageProductVariantActivity"
+            android:name="com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.ManageProductVariantActivity"
             android:exported="false" />
     </application>
 

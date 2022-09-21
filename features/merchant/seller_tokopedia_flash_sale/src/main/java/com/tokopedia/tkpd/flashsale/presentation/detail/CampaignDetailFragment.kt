@@ -32,7 +32,8 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
-import com.tokopedia.tkpd.flashsale.presentation.avp.ManageProductVariantActivity
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.ManageProductVariantActivity
+import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingRejectedDelegateAdapter
@@ -40,11 +41,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.Finis
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.OnSelectionProcessDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.WaitingForSelectionDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
-import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
-import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
-import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
-import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerFragment
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1267,7 +1264,38 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 sku = "SKU-$child",
                 stock = 80,
                 url = "",
-                warehouses = listOf()
+                warehouses = listOf(
+                    ReservedProduct.Product.Warehouse(
+                        warehouseId = 123,
+                        name = "JKT",
+                        stock = 1,
+                        price = 100,
+                        discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
+                            discount = 0,
+                            price = 0,
+                            stock = 0,
+                        ),
+                        isDilayaniTokopedia = false,
+                        isToggleOn = true,
+                        isDisabled = false,
+                        disabledReason = "",
+                    ),
+                    ReservedProduct.Product.Warehouse(
+                        warehouseId = 122,
+                        name = "JKTSEL",
+                        stock = 10,
+                        price = 200,
+                        discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
+                            discount = 0,
+                            price = 0,
+                            stock = 0,
+                        ),
+                        isDilayaniTokopedia = false,
+                        isToggleOn = true,
+                        isDisabled = false,
+                        disabledReason = "",
+                    )
+                )
             )
             childsProduct.add(childProduct)
         }

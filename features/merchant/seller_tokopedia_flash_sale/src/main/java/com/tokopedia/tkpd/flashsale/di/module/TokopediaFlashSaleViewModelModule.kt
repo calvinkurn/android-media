@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
-import com.tokopedia.tkpd.flashsale.presentation.avp.ManageProductVariantViewModel
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.ManageProductVariantViewModel
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.viewmodel.ChooseProductViewModel
 import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListViewModel
 import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerViewModel

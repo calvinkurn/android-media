@@ -5,7 +5,7 @@ import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleViewModelModule
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
-import com.tokopedia.tkpd.flashsale.presentation.avp.ManageProductVariantFragment
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.ManageProductVariantFragment
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.fragment.ChooseProductFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
