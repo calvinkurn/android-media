@@ -61,7 +61,7 @@ class GyroEngineRequestUseCase @Inject constructor(
                         mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
                         isDonation(thanksPageData).toString(), userSession.userId,
                         isMarketplace(thanksPageData).toString(), isGoldMerchant(thanksPageData).toString(),
-                        isOfficialStore(thanksPageData).toString(),thanksPageData.customDataOther?.isEnjoyPLus?:"false"),
+                        isOfficialStore(thanksPageData).toString(),thanksPageData.customDataOther?.isEnjoyPLus?:"false",thanksPageData.gyroData),
                 FeatureEngineRequestOperators(),
                 FeatureEngineRequestThresholds()
             )

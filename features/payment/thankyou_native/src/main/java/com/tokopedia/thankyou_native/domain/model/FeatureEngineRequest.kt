@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.domain.model
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.RawValue
 
 data class FeatureEngineRequest (
         @SerializedName("merchant_code")
@@ -39,7 +40,9 @@ data class FeatureEngineRequestParameters(
         @SerializedName("is_OS")
         val isOS : String,
         @SerializedName("is_enjoy_plus_benefit")
-        val isPlus: String
+        val isPlus: String,
+        // parse gyro data json
+        var gyroData: @RawValue Map<String,Any?>? = null,
 )
 
 class FeatureEngineRequestOperators
