@@ -159,7 +159,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun setUpPermissionChecker() {
-        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onNeverAskAgain(permissionText: String) {}
 
