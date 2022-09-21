@@ -1277,10 +1277,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizChoiceDetailState.value = QuizChoiceDetailStateUiModel.Empty
         when (val state = _quizDetailState.value) {
             is QuizDetailStateUiModel.Error -> {
-                if (state.isQuizDetail)
-                    getQuizDetailData()
-                else
-                    getLeaderboardWithSlots(state.allowChat)
+                if (state.isQuizDetail) getQuizDetailData()
+                else getLeaderboardWithSlots(if (authorType == TYPE_USER) false else state.allowChat)
             }
 
         }
