@@ -29,6 +29,10 @@ class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
     }
 
     var items: List<Visitable<*>> = emptyList()
+        set(value) {
+            field = value
+            submitList(value)
+        }
     var productListener: RecipeProductListener? = null
     var productAnalytics: ProductAnalytics? = null
 
@@ -82,6 +86,10 @@ class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
             adapter = this@TokoNowRecipeProductBottomSheet.adapter
             layoutManager = LinearLayoutManager(context)
         }
-        adapter.submitList(items)
+        submitList(items)
+    }
+
+    private fun submitList(value: List<Visitable<*>>) {
+        adapter.submitList(value)
     }
 }

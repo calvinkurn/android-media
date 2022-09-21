@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedianow.recipedetail.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokopedianow.R
@@ -27,6 +31,7 @@ import javax.inject.Inject
 class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
 
     companion object {
+        private const val REQUEST_CODE_LOGIN = 101
 
         fun newInstance(products: List<RecipeProductUiModel>): TokoNowRecipeSimilarProductFragment {
             return TokoNowRecipeSimilarProductFragment().apply {
@@ -50,6 +55,8 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
 
     private val analytics by lazy { RecipeSimilarProductAnalytics(userSession) }
 
+    private var bottomSheet: TokoNowRecipeProductBottomSheet? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,14 +67,28 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val productList = arguments
+            ?.getParcelableArrayList<RecipeProductUiModel>(EXTRA_SIMILAR_PRODUCT_LIST).orEmpty()
+
         observeLiveData()
         setupBottomSheet()
-        trackBottomSheetImpression()
+        trackImpression()
+
+        viewModel.onViewCreated(productList)
     }
 
     override fun onAttach(context: Context) {
         injectDependencies()
         super.onAttach(context)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode != Activity.RESULT_OK) return
+
+        when(requestCode) {
+            REQUEST_CODE_LOGIN -> activity?.finish()
+        }
     }
 
     override fun deleteCartItem(productId: String) {
@@ -77,28 +98,44 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
     }
 
     override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
-        viewModel.onQuantityChanged(productId, shopId, quantity)
+        if(userSession.isLoggedIn) {
+            viewModel.onQuantityChanged(productId, shopId, quantity)
+        } else {
+            goToLoginPage()
+        }
     }
 
     override fun addItemToCart(productId: String, shopId: String, quantity: Int) {
-        viewModel.addItemToCart(productId, shopId, quantity)
+        if(userSession.isLoggedIn) {
+            viewModel.addItemToCart(productId, shopId, quantity)
+        } else {
+            goToLoginPage()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getMiniCart()
     }
 
     private fun setupBottomSheet() {
         val title = getString(R.string.tokopedianow_recipe_similar_product_title)
-        val productList = arguments
-            ?.getParcelableArrayList<RecipeProductUiModel>(EXTRA_SIMILAR_PRODUCT_LIST).orEmpty()
 
-        val bottomSheet = TokoNowRecipeProductBottomSheet.newInstance().apply {
+        bottomSheet = TokoNowRecipeProductBottomSheet.newInstance().apply {
             productListener = this@TokoNowRecipeSimilarProductFragment
             productAnalytics = analytics
-            items = productList
+            items = emptyList()
             setTitle(title)
         }
-        bottomSheet.show(childFragmentManager)
+
+        bottomSheet?.show(childFragmentManager)
     }
 
     private fun observeLiveData() {
+        observe(viewModel.visitableItems) {
+            bottomSheet?.items = it
+        }
+
         observe(viewModel.addItemToCart) {
             when (it) {
                 is Success -> onSuccessAddItemToCart(it.data)
@@ -123,10 +160,12 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
     private fun onSuccessAddItemToCart(data: AddToCartDataModel) {
         val message = data.errorMessage.joinToString(separator = ", ")
         showToaster(message = message)
+        getMiniCart()
     }
 
     private fun onSuccessRemoveCartItem(data: Pair<String, String>) {
         showToaster(message = data.second)
+        getMiniCart()
     }
 
     private fun showErrorToaster(error: Fail) {
@@ -136,6 +175,10 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
         )
     }
 
+    private fun getMiniCart() {
+        viewModel.getMiniCart()
+    }
+
     private fun showToaster(
         message: String,
         duration: Int = Toaster.LENGTH_SHORT,
@@ -143,7 +186,7 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
         actionText: String = "",
         onClickAction: View.OnClickListener = View.OnClickListener { }
     ) {
-        view?.let { view ->
+        bottomSheet?.view?.let { view ->
             if (message.isNotBlank()) {
                 val toaster = Toaster.build(
                     view = view,
@@ -158,7 +201,12 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
         }
     }
 
-    private fun trackBottomSheetImpression() {
+    private fun goToLoginPage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+
+    private fun trackImpression() {
         analytics.trackImpressionBottomSheet()
     }
 
