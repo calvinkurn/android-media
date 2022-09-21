@@ -14,6 +14,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArg
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayUgcProductPickerBinding
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
@@ -22,6 +23,7 @@ import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collect
@@ -33,13 +35,17 @@ import javax.inject.Inject
  */
 class ProductPickerUGCBottomSheet @Inject constructor(
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
+    private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
+    private val analytic: ProductPickerUGCAnalytic,
 ) : BaseProductSetupBottomSheet() {
 
     private var _binding: BottomSheetPlayUgcProductPickerBinding? = null
     private val binding: BottomSheetPlayUgcProductPickerBinding
         get() = _binding!!
 
-    private val parentViewModel by activityViewModels<PlayBroadcastViewModel>()
+    private val parentViewModel by activityViewModels<PlayBroadcastViewModel> {
+        parentViewModelFactoryCreator.create(requireActivity())
+    }
 
     private val productTagListener = object : ProductTagParentFragment.Listener {
         override fun onCloseProductTag() {
@@ -79,6 +85,11 @@ class ProductPickerUGCBottomSheet @Inject constructor(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
+            override fun onBackPressed() {
+                ProductTagParentFragment.findFragment(childFragmentManager)
+                    ?.onBackPressed()
+            }
+
             override fun cancel() {
                 closeBottomSheet()
             }
@@ -107,6 +118,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
             is ProductTagParentFragment -> {
                 childFragment.setListener(productTagListener)
                 childFragment.setDataSource(productTagDataSource)
+                childFragment.setAnalytic(analytic)
             }
         }
     }
@@ -149,10 +161,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
             classLoader = requireActivity().classLoader,
             argumentBuilder = ContentProductTagArgument.Builder()
                 .setAuthorType(selectedAccount.type)
-                .setProductTagSource(
-                    listOf(ProductTagSource.GlobalSearch, ProductTagSource.LastPurchase, ProductTagSource.MyShop)
-                        .joinToString { it.tag }
-                )
+                .setProductTagSource(ProductTagSource.GlobalSearch.tag)
                 .setAuthorId(selectedAccount.id)
                 .setShopBadge(selectedAccount.badge)
                 .setMultipleSelectionProduct(true, viewModel.maxProduct)

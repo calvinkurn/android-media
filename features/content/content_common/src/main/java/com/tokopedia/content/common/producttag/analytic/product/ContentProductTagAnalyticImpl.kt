@@ -238,6 +238,22 @@ class ContentProductTagAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun clickSaveProduct(source: ProductTagSource) {
+
+    }
+
+    override fun clickAdvancedProductFilter() {
+
+    }
+
+    override fun clickSaveAdvancedProductFilter() {
+
+    }
+
+    override fun clickProductFilterChips() {
+
+    }
+
     override fun sendAll() {
         trackingQueue.sendAll()
     }

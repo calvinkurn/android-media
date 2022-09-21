@@ -202,6 +202,7 @@ class ProductTagParentFragment @Inject constructor(
             viewModel.uiEvent.collect {
                 when(it) {
                     is ProductTagUiEvent.FinishProductTag -> {
+                        mAnalytic?.clickSaveProduct(viewModel.selectedTagSource)
                         mListener?.onFinishProductTag(it.products)
                     }
                     is ProductTagUiEvent.ShowSourceBottomSheet -> {
