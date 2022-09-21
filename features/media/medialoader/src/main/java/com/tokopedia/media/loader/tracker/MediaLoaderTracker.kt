@@ -107,8 +107,7 @@ object MediaLoaderTracker {
                 val remoteInfo = ServerIpAddressLocator.fetchServerInfo(url)
                 ipInfo = remoteInfo.hostAddress
                 hostName = remoteInfo.hostName
-            } catch (exp: Exception) {
-            }
+            } catch (ignored: Exception) { /* no-op */ }
 
             map[CDN_IP_MAP_KEY] = ipInfo
             map[CDN_HOST_NAME_MAP_KEY] = hostName
