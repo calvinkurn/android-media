@@ -16,10 +16,16 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
 
+    companion object {
+        private const val SINGLE_PRODUCT_COUNT = 1
+    }
+
     private var binding by autoClearedNullable<StfsBottomsheetCampaignCriteriaCheckBinding>()
     private var criteriaCheckingResults: List<CriteriaCheckingResult> = emptyList()
     private var productName: String = ""
     private var productImageUrl: String = ""
+    private val isVariant: Boolean by lazy { criteriaCheckingResults.size > SINGLE_PRODUCT_COUNT }
+    private val isMultiLoc: Boolean by lazy { criteriaCheckingResults.firstOrNull { it.isMultiloc } != null }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +47,11 @@ class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
         clearContentPadding = true
         setChild(binding?.root)
         setTitle(getString(R.string.commonbs_category_criteria_check_title))
+        binding?.tfDescription?.text = when {
+            !isVariant && !isMultiLoc -> getString(R.string.commonbs_criteria_single_check_description)
+            isVariant && !isMultiLoc -> getString(R.string.commonbs_criteria_variant_check_description)
+            else -> getString(R.string.commonbs_criteria_check_description)
+        }
     }
 
     private fun setupCheckingList(rvResult: RecyclerView) {
@@ -62,7 +73,7 @@ class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
 
     private fun onListTickerClick(list: List<CriteriaCheckingResult.LocationCheckingResult>) {
         val bottomSheet = LocationCriteriaCheckBottomSheet()
-        bottomSheet.show(list, childFragmentManager, "")
+        bottomSheet.show(list, childFragmentManager, "", isVariant)
     }
 
     fun setProductPreview(productName: String, productImageUrl: String) {
