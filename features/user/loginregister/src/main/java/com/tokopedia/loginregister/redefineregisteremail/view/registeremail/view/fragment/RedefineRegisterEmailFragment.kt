@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.redefineregisteremail.view.registeremail.view.fragment
 
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler as KeyboardHandlerGlobal
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -14,13 +15,12 @@ import androidx.navigation.findNavController
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler as KeyboardHandlerGlobal
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterEmailBinding
@@ -244,7 +244,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    val message = ErrorHandler.getErrorMessage(requireActivity(), it.throwable)
+                    val message = ErrorHandler.getErrorMessagePair(context, it.throwable, ErrorHandler.Builder()).first.orEmpty()
                     showToasterError(message)
                 }
             }
