@@ -106,8 +106,8 @@ object MediaLoaderTracker : CoroutineScope {
         val map = data.toMap(context.applicationContext).toMutableMap()
 
         launchCatchError(block = {
-            var ipInfo: String = NOT_AVAILABLE
-            var hostName: String = NOT_AVAILABLE
+            var ipInfo = NOT_AVAILABLE
+            var hostName = NOT_AVAILABLE
             try {
                 val remoteInfo = ServerIpAddressLocator.fetchServerInfo(url)
                 ipInfo = remoteInfo.hostAddress
@@ -116,7 +116,7 @@ object MediaLoaderTracker : CoroutineScope {
 
             map[CDN_IP_MAP_KEY] = ipInfo
             map[CDN_HOST_NAME_MAP_KEY] = hostName
-            map[CDN_ERROR_DETAIL] = "localizedMessage=${e?.localizedMessage} , cause=${e?.cause}, rootCauses=${e?.rootCauses}"
+            map[CDN_ERROR_DETAIL] = "localizedMessage=${e?.localizedMessage}, cause=${e?.cause}, rootCauses=${e?.rootCauses}"
 
             ServerLogger.log(
                 priority = Priority.P1,
