@@ -193,8 +193,8 @@ class QuizFormView : ConstraintLayout {
             else CONTINUE_DISABLED_ALPHA
     }
 
-    fun isEnableQuizGift(enable: Boolean) {
-        binding.viewQuizGift.showWithCondition(enable)
+    fun isEnableQuizGift(isEnable: Boolean) {
+        binding.viewQuizGift.showWithCondition(isEnable)
     }
 
     fun setFormState(quizFormState: QuizFormStateUiModel) {
