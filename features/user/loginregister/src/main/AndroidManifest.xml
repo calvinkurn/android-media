@@ -51,7 +51,7 @@
             android:label="@string/register_email_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="stateHidden"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
