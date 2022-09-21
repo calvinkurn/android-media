@@ -31,8 +31,8 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
 
     fun getTickers(multiLocationSeller: Boolean): List<TickerData> {
         return mutableListOf<TickerData>().apply {
-            addMultiLocationTicker(multiLocationSeller)
             addMaxStockTicker()
+            addMultiLocationTicker(multiLocationSeller)
         }.filter { it.description.isNotBlank() }
     }
 }
