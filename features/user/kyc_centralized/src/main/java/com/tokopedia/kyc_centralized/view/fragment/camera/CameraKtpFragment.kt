@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_COMPRESSION
 import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_CROPPING
 import com.tokopedia.kyc_centralized.R
@@ -64,7 +65,15 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        arguments?.let {
+            isUseCropping = it.getBoolean(EXTRA_USE_CROPPING).orFalse()
+            isUseCompression = it.getBoolean(EXTRA_USE_COMPRESSION).orFalse()
+            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orZero()
+        }
+
         analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -74,12 +83,6 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        arguments?.let {
-            isUseCropping = it.getBoolean(EXTRA_USE_CROPPING).orFalse()
-            isUseCompression = it.getBoolean(EXTRA_USE_COMPRESSION).orFalse()
-            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orZero()
-        }
 
         setupView()
         showCameraView()
@@ -103,7 +106,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
             imageButtonShutter.setOnClickListener {
                 analytics?.eventClickShutterCameraKtp()
                 hideCameraButtonAndShowLoading()
-                cameraView.takePicture()
+                cameraView.takePictureSnapshot()
             }
 
             imageButtonFlip.setOnClickListener {
@@ -337,7 +340,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun getFileSizeInMb(file: File): Int {
-        return (file.length() / DEFAULT_ONE_MEGABYTE).toString().toInt()
+        return (file.length() / DEFAULT_ONE_MEGABYTE).toString().toIntOrZero()
     }
 
     private fun listenerOnPictureTaken(result: (PictureResult) -> Unit): CameraListener {

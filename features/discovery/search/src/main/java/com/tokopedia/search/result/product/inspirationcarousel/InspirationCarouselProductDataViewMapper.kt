@@ -20,6 +20,7 @@ class InspirationCarouselProductDataViewMapper {
         optionTitle: String,
         carouselTitle: String,
         dimension90: String,
+        externalReference: String,
     ): List<InspirationCarouselDataView.Option.Product> {
 
         return inspirationCarouselProduct.mapIndexed { index, product ->
@@ -57,6 +58,10 @@ class InspirationCarouselProductDataViewMapper {
                 carouselTitle,
                 dimension90,
                 customVideoURL = product.customVideoURL,
+                externalReference = externalReference,
+                discount = product.discount,
+                label = product.label,
+                bundleId = product.bundleId,
             )
         }
     }

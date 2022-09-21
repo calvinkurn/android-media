@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -41,6 +42,8 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_IS_FROM_ANA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -264,7 +267,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun initData() {
         source = listener?.getLocalizingAddressHostSourceBottomSheet().toString()
         isSupportWarehouseLoc = listener?.isSupportWarehouseLoc() ?: true
-        isTokonow = source.contains(TOKONOW, ignoreCase = true)
+        isTokonow = listener?.isFromTokonowPage() ?: false
         viewModel.getChosenAddressList(source, isTokonow)
     }
 
@@ -395,6 +398,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
                             putExtra(EXTRA_IS_FULL_FLOW, true)
                             putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                            putExtra(PARAM_SOURCE, AddEditAddressSource.ADDRESS_LOCALIZATION_WIDGET.source)
                         }, REQUEST_CODE_ADD_ADDRESS)
                     } else {
                         startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
@@ -557,7 +561,16 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         ChooseAddressTracking.onClickCekAlamatLainnya(userSession.userId)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
         intent.putExtra(EXTRA_IS_LOCALIZATION, true)
+        intent.putExtra(PARAM_SOURCE, getParamSource())
         startActivityForResult(intent, REQUEST_CODE_ADDRESS_LIST)
+    }
+
+    private fun getParamSource(): String {
+        return if (isTokonow) {
+            ManageAddressSource.TOKONOW.source
+        } else {
+            ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -659,6 +672,13 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
          */
         fun isSupportWarehouseLoc(): Boolean {
             return true
+        }
+
+        /**
+         * To check from tokonow page or not
+         */
+        fun isFromTokonowPage(): Boolean {
+            return false
         }
     }
 }

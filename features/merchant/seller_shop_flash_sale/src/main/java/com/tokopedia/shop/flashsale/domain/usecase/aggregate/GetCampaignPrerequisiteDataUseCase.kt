@@ -25,7 +25,7 @@ class GetCampaignPrerequisiteDataUseCase @Inject constructor(
         private const val DRAFT_COUNT_TO_FETCH = 50
     }
 
-    suspend fun execute(): CampaignPrerequisiteData {
+    suspend fun execute(vpsPackageId : Long): CampaignPrerequisiteData {
         return coroutineScope {
             val campaignDraftDeferred = async {
                 getSellerCampaignListUseCase.execute(
@@ -37,7 +37,8 @@ class GetCampaignPrerequisiteDataUseCase @Inject constructor(
             val remainingQuotaDeferred = async {
                 getSellerCampaignAttributeUseCase.execute(
                     month = dateManager.getCurrentMonth(),
-                    year = dateManager.getCurrentYear()
+                    year = dateManager.getCurrentYear(),
+                    vpsPackageId = vpsPackageId
                 )
             }
 

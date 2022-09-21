@@ -77,6 +77,7 @@ object ProductDetailConstant {
     const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"
     const val PRODUCT_SHIPPING_INFO = "shipping"
     const val ORDER_PRIORITY = "order_prio"
+    const val COD = "cod"
     const val PRODUCT_FULLFILMENT = "fulfillment"
     const val PRODUCT_PROTECTION = "protection"
     const val VALUE_PROP = "value_prop"
@@ -88,6 +89,8 @@ object ProductDetailConstant {
     const val MINI_SHOP_WIDGET = "mini_shop_widget"
     const val CATEGORY_CAROUSEL = "category_carousel"
     const val HAMPERS_INFO = "palugada_hampers"
+    const val PRODUCT_LIST_VERTICAL = "product_list_vertical"
+    const val PDP_VERTICAL_LOADING = "pdp_vertical_loading"
 
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"
@@ -114,6 +117,8 @@ object ProductDetailConstant {
     const val REVIEW_PRD_NM = "x_prd_nm"
     const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"
     const val ARG_CHANNEL = "ARG_CHANNEL"
+    const val ARG_CAMPAIGN_ID = "ARG_CAMPAIGN_ID"
+    const val ARG_VARIANT_ID = "ARG_VARIANT_ID"
 
     //Animation
     const val CART_MAX_COUNT = 99
@@ -131,7 +136,7 @@ object ProductDetailConstant {
     const val ALREADY_FAVORITE_SHOP = 1
 
     //TopAds Banner
-    const val ADS_COUNT = 1
+    const val ADS_COUNT = 3
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
 
@@ -175,4 +180,5 @@ object ProductDetailConstant {
     const val WISHLIST_STATUS_KEY = "wishlist_status"
     const val ADD_WISHLIST = "true"
     const val REMOVE_WISHLIST = "false"
+    const val PDP_SOURCE_WISHLIST = "pdp"
 }

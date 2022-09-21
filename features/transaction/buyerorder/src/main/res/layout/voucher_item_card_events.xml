@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainContent"
-    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -36,7 +35,7 @@
                 app:ticketElevation="4dp" />
 
             <View
-                android:layout_width="@dimen/dp_3"
+                android:layout_width="3dp"
                 android:layout_height="0dp"
                 android:layout_alignBottom="@+id/divider1"
                 android:layout_alignParentTop="true"
@@ -76,8 +75,8 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/imageView"
-                android:layout_width="@dimen/dp_60"
-                android:layout_height="@dimen/dp_60"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="16dp"
@@ -103,7 +102,7 @@
                 android:layout_toRightOf="@+id/imageView"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/Unify_N700_68"
-                android:textSize="@dimen/sp_12"
+                android:textSize="12sp"
                 android:textStyle="normal" />
 
             <TextView
@@ -240,7 +239,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/tanggal_events"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/tanggal_events"
@@ -249,7 +248,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         android:textStyle="bold"
         tools:text="13 Jul 2019, 15:00" />
 
@@ -261,7 +260,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/location_events"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/city_event"
@@ -270,7 +269,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         android:textStyle="bold"
         tools:text="IFI Thamrin - Venue level" />
 
@@ -281,7 +280,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         tools:text=" Jl. M.H. Thamrin, No.20, RT.9 RW.4, Gondang (This is street level with Max 2 lines)…" />
 
 
