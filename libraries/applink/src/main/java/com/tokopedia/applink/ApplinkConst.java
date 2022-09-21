@@ -321,15 +321,10 @@ public interface ApplinkConst {
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
-    String CONTENT_CREATE_POST = "tokopedia://content/create_post/";
-    String CONTENT_DRAFT_POST = "tokopedia://content/draft/{draft_id}";
     String KOL_COMMENT = "tokopedia://kolcomment/{id}";
     String KOL_YOUTUBE_HOST_BASE = "kolyoutube";
     String KOL_YOUTUBE = "tokopedia://" + KOL_YOUTUBE_HOST_BASE+ "/{youtube_url}";
 
-    String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
-    String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
-    String AFFILIATE_DEFAULT_CREATE_POST = "tokopedia://affiliate/create_post/";
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM = "tokopedia://productpickerfromshop";
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_HOST = "productpickerfromshop";
     String AFFILIATE_DEFAULT_CREATE_POST_V2 = "tokopedia://affiliate/create_post_v2";
@@ -525,7 +520,6 @@ public interface ApplinkConst {
         String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
         String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
         String SHOP_FEED = "sellerapp://shop/{shop_id}/feed";
-        String CONTENT_CREATE_POST = "sellerapp://content/create_post";
         String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
         String STATISTIC_DASHBOARD = "sellerapp://gold-merchant-statistic-dashboard";
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
