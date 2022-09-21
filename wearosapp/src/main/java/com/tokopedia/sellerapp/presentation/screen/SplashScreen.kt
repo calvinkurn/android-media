@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,6 +27,7 @@ import com.tokopedia.sellerapp.presentation.theme.DP_0
 import com.tokopedia.sellerapp.presentation.theme.DP_100
 import com.tokopedia.sellerapp.presentation.theme.defaultBackgroundColor
 import com.tokopedia.sellerapp.presentation.theme.splashScreenBackgroundColor
+import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.NumberConstant.ANIMATION_SPLASH_DURATION
 import com.tokopedia.sellerapp.util.NumberConstant.DELAY_SPLASH_DURATION
 import com.tokopedia.sellerapp.util.NumberConstant.START_LOGO_ALPHA_TARGET
@@ -35,9 +37,14 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
-    navigateToHomeScreen: () -> Unit
+    navigateToHomeScreen: () -> Unit,
+    navigateToAppNotInstalledScreen: () -> Unit,
+    sharedViewModel: SharedViewModel,
 ) {
     var startAnimation by remember { mutableStateOf(false) }
+    val ifPhoneHasApp: Boolean? by sharedViewModel.ifPhoneHasApp.observeAsState()
+
+    sharedViewModel.checkIfPhoneHasApp()
 
     val offState by animateDpAsState(
         targetValue = if (startAnimation) DP_0 else DP_100,
@@ -60,7 +67,11 @@ fun SplashScreen(
         delay(DELAY_SPLASH_DURATION)
         animVisibleState = false
         delay(DELAY_SPLASH_DURATION)
-        navigateToHomeScreen()
+        if (ifPhoneHasApp == true) {
+            navigateToHomeScreen()
+        } else {
+            navigateToAppNotInstalledScreen()
+        }
     }
 
     AnimatedVisibility(

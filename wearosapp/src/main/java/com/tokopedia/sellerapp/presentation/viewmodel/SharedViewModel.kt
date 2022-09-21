@@ -1,5 +1,11 @@
 package com.tokopedia.sellerapp.presentation.viewmodel
 
+import android.content.Intent
+import android.net.Uri
+import androidx.wear.remote.interactions.RemoteActivityHelper
+import com.google.android.gms.wearable.CapabilityClient
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -9,16 +15,26 @@ import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
 import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCase
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
+import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
+import com.tokopedia.sellerapp.util.MarketURIConstant.MARKET_TOKOPEDIA
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.guava.await
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
     private val newOrderUseCase: NewOrderUseCase,
-    private val readyToDeliverOrderUseCase: ReadyToDeliverOrderUseCase
+    private val readyToDeliverOrderUseCase: ReadyToDeliverOrderUseCase,
+    private val capabilityClient: CapabilityClient,
+    private val remoteActivityHelper: RemoteActivityHelper,
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -77,6 +93,55 @@ class SharedViewModel @Inject constructor(
             if(index != INDEX_NOT_FOUND){
                 this[index] = this[index].copy(unreadCount = count)
             }
+        }
+    }
+
+    private val _ifPhoneHasApp = MutableLiveData<Boolean>()
+    val ifPhoneHasApp: LiveData<Boolean>
+        get() = _ifPhoneHasApp
+
+    fun checkIfPhoneHasApp() {
+        launch {
+            try {
+                val capabilityInfo = capabilityClient
+                    .getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)
+                    .await()
+
+                withContext(Dispatchers.Main) {
+                    // There should only ever be one phone in a node set (much less w/ the correct
+                    // capability), so I am just grabbing the first one (which should be the only one).
+                    val androidPhoneNodeWithApp = capabilityInfo.nodes.firstOrNull()
+                    _ifPhoneHasApp.value = androidPhoneNodeWithApp != null
+                }
+            } catch (cancellationException: CancellationException) {
+                // Request was cancelled normally
+            } catch (throwable: Throwable) {
+
+            }
+        }
+    }
+
+    fun openAppInStoreOnPhone() {
+        val intent = Intent(Intent.ACTION_VIEW)
+            .addCategory(Intent.CATEGORY_BROWSABLE)
+            .setData(Uri.parse(MARKET_TOKOPEDIA))
+
+        launch {
+            startRemoteActivity(remoteActivityHelper, intent)
+        }
+    }
+
+    private suspend fun startRemoteActivity(
+        remoteActivityHelper: RemoteActivityHelper,
+        intent: Intent,
+    ) {
+        try {
+            remoteActivityHelper.startRemoteActivity(intent).await()
+
+        } catch (cancellationException: CancellationException) {
+            // Request was cancelled normally
+            throw cancellationException
+        } catch (throwable: Throwable) {
         }
     }
 }

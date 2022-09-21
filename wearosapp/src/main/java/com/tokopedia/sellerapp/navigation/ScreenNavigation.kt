@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.navigation
 
 import androidx.navigation.NavController
+import com.tokopedia.sellerapp.util.ScreenConstant.APP_NOT_INSTALLED_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.HOME_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_DETAIL_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_LIST_SCREEN
@@ -23,5 +24,12 @@ class ScreenNavigation(navController: NavController) {
     }
     val toNewOrderDetailScreen: () -> Unit = {
         navController.navigate(route = NEW_ORDER_DETAIL_SCREEN)
+    }
+    val toAppNotInstalledScreen: () -> Unit = {
+        navController.navigate(route = APP_NOT_INSTALLED_SCREEN) {
+            popUpTo(SPLASH_SCREEN) {
+                inclusive = true
+            }
+        }
     }
 }
