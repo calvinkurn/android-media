@@ -15,13 +15,12 @@ import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageA
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_AUTHOR_TYPE
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_ID
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_IS_POST_FOLLOWED
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_POST_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_VIDEO
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_POSITION
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import javax.inject.Inject
 
 /**
@@ -58,7 +57,7 @@ class KolCommentNewActivity : BaseSimpleActivity() {
         val bundle = Bundle()
         postId = intent.data?.lastPathSegment
         if (!postId.isNullOrEmpty()) {
-            bundle.putInt(KolCommentActivity.ARGS_ID, postId.toIntOrZero())
+            bundle.putLong(ARGS_ID, postId.toLongOrZero())
         }
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
@@ -110,6 +109,7 @@ class KolCommentNewActivity : BaseSimpleActivity() {
 
     companion object {
         private const val ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
+        const val ARGS_ID = "ARGS_ID"
 
 
         @JvmStatic
