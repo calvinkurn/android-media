@@ -86,8 +86,6 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
     }
 
     private fun moveThumb() {
-        if (sliderInitialPosition == sliderStartValue) return
-
         // got step size on px
         val stepSize = (sliderWidth - thumbWidth) / sliderStepNumber
 
