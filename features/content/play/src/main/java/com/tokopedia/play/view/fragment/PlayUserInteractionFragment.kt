@@ -84,6 +84,8 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.eventbus.EventBus
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
@@ -248,11 +250,20 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Animation
      */
-    private val fadeInAnimation = PlayFadeInAnimation(FADE_DURATION)
-    private val fadeOutAnimation = PlayFadeOutAnimation(FADE_DURATION)
-    private val fadeInFadeOutAnimation = PlayFadeInFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY)
-    private val delayFadeOutAnimation = PlayDelayFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY)
-    private val fadeAnimationList = arrayOf(fadeInAnimation, fadeOutAnimation, fadeInFadeOutAnimation, delayFadeOutAnimation)
+    private val fadeInAnimation by viewLifecycleBound( { PlayFadeInAnimation(FADE_DURATION) } )
+    private val fadeOutAnimation by viewLifecycleBound( { PlayFadeOutAnimation(FADE_DURATION) })
+    private val fadeInFadeOutAnimation by viewLifecycleBound(
+        { PlayFadeInFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY) }
+    )
+    private val delayFadeOutAnimation by viewLifecycleBound(
+        { PlayDelayFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY) }
+    )
+    private val fadeAnimationList by viewLifecycleBound(
+        { arrayOf(fadeInAnimation, fadeOutAnimation, fadeInFadeOutAnimation, delayFadeOutAnimation) },
+        whenLifecycle {
+            onDestroy { cancelAllAnimations() }
+        }
+    )
 
     private val interactiveDialogDataSource = object : InteractiveDialogFragment.DataSource {
         override fun getViewModelProvider(): ViewModelProvider {
@@ -366,8 +377,6 @@ class PlayUserInteractionFragment @Inject constructor(
         chatListHeightManager = null
 
         hasInvalidateChat = false
-
-        cancelAllAnimations()
 
         super.onDestroyView()
         _binding = null
