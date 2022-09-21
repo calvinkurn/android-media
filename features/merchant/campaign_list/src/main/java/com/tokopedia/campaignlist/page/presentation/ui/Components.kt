@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import coil.annotation.ExperimentalCoilApi
 import com.tokopedia.campaignlist.common.util.onTextChanged
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilter
@@ -165,7 +164,6 @@ fun UnifyTypography(
     )
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun UnifyImage(modifier: Modifier = Modifier, imageUrl : String) {
     AndroidView(
