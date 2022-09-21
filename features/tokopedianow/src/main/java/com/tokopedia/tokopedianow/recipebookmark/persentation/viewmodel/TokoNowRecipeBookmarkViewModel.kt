@@ -44,7 +44,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private val _toaster: MutableStateFlow<UiState<ToasterUiModel>?> = MutableStateFlow(null)
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    private val warehouseId: String
+    val warehouseId: String
         get() = chooseAddressData.warehouse_id
 
     val loadRecipeBookmarks: StateFlow<UiState<List<Visitable<*>>>?>

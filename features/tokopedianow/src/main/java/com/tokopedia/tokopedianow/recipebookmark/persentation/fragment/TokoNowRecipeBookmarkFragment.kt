@@ -28,6 +28,7 @@ import com.tokopedia.tokopedianow.recipebookmark.persentation.viewmodel.TokoNowR
 import com.tokopedia.tokopedianow.recipebookmark.util.RecyclerViewSpaceItemDecoration
 import com.tokopedia.tokopedianow.recipebookmark.util.UiState
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.recipebookmark.analytics.RecipeBookmarkAnalytics
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeShimmeringUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.RecipeViewHolder
@@ -64,6 +65,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     @Inject
     lateinit var viewModel: TokoNowRecipeBookmarkViewModel
 
+    @Inject
+    lateinit var analytics: RecipeBookmarkAnalytics
+
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeBookmarkBinding>()
     private var adapter by autoClearedNullable<RecipeBookmarkAdapter>()
 
@@ -88,17 +92,38 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         super.onAttach(context)
     }
 
-    override fun onRemoveBookmark(title: String, position: Int, recipeId: String) {
+    override fun onRemoveBookmark(recipeTitle: String, position: Int, recipeId: String) {
         viewModel.removeRecipeBookmark(
-            title = title,
+            title = recipeTitle,
             position = position,
             recipeId = recipeId,
             isRemoving = true
         )
+        analytics.clickUnBookmark(recipeId, recipeTitle)
     }
 
-    override fun onClickBookmark(appUrl: String) {
+    override fun onClickRecipeCard(
+        appUrl: String,
+        recipeId: String,
+        recipeTitle: String,
+        position: Int
+    ) {
         RouteManager.route(context, appUrl)
+        analytics.clickRecipeCard(
+            recipeId = recipeId,
+            recipeTitle = recipeTitle,
+            warehouseId = viewModel.warehouseId,
+            position = position
+        )
+    }
+
+    override fun onImpressRecipeCard(recipeId: String, recipeTitle: String, position: Int) {
+        analytics.impressRecipeCard(
+            recipeId = recipeId,
+            recipeTitle = recipeTitle,
+            warehouseId = viewModel.warehouseId,
+            position = position
+        )
     }
 
     private fun injectDependencies() {
@@ -217,8 +242,10 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel),
                 clickListener = {
                     viewModel.addRecipeBookmark(recipeId, data.position.orZero(), false)
+                    analytics.clickCancelUnBookmarkToaster()
                 }
             )
+            analytics.impressUnBookmarkToaster()
         }
     }
 
@@ -320,6 +347,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         binding?.huRecipeBookmark?.apply {
             isShowShadow = false
             setNavigationOnClickListener {
+                analytics.clickBackButton()
                 activity?.onBackPressed()
             }
         }

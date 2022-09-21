@@ -3,6 +3,8 @@ package com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeBookmarkBinding
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.TagAdapter
@@ -42,8 +44,23 @@ class RecipeViewHolder(
             )
 
             root.setOnClickListener {
-                listener.onClickBookmark(element.appUrl)
+                listener.onClickRecipeCard(
+                    appUrl = element.appUrl,
+                    recipeId = element.id,
+                    recipeTitle = element.title,
+                    position = layoutPosition
+                )
             }
+
+            root.addOnImpressionListener(element, object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onImpressRecipeCard(
+                        recipeId = element.id,
+                        recipeTitle = element.title,
+                        position = layoutPosition
+                    )
+                }
+            })
         }
     }
 
@@ -69,7 +86,7 @@ class RecipeViewHolder(
     private fun setBookmarkIcon(binding: ItemTokopedianowRecipeBookmarkBinding, element: RecipeUiModel) {
         binding.icuBookmark.setOnClickListener {
             listener.onRemoveBookmark(
-                title = element.title,
+                recipeTitle = element.title,
                 position = layoutPosition,
                 recipeId = element.id
             )
@@ -77,7 +94,8 @@ class RecipeViewHolder(
     }
 
     interface RecipeListener {
-        fun onRemoveBookmark(title: String, position: Int, recipeId: String)
-        fun onClickBookmark(appUrl: String)
+        fun onRemoveBookmark(recipeTitle: String, position: Int, recipeId: String)
+        fun onClickRecipeCard(appUrl: String, recipeId: String, recipeTitle: String, position: Int)
+        fun onImpressRecipeCard(recipeId: String, recipeTitle: String, position: Int)
     }
 }
