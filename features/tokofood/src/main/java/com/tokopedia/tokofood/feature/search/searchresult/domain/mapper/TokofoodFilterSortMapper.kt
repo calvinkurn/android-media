@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.feature.search.searchresult.domain.mapper
 
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
@@ -23,7 +22,7 @@ class TokofoodFilterSortMapper @Inject constructor() {
         return listOf(sortItem) + filterItems
     }
 
-    fun getAppliedSortFilterUiModels(searchParameters: SearchParameter,
+    fun getAppliedSortFilterUiModels(searchParameters: HashMap<String, String>,
                                      uiModels: List<TokofoodSortFilterItemUiModel>): List<TokofoodSortFilterItemUiModel> {
         return uiModels.map { item ->
             when(item) {
@@ -86,7 +85,7 @@ class TokofoodFilterSortMapper @Inject constructor() {
     }
 
     private fun getAppliedFilterItemUiModel(item: TokofoodFilterItemUiModel,
-                                            searchParameters: SearchParameter): TokofoodFilterItemUiModel {
+                                            searchParameters: HashMap<String, String>): TokofoodFilterItemUiModel {
         val updatedFilter = getFilterFromSearchParameter(searchParameters, item)
         val (selectedCount, selectedKey) = updatedFilter.getSelectedCountAndKey()
         return item.copy(
@@ -97,7 +96,7 @@ class TokofoodFilterSortMapper @Inject constructor() {
     }
 
     private fun getAppliedSortItemUiModel(item: TokofoodSortItemUiModel,
-                                          searchParameters: SearchParameter): TokofoodSortItemUiModel {
+                                          searchParameters: HashMap<String, String>): TokofoodSortItemUiModel {
         val updatedSort = getSelectedSortFromSearchParameter(searchParameters, item)
         val (selectedCount, selectedKey) = updatedSort.getSelectedCountAndKey()
         return item.copy(
@@ -107,13 +106,13 @@ class TokofoodFilterSortMapper @Inject constructor() {
         )
     }
 
-    private fun getFilterFromSearchParameter(searchParameters: SearchParameter,
+    private fun getFilterFromSearchParameter(searchParameters: HashMap<String, String>,
                                              uiModel: TokofoodFilterItemUiModel): Filter {
         return uiModel.filter.options.firstOrNull()?.key?.let { key ->
-            val valueList = searchParameters.get(key).split(OPTION_SEPARATOR)
+            val valueList = searchParameters[key]?.split(OPTION_SEPARATOR)
             val newFilter = uiModel.filter.apply {
                 options = options.onEach { option ->
-                    if (valueList.contains(option.value)) {
+                    if (valueList?.contains(option.value) == true) {
                         option.inputState = true.toString()
                     } else {
                         option.inputState = false.toString()
@@ -124,11 +123,11 @@ class TokofoodFilterSortMapper @Inject constructor() {
         } ?: uiModel.filter
     }
 
-    private fun getSelectedSortFromSearchParameter(searchParameters: SearchParameter,
+    private fun getSelectedSortFromSearchParameter(searchParameters: HashMap<String, String>,
                                                    uiModel: TokofoodSortItemUiModel): Sort? {
         return uiModel.sortList.firstOrNull()?.key?.let { key ->
-            val valueList = searchParameters.get(key).split(OPTION_SEPARATOR)
-            return valueList.firstOrNull()?.let { selectedSortValue ->
+            val valueList = searchParameters[key]?.split(OPTION_SEPARATOR)
+            return valueList?.firstOrNull()?.let { selectedSortValue ->
                 uiModel.sortList.find { it.value == selectedSortValue }
             }
         }

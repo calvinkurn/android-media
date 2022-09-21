@@ -17,7 +17,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
@@ -101,7 +100,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private var searchResultViewUpdateListener: SearchResultViewUpdateListener? = null
 
     private var tokofoodSearchFilterTab: TokofoodSearchFilterTab? = null
-    private var searchParameter: SearchParameter? = null
+    private var searchParameter: HashMap<String, String>? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var localCacheModel: LocalCacheModel? = null
 
@@ -317,7 +316,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun collectSearchParameters() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.searchParameters.collect {
+            viewModel.searchParameterMap.collect {
                 searchParameter = it
                 if (it != null) {
                     viewModel.loadQuickSortFilter(it)
@@ -573,7 +572,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         hideKeyboard()
         sortFilterBottomSheet?.show(
             parentFragmentManager,
-            searchParameter?.getSearchParameterHashMap(),
+            searchParameter,
             dynamicFilterModel,
             this
         )

@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.feature.search.searchresult.domain.usecase
 
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -54,7 +53,7 @@ class TokofoodSearchMerchantUseCase @Inject constructor(
 
     suspend fun execute(
         localCacheModel: LocalCacheModel?,
-        searchParameter: SearchParameter,
+        searchParameter: HashMap<String, String>,
         pageKey: String? = null
     ): TokofoodSearchMerchantResponse {
         setRequestParams(
@@ -70,7 +69,7 @@ class TokofoodSearchMerchantUseCase @Inject constructor(
         @JvmStatic
         fun createRequestParams(
             localCacheModel: LocalCacheModel?,
-            searchParameter: SearchParameter,
+            searchParameter: HashMap<String, String>,
             pageKey: String?
         ): RequestParams {
             return RequestParams.create().apply {
@@ -88,9 +87,9 @@ class TokofoodSearchMerchantUseCase @Inject constructor(
 
         private fun getParamsStringValue(
             localCacheModel: LocalCacheModel?,
-            searchParameter: SearchParameter
+            searchParameter: HashMap<String, String>
         ): String {
-            val searchParamMap = searchParameter.getSearchParameterMap().entries.associate {
+            val searchParamMap = searchParameter.entries.associate {
                 it.key as? String to it.value as? Any
             }
             val updatedSearchParamMap = searchParamMap.toMutableMap().apply {

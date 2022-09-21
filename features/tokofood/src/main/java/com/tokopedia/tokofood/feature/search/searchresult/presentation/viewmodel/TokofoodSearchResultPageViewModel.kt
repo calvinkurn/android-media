@@ -4,9 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
@@ -74,15 +72,15 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     private val _appliedFilterCount = MutableSharedFlow<Int>(Int.ONE)
     val appliedFilterCount: SharedFlow<Int>
         get() = _appliedFilterCount
-
-    val searchParameters: SharedFlow<SearchParameter?> =
+    
+    val searchParameterMap: SharedFlow<HashMap<String, String>> =
         combine(_searchKeyword, _searchMap) { keyword, map ->
-            val searchParameter = currentSearchParameter.value ?: SearchParameter(ApplinkConstInternalTokoFood.SEARCH)
+            val searchParameter = currentSearchParameterMap.value ?: hashMapOf()
             map.entries.forEach {
-                searchParameter.set(it.key, it.value)
+                searchParameter[it.key] = it.value
             }
             if (keyword.length >= MIN_SEARCH_KEYWORD_LENGTH) {
-                searchParameter.set(SearchApiConst.Q, keyword)
+                searchParameter[SearchApiConst.Q] = keyword
             }
             searchParameter
         }.shareIn(
@@ -104,7 +102,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     private val localCacheModelLiveData = MutableLiveData<LocalCacheModel>()
     private val pageKeyLiveData = MutableLiveData<String>()
     private val currentVisitables = MutableLiveData<List<Visitable<*>>>()
-    private val currentSearchParameter = MutableLiveData<SearchParameter>()
+    private val currentSearchParameterMap = MutableLiveData<HashMap<String, String>>()
     private val dynamicFilterModel = MutableLiveData<DynamicFilterModel>()
     private val currentSortFilterUiModels = MutableLiveData<List<TokofoodSortFilterItemUiModel>>()
 
@@ -120,7 +118,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         localCacheModelLiveData.value = localCacheModel
     }
 
-    fun loadQuickSortFilter(searchParameter: SearchParameter) {
+    fun loadQuickSortFilter(searchParameter: HashMap<String, String>) {
         if (shouldLoadSortFilter(searchParameter)) {
             launchCatchError(
                 block = {
@@ -147,14 +145,14 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     }
 
     fun resetFilterSearch() {
-        currentSearchParameter.value = null
+        currentSearchParameterMap.value = null
         currentSortFilterUiModels.value = null
         _searchMap.tryEmit(hashMapOf())
     }
 
-    fun getInitialMerchantSearchResult(searchParameter: SearchParameter?) {
+    fun getInitialMerchantSearchResult(searchParameter: HashMap<String, String>?) {
         pageKeyLiveData.value = null
-        currentSearchParameter.value = searchParameter
+        currentSearchParameterMap.value = searchParameter
         _uiState.tryEmit(
             TokofoodSearchUiState(
                 state = TokofoodSearchUiState.STATE_LOAD_INITIAL
@@ -217,49 +215,49 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
             } else {
                 String.EMPTY
             }
-        currentSearchParameter.value?.run {
+        currentSearchParameterMap.value?.run {
             set(sort.key, value)
-            _searchMap.tryEmit(getSearchParameterHashMap())
+            _searchMap.tryEmit(this)
         }
     }
 
     fun applySortSelected(uiModel: TokofoodQuickSortUiModel) {
-        currentSearchParameter.value?.run {
+        currentSearchParameterMap.value?.run {
             set(uiModel.key, uiModel.value)
-            _searchMap.tryEmit(getSearchParameterHashMap())
+            _searchMap.tryEmit(this)
         }
     }
 
     fun applyFilter(filter: Filter) {
-        currentSearchParameter.value?.run {
+        currentSearchParameterMap.value?.run {
             getAppliedFilterMap(filter)?.let { (key, value) ->
                 set(key, value)
             }
 
-            _searchMap.tryEmit(getSearchParameterHashMap())
+            _searchMap.tryEmit(this)
         }
     }
 
     fun applyOptions(options: List<Option>) {
-        currentSearchParameter.value?.run {
+        currentSearchParameterMap.value?.run {
             getAppliedFilterMap(options).entries.forEach {
                 set(it.key, it.value)
             }
 
-            _searchMap.tryEmit(getSearchParameterHashMap())
+            _searchMap.tryEmit(this)
         }
     }
 
     fun resetParams(queryParams: Map<String, String>) {
-        currentSearchParameter.value?.run {
+        currentSearchParameterMap.value?.run {
             resetParams(queryParams)
-            _searchMap.tryEmit(getSearchParameterHashMap())
+            _searchMap.tryEmit(this)
         }
     }
 
     fun showQuickSortBottomSheet(sort: List<Sort>) {
         sort.firstOrNull()?.key?.let { currentKey ->
-            currentSearchParameter.value?.get(currentKey)?.let { selectedSortValue ->
+            currentSearchParameterMap.value?.get(currentKey)?.let { selectedSortValue ->
                 showQuickSortBottomSheet(sort, selectedSortValue)
             }
         }
@@ -272,26 +270,34 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
 
     fun getCurrentSortValue(): String {
         val sortKey = tokofoodFilterSortMapper.getCurrentSortKey(currentSortFilterUiModels.value)
-        return currentSearchParameter.value?.get(sortKey).orEmpty()
+        return currentSearchParameterMap.value?.get(sortKey).orEmpty()
     }
 
     private fun setIndicatorCount() {
-        currentSearchParameter.value?.let { searchParameter ->
+        currentSearchParameterMap.value?.let { searchParameter ->
             _appliedFilterCount.tryEmit(searchParameter.getActiveCount())
         }
     }
 
-    private fun SearchParameter.resetParams(queryParams: Map<String, String>) {
-        getSearchParameterHashMap().clear()
-        getSearchParameterHashMap().putAll(queryParams)
+    private fun HashMap<String, String>.resetParams(queryParams: Map<String, String>) {
+        clear()
+        putAll(queryParams)
     }
 
-    private fun SearchParameter.getActiveCount(): Int {
-        val searchMap = getSearchParameterHashMap().filter { it.value.isNotEmpty() }
+    private fun HashMap<String, String>.getActiveCount(): Int {
+        val searchMap = filter { it.value.isNotEmpty() }
         return getSortFilterCount(searchMap)
     }
 
-    private fun shouldLoadSortFilter(searchParameter: SearchParameter): Boolean {
+    private fun HashMap<String, String>.getSearchQuery(): String {
+        return when {
+            contains(SearchApiConst.Q) -> get(SearchApiConst.Q).orEmpty()
+            contains(SearchApiConst.KEYWORD) -> get(SearchApiConst.KEYWORD).orEmpty()
+            else -> String.EMPTY
+        }
+    }
+
+    private fun shouldLoadSortFilter(searchParameter: HashMap<String, String>): Boolean {
         return !getIsSortFilterLoaded() || isSearchParameterNew(searchParameter)
     }
 
@@ -299,8 +305,8 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         return !currentSortFilterUiModels.value.isNullOrEmpty()
     }
 
-    private fun isSearchParameterNew(searchParameter: SearchParameter): Boolean {
-        return currentSearchParameter.value?.getSearchParameterMap() == searchParameter.getSearchParameterMap()
+    private fun isSearchParameterNew(searchParameter: HashMap<String, String>): Boolean {
+        return currentSearchParameterMap.value == searchParameter
     }
 
     private fun getAppliedFilterMap(filter: Filter): Pair<String, String>? {
@@ -372,8 +378,8 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         }
     }
 
-    private fun getCurrentSearchParameter(): SearchParameter {
-        return currentSearchParameter.value ?: SearchParameter()
+    private fun getCurrentSearchParameter(): HashMap<String, String> {
+        return currentSearchParameterMap.value ?: hashMapOf()
     }
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int, itemCount: Int): Boolean {
@@ -400,10 +406,10 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     }
 
     private fun getInitialSearchResultSuccessState(searchResult: TokofoodSearchMerchantResponse): TokofoodSearchUiState {
-        val currentSearchParameter = getCurrentSearchParameter()
+        val currentSearchParameterMap = getCurrentSearchParameter()
         pageKeyLiveData.value = searchResult.tokofoodSearchMerchant.nextPageKey
         return when {
-            searchResult.tokofoodSearchMerchant.merchants.isEmpty() && currentSearchParameter.hasFilterSortApplied() -> {
+            searchResult.tokofoodSearchMerchant.merchants.isEmpty() && currentSearchParameterMap.hasFilterSortApplied() -> {
                 TokofoodSearchUiState(state = TokofoodSearchUiState.STATE_EMPTY_WITH_FILTER)
             }
             searchResult.tokofoodSearchMerchant.merchants.isEmpty() -> {
@@ -425,11 +431,11 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         )
     }
 
-    private fun SearchParameter.hasFilterSortApplied(): Boolean {
+    private fun HashMap<String, String>.hasFilterSortApplied(): Boolean {
         return if (contains(SearchApiConst.Q)) {
-            getSearchParameterHashMap().entries.filter { it.value.isNotBlank() }.size > Int.ONE
+            entries.filter { it.value.isNotBlank() }.size > Int.ONE
         } else {
-            getSearchParameterHashMap().entries.filter { it.value.isNotBlank() }.size > Int.ZERO
+            entries.filter { it.value.isNotBlank() }.size > Int.ZERO
         }
     }
 
@@ -476,7 +482,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     }
 
     private fun getEmptyWithoutFilterState(): List<Visitable<*>> {
-        val currentKeyword = currentSearchParameter.value?.getSearchQuery()
+        val currentKeyword = currentSearchParameterMap.value?.getSearchQuery()
         return listOf(MerchantSearchEmptyWithoutFilterUiModel(currentKeyword.orEmpty()))
     }
 
@@ -534,7 +540,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         val updatedDataValue = dataValue.apply {
             filter.forEach { filter ->
                 filter.options.forEach { option ->
-                    option.inputState = currentSearchParameter.value?.get(option.key)?.takeIf { it.isNotBlank() }.let { selectedParams ->
+                    option.inputState = currentSearchParameterMap.value?.get(option.key)?.takeIf { it.isNotBlank() }.let { selectedParams ->
                         (selectedParams?.split(PARAM_VALUES_DIVIDER)?.contains(option.value) == true).toString()
                     }
                 }

@@ -9,7 +9,9 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
@@ -34,6 +36,11 @@ open class TokofoodQuickPriceRangeViewModelTestFixture {
             helper,
             CoroutineTestDispatchersProvider
         )
+    }
+
+    @After
+    fun cleanUp() {
+        unmockkAll()
     }
 
     protected fun getPriceFilterUiModels(): List<PriceRangeFilterCheckboxItemUiModel> {
