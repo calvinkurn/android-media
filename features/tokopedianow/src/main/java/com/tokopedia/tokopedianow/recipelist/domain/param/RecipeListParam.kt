@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.recipelist.domain.param
 
+import android.net.Uri
 import com.tokopedia.tokopedianow.recipelist.domain.query.GetRecipeList
 import com.tokopedia.tokopedianow.recipelist.domain.query.GetRecipeList.PARAM_QUERY_PARAM
 import com.tokopedia.tokopedianow.recipelist.domain.query.GetRecipeList.PARAM_SOURCE_PAGE
@@ -23,6 +24,10 @@ class RecipeListParam {
     var toPortion: String? = null
     var sortBy: RecipeSortBy? = null
     var queryParams = ""
+        set(value) {
+            field = value
+            breakDownQueryParams()
+        }
     
     companion object {
         private const val DEFAULT_PAGE = 1
@@ -112,6 +117,42 @@ class RecipeListParam {
         }
 
         return stringBuilder.toString()
+    }
+
+    private fun breakDownQueryParams() {
+        val uri = Uri.parse("?$queryParams")
+
+        uri.getQueryParameter(PARAM_TITLE)?.let {
+            title = it
+        }
+
+        uri.getQueryParameters(PARAM_TAG_ID)?.let {
+            tagID = it
+        }
+
+        uri.getQueryParameters(PARAM_INGREDIENT_ID)?.let {
+            ingredientID = it
+        }
+
+        uri.getQueryParameters(PARAM_CATEGORY_ID)?.let {
+            categoryID = it
+        }
+
+        uri.getQueryParameter(PARAM_FROM_DURATION)?.let {
+            fromDuration = it
+        }
+
+        uri.getQueryParameter(PARAM_TO_DURATION)?.let {
+            toDuration = it
+        }
+
+        uri.getQueryParameter(PARAM_FROM_PORTION)?.let {
+            fromPortion = it
+        }
+
+        uri.getQueryParameter(PARAM_TO_PORTION)?.let {
+            toPortion = it
+        }
     }
 
     private fun List<String>.formatParam(): String {

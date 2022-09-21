@@ -29,10 +29,13 @@ abstract class BaseTokoNowRecipeListViewModel(
         get() = _showProgressBar
     val showHeaderBackground: LiveData<Boolean>
         get() = _showHeaderBackground
+    val searchKeyword: LiveData<String>
+        get() = _searchKeyword
 
     private val _visitableList = MutableLiveData<List<Visitable<*>>>()
     private val _showProgressBar = MutableLiveData<Boolean>()
     private val _showHeaderBackground = MutableLiveData<Boolean>()
+    private val _searchKeyword = MutableLiveData<String>()
 
     protected var getRecipeListParam = RecipeListParam()
     protected var visitableItems = mutableListOf<Visitable<*>>()
@@ -82,6 +85,10 @@ abstract class BaseTokoNowRecipeListViewModel(
         resetVisitableItems()
         showProgressBar()
         getRecipeList()
+    }
+
+    fun setKeywordToSearchbar() {
+        _searchKeyword.postValue(if (getRecipeListParam.title.isNullOrBlank()) "" else getRecipeListParam.title)
     }
 
     private fun showError() {

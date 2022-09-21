@@ -14,9 +14,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.PARAM_RECIPE_ID
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -100,12 +97,8 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         )
     }
 
-    override fun onClickBookmark(recipeId: String) {
-        val appLink = UriUtil.buildUriAppendParam(
-            ApplinkConstInternalTokopediaNow.RECIPE_DETAIL,
-            mapOf(PARAM_RECIPE_ID to recipeId)
-        )
-        RouteManager.route(context, appLink)
+    override fun onClickBookmark(appUrl: String) {
+        RouteManager.route(context, appUrl)
     }
 
     private fun injectDependencies() {

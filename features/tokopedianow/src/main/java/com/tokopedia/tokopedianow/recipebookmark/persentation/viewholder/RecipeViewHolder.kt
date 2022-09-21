@@ -42,7 +42,7 @@ class RecipeViewHolder(
             )
 
             root.setOnClickListener {
-                listener.onClickBookmark(element.id)
+                listener.onClickBookmark(element.appUrl)
             }
         }
     }
@@ -78,6 +78,6 @@ class RecipeViewHolder(
 
     interface RecipeListener {
         fun onRemoveBookmark(title: String, position: Int, recipeId: String)
-        fun onClickBookmark(recipeId: String)
+        fun onClickBookmark(appUrl: String)
     }
 }

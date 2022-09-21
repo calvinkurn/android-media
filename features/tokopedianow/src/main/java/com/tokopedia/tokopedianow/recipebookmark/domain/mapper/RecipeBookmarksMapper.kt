@@ -50,7 +50,8 @@ object RecipeBookmarksMapper {
                 portion = response.portion,
                 duration = response.duration,
                 tags =  mapTag(response.tags),
-                picture = response.images?.firstOrNull()?.urlOriginal.orEmpty()
+                picture = response.images?.firstOrNull()?.urlOriginal.orEmpty(),
+                appUrl = response.appUrl
             )
         }
     }

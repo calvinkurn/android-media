@@ -7,7 +7,7 @@
     android:background="@color/Unify_Background"
     android:gravity="center_vertical"
     android:paddingTop="4dp"
-    android:paddingBottom="4dp">
+    android:paddingBottom="2dp">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/backButton"

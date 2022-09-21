@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
-import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureBottomSheetHeight
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder.ChipListener
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSortFilterBinding
