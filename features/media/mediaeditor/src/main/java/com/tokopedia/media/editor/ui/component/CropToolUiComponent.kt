@@ -25,6 +25,8 @@ class CropToolUiComponent constructor(
     private val activeColor = ContextCompat.getColor(this.context, unifyR.color.Unify_GN500)
     private val inactiveColor = ContextCompat.getColor(this.context, unifyR.color.Unify_NN950)
 
+    private var availableRatio = arrayListOf<ImageRatioType>()
+
     fun setupView(editorParam: EditorParam?, detailUiModel: EditorDetailUiModel) {
         (container() as LinearLayout).apply {
             editorParam?.autoCropRatio?.let {
@@ -35,22 +37,33 @@ class CropToolUiComponent constructor(
                     )
                 )
             } ?: kotlin.run {
-                editorParam?.ratioList?.forEachIndexed { index, ratio ->
-                    val isSelected = if(detailUiModel.cropRotateValue.getRatio() != null){
-                        detailUiModel.cropRotateValue.getRatio() == ratio.getRatio()
-                    } else (index == 0 && detailUiModel.isToolCrop())
+                editorParam?.ratioList?.let {
+                    availableRatio = it
+                    it.forEachIndexed { index, ratio ->
+                        val isSelected = if (detailUiModel.cropRotateValue.getRatio() != null) {
+                            detailUiModel.cropRotateValue.getRatio() == ratio.getRatio()
+                        } else (index == 0 && detailUiModel.isToolCrop())
 
-                    addView(
-                        generateCropButton(
-                            ratio,
-                            isSelected
+                        addView(
+                            generateCropButton(
+                                ratio,
+                                isSelected
+                            )
                         )
-                    )
+                    }
                 }
             }
         }
 
         container().show()
+    }
+
+    fun setActiveCropRatio(activeRatio: Pair<Int, Int>){
+        availableRatio.forEachIndexed { index, availRatio ->
+            if(activeRatio == availRatio.ratio) {
+                (container() as LinearLayout).getChildAt(index).performClick()
+            }
+        }
     }
 
     private fun generateCropButton(imageRatio: ImageRatioType, isSelected: Boolean = false): View {

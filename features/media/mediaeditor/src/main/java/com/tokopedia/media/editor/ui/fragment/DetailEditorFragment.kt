@@ -455,7 +455,7 @@ class DetailEditorFragment @Inject constructor(
             val cropView = it.cropImageView
             val overlayView = it.overlayView
 
-            overlayView.setTargetAspectRatio(cropRotateData.imageWidth / cropRotateData.imageHeight.toFloat())
+            overlayView.setTargetAspectRatio(cropRotateData.imageWidth.toFloat() / cropRotateData.imageHeight)
             overlayView.setupCropBounds()
             cropView.zoomInImage(cropRotateData.scale)
 
@@ -468,6 +468,15 @@ class DetailEditorFragment @Inject constructor(
                     cropView.postTranslate(deltaX, deltaY)
 
                     cropView.setImageToWrapCropBounds(false)
+
+                    // set default crop active ratio if already cropped by autoCrop / rotate
+                    if(data.isToolCrop()){
+                        cropView.post {
+                            viewBinding?.imgUcropPreview?.cropImageView?.post {
+                                cropComponent.setActiveCropRatio(data.cropRotateValue.cropRatio)
+                            }
+                        }
+                    }
                 }, DELAY_IMPLEMENT_CROP)
             }
         }
@@ -730,5 +739,7 @@ class DetailEditorFragment @Inject constructor(
         private const val DEFAULT_VALUE_SHOP_TEXT = "Shop Name"
 
         private const val DELAY_IMPLEMENT_CROP = 300L
+
+        private const val DEFAULT_CROP_RATIO = 1f
     }
 }

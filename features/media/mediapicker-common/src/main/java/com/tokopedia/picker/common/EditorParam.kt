@@ -30,7 +30,7 @@ fun createDefaultRatioList() = arrayListOf(
 )
 
 @Parcelize
-enum class ImageRatioType(val id: Int, private val ratio: Pair<Int, Int>) : Parcelable {
+enum class ImageRatioType(val id: Int, val ratio: Pair<Int, Int>) : Parcelable {
     RATIO_1_1(1, 1 to 1),
     RATIO_3_4(2, 3 to 4),
     RATIO_2_1(3, 2 to 1);
