@@ -36,6 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.deals.R
 import com.tokopedia.deals.R.string as stringDeals
 import com.tokopedia.deals.R.drawable as drawableDeals
+import com.tokopedia.deals.R.id as idDeals
 import com.tokopedia.abstraction.R.drawable as abstractionDrawables
 import com.tokopedia.unifyprinciples.R.color as colorUnify
 import com.tokopedia.deals.common.analytics.DealsAnalytics
@@ -712,7 +713,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
 
     private fun showShareButton() {
         if (menuPDP != null) {
-            val item = menuPDP?.findItem(com.tokopedia.deals.R.id.action_menu_share)
+            val item = menuPDP?.findItem(idDeals.action_share_deals)
             item?.setVisible(true)
         }
     }
