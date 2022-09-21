@@ -675,12 +675,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun renderUserProfileEntryPoint(userAccount: Author?) {
         if(userAccount == null) {
+            ivFeedUser.setOnClickListener(null)
             ivFeedUser.hide()
             return
         }
 
         ivFeedUser.show()
         ivFeedUser.setImageUrl(userAccount.thumbnail)
+        ivFeedUser.setOnClickListener {
+            RouteManager.route(requireContext(), ApplinkConst.PROFILE, userAccount.id)
+        }
     }
 
     private fun createCreateLiveFab(): FloatingButtonItem {
