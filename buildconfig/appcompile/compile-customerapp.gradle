@@ -243,6 +243,7 @@ includeIfEnabled("features:communication:inbox")
 includeIfEnabled("features:communication:inbox_common")
 includeIfEnabled("features:communication:attachvoucher")
 includeIfEnabled("features:communication:topchat")
+includeIfEnabled("features:communication:tokochat")
 
 includeIfEnabled("features:user:campaign_shake_landing")
 includeIfEnabled("features:user:chatbot")
