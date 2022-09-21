@@ -108,7 +108,6 @@ object MediaLoaderTracker {
                 ipInfo = remoteInfo.hostAddress
                 hostName = remoteInfo.hostName
             } catch (exp: Exception) {
-                CDN_NO_IP_MSG
             }
 
             map[CDN_IP_MAP_KEY] = ipInfo
