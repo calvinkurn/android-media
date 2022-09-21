@@ -30,7 +30,7 @@ object MediaLoaderTracker {
     private const val TAG_CDN_MONITORING = "DEV_CDN_MONITORING"
 
     private const val PAGE_NAME_NOT_FOUND = "None"
-    private const val CDN_NO_IP_MSG = "not available"
+    private const val NOT_AVAILABLE = "not available"
     private const val CDN_IP_MAP_KEY = "remote_server_ip"
     private const val CDN_HOST_NAME_MAP_KEY = "remote_host_name"
     private const val CDN_ERROR_DETAIL = "error_detail"
@@ -104,8 +104,8 @@ object MediaLoaderTracker {
         val map = data.toMap(context.applicationContext).toMutableMap()
 
         CoroutineScope(Dispatchers.IO).launch {
-            var ipInfo: String = CDN_NO_IP_MSG
-            var hostName: String = CDN_NO_IP_MSG
+            var ipInfo: String = NOT_AVAILABLE
+            var hostName: String = NOT_AVAILABLE
             try {
                 val remoteInfo = ServerIpAddressLocator.fetchServerInfo(url)
                 ipInfo = remoteInfo.hostAddress
