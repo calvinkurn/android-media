@@ -6,7 +6,6 @@ import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +31,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
-import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
@@ -317,7 +315,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         shouldHitFeedTracker = true
         unRegisterNewFeedReceiver()
         feedFloatingButton.stopTimer()
-        coachMarkHelper.dismissAllCoachMark()
     }
 
     override fun onResume() {
@@ -363,6 +360,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         viewModel.flush()
         postProgressUpdateView?.unregisterBroadcastReceiver()
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
+        coachMarkHelper.dismissAllCoachMark()
         super.onDestroy()
     }
 
@@ -697,13 +695,29 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         ivFeedUser.setImageUrl(userAccount.thumbnail)
         ivFeedUser.setOnClickListener {
             toolBarAnalytics.clickUserProfileIcon(userSession.userId)
+            dismissUserProfileCoachMark()
+
             RouteManager.route(requireContext(), ApplinkConst.PROFILE, userAccount.id)
         }
-        coachMarkHelper.showCoachMark(
-            CoachMarkConfig(ivFeedUser)
-                .setSubtitle(getString(R.string.feed_user_profile_entry_point_coach_mark))
-                .setDuration(USER_ICON_COACH_MARK_DURATION)
-        )
+
+        if(!affiliatePreference.isUserProfileEntryPointCoachMarkShown(userSession.userId)) {
+            coachMarkHelper.showCoachMark(
+                CoachMarkConfig(ivFeedUser)
+                    .setSubtitle(getString(R.string.feed_user_profile_entry_point_coach_mark))
+                    .setDuration(USER_ICON_COACH_MARK_DURATION)
+                    .setOnClickCloseListener {
+                        affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
+                    }
+                    .setOnClickListener {
+                        dismissUserProfileCoachMark()
+                    }
+            )
+        }
+    }
+
+    private fun dismissUserProfileCoachMark() {
+        affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
+        coachMarkHelper.dismissCoachmark(ivFeedUser)
     }
 
     private fun createCreateLiveFab(): FloatingButtonItem {

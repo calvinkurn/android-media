@@ -16,6 +16,10 @@ class CoachMarkConfig(
         private set
     var duration: Long = 0L
         private set
+    var onClickCloseListener: () -> Unit = {}
+        private set
+    var onClickListener: () -> Unit = {}
+        private set
 
     fun setTitle(title: String) = chainable {
         this.title = title
@@ -31,6 +35,14 @@ class CoachMarkConfig(
 
     fun setDuration(duration: Long) = chainable {
         this.duration = duration
+    }
+
+    fun setOnClickCloseListener(listener: () -> Unit) = chainable {
+        this.onClickCloseListener = listener
+    }
+
+    fun setOnClickListener(listener: () -> Unit) = chainable {
+        this.onClickListener = listener
     }
 
     private fun CoachMarkConfig.chainable(fn: () -> Unit): CoachMarkConfig {

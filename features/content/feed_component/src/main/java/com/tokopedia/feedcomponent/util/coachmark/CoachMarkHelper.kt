@@ -21,22 +21,28 @@ class CoachMarkHelper(
         config: CoachMarkConfig,
     ) {
         if(config.delay == 0L && config.duration == 0L)
-            showCoachMark(config.view, config.title, config.subtitle)
+            showCoachMarkInternal(config)
         else {
             jobMap[config.view]?.cancel()
             jobMap[config.view] = CoroutineScope(dispatcher.main).launch {
                 if(config.delay != 0L) delay(config.delay)
 
-                showCoachMark(config.view, config.title, config.subtitle)
+                showCoachMarkInternal(config)
 
-                if(config.duration != 0L) delay(config.duration)
+                if(config.duration != 0L) {
+                    delay(config.duration)
 
-                val coachMark = getOrCreateCoachMark(config.view)
-                if(coachMark.isShowing) {
-                    coachMark.dismissCoachMark()
+                    val coachMark = getOrCreateCoachMark(config.view)
+                    if(coachMark.isShowing) {
+                        coachMark.dismissCoachMark()
+                    }
                 }
             }
         }
+    }
+
+    fun dismissCoachmark(view: View) {
+        coachMarkMap[view]?.dismissCoachMark()
     }
 
     fun dismissAllCoachMark() {
@@ -45,27 +51,34 @@ class CoachMarkHelper(
         }
 
         jobMap.forEach {
-            jobMap[it.key]?.cancelChildren()
+            jobMap[it.key]?.cancel()
         }
     }
 
-    private fun showCoachMark(
-        view: View,
-        title: String,
-        subtitle: String
+    private fun showCoachMarkInternal(
+        config: CoachMarkConfig,
     ) {
-        val coachMark = getOrCreateCoachMark(view)
+        val coachMark = getOrCreateCoachMark(config.view)
 
         coachMark.isDismissed = false
         coachMark.showCoachMark(
             arrayListOf(
                 CoachMark2Item(
-                    view,
-                    title,
-                    subtitle
+                    config.view,
+                    config.title,
+                    config.subtitle
                 )
             )
         )
+
+        coachMark.simpleCloseIcon?.setOnClickListener {
+            coachMark.dismissCoachMark()
+            config.onClickCloseListener()
+        }
+
+        coachMark.container?.setOnClickListener {
+            config.onClickListener()
+        }
     }
 
     private fun getOrCreateCoachMark(view: View): CoachMark2 {
