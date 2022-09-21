@@ -106,7 +106,7 @@ class MerchantSearchResultViewHolder(
     }
 
     private fun setMerchantRating(rating: String, ratingDouble: Double) {
-        if (rating.isEmpty() || ratingDouble <= 0f) {
+        if (rating.isBlank() && ratingDouble <= 0f) {
             binding?.tgTokofoodItemSrpMerchantRating?.hide()
             binding?.imgTokofoodItemSrpMerchantRating?.hide()
         } else {
