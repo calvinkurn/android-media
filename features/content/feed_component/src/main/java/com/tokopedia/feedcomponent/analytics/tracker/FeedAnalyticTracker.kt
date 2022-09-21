@@ -2319,7 +2319,7 @@ class FeedAnalyticTracker
      */
     fun eventImageImpressionPost(
         screenName: String, activityId: String, activityName: String, mediaType: String,
-        imageUrl: String, recomId: Int, rowNumber: Int,
+        imageUrl: String, recomId: Long, rowNumber: Int,
     ) {
         var eventCategory = ""
         var promotionsNameInitial = ""

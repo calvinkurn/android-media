@@ -28,13 +28,13 @@ public interface ContentExploreContract {
 
         void updateCursor(String cursor);
 
-        void updateCategoryId(int categoryId);
+        void updateCategoryId(long categoryId);
 
         void updateSearch(String search);
 
         void clearData();
 
-        void onCategoryClicked(int position, int categoryId, String categoryName, android.view.View view);
+        void onCategoryClicked(int position, long categoryId, String categoryName, android.view.View view);
 
         void onCategoryReset();
 
@@ -46,7 +46,7 @@ public interface ContentExploreContract {
 
         void showEmpty();
 
-        void goToKolPostDetail(@NotNull String postId, @NotNull String name, int recomId);
+        void goToKolPostDetail(@NotNull String postId, @NotNull String name, long recomId);
 
         void addExploreItemCoachmark(android.view.View view);
 
@@ -60,7 +60,7 @@ public interface ContentExploreContract {
 
         void onAffiliateTrack(List<TrackingViewModel> trackingList, boolean isClick);
 
-        int getExploreCategory();
+        long getExploreCategory();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -68,7 +68,7 @@ public interface ContentExploreContract {
 
         void updateCursor(String cursor);
 
-        void updateCategoryId(int categoryId);
+        void updateCategoryId(long categoryId);
 
         void updateSearch(String search);
 

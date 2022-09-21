@@ -25,7 +25,7 @@ class ExploreDataUseCase @Inject constructor(graphqlRepository: GraphqlRepositor
         setGraphqlQuery(GetExploreDataQuery.GQL_QUERY)
     }
 
-    fun setParams(categoryId: Int = ExploreDataQueries.DEFAULT_CATEGORY_ID, cursor: String, search: String, limit: Int = ExploreDataQueries.LIMIT) {
+    fun setParams(categoryId: Long = ExploreDataQueries.DEFAULT_CATEGORY_ID, cursor: String, search: String, limit: Int = ExploreDataQueries.LIMIT) {
         val queryMap = HashMap<String, Any?>()
         queryMap[ExploreDataQueries.PARAM_CATEGORY_ID] = categoryId
         queryMap[ExploreDataQueries.PARAM_CURSOR] = cursor

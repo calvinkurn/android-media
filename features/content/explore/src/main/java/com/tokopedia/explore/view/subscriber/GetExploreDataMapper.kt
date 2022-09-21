@@ -9,7 +9,7 @@ import com.tokopedia.explore.view.type.ExploreCardType.Companion.getCardTypeBySt
 import com.tokopedia.explore.view.uimodel.ExploreCategoryViewModel
 import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import java.util.*
 
 /**
@@ -66,7 +66,7 @@ object GetExploreDataMapper {
 
     private fun convertToCategoryViewModel(category: Category): ExploreCategoryViewModel {
         return ExploreCategoryViewModel(
-                category.id.toIntOrZero(),
+                category.id.toLongOrZero(),
                 category.name
         )
     }

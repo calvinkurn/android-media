@@ -295,7 +295,7 @@ public class FeedAnalytics {
     public void eventCardPostClick(String templateType, String activityName, String mediaType,
                                    String redirectUrl, String imageUrl, String authorId,
                                    int totalContent, String postId, long userId,
-                                   int feedPosition, int recomId) {
+                                   int feedPosition, long recomId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                 postId,

@@ -40,6 +40,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * @author by milhamj on 19/07/18.
@@ -53,7 +54,8 @@ class ContentExploreFragment :
     companion object {
 
         const val PARAM_CATEGORY_ID = "category_id"
-        private const val DEFAULT_CATEGORY = "0"
+        private const val DEFAULT_CATEGORY: Long = 0
+        private const val DEFAULT_CATEGORY_STRING = "0"
         private const val SOURCE = "source"
         private const val PEFORMANCE_EXPLORE = "mp_explore"
         private const val CATEGORY_POSITION_NONE = -1
@@ -97,7 +99,7 @@ class ContentExploreFragment :
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var coachMark: CoachMark
 
-    private var categoryId: Int = 0
+    private var categoryId: Long = 0
     private var canLoadMore: Boolean = false
     private var hasLoadedOnce: Boolean = false
     private var isTraceStopped: Boolean = false
@@ -185,9 +187,9 @@ class ContentExploreFragment :
 
     private fun initVar() {
         if (arguments != null) {
-            categoryId = Integer.valueOf(requireArguments().getString(
+            categoryId = (requireArguments().getString(
                     PARAM_CATEGORY_ID,
-                    DEFAULT_CATEGORY)
+                    DEFAULT_CATEGORY_STRING).toLong()
             )
             presenter.updateCategoryId(categoryId)
         }
@@ -241,7 +243,7 @@ class ContentExploreFragment :
                 break
             }
         }
-        if (!isCategoryExist && categoryId != Integer.valueOf(DEFAULT_CATEGORY)) {
+        if (!isCategoryExist && categoryId != (DEFAULT_CATEGORY)) {
             onCategoryReset()
         }
     }
@@ -260,7 +262,7 @@ class ContentExploreFragment :
         presenter.updateCursor(cursor)
     }
 
-    override fun updateCategoryId(categoryId: Int) {
+    override fun updateCategoryId(categoryId: Long) {
         this.categoryId = categoryId
         presenter.updateCategoryId(categoryId)
     }
@@ -273,7 +275,7 @@ class ContentExploreFragment :
         imageAdapter.clearData()
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: Int, categoryName: String, view: View) {
+    override fun onCategoryClicked(position: Int, categoryId: Long, categoryName: String, view: View) {
         NetworkErrorHelper.removeEmptyState(view)
         clearSearch()
         resetDataParam()
@@ -314,7 +316,7 @@ class ContentExploreFragment :
     }
 
     override fun onCategoryReset() {
-        onCategoryClicked(CATEGORY_POSITION_NONE, Integer.valueOf(DEFAULT_CATEGORY), "", View(activity))
+        onCategoryClicked(CATEGORY_POSITION_NONE, (DEFAULT_CATEGORY), "", View(activity))
     }
 
     override fun showRefreshing() {
@@ -340,7 +342,7 @@ class ContentExploreFragment :
         imageAdapter.showEmpty()
     }
 
-    override fun goToKolPostDetail(postId: String, name: String, recomId: Int) {
+    override fun goToKolPostDetail(postId: String, name: String, recomId: Long) {
         val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, postId)
         val finaAppLink = Uri.parse(contentAppLink)
                 .buildUpon()
@@ -402,7 +404,7 @@ class ContentExploreFragment :
         updateCategoryId(0)
     }
 
-    override fun getExploreCategory(): Int {
+    override fun getExploreCategory(): Long {
         return categoryId
     }
 
