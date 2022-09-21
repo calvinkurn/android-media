@@ -142,7 +142,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        return binding?.unifyToolbar?.isShowBackButton == true
+        return binding?.unifyToolbar?.isShowBackButton != true
     }
 
     private fun initRegisterRequest() {
@@ -175,13 +175,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private fun editorChangesListener() {
         binding?.fieldInputPhone?.editText?.afterTextChanged {
             viewModel.validatePhone(it)
-        }
-
-        binding?.fieldInputPhone?.editText?.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                submitForm()
-                true
-            } else false
         }
     }
 
