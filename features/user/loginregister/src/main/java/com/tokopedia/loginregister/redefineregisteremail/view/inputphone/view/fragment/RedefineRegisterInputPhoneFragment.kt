@@ -10,7 +10,6 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -592,7 +591,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun showToasterError(throwable: Throwable) {
-        val message = ErrorHandler.getErrorMessage(requireActivity(), throwable)
+        val message = ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder()).first.orEmpty()
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
