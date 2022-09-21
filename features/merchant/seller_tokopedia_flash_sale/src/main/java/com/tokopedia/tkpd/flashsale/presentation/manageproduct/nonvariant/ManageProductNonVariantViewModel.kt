@@ -5,12 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import javax.inject.Inject
+import kotlin.math.round
 
 class ManageProductNonVariantViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
@@ -44,5 +45,13 @@ class ManageProductNonVariantViewModel @Inject constructor(
         _isInputPageValid.value = warehouses
             .filter { it.isToggleOn }
             .all { validateInput(criteria, it.discountSetup).isAllFieldValid() }
+    }
+
+    fun calculatePrice(percentInput: Long, originalPrice: Long): String {
+        return (100 - (percentInput * originalPrice / 100)).toString()
+    }
+
+    fun calculatePercent(priceInput: Long, originalPrice: Long): String {
+        return round(((originalPrice.toDouble() - priceInput.toDouble()) / originalPrice.toDouble()) * 100).toInt().toString()
     }
 }

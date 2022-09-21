@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
@@ -77,6 +78,18 @@ class ManageProductNonVariantMultilocFragment :
             viewModel.validateInputPage(warehouses, it)
         }
         return viewModel.validateInput(criteria, discountSetup)
+    }
+
+    override fun calculatePrice(percentInput: Long, adapterPosition: Int): String {
+        val warehouses = (adapter as ManageProductNonVariantMultilocAdapter).getDataList()
+        val originalPrice = warehouses.getOrNull(adapterPosition)?.price.orZero()
+        return viewModel.calculatePrice(percentInput, originalPrice)
+    }
+
+    override fun calculatePercent(priceInput: Long, adapterPosition: Int): String {
+        val warehouses = (adapter as ManageProductNonVariantMultilocAdapter).getDataList()
+        val originalPrice = warehouses.getOrNull(adapterPosition)?.price.orZero()
+        return viewModel.calculatePercent(priceInput, originalPrice)
     }
 
     private fun setupObservers() {

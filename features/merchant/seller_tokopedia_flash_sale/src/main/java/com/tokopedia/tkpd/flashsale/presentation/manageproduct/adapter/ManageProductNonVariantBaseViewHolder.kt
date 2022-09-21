@@ -7,17 +7,18 @@ import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailInfor
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.unifycomponents.TextFieldUnify2
 
 open class ManageProductNonVariantBaseViewHolder(
     view: View,
     private val listener: ManageProductNonVariantAdapterListener?
 ): RecyclerView.ViewHolder(view) {
 
-    private fun Number?.toStringOrEmpty(): String {
-        return if (this == null || this == Int.ZERO) {
-            ""
-        } else {
-            toString()
+    private fun Number?.toStringOrEmpty() = if (this == null || this == Int.ZERO) "" else toString()
+
+    private fun TextFieldUnify2.setTextIfNotFocus(text: String) {
+        if (!editText.isFocused) {
+            editText.setText(text)
         }
     }
 
@@ -65,10 +66,16 @@ open class ManageProductNonVariantBaseViewHolder(
     ) {
         textFieldPriceDiscountNominal.editText.afterTextChanged {
             discount?.price = it.digitsOnly()
+            textFieldPriceDiscountPercentage.setTextIfNotFocus(
+                listener?.calculatePercent(it.digitsOnly(), adapterPosition).orEmpty()
+            )
             triggerListener(criteria, discount)
         }
         textFieldPriceDiscountPercentage.editText.afterTextChanged {
             discount?.discount = it.digitsOnly().toInt()
+            textFieldPriceDiscountNominal.setTextIfNotFocus(
+                listener?.calculatePrice(it.digitsOnly(), adapterPosition).orEmpty()
+            )
             triggerListener(criteria, discount)
         }
         quantityEditor.editText.afterTextChanged {
@@ -89,7 +96,7 @@ open class ManageProductNonVariantBaseViewHolder(
         textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
 
         textFieldPriceDiscountNominal.editText.setModeToNumberDelimitedInput()
-        textFieldPriceDiscountPercentage.editText.setModeToNumberDelimitedInput(2)
+        textFieldPriceDiscountPercentage.editText.setModeToNumberDelimitedInput()
         setupInitialFieldMessage(criteria)
     }
 }

@@ -10,7 +10,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 class ManageProductNonVariantAdapter: RecyclerView.Adapter<ManageProductNonVariantAdapter.CriteriaViewHolder>() {
 
     private var data: List<ReservedProduct.Product> = emptyList()
-    private var listener: ManageProductNonVariantAdapterListener? =null
+    private var listener: ManageProductNonVariantAdapterListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
         val binding = StfsItemManageProductNonvariantBinding.inflate(LayoutInflater.from(parent.context),
