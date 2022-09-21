@@ -38,9 +38,6 @@ object DeeplinkMapperContent {
 
     fun getKolDeepLink(deepLink: String): String {
         when {
-            deepLink.startsWith(ApplinkConst.CONTENT_CREATE_POST) -> {
-                return ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST
-            }
             deepLink.startsWithPattern(ApplinkConst.KOL_COMMENT) -> {
                 return deepLink.replace(ApplinkConst.KOL_COMMENT.substringBefore("{"), ApplinkConstInternalContent.COMMENT.substringBefore("{")).plus(ApplinkConstInternalContent.COMMENT_EXTRA_PARAM)
             }
@@ -74,14 +71,6 @@ object DeeplinkMapperContent {
             return deepLink.replace(regexExp, INTERNAL_FEED_CREATION_SHOP_SEARCH)
         }
 
-        when {
-            deepLink.startsWith(ApplinkConst.CONTENT_CREATE_POST) ||
-                    deepLink.startsWithPattern(ApplinkConst.CONTENT_DRAFT_POST) ||
-                    deepLink.startsWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST) ||
-                    deepLink.startsWithPattern(ApplinkConst.AFFILIATE_DRAFT_POST) -> {
-                return getRegisteredNavigation(deepLink)
-            }
-        }
         return deepLink
     }
 

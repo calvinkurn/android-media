@@ -221,11 +221,11 @@ open class DynamicPostUIViewHolder(v: View,
                             feedXCard.deletable,
                             feedXCard.editable,
                             true,
+                            feedXCard.author.id,
                             "",
                             "",
                             "",
-                            "",
-                            ""
+                            feedXCard.text,
                         )
                     }
                 } else{
