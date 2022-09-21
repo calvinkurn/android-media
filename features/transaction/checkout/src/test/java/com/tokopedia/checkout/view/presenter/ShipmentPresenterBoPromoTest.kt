@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
@@ -117,6 +118,7 @@ class ShipmentPresenterBoPromoTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
+    private var shipmentMapper = ShipmentMapper()
     private var shipmentDataConverter = ShipmentDataConverter()
     private var shippingDurationConverter = ShippingDurationConverter()
 
@@ -147,17 +149,14 @@ class ShipmentPresenterBoPromoTest {
     @Test
     fun `WHEN initialize presenter THEN cart data should be filled`() {
         // Given
-        val cartData =
-            "{\\\"data\\\":{\\\"codes\\\":null,\\\"grand_total\\\":3.14,\\\"book\\\":false,\\\"service_id\\\":123,\\\"secret_key\\\":\\\"123\\\",\\\"user_data\\\":{\\\"user_id\\\":123,\\\"email\\\":\\\"test@test.com\\\",\\\"msisdn\\\":\\\"08123\\\",\\\"msisdn_verified\\\":false,\\\"is_qc_acc\\\":false,\\\"app_version\\\":\\\"1.23\\\",\\\"ip_address\\\":\\\"test\\\",\\\"user_agent\\\":\\\"test\\\",\\\"advertisement_id\\\":\\\"test\\\",\\\"device_type\\\":\\\"android\\\",\\\"device_id\\\":\\\"test\\\"},\\\"meta_data\\\":{\\\"orders\\\":[{\\\"shop_id\\\":1,\\\"shop_name\\\":\\\"test\\\",\\\"codes\\\":null,\\\"unique_id\\\":\\\"1-1-1-1\\\",\\\"is_po\\\":false,\\\"duration\\\":\\\"0\\\",\\\"warehouse_id\\\":1,\\\"address_id\\\":1}]},\\\"state\\\":\\\"checkout\\\"}}"
-        val cartShipmentAddressFormData = CartShipmentAddressFormData(
-            cartData = cartData
-        )
+        val response = DataProvider.provideShipmentAddressFormResponse()
+        val cartShipmentAddressFormData = shipmentMapper.convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)
 
         // When
         presenter.initializePresenterData(cartShipmentAddressFormData)
 
         // Then
-        assert(presenter.cartDataForRates == cartData)
+        assert(presenter.cartDataForRates == cartShipmentAddressFormData.cartData)
     }
 
     // Test ShipmentPresenter.doApplyBo()
