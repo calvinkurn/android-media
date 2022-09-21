@@ -72,11 +72,11 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_feed_user"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/feed_space_24"
+                android:layout_height="@dimen/feed_space_24"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/feed_space_16"
+                android:layout_marginEnd="@dimen/feed_space_16"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tab_layout"
@@ -97,7 +97,7 @@
                 app:layout_scrollFlags="enterAlways"
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/Unify_GN500"
-                app:tabIndicatorHeight="1dp"
+                app:tabIndicatorHeight="@dimen/feed_space_1"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/Unify_GN500"
                 app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
@@ -105,7 +105,7 @@
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/feed_space_1"
                 android:background="@color/Unify_NN300"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tab_layout"
