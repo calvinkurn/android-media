@@ -67,5 +67,5 @@
     <string name="tm_home_title">Bagian ini lagi disiapin, ya</string>
     <string name="tm_no_internet_dashboard">Ke Dashboard Tokomember</string>
     <string name="tm_home_desc">Toped lagi rapi-rapi halaman statistik versi mobile, nih. Kamu masih bisa cek statistik lengkap di versi desktop.</string>
-
+    <string name="tm_member_list_header_title">TokoMember (%1$s)</string>
 </resources>

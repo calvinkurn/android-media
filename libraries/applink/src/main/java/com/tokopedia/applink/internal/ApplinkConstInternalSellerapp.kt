@@ -101,4 +101,7 @@ object ApplinkConstInternalSellerapp {
     const val SHOP_DISCOUNT_MANAGE_PRODUCT_MULTI_LOC_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/multi-loc"
 
     const val TOKOMEMBER = "$INTERNAL_SELLERAPP/tokomember"
+
+    //TokomemberMemberListActivity
+    const val INTERNAL_MEMBER_LIST = "$TOKOMEMBER/member-list"
 }
