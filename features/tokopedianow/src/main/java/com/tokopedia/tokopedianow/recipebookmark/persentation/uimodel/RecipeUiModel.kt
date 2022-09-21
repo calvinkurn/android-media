@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.RecipeBookmarkTypeFactory
 
 data class RecipeUiModel(
@@ -11,6 +12,6 @@ data class RecipeUiModel(
     val tags: List<TagUiModel>?,
     val picture: String,
     val appUrl: String
-): Visitable<RecipeBookmarkTypeFactory> {
+): Visitable<RecipeBookmarkTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: RecipeBookmarkTypeFactory): Int = typeFactory.type(this)
 }

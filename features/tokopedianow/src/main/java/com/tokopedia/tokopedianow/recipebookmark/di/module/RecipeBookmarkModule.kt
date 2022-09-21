@@ -26,4 +26,10 @@ class RecipeBookmarkModule {
     fun provideGrqphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
+
+    @RecipeBookmarkScope
+    @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
 }
