@@ -68,7 +68,6 @@ internal class HowToPayViewModelTest {
         assert(viewModel.howToPayLiveData.value is Fail)
     }
 
-
     @Test
     fun `getMutableLiveData fail`() {
         val result = mockk<Throwable>()
