@@ -116,7 +116,7 @@ object MediaLoaderTracker : CoroutineScope {
 
             map[CDN_IP_MAP_KEY] = ipInfo
             map[CDN_HOST_NAME_MAP_KEY] = hostName
-            map[CDN_ERROR_DETAIL] = "localizedMessage=${e?.localizedMessage}, cause=${e?.cause}, rootCauses=${e?.rootCauses}"
+            map[CDN_ERROR_DETAIL] = "localizedMessage=${exception?.localizedMessage}, cause=${exception?.cause}, rootCauses=${exception?.rootCauses}"
 
             ServerLogger.log(
                 priority = Priority.P1,
