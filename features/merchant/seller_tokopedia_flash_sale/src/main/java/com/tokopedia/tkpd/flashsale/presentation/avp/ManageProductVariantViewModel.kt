@@ -22,7 +22,7 @@ class ManageProductVariantViewModel @Inject constructor(
 
     fun setDiscountAmount(itemPosition: Int, value: Long) {
         val selectedItem = productData.childProducts[itemPosition]
-        selectedItem.discountedPrice = value
+//        selectedItem.discountedPrice = value
     }
 
     fun getFinalProductData(): ReservedProduct.Product {

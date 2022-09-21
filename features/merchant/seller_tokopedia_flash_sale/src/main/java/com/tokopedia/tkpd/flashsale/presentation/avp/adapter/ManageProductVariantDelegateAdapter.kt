@@ -87,6 +87,7 @@ class ManageProductVariantDelegateAdapter(
             discountPercentageView: TextFieldUnify2,
             item: ManageProductVariantItem
         ) {
+            this.textInputLayout.editText?.afterTextChanged {  }
             this.textInputLayout.editText?.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 

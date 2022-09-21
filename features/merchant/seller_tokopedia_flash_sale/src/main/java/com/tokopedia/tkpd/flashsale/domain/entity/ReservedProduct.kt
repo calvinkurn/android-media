@@ -21,7 +21,7 @@ data class ReservedProduct(
         val stock: Int,
         val url: String,
         val warehouses: List<Warehouse>
-    ):Parcelable {
+    ) : Parcelable {
         @Parcelize
         data class ChildProduct(
             val disabledReason: String,
@@ -31,23 +31,14 @@ data class ReservedProduct(
             val name: String,
             val picture: String,
             val price: Price,
-            var discountedPrice: Long = 0,
-            var discount: Long = 0,
             val productId: Long,
             val sku: String,
             val stock: Int,
             val url: String,
             val warehouses: List<Warehouse>
-        ): Parcelable {
-            @Parcelize
-            data class Price(
-                val lowerPrice: String,
-                var price: String,
-                val upperPrice: String
-            ):Parcelable
-        }
+        ) : Parcelable
         @Parcelize
-        data class Price(val lowerPrice: Long, val price: Long, val upperPrice: Long): Parcelable
+        data class Price(val lowerPrice: Long, val price: Long, val upperPrice: Long) : Parcelable
         @Parcelize
         data class ProductCriteria(
             val criteriaId: Long,
@@ -57,7 +48,8 @@ data class ReservedProduct(
             val minCustomStock: Int,
             val minDiscount: Long,
             val minFinalPrice: Long,
-        ):Parcelable
+        ) : Parcelable
+
         @Parcelize
         data class Warehouse(
             val warehouseId: Long,
@@ -66,16 +58,16 @@ data class ReservedProduct(
             val price: Long,
             val discountSetup: DiscountSetup,
             val isDilayaniTokopedia: Boolean,
-            val isToggleOn: Boolean,
+            var isToggleOn: Boolean,
             val isDisabled: Boolean,
             val disabledReason: String
-        ):Parcelable {
+        ) : Parcelable {
             @Parcelize
             data class DiscountSetup(
-                val discount: Int,
-                val price: Long,
-                val stock: Long
-            ):Parcelable
+                var discount: Int,
+                var price: Long,
+                var stock: Long
+            ) : Parcelable
         }
     }
 }

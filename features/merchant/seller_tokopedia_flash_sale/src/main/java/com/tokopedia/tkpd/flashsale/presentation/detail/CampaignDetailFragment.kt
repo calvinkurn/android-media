@@ -1244,13 +1244,11 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 isToggleOn = false,
                 name = "product child $child",
                 picture = "",
-                price = ReservedProduct.Product.ChildProduct.Price(
-                    "${child*1000}",
-                    "${child*2000}",
-                    "${child*3000}"
+                price = ReservedProduct.Product.Price(
+                    child*1000L,
+                    child*2000L,
+                    child*3000L
                 ),
-                0,
-                0,
                 productId = child.toLong(),
                 sku = "SKU-$child",
                 stock = 80,
