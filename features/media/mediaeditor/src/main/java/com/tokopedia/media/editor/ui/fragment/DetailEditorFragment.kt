@@ -356,7 +356,6 @@ class DetailEditorFragment @Inject constructor(
             if(data.isToolCrop() || data.isToolRotate()){
                 // needed to trigger crop tools draw and get the highest height between rotate & crop
                 // crop item is dynamic according to the editor param
-                rotateComponent.setupView(data)
                 cropComponent.setupView(it, data)
 
                 viewBinding?.ucToolContainer?.post {
@@ -435,6 +434,7 @@ class DetailEditorFragment @Inject constructor(
                     setImageView(url, true)
                     watermarkComponent.setupView()
                 }
+                EditorToolType.ROTATE -> rotateComponent.setupView(data)
             }
         }
     }
