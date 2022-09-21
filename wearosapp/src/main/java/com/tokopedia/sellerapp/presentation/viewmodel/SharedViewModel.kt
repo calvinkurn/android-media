@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers,
     private val newOrderUseCase: NewOrderUseCase,
     private val readyToDeliverOrderUseCase: ReadyToDeliverOrderUseCase,
     private val capabilityClient: CapabilityClient,
@@ -96,8 +96,8 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    private val _ifPhoneHasApp = MutableLiveData<Boolean>()
-    val ifPhoneHasApp: LiveData<Boolean>
+    private val _ifPhoneHasApp = MutableStateFlow(false)
+    val ifPhoneHasApp: StateFlow<Boolean>
         get() = _ifPhoneHasApp
 
     fun checkIfPhoneHasApp() {
@@ -107,7 +107,7 @@ class SharedViewModel @Inject constructor(
                     .getCapability(CAPABILITY_PHONE_APP, CapabilityClient.FILTER_ALL)
                     .await()
 
-                withContext(Dispatchers.Main) {
+                withContext(dispatchers.main) {
                     // There should only ever be one phone in a node set (much less w/ the correct
                     // capability), so I am just grabbing the first one (which should be the only one).
                     val androidPhoneNodeWithApp = capabilityInfo.nodes.firstOrNull()
