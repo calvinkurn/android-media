@@ -1161,6 +1161,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
                 }
 
+                if (isReturnHomeWhenBackPressed) {
+                    goToHome()
+                }
+
                 it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
                 it.finish()
             }
@@ -1279,6 +1283,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         analytics.eventFailedLogin(userSession.loginMethod, errMsg.removeErrorCode(), isFromRegister)
         dismissLoadingLogin()
         showToaster(errMsg)
+    }
+
+    private fun goToHome() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 
     override fun trackSuccessValidate() {
@@ -1759,9 +1769,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             onChangeButtonClicked()
             emailPhoneEditText?.setText(email)
         } else if (isReturnHomeWhenBackPressed) {
-            val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
+            goToHome()
         } else if (activity != null) {
             activity?.finish()
         }
