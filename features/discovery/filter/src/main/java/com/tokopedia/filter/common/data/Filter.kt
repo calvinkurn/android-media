@@ -16,7 +16,7 @@ class Filter(@SerializedName("title")
              @Expose
              var subTitle: String = "",
 
-             @SerializedName("template_name")
+             @SerializedName("template_name", alternate = ["templateName"])
              @Expose
              var templateName: String = "",
 
