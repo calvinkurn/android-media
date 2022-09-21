@@ -1,6 +1,9 @@
 package com.tokopedia.product.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
@@ -14,6 +17,7 @@ import com.tokopedia.product.info.data.response.ShopNotesData
 import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationDataModel.Companion.SPECIFICATION_SIZE_THRESHOLD
 import com.tokopedia.product.info.view.models.ProductDetailInfoCardDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoCatalogDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoDiscussionDataModel
@@ -21,10 +25,12 @@ import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableDataMod
 import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableImageDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoVisitable
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -105,7 +111,7 @@ class BsProductDetailInfoViewModelTest {
         )
     }
 
-    private val parcelDataSpecification = ProductInfoParcelData(
+    private fun createParcelData(maxContent: Int = 15) = ProductInfoParcelData(
         productId = "123",
         shopId = "213",
         productTitle = "123",
@@ -113,38 +119,49 @@ class BsProductDetailInfoViewModelTest {
         productInfo = ProductDetailInfoDataModel(
             catalogBottomSheet = ProductDetailInfoSeeMore(bottomSheetTitle = SPECIFICATION_BOTTOM_SHEET_TITLE),
             bottomSheet = ProductDetailInfoSeeMore(),
-            dataContent = listOf(
+            dataContent = (Int.ONE..maxContent).map {
                 ProductDetailInfoContent(
-                    title = DESCRIPTION_DETAIL_KEY,
-                    subtitle = DESCRIPTION_DETAIL_KEY
-                ),
-                ProductDetailInfoContent(
-                    title = "Kondisi",
-                    subtitle = "Baru"
-                ),
-            )
+                    title = "Kondisi #$it",
+                    subtitle = "Baru #$it"
+                )
+            }.toMutableList().apply {
+                add(
+                    ProductDetailInfoContent(
+                        title = DESCRIPTION_DETAIL_KEY,
+                        subtitle = DESCRIPTION_DETAIL_KEY
+                    )
+                )
+            }
         ),
         isOpenSpecification = true
     )
 
-    private val parcelDataCatalogDescription = parcelDataSpecification.copy(
-        isOpenSpecification = false,
-        productInfo = parcelDataSpecification.productInfo.copy(
-            bottomSheet = parcelDataSpecification.productInfo.bottomSheet.copy(
-                bottomSheetTitle = DESCRIPTION_BOTTOM_SHEET_TITLE
+    private val parcelDataCatalogDescription: ProductInfoParcelData
+        get() {
+            val parcel = createParcelData()
+            return parcel.copy(
+                isOpenSpecification = false,
+                productInfo = parcel.productInfo.copy(
+                    bottomSheet = parcel.productInfo.bottomSheet.copy(
+                        bottomSheetTitle = DESCRIPTION_BOTTOM_SHEET_TITLE
+                    )
+                )
             )
-        )
-    )
+        }
 
-    private val parcelDataDescription = parcelDataSpecification.copy(
-        isOpenSpecification = false,
-        productInfo = parcelDataSpecification.productInfo.copy(
-            catalogBottomSheet = null,
-            bottomSheet = parcelDataSpecification.productInfo.bottomSheet.copy(
-                bottomSheetTitle = DESCRIPTION_BOTTOM_SHEET_TITLE
+    private val parcelDataDescription: ProductInfoParcelData
+        get() {
+            val parcel = createParcelData()
+            return parcel.copy(
+                isOpenSpecification = false,
+                productInfo = parcel.productInfo.copy(
+                    catalogBottomSheet = null,
+                    bottomSheet = parcel.productInfo.bottomSheet.copy(
+                        bottomSheetTitle = DESCRIPTION_BOTTOM_SHEET_TITLE
+                    )
+                )
             )
-        )
-    )
+        }
 
     private val bottomSheetCatalog =
         ProductDetailTestUtil.createMockGraphqlSuccessResponse<BottomSheetProductDetailInfoResponse>(
@@ -152,13 +169,13 @@ class BsProductDetailInfoViewModelTest {
             BottomSheetProductDetailInfoResponse::class.java
         ).response
 
-   private val bottomSheetDescriptionCatalog =
+    private val bottomSheetDescriptionCatalog =
         ProductDetailTestUtil.createMockGraphqlSuccessResponse<BottomSheetProductDetailInfoResponse>(
             jsonLocation = RESOURCE_BOTTOM_SHEET_DESC_CATALOG,
             BottomSheetProductDetailInfoResponse::class.java
         ).response
 
-     private val bottomSheetDescriptionNonCatalog =
+    private val bottomSheetDescriptionNonCatalog =
         ProductDetailTestUtil.createMockGraphqlSuccessResponse<BottomSheetProductDetailInfoResponse>(
             jsonLocation = RESOURCE_BOTTOM_SHEET_DESC_NON_CATALOG,
             BottomSheetProductDetailInfoResponse::class.java
@@ -167,7 +184,7 @@ class BsProductDetailInfoViewModelTest {
     @Test
     fun `verify bottom sheet title when open specification`() {
         // given and when
-        viewModel.setParams(parcelDataSpecification)
+        viewModel.setParams(createParcelData())
         val title = viewModel.bottomSheetTitle.getOrAwaitValue()
 
         // then
@@ -198,11 +215,19 @@ class BsProductDetailInfoViewModelTest {
     fun `show specification component when success get data from network`() {
         // given
         coEvery {
-            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
+            getProductDetailBottomSheetUseCase.execute(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } returns bottomSheetCatalog
 
         // when
-        viewModel.setParams(parcelDataSpecification)
+        viewModel.setParams(createParcelData())
 
         // then
         val result = viewModel.bottomSheetDetailData.getOrAwaitValue()
@@ -210,16 +235,28 @@ class BsProductDetailInfoViewModelTest {
 
         Assert.assertTrue(result is Success)
         Assert.assertTrue(data.filterIsInstance<ProductDetailInfoHeaderDataModel>().isNotEmpty())
-        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoAnnotationDataModel>().isNotEmpty())
+        Assert.assertTrue(
+            data.filterIsInstance<ProductDetailInfoAnnotationDataModel>().isNotEmpty()
+        )
         Assert.assertTrue(data.filterIsInstance<ProductDetailInfoCatalogDataModel>().isNotEmpty())
-        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoDiscussionDataModel>().isNotEmpty())
+        Assert.assertTrue(
+            data.filterIsInstance<ProductDetailInfoDiscussionDataModel>().isNotEmpty()
+        )
     }
 
     @Test
     fun `show catalog description component when success get data from network`() {
         // given
         coEvery {
-            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
+            getProductDetailBottomSheetUseCase.execute(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } returns bottomSheetDescriptionCatalog
 
         // when
@@ -231,16 +268,30 @@ class BsProductDetailInfoViewModelTest {
         // then
         Assert.assertTrue(result is Success)
         Assert.assertTrue(data.filterIsInstance<ProductDetailInfoHeaderDataModel>().isNotEmpty())
-        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoExpandableDataModel>().isNotEmpty())
-        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoExpandableListDataModel>().isNotEmpty())
-        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoDiscussionDataModel>().isNotEmpty())
+        Assert.assertTrue(
+            data.filterIsInstance<ProductDetailInfoExpandableDataModel>().isNotEmpty()
+        )
+        Assert.assertTrue(
+            data.filterIsInstance<ProductDetailInfoExpandableListDataModel>().isNotEmpty()
+        )
+        Assert.assertTrue(
+            data.filterIsInstance<ProductDetailInfoDiscussionDataModel>().isNotEmpty()
+        )
     }
 
     @Test
     fun `show non catalog description component when success get data from network`() {
         // given
         coEvery {
-            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
+            getProductDetailBottomSheetUseCase.execute(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } returns bottomSheetDescriptionNonCatalog
 
         // when
@@ -252,10 +303,72 @@ class BsProductDetailInfoViewModelTest {
 
         Assert.assertTrue(result is Success)
         Assert.assertTrue(data.filterIsInstance<ProductDetailInfoHeaderDataModel>().isNotEmpty())
-        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoAnnotationDataModel>().isNotEmpty())
-        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoExpandableDataModel>().isNotEmpty())
-        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoExpandableListDataModel>().isNotEmpty())
-        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoDiscussionDataModel>().isNotEmpty())
+        Assert.assertTrue(
+            data.filterIsInstance<ProductDetailInfoAnnotationDataModel>().isNotEmpty()
+        )
+        Assert.assertTrue(
+            data.filterIsInstance<ProductDetailInfoExpandableDataModel>().isNotEmpty()
+        )
+        Assert.assertTrue(
+            data.filterIsInstance<ProductDetailInfoExpandableListDataModel>().isNotEmpty()
+        )
+        Assert.assertTrue(
+            data.filterIsInstance<ProductDetailInfoDiscussionDataModel>().isNotEmpty()
+        )
+    }
+
+    @Test
+    fun `verify button 'see more' should visible`() {
+        // prepare given and when
+        val result = prepareVerifyButtonSeeMoreTest(
+            maxContent = SPECIFICATION_SIZE_THRESHOLD + Int.ONE
+        )
+        val data = (result as? Success)?.data.orEmpty()
+
+        // then
+        Assert.assertTrue(result is Success)
+        val annotations = data.filterIsInstance<ProductDetailInfoAnnotationDataModel>()
+        Assert.assertTrue(annotations.isNotEmpty())
+        Assert.assertTrue(annotations.firstOrNull()?.productInfo?.size == SPECIFICATION_SIZE_THRESHOLD)
+        Assert.assertTrue(annotations.firstOrNull()?.annotation?.size == Int.ONE)
+    }
+
+    @Test
+    fun `verify button 'see more' should hide`() {
+        // prepare given and when
+        val result = prepareVerifyButtonSeeMoreTest(
+            maxContent = SPECIFICATION_SIZE_THRESHOLD - Int.ONE
+        )
+        val data = (result as? Success)?.data.orEmpty()
+
+        // then
+        Assert.assertTrue(result is Success)
+        val annotations = data.filterIsInstance<ProductDetailInfoAnnotationDataModel>()
+        Assert.assertTrue(annotations.isNotEmpty())
+        Assert.assertTrue(annotations.firstOrNull()?.productInfo?.size.orZero() < SPECIFICATION_SIZE_THRESHOLD)
+        Assert.assertTrue(annotations.firstOrNull()?.annotation?.isEmpty().orFalse())
+    }
+
+    private fun prepareVerifyButtonSeeMoreTest(maxContent: Int): Result<List<ProductDetailInfoVisitable>> {
+        // given
+        val parcel = createParcelData(maxContent = maxContent)
+
+        coEvery {
+            getProductDetailBottomSheetUseCase.execute(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns bottomSheetCatalog
+
+        // when
+        viewModel.setParams(parcel)
+
+        return viewModel.bottomSheetDetailData.getOrAwaitValue()
     }
 
     @Test
@@ -263,7 +376,15 @@ class BsProductDetailInfoViewModelTest {
         viewModel.bottomSheetDetailData.observeForever { }
 
         coEvery {
-            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
+            getProductDetailBottomSheetUseCase.execute(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } returns PdpGetDetailBottomSheet(bottomsheetData = bottomSheetOrderItem)
 
         viewModel.setParams(
@@ -334,7 +455,15 @@ class BsProductDetailInfoViewModelTest {
         viewModel.bottomSheetDetailData.observeForever { }
 
         coEvery {
-            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
+            getProductDetailBottomSheetUseCase.execute(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } returns PdpGetDetailBottomSheet(
             bottomsheetData = bottomSheetOrderItem,
             dataShopNotes = shopNotes
@@ -418,7 +547,15 @@ class BsProductDetailInfoViewModelTest {
         viewModel.bottomSheetDetailData.observeForever { }
 
         coEvery {
-            getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
+            getProductDetailBottomSheetUseCase.execute(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
         } throws Throwable()
 
         viewModel.setParams(ProductInfoParcelData())
@@ -436,8 +573,11 @@ class BsProductDetailInfoViewModelTest {
 
         const val SPECIFICATION_BOTTOM_SHEET_TITLE = "Spesifikasi produk"
         const val DESCRIPTION_BOTTOM_SHEET_TITLE = "Detail produk"
-        const val RESOURCE_BOTTOM_SHEET_CATALOG = "json/gql_get_product_info_bottom_sheet_catalog.json"
-        const val RESOURCE_BOTTOM_SHEET_DESC_CATALOG = "json/gql_get_product_info_bottom_sheet_description_catalog.json"
-        const val RESOURCE_BOTTOM_SHEET_DESC_NON_CATALOG = "json/gql_get_product_info_bottom_sheet_descripton_non_catalog.json"
+        const val RESOURCE_BOTTOM_SHEET_CATALOG =
+            "json/gql_get_product_info_bottom_sheet_catalog.json"
+        const val RESOURCE_BOTTOM_SHEET_DESC_CATALOG =
+            "json/gql_get_product_info_bottom_sheet_description_catalog.json"
+        const val RESOURCE_BOTTOM_SHEET_DESC_NON_CATALOG =
+            "json/gql_get_product_info_bottom_sheet_descripton_non_catalog.json"
     }
 }

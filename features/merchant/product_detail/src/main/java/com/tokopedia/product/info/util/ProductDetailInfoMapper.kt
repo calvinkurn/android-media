@@ -1,6 +1,5 @@
 package com.tokopedia.product.info.util
 
-import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.info.data.response.PdpGetDetailBottomSheet
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.CATALOG
@@ -154,30 +153,20 @@ object ProductDetailInfoMapper {
         componentId: Int,
         parcelData: ProductInfoParcelData
     ): ProductDetailInfoAnnotationDataModel {
-        val productInfoItems = mutableListOf<ProductDetailInfoContent>()
-        val annotationItems = mutableListOf<ProductDetailInfoContent>()
         val dataContent = parcelData.productInfo.dataContent
-
-        dataContent.forEach { data ->
-            if (data.title.lowercase() != DESCRIPTION_DETAIL_KEY) {
-                val notShownMax = isInfoUnderMax(currentSize = productInfoItems.size)
-
-                if (data.showAtBottomSheet && notShownMax) {
-                    productInfoItems.add(data)
-                }
-
-                if (data.isAnnotation) {
-                    annotationItems.add(data)
-                }
-            }
+        val productInfo = dataContent.filter {
+            it.title.lowercase() != DESCRIPTION_DETAIL_KEY && it.showAtBottomSheet
+        }
+        val annotation = if (productInfo.size > SPECIFICATION_SIZE_THRESHOLD) {
+            productInfo.subList(SPECIFICATION_SIZE_THRESHOLD, productInfo.size)
+        } else {
+            emptyList()
         }
 
         return ProductDetailInfoAnnotationDataModel(
             componentId = componentId,
-            productInfo = productInfoItems,
-            annotation = annotationItems
+            productInfo = productInfo.take(SPECIFICATION_SIZE_THRESHOLD),
+            annotation = annotation
         )
     }
-
-    private fun isInfoUnderMax(currentSize: Int) = currentSize < SPECIFICATION_SIZE_THRESHOLD
 }
