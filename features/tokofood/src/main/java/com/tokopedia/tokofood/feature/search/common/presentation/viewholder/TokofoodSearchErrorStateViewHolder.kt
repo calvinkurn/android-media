@@ -31,7 +31,7 @@ class TokofoodSearchErrorStateViewHolder(itemView: View,
         binding?.errorItemSearchErrorState?.run {
             setType(globalErrorType)
             setButtonFull(true)
-            if (globalErrorType == GlobalError.NO_CONNECTION) {
+            if (globalErrorType == GlobalError.NO_CONNECTION || globalErrorType == GlobalError.SERVER_ERROR) {
                 onActionClickListener = listener::onRetry
             } else {
                 errorAction.text =
