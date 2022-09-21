@@ -31,7 +31,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
@@ -72,15 +74,20 @@ class CampaignListViewModel @Inject constructor(
 
 
     sealed class UiEvent {
+        data class TapShareButton(val campaignId: Int): UiEvent()
         data class CampaignStatusFilterApplied(val selectedCampaignStatus: CampaignStatusSelection) : UiEvent()
         data class CampaignTypeFilterApplied(val selectedCampaignType: CampaignTypeSelection) : UiEvent()
         object NoCampaignStatusFilterApplied : UiEvent()
         object DismissTicker: UiEvent()
     }
 
+    sealed class UiEffect {
+        object None : UiEffect()
+        data class ShowShareBottomSheet(val banner: GetMerchantCampaignBannerGeneratorData) : UiEffect()
+    }
+
     data class UiState(
         val campaigns: List<ActiveCampaign> = listOf(),
-        val banner: GetMerchantCampaignBannerGeneratorData? = null,
         val campaignStatus: List<CampaignStatusSelection> = emptyList(),
         val campaignType: List<CampaignTypeSelection> = emptyList(),
         val selectedCampaignStatus: CampaignStatusSelection? = null,
@@ -90,6 +97,9 @@ class CampaignListViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
+    val uiEffect = _uiEffect.asSharedFlow()
 
     fun setCampaignName(campaignName : String) {
         this.campaignName = campaignName
@@ -183,9 +193,8 @@ class CampaignListViewModel @Inject constructor(
             }
             getMerchantBannerResultLiveData.value = Success(result)
 
-            _uiState.update { it.copy(banner = result.getMerchantCampaignBannerGeneratorData) }
+            _uiEffect.emit(UiEffect.ShowShareBottomSheet(result.getMerchantCampaignBannerGeneratorData))
         }, onError = {
-            _uiState.update { it.copy(banner = null) }
             getMerchantBannerResultLiveData.value = Fail(it)
         })
     }
@@ -362,6 +371,7 @@ class CampaignListViewModel @Inject constructor(
                 preferenceDataStore.markTickerAsDismissed()
                 _uiState.update { it.copy(isTickerDismissed = true) }
             }
+            is UiEvent.TapShareButton -> { getSellerBanner(event.campaignId) }
         }
     }
 

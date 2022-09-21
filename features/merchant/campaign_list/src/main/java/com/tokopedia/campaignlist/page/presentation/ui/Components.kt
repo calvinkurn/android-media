@@ -3,17 +3,16 @@ package com.tokopedia.campaignlist.page.presentation.ui
 import android.content.res.ColorStateList
 import android.view.KeyEvent
 import android.widget.TextView
-import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
 import com.tokopedia.campaignlist.common.util.onTextChanged
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -33,13 +32,12 @@ fun UnifySortFilter(
         modifier = modifier,
         factory = { context ->
             SortFilter(context).apply {
-                addItem(items)
-                this.filterRelationship = filterRelationship
-                this.filterType = filterType
                 dismissListener = onClearFilter
             }
         },
         update = {
+            it.filterRelationship = filterRelationship
+            it.filterType = filterType
             it.addItem(items)
         }
     )
@@ -59,10 +57,12 @@ fun UnifySearchBar(
             SearchBarUnify(context).apply {
                 searchBarTextField.onTextChanged(onTextChanged)
                 searchBarTextField.setOnEditorActionListener(onEditorAction)
-                showIcon = false
-                searchBarPlaceholder = placeholderText
-                clearListener = onSearchBarCleared
             }
+        },
+        update = {
+            it.showIcon = false
+            it.searchBarPlaceholder = placeholderText
+            it.clearListener = onSearchBarCleared
         }
     )
 }
@@ -80,7 +80,6 @@ fun UnifyTicker(
         modifier = modifier,
         factory = { context ->
             Ticker(context).apply {
-                setTextDescription(text)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         onHyperlinkClicked(linkUrl)
@@ -89,11 +88,13 @@ fun UnifyTicker(
                     override fun onDismiss() {
                         onDismissed()
                     }
-
                 })
-                this.tickerShape = tickerShape
-                this.tickerType = tickerType
             }
+        },
+        update = {
+            it.setTextDescription(text)
+            it.tickerShape = tickerShape
+            it.tickerType = tickerType
         }
     )
 }
@@ -107,11 +108,10 @@ fun UnifyLabel(
 ) {
     AndroidView(
         modifier = modifier,
-        factory = { context ->
-            Label(context).apply {
-                setLabelType(labelType)
-                setLabel(labelText.toString())
-            }
+        factory = { context -> Label(context) },
+        update = {
+            it.setLabelType(labelType)
+            it.setLabel(labelText.toString())
         }
     )
 }
@@ -128,13 +128,14 @@ fun UnifyButton(
     AndroidView(
         modifier = modifier,
         factory = { context ->
-            UnifyButton(context).apply {
-                this.text = text
-                this.buttonSize = buttonSize
-                this.buttonVariant = buttonVariant
-                this.buttonType = buttonType
-                setOnClickListener { onClick() }
-            }
+            UnifyButton(context)
+        },
+        update = {
+            it.text = text
+            it.buttonSize = buttonSize
+            it.buttonVariant = buttonVariant
+            it.buttonType = buttonType
+            it.setOnClickListener { onClick() }
         }
     )
 }
@@ -150,28 +151,30 @@ fun UnifyTypography(
     AndroidView(
         modifier = modifier,
         factory = { context ->
+            Typography(context)
+        },
+        update = {
             val stateList = arrayOf(intArrayOf(android.R.attr.state_enabled))
-            val color = intArrayOf(ContextCompat.getColor(context, colorId))
+            val color = intArrayOf(ContextCompat.getColor(it.context, colorId))
             val colorStateList = ColorStateList(stateList, color)
-
-            Typography(context).apply {
-                this.text = text
-                setType(type)
-                setWeight(weight)
-                setTextColor(colorStateList)
-            }
+            it.setType(type)
+            it.setWeight(weight)
+            it.setTextColor(colorStateList)
+            it.text = text
         }
     )
 }
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun RemoteImage(modifier: Modifier = Modifier, imageUrl : String) {
-    val painter = rememberImagePainter(data = imageUrl)
-    Image(
-        painter = painter,
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = modifier
+fun UnifyImage(modifier: Modifier = Modifier, imageUrl : String) {
+    AndroidView(
+        modifier = modifier,
+        factory = { context ->
+            ImageUnify(context)
+        },
+        update = {
+            it.loadImage(imageUrl)
+        }
     )
 }

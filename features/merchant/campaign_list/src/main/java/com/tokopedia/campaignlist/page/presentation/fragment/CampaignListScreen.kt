@@ -14,7 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -22,11 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.campaignlist.R
-import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
-import com.tokopedia.campaignlist.page.presentation.ui.RemoteImage
+import com.tokopedia.campaignlist.page.presentation.ui.UnifyImage
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyButton
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyLabel
 import com.tokopedia.campaignlist.page.presentation.ui.UnifySearchBar
@@ -49,7 +48,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 @Composable
 fun CampaignListScreen(
-    viewModel: CampaignListViewModel,
+    uiState: State<CampaignListViewModel.UiState>,
     onTapCampaignStatusFilter: (List<CampaignStatusSelection>) -> Unit,
     onTapCampaignTypeFilter: (List<CampaignTypeSelection>) -> Unit,
     onClearFilter: () -> Unit,
@@ -57,11 +56,8 @@ fun CampaignListScreen(
     onSearchbarCleared: () -> Unit,
     onTickerDismissed: () -> Unit,
     onTapShareCampaignButton : (ActiveCampaign) -> Unit,
-    onDisplayShareBottomSheet: (GetMerchantCampaignBannerGeneratorData) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        val uiState = viewModel.uiState.collectAsState()
-
         SearchBar(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             onSearchBarKeywordSubmit = onSearchBarKeywordSubmit,
@@ -85,8 +81,6 @@ fun CampaignListScreen(
         }
 
         List(campaigns = uiState.value.campaigns, onTapShareCampaignButton)
-
-        uiState.value.banner?.run { onDisplayShareBottomSheet(this) }
     }
 }
 
@@ -238,7 +232,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                 campaignStatusId = campaign.campaignStatusId.toIntOrZero()
             )
 
-            RemoteImage(
+            UnifyImage(
                 modifier = Modifier
                     .size(62.dp)
                     .constrainAs(campaignImage) {

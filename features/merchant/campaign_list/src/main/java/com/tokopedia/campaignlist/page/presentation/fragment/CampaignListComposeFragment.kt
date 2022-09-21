@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.ViewModelProvider
@@ -99,12 +100,12 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 CampaignListScreen(
-                    viewModel = viewModel,
+                    uiState = viewModel.uiState.collectAsState(),
                     onTapCampaignStatusFilter = { campaignStatuses -> showCampaignStatusBottomSheet(campaignStatuses) },
                     onTapCampaignTypeFilter = { campaignType -> showCampaignTypeBottomSheet(campaignType) },
                     onTapShareCampaignButton = { campaign ->
                         viewModel.setSelectedActiveCampaign(campaign)
-                        viewModel.getSellerBanner(campaign.campaignId.toIntOrZero())
+                        viewModel.onEvent(CampaignListViewModel.UiEvent.TapShareButton(campaign.campaignId.toIntOrZero()))
                     },
                     onClearFilter = { viewModel.getCampaignList() },
                     onSearchBarKeywordSubmit = { searchQuery ->
@@ -118,14 +119,19 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
                         )
                     },
                     onSearchbarCleared = { viewModel.getCampaignList() },
-                    onDisplayShareBottomSheet = { banner ->
+                    onTickerDismissed = { viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker) }
+                )
+
+                val uiEffect = viewModel.uiEffect.collectAsState(initial = CampaignListViewModel.UiEffect.None)
+                when (uiEffect.value) {
+                    CampaignListViewModel.UiEffect.None -> {}
+                    is CampaignListViewModel.UiEffect.ShowShareBottomSheet -> {
+                        val banner = (uiEffect.value as CampaignListViewModel.UiEffect.ShowShareBottomSheet).banner
                         viewModel.setMerchantBannerData(banner)
                         showShareBottomSheet(banner)
-                    },
-                    onTickerDismissed = {
-                        viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker)
                     }
-                )
+                }
+
             }
         }
     }
