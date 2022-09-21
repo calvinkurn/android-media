@@ -25,8 +25,8 @@ fun createDefaultEditorTools() = arrayListOf(
 
 fun createDefaultRatioList() = arrayListOf(
     ImageRatioType.RATIO_1_1,
-    ImageRatioType.RATIO_2_1,
-    ImageRatioType.RATIO_3_4
+    ImageRatioType.RATIO_3_4,
+    ImageRatioType.RATIO_2_1
 )
 
 @Parcelize
