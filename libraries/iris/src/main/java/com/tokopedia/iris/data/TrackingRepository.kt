@@ -79,7 +79,7 @@ class TrackingRepository(
 
     private fun getFromOldest(maxRow: Int): List<Tracking> {
         return try {
-            setEmbraceLog("getFromOldest",maxRow.toString())
+            setEmbraceLog("getFromOldest", maxRow.toString())
             trackingDao.getFromOldest(maxRow)
         } catch (e: Throwable) {
             ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to String.format("getFromOldest %s", e.toString())))
