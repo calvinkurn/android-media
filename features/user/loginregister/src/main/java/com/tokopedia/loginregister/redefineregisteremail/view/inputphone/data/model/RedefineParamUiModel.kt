@@ -1,3 +1,4 @@
+@file:Suppress("ParamFieldAnnotation")
 package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.model
 
 import android.annotation.SuppressLint
@@ -5,19 +6,12 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class RedefineParamUiModel(
-    @SuppressLint("ParamFieldAnnotation")
     val source: String = "",
-    @SuppressLint("ParamFieldAnnotation")
     val email: String = "",
-    @SuppressLint("ParamFieldAnnotation")
     val password: String = "",
-    @SuppressLint("ParamFieldAnnotation")
     val name: String = "",
-    @SuppressLint("ParamFieldAnnotation")
     val isRequiredInputPhone: Boolean = false,
-    @SuppressLint("ParamFieldAnnotation")
     var token: String = "",
-    @SuppressLint("ParamFieldAnnotation")
     val hash: String = ""
 ): Parcelable {
     constructor(@SuppressLint("ParamFieldAnnotation") parcel: Parcel) : this(
