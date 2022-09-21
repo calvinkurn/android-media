@@ -1,4 +1,4 @@
-package com.tokopedia.campaignlist.page.presentation.fragment
+package com.tokopedia.campaignlist.page.presentation.ui
 
 import android.content.res.ColorStateList
 import android.view.KeyEvent
