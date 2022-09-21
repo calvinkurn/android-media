@@ -73,12 +73,12 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_payment_success_check_order"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:gravity="center"
                 android:textColor="@color/Unify_NN600"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/tv_payment_success"
                 app:layout_constraintStart_toStartOf="@id/tv_payment_success"
                 app:layout_constraintTop_toBottomOf="@+id/tv_payment_success"
                 app:typographyType="paragraph_2"
