@@ -12,7 +12,7 @@ import com.tokopedia.catalog.viewholder.components.ComparisonFeatureNewViewHolde
 class CatalogComparisonNewAdapter(
     private val specsList: ArrayList<ComponentData.SpecList>,
     val catalogDetailListener: CatalogDetailListener
-): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object ViewType {
         const val CATALOG_DETAIL = 0
@@ -21,15 +21,15 @@ class CatalogComparisonNewAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if(viewType == CATALOG_DETAIL){
+        return if (viewType == CATALOG_DETAIL) {
             ComparisonDetailNewViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_catalog_comparision_detail, parent, false))
-        }else {
+        } else {
             ComparisonFeatureNewViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_catalog_comparision_accordion, parent, false))
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(position == FIRST_POSITION){
+        return if (position == FIRST_POSITION) {
             CATALOG_DETAIL
         } else {
             CATALOG_FEATURE
@@ -37,17 +37,18 @@ class CatalogComparisonNewAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if(position == FIRST_POSITION){
+        if (position == FIRST_POSITION) {
             (holder as ComparisonDetailNewViewHolder).bind(
                 specsList[position].subcard?.firstOrNull()?.featureLeftData,
                 specsList[position].subcard?.firstOrNull()?.featureRightData,
-                catalogDetailListener)
+                catalogDetailListener
+            )
         } else {
-            (holder as ComparisonFeatureNewViewHolder).bind(specsList[position],
-                catalogDetailListener)
+            (holder as ComparisonFeatureNewViewHolder).bind(
+                specsList[position], catalogDetailListener
+            )
         }
     }
 
     override fun getItemCount() = specsList.size
-
 }

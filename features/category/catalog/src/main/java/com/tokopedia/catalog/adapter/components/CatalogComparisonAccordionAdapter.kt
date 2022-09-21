@@ -12,8 +12,8 @@ import com.tokopedia.unifyprinciples.Typography
 class CatalogComparisonAccordionAdapter(var subcard: ArrayList<ComponentData.SpecList.Subcard>):
     RecyclerView.Adapter<CatalogAccordionItemViewHolder>() {
 
-    fun setData(subcardList: ArrayList<ComponentData.SpecList.Subcard>){
-        subcard = subcardList
+    fun setData(subCardList: ArrayList<ComponentData.SpecList.Subcard>) {
+        subcard = subCardList
         notifyDataSetChanged()
     }
 
@@ -23,10 +23,8 @@ class CatalogComparisonAccordionAdapter(var subcard: ArrayList<ComponentData.Spe
 
     override fun onBindViewHolder(holder: CatalogAccordionItemViewHolder, position: Int) {
         holder.bind(subcard[position])
-
         val subcategoryTitle = holder.view.findViewById<Typography>(R.id.subcategory_title)
         val comparisonContentLayout = holder.view.findViewById<ConstraintLayout>(R.id.comparison_content_layout)
-
         when (position) {
             0 -> {
                 subcategoryTitle.setBackgroundResource(R.drawable.catalog_subtitle_background)
@@ -42,7 +40,6 @@ class CatalogComparisonAccordionAdapter(var subcard: ArrayList<ComponentData.Spe
     }
 
     override fun getItemCount() = subcard.size
-
 }
 
 

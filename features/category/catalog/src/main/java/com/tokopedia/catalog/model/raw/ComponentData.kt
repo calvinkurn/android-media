@@ -48,9 +48,11 @@ data class ComponentData(
         val reviews: ArrayList<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>?,
         @Expose @SerializedName("totalHelpfulReview")
         val totalHelpfulReview: String?,
-        @Expose @SerializedName("spec_list")
+        @Expose
+        @SerializedName("spec_list")
         var specList: ArrayList<SpecList>? = arrayListOf(),
-        @Expose @SerializedName("compared_data")
+        @Expose
+        @SerializedName("compared_data")
         val comparedData: ComparedData? = null
 
 ){
@@ -64,9 +66,11 @@ data class ComponentData(
 
     @Parcelize
     data class SpecList(
-            @Expose @SerializedName("title")
+            @Expose
+            @SerializedName("title")
             val comparisonTitle: String?,
-            @Expose @SerializedName("sub_card")
+            @Expose
+            @SerializedName("sub_card")
             val subcard: ArrayList<Subcard>? = arrayListOf(),
 
             var isExpanded: Boolean = false
