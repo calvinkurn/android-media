@@ -126,27 +126,12 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
 
     //token must get from OTP type 126
     fun registerV2(
-        email: String = "",
-        phone: String = "",
-        fullName: String,
-        encryptedPassword: String,
-        validateToken: String,
-        hash: String
+        registerV2Param: RegisterV2Param
     ) {
         _submitRegisterLoading.value = true
         launchCatchError(coroutineContext, {
-            val param = RegisterV2Param(
-                regType = REGISTRATION_TYPE,
-                osType = OS_TYPE,
-                fullName = fullName,
-                email = email,
-                phone = phone,
-                password = encryptedPassword,
-                validateToken = validateToken,
-                hash = hash
-            )
 
-            val result = getRegisterV2AndSaveSessionUseCase(param)
+            val result = getRegisterV2AndSaveSessionUseCase(registerV2Param)
 
             _registerV2.value = result
             _submitRegisterLoading.value = false
@@ -189,9 +174,6 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     }
 
     companion object {
-        private const val REGISTRATION_TYPE = "email"
-        private const val OS_TYPE = "1"
-
         const val NOTHING_RESOURCE = 0
         const val RESOURCE_NOT_CHANGED = -1
     }

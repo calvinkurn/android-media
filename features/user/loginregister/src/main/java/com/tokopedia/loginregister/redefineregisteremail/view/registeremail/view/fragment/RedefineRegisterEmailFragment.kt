@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -29,6 +28,7 @@ import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToLoginW
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerification
 import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationParam
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.model.RedefineParamUiModel
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.data.ValidateUserData
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.view.viewmodel.RedefineRegisterEmailViewModel
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
@@ -349,7 +349,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
         handleNakamaRegistration()
 
-        val toRedefineRegisterInputPhoneNumber = RedefineRegisterEmailFragmentDirections.actionRedefineRegisterEmailFragmentToRedefineRegisterInputPhoneFragment(
+        val parameter = RedefineParamUiModel(
             source = paramSource,
             email = viewModel.currentEmail,
             password = viewModel.encryptedPassword,
@@ -357,6 +357,10 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             isRequiredInputPhone = paramIsRequiredInputPhone,
             token = paramToken,
             hash = viewModel.currentHash
+        )
+
+        val toRedefineRegisterInputPhoneNumber = RedefineRegisterEmailFragmentDirections.actionRedefineRegisterEmailFragmentToRedefineRegisterInputPhoneFragment(
+            parameter = parameter
         )
         view?.findNavController()?.navigate(toRedefineRegisterInputPhoneNumber)
     }
@@ -389,13 +393,5 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         private const val SPLIT_EMAIL_SIZE = 2
         private const val STRING_TESTING_REGISTER = "testreg"
         private const val DOMAIN_TOKOPEDIA_EMAIL = "tokopedia.com"
-
-
-        @JvmStatic
-        fun newInstance(bundle: Bundle): Fragment {
-            val fragment = RedefineRegisterEmailFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
     }
 }

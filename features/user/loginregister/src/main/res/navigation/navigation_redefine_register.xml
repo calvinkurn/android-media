@@ -25,33 +25,8 @@
         android:label="RedefineRegisterInputPhoneFragment"
         tools:layout="@layout/fragment_redefine_register_input_phone" >
         <argument
-            android:name="source"
-            app:argType="string"
-            android:defaultValue=""/>
-        <argument
-            android:name="email"
-            app:argType="string"
-            android:defaultValue=""/>
-        <argument
-            android:name="password"
-            app:argType="string"
-            android:defaultValue=""/>
-        <argument
-            android:name="name"
-            app:argType="string"
-            android:defaultValue=""/>
-        <argument
-            android:name="isRequiredInputPhone"
-            app:argType="boolean"
-            android:defaultValue="false"/>
-        <argument
-            android:name="token"
-            app:argType="string"
-            android:defaultValue=""/>
-        <argument
-            android:name="hash"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:name="parameter"
+            app:argType="com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.model.RedefineParamUiModel"/>
     </fragment>
 
 </navigation>

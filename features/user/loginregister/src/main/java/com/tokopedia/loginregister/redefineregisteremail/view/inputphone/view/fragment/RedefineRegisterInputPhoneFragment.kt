@@ -3,14 +3,12 @@ package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.f
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -30,20 +28,22 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterInputPhoneBinding
-import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToHome
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToLoginWithPhone
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerification
 import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationParam
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.local.RegisterPreferences
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.model.RedefineParamUiModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RedefineRegisterInputPhoneViewModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RegistrationPhoneState
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.sessioncommon.data.register.RegisterV2Param
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
@@ -65,32 +65,22 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         )
     }
 
+    @Inject
+    lateinit var firebaseRemoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var registerPreferences: RegisterPreferences
+
     private var _binding: FragmentRedefineRegisterInputPhoneBinding? = null
     private val binding get() = _binding
 
-    private var paramSource: String = RedefineRegisterEmailConstants.EMPTY_STRING
-    private var paramEmail: String = RedefineRegisterEmailConstants.EMPTY_STRING
-    private var paramPassword: String = RedefineRegisterEmailConstants.EMPTY_STRING
-    private var paramName: String = RedefineRegisterEmailConstants.EMPTY_STRING
-    private var paramIsRequiredInputPhone: Boolean = false
-    private var paramToken = RedefineRegisterEmailConstants.EMPTY_STRING
-    private var paramHash = RedefineRegisterEmailConstants.EMPTY_STRING
-    private var sharedPrefs: SharedPreferences? = null
-
     private val args: RedefineRegisterInputPhoneFragmentArgs by navArgs()
+    private var parameter: RedefineParamUiModel = RedefineParamUiModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        args.apply {
-            paramSource = source
-            paramEmail = email
-            paramPassword = password
-            paramName = name
-            paramIsRequiredInputPhone = isRequiredInputPhone
-            paramToken = token
-            paramHash = hash
-        }
+        parameter = args.parameter
     }
 
     override fun onCreateView(
@@ -108,7 +98,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         binding?.unifyToolbar?.title = getString(R.string.register_email_title)
         showNavigateBackToolbar(true)
 
-        if (!paramIsRequiredInputPhone) onEntireScreenLoading()
+        if (!parameter.isRequiredInputPhone) onEntireScreenLoading()
         initListener()
         registrationProsesObserver()
         formValidateObserver()
@@ -145,30 +135,23 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun initRegisterRequest() {
-        if (!paramIsRequiredInputPhone) {
+        if (!parameter.isRequiredInputPhone) {
             submitRegisterV2()
         }
     }
 
     private fun submitRegisterV2() {
-        if (paramIsRequiredInputPhone) {
-            viewModel.registerV2(
-                email = paramEmail,
+        viewModel.registerV2(
+            RegisterV2Param(
+                regType = REGISTRATION_TYPE,
+                email = parameter.email,
                 phone = binding?.fieldInputPhone?.editText?.text.toString(),
-                fullName = paramName,
-                encryptedPassword = paramPassword,
-                validateToken = paramToken,
-                hash = paramHash
+                fullName = parameter.name,
+                password = parameter.password,
+                validateToken = parameter.token,
+                hash = parameter.hash
             )
-        } else {
-            viewModel.registerV2(
-                email = paramEmail,
-                fullName = paramName,
-                encryptedPassword = paramPassword,
-                validateToken = paramToken,
-                hash = paramHash
-            )
-        }
+        )
     }
 
     private fun editorChangesListener() {
@@ -193,13 +176,13 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun submitForm() {
-        if (paramIsRequiredInputPhone) {
+        if (parameter.isRequiredInputPhone) {
             viewModel.submitForm(
                 binding?.fieldInputPhone?.editText?.text.toString()
             )
         } else {
             viewModel.userProfileValidate(
-                email = paramEmail,
+                email = parameter.email,
                 phone = binding?.fieldInputPhone?.editText?.text.toString()
             )
         }
@@ -211,7 +194,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 is Success -> {
                     actionAfterLoggedIn()
 
-                    if (paramIsRequiredInputPhone) {
+                    if (parameter.isRequiredInputPhone) {
                         goToHome()
                     } else {
                         showNavigateBackToolbar(false)
@@ -322,7 +305,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     private fun registerPushNotif() {
         context?.let {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
             val isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(
                 RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF,
                 false
@@ -335,23 +317,12 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     private fun actionAfterLoggedIn() {
         registerPushNotif()
-        saveFirstInstallTime()
+        registerPreferences.saveFirstInstallTime()
         activity?.let {
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
             DataVisorWorker.scheduleWorker(it, true)
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
-        }
-    }
-
-    private fun saveFirstInstallTime() {
-        context?.let {
-            sharedPrefs = it.getSharedPreferences(
-                LoginConstants.PrefKey.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE
-            )
-            sharedPrefs?.edit()?.putLong(
-                LoginConstants.PrefKey.KEY_FIRST_INSTALL_TIME_SEARCH, 0
-            )?.apply()
         }
     }
 
@@ -367,7 +338,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     private fun submitUpdatePhone() {
         onEntireScreenLoading()
-        viewModel.userProfileUpdate(binding?.fieldInputPhone?.editText?.text.toString(), paramToken)
+        viewModel.userProfileUpdate(binding?.fieldInputPhone?.editText?.text.toString(), parameter.token)
     }
 
     private fun showGlobalError(errorType: Int) {
@@ -519,7 +490,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             }
             RedefineRegisterEmailConstants.VERIFICATION_PHONE_UPDATE_PROFILE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    paramToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+                    parameter.token = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
                     submitUpdatePhone()
                 }
             }
@@ -528,7 +499,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     private fun goToVerification(phone: String, context: Context) {
 
-        val otpType = if (paramIsRequiredInputPhone) {
+        val otpType = if (parameter.isRequiredInputPhone) {
             RedefineRegisterEmailConstants.OTP_REDEFINE_REGISTER_EMAIL
         } else {
             RedefineRegisterEmailConstants.OTP_VERIFICATION_PHONE
@@ -536,15 +507,15 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
         val intent = context.intentGoToVerification(
             GoToVerificationParam(
-                email = paramEmail,
+                email = parameter.email,
                 phone = phone,
                 otpType = otpType,
-                source = paramSource,
-                token = paramToken
+                source = parameter.source,
+                token = parameter.token
             )
         )
 
-        val otpResultCode = if (paramIsRequiredInputPhone) {
+        val otpResultCode = if (parameter.isRequiredInputPhone) {
             RedefineRegisterEmailConstants.VERIFICATION_PHONE_REGISTER
         } else {
             RedefineRegisterEmailConstants.VERIFICATION_PHONE_UPDATE_PROFILE
@@ -555,7 +526,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     private fun goToPhoneLogin() {
         val intent = requireActivity().intentGoToLoginWithPhone(
             binding?.fieldInputPhone?.editText?.text.toString(),
-            paramSource
+            parameter.source
         )
         startActivity(intent)
     }
@@ -602,16 +573,11 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     companion object {
 
+        private const val REGISTRATION_TYPE = "email"
+
         private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
         private const val TOKOPEDIA_CARE_PATH = "help"
 
         private val SCREEN_NAME = RedefineRegisterInputPhoneFragment::class.java.simpleName
-
-        @JvmStatic
-        fun newInstance(bundle: Bundle): Fragment {
-            val fragment = RedefineRegisterInputPhoneFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
     }
 }
