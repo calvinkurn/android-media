@@ -223,20 +223,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
             )
     }
 
-    private fun copyTotalAmountToClipboard(amountStr: String?) {
-        amountStr?.let { str ->
-            context?.let { context ->
-                copyTOClipBoard(context, str)
-                view?.let {
-                    Toaster.build(
-                        it, getString(R.string.thank_you_amount_copy_success),
-                        Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL
-                    ).show()
-                }
-            }
-        }
-    }
-
     private fun showToastCopySuccessFully(context: Context) {
         view?.let {
             val toasterMessage = when (paymentType) {
@@ -273,20 +259,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
     private fun isTimerExpired(thanksPageData: ThanksPageData): Boolean {
         if (thanksPageData.expireTimeUnix * 1000L <= System.currentTimeMillis())
             return true
-        return false
-    }
-
-    private fun isPaymentTimerExpired(): Boolean {
-        if (thanksPageData.expireTimeUnix <= System.currentTimeMillis() / ONE_SECOND_TO_MILLIS)
-            return true
-        return false
-    }
-
-    internal fun onBackPressed(): Boolean {
-        if (!isPaymentTimerExpired()) {
-            refreshThanksPageData()
-            return true
-        }
         return false
     }
 
