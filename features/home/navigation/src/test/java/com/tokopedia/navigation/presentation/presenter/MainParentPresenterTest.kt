@@ -7,7 +7,6 @@ import com.tokopedia.navigation.domain.subscriber.NotificationSubscriber
 import com.tokopedia.navigation.presentation.view.MainParentView
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
-import io.mockk.called
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
