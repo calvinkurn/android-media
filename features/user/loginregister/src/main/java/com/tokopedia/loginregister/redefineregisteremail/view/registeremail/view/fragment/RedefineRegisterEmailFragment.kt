@@ -175,13 +175,6 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         binding?.fieldName?.editText?.afterTextChanged {
             viewModel.validateName(it)
         }
-
-        binding?.fieldName?.editText?.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                submitForm()
-                true
-            } else false
-        }
     }
 
     private fun setUpEmailExtension(email: String) {
