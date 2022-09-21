@@ -2066,7 +2066,6 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             REQUEST_CODE_LOGIN_PLAY_INTERACTIVE -> handlePlayingInteractive(shouldPlay = true)
             REQUEST_CODE_USER_REPORT -> handleUserReport()
-//            REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
             REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems()
             else -> {}
         }

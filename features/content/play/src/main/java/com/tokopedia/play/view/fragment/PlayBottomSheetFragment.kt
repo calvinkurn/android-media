@@ -743,7 +743,10 @@ class PlayBottomSheetFragment @Inject constructor(
 
         val prevSum = prevTagItem?.product?.productSectionList?.productsSum().orZero()
         val sum = tagItem.product.productSectionList.productsSum()
-        if (prevSum != sum && prevSum != 0 && sum != 0) onProductCountChanged()
+
+        if (prevSum != sum &&
+            prevTagItem?.resultState?.isLoading != true &&
+            sum != 0) onProductCountChanged()
     }
 
     private fun renderVoucherSheet(tagItem: TagItemUiModel) {
