@@ -27,14 +27,17 @@ class CatalogComparisonAccordionAdapter(var subcard: ArrayList<ComponentData.Spe
         val subcategoryTitle = holder.view.findViewById<Typography>(R.id.subcategory_title)
         val comparisonContentLayout = holder.view.findViewById<ConstraintLayout>(R.id.comparison_content_layout)
 
-        if(position == 0){
-            subcategoryTitle.setBackgroundResource(R.drawable.catalog_subtitle_background)
-        }
-        else if(position == subcard.size-1){
-            comparisonContentLayout.setBackgroundResource(R.drawable.catalog_content_border)
-        } else{
-            subcategoryTitle.setBackgroundResource(R.drawable.catalog_subtitle_bg_default)
-            comparisonContentLayout.setBackgroundResource(R.drawable.catalog_content_bg_default)
+        when (position) {
+            0 -> {
+                subcategoryTitle.setBackgroundResource(R.drawable.catalog_subtitle_background)
+            }
+            subcard.size - 1 -> {
+                comparisonContentLayout.setBackgroundResource(R.drawable.catalog_content_border)
+            }
+            else -> {
+                subcategoryTitle.setBackgroundResource(R.drawable.catalog_subtitle_bg_default)
+                comparisonContentLayout.setBackgroundResource(R.drawable.catalog_content_bg_default)
+            }
         }
     }
 

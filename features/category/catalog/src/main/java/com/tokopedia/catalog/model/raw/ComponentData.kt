@@ -68,6 +68,8 @@ data class ComponentData(
             val comparisonTitle: String?,
             @Expose @SerializedName("sub_card")
             val subcard: ArrayList<Subcard>? = arrayListOf(),
+
+            var isExpanded: Boolean = false
     ) : Parcelable
     {
             @Parcelize

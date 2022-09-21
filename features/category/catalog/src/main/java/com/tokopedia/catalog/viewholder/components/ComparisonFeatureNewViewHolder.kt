@@ -14,39 +14,53 @@ class ComparisonFeatureNewViewHolder(val view: View) : RecyclerView.ViewHolder(v
     private val accordionView = view.findViewById<AccordionUnify>(R.id.comparision_accordion_view)
     private var childView: View? = null
 
-    fun bind(specList: ComponentData.SpecList, catalogDetailListener: CatalogDetailListener){
-        val catalogComparisonAccordionAdapter = specList.subcard?.let {
-            CatalogComparisonAccordionAdapter(it)
-        }
+    fun bind(specList: ComponentData.SpecList, catalogDetailListener: CatalogDetailListener) {
         accordionView.run {
             accordionData.clear()
             removeAllViews()
-            onItemClick = {_, isExpanded ->
+            onItemClick = { _, isExpanded ->
 
-                if(isExpanded){
-                    catalogComparisonAccordionAdapter?.setData(specList.subcard)
-                    catalogDetailListener.accordionDropDown(specList.comparisonTitle)
-                } else{
+                if (isExpanded) {
+                    specList.subcard?.let {
+                        getAccordionAdapter(specList)?.setData(specList.subcard)
+                        catalogDetailListener.accordionDropDown(specList.comparisonTitle)
+                    }
+                } else {
                     catalogDetailListener.accordionDropUp(specList.comparisonTitle)
                 }
             }
         }
         childView = View.inflate(view.context, LAYOUT, null)
         childView?.findViewById<RecyclerView>(R.id.accordion_expandable_rv)?.apply {
-            adapter = catalogComparisonAccordionAdapter
-            layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+            if (specList.subcard != null) {
+                adapter = getAccordionAdapter(specList)
+                layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+            }
         }
-
         addAccordionData(specList)
     }
 
-    private fun addAccordionData(specList: ComponentData.SpecList?){
+    private fun addAccordionData(specList: ComponentData.SpecList?) {
         accordionView.apply {
-            addGroup(AccordionDataUnify(title = specList?.comparisonTitle.toString(), expandableView = childView!!))
+            childView?.let {
+                val accordionUnifyData = AccordionDataUnify(
+                    title = specList?.comparisonTitle.toString(),
+                    expandableView = it,
+                    isExpanded = specList?.isExpanded ?: false
+                )
+                accordionUnifyData.setContentPadding(0, 0, 0, 0)
+                addGroup(accordionUnifyData)
             }
         }
+    }
 
-    companion object{
+    private fun getAccordionAdapter(specList: ComponentData.SpecList): CatalogComparisonAccordionAdapter? {
+        return specList.subcard?.let {
+            CatalogComparisonAccordionAdapter(it)
+        }
+    }
+
+    companion object {
         val LAYOUT = R.layout.item_catalog_comparision_expanded_layout
     }
 }

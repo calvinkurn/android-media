@@ -155,12 +155,16 @@ object CatalogDetailMapper {
                         "${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.minFmt} - ${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.maxFmt}",
                         comparisonComponentDataNew.comparedData?.catalogImage?.firstOrNull()?.imageURL ?: "",
                         )
-            )))
+            )), false)
         )
 
-        comparisonComponentDataNew.specList?.forEach {
-            specsListCombined.add(it)
+        comparisonComponentDataNew.specList?.forEachIndexed { index, specList ->
+            if(index == 0){
+                specList.isExpanded = true
+            }
+            specsListCombined.add(specList)
         }
+
         comparisonComponentDataNew.specList = specsListCombined
         return CatalogComparisonNewDataModel(CatalogConstant.COMPARISON_NEW, CatalogConstant.COMPARISON_NEW, comparisonComponentDataNew.specList)
     }
@@ -168,7 +172,7 @@ object CatalogDetailMapper {
     private fun mapIntoReviewDataModel(catalogName : String, catalogId : String, componentName : String,
                                        componentType : String, crudeReviewData: List<ComponentData>?)
     : List<BaseCatalogDataModel> {
-        val listOfReviewComponents = ArrayList<BaseCatalogDataModel>();
+        val listOfReviewComponents = ArrayList<BaseCatalogDataModel>()
         crudeReviewData?.firstOrNull()?.let {  componentData ->
             listOfReviewComponents.add(CatalogReviewDataModel(componentName, type = componentType,
                     data = ReviewComponentData(catalogName,catalogId,componentData.avgRating,componentData.reviews,

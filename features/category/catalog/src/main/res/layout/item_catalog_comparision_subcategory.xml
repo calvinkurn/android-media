@@ -12,10 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:gravity="center_vertical"
-        android:layout_marginBottom="12dp"
         android:background="@drawable/catalog_subtitle_bg_default"
-        android:padding="4dp"
-        android:textSize="12sp"
+        android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@id/comparison_content_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="display_3"
@@ -28,7 +26,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/catalog_content_bg_default"
         android:orientation="horizontal"
-        android:padding="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/subcategory_title">
 
@@ -47,8 +44,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/diff_guideline"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:padding="8dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/first_content"
