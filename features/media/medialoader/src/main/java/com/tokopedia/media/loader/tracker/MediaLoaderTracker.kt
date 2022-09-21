@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
+import com.bumptech.glide.load.engine.GlideException
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -32,6 +33,7 @@ object MediaLoaderTracker {
     private const val CDN_NO_IP_MSG = "not available"
     private const val CDN_IP_MAP_KEY = "remote_server_ip"
     private const val CDN_HOST_NAME_MAP_KEY = "remote_host_name"
+    private const val CDN_ERROR_DETAIL = "error_detail"
     private const val CDN_IMG_SIZE_NOT_AVAILBLE = "n/a"
 
     private fun priority() = Priority.P2
@@ -82,7 +84,8 @@ object MediaLoaderTracker {
     fun trackCdnDown(
         context: Context,
         url: String,
-        loadTime: String = ""
+        loadTime: String = "",
+        e: GlideException?
     ) {
 
         val pageName = try {
@@ -112,6 +115,7 @@ object MediaLoaderTracker {
 
             map[CDN_IP_MAP_KEY] = ipInfo
             map[CDN_HOST_NAME_MAP_KEY] = hostName
+            map[CDN_ERROR_DETAIL] = "localizedMessage=${e.localizedMessage} , cause=${e.cause}, rootCauses=${e.rootCauses}"
 
             ServerLogger.log(
                 priority = Priority.P1,

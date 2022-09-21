@@ -33,7 +33,8 @@ object MediaListenerBuilder {
             MediaLoaderTracker.trackCdnDown(
                 context = context.applicationContext,
                 url = properties.data.toString(),
-                loadTime = loadTime
+                loadTime = loadTime,
+                e = e
             )
             return false
         }
