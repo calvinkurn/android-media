@@ -10,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.data.OrderCategory
+import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListDetailActivity
 import com.tokopedia.buyerorder.detail.view.activity.OrderListDetailActivity
 import com.tokopedia.buyerorder.recharge.di.DaggerRechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
@@ -35,7 +36,7 @@ class RechargeOrderDetailActivity : BaseSimpleActivity(), HasComponent<RechargeO
         remoteConfig = FirebaseRemoteConfigImpl(this)
 
         if (!remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_NEW_ORDER_DETAIL, true)) {
-            startActivity(OrderListDetailActivity.getIntent(this, orderId, intent.data))
+            startActivity(RevampOrderListDetailActivity.getIntent(this, orderId, intent.data))
             finish()
         }
 
@@ -75,7 +76,7 @@ class RechargeOrderDetailActivity : BaseSimpleActivity(), HasComponent<RechargeO
             return if (it.contains(OrderCategory.DIGITAL, true)) {
                 RechargeOrderDetailFragment.getInstance(orderId, OrderCategory.DIGITAL)
             } else {
-                startActivity(OrderListDetailActivity.getIntent(this, orderId, intent.data))
+                startActivity(RevampOrderListDetailActivity.getIntent(this, orderId, intent.data))
                 finish()
                 null
             }

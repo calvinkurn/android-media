@@ -10,9 +10,14 @@ import javax.inject.Inject
 
 class DeletePeopleAddressUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<DeletePeopleAddressGqlResponse>) {
 
-    fun execute(inputAddressId: Int, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+    fun execute(inputAddressId: Int, isTokonow: Boolean, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to inputAddressId))
+        graphqlUseCase.setRequestParams(
+            mapOf(
+                PARAM_KEY to inputAddressId,
+                PARAM_IS_TOKONOW_REQUEST to isTokonow
+            )
+        )
         graphqlUseCase.setTypeClass(DeletePeopleAddressGqlResponse::class.java)
         graphqlUseCase.execute({ response: DeletePeopleAddressGqlResponse ->
             if(response.response.status.equals(STATUS_OK, true))  {
@@ -32,10 +37,11 @@ class DeletePeopleAddressUseCase @Inject constructor(private val graphqlUseCase:
 
     companion object{
         const val PARAM_KEY = "inputAddressId"
+        const val PARAM_IS_TOKONOW_REQUEST = "isTokonowRequest"
 
         val QUERY = """
-            mutation deleteAddress(${"$"}inputAddressId: Int!) {
-              kero_remove_address(addr_id: ${"$"}inputAddressId) {
+            mutation deleteAddress(${"$"}inputAddressId: Int!, ${"$"}isTokonowRequest: Boolean!) {
+              kero_remove_address(addr_id: ${"$"}inputAddressId, is_tokonow_request: ${"$"}isTokonowRequest) {
                     data{
                         is_success
                     }

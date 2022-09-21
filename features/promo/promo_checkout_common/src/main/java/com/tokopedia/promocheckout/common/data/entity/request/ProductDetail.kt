@@ -10,13 +10,13 @@ import com.google.gson.annotations.SerializedName
 
 data class ProductDetail(
         @SerializedName("product_id")
-        var productId: Int? = 0,
+        var productId: Long? = 0,
 
         @SerializedName("quantity")
         var quantity: Int? = 0
 ) : Parcelable {
         constructor(parcel: Parcel) : this(
-                parcel.readValue(Int::class.java.classLoader) as? Int,
+                parcel.readValue(Long::class.java.classLoader) as? Long,
                 parcel.readValue(Int::class.java.classLoader) as? Int) {
         }
 
