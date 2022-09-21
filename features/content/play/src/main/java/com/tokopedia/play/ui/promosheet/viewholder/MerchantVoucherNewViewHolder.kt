@@ -69,12 +69,9 @@ class MerchantVoucherNewViewHolder(
         binding.viewVoucherCopyable.root.showWithCondition(item.copyable)
         binding.viewVoucherCopyable.tvPlayVoucherCode.text = item.code
 
-        binding.viewVoucherCopyable.ivPlayVoucherCopy.setOnClickListener {
-            if (!item.copyable) return@setOnClickListener
-            listener.onCopyItemVoucherClicked(item)
-        }
         binding.root.setOnClickListener {
-            listener.onVoucherItemClicked(item)
+            if(item.isPrivate) listener.onCopyItemVoucherClicked(item)
+            else listener.onVoucherItemClicked(item)
         }
     }
 
