@@ -78,7 +78,6 @@ object TrackingConstant {
      */
     object Value{
         const val PROMO_VIEW = "promoView"
-        const val VIEW_ITEM = "view_item"
         const val SELECT_CONTENT = "select_content"
         const val PRODUCT_DETAIL_PAGE = "product detail page"
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
