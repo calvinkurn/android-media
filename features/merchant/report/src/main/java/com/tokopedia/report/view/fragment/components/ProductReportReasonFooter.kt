@@ -1,10 +1,6 @@
 package com.tokopedia.report.view.fragment.components
 
-import android.graphics.Typeface
-import android.text.Spannable
 import android.text.method.LinkMovementMethod
-import android.text.style.StyleSpan
-import android.text.style.URLSpan
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -13,11 +9,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.text.style.WebViewURLSpan
 import com.tokopedia.report.view.fragment.unify_components.TextUnify
 import com.tokopedia.report.view.fragment.unify_components.TextUnifyType
 import com.tokopedia.report.view.fragment.unify_components.TextUnifyWeight
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -36,7 +31,7 @@ fun ProductReportReasonFooter(
             .padding(16.dp),
         type = TextUnifyType.Body3,
         weight = TextUnifyWeight.Regular,
-        properties = { context ->
+        update = { context ->
             val color = ContextCompat.getColor(
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_96
@@ -53,25 +48,16 @@ private fun composeSpannable(
     onClick: (String) -> Unit
 ) = with(typography) {
     movementMethod = LinkMovementMethod.getInstance()
-    val spannable = MethodChecker.fromHtml(text) as Spannable
-    spannable.getSpans(0, spannable.length, URLSpan::class.java).forEach {
-        val start = spannable.getSpanStart(it)
-        val end = spannable.getSpanEnd(it)
-        spannable.removeSpan(it)
-        val urlSpan = WebViewURLSpan( it.url).apply {
-            listener = object : WebViewURLSpan.OnClickListener {
-                override fun onClick(url: String) {
-                    onClick.invoke(url)
-                }
-
-                override fun showUnderline() = false
-
-            }
+    val helper = HtmlLinkHelper(
+        context = context,
+        htmlString = text
+    )
+    helper.urlList.forEach {
+        it.onClick = {
+            onClick.invoke(it.linkUrl)
         }
-        spannable.setSpan(urlSpan, start, end, 0)
-        spannable.setSpan(StyleSpan(Typeface.BOLD), start, end, 0)
     }
-    this.text = spannable
+    this.text = helper.spannedString
 }
 
 @Preview

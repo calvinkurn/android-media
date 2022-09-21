@@ -60,7 +60,7 @@ fun ProductReportReasonItem(
                     modifier = Modifier,
                     type = TextUnifyType.Body2,
                     weight = TextUnifyWeight.Bold,
-                    properties = { context ->
+                    update = { context ->
                         val color = ContextCompat.getColor(
                             context,
                             com.tokopedia.unifyprinciples.R.color.Unify_N700_96
@@ -74,7 +74,7 @@ fun ProductReportReasonItem(
                     TextUnify(
                         modifier = Modifier,
                         type = TextUnifyType.Body3,
-                        properties = { context ->
+                        update = { context ->
                             val color = ContextCompat.getColor(
                                 context,
                                 com.tokopedia.unifyprinciples.R.color.Unify_N700_68

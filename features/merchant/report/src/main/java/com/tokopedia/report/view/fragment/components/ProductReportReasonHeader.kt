@@ -27,7 +27,7 @@ fun ProductReportReasonHeader(
             .padding(16.dp),
         type = TextUnifyType.Heading3,
         weight = TextUnifyWeight.Bold,
-        properties = { context ->
+        update = { context ->
             val color = ContextCompat.getColor(
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_96

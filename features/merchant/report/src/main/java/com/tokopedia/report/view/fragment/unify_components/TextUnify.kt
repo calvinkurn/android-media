@@ -16,7 +16,7 @@ fun TextUnify(
     modifier: Modifier = Modifier,
     type: TextUnifyType,
     weight: TextUnifyWeight = TextUnifyWeight.Regular,
-    properties: Typography.(Context) -> Unit
+    update: Typography.(Context) -> Unit
 ) {
     AndroidView(
         factory = { context ->
@@ -27,7 +27,7 @@ fun TextUnify(
         },
         modifier = modifier,
         update = {
-            properties.invoke(it, it.context)
+            update.invoke(it, it.context)
         }
     )
 }

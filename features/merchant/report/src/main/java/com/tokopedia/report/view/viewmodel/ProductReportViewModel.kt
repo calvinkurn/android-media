@@ -113,11 +113,10 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     private fun onItemClicked(reason: ProductReportReason) = viewModelScope.launch {
-        val filterId = _uiState.value.filterId.toMutableList()
-
         if (reason.children.isNotEmpty()) {
             setChildrenIsNotEmpty(reason = reason)
         } else {
+            val filterId = _uiState.value.filterId.toMutableList()
             val baseParent = _uiState.value.baseParent
             val fieldReason = if (baseParent != null && filterId.isNotEmpty()) {
                 reason.copy(
@@ -137,13 +136,13 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
     ) {
         val state = _uiState.value
         val filterId = state.filterId.toMutableList()
-        filterId.add(reason.categoryId.toIntOrZero())
-
         val baseParent = if (filterId.isEmpty()) {
             reason
         } else {
             state.baseParent
         }
+
+        filterId.add(reason.categoryId.toIntOrZero())
 
         updateState(
             state.copy(baseParent = baseParent, filterId = filterId)
