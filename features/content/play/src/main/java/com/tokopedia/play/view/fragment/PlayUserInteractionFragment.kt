@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -566,7 +567,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     fun onStartAnimateInsets(isHidingInsets: Boolean) {
-        view?.hide()
+        view?.alpha = 0f
     }
 
     //TODO("Find better logic to improve this code")
@@ -577,7 +578,7 @@ class PlayUserInteractionFragment @Inject constructor(
         if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
             invalidateChatListBounds(shouldForceInvalidate = true)
         }
-        view?.show()
+        view?.alpha = VISIBLE_ALPHA
         /**
          * The second one is to handle edge cases when somehow any interaction has changed while insets is shown
          */
