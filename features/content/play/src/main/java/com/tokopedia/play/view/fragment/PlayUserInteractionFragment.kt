@@ -1144,7 +1144,7 @@ class PlayUserInteractionFragment @Inject constructor(
     //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")
     private fun doOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
-            analytic.clickProduct(product, ProductSectionUiModel.Section.ConfigUiModel.Empty, position)
+            analytic.clickProduct(product, ProductSectionUiModel.Section.Empty, position)
             openPageByApplink(product.applink, pipMode = true)
         }
     }

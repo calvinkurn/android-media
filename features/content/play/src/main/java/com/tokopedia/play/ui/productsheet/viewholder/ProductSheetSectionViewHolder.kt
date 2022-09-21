@@ -108,20 +108,14 @@ class ProductSheetSectionViewHolder(
             TimerUnifySingle.VARIANT_MAIN
         } else TimerUnifySingle.VARIANT_INFORMATIVE
 
-        val convertedServerTime = config.serverTime.toDate(
-            format = DateUtil.YYYY_MM_DD_T_HH_MM_SS
-        )
-        val convertedTimerTime = (
-                if (config.type == ProductSectionType.Active) {
-                    config.endTime
-                } else config.startTime
-                ).toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS)
+        val targetTime = if (config.type == ProductSectionType.Active) {
+            config.endTime
+        } else config.startTime
+
+        if (targetTime == null || config.serverTime == null) return
 
         val dt = DateUtil.getCurrentCalendar().apply {
-            val diff = convertedTimerTime.time - getTimeDiff(serverTime = convertedServerTime, currentTime = time).time
-            add(Calendar.SECOND, ((diff / 1000) % 60).toInt())
-            add(Calendar.MINUTE, (((diff / 1000) / 60) % 60).toInt())
-            add(Calendar.HOUR, (((diff / 1000) / 60) / 60).toInt())
+            time = Date(targetTime.time + (config.controlTime.time - config.serverTime.time))
         }
 
         binding.sectionTimer.targetDate = dt

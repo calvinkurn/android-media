@@ -7,6 +7,9 @@ import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -15,20 +18,27 @@ import javax.inject.Inject
 @PlayScope
 class PlayProductTagUiMapper @Inject constructor() {
 
-    fun mapSection(input: Section) = ProductSectionUiModel.Section(
+    fun mapSection(
+        input: Section,
+        controlTime: Date,
+    ) = ProductSectionUiModel.Section(
         productList = input.listOfProducts.map {
             mapProduct(it, ProductSectionType.getSectionValue(sectionType = input.sectionType))
         },
-        config = mapConfig(input),
+        config = mapConfig(input, controlTime),
         id = input.id,
     )
 
-    private fun mapConfig(input: Section) = ProductSectionUiModel.Section.ConfigUiModel(
+    private fun mapConfig(
+        input: Section,
+        controlTime: Date,
+    ) = ProductSectionUiModel.Section.ConfigUiModel(
         title = input.sectionTitle,
         type = ProductSectionType.getSectionValue(sectionType = input.sectionType),
-        serverTime = input.serverTime,
-        startTime = input.timerStartTime,
-        endTime = input.timerEndTime,
+        controlTime = controlTime,
+        serverTime = input.serverTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS),
+        startTime = input.timerStartTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS),
+        endTime = input.timerEndTime.toDate(format = DateUtil.YYYY_MM_DD_T_HH_MM_SS),
         timerInfo = input.countdown.countdownInfo,
         background = ProductSectionUiModel.Section.BackgroundUiModel(
             gradients = input.background.gradientList ?: emptyList(),
