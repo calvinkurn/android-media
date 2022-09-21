@@ -71,7 +71,7 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor(
         if (price.lowerPrice != price.upperPrice) {
             val min = price.lowerPrice.getCurrencyFormatted()
             val max = price.upperPrice.getCurrencyFormatted()
-            "$min $max"
+            "$min-$max"
         } else {
             price.price.getCurrencyFormatted()
         }
