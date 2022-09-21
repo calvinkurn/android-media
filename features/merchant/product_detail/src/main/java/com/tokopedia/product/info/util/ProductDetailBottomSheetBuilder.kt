@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 object ProductDetailBottomSheetBuilder {
     private const val PDP_TIME_PUKUL = "pukul"
     private const val SHIPPING_CHOOSE_ADDRESS_TAG = "SHIPPING_CHOOSE_ADDRESS_TAG"
-    private const val DATE_FORMATTER = "dd MMM yyyy, '${PDP_TIME_PUKUL}' HH:mm"
+    private const val DATE_FORMATTER = "dd MMM yyyy, '$PDP_TIME_PUKUL' HH:mm"
 
     fun getShopNotesBottomSheet(
         context: Context,

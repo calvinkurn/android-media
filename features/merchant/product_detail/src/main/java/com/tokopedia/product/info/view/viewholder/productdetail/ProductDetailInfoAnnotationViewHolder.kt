@@ -41,6 +41,8 @@ class ProductDetailInfoAnnotationViewHolder(
     private fun setupProductInfo(productInfo: List<ProductDetailInfoContent>) = with(binding) {
         val inflater = root.context.layoutInflater
 
+        pdpHeaderListContainer.removeAllViews()
+
         productInfo.forEach {
             val child = onInfoCreateView(data = it, layoutInflater = inflater)
             pdpHeaderListContainer.addView(child)

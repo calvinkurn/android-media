@@ -2,8 +2,8 @@
   "pdpGetDetailBottomSheet": {
     "bottomsheetData": [
       {
-        "title": "Detail produk",
-        "componentName": "detail",
+        "title": "header",
+        "componentName": "header",
         "isApplink": false,
         "isShowable": true,
         "value": "",
@@ -11,61 +11,10 @@
         "icon": ""
       },
       {
-        "title": "Fitur",
-        "componentName": "catalog",
-        "isApplink": false,
-        "isShowable": true,
-        "value": "",
-        "applink": "",
-        "icon": "",
-        "row": [
-          {
-            "key": "Sensors",
-            "value": "Fingerprint (under display, ultrasonic), accelerometer, gyro, proximity, compass, barometer"
-          },
-          {
-            "key": "Features",
-            "value": "Samsung Dex, Samsung wureless Dex (desktop experience support), Bixby natural language commands and dictation, Samsung Pay (Visa, MasterCard certified)"
-          }
-        ]
-      },
-      {
-        "title": "Memory",
-        "componentName": "catalog",
-        "isApplink": false,
-        "isShowable": true,
-        "value": "",
-        "applink": "",
-        "icon": "",
-        "row": [
-          {
-            "key": "Memory",
-            "value": "UFS 3.1"
-          },
-          {
-            "key": "Card Slot",
-            "value": "No"
-          },
-          {
-            "key": "Internal",
-            "value": "128GB 8GB RAM, 256GB 8GB RAM"
-          }
-        ]
-      },
-      {
-        "title": "Deskripsi produk aaaa astaga hahaa",
+        "title": "Deskripsi produk",
         "componentName": "deskripsi",
         "isApplink": true,
         "isShowable": true,
-        "value": "",
-        "applink": "",
-        "icon": ""
-      },
-      {
-        "title": "Panduan ukuran",
-        "componentName": "panduan_ukuran",
-        "isApplink": true,
-        "isShowable": false,
         "value": "",
         "applink": "",
         "icon": ""

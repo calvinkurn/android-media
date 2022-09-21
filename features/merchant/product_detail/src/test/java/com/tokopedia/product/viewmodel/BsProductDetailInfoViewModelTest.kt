@@ -11,7 +11,9 @@ import com.tokopedia.product.info.data.response.BottomSheetProductDetailInfoResp
 import com.tokopedia.product.info.data.response.DataShopNotes
 import com.tokopedia.product.info.data.response.PdpGetDetailBottomSheet
 import com.tokopedia.product.info.data.response.ShopNotesData
-import com.tokopedia.product.info.view.models.AnnotationValueDataModel
+import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
+import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
+import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoCardDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoCatalogDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoDiscussionDataModel
@@ -19,8 +21,6 @@ import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableDataMod
 import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableImageDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.product.info.view.models.ProductDetailInfoHeaderDataModel
-import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
-import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
@@ -72,7 +72,8 @@ class BsProductDetailInfoViewModelTest {
 
     private val bottomSheetOrderItem by lazy {
         listOf(
-            BottomSheetItem(componentName = HEADER_DETAIL_KEY),
+            BottomSheetItem(componentName = HEADER_KEY),
+            BottomSheetItem(componentName = DETAIL_KEY),
             BottomSheetItem(componentName = DESCRIPTION_DETAIL_KEY),
             BottomSheetItem(componentName = GUIDELINE_DETAIL_KEY),
             BottomSheetItem(componentName = SHOP_NOTES_DETAIL_KEY),
@@ -111,7 +112,17 @@ class BsProductDetailInfoViewModelTest {
         productImageUrl = "123",
         productInfo = ProductDetailInfoDataModel(
             catalogBottomSheet = ProductDetailInfoSeeMore(bottomSheetTitle = SPECIFICATION_BOTTOM_SHEET_TITLE),
-            bottomSheet = ProductDetailInfoSeeMore()
+            bottomSheet = ProductDetailInfoSeeMore(),
+            dataContent = listOf(
+                ProductDetailInfoContent(
+                    title = DESCRIPTION_DETAIL_KEY,
+                    subtitle = DESCRIPTION_DETAIL_KEY
+                ),
+                ProductDetailInfoContent(
+                    title = "Kondisi",
+                    subtitle = "Baru"
+                ),
+            )
         ),
         isOpenSpecification = true
     )
@@ -135,9 +146,21 @@ class BsProductDetailInfoViewModelTest {
         )
     )
 
-    private val bottomSheetData =
+    private val bottomSheetCatalog =
         ProductDetailTestUtil.createMockGraphqlSuccessResponse<BottomSheetProductDetailInfoResponse>(
-            jsonLocation = RESOURCE_BOTTOM_SHEET_DATA,
+            jsonLocation = RESOURCE_BOTTOM_SHEET_CATALOG,
+            BottomSheetProductDetailInfoResponse::class.java
+        ).response
+
+   private val bottomSheetDescriptionCatalog =
+        ProductDetailTestUtil.createMockGraphqlSuccessResponse<BottomSheetProductDetailInfoResponse>(
+            jsonLocation = RESOURCE_BOTTOM_SHEET_DESC_CATALOG,
+            BottomSheetProductDetailInfoResponse::class.java
+        ).response
+
+     private val bottomSheetDescriptionNonCatalog =
+        ProductDetailTestUtil.createMockGraphqlSuccessResponse<BottomSheetProductDetailInfoResponse>(
+            jsonLocation = RESOURCE_BOTTOM_SHEET_DESC_NON_CATALOG,
             BottomSheetProductDetailInfoResponse::class.java
         ).response
 
@@ -176,7 +199,7 @@ class BsProductDetailInfoViewModelTest {
         // given
         coEvery {
             getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
-        } returns bottomSheetData
+        } returns bottomSheetCatalog
 
         // when
         viewModel.setParams(parcelDataSpecification)
@@ -187,14 +210,9 @@ class BsProductDetailInfoViewModelTest {
 
         Assert.assertTrue(result is Success)
         Assert.assertTrue(data.filterIsInstance<ProductDetailInfoHeaderDataModel>().isNotEmpty())
+        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoAnnotationDataModel>().isNotEmpty())
         Assert.assertTrue(data.filterIsInstance<ProductDetailInfoCatalogDataModel>().isNotEmpty())
         Assert.assertTrue(data.filterIsInstance<ProductDetailInfoDiscussionDataModel>().isNotEmpty())
-
-        Assert.assertFalse(data.filterIsInstance<AnnotationValueDataModel>().isNotEmpty())
-        Assert.assertFalse(data.filterIsInstance<ProductDetailInfoCardDataModel>().isNotEmpty())
-        Assert.assertFalse(data.filterIsInstance<ProductDetailInfoExpandableDataModel>().isNotEmpty())
-        Assert.assertFalse(data.filterIsInstance<ProductDetailInfoExpandableListDataModel>().isNotEmpty())
-        Assert.assertFalse(data.filterIsInstance<ProductDetailInfoExpandableImageDataModel>().isNotEmpty())
     }
 
     @Test
@@ -202,7 +220,7 @@ class BsProductDetailInfoViewModelTest {
         // given
         coEvery {
             getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
-        } returns bottomSheetData
+        } returns bottomSheetDescriptionCatalog
 
         // when
         viewModel.setParams(parcelDataCatalogDescription)
@@ -213,9 +231,9 @@ class BsProductDetailInfoViewModelTest {
         // then
         Assert.assertTrue(result is Success)
         Assert.assertTrue(data.filterIsInstance<ProductDetailInfoHeaderDataModel>().isNotEmpty())
+        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoExpandableDataModel>().isNotEmpty())
         Assert.assertTrue(data.filterIsInstance<ProductDetailInfoExpandableListDataModel>().isNotEmpty())
-
-        Assert.assertFalse(data.filterIsInstance<ProductDetailInfoCatalogDataModel>().isNotEmpty())
+        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoDiscussionDataModel>().isNotEmpty())
     }
 
     @Test
@@ -223,7 +241,7 @@ class BsProductDetailInfoViewModelTest {
         // given
         coEvery {
             getProductDetailBottomSheetUseCase.execute(any(), any(), any(), any(), any(), any(), any())
-        } returns bottomSheetData
+        } returns bottomSheetDescriptionNonCatalog
 
         // when
         viewModel.setParams(parcelDataDescription)
@@ -234,9 +252,10 @@ class BsProductDetailInfoViewModelTest {
 
         Assert.assertTrue(result is Success)
         Assert.assertTrue(data.filterIsInstance<ProductDetailInfoHeaderDataModel>().isNotEmpty())
+        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoAnnotationDataModel>().isNotEmpty())
+        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoExpandableDataModel>().isNotEmpty())
         Assert.assertTrue(data.filterIsInstance<ProductDetailInfoExpandableListDataModel>().isNotEmpty())
-
-        Assert.assertFalse(data.filterIsInstance<ProductDetailInfoCatalogDataModel>().isNotEmpty())
+        Assert.assertTrue(data.filterIsInstance<ProductDetailInfoDiscussionDataModel>().isNotEmpty())
     }
 
     @Test
@@ -270,11 +289,11 @@ class BsProductDetailInfoViewModelTest {
         )
         Assert.assertTrue(
             (viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>()
-                .first().img.isNotEmpty()
+                .first().image.isNotEmpty()
         )
         Assert.assertTrue(
             (viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>()
-                .first().listOfInfo.isNotEmpty()
+                .first().title.isNotEmpty()
         )
         //endregion
 
@@ -342,11 +361,11 @@ class BsProductDetailInfoViewModelTest {
         )
         Assert.assertTrue(
             (viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>()
-                .first().img.isNotEmpty()
+                .first().image.isNotEmpty()
         )
         Assert.assertTrue(
             (viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>()
-                .first().listOfInfo.isNotEmpty()
+                .first().title.isNotEmpty()
         )
         //endregion
 
@@ -408,7 +427,8 @@ class BsProductDetailInfoViewModelTest {
     }
 
     companion object {
-        const val HEADER_DETAIL_KEY = "detail"
+        const val DETAIL_KEY = "detail"
+        const val HEADER_KEY = "header"
         const val DESCRIPTION_DETAIL_KEY = "deskripsi"
         const val GUIDELINE_DETAIL_KEY = "panduan_ukuran"
         const val SHOP_NOTES_DETAIL_KEY = "informasi_penting"
@@ -416,6 +436,8 @@ class BsProductDetailInfoViewModelTest {
 
         const val SPECIFICATION_BOTTOM_SHEET_TITLE = "Spesifikasi produk"
         const val DESCRIPTION_BOTTOM_SHEET_TITLE = "Detail produk"
-        const val RESOURCE_BOTTOM_SHEET_DATA = "json/gql_get_product_info_bottom_sheet_data.json"
+        const val RESOURCE_BOTTOM_SHEET_CATALOG = "json/gql_get_product_info_bottom_sheet_catalog.json"
+        const val RESOURCE_BOTTOM_SHEET_DESC_CATALOG = "json/gql_get_product_info_bottom_sheet_description_catalog.json"
+        const val RESOURCE_BOTTOM_SHEET_DESC_NON_CATALOG = "json/gql_get_product_info_bottom_sheet_descripton_non_catalog.json"
     }
 }
