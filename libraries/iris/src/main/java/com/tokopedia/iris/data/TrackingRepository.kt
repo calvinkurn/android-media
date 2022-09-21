@@ -58,7 +58,7 @@ class TrackingRepository(
                     Calendar.getInstance().timeInMillis, GlobalConfig.VERSION_NAME)
                 trackingDao.insert(tracking)
                 IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
-                setEmbraceLog("getCount","total count")
+                setEmbraceLog("getCount", "total count")
                 val dbCount = trackingDao.getCount()
                 if (dbCount >= getLineDBFlush()) {
                     ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "dbCountFlush", "no" to dbCount.toString()))
