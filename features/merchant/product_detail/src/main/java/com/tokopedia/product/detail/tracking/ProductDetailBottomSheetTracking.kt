@@ -4,6 +4,10 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant.Category
 import com.tokopedia.product.detail.common.ProductTrackingConstant.TrackerId
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.tracking.TrackingConstant.Hit
+import com.tokopedia.product.detail.tracking.TrackingConstant.Item.CREATIVE_NAME
+import com.tokopedia.product.detail.tracking.TrackingConstant.Item.CREATIVE_SLOT
+import com.tokopedia.product.detail.tracking.TrackingConstant.Item.ITEM_ID
+import com.tokopedia.product.detail.tracking.TrackingConstant.Item.ITEM_NAME
 import com.tokopedia.product.detail.tracking.TrackingConstant.Value
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -42,10 +46,10 @@ object ProductDetailBottomSheetTracking {
                 Hit.PROMO_VIEW to hashMapOf(
                     Hit.PROMOTIONS to arrayListOf(
                         hashMapOf(
-                            TrackingConstant.Item.CREATIVE_NAME to infoValue,
-                            TrackingConstant.Item.CREATIVE_SLOT to position,
-                            TrackingConstant.Item.ITEM_ID to "product detail bottomsheet - $productId",
-                            TrackingConstant.Item.ITEM_NAME to infoTitle
+                            CREATIVE_NAME to infoValue,
+                            CREATIVE_SLOT to position,
+                            ITEM_ID to "product detail bottomsheet - $productId",
+                            ITEM_NAME to infoTitle
                         )
                     )
                 )
@@ -84,10 +88,10 @@ object ProductDetailBottomSheetTracking {
                 Hit.PROMO_VIEW to hashMapOf(
                     Hit.PROMOTIONS to arrayListOf(
                         hashMapOf(
-                            TrackingConstant.Item.CREATIVE_NAME to value,
-                            TrackingConstant.Item.CREATIVE_SLOT to position,
-                            TrackingConstant.Item.ITEM_ID to productId,
-                            TrackingConstant.Item.ITEM_NAME to key
+                            CREATIVE_NAME to value,
+                            CREATIVE_SLOT to position,
+                            ITEM_ID to productId,
+                            ITEM_NAME to key
                         )
                     )
                 )
@@ -122,10 +126,10 @@ object ProductDetailBottomSheetTracking {
                 Hit.PROMO_VIEW to hashMapOf(
                     Hit.PROMOTIONS to arrayListOf(
                         hashMapOf(
-                            TrackingConstant.Item.CREATIVE_NAME to infoValue,
-                            TrackingConstant.Item.CREATIVE_SLOT to position,
-                            TrackingConstant.Item.ITEM_ID to "product detail bottomsheet - $productId",
-                            TrackingConstant.Item.ITEM_NAME to infoTitle
+                            CREATIVE_NAME to infoValue,
+                            CREATIVE_SLOT to position,
+                            ITEM_ID to "product detail bottomsheet - $productId",
+                            ITEM_NAME to infoTitle
                         )
                     )
                 )
