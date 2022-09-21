@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">tokochat_common</string>
+
+    <string name="tokochat_is_typing">"lagi ngetik"</string>
+    <string name="tokochat_content_desc_user_avatar">user_avatar</string>
+    <string name="tokochat_content_desc_header_menu">header_menu</string>
+    <string name="tokochat_content_desc_badge">badge</string>
 </resources>
