@@ -82,9 +82,18 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
         return phoneError == NOTHING_RESOURCE
     }
 
-    fun submitForm(phone: String) {
+    fun submitForm(phone: String, email: String, isRequiredInputPhone: Boolean) {
         if (isPhoneNumberValid()) {
-            registerCheck(phone)
+            if (isRequiredInputPhone) {
+                registerCheck(phone)
+            } else {
+                userProfileValidate(
+                    UserProfileValidateParam(
+                        email = email,
+                        phone = phone
+                    )
+                )
+            }
         } else {
             validatePhone(phone)
         }
@@ -142,13 +151,10 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
         })
     }
 
-    fun userProfileValidate(email: String, phone: String) {
+    private fun userProfileValidate(userProfileValidateParam: UserProfileValidateParam) {
         launchCatchError(coroutineContext, {
-            val param = UserProfileValidateParam(
-                email = email,
-                phone = phone
-            )
-            val response = getUserProfileValidateUseCase(param)
+
+            val response = getUserProfileValidateUseCase(userProfileValidateParam)
 
             _userProfileValidate.value = Success(response)
         }, {
@@ -157,15 +163,10 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     }
 
     //token must get from OTP type 11
-    fun userProfileUpdate(phone: String, token: String) {
+    fun userProfileUpdate(userProfileUpdateParam: UserProfileUpdateParam) {
         launchCatchError(coroutineContext, {
 
-            val param = UserProfileUpdateParam(
-                phone = phone,
-                currentValidateToken = token
-            )
-
-            val response = getUserProfileUpdateUseCase(param)
+            val response = getUserProfileUpdateUseCase(userProfileUpdateParam)
 
             _userPhoneUpdate.value = Success(response)
         }, {

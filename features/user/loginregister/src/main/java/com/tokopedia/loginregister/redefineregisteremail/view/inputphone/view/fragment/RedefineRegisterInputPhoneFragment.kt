@@ -36,6 +36,7 @@ import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.G
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.local.RegisterPreferences
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.model.RedefineParamUiModel
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateParam
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RedefineRegisterInputPhoneViewModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RegistrationPhoneState
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
@@ -338,7 +339,12 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     private fun submitUpdatePhone() {
         onEntireScreenLoading()
-        viewModel.userProfileUpdate(binding?.fieldInputPhone?.editText?.text.toString(), parameter.token)
+        viewModel.userProfileUpdate(
+            UserProfileUpdateParam(
+                binding?.fieldInputPhone?.editText?.text.toString(),
+                parameter.token
+            )
+        )
     }
 
     private fun showGlobalError(errorType: Int) {
