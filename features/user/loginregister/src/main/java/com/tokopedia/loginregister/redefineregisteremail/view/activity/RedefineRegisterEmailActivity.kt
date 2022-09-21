@@ -38,7 +38,7 @@ class RedefineRegisterEmailActivity : BaseSimpleActivity(), HasComponent<Redefin
                     return
                 }
             }
-        } catch (e: Exception) {}
+        } catch (_: Exception) {}
 
         super.onBackPressed()
     }
