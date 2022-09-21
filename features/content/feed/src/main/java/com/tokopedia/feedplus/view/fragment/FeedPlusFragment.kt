@@ -65,7 +65,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
@@ -138,7 +137,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * @author by nisie on 5/15/17.
@@ -223,9 +222,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
 
     private lateinit var productTagBS: ProductItemInfoBottomSheet
-    private val userIdInt: Int
+    private val userIdLong: Long
         get() {
-            return userSession.userId.toIntOrZero()
+            return userSession.userId.toLongOrZero()
         }
 
     companion object {
@@ -888,7 +887,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
         )
         analytics.eventTrackingEnhancedEcommerce(
-            FeedEnhancedTracking.getClickTracking(listTopAds, userIdInt)
+            FeedEnhancedTracking.getClickTracking(listTopAds, userIdLong)
         )
     }
 
@@ -916,7 +915,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
 
         analytics.eventTrackingEnhancedEcommerce(
-            FeedEnhancedTracking.getClickTracking(listTopAds, userIdInt)
+            FeedEnhancedTracking.getClickTracking(listTopAds, userIdLong)
         )
     }
 
@@ -1208,7 +1207,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onLikeKolClicked(
-        rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+        rowNumber: Int, id: Long, hasMultipleContent: Boolean,
         activityType: String
     ) {
         if (userSession.isLoggedIn) {
@@ -1219,7 +1218,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onUnlikeKolClicked(
-        rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+        rowNumber: Int, id: Long, hasMultipleContent: Boolean,
         activityType: String
     ) {
         if (userSession.isLoggedIn) {
@@ -1257,7 +1256,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         startActivityForResult(intent, OPEN_KOL_COMMENT)
     }
 
-    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Long, isLiked: Boolean) {
         onLikeClick(positionInFeed, id, isLiked)
     }
 
@@ -1407,7 +1406,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         if (type == FollowCta.AUTHOR_USER) {
             val userIdInt = id.toIntOrZero()
-
             if (isFollow) {
                 feedViewModel.doUnfollowKolFromRecommendation(
                     userIdInt,
@@ -1438,7 +1436,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         adId,
                         authorId,
                         cardPosition,
-                        userIdInt
+                        userIdLong
                     )
                     break
                 }
@@ -1703,7 +1701,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onLikeClick(
         positionInFeed: Int,
-        id: Int,
+        id: Long,
         isLiked: Boolean,
         postType: String,
         isFollowed: Boolean,
@@ -2203,7 +2201,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     option1,
                     imageUrl,
                     trackingPostModel.postId,
-                    userIdInt
+                    userIdLong
                 )
             }
         }
@@ -3014,8 +3012,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun trackFeedImpression(listFeed: List<Visitable<*>>) {
         for (i in listFeed.indices) {
             val visitable = listFeed[i]
-            val feedPosition = adapter.getlist().size + i
-            val userId = userIdInt
 
             if (visitable is DynamicPostUiModel) {
                 val trackingPostModel = visitable.trackingPostModel
@@ -3033,7 +3029,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 val (_, _, _, trackingList, _) = visitable
                 analytics.eventTopadsRecommendationImpression(
                     trackingList,
-                    userId
+                    userIdLong
                 )
             }
         }
@@ -3049,7 +3045,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             trackingPostModel.authorId,
             trackingPostModel.totalContent,
             trackingPostModel.postId,
-            userIdInt,
+            userIdLong,
             positionInFeed,
             trackingPostModel.recomId
         )
@@ -3062,24 +3058,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         analytics.eventFollowRecommendation(
             action,
             trackingRecommendationModel.authorType,
-            trackingRecommendationModel.authorId.toString()
-        )
-    }
-
-    private fun trackBannerClick(
-        adapterPosition: Int,
-        trackingBannerModel: TrackingBannerModel
-    ) {
-        analytics.eventBannerClick(
-            trackingBannerModel.templateType,
-            trackingBannerModel.activityName,
-            trackingBannerModel.mediaType,
-            trackingBannerModel.bannerUrl,
-            trackingBannerModel.applink,
-            trackingBannerModel.totalBanner,
-            trackingBannerModel.postId,
-            adapterPosition,
-            userIdInt
+            trackingRecommendationModel.authorId
         )
     }
 
@@ -3092,7 +3071,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
         analytics.eventTopadsRecommendationImpression(
             listOf(TrackingRecommendationModel(authorId = bannerId)),
-            userIdInt
+            userIdLong
         )
         feedViewModel.doTopAdsTracker(imageUrl, "", "", "", false)
     }

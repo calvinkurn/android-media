@@ -1,7 +1,5 @@
 package com.tokopedia.feedplus.view.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +18,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
+import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -32,7 +31,6 @@ import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_dynamic_feed.*
 import javax.inject.Inject
-import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 
 /**
  * @author by yoasfs on 2019-08-06
@@ -216,7 +214,7 @@ class DynamicFeedFragment:
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Long, isLiked: Boolean) {
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, positionInFeed, columnNumber)
         } else {

@@ -228,7 +228,7 @@ class FeedShopPresenter @Inject constructor(
         })
     }
 
-    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
+    override fun likeKol(id: Long, rowNumber: Int, likeListener: KolPostLikeListener) {
         if (isViewAttached) {
             likeKolPostUseCase.execute(
                     LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
@@ -241,7 +241,7 @@ class FeedShopPresenter @Inject constructor(
         }
     }
 
-    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
+    override fun unlikeKol(id: Long, rowNumber: Int, likeListener: KolPostLikeListener) {
         if (isViewAttached) {
             likeKolPostUseCase.execute(
                     LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),

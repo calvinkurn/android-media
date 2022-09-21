@@ -275,7 +275,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             override fun onLiked(viewHolder: CarouselImageViewHolder) {
                 listener?.onLikeClick(
                     positionInFeed,
-                    mData.id.toIntOrZero(),
+                    mData.id.toLongOrZero(),
                     mData.like.isLiked,
                     mData.typename,
                     mData.followers.isFollowed,
@@ -769,7 +769,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             changeCTABtnColorAsPerWidget(feedXCard)
             listener?.onLikeClick(
                     positionInFeed,
-                    feedXCard.id.toIntOrZero(),
+                    feedXCard.id.toLongOrZero(),
                     feedXCard.like.isLiked,
                     feedXCard.typename,
                     feedXCard.followers.isFollowed,
@@ -784,7 +784,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun bindLikeData(feedXCard: FeedXCard) {
         val like: FeedXLike = feedXCard.like
-        val id: Int = feedXCard.id.toIntOrZero()
+        val id = feedXCard.id.toLongOrZero()
         val mediaType: String = feedXCard.media.firstOrNull()?.type?:""
 
         if (like.isLiked) {

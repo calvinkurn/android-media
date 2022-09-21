@@ -423,7 +423,7 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.likeIcon.setOnClickListener {
                     listener.onLikeClick(
                         adapterPosition,
-                        feedXCard.id.toIntOrZero(),
+                        feedXCard.id.toLongOrZero(),
                         feedXCard.like.isLiked,
                         "",
                         false,
@@ -433,7 +433,7 @@ open class DynamicPostUIViewHolder(v: View,
                 itemView.likeText.setOnClickListener {
                     listener.onLikeClick(
                         adapterPosition,
-                        feedXCard.id.toIntOrZero(),
+                        feedXCard.id.toLongOrZero(),
                         feedXCard.like.isLiked,
                         "",
                         isFollowed = false, type = false, "", ""

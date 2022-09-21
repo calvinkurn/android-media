@@ -22,9 +22,9 @@ class LikeKolPostUseCase @Inject constructor(
 
         private const val LIKE_SUCCESS = 1
 
-        fun getParam(postId: Int, action: LikeKolPostAction): RequestParams {
+        fun getParam(postId: Long, action: LikeKolPostAction): RequestParams {
             return RequestParams.create().apply {
-                putInt(PARAM_ID_POST, postId)
+                putLong(PARAM_ID_POST, postId)
                 putInt(PARAM_ACTION, action.actionValue)
             }
         }

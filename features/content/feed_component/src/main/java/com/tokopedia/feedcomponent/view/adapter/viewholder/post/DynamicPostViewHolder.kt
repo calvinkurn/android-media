@@ -379,7 +379,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.likeIcon.setOnClickListener {
                     listener.onLikeClick(
                             adapterPosition,
-                            id.toIntOrZero(),
+                            id.toLongOrZero(),
                             footer.like.isChecked,
                             "",
                             false,
@@ -389,7 +389,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.likeText.setOnClickListener {
                     listener.onLikeClick(
                             adapterPosition,
-                            id.toIntOrZero(),
+                            id.toLongOrZero(),
                             footer.like.isChecked,
                             "",
                             isFollowed = false, type = false, "", ""
@@ -634,7 +634,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onLikeClick(
             positionInFeed: Int,
-            id: Int,
+            id: Long,
             isLiked: Boolean,
             postType: String = "",
             isFollowed: Boolean = false,

@@ -252,7 +252,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doLikeKol(id: Int, rowNumber: Int) {
+    fun doLikeKol(id: Long, rowNumber: Int) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 likeKol(id, rowNumber)
@@ -263,7 +263,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doUnlikeKol(id: Int, rowNumber: Int) {
+    fun doUnlikeKol(id: Long, rowNumber: Int) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 unlikeKol(id, rowNumber)
@@ -518,7 +518,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun likeKol(id: Int, rowNumber: Int): LikeKolViewModel {
+    private fun likeKol(id: Long, rowNumber: Int): LikeKolViewModel {
         try {
             val data = LikeKolViewModel()
             data.id = id
@@ -532,7 +532,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun unlikeKol(id: Int, rowNumber: Int): LikeKolViewModel {
+    private fun unlikeKol(id: Long, rowNumber: Int): LikeKolViewModel {
         try {
             val data = LikeKolViewModel()
             data.id = id

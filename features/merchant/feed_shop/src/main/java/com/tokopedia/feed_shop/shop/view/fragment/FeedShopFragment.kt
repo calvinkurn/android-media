@@ -43,7 +43,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -550,7 +549,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
     }
 
-    override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
+    override fun onLikeKolClicked(rowNumber: Int, id: Long, hasMultipleContent: Boolean, activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
         } else {
@@ -558,7 +557,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
+    override fun onUnlikeKolClicked(rowNumber: Int, id: Long, hasMultipleContent: Boolean, activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.unlikeKol(id, rowNumber, this)
         } else {
@@ -566,7 +565,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Long, isLiked: Boolean) {
     }
 
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: String) {
@@ -681,7 +680,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, mediaType: String?, playChannelId: String) {
+    override fun onLikeClick(positionInFeed: Int, id: Long, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, mediaType: String?, playChannelId: String) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {

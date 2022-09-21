@@ -16,7 +16,7 @@ import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCa
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailWishlistedUseCase
 import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -101,7 +101,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
 
     @SuppressLint("Method Call Prohibited")
     fun doLikePost(isLikeAction: Boolean, onFail: (Throwable) -> Unit) {
-        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(postId.toIntOrZero(),
+        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(postId.toLongOrZero(),
                 if (isLikeAction) LikeKolPostUseCase.LikeKolPostAction.Like else LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {

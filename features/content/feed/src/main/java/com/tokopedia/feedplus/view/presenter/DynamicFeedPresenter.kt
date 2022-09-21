@@ -91,7 +91,7 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
         )
     }
 
-    override fun likeKol(id: Int, rowNumber: Int, columnNumber: Int) {
+    override fun likeKol(id: Long, rowNumber: Int, columnNumber: Int) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
                 object : Subscriber<Boolean>() {
@@ -108,7 +108,7 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
         )
     }
 
-    override fun unlikeKol(id: Int, rowNumber: Int, columnNumber: Int) {
+    override fun unlikeKol(id: Long, rowNumber: Int, columnNumber: Int) {
         likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {

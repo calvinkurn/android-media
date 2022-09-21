@@ -14,7 +14,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewMod
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import kotlinx.android.synthetic.main.item_highlight_card.view.*
 
 /**
@@ -53,10 +53,10 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
 
         private fun initViewListener(item: HighlightCardViewModel, positionInAdapter: Int) {
             itemView.likeIcon.setOnClickListener{
-                highlightListener.onLikeClick(item.positionInFeed, positionInAdapter, item.postId.toIntOrZero(), item.footer.like.isChecked)
+                highlightListener.onLikeClick(item.positionInFeed, positionInAdapter, item.postId.toLongOrZero(), item.footer.like.isChecked)
             }
             itemView.likeText.setOnClickListener{
-                highlightListener.onLikeClick(positionInAdapter, positionInAdapter, item.postId.toIntOrZero(), item.footer.like.isChecked)
+                highlightListener.onLikeClick(positionInAdapter, positionInAdapter, item.postId.toLongOrZero(), item.footer.like.isChecked)
             }
             itemView.commentIcon.setOnClickListener{
                 highlightListener.onCommentClick(item.positionInFeed, positionInAdapter, item.postId)
@@ -165,7 +165,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
             isCaption: Boolean
         )
 
-        fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean)
+        fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Long, isLiked: Boolean)
 
         fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: String)
 
