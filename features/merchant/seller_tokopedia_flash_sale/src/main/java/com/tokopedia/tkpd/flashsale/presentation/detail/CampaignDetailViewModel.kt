@@ -9,16 +9,10 @@ import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
-import com.tokopedia.tkpd.flashsale.domain.entity.ProductDeleteResult
-import com.tokopedia.tkpd.flashsale.domain.entity.ProductReserveResult
-import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProduct
+import com.tokopedia.tkpd.flashsale.domain.entity.*
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
-import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductDeleteUseCase
-import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseCase
-import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleDetailForSellerUseCase
-import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSubmittedProductListUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.*
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingRejectedItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
@@ -41,6 +35,7 @@ class CampaignDetailViewModel @Inject constructor(
     private val getFlashSaleSubmittedProductListUseCase: GetFlashSaleSubmittedProductListUseCase,
     private val doFlashSaleProductReserveUseCase: DoFlashSaleProductReserveUseCase,
     private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
+    private val doFlashSaleSellerRegistrationUseCase: DoFlashSaleSellerRegistrationUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
@@ -64,6 +59,10 @@ class CampaignDetailViewModel @Inject constructor(
     val productDeleteResult: LiveData<ProductDeleteResult>
         get() = _productDeleteResult
 
+    private var _flashSaleRegistrationResult = MutableLiveData<FlashSaleRegistrationResult>()
+    val flashSaleRegistrationResult: LiveData<FlashSaleRegistrationResult>
+        get() = _flashSaleRegistrationResult
+
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable>
         get() = _error
@@ -74,11 +73,23 @@ class CampaignDetailViewModel @Inject constructor(
     private var isTriggeredFromDelete = false
 
     companion object {
-        private const val PAGE_SIZE = 3
+        private const val PAGE_SIZE = 10
         private const val REGISTER_PERIOD_TITLE = "Periode Pendaftaran"
         private const val ADD_PRODUCT_TITLE = "Tambah Produk"
         private const val SELECTION_PROCESS_TITLE = "Proses Seleksi"
         private const val ACTIVE_PROMOTION_TITLE = "Promosi Aktif"
+    }
+
+    fun register(campaignId: Long) {
+        launchCatchError(
+            block = {
+                val result = doFlashSaleSellerRegistrationUseCase.execute(campaignId)
+                _flashSaleRegistrationResult.postValue(result)
+            },
+            onError = { error ->
+                _error.postValue(error)
+            }
+        )
     }
 
     fun getCampaignDetail(campaignId: Long) {

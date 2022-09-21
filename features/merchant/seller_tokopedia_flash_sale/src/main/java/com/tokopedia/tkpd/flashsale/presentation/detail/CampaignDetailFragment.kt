@@ -58,7 +58,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         private const val REGISTERED_TAB = "registered"
         private const val ONGOING_TAB = "ongoing"
         private const val FINISHED_TAB = "finished"
-        private const val PAGE_SIZE = 3
+        private const val PAGE_SIZE = 10
         private const val DELAY = 1000L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
@@ -161,11 +161,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupChooseProductRedirection()
         observeCampaignDetail()
         observeProductReserveResult()
         observeDeletedProductResult()
+        observeCampaignRegistrationResult()
         loadCampaignDetailData()
-        setupChooseProductRedirection()
     }
 
     private fun observeCampaignDetail() {
@@ -242,6 +243,19 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     showErrorToaster(result.errorMessage)
                 }
                 loadSubmittedProductListData(Int.ZERO)
+            }
+        }
+    }
+
+    private fun observeCampaignRegistrationResult() {
+        viewModel.flashSaleRegistrationResult.observe(viewLifecycleOwner) { result ->
+            doOnDelayFinished(DELAY) {
+                binding?.btnRegister?.isLoading = false
+                if (result.isSuccess) {
+                    navigateToChooseProductPage()
+                } else {
+                    showErrorToaster(result.errorMessage)
+                }
             }
         }
     }
@@ -482,7 +496,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupUpcomingButton() {
         binding?.run {
-            btnRegister.text = getString(R.string.label_register)
+            btnRegister.apply {
+                text = getString(R.string.label_register)
+                setOnClickListener {
+                    registerToCampaign()
+                }
+            }
             imageProductEligible.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
         }
     }
@@ -580,11 +599,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupChooseProductRedirection() {
         binding?.btnRegister?.setOnClickListener {
-            ChooseProductActivity.start(context ?: return@setOnClickListener, flashSaleId)
+            navigateToChooseProductPage()
         }
         upcomingCdpMidBinding?.btnCheckReason?.setOnClickListener {
-            ChooseProductActivity.start(context ?: return@setOnClickListener, flashSaleId)
+            navigateToChooseProductPage()
         }
+    }
+
+    private fun navigateToChooseProductPage() {
+        ChooseProductActivity.start(context ?: return, flashSaleId)
     }
 
     private fun setWaitingForSelectionMidSection(flashSale: FlashSale) {
@@ -1101,6 +1124,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     /**
      * Reusable Method
      */
+
+    private fun registerToCampaign() {
+        binding?.btnRegister?.isLoading = true
+        viewModel.register(flashSaleId)
+    }
+
     private fun loadCampaignDetailData() {
         showLoading()
         viewModel.getCampaignDetail(flashSaleId)
@@ -1270,10 +1299,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun hideLoading() {
-        binding?.run {
-            loader.gone()
-            llContent.show()
-            globalError.gone()
+        doOnDelayFinished(DELAY) {
+            binding?.run {
+                loader.gone()
+                llContent.show()
+                globalError.gone()
+            }
         }
     }
 
