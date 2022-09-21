@@ -480,11 +480,6 @@
           "deeplink_variable": "ApplinkConstInternalTokopediaNow.HOME"
      }, 
      {
-          "destination_activity": "com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity",
-          "deeplink": "tokopedia-android-internal://digital/favoritenumber", 
-          "deeplink_variable": "ApplinkConsInternalDigital.FAVORITE_NUMBER"
-     },
-     {
           "destination_activity": "com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity", 
           "deeplink": "tokopedia-android-internal://now/category-list", 
           "deeplink_variable": ""
@@ -543,7 +538,12 @@
           "destination_activity": "com.tokopedia.recharge_credit_card.RechargeCCActivity", 
           "deeplink": "tokopedia-android-internal://recharge/cc", 
           "deeplink_variable": "ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE"
-     },
+     }, 
+     {
+          "destination_activity": "com.tokopedia.digital.home.old.presentation.activity.DigitalHomePageActivity", 
+          "deeplink": "tokopedia-android-internal://recharge/home", 
+          "deeplink_variable": "ApplinkConsInternalDigital.SUBHOMEPAGE"
+     }, 
      {
           "destination_activity": "com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity", 
           "deeplink": "tokopedia-android-internal://recharge/home/dynamic", 
@@ -2433,10 +2433,5 @@
           "destination_activity": "com.tokopedia.tkpd.home.TkpdYoutubeVideoActivity", 
           "deeplink": "tokopedia-android-internal://global/youtube-video", 
           "deeplink_variable": "ApplinkConstInternalGlobal.YOUTUBE_VIDEO"
-     },
-     {
-          "destination_activity": "com.tokopedia.autocompletecomponent.universal.UniversalSearchActivity",
-          "deeplink": "tokopedia-android-internal://discovery/universal",
-          "deeplink_variable": "ApplinkConstInternalDiscovery.UNIVERSAL"
      }
 ]
