@@ -40,6 +40,7 @@
         tools:visibility="visible"/>
 
     <LinearLayout
+        android:background="@color/Unify_NN0"
         android:id="@+id/uc_tool_container"
         app:layout_constraintBottom_toTopOf="@id/action_btn_container"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -96,6 +97,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:background="@color/Unify_NN0"
         android:id="@+id/action_btn_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
