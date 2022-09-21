@@ -12,5 +12,7 @@
     <color name="gamification_dms_purple_dark">#693FC0</color>
     <color name="gamification_dms_purple_light">#956BDE</color>
     <color name="gamification_dms_glowing_green">#B3AAFE56</color>
+    <color name="gamification_dms_blue_start">#006683</color>
+    <color name="gamification_dms_blue_end">#1A8BAB</color>
 
 </resources>

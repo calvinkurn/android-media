@@ -39,7 +39,7 @@
                 android:layout_marginBottom="12dp"
                 android:gravity="center"
                 android:text="@string/gami_hadiah_yang_didapatkan"
-                android:textColor="@color/light_G600"
+                android:textColor="@color/Unify_G600"
                 app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 
