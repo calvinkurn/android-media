@@ -54,8 +54,8 @@ class ProductMediaViewHolder(private val view: View,
         else -> {}
     }
 
-    private fun setupViewpager(element: ProductMediaDataModel, resetPosition: Boolean = false){
-        val scrollPosition = if(resetPosition) 0 else element.getScrollPosition()
+    private fun setupViewpager(element: ProductMediaDataModel, resetPosition: Boolean = false) {
+        val scrollPosition = if (resetPosition) 0 else element.getScrollPosition()
 
         binding.viewMediaPager.setup(
             media = element.listOfMedia,
