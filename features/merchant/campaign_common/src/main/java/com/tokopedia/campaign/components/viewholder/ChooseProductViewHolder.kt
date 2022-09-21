@@ -60,6 +60,7 @@ class ChooseProductViewHolder(
             root.isEnabled = enabled
             root.setViewGroupEnabled(enabled)
             tvCheckDetail.enable() // this text/cta will always enabled
+            tvDisabledReason.enable() // this must enabled to be highlighted in red
         }
     }
 }
