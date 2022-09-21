@@ -39,27 +39,27 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
         android:ellipsize="end"
         android:maxLines="1"
+        app:layout_constraintBottom_toTopOf="@id/tv_min_transaction"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_shipping"
+        app:layout_constraintVertical_bias="1.0"
         app:layout_goneMarginTop="@dimen/spacing_lvl4"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        app:layout_constraintBottom_toTopOf="@id/tv_min_transaction"
         tools:text="Gratis Ongkir hingga Rp500.000" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_expired_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         app:layout_goneMarginBottom="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="@+id/tv_min_transaction"
         app:layout_constraintStart_toStartOf="@+id/tv_min_transaction"
@@ -73,16 +73,16 @@
         android:id="@+id/tv_min_transaction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:ellipsize="end"
         android:maxLines="1"
+        app:layout_constraintBottom_toTopOf="@id/tv_expired_date"
         app:layout_constraintEnd_toEndOf="@+id/tv_coupon_title"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tv_coupon_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_coupon_title"
         app:layout_goneMarginBottom="@dimen/spacing_lvl4"
         app:typographyType="body_3"
-        app:layout_constraintBottom_toTopOf="@id/tv_expired_date"
         tools:text="Transaksi min. Rp1.000.000"
         tools:visibility="visible" />
 
@@ -97,6 +97,6 @@
         app:layout_constraintEnd_toEndOf="@+id/tv_expired_date"
         app:layout_constraintStart_toStartOf="@+id/tv_expired_date"
         app:layout_constraintTop_toBottomOf="@+id/tv_expired_date"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

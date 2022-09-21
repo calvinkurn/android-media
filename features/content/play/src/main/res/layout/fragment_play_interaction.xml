@@ -368,7 +368,7 @@
         android:layout_width="wrap_content"
         android:layout_height="110dp"
         android:maxHeight="110dp"
-        android:layout_marginEnd="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_4"
         app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintTop_toTopOf="@id/view_stats_info"
         android:visibility="visible"

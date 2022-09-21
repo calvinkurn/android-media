@@ -90,7 +90,7 @@
     <!--Coupon Sheet-->
     <string name="play_product_voucher_header_desc">Masih ada %1$s Kupon Toko lainnya!</string>
     <string name="play_product_voucher_header_empty_desc">Ayo pakai promonya biar makin hemat!</string>
-    <string name="play_title_coupon">Daftar kupon toko</string>
+    <string name="play_title_coupon">Daftar kupon</string>
     <string name="play_voucher_sheet_coupon_expired">Berakhir dalam %1$s hari</string>
     <string name="play_voucher_widget_single">Cek kuponnya!</string>
     <string name="play_voucher_widget_low_quantity">Sisa %1$s kupon%2$s</string>

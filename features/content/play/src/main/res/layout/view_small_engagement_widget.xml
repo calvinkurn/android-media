@@ -24,7 +24,6 @@
         android:id="@+id/play_engagement_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/unify_space_4"
         android:rotation="90"
         app:indicator_color="INVERTED"
         app:indicator_type="CIRCLE"
