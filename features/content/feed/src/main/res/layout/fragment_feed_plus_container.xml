@@ -66,38 +66,52 @@
             android:layout_marginTop="-5dp"
             android:layout_height="25dp"/>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+            android:layout_height="wrap_content">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_feed_user"
-                android:layout_width="@dimen/layout_lvl3"
-                android:layout_height="@dimen/layout_lvl3"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tab_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:unify_image_type="circle" />
 
             <com.tokopedia.unifycomponents.TabsUnify
                 android:id="@+id/tab_layout"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
                 android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_feed_user"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_scrollFlags="enterAlways"
-                app:tabMode="fixed"
                 app:tabGravity="fill"
-                app:tabIndicatorHeight="1dp"
-                app:tabSelectedTextColor="@color/Unify_GN500"
-                app:tabTextColor="@color/Unify_N700_32"
-                app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
                 app:tabIndicatorColor="@color/Unify_GN500"
-                android:theme="@style/ThemeOverlay.AppCompat.Light"/>
+                app:tabIndicatorHeight="1dp"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/Unify_GN500"
+                app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
+                app:tabTextColor="@color/Unify_N700_32" />
 
-        </LinearLayout>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/Unify_NN300"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tab_layout"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
             android:id="@+id/postUpdateView"
