@@ -124,7 +124,6 @@ class ProductPostTagViewHolderNew(
 
         addToWishlistBtn.showWithCondition(item.isUpcoming || item.isOngoing)
         addToCartBtn.showWithCondition(item.isUpcoming || item.isOngoing)
-        addToCartBtn.isEnabled = item.product.cartable
         val isUpcomingAndRilisanSpecial = item.isUpcoming && item.isRilisanSpl
         addToCartBtn.isEnabled = item.product.cartable && !isUpcomingAndRilisanSpecial
 

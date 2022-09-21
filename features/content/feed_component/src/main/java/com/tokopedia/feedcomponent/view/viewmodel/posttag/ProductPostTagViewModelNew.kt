@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.view.viewmodel.posttag
 
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactory
 
