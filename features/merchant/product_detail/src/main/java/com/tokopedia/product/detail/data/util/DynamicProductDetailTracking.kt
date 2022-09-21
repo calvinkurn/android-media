@@ -613,6 +613,7 @@ object DynamicProductDetailTracking {
 
         fun eventProductImageOnSwipe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel, trackingQueue: TrackingQueue?, type: String, imageUrl: String, position: Int) {
             val productId = productInfo?.basic?.productID ?: ""
+            val containerType = productInfo?.data?.containerType.orEmpty()
             val mapEvent = DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.MerchantVoucher.PROMO_VIEW,
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
@@ -626,7 +627,7 @@ object DynamicProductDetailTracking {
                     DataLayer.mapOf(
                             "id", imageUrl,
                             "name", "product detail page - $productId - pdp",
-                            "creative", "media type:$type;",
+                            "creative", "media type:$type;container_type:$containerType;",
                             "creative_url", imageUrl,
                             "position", position
                     )

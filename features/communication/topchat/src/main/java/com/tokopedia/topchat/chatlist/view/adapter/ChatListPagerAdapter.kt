@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatlist.view.adapter
 
-import androidx.annotation.DrawableRes
+import android.graphics.drawable.Drawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -30,10 +30,10 @@ class ChatListPagerAdapter(fm: FragmentManager)
     }
 
     data class ChatListTab(
-            val title: String,
-            val fragment: Fragment,
-            @DrawableRes val icon: Int,
-            var counter: String = "0"
+        val title: String,
+        val fragment: Fragment,
+        val icon: Drawable?,
+        var counter: String = "0"
     ) {
         fun increaseTabCounter() {
             var count = counter.toIntOrNull()
