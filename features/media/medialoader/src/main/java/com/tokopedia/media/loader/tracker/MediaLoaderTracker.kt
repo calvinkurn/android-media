@@ -2,8 +2,6 @@ package com.tokopedia.media.loader.tracker
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
-import android.widget.Toast
 import com.bumptech.glide.load.engine.GlideException
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.formattedToMB
