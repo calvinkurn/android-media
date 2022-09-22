@@ -33,9 +33,6 @@ data class ProductDetailInfoAnnotationDataModel(
         return typeFactory.type(this)
     }
 
-    val isShowReadMore: Boolean
-        get() = productInfo.size + annotation.size > SPECIFICATION_SIZE_THRESHOLD
-
     companion object {
 
         const val SPECIFICATION_SIZE_THRESHOLD = 11

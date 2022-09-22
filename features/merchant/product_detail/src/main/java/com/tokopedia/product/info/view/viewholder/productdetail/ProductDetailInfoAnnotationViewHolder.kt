@@ -123,7 +123,7 @@ class ProductDetailInfoAnnotationViewHolder(
     }
 
     private fun setupReadMoreInfo(element: ProductDetailInfoAnnotationDataModel) = with(binding) {
-        pdpHeaderProductSeeMore.shouldShowWithAction(element.isShowReadMore) {
+        pdpHeaderProductSeeMore.shouldShowWithAction(element.annotation.isNotEmpty()) {
             pdpHeaderProductSeeMore.setOnClickListener {
                 listener.goToSpecification(annotation = element.annotation)
             }
