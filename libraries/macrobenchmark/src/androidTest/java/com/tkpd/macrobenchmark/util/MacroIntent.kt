@@ -3,8 +3,10 @@ package com.tkpd.macrobenchmark.util
 import android.content.Intent
 import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.macrobenchmark_util.env.mock.InstrumentationMockHelper.getRawString
 import com.tokopedia.macrobenchmark_util.env.mock.config.HomeMockResponseConfig
 import com.tokopedia.macrobenchmark_util.env.mock.config.SearchMockResponseConfig
+import com.tkpd.macrobenchmark.test.R
 
 fun Intent.putMockData(key: String, res: Int) {
     this.putExtra(key, getRawString(
