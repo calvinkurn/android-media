@@ -307,7 +307,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun initAffiliateCookie() {
-        viewModel?.initAffiliateCookie(
+        viewModel.initAffiliateCookie(
             affiliateCookieHelper,
             shopId.orEmpty()
         )
@@ -928,7 +928,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopId.orEmpty()
             )
         }
-        startActivity(getProductIntent(shopProductUiModel.id ?: "", attribution,
+        startActivity(getProductIntent(shopProductUiModel.productUrl, attribution,
                 shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, getSelectedEtalaseChip())
                         ?: ""))
     }
@@ -1088,27 +1088,19 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-    private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
+    private fun getProductIntent(pdpAppLink: String, attribution: String?, listNameOfProduct: String): Intent? {
         return if (context != null) {
-            val pdpAppLink = getPdpAppLink(productId)
+            val updatedPdpAppLink = createPdpAffiliateLink(pdpAppLink)
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            RouteManager.getIntent(context, pdpAppLink)
+            RouteManager.getIntent(context, updatedPdpAppLink)
         } else {
             null
         }
     }
 
-    private fun getPdpAppLink(productId: String): String {
-        val basePdpAppLink = UriUtil.buildUri(
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
-        )
-        return createPdpAffiliateLink(basePdpAppLink)
-    }
-
-    fun createPdpAffiliateLink(basePdpAppLink: String): String {
+    private fun createPdpAffiliateLink(basePdpAppLink: String): String {
         return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 

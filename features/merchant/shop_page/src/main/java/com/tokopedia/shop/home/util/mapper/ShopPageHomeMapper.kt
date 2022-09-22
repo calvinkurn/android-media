@@ -84,7 +84,7 @@ object ShopPageHomeMapper {
                 it.isPo = flags.isPreorder
                 it.isFreeReturn = flags.isFreereturn
                 it.isWishList = flags.isWishlist
-                it.productUrl = productUrl
+                it.productUrl = appLink
                 it.isSoldOut = flags.isSold
                 it.isShowWishList = !isMyOwnProduct
                 it.isShowFreeOngkir = freeOngkir.isActive
