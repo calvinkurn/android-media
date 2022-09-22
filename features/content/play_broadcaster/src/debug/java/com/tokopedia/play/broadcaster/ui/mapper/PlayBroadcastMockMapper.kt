@@ -224,6 +224,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         ),
         quizConfig = QuizConfigUiModel(
             isActive = true,
+            isGiftActive = true,
             maxTitleLength = 30,
             maxChoicesCount = 3,
             minChoicesCount = 2,

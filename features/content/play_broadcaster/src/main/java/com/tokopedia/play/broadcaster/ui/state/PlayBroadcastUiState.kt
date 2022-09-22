@@ -112,7 +112,6 @@ data class QuizFormUiState(
     val quizFormData: QuizFormDataUiModel,
     val quizFormState: QuizFormStateUiModel,
     val isNeedToUpdateUI: Boolean,
-    val isEnableQuizGift: Boolean,
 ) {
     companion object {
         val Empty: QuizFormUiState
@@ -121,7 +120,6 @@ data class QuizFormUiState(
                     quizFormData = QuizFormDataUiModel(),
                     quizFormState = QuizFormStateUiModel.Nothing,
                     isNeedToUpdateUI = false,
-                    isEnableQuizGift = true,
                 )
             }
     }

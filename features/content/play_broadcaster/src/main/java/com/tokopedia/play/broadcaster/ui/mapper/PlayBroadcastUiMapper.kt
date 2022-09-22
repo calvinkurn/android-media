@@ -330,6 +330,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             ),
             quizConfig = QuizConfigUiModel(
                 isActive = response.interactiveConfig.quizConfig.isActive,
+                isGiftActive = true,
                 maxTitleLength = response.interactiveConfig.quizConfig.maxTitleLength,
                 maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,
                 minChoicesCount = response.interactiveConfig.quizConfig.minChoicesCount,

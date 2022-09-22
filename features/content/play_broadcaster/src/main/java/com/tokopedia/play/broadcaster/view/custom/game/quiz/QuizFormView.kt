@@ -72,6 +72,8 @@ class QuizFormView : ConstraintLayout {
                 binding.viewQuizGift.maxLength = value.maxRewardLength
                 binding.viewQuizGift.isShowCoachmark = value.showPrizeCoachMark
                 timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
+
+                binding.viewQuizGift.showWithCondition(value.isGiftActive)
             }
         }
 
@@ -191,10 +193,6 @@ class QuizFormView : ConstraintLayout {
         binding.tvBroQuizFormNext.alpha =
             if (shouldEnable) CONTINUE_ENABLED_ALPHA
             else CONTINUE_DISABLED_ALPHA
-    }
-
-    fun isEnableQuizGift(isEnable: Boolean) {
-        binding.viewQuizGift.showWithCondition(isEnable)
     }
 
     fun setFormState(quizFormState: QuizFormStateUiModel) {

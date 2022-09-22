@@ -1050,7 +1050,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 }
             }
 
-            quizForm.isEnableQuizGift(state.isEnableQuizGift)
             quizForm.setFormState(state.quizFormState)
         }
     }
