@@ -7,13 +7,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.item.ManageProductVariantItem
 import com.tokopedia.tkpd.flashsale.util.constant.NumericalNormalizationConstant
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.round
 
 class ManageProductVariantViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers,
     private val errorMessageHelper: ErrorMessageHelper
 ) : BaseViewModel(dispatchers.main) {
 
@@ -40,14 +40,6 @@ class ManageProductVariantViewModel @Inject constructor(
     }
 
     fun getProductData(): ReservedProduct.Product {
-        return productData
-    }
-
-    fun getModifiedProductData(): ReservedProduct.Product {
-        val selectedChildProduct = productData.childProducts.filter {
-            it.isToggleOn
-        }
-        productData.childProducts = selectedChildProduct
         return productData
     }
 
@@ -87,5 +79,26 @@ class ManageProductVariantViewModel @Inject constructor(
     fun calculatePercent(priceInput: Long, originalPrice: Long): String {
         return round((priceInput.toDouble() / originalPrice.toDouble()) * NumericalNormalizationConstant.BULK_APPLY_PERCENT_NORMALIZATION).toInt()
             .toString()
+    }
+
+    fun getListItemData() = getProductData().toListItem()
+
+    private fun ReservedProduct.Product.toListItem(): List<ManageProductVariantItem> {
+        return this.childProducts.map {
+            ManageProductVariantItem(
+                disabledReason = it.disabledReason,
+                isDisabled =  it.isDisabled,
+                isMultiwarehouse = it.isMultiwarehouse,
+                isToggleOn = it.isToggleOn,
+                name = it.name,
+                picture = it.picture,
+                price = it.price,
+                productId = it.productId,
+                sku = it.sku,
+                stock = it.stock,
+                url = it.url,
+                warehouses = it.warehouses
+            )
+        }
     }
 }

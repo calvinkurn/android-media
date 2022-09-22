@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
+import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
@@ -16,10 +17,11 @@ import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.item.ManageProductVariantItem
 import timber.log.Timber
 
 class ManageProductVariantFragment :
-    BaseCampaignManageProductDetailFragment<ManageProductVariantAdapter>(),
+    BaseCampaignManageProductDetailFragment<CompositeAdapter>(),
     ManageProductVariantListener {
 
     companion object {
@@ -75,6 +77,7 @@ class ManageProductVariantFragment :
             productStockTextFormatted = product.stock.toString(),
             isShowWidgetBulkApply = true
         )
+        adapter?.submit(viewModel.getListItemData())
         buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
     }
 
@@ -102,16 +105,13 @@ class ManageProductVariantFragment :
     }
 
     override fun onSubmitButtonClicked() {
-
+        Timber.tag("Masuk").d(viewModel.getProductData().toString())
     }
 
-    override fun createAdapterInstance(): ManageProductVariantAdapter {
-        return ManageProductVariantAdapter().apply {
-            product?.let {
-                setDataList(it)
-                setListener(this@ManageProductVariantFragment)
-            }
-        }
+    override fun createAdapterInstance(): CompositeAdapter {
+        return CompositeAdapter.Builder()
+            .add(ManageProductVariantAdapter(listener = this, product = viewModel.getProductData()))
+            .build()
     }
 
     private fun setWidgetBulkApplyState(items: List<ReservedProduct.Product.ChildProduct>) {
@@ -141,9 +141,11 @@ class ManageProductVariantFragment :
         discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
     ): ValidationResult {
         product.productCriteria.let {
-            val warehouses =
-                (adapter as ManageProductVariantAdapter).getDataList()[index].warehouses
-            viewModel.validateInputPage(warehouses, it)
+            val selectedItem = adapter?.getItems()?.filterIsInstance<ManageProductVariantItem>()
+            val warehouses = selectedItem?.get(index)?.warehouses
+            if (warehouses != null) {
+                viewModel.validateInputPage(warehouses, it)
+            }
         }
         return viewModel.validateInput(product.productCriteria, discountSetup)
     }

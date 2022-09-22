@@ -4,53 +4,36 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailVariantItemBinding
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.item.ManageProductVariantItem
 import com.tokopedia.unifycomponents.TextFieldUnify2
 
-class ManageProductVariantAdapter :
-    RecyclerView.Adapter<ManageProductVariantAdapter.VariantViewHolder>() {
+class ManageProductVariantAdapter(
+    private val listener: ManageProductVariantListener,
+    private val product: ReservedProduct.Product
+) :
+    DelegateAdapter<ManageProductVariantItem, ManageProductVariantAdapter.VariantViewHolder>(
+        ManageProductVariantItem::class.java
+    ) {
 
-    private var listener: ManageProductVariantListener? = null
-    private var product: ReservedProduct.Product? = null
-
-    fun setListener(listener: ManageProductVariantListener) {
-        this.listener = listener
-    }
-
-    fun setDataList(newData: ReservedProduct.Product) {
-        product = newData
-        notifyItemRangeChanged(Int.ZERO, newData.childProducts.size)
-    }
-
-    fun getDataList() = product?.childProducts.orEmpty()
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ManageProductVariantAdapter.VariantViewHolder {
+    override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = LayoutCampaignManageProductDetailVariantItemBinding.inflate(
             LayoutInflater.from(parent.context),
-            parent, false
+            parent,
+            false
         )
         return VariantViewHolder(binding, listener)
     }
 
-    override fun onBindViewHolder(
-        holder: ManageProductVariantAdapter.VariantViewHolder,
-        position: Int
+    override fun bindViewHolder(
+        item: ManageProductVariantItem,
+        viewHolder: ManageProductVariantAdapter.VariantViewHolder
     ) {
-        product?.let {
-            it.childProducts.getOrNull(position)?.let { selectedChildProduct ->
-                holder.bind(it, selectedChildProduct)
-            }
-        }
-    }
-
-    override fun getItemCount(): Int {
-        return product?.childProducts?.size.orZero()
+        viewHolder.bind(item)
     }
 
     inner class VariantViewHolder(
@@ -67,10 +50,7 @@ class ManageProductVariantAdapter :
             }
         }
 
-        fun bind(
-            product: ReservedProduct.Product,
-            item: ReservedProduct.Product.ChildProduct
-        ) {
+        fun bind(item: ManageProductVariantItem) {
             val discount = item.warehouses.first().discountSetup
             val criteria = product.productCriteria
             binding.containerLayoutProductParent.apply {
@@ -85,7 +65,10 @@ class ManageProductVariantAdapter :
                     item.isToggleOn = switcherToggleParent.isChecked
                     binding.containerProductChild.isVisible = item.isToggleOn
                     listener?.onToggleSwitch(adapterPosition, switcherToggleParent.isChecked)
-                    listener?.onDataInputChanged(adapterPosition, product, discount)
+                    listener?.onDataInputChanged(
+                        adapterPosition,
+                        product, discount
+                    )
                 }
                 binding.containerProductChild.isVisible = item.isToggleOn
                 binding.containerLayoutProductInformation.apply {
@@ -120,17 +103,27 @@ class ManageProductVariantAdapter :
 
                     textFieldPriceDiscountNominal.textInputLayout.editText?.afterTextChanged {
                         discount.price = it.digitsOnly()
-                        val discountPercent = listener?.calculatePercent(it.digitsOnly(), adapterPosition).orEmpty()
+                        val discountPercent =
+                            listener?.calculatePercent(it.digitsOnly(), adapterPosition).orEmpty()
                         textFieldPriceDiscountPercentage.setTextIfNotFocus(discountPercent)
-                        listener?.onDiscountChange(adapterPosition, it.digitsOnly(), discountPercent.toInt())
+                        listener?.onDiscountChange(
+                            adapterPosition,
+                            it.digitsOnly(),
+                            discountPercent.toInt()
+                        )
                         triggerListener(product, discount)
                     }
 
                     textFieldPriceDiscountPercentage.editText.afterTextChanged {
                         discount.discount = it.digitsOnly().toInt()
-                        val discountPrice = listener?.calculatePrice(it.digitsOnly(), adapterPosition).orEmpty()
+                        val discountPrice =
+                            listener?.calculatePrice(it.digitsOnly(), adapterPosition).orEmpty()
                         textFieldPriceDiscountNominal.setTextIfNotFocus(discountPrice)
-                        listener?.onDiscountChange(adapterPosition, discountPrice.toLong(), it.digitsOnly().toInt())
+                        listener?.onDiscountChange(
+                            adapterPosition,
+                            discountPrice.toLong(),
+                            it.digitsOnly().toInt()
+                        )
                         triggerListener(product, discount)
                     }
 
