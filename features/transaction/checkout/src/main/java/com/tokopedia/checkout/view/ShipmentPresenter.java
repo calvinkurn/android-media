@@ -1955,7 +1955,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Nullable
-    private ClearPromoOrder getClearPromoOrderByUniqueId(ArrayList<ClearPromoOrder> list, String uniqueId) {
+    public ClearPromoOrder getClearPromoOrderByUniqueId(ArrayList<ClearPromoOrder> list, String uniqueId) {
         for (ClearPromoOrder clearPromoOrder : list) {
             if (clearPromoOrder.getUniqueId().equals(uniqueId)) {
                 return clearPromoOrder;
@@ -2062,7 +2062,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         );
     }
 
-    private void hitClearAllBo() {
+    @Override
+    public void hitClearAllBo() {
         ArrayList<ClearPromoOrder> clearOrders = new ArrayList<>();
         boolean hasBo = false;
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
@@ -2610,14 +2611,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return new Pair<>(reloadedUniqueIds, unappliedBoPromoUniqueIds);
     }
 
-    private void doUnapplyBo(String uniqueId, String promoCode) {
+    @Override
+    public void doUnapplyBo(String uniqueId, String promoCode) {
         final int itemAdapterPosition = getView().getShipmentCartItemModelAdapterPositionByUniqueId(uniqueId);
         final ShipmentCartItemModel shipmentCartItemModel = getView().getShipmentCartItemModel(itemAdapterPosition);
-        if (itemAdapterPosition != -1) {
+        if (shipmentCartItemModel != null && itemAdapterPosition != -1) {
             getView().resetCourier(itemAdapterPosition);
-            if (shipmentCartItemModel != null) {
-                clearCacheAutoApply(shipmentCartItemModel, promoCode);
-            }
+            clearCacheAutoApply(shipmentCartItemModel, promoCode);
             clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode);
             getView().onNeedUpdateViewItem(itemAdapterPosition);
         }
@@ -2652,7 +2652,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    private void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel) {
+    @Override
+    public void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel) {
         final int itemAdapterPosition = getView().getShipmentCartItemModelAdapterPositionByUniqueId(voucherOrdersItemUiModel.getUniqueId());
         final ShipmentCartItemModel shipmentCartItemModel = getView().getShipmentCartItemModel(itemAdapterPosition);
         if (shipmentCartItemModel != null && itemAdapterPosition != -1) {
@@ -2663,7 +2664,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    private void processBoPromoCourierRecommendation(int itemPosition, PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel, ShipmentCartItemModel shipmentCartItemModel) {
+    @Override
+    public void processBoPromoCourierRecommendation(int itemPosition, PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel, ShipmentCartItemModel shipmentCartItemModel) {
         ShipmentDetailData selectedShipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         if (selectedShipmentDetailData == null) {
             selectedShipmentDetailData = getView().getShipmentDetailData(shipmentCartItemModel, recipientAddressModel);
@@ -2717,7 +2719,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 )));
     }
 
-    private List<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel) {
+    @Override
+    public List<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel) {
         ArrayList<Product> products = new ArrayList<>();
         if (shipmentCartItemModel != null) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
@@ -2737,13 +2740,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void validateClearAllBoPromo() {
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-            for (OrdersItem ordersItem : lastValidateUsePromoRequest.getOrders()) {
-                if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())
-                        && ordersItem.getCodes().isEmpty()
-                        && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                    doUnapplyBo(shipmentCartItemModel.getCartString(),
-                            shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+        if (shipmentCartItemModelList != null && lastValidateUsePromoRequest != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                for (OrdersItem ordersItem : lastValidateUsePromoRequest.getOrders()) {
+                    if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())
+                            && ordersItem.getCodes().isEmpty()
+                            && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                        doUnapplyBo(shipmentCartItemModel.getCartString(),
+                                shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                    }
                 }
             }
         }

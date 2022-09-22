@@ -43,6 +43,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
@@ -410,6 +411,16 @@ public interface ShipmentContract {
         void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
 
         void validateClearAllBoPromo();
+
+        void doUnapplyBo(String uniqueId, String promoCode);
+
+        List<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel);
+
+        void processBoPromoCourierRecommendation(int itemPosition, PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel, ShipmentCartItemModel shipmentCartItemModel);
+
+        void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel);
+
+        void hitClearAllBo();
 
         void cancelUpsell(boolean isReloadData, boolean isOneClickShipment,
                           boolean isTradeIn, boolean skipUpdateOnboardingState,
