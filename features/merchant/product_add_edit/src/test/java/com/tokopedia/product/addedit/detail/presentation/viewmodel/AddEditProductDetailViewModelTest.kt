@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DOUBLE_ZERO
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -102,6 +103,12 @@ class AddEditProductDetailViewModelTest {
     lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
 
     @RelaxedMockK
+    lateinit var getShopInfoUseCase: GetShopInfoUseCase
+
+    @RelaxedMockK
+    lateinit var getDefaultCommissionRulesUseCase: GetDefaultCommissionRulesUseCase
+
+    @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
 
     @RelaxedMockK
@@ -180,6 +187,8 @@ class AddEditProductDetailViewModelTest {
                 getEditProductPriceSuggestionUseCase,
                 getProductTitleValidationUseCase,
                 getMaxStockThresholdUseCase,
+                getShopInfoUseCase,
+                getDefaultCommissionRulesUseCase,
                 userSession)
     }
 
@@ -2044,6 +2053,117 @@ class AddEditProductDetailViewModelTest {
     fun `when price suggestion max limit is not zero expect isPriceSuggestionRangeIsEmpty false`() {
         val isRangeEmpty = viewModel.isPriceSuggestionRangeIsEmpty(DOUBLE_ZERO, 1000.0)
         assertFalse(isRangeEmpty)
+    }
+
+    @Test
+    fun `when successful transactions is less than 100 and shop type is regular merchant expect no service fee`() {
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(99, AddEditProductConstants.REGULAR_MERCHANT)
+        assertTrue(isFreeOfServiceFee)
+    }
+
+    @Test
+    fun `when successful transactions is 100 and shop type is regular merchant expect no service fee`() {
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(100, AddEditProductConstants.REGULAR_MERCHANT)
+        assertTrue(isFreeOfServiceFee)
+    }
+
+    @Test
+    fun `when successful transactions is more than 100 and shop type is regular merchant expect service fee`() {
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(101, AddEditProductConstants.REGULAR_MERCHANT)
+        assertFalse(isFreeOfServiceFee)
+    }
+
+    @Test
+    fun `when successful transactions is 100 and shop type is not regular merchant expect service fee`() {
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(100, AddEditProductConstants.POWER_MERCHANT)
+        assertFalse(isFreeOfServiceFee)
+    }
+
+    @Test
+    fun `when shop type is not regular merchant expect legit commission rate from commission rule`() {
+        val commissionRules = listOf(
+            CommissionRule(shopType = 1, commissionRate = 2.5),
+            CommissionRule(shopType = 2, commissionRate = 3.5)
+        )
+        val shopType = 1
+        val expectedResult = 2.5
+        val actualResult = viewModel.getCommissionRate(commissionRules, shopType)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when commission rules is empty expect zero commission rate`() {
+        val commissionRules = listOf<CommissionRule>()
+        val shopType = 1
+        val expectedResult = 0.0
+        val actualResult = viewModel.getCommissionRate(commissionRules, shopType)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `getShopInfo should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            getShopInfoUseCase.executeOnBackground()
+                .shopInfoById
+        } returns ShopInfoById(
+            result = listOf(
+                TokoShopInfoData(
+                    shopStats = StatsData("100"),
+                    goldOSData = GoldOSData(1)
+                )
+            )
+        )
+        viewModel.getShopInfo(1)
+        val result = viewModel.shopInfo.getOrAwaitValue()
+        coVerify {
+            getShopInfoUseCase.executeOnBackground()
+        }
+        assertEquals("100", result.shopInfoById.result.first().shopStats.totalTxSuccess)
+    }
+
+    @Test
+    fun `getShopInfo should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+        val expectedErrorMessage = "error happen"
+        coEvery {
+            getShopInfoUseCase.executeOnBackground()
+        } throws MessageErrorException(expectedErrorMessage)
+        viewModel.getShopInfo(1)
+        val resultErrorMessage = viewModel.shopInfoError.getOrAwaitValue()
+        assertEquals(expectedErrorMessage, resultErrorMessage.localizedMessage)
+    }
+
+    @Test
+    fun `getCommissionInfo should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            getDefaultCommissionRulesUseCase.executeOnBackground()
+        } returns GetDefaultCommissionRulesResponse(
+            GetDefaultCommissionRules(
+                categoryRate = listOf(
+                    CategoryRate(
+                        listOf(
+                            CommissionRule(shopType = 1, commissionRate = 2.5)
+                        )
+                    )
+                )
+            )
+        )
+        viewModel.getCommissionInfo(1)
+        val result = viewModel.commissionInfo.getOrAwaitValue()
+        coVerify {
+            getDefaultCommissionRulesUseCase.executeOnBackground()
+        }
+        assertEquals(2.5, result.getDefaultCommissionRules.categoryRate.first().commissionRules.first().commissionRate)
+    }
+
+    @Test
+    fun `getCommissionInfo should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+        val expectedErrorMessage = "error happen"
+        coEvery {
+            getDefaultCommissionRulesUseCase.executeOnBackground()
+        } throws MessageErrorException(expectedErrorMessage)
+        viewModel.getCommissionInfo(1)
+        val resultErrorMessage = viewModel.commissionInfoError.getOrAwaitValue()
+        assertEquals(expectedErrorMessage, resultErrorMessage.localizedMessage)
     }
 
     private fun getIsTheLastOfWholeSaleTestResult(

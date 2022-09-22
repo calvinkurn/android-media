@@ -44,4 +44,10 @@ object AddEditProductConstants {
 
     const val FIRST_CATEGORY_SELECTED = 0
     const val DOUBLE_ZERO = 0.0
+
+    const val SERVICE_FEE_LIMIT = 100
+    const val REGULAR_MERCHANT = 0
+    const val POWER_MERCHANT = 1
+    const val OFFICIAL_STORE = 2
+    const val POWER_MERCHANT_PRO = 3
 }

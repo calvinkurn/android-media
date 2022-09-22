@@ -11,12 +11,13 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DOUBLE_ZERO
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.REGULAR_MERCHANT
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.SERVICE_FEE_LIMIT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionByKeyword
-import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
+import com.tokopedia.product.addedit.detail.domain.model.*
 import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
@@ -74,6 +75,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val getEditProductPriceSuggestionUseCase: PriceSuggestionSuggestedPriceGetUseCase,
     private val getProductTitleValidationUseCase: GetProductTitleValidationUseCase,
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
+    private val getShopInfoUseCase: GetShopInfoUseCase,
+    private val getDefaultCommissionRulesUseCase: GetDefaultCommissionRulesUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
@@ -88,6 +91,9 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isAddingValidationWholeSale = false
     var isSavingPriceAdjustment = false
     var isPriceSuggestionRangeEmpty = false
+    var isFreeOfServiceFee = false
+
+    var shopType = 0
 
     private var isMultiLocationShop = false
 
@@ -153,6 +159,20 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val mShopShowCases = MutableLiveData<Result<List<ShopEtalaseModel>>>()
     val shopShowCases: LiveData<Result<List<ShopEtalaseModel>>>
         get() = mShopShowCases
+
+    private val mShopInfo = MutableLiveData<GetShopInfoResponse>()
+    val shopInfo: LiveData<GetShopInfoResponse>
+        get() = mShopInfo
+    private val mShopInfoError = MutableLiveData<Throwable>()
+    val shopInfoError: LiveData<Throwable>
+        get() = mShopInfoError
+
+    private val mCommissionInfo = MutableLiveData<GetDefaultCommissionRulesResponse>()
+    val commissionInfo: LiveData<GetDefaultCommissionRulesResponse>
+        get() = mCommissionInfo
+    private val mCommissionInfoError = MutableLiveData<Throwable>()
+    val commissionInfoError: LiveData<Throwable>
+        get() = mCommissionInfoError
 
     private val mAnnotationCategoryData = MutableLiveData<Result<List<AnnotationCategoryData>>>()
     val annotationCategoryData: LiveData<Result<List<AnnotationCategoryData>>>
@@ -620,6 +640,30 @@ class AddEditProductDetailViewModel @Inject constructor(
         })
     }
 
+    fun getShopInfo(shopId: Int) {
+        launchCatchError(block = {
+            mShopInfo.value = withContext(dispatchers.io) {
+                getShopInfoUseCase.setParam(shopId)
+                val response = getShopInfoUseCase.executeOnBackground()
+                response
+            }
+        }, onError = {
+            mShopInfoError.value = it
+        })
+    }
+
+    fun getCommissionInfo(categoryId: Int) {
+        launchCatchError(block = {
+            mCommissionInfo.value = withContext(dispatchers.io) {
+                getDefaultCommissionRulesUseCase.setParam(categoryId)
+                val response = getDefaultCommissionRulesUseCase.executeOnBackground()
+                response
+            }
+        }, onError = {
+            mCommissionInfoError.value = it
+        })
+    }
+
     /**
      * Modify stock related values if admin/owner has multi location shops
      */
@@ -831,6 +875,14 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun isPriceSuggestionRangeIsEmpty(minLimit: Double, maxLimit: Double): Boolean {
         return minLimit == DOUBLE_ZERO && maxLimit == DOUBLE_ZERO
+    }
+
+    fun isFreeOfServiceFee(totalTxSuccess: Int, shopType: Int): Boolean {
+        return totalTxSuccess <= SERVICE_FEE_LIMIT && shopType == REGULAR_MERCHANT
+    }
+
+    fun getCommissionRate(commissionRules: List<CommissionRule>, shopType: Int): Double {
+        return commissionRules.firstOrNull { it.shopType == shopType }?.commissionRate.orZero()
     }
 
     /**

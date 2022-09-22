@@ -2,13 +2,13 @@ package com.tokopedia.product.addedit.detail.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.InputFilter
-import android.text.InputType
-import android.text.TextWatcher
+import android.text.*
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -50,6 +51,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DOUBLE_ZERO
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
@@ -92,6 +94,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.customview.TypoCorrectionView
 import com.tokopedia.product.addedit.detail.presentation.dialog.PriceSuggestionBottomSheet
 import com.tokopedia.product.addedit.detail.presentation.dialog.PriceSuggestionInfoBottomSheet
+import com.tokopedia.product.addedit.detail.presentation.dialog.ServiceFeeBottomSheet
 import com.tokopedia.product.addedit.detail.presentation.dialog.TitleValidationBottomSheet
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
@@ -196,6 +199,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     private var productCategoryRecListView: ListUnify? = null
     private var productCategoryPickerButton: AppCompatTextView? = null
     private var categoryAlertDialog: DialogUnify? = null
+    private var additionalInfoView: Typography? = null
+    private var commissionInfoTipsView: TipsUnify? = null
 
     // product specification
     private var productSpecificationLayout: ViewGroup? = null
@@ -256,6 +261,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
     // button continue
     private var submitButton: UnifyButton? = null
+
+    // static content bottom sheets
+    private var serviceFeeBottomSheet: ServiceFeeBottomSheet? = null
 
     // PLT monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -341,11 +349,13 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         setupProductSkuViews()
         setupProductShowcaseViews()
         setupProductSubmitButtonViews()
+        setupServiceFeeBottomSheet()
 
         // fill the form with detail input model
         fillProductDetailForm(viewModel.productInputModel.detailInputModel)
         initPriceSuggestion(viewModel.isEditing)
         initProductShowcaseValue()
+        initCommissionInfo(shopId)
         setupDefaultFieldMessage()
         setupSpecificationField()
         enableProductNameField()
@@ -363,6 +373,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         subscribeToPreOrderDurationInputStatus()
         subscribeToProductSkuInputStatus()
         subscribeToShopShowCases()
+        subscribeToShopInfo()
+        subscribeToCommissionInfo()
         subscribeToAnnotationCategoryData()
         subscribeToSpecificationText()
         subscribeToHasRequiredSpecification()
@@ -609,6 +621,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
                     // in edit case, product change occurred therefore new price suggestion is needed
                     getAddProductPriceSuggestion(keyword = productNameField.getText(), categoryL3 = productCategoryId)
+
+                    // display commission rate based on category
+                    if (!viewModel.isFreeOfServiceFee) { viewModel.getCommissionInfo(categoryId.toInt()) }
                 }
                 SHOWCASE_PICKER_RESULT_REQUEST_CODE -> {
                     val selectedShowcaseList: ArrayList<ShowcaseItemPicker> = data.getParcelableArrayListExtra(EXTRA_PICKER_SELECTED_SHOWCASE)
@@ -1132,6 +1147,52 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         })
     }
 
+    private fun subscribeToShopInfo() {
+        viewModel.shopInfo.observe(viewLifecycleOwner, { shopInfoResponse ->
+            val shopInfo = shopInfoResponse.shopInfoById.result.firstOrNull()
+            shopInfo?.run {
+                val totalTxSuccess = shopInfo.shopStats.totalTxSuccess.toIntOrZero()
+                viewModel.shopType = shopInfo.goldOSData.shopTier
+                viewModel.isFreeOfServiceFee = viewModel.isFreeOfServiceFee(totalTxSuccess, viewModel.shopType)
+                if (viewModel.isFreeOfServiceFee) {
+                    setupCommissionInfoTips(commissionInfoTipsView, viewModel.isFreeOfServiceFee)
+                    commissionInfoTipsView?.show()
+                } else {
+                    // display commission info tips when drafting or editing
+                    val categoryIdStr = viewModel.productInputModel.detailInputModel.categoryId
+                    if (categoryIdStr.isNotBlank()) {
+                        val categoryId = categoryIdStr.toIntOrNull()
+                        categoryId?.run { viewModel.getCommissionInfo(categoryId) }
+                    }
+                }
+            }
+        })
+        viewModel.shopInfoError.observe(viewLifecycleOwner, {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        })
+    }
+
+    private fun subscribeToCommissionInfo() {
+        viewModel.commissionInfo.observe(viewLifecycleOwner, { commissionInfo ->
+            val categoryRate = commissionInfo.getDefaultCommissionRules.categoryRate.firstOrNull()
+            categoryRate?.run {
+                if (commissionRules.isNotEmpty()) {
+                    // select commission rate based on shop type
+                    val commissionRate = viewModel.getCommissionRate(commissionRules, viewModel.shopType)
+                    // setup commission rate tips if rate is not zero
+                    if (commissionRate != DOUBLE_ZERO) {
+                        val strCommissionRate = commissionRate.toString()
+                        setupCommissionInfoTips(commissionInfoTipsView, viewModel.isFreeOfServiceFee, strCommissionRate)
+                    }
+                    commissionInfoTipsView?.show()
+                }
+            }
+        })
+        viewModel.commissionInfoError.observe(viewLifecycleOwner, {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        })
+    }
+
     private fun subscribeToAnnotationCategoryData() {
         viewModel.annotationCategoryData.observe(viewLifecycleOwner, { result ->
             when (result) {
@@ -1357,6 +1418,10 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             validateInput()
             validateSpecificationList()
         }
+    }
+
+    private fun setupServiceFeeBottomSheet() {
+        serviceFeeBottomSheet = ServiceFeeBottomSheet.createInstance()
     }
 
     private fun setupProductShowcaseViews() {
@@ -1706,6 +1771,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         productCategoryLayout = binding?.addEditProductCategoryLayout?.root
         productCategoryRecListView = binding?.addEditProductCategoryLayout?.lvuProductCategoryRec
         productCategoryPickerButton = binding?.addEditProductCategoryLayout?.tvCategoryPickerButton
+        additionalInfoView = binding?.addEditProductCategoryLayout?.tpgAdditionalInfo
+        commissionInfoTipsView = binding?.addEditProductCategoryLayout?.tuCommissionInfoTips
         context?.let {
             categoryAlertDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             categoryAlertDialog?.setTitle(getString(R.string.title_category_dialog))
@@ -1737,6 +1804,25 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     }
                 } else {
                     startCategoryActivity(REQUEST_CODE_CATEGORY)
+                }
+            }
+        }
+    }
+
+    private fun setupCommissionInfoTips(
+        commissionInfoTipsView: TipsUnify?,
+        isFreeOfServiceFee: Boolean,
+        commissionRate: String = String.EMPTY
+    ) {
+        commissionInfoTipsView?.run {
+            context?.run {
+                val description = if (isFreeOfServiceFee) { getString(R.string.label_no_service_fee) }
+                else { getString(R.string.text_service_fee_per_sold_product, commissionRate) }
+                val htmlDescription = HtmlLinkHelper(this, description)
+                htmlDescription.spannedString?.let { commissionInfoTipsView.description = it }
+                commissionInfoTipsView.descriptionView.movementMethod = LinkMovementMethod.getInstance()
+                htmlDescription.urlList.first().onClick = {
+                    serviceFeeBottomSheet?.show(childFragmentManager)
                 }
             }
         }
@@ -1823,6 +1909,10 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 )
             }
         }
+    }
+
+    private fun initCommissionInfo(shopId: String) {
+        viewModel.getShopInfo(shopId.toIntOrZero())
     }
 
     private fun getCategoryRecommendation(productNameInput: String) {
@@ -2127,6 +2217,12 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         val keyword = productNameField.getText()
         val selectedCategoryId = items.firstOrNull()?.getCategoryId().toString()
         getAddProductPriceSuggestion(keyword = keyword, categoryL3 = selectedCategoryId)
+
+        // display commission rate based on category
+        if (!viewModel.isFreeOfServiceFee) {
+            val categoryId = productCategoryId.toIntOrNull()
+            categoryId?.run { viewModel.getCommissionInfo(categoryId) }
+        }
     }
 
     private fun getAddProductPriceSuggestion(keyword: String, categoryL3: String) {
