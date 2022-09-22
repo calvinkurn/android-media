@@ -294,6 +294,7 @@ abstract class BaseNotification internal constructor(
     companion object {
         private const val CM_REQUEST_CODE = "cm_request_code"
         private const val sdkLevel31 = 31
+        private const val ACTIVITY_RECEIVER = "CMReceiverActivity"
         fun getBaseBroadcastIntent(
             context: Context,
             baseNotificationModel: BaseNotificationModel,
@@ -314,14 +315,24 @@ abstract class BaseNotification internal constructor(
         }
 
         fun getPendingIntent(context: Context, intent: Intent, reqCode: Int): PendingIntent =
-            if (Build.VERSION.SDK_INT >= sdkLevel31) {
+            if (Build.VERSION.SDK_INT >= sdkLevel31 && intent.component?.className?.contains(
+                    ACTIVITY_RECEIVER) == true) {
                 PendingIntent.getActivity(
                     context,
                     reqCode,
                     intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
                 )
-            } else {
+            } else if (Build.VERSION.SDK_INT >= sdkLevel31 && intent.component?.className?.contains(
+                    ACTIVITY_RECEIVER) == false) {
+                PendingIntent.getBroadcast(
+                    context,
+                    reqCode,
+                    intent,
+                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
+            else {
                 PendingIntent.getBroadcast(
                     context,
                     reqCode,
