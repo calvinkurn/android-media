@@ -7,6 +7,8 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeBinding
@@ -35,6 +37,7 @@ class RecipeViewHolder(
         renderPortion(recipe)
         renderDuration(recipe)
         renderBookmark(recipe)
+        setImpressionListener(recipe)
         setClickListener(recipe)
     }
 
@@ -100,11 +103,20 @@ class RecipeViewHolder(
 
     private fun setClickListener(recipe: RecipeUiModel) {
         binding?.root?.setOnClickListener {
-            listener.onClickItem(recipe)
+            listener.onClickItem(recipe, layoutPosition)
         }
     }
 
+    private fun setImpressionListener(recipe: RecipeUiModel) {
+        binding?.root?.addOnImpressionListener(recipe, object : ViewHintListener {
+            override fun onViewHint() {
+                listener.onImpressItem(recipe, layoutPosition)
+            }
+        })
+    }
+
     interface RecipeItemListener {
-        fun onClickItem(recipe: RecipeUiModel)
+        fun onClickItem(recipe: RecipeUiModel, position: Int)
+        fun onImpressItem(recipe: RecipeUiModel, position: Int)
     }
 }

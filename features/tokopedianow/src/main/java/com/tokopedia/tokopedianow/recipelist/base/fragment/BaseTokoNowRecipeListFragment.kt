@@ -33,12 +33,17 @@ import com.tokopedia.tokopedianow.recipelist.presentation.constant.ImageUrl
 import com.tokopedia.tokopedianow.recipelist.presentation.listener.RecipeFilterListener
 import com.tokopedia.tokopedianow.recipelist.presentation.listener.RecipeListListener
 import com.tokopedia.tokopedianow.recipelist.presentation.view.RecipeListView
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.EXTRA_SELECTED_FILTER
 import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, ServerErrorListener {
+
+    @Inject
+    lateinit var analytics: RecipeListAnalytics
 
     companion object {
         const val REQUEST_CODE_FILTER = 101
@@ -47,8 +52,8 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
     private val adapter by lazy {
         RecipeListAdapter(
             RecipeListAdapterTypeFactory(
-                recipeItemListener = RecipeListListener(this),
-                recipeFilterListener = RecipeFilterListener(this),
+                recipeItemListener = RecipeListListener(this, analytics, viewModel.warehouseId, pageName),
+                recipeFilterListener = RecipeFilterListener(this, analytics, pageName),
                 serverErrorListener = this
             )
         )
@@ -120,11 +125,17 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
             pageName = pageName,
             hintData = searchHintData
         ) {
+            analytics.clickSearchBar(pageName)
             RouteManager.route(context, ApplinkConst.TokopediaNow.RECIPE_AUTO_COMPLETE)
         }
         navToolbar?.headerBackground = headerBg
         navToolbar?.setIcon(icons)
         navToolbar?.init(fragment)
+
+        navToolbar?.setBackButtonOnClickListener {
+            analytics.clickBackButton(pageName)
+            activity?.finish()
+        }
 
         setNavToolbarScrollListener()
         setToolbarShadowScrollListener()
@@ -221,6 +232,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
     }
 
     private fun goToBookmarkPage() {
+        analytics.clickBookmarkList(pageName)
         RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK)
     }
 }
