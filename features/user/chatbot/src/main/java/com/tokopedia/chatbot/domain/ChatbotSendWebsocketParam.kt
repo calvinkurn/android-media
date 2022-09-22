@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.util.convertMessageIdToLong
@@ -24,6 +25,7 @@ object ChatbotSendWebsocketParam {
         data.addProperty("message", sendMessage)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         json.add("data", data)
         return json
     }
@@ -47,6 +49,7 @@ object ChatbotSendWebsocketParam {
         data.addProperty("file_path", path)
         data.addProperty("image_obj", imageObj)
         data.addProperty("attachment_type", TYPE_IMAGE_UPLOAD.toIntOrZero())
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         json.add("data", data)
         return json
     }
@@ -68,6 +71,7 @@ object ChatbotSendWebsocketParam {
         data.addProperty("start_time", startTime)
         data.addProperty("file_path", path)
         data.addProperty("attachment_type", TYPE_SECURE_IMAGE_UPLOAD.toIntOrZero())
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         json.add("data", data)
         return json
     }
@@ -86,6 +90,7 @@ object ChatbotSendWebsocketParam {
         data.addProperty("message_id", messageId.convertMessageIdToLong())
         data.addProperty("attachment_type", TYPE_REPLY_BUBBLE.toIntOrZero())
         data.addProperty("start_time", startTime)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         if (referredMsgObj != null)
             data.add("parent_reply", referredMsgObj)
         json.add("data", data)

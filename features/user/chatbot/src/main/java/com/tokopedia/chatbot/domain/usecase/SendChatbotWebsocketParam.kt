@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
@@ -31,6 +32,7 @@ object SendChatbotWebsocketParam {
                 .Companion.TYPE_INVOICE_SEND).toIntOrZero())
         val payload = GsonBuilder().create().toJsonTree(invoiceLinkPojo, InvoiceLinkPojo::class.java)
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         json.add("data", data)
         return json
     }
@@ -71,6 +73,7 @@ object SendChatbotWebsocketParam {
 
         payload.add("attributes", attributeSelected)
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
 
         json.add("data", data)
         return json
@@ -106,6 +109,7 @@ object SendChatbotWebsocketParam {
         payload.add("selected_option", selectedOption)
 
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
 
         json.add("data", data)
         return json
@@ -150,6 +154,7 @@ object SendChatbotWebsocketParam {
         payload.add("selected_option", selectedOption)
 
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
 
         json.add("data", data)
         return json
@@ -185,6 +190,7 @@ object SendChatbotWebsocketParam {
         payload.add("selected_option", selectedOption)
 
         data.add("payload", payload)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
 
         json.add("data", data)
         return json
@@ -211,6 +217,7 @@ object SendChatbotWebsocketParam {
         data.addProperty("message", sendMessage)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
+        data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
         json.add("data", data)
         return json
     }

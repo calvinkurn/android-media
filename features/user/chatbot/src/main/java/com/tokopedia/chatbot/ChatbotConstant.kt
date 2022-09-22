@@ -13,6 +13,7 @@ object ChatbotConstant {
     const val TANYA = "Tanya"
     const val REPLY_AGENT_NAME = "{.Name}"
     const val RENDER_INVOICE_LIST_AND_BUTTON_ACTION = 1
+    const val SOURCE_CHATBOT = "chatbot"
 
     object CsatRating {
         const val RATING_ONE = 1
