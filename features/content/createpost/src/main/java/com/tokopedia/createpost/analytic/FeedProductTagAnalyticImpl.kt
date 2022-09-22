@@ -230,6 +230,22 @@ class FeedProductTagAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun clickSaveProduct(source: ProductTagSource) {
+        TODO("Not yet implemented")
+    }
+
+    override fun clickAdvancedProductFilter() {
+        TODO("Not yet implemented")
+    }
+
+    override fun clickSaveAdvancedProductFilter() {
+        TODO("Not yet implemented")
+    }
+
+    override fun clickProductFilterChips() {
+        TODO("Not yet implemented")
+    }
+
     override fun sendAll() {
         trackingQueue.sendAll()
     }
