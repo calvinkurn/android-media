@@ -48,7 +48,7 @@ class RecentSearchItemViewHolder(view: View,
 
     private fun setRecentSearchImageUrl(imageUrl: String) {
         with(binding) {
-            ivDeleteRecentSearch.setImageUrl(imageUrl)
+            ivInitialStateHistory.setImageUrl(imageUrl)
         }
     }
 
