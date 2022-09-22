@@ -79,9 +79,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                     showLoginPortal(intent?.data?.getQueryParameter(data.queryParameterNames.first()))
                 else
                     showLoginPortal()
+            } else {
+                afterViewCreated()
             }
         }
-        afterViewCreated()
     }
 
     override fun getLayoutRes(): Int = R.layout.affiliate_layout
