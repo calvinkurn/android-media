@@ -195,4 +195,15 @@
     <string name="bulk_apply_text_stock">Stok Campaign</string>
     <string name="bulk_apply_text_stock_description">Stok wajib %1d - %2d</string>
 
+    <string name="stfs_stfs_manage_location_title">Atur Lokasi</string>
+    <string name="stfs_active_location_bulk_apply_place_holder">Atur Sekaligus %d lokasi</string>
+    <string name="stfs_inactive_location_bulk_apply_place_holder">Aktifkan lokasi untuk Atur Sekaligus</string>
+    <string name="stfs_note_stock_on_location">Stok di Lokasi Ini: %d</string>
+    <string name="stfs_note_stock_mandatory_on_location">Stok Wajib %d - %2d</string>
+    <string name="stfs_title_qty_editor_title">Stok Campaign</string>
+    <string name="stfs_text_button_save">Simpan</string>
+
+    <string name="manageproductnonvar_min_message_format">Min. %s</string>
+    <string name="manageproductnonvar_max_message_format">Maks. %s</string>
+    <string name="manageproductnonvar_range_message_format">%s - %s</string>
 </resources>
