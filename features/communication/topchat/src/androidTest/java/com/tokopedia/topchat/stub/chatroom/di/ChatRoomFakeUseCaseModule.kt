@@ -22,7 +22,6 @@ import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
 import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
 import dagger.Module
 import dagger.Provides
@@ -89,22 +88,6 @@ class ChatRoomFakeUseCaseModule {
             chatImageServerUseCase,
             dispatchers
         )
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
-    fun provideAddWishListUseCase(
-        stub: AddWishListUseCaseStub
-    ): AddWishListUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideAddWishListUseCaseStub(
-        @TopchatContext context: Context
-    ): AddWishListUseCaseStub {
-        return AddWishListUseCaseStub(context)
     }
 
     // -- separator -- view model usecase start here //

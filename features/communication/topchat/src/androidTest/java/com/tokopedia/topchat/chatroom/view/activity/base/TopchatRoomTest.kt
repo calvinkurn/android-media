@@ -143,9 +143,6 @@ abstract class TopchatRoomTest {
     protected lateinit var websocket: FakeTopchatWebSocket
 
     @Inject
-    protected lateinit var addWishListUseCase: AddWishListUseCaseStub
-
-    @Inject
     protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseStub
 
     @Inject
