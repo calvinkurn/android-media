@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.domain.query.RecommendationFilterChipsQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
@@ -15,53 +16,10 @@ class GetRecommendationFilterChips (
         private val graphqlUseCase: GraphqlUseCase<RecommendationFilterChipsEntity>
 ): UseCase<RecommendationFilterChipsEntity.FilterAndSort>() {
 
-    private val query = "query RecommendationFilterChipsQuery(${'$'}productIDs: String!, ${'$'}pageName: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}filterType: String!, ${'$'}injectionID: String!, ${'$'}userID: Int) {\n" +
-            "  recommendationFilterChips(productIDs: ${'$'}productIDs, pageName: ${'$'}pageName, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, filterType: ${'$'}filterType, injectionID: ${'$'}injectionID, userID: ${'$'}userID) {\n" +
-            "    data {\n" +
-            "      filter {\n" +
-            "        title\n" +
-            "        name\n" +
-            "        templateName\n" +
-            "        isActivated\n" +
-            "        value\n" +
-            "        options {\n" +
-            "          name\n" +
-            "          icon\n" +
-            "          key\n" +
-            "          value\n" +
-            "          inputType\n" +
-            "          isActivated\n" +
-            "          isPopular\n" +
-            "          child {\n" +
-            "            name\n" +
-            "            icon\n" +
-            "            key\n" +
-            "            value\n" +
-            "            inputType\n" +
-            "            child {\n" +
-            "              name\n" +
-            "              icon\n" +
-            "              key\n" +
-            "              value\n" +
-            "              inputType\n" +
-            "            }\n" +
-            "          }\n" +
-            "        }\n" +
-            "      }\n" +
-            "      sort {\n" +
-            "        name\n" +
-            "        key\n" +
-            "        value\n" +
-            "        inputType\n" +
-            "      }\n" +
-            "    }\n" +
-            "  }\n" +
-            "}"
-
     private val params = RequestParams.create()
 
     init {
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(RecommendationFilterChipsQuery())
         graphqlUseCase.setTypeClass(RecommendationFilterChipsEntity::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         params.parameters.clear()
