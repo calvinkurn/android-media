@@ -754,7 +754,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             btnDelete.apply {
                 text = getString(R.string.stfs_label_delete)
                 setOnClickListener {
-                    deleteProduct()
+                    showDeleteDialog()
                 }
             }
             btnEdit.apply {
@@ -1144,7 +1144,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         viewModel.reserveProduct(flashSaleId)
     }
 
-    private fun deleteProduct() {
+    private fun showDeleteDialog() {
         val context = context ?: return
         val selectedProductCount = viewModel.selectedProducts.value?.count()
         val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
@@ -1156,14 +1156,18 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             setPrimaryCTAClickListener {
                 dismiss()
                 showLoading()
-                viewModel.setDeleteStateStatus(true)
-                viewModel.deleteProduct(flashSaleId)
+                deleteProduct()
             }
             setSecondaryCTAClickListener {
                 dismiss()
             }
             show()
         }
+    }
+
+    private fun deleteProduct() {
+        viewModel.setDeleteStateStatus(true)
+        viewModel.deleteProduct(flashSaleId)
     }
 
     private fun setHeaderCampaignPeriod(
