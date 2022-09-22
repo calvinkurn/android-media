@@ -78,9 +78,9 @@ class SeparatorItemDecoration(
     private fun Drawable.drawBottomSeparator(view: View, parent: RecyclerView, canvas: Canvas) =
         apply {
             val left = parent.left
-            val top = view.bottom + view.paddingBottom
+            val top = view.bottom
             val right = parent.right
-            val bottom = view.bottom + intrinsicHeight + view.paddingBottom
+            val bottom = view.bottom + intrinsicHeight
             bounds = Rect(left, top, right, bottom)
             draw(canvas)
         }

@@ -60,6 +60,7 @@ import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodExt.setBackIconUnify
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
@@ -282,7 +283,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         setToolbarBackIconUnify()
         setBackgroundDefaultColor()
         setHeaderBackground()
-        setupAppBarLayoutListener()
         setupMerchantLogo()
         setupMerchantProfileCarousel()
         setupProductList()
@@ -472,16 +472,22 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun showLoader() {
         binding?.merchantInfoViewGroup?.hide()
+        binding?.geMerchantPageErrorView?.hide()
+        binding?.toolbarParent?.show()
+        binding?.productListLayout?.show()
         binding?.shimmeringMerchantPage?.root?.show()
     }
 
     private fun hideLoader() {
         binding?.shimmeringMerchantPage?.root?.hide()
+        binding?.geMerchantPageErrorView?.hide()
+        binding?.toolbarParent?.show()
+        binding?.productListLayout?.show()
         binding?.merchantInfoViewGroup?.show()
     }
 
-    private fun showGlobalError(errorType: Int) {
-        binding?.geMerchantPageErrorView?.setType(errorType)
+    private fun showGlobalError(throwable: Throwable) {
+        binding?.geMerchantPageErrorView?.setType(throwable.getGlobalErrorType())
         binding?.geMerchantPageErrorView?.setActionClickListener { fetchMerchantData() }
         binding?.geMerchantPageErrorView?.show()
     }
@@ -510,46 +516,50 @@ class MerchantPageFragment : BaseMultiFragment(),
         merchantShareComponent: MerchantShareComponent,
         storageImagePath: String
     ) {
-        universalShareBottomSheet = null
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@MerchantPageFragment)
-            setUtmCampaignData(
-                pageName = ShareComponentConstants.TOKOFOOD,
-                userId = userSession.userId.orEmpty(),
-                pageIdConstituents = listOf(
-                    ShareComponentConstants.MERCHANT,
-                    merchantShareComponent.id
-                ),
-                feature = SHARE
-            )
-            setMetaData(
-                tnTitle = merchantShareComponent.previewTitle,
-                tnImage = merchantShareComponent.previewThumbnail,
-            )
-            setOgImageUrl(imgUrl = merchantShareComponent.ogImage)
-            imageSaved(storageImagePath)
-        }
+        if (isAdded) {
+            universalShareBottomSheet = null
+            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                init(this@MerchantPageFragment)
+                setUtmCampaignData(
+                    pageName = ShareComponentConstants.TOKOFOOD,
+                    userId = userSession.userId.orEmpty(),
+                    pageIdConstituents = listOf(
+                        ShareComponentConstants.MERCHANT,
+                        merchantShareComponent.id
+                    ),
+                    feature = SHARE
+                )
+                setMetaData(
+                    tnTitle = merchantShareComponent.previewTitle,
+                    tnImage = merchantShareComponent.previewThumbnail,
+                )
+                setOgImageUrl(imgUrl = merchantShareComponent.ogImage)
+                imageSaved(storageImagePath)
+            }
 
-        universalShareBottomSheet?.show(childFragmentManager, this)
+            universalShareBottomSheet?.show(childFragmentManager, this)
+        }
     }
 
     private fun shareFoodItem(
         tokoFoodMerchantProfile: TokoFoodMerchantProfile?,
         productUiModel: ProductUiModel
     ) {
-        merchantShareComponent = null
-        merchantShareComponent = merchantShareComponentUtil?.getFoodShareComponent(
-            tokoFoodMerchantProfile,
-            productUiModel,
-            merchantId
-        )
-        context?.let {
-            merchantShareComponent?.let { merchantShareComponent ->
-                SharingUtil.saveImageFromURLToStorage(
-                    it,
-                    merchantShareComponent.previewThumbnail
-                ) { storageImagePath ->
-                    showFoodShareBottomSheet(merchantShareComponent, storageImagePath)
+        if (isAdded) {
+            merchantShareComponent = null
+            merchantShareComponent = merchantShareComponentUtil?.getFoodShareComponent(
+                tokoFoodMerchantProfile,
+                productUiModel,
+                merchantId
+            )
+            context?.let {
+                merchantShareComponent?.let { merchantShareComponent ->
+                    SharingUtil.saveImageFromURLToStorage(
+                        it,
+                        merchantShareComponent.previewThumbnail
+                    ) { storageImagePath ->
+                        showFoodShareBottomSheet(merchantShareComponent, storageImagePath)
+                    }
                 }
             }
         }
@@ -595,8 +605,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                     val isDeliverable = merchantData.merchantProfile.deliverable
                     if (isDeliverable) {
                         hideLoader()
-                        // hide global error
-                        binding?.geMerchantPageErrorView?.hide()
+                        setupAppBarLayoutListener()
                         // render ticker data if not empty
                         val tickerData = merchantData.ticker
                         if (!viewModel.isTickerDetailEmpty(tickerData)) {
@@ -640,7 +649,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 is Fail -> {
                     binding?.toolbarParent?.hide()
                     binding?.productListLayout?.hide()
-                    showGlobalError(errorType = GlobalError.SERVER_ERROR)
+                    showGlobalError(result.throwable)
                     logExceptionToServerLogger(
                         result.throwable,
                         TokofoodErrorLogger.ErrorType.ERROR_PAGE,

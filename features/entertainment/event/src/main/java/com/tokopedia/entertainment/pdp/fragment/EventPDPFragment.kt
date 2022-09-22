@@ -40,7 +40,11 @@ import com.tokopedia.entertainment.pdp.adapter.factory.EventPDPFactoryImpl
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter
 import com.tokopedia.entertainment.pdp.common.util.EventShare
-import com.tokopedia.entertainment.pdp.data.*
+import com.tokopedia.entertainment.pdp.data.EventPDPContentCombined
+import com.tokopedia.entertainment.pdp.data.Facilities
+import com.tokopedia.entertainment.pdp.data.Outlet
+import com.tokopedia.entertainment.pdp.data.ProductDetailData
+import com.tokopedia.entertainment.pdp.data.ValueBullet
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPModel
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPTabEntity
 import com.tokopedia.entertainment.pdp.data.pdp.OpenHour
@@ -60,6 +64,7 @@ import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -155,7 +160,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             context?.let {
                 renderView(it, eventPDPContentCombined)
                 if(userSession.isLoggedIn){
-                    eventPDPViewModel.getWhiteListUser(userSession.userId.toInt(),userSession.email, productDetailData)
+                    eventPDPViewModel.getWhiteListUser(userSession.userId.toIntSafely(),userSession.email, productDetailData)
                 }
             }
         })
@@ -250,10 +255,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     private fun loadPrice(productDetailData: ProductDetailData) {
-        val price = productDetailData.salesPrice.toInt()
+        val price = productDetailData.salesPrice.toIntSafely()
         tg_event_pdp_price.apply {
             text = if(price != ZERO_PRICE) {
-                 CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toInt())
+                 CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toIntSafely())
             } else {
                  context?.resources?.getString(R.string.ent_free_price) ?: ""
             }

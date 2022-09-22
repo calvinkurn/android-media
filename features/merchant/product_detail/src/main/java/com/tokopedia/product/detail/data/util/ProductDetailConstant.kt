@@ -29,6 +29,7 @@ object ProductDetailConstant {
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
+    const val PAYLOAD_MEDIA_UPDATE = 6
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
@@ -89,6 +90,8 @@ object ProductDetailConstant {
     const val MINI_SHOP_WIDGET = "mini_shop_widget"
     const val CATEGORY_CAROUSEL = "category_carousel"
     const val HAMPERS_INFO = "palugada_hampers"
+    const val PRODUCT_LIST_VERTICAL = "product_list_vertical"
+    const val PDP_VERTICAL_LOADING = "pdp_vertical_loading"
 
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"
@@ -115,6 +118,8 @@ object ProductDetailConstant {
     const val REVIEW_PRD_NM = "x_prd_nm"
     const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"
     const val ARG_CHANNEL = "ARG_CHANNEL"
+    const val ARG_CAMPAIGN_ID = "ARG_CAMPAIGN_ID"
+    const val ARG_VARIANT_ID = "ARG_VARIANT_ID"
 
     //Animation
     const val CART_MAX_COUNT = 99
@@ -176,4 +181,5 @@ object ProductDetailConstant {
     const val WISHLIST_STATUS_KEY = "wishlist_status"
     const val ADD_WISHLIST = "true"
     const val REMOVE_WISHLIST = "false"
+    const val PDP_SOURCE_WISHLIST = "pdp"
 }

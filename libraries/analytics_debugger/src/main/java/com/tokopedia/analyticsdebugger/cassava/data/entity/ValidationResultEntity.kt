@@ -8,6 +8,5 @@ import com.google.gson.annotations.SerializedName
  */
 data class ValidationResultEntity(
         @SerializedName("status")
-        @Expose
         val status: Boolean = false
 )

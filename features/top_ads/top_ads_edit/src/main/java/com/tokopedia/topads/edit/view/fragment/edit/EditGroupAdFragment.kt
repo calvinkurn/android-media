@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_TYPE
@@ -121,9 +122,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         sharedViewModel.setBidSettings(bidSettingsList)
         priceDaily = data.daiyBudget
         if (priceDaily != 0.0F) {
-            toggle?.isChecked = true
             dailyBudget?.visible()
             setCurrentDailyBudget((priceDaily).toInt().toString())
+            toggle?.setOnCheckedChangeListener(null)
+            toggle?.isChecked = true
+            setToggleCheckedListener()
         } else {
             dailyBudget?.gone()
         }
@@ -134,7 +137,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private fun getCurrentTitle() = txtGroupName?.textFieldInput?.text?.toString()
 
     private fun getCurrentDailyBudget(): Int {
-        return dailyBudget?.textFieldInput?.text.toString().removeCommaRawString().toInt()
+        return dailyBudget?.textFieldInput?.text.toString().removeCommaRawString().toIntOrZero()
     }
 
     private fun setCurrentDailyBudget(data: String) {
@@ -172,16 +175,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             groupId = arguments?.getString(GROUP_ID)?.toInt()
             sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
         }
-        toggle?.setOnCheckedChangeListener { _, _ ->
-            if (toggle?.isChecked == true) {
-                dailyBudget?.visibility = View.VISIBLE
-                checkErrorsDailyBudgetTF(getCurrentDailyBudget().toDouble())
-            } else {
-                dailyBudget?.visibility = View.GONE
-                validation3 = true
-                actionEnable()
-            }
-        }
+        setToggleCheckedListener()
+
         txtGroupName?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
         txtGroupName?.textFieldInput?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -192,6 +187,19 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         }
         setGroupNameWatcher()
         setDailyBudgetWatcher()
+    }
+
+    private fun setToggleCheckedListener () {
+        toggle?.setOnCheckedChangeListener { _, _ ->
+            if (toggle?.isChecked == true) {
+                dailyBudget?.visibility = View.VISIBLE
+                checkErrorsDailyBudgetTF(getCurrentDailyBudget().toDouble())
+            } else {
+                dailyBudget?.visibility = View.GONE
+                validation3 = true
+                actionEnable()
+            }
+        }
     }
 
     private fun updateValidation3IfDailyBudgetTFVisible(state: Boolean) = dailyBudget?.let {

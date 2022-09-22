@@ -14,8 +14,6 @@ import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import io.mockk.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,7 +23,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 199
+        const val SIZE_MAPPER = 196
     }
 
     override fun setup() {
@@ -613,7 +611,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check digital subhome page appLink then should return tokopedia internal recharge home in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://recharge/home"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://recharge/home/dynamic?platform_id=53&personalize=false"
         assertEqualsDeepLinkMapper(ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME, expectedDeepLink)
     }
 
@@ -730,6 +728,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check search universal search page applink then should return tokopedia internal universal search in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/universal"
+        assertEqualsDeepLinkMapper(ApplinkConst.DISCOVERY_SEARCH_UNIVERSAL, expectedDeepLink)
+    }
+
+    @Test
     fun `check hotlist detail appLink then should return tokopedia internal hotlist detail in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=baju"
@@ -741,6 +745,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check category appLink then should return tokopedia internal category in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://catalog"
         assertEqualsDeepLinkMapper(ApplinkConst.DISCOVERY_CATALOG, expectedDeepLink)
+    }
+
+    @Test
+    fun `check epharmacy appLink then should return tokopedia internal category in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://epharmacy"
+        assertEqualsDeepLinkMapper(ApplinkConst.EPHARMACY, expectedDeepLink)
     }
 
     @Test
@@ -1034,21 +1044,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check ovo register init then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/ovo-reg-init"
-        assertEqualsDeepLinkMapper(ApplinkConst.OVO_REGISTER_INIT, expectedDeepLink)
-    }
-
-    @Test
     fun `check register init then should return tokopedia internal`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/init-register"
         assertEqualsDeepLinkMapper(ApplinkConst.REGISTER_INIT, expectedDeepLink)
-    }
-
-    @Test
-    fun `check ovo final page then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/ovo-final-page"
-        assertEqualsDeepLinkMapper(ApplinkConst.OVO_FINAL_PAGE, expectedDeepLink)
     }
 
     @Test
@@ -1627,25 +1625,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check content create post appLink then should return tokopedia internal content create post in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://content/create_post/"
-        assertEqualsDeepLinkMapper(ApplinkConst.CONTENT_CREATE_POST, expectedDeepLink)
-    }
-
-    @Test
-    fun `check content draft post appLink then should return tokopedia internal content draft post in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://content/draft/1234"
-        val appLink = UriUtil.buildUri(ApplinkConst.CONTENT_DRAFT_POST, "1234")
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check interest pick appLink then should return tokopedia internal interest pick in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://interestpick"
-        assertEqualsDeepLinkMapper(ApplinkConst.INTEREST_PICK, expectedDeepLink)
-    }
-
-    @Test
     fun `check kol comment appLink then should return tokopedia internal kol comment in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://content/comment/1234?isFromApplink=true"
@@ -1662,27 +1641,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             "https://www.youtube.com/watch?v=U5BwfqBpiWU"
         )
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check affiliate create post appLink then should return tokopedia internal affiliate create post in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/create_post/123456/123456"
-        val appLink = UriUtil.buildUri(ApplinkConst.AFFILIATE_CREATE_POST, "123456", "123456")
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check affiliate draft post appLink then should return tokopedia internal affiliate draft post in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/draft/123456"
-        val appLink = UriUtil.buildUri(ApplinkConst.AFFILIATE_DRAFT_POST, "123456")
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check affiliate default create post appLink then should return tokopedia internal affiliate default create post in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/create_post/"
-        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST, expectedDeepLink)
     }
 
     @Test
@@ -2214,6 +2172,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
         val expectedDeepLink2 = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/help"
         assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_HELP, expectedDeepLink2)
+
+        val expectedDeepLink3 = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/transaction-history"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_TRANSACTION_HISTORY, expectedDeepLink3)
     }
 
     @Test

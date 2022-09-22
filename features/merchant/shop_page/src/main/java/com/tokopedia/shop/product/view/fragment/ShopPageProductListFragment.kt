@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -33,8 +34,11 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -55,7 +59,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FEATURED_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_ADD_PRODUCT
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
@@ -65,7 +68,6 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_P
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_RENDER
-import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
@@ -73,6 +75,7 @@ import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
+import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -80,7 +83,6 @@ import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewM
 import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
-import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
@@ -89,6 +91,7 @@ import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
+import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
@@ -623,13 +626,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductUiModel: ShopProductUiModel,
         position: Int
     ) {
-        shopPageTracking?.onImpressionProductAtcButton(
-            shopProductUiModel,
-            ShopPageConstant.ShopProductCardAtc.CARD_PRODUCT,
-            position,
-            shopId,
-            userId
-        )
+        if(isEnableDirectPurchase) {
+            shopPageTracking?.onImpressionProductAtcDirectPurchaseButton(
+                shopProductUiModel,
+                ShopPageConstant.ShopProductCardAtc.CARD_PRODUCT,
+                position,
+                shopId,
+                userId
+            )
+        }
     }
 
     private fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {
@@ -716,7 +721,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                         isGoldMerchant -> TrackShopTypeDef.GOLD_MERCHANT
                         else -> TrackShopTypeDef.REGULAR_MERCHANT
                     }
-                    shopPageTracking?.sendScreenShopPage(shopId, shopType, SCREEN_ADD_PRODUCT)
+                    shopPageTracking?.sendOpenScreenAddProduct(shopId, shopType)
                 }
             }
             else -> {
@@ -1016,13 +1021,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun goToPDP(productAppLink: String, attribution: String?, listNameOfProduct: String) {
+        val pdpAppLink = createAffiliateLink(productAppLink)
         context?.let {
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            val intent = RouteManager.getIntent(context, productAppLink)
+            val intent = RouteManager.getIntent(context, pdpAppLink)
             startActivity(intent)
         }
+    }
+
+    private fun createAffiliateLink(basePdpAppLink: String): String {
+        return (activity as? ShopPageSharedListener)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
     }
 
     override fun loadData(page: Int) {
@@ -1197,7 +1207,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun sendClickAddToCartTracker(atcTrackerModel: ShopPageAtcTracker) {
-        shopPageTracking?.onClickProductAtcButton(
+        shopPageTracking?.onClickProductAtcDirectPurchaseButton(
             atcTrackerModel,
             shopId,
             customDimensionShopPage.shopType.orEmpty(),
@@ -1417,8 +1427,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             when (it) {
                 is Success -> {
                     val totalProduct = it.data.totalProductData
-                    if(!isOwner)
-                        updateProductChangeGridSection(totalProduct)
+                    val currentPage = it.data.currentPage
+                    if(!isOwner) {
+                        val isProductListEmpty = (it.data.listShopProductUiModel.size.isZero() && currentPage == Int.ONE) || totalProduct.isZero()
+                        updateProductChangeGridSection(isProductListEmpty, totalProduct)
+                    }
                     onSuccessGetProductListData(it.data.hasNextPage, it.data.listShopProductUiModel)
                     productListName = it.data.listShopProductUiModel.joinToString(",") { product -> product.name.orEmpty() }
                 }
@@ -1490,22 +1503,26 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.shopProductFilterCountLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessGetShopProductFilterCount(it.data)
+                    onSuccessGetShopProductFilterCount(count = it.data)
                 }
             }
         })
 
     }
 
-    private fun updateProductChangeGridSection(totalProduct: Int) {
-        shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProduct, gridType)
+    private fun updateProductChangeGridSection(isProductListEmpty: Boolean, totalProduct: Int = 0) {
+        shopProductAdapter.updateShopPageProductChangeGridSectionIcon(isProductListEmpty, totalProduct, gridType)
     }
 
-    private fun onSuccessGetShopProductFilterCount(count: Int) {
-        val countText = String.format(
+    private fun onSuccessGetShopProductFilterCount(count: Int = Int.ZERO, isFulfillmentFilterActive: Boolean = false) {
+        val countText = if (isFulfillmentFilterActive) {
+            getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
+        } else {
+            String.format(
                 getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
                 count.thousandFormatted()
-        )
+            )
+        }
         sortFilterBottomSheet?.setResultCountText(countText)
     }
 
@@ -1793,12 +1810,19 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun getResultCount(mapParameter: Map<String, String>) {
         val tempShopProductFilterParameter = ShopProductFilterParameter()
         tempShopProductFilterParameter.setMapData(mapParameter)
-        viewModel.getFilterResultCount(
+        shopProductFilterParameterSharedViewModel?.setFulfillmentFilterActiveStatus(mapParameter)
+        val isFulfillmentFilterActive = shopProductFilterParameterSharedViewModel?.isFulfillmentFilterActive.orFalse()
+        if (isFulfillmentFilterActive) {
+            // if fulfillment filter is active then avoid gql call to get total product
+            onSuccessGetShopProductFilterCount(isFulfillmentFilterActive = isFulfillmentFilterActive)
+        } else {
+            viewModel.getFilterResultCount(
                 shopId,
                 ShopUtil.getProductPerPage(context),
                 tempShopProductFilterParameter,
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
-        )
+            )
+        }
     }
 
     private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {

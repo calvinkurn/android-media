@@ -17,7 +17,9 @@ import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.*
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.Companion.TYPE_CASHBACK
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.Companion.TYPE_DISCOUNT
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.Companion.TYPE_FREE_ONGKIR
 import com.tokopedia.merchantvoucher.common.model.*
 
 

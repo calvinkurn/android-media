@@ -160,7 +160,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
                 stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
-                price = if (it.discount != 0) {
+                price = if (it.discount != 0L) {
                     DiscountedPrice(
                         originalPrice = it.originalPriceFormatted,
                         originalPriceNumber = it.originalPrice,
@@ -239,13 +239,13 @@ class PlayBroadcastUiMapper @Inject constructor(
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
                 stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
-                price = if (it.discount.toInt() != 0) {
+                price = if (it.discount.toLong() != 0L) {
                     DiscountedPrice(
                         originalPrice = it.originalPriceFmt,
                         originalPriceNumber = it.originalPrice.toDouble(),
                         discountedPrice = it.priceFmt,
                         discountedPriceNumber = it.price.toDouble(),
-                        discountPercent = it.discount.toInt()
+                        discountPercent = it.discount.toLong()
                     )
                 } else {
                     OriginalPrice(

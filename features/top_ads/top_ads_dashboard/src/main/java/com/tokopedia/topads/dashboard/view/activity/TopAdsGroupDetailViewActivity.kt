@@ -26,6 +26,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.analytics.TopAdsGroupDetailTrackerImpl
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
@@ -39,6 +40,7 @@ import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
+import com.tokopedia.topads.common.data.util.TopAdsEditUtils
 import com.tokopedia.topads.common.view.TopadsAutoBidSwitchPartialLayout
 import com.tokopedia.topads.common.view.sheet.BidInfoBottomSheet
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -69,7 +71,6 @@ import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.tracker.TopAdsGroupDetailTrackerImpl
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.interfaces.ChangePlacementFilter
@@ -103,6 +104,8 @@ private const val CLICK_TAB_PRODUK = "click - tab produk"
 private const val CLICK_TAB_KATA_KUNCI = "click - tab kata kunci"
 private const val CLICK_TAB_NEG_KATA_KUNCI = "click - tab kata kunci negatif"
 private const val CLICK_GROUP_EDIT_ICON = "click - edit form"
+private const val BID_TYPE_SEARCH = "search"
+private const val BID_TYPE_BROWSE = "browse"
 class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<TopAdsDashboardComponent>, CompoundButton.OnCheckedChangeListener, ChangePlacementFilter {
 
     private var switchAutoBidLayout : TopadsAutoBidSwitchPartialLayout ?= null
@@ -139,14 +142,14 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var minSuggestKeyword = "0"
     private var maxSuggestKeyword = "0"
     private var suggestedBid = "0"
-    private var bidType = "search"
+    private var bidType = BID_TYPE_SEARCH
     private var searchBid: Float? = 0.0F
     private var rekommendedBid: Float? = 0.0F
     private var bidTypeData: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
     private var placementType: Int = 0
     private val bidSwitchManualBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
         BidSwitchManualBudgetBottomSheet(maxSuggestKeyword, minSuggestKeyword, suggestedBid,
-            ::onSaveClickedInManualBottomSheet, trackerImpl)
+            ::onSaveClickedInManualBottomSheet)
     }
     private val bidInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { BidInfoBottomSheet() }
 
@@ -155,7 +158,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     @set: Inject
-    var trackerImpl: TopAdsGroupDetailTrackerImpl ?= null
+    var trackerImpl: TopAdsGroupDetailTrackerImpl?= null
 
     override fun loadChildStatisticsData() {
         loadData()
@@ -289,17 +292,26 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(false))
             sheet.show(supportFragmentManager, "")
             sheet.onSaved = { bid, pos ->
-                saveBidData(bid, "search")
+                saveBidData(
+                    bid, BID_TYPE_SEARCH, dailyBudget = TopAdsEditUtils.calculateDailyBudget(
+                        bid.toIntSafely(), rekommendedBid.toIntSafely()
+                    )
+                )
             }
         }
 
         editRekomendasiBudget?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
-                EDIT_BIAYA_REKOMENDASI, "")
+                EDIT_BIAYA_REKOMENDASI, ""
+            )
             val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(true))
             sheet.show(supportFragmentManager, "")
             sheet.onSaved = { bid, pos ->
-                saveBidData(bid, "browse")
+                saveBidData(
+                    bid, BID_TYPE_BROWSE, dailyBudget = TopAdsEditUtils.calculateDailyBudget(
+                        searchBid.toIntSafely(), bid.toIntSafely()
+                    )
+                )
             }
         }
 
@@ -388,7 +400,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         dailyBudgetProgressBar = findViewById(R.id.daily_budget_progress_bar)
     }
 
-    private fun saveBidData(bid: String, bidType: String) {
+    private fun saveBidData(bid: String, bidType: String, dailyBudget: Int) {
         val dataMap = HashMap<String, Any?>()
         this.bidType = bidType
         try {
@@ -396,7 +408,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             dataMap["groupName"] = groupName
             dataMap[GROUPID] = groupId
             dataMap[NAME_EDIT] = true
-            if (this.bidType == "browse") {
+            dataMap[DAILY_BUDGET] = dailyBudget.toString()
+            if (this.bidType == BID_TYPE_BROWSE) {
                 bidTypeData?.clear()
                 bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, bid.toFloat()))
                 bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, searchBid))
@@ -420,7 +433,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
 
     private fun onSuccesGroupEdit() {
-        val successMessage = if (bidType == "search") {
+        val successMessage = if (bidType == BID_TYPE_SEARCH) {
             getString(com.tokopedia.topads.common.R.string.bid_edit_search_successful)
         } else {
             getString(com.tokopedia.topads.common.R.string.bid_edit_browse_successful)
