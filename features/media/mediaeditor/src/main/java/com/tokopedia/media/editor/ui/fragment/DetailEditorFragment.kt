@@ -354,7 +354,7 @@ class DetailEditorFragment @Inject constructor(
     private fun observeEditorParamModel() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
             if(data.isToolCrop() || data.isToolRotate()){
-                // needed to trigger crop tools draw and get the highest height between rotate & crop
+                // ucrop height must be same between rotate & crop to get same result when implement state
                 // crop item is dynamic according to the editor param
                 rotateComponent.setupView(data)
                 cropComponent.setupView(it, data)
@@ -384,8 +384,8 @@ class DetailEditorFragment @Inject constructor(
                         rotateComponent.container().hide()
                         viewBinding?.imgUcropPreview?.initializeCrop(uri, this@DetailEditorFragment)
                     } else {
-                        rotateComponent.initRotateSlider(data.cropRotateValue.rotateDegree.toInt())
                         cropComponent.container().hide()
+                        viewBinding?.imgUcropPreview?.setOverlayRotate()
                         viewBinding?.imgUcropPreview?.initializeRotate(uri, this@DetailEditorFragment, data)
                     }
                 }

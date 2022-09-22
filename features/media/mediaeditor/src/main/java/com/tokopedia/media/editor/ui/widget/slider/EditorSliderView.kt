@@ -66,8 +66,6 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
         sliderStepValue = stepValue
         sliderInitialPosition = initialPosition ?: startValue
 
-        resetSlider()
-
         post {
             initSliderValue()
             moveThumb()
@@ -86,8 +84,6 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
     }
 
     private fun moveThumb() {
-        if (sliderInitialPosition == sliderStartValue) return
-
         // got step size on px
         val stepSize = (sliderWidth - thumbWidth) / sliderStepNumber
 
@@ -114,11 +110,6 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
         )
 
         sliderText.text = sliderInitialPosition.toString()
-    }
-
-    private fun resetSlider() {
-        updateSliderTextValue()
-        sliderThumb.x = 0f
     }
 
     private fun updateSliderTextValue() {

@@ -27,20 +27,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
 
     fun initializeRotate(uriSource: Uri, listener: Listener, data: EditorDetailUiModel) {
         val resultDestination = getUCropTempResultPath()
-
         cropImageView.setImageUri(uriSource, resultDestination)
-
-        overlayView.apply {
-            setDimmedColor(
-                ContextCompat.getColor(
-                    context,
-                    principleR.color.Unify_NN50
-                )
-            )
-
-            setCropGridColor(Color.TRANSPARENT)
-        }
-
         disabledTouchEvent()
         initListener(listener)
     }
@@ -52,8 +39,17 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         initListener(listener)
     }
 
-    fun getBitmap(): Bitmap {
-        return cropImageView.drawable.toBitmap()
+    fun setOverlayRotate(){
+        overlayView.apply {
+            setDimmedColor(
+                ContextCompat.getColor(
+                    context,
+                    principleR.color.Unify_NN50
+                )
+            )
+
+            setCropGridColor(Color.TRANSPARENT)
+        }
     }
 
     // conditional crop function for rotate feature

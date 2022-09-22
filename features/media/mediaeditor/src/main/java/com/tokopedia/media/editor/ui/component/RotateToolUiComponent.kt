@@ -28,7 +28,14 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
     fun setupView(paramData: EditorDetailUiModel) {
         container().show()
 
-        initRotateSlider(paramData.cropRotateValue.rotateDegree.toInt())
+        rotateSlider.setRangeSliderValue(
+            ROTATE_SLIDER_START_VALUE,
+            ROTATE_SLIDER_STEP_NUMBER,
+            ROTATE_SLIDER_STEP_VALUE,
+            paramData.cropRotateValue.rotateDegree.toInt()
+        )
+
+        rotateSlider.listener = this
 
         flipBtn.apply {
             setImageDrawable(
@@ -42,17 +49,6 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
         rotateBtn.setOnClickListener {
             listener.onImageRotate(ROTATE_BTN_DEGREE)
         }
-    }
-
-    fun initRotateSlider(initialPosition: Int){
-        rotateSlider.setRangeSliderValue(
-            ROTATE_SLIDER_START_VALUE,
-            ROTATE_SLIDER_STEP_NUMBER,
-            ROTATE_SLIDER_STEP_VALUE,
-            initialPosition
-        )
-
-        rotateSlider.listener = this
     }
 
     private fun updateRotation() {
