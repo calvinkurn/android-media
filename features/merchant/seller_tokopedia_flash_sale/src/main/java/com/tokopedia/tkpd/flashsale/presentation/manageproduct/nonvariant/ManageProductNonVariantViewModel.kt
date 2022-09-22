@@ -8,11 +8,10 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
-import com.tokopedia.tkpd.flashsale.util.constant.NumericalNormalizationConstant.BULK_APPLY_PERCENT_NORMALIZATION
 import javax.inject.Inject
-import kotlin.math.round
 
 class ManageProductNonVariantViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
@@ -21,6 +20,12 @@ class ManageProductNonVariantViewModel @Inject constructor(
 
     private val _isMultiloc: MutableLiveData<Boolean> = MutableLiveData()
     val isMultiloc: LiveData<Boolean> get() = _isMultiloc
+
+    private val _enableBulkApply: MutableLiveData<Boolean> = MutableLiveData()
+    val enableBulkApply: LiveData<Boolean> get() = _enableBulkApply
+
+    private val _bulkApplyCaption: MutableLiveData<String> = MutableLiveData()
+    val bulkApplyCaption: LiveData<String> get() = _bulkApplyCaption
 
     private val _isInputPageValid: MutableLiveData<Boolean> = MutableLiveData()
     val isInputPageValid: LiveData<Boolean> get() = _isInputPageValid
@@ -42,6 +47,14 @@ class ManageProductNonVariantViewModel @Inject constructor(
         _isMultiloc.value = product.isMultiWarehouse
     }
 
+    fun checkEnableBulkApply(warehouses: List<Warehouse>) {
+        _enableBulkApply.value = warehouses.any { it.isToggleOn }
+    }
+
+    fun getBulkApplyCaption(warehouses: List<Warehouse>) {
+        _bulkApplyCaption.value = errorMessageHelper.getBulkApplyCaption(warehouses)
+    }
+
     fun validateInputPage(warehouses: List<Warehouse>, criteria: ProductCriteria) {
         _isInputPageValid.value = warehouses
             .filter { it.isToggleOn }
@@ -49,10 +62,10 @@ class ManageProductNonVariantViewModel @Inject constructor(
     }
 
     fun calculatePrice(percentInput: Long, originalPrice: Long): String {
-        return (BULK_APPLY_PERCENT_NORMALIZATION - (percentInput * originalPrice / BULK_APPLY_PERCENT_NORMALIZATION)).toString()
+        return DiscountUtil.calculatePrice(percentInput, originalPrice).toString()
     }
 
     fun calculatePercent(priceInput: Long, originalPrice: Long): String {
-        return round(((originalPrice.toDouble() - priceInput.toDouble()) / originalPrice.toDouble()) * BULK_APPLY_PERCENT_NORMALIZATION).toInt().toString()
+        return DiscountUtil.calculatePercent(priceInput, originalPrice).toString()
     }
 }

@@ -36,7 +36,7 @@ class ManageProductNonVariantMultilocAdapter: RecyclerView.Adapter<ManageProduct
 
     fun getDataList() = product?.warehouses.orEmpty()
 
-    fun setListener(listener: ManageProductNonVariantAdapterListener) {
+    fun setListener(listener: ManageProductNonVariantAdapterListener?) {
         this.listener = listener
     }
 

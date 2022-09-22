@@ -199,6 +199,8 @@
     <string name="manageproductnonvar_min_message_format">Min. %s</string>
     <string name="manageproductnonvar_max_message_format">Maks. %s</string>
     <string name="manageproductnonvar_range_message_format">%s-%s</string>
+    <string name="manageproductnonvar_bulk_apply_empty_text">Aktifkan lokasi untuk Atur Sekaligus</string>
+    <string name="manageproductnonvar_bulk_apply_text">Atur Sekaligus %d Lokasi</string>
 
     <!-- Bulk Apply -->
     <string name="bulk_apply_title">Atur Sekaligus</string>

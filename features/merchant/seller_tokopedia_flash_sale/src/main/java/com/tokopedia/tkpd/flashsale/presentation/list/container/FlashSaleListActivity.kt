@@ -28,7 +28,7 @@ class FlashSaleListActivity : BaseSimpleActivity() {
         setContentView(R.layout.stfs_activity_flash_sale_list_container)
         ManageProductNonVariantActivity.start(this, ReservedProduct.Product(
             childProducts = emptyList(),
-            isMultiWarehouse = false,
+            isMultiWarehouse = true,
             isParentProduct = true,
             name = "Alat Pemuas Batin",
             picture = "https://placekitten.com/100/100",

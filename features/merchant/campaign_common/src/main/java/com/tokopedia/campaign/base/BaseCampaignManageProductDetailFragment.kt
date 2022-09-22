@@ -225,7 +225,7 @@ abstract class BaseCampaignManageProductDetailFragment<RA : RecyclerView.Adapter
     /**
      * You can override this function to define the action when clicking widget bulk apply
      */
-    protected fun onWidgetBulkApplyClicked() {}
+    protected open fun onWidgetBulkApplyClicked() {}
 
     /**
      * Can be used to set widget bulk apply title
