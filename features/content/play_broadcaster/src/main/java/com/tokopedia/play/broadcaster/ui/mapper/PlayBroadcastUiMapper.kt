@@ -256,8 +256,11 @@ class PlayBroadcastUiMapper @Inject constructor(
             )
         }
 
-    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
-        return if (timestamp.publishedAt.isBlank()) BroadcastScheduleUiModel.NoSchedule
+    override fun mapChannelSchedule(
+        timestamp: GetChannelResponse.Timestamp,
+        status: GetChannelResponse.ChannelBasicStatus
+    ): BroadcastScheduleUiModel {
+        return if (timestamp.publishedAt.isBlank() || ChannelStatus.getByValue(status.id) == ChannelStatus.Live) BroadcastScheduleUiModel.NoSchedule
         else {
             val scheduleDate = timestamp.publishedAt.toDateWithFormat(DATE_FORMAT_RFC3339)
             BroadcastScheduleUiModel.Scheduled(

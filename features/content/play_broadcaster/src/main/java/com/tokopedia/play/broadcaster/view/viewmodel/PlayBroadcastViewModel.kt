@@ -494,7 +494,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     channel.basic.coverUrl
                 )
             )
-            setBroadcastSchedule(playBroadcastMapper.mapChannelSchedule(channel.basic.timestamp))
+            setBroadcastSchedule(playBroadcastMapper.mapChannelSchedule(channel.basic.timestamp, channel.basic.status))
 
             generateShareLink(playBroadcastMapper.mapShareInfo(channel))
             null
