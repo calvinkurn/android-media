@@ -226,8 +226,10 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         if (isBranchUrlActive()) {
             val branchStart = System.currentTimeMillis()
             LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(0,
-                    productDataToLinkerDataMapper(data), object : ShareCallback {
+                LinkerUtils.createShareRequest(
+                    0,
+                    productDataToLinkerDataMapper(data),
+                    object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult) {
                             val branchEnd = System.currentTimeMillis()
                             branchTime = (branchEnd - branchStart)
@@ -329,46 +331,27 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             }
 
             LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(0,
-                    linkerShareData, object : ShareCallback {
-                        override fun urlCreated(linkerShareResult: LinkerShareResult) {
-                            val branchEnd = System.currentTimeMillis()
-                            branchTime = (branchEnd - branchStart)
-                            postBuildImage.invoke()
-                            try {
-                                val shareString = productData.getTextDescription(
-                                    activity.applicationContext,
-                                    linkerShareResult.url
-                                )
-                                shareModel.subjectName = productData.productName ?: ""
-                                SharingUtil.executeShareIntent(
-                                    shareModel,
-                                    linkerShareResult,
-                                    activity,
-                                    parentView,
-                                    shareString
-                                )
-                            } catch (e: Exception) {
-                                err.add(e)
-                                logExceptionToFirebase(e)
-                                openIntentShareDefaultUniversalSharing(
-                                    null, productData.productName ?: "",
-                                    productData.getTextDescription(
-                                        activity.applicationContext,
-                                        linkerShareData.linkerData.renderShareUri()
-                                    ),
-                                    linkerShareData.linkerData.renderShareUri()
-                                )
-                            }
-
-                            if (isLog) {
-                                log(mode, resourceReady, imageProcess, branchTime, err, null)
-                            }
-                            universalShareBottomSheet?.dismiss()
-                        }
-
-                        override fun onError(linkerError: LinkerError) {
-                            postBuildImage.invoke()
+                LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                    override fun urlCreated(linkerShareResult: LinkerShareResult) {
+                        val branchEnd = System.currentTimeMillis()
+                        branchTime = (branchEnd - branchStart)
+                        postBuildImage.invoke()
+                        try {
+                            val shareString = productData.getTextDescription(
+                                activity.applicationContext,
+                                linkerShareResult.url
+                            )
+                            shareModel.subjectName = productData.productName ?: ""
+                            SharingUtil.executeShareIntent(
+                                shareModel,
+                                linkerShareResult,
+                                activity,
+                                parentView,
+                                shareString
+                            )
+                        } catch (e: Exception) {
+                            err.add(e)
+                            logExceptionToFirebase(e)
                             openIntentShareDefaultUniversalSharing(
                                 null, productData.productName ?: "",
                                 productData.getTextDescription(
@@ -377,12 +360,30 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                                 ),
                                 linkerShareData.linkerData.renderShareUri()
                             )
-                            if (isLog) {
-                                log(mode, resourceReady, imageProcess, branchTime, err, linkerError)
-                            }
-                            universalShareBottomSheet?.dismiss()
                         }
-                    })
+
+                        if (isLog) {
+                            log(mode, resourceReady, imageProcess, branchTime, err, null)
+                        }
+                        universalShareBottomSheet?.dismiss()
+                    }
+
+                    override fun onError(linkerError: LinkerError) {
+                        postBuildImage.invoke()
+                        openIntentShareDefaultUniversalSharing(
+                            null, productData.productName ?: "",
+                            productData.getTextDescription(
+                                activity.applicationContext,
+                                linkerShareData.linkerData.renderShareUri()
+                            ),
+                            linkerShareData.linkerData.renderShareUri()
+                        )
+                        if (isLog) {
+                            log(mode, resourceReady, imageProcess, branchTime, err, linkerError)
+                        }
+                        universalShareBottomSheet?.dismiss()
+                    }
+                })
             )
         } else {
             postBuildImage.invoke()

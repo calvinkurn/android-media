@@ -19,13 +19,13 @@ class ProductAnnotationBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BsProductSpecificationBinding>()
 
-    private val title by lazy {
+    private val title by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getString(ARG_TITLE).orEmpty().ifEmpty {
             getString(R.string.merchant_product_detail_label_specification_product)
         }
     }
 
-    private val annotation: Array<ProductDetailInfoContent> by lazy {
+    private val annotation: Array<ProductDetailInfoContent> by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getParcelableArray(ARG_ANNOTATION).orEmpty() as Array<ProductDetailInfoContent>
     }
 
