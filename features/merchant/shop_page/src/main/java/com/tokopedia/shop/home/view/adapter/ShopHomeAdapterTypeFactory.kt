@@ -114,7 +114,7 @@ open class ShopHomeAdapterTypeFactory(
             VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER, ADD_ONS -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
-            FLASH_SALE_TOKO -> ShopHomeFlashSaleViewHolder.LAYOUT
+            FLASH_SALE_TOKO -> getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel)
             PLAY_CAROUSEL_WIDGET -> CarouselPlayWidgetViewHolder.LAYOUT
             INFO_CARD -> ShopHomeCardDonationViewHolder.LAYOUT
             PRODUCT_BUNDLE_SINGLE, PRODUCT_BUNDLE_MULTIPLE -> ShopHomeProductBundleParentWidgetViewHolder.LAYOUT
@@ -143,6 +143,13 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeNplCampaignPlaceholderViewHolder.LAYOUT
         else
             ShopHomeNplCampaignViewHolder.LAYOUT
+    }
+
+    private fun getShopFlashSaleViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeCarousellProductPlaceholderViewHolder.LAYOUT
+        else
+            ShopHomeFlashSaleViewHolder.LAYOUT
     }
 
     private fun getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {

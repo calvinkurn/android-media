@@ -22,7 +22,7 @@ object CatalogDetailAnalytics {
     }
 
     fun sendEvent(event: String, category: String,
-                  action: String, label: String, userId : String, catalogId: String) {
+                  action: String, label: String, userId : String, catalogId: String, trackerId: String?="") {
         HashMap<String,Any>().apply {
             put(EventKeys.KEY_EVENT,event)
             put(EventKeys.KEY_EVENT_CATEGORY,category)
@@ -32,6 +32,9 @@ object CatalogDetailAnalytics {
             put(EventKeys.KEY_CATALOG_ID,catalogId)
             put(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
             put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+            if(!trackerId.isNullOrEmpty()){
+                put(EventKeys.KEY_TRACKER_ID, trackerId)
+            }
         }.also {
             getTracker().sendGeneralEvent(it)
         }
@@ -220,6 +223,7 @@ object CatalogDetailAnalytics {
 
             const val KEY_BUSINESS_UNIT = "businessUnit"
             const val KEY_CURRENT_SITE = "currentSite"
+            const val KEY_TRACKER_ID = "trackerId"
 
             const val KEY_PROMOTIONS = "promotions"
             const val BUSINESS_UNIT_VALUE= "Physical Goods"
@@ -290,6 +294,9 @@ object CatalogDetailAnalytics {
             const val CLICK_GANTI_PERBANDINGAN = "click ganti perbandingan - perbandingan produk"
             const val CLICK_SEARCH_BAR_PERBANDINGAN_PRODUK = "click search bar - perbandingan produk"
             const val CLICK_BANDINGKAN_PERBANDINGAN_PRODUK= "click bandingkan - perbandingan produk"
+            const val CLICK_NEXT_CATALOG_PAGE_PERBANDINGAN_PRODUK = "click next catalog page - perbandingan produk"
+            const val CLICK_DROP_UP_BUTTON_PERBANDINGAN_PRODUK = "click drop up button - perbandingan produk"
+            const val CLICK_DROP_DOWN_BUTTON_PERBANDINGAN_PRODUK = "click drop down button - perbandingan produk"
 
             const val KATALOG_PiILIHAN_UNTUKMU = "katalog pilihan untukmu"
             const val CLICK_KATALOG_PILIHAN_UNTUKMU = "click katalog pilihan untukmu"
@@ -336,6 +343,18 @@ object CatalogDetailAnalytics {
             const val IDR = "IDR"
 
             const val CATALOG_URL_KEY = "/catalog/"
+        }
+    }
+
+    interface TrackerId{
+        companion object {
+            const val OPEN_BOTTOMSHEET = "27182"
+            const val CLICK_SEARCH_BAR = "27183"
+            const val CLICK_BANDINGAN = "27184"
+            const val CLICK_NEXT_CATALOG_PAGE = "28893"
+            const val CLICK_DROP_UP_BUTTON = "35721"
+            const val CLICK_DROP_DOWN_BUTTON = "35722"
+
         }
     }
 
