@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.core.content.ContextCompat
@@ -41,13 +40,10 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
+import com.tokopedia.catalog.model.datamodel.CatalogComparisonNewDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
-import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.catalog.model.raw.ComparisionModel
-import com.tokopedia.catalog.model.raw.TopSpecificationsComponentData
-import com.tokopedia.catalog.model.raw.VideoComponentData
+import com.tokopedia.catalog.model.raw.*
 import com.tokopedia.catalog.model.util.CatalogConstant
-import com.tokopedia.catalog.model.util.CatalogConstant.CATALOG_PRODUCT_BS_NEW_DESIGN
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
@@ -154,6 +150,8 @@ class CatalogDetailPageFragment : Fragment(),
     private var lastAttachItemPosition : Int = 0
     private var isScrollDownButtonClicked = false
 
+    private var isNewComparison = false
+
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
@@ -177,6 +175,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRollence()
         injectComponents()
         initViews(view)
         if (arguments != null) {
@@ -235,6 +234,17 @@ class CatalogDetailPageFragment : Fragment(),
                 slideUpMoreProductsView()
             }
         }
+    }
+
+    private fun initRollence() {
+        isNewComparison =
+            when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                CatalogConstant.CATALOG_COMPARISON,
+                ""
+            )) {
+                CatalogConstant.CATALOG_COMPARISON -> true
+                else -> false
+            }
     }
 
     private fun initViews(parentView : View) {
@@ -299,7 +309,15 @@ class CatalogDetailPageFragment : Fragment(),
                         catalogUiUpdater.updateModel(component)
                         if(component is CatalogComparisionDataModel && comparisonCatalogId.isBlank()){
                             recommendedCatalogId = (component).comparisionCatalog[CatalogConstant.COMPARISION_DETAIL]?.id ?: ""
+                        }else if(component is CatalogComparisonNewDataModel && comparisonCatalogId.isBlank()){
+                            recommendedCatalogId = component.specsList?.firstOrNull()?.subcard?.firstOrNull()?.featureRightData?.id ?: ""
                         }
+
+                    }
+                    if (isNewComparison) {
+                        catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON)
+                    } else {
+                        catalogUiUpdater.mapOfData.remove(CatalogConstant.COMPARISON_NEW)
                     }
                     catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
@@ -712,6 +730,50 @@ class CatalogDetailPageFragment : Fragment(),
             catalogBrand, catalogDepartmentId, recommendedCatalogId,
             CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,this)
         catalogComparisonBottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun openComparisonNewBottomSheet(comparisonNewModel: ComparisonNewModel?) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_GANTI_PERBANDINGAN,
+            "catalog page: $catalogId | catalog comparison: ${comparisonNewModel?.id ?: ""}",userSession.userId,catalogId,
+            CatalogDetailAnalytics.TrackerId.OPEN_BOTTOMSHEET)
+
+        val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(catalogName,catalogId,
+            catalogBrand, catalogDepartmentId, recommendedCatalogId,
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,this)
+        catalogComparisonBottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun comparisonNewCatalogClicked(comparisonCatalogId: String) {
+        context.let {
+            CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_NEXT_CATALOG_PAGE_PERBANDINGAN_PRODUK,
+                "catalog page: $catalogId | next catalog page: $comparisonCatalogId", userSession.userId, catalogId,
+                CatalogDetailAnalytics.TrackerId.CLICK_NEXT_CATALOG_PAGE)
+            RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisonCatalogId}")
+        }
+    }
+
+    override fun accordionDropUp(tabName: String?) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_DROP_UP_BUTTON_PERBANDINGAN_PRODUK,
+            "$catalogName - $catalogId - tabName: $tabName", userSession.userId, catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_DROP_UP_BUTTON)
+    }
+
+    override fun accordionDropDown(tabName: String?) {
+        CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_DROP_DOWN_BUTTON_PERBANDINGAN_PRODUK,
+            "$catalogName - $catalogId - tabName: $tabName", userSession.userId, catalogId,
+            CatalogDetailAnalytics.TrackerId.CLICK_DROP_DOWN_BUTTON)
     }
 
     override fun changeComparison(comparedCatalogId: String) {
