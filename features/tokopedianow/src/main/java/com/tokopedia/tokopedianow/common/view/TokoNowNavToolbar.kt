@@ -73,6 +73,12 @@ class TokoNowNavToolbar(
         navToolbar?.setSearchbarText(text)
     }
 
+    fun setBackButtonOnClickListener(onClickListener: () -> Unit) {
+        navToolbar?.setOnBackButtonClickListener(true) {
+            onClickListener.invoke()
+        }
+    }
+
     private fun setupScrollListener() {
         navToolbar?.let {
             scrollListener = NavRecyclerViewScrollListener(

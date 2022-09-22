@@ -32,6 +32,9 @@ abstract class BaseTokoNowRecipeListViewModel(
     val searchKeyword: LiveData<String>
         get() = _searchKeyword
 
+    val warehouseId: String
+        get() = addressData.getWarehouseId().toString()
+
     private val _visitableList = MutableLiveData<List<Visitable<*>>>()
     private val _showProgressBar = MutableLiveData<Boolean>()
     private val _showHeaderBackground = MutableLiveData<Boolean>()
