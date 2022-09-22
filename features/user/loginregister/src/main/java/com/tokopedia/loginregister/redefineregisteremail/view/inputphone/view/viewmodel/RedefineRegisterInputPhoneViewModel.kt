@@ -82,9 +82,16 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
         return phoneError == NOTHING_RESOURCE
     }
 
-    fun submitForm(phone: String) {
+    fun submitForm(phone: String, email: String, isRequiredInputPhone: Boolean) {
         if (isPhoneNumberValid()) {
-            registerCheck(phone)
+            if (isRequiredInputPhone) {
+                registerCheck(phone)
+            } else {
+                userProfileValidate(
+                    email = email,
+                    phone = phone
+                )
+            }
         } else {
             validatePhone(phone)
         }

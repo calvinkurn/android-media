@@ -24,6 +24,7 @@ import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterEmailBinding
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
+import com.tokopedia.loginregister.redefineregisteremail.common.analytics.RedefineRegisterEmailAnalytics
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToLoginWithEmail
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerification
 import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationParam
@@ -48,6 +49,9 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             RedefineRegisterEmailViewModel::class.java
         )
     }
+
+    @Inject
+    lateinit var redefineRegisterEmailAnalytics: RedefineRegisterEmailAnalytics
 
     private var binding: FragmentRedefineRegisterEmailBinding? = null
 
@@ -77,6 +81,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        redefineRegisterEmailAnalytics.sendViewRegisterPageEnterDataEvent(paramIsRequiredInputPhone)
         setUpValue()
         setUpToolbar()
         setUpField()
@@ -212,6 +217,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
+            redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(RedefineRegisterEmailAnalytics.ACTION_CLICK, paramIsRequiredInputPhone)
             submitForm()
         }
     }
@@ -245,6 +251,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     val message = ErrorHandler.getErrorMessagePair(context, it.throwable, ErrorHandler.Builder()).first.orEmpty()
+                    redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, paramIsRequiredInputPhone, message)
                     showToasterError(message)
                 }
             }
@@ -268,6 +275,9 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             if (isExist) {
                 showLoginDialog()
             }
+
+            val allErrorMessage = "$error, $errorEmail, $errorFullName, $errorPassword"
+            redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, paramIsRequiredInputPhone, allErrorMessage)
 
             if (error.isNotEmpty()) {
                 showToasterError(error)
@@ -316,6 +326,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             offerToLoginDialog.dismiss()
         }
 
+        redefineRegisterEmailAnalytics.sendViewPopUpEmailRegisteredPageEvent(paramIsRequiredInputPhone)
         offerToLoginDialog.show()
     }
 
@@ -327,8 +338,10 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
                 if (resultCode == Activity.RESULT_OK) {
 
                     paramToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
-
+                    redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(RedefineRegisterEmailAnalytics.ACTION_SUCCESS, paramIsRequiredInputPhone)
                     goToInputPhone()
+                } else {
+                    redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, paramIsRequiredInputPhone, RedefineRegisterEmailAnalytics.MESSAGE_FAILED_OTP)
                 }
             }
         }

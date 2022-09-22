@@ -29,6 +29,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterInputPhoneBinding
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
+import com.tokopedia.loginregister.redefineregisteremail.common.analytics.RedefineRegisterEmailAnalytics
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToHome
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToLoginWithPhone
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerification
@@ -71,6 +72,9 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     @Inject
     lateinit var registerPreferences: RegisterPreferences
 
+    @Inject
+    lateinit var redefineRegisterEmailAnalytics: RedefineRegisterEmailAnalytics
+
     private var _binding: FragmentRedefineRegisterInputPhoneBinding? = null
     private val binding get() = _binding
 
@@ -98,7 +102,12 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         binding?.unifyToolbar?.title = getString(R.string.register_email_title)
         showNavigateBackToolbar(true)
 
-        if (!parameter.isRequiredInputPhone) onEntireScreenLoading()
+        if (!parameter.isRequiredInputPhone) {
+            onEntireScreenLoading()
+            redefineRegisterEmailAnalytics.sendViewAddPhoneNumberOptionalPageEvent(false)
+        } else {
+            redefineRegisterEmailAnalytics.sendViewRegisterPageAddPhoneNumberEvent(true)
+        }
         initListener()
         registrationProsesObserver()
         formValidateObserver()
@@ -119,11 +128,13 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             if (isShow) {
                 actionText = RedefineRegisterEmailConstants.EMPTY_STRING
                 setNavigationOnClickListener {
+                    redefineRegisterEmailAnalytics.sendClickOnButtonBackEvent(parameter.isRequiredInputPhone)
                     requireActivity().onBackPressed()
                 }
             } else {
                 actionText = getString(R.string.register_email_input_phone_skip)
                 actionTextView?.setOnClickListener {
+                    redefineRegisterEmailAnalytics.sendClickOnButtonLewatiEvent(parameter.isRequiredInputPhone)
                     goToHome()
                 }
             }
@@ -176,16 +187,18 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun submitForm() {
+
         if (parameter.isRequiredInputPhone) {
-            viewModel.submitForm(
-                binding?.fieldInputPhone?.editText?.text.toString()
-            )
+            redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_CLICK, parameter.isRequiredInputPhone)
         } else {
-            viewModel.userProfileValidate(
-                email = parameter.email,
-                phone = binding?.fieldInputPhone?.editText?.text.toString()
-            )
+            redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPnPageOptionalEvent(RedefineRegisterEmailAnalytics.ACTION_CLICK, parameter.isRequiredInputPhone)
         }
+
+        viewModel.submitForm(
+            binding?.fieldInputPhone?.editText?.text.toString(),
+            parameter.email,
+            parameter.isRequiredInputPhone
+        )
     }
 
     private fun registrationProsesObserver() {
@@ -212,28 +225,42 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     viewModel.getUserInfo()
+                    redefineRegisterEmailAnalytics.sendClickOnButtonDaftarEmailEvent(RedefineRegisterEmailAnalytics.ACTION_SUCCESS, parameter.isRequiredInputPhone)
                     onEntireScreenLoading()
+
+                    if (parameter.isRequiredInputPhone) {
+                        redefineRegisterEmailAnalytics.sendClickYaBenarPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_SUCCESS, parameter.isRequiredInputPhone)
+                    }
                 }
                 is Fail -> {
+                    val messageError = ErrorHandler.getErrorMessagePair(context, it.throwable, ErrorHandler.Builder()).first.orEmpty()
+                    redefineRegisterEmailAnalytics.sendClickOnButtonDaftarEmailEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, messageError)
+
+                    if (parameter.isRequiredInputPhone) {
+                        redefineRegisterEmailAnalytics.sendClickYaBenarPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, messageError)
+                    }
+
                     handleGlobalError(it.throwable)
                     onEntireLoadingFailed()
                 }
             }
         }
 
-
-
         viewModel.userPhoneUpdate.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.data.errors.isEmpty()) {
+                        redefineRegisterEmailAnalytics.sendClickYaBenarPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_SUCCESS, parameter.isRequiredInputPhone)
                         goToHome()
                     } else {
                         val messageError = it.data.data.errors.first()
+                        redefineRegisterEmailAnalytics.sendClickYaBenarPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, messageError)
                         onUserPhoneUpdateFailed(MessageErrorException(messageError))
                     }
                 }
                 is Fail -> {
+                    val messageError = ErrorHandler.getErrorMessagePair(context, it.throwable, ErrorHandler.Builder()).first.orEmpty()
+                    redefineRegisterEmailAnalytics.sendClickYaBenarPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, messageError)
                     onUserPhoneUpdateFailed(it.throwable)
                 }
             }
@@ -260,19 +287,29 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     showRegisteredPhoneCheckLoading(true)
                 }
                 is RegistrationPhoneState.Registered -> {
+                    redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, RedefineRegisterEmailAnalytics.MESSAGE_REGISTERED_PHONE)
                     showRegisteredPhoneCheckLoading(false)
                     showDialogOfferLogin()
                 }
                 is RegistrationPhoneState.Unregistered -> {
+                    redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_SUCCESS, parameter.isRequiredInputPhone)
                     showRegisteredPhoneCheckLoading(false)
                     showDialogConfirmPhone(phone = it.message)
                 }
                 is RegistrationPhoneState.Ineligible -> {
                     showRegisteredPhoneCheckLoading(false)
+
+                    redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, it.message)
                     binding?.fieldInputPhone?.setMessageField(it.message)
                 }
                 is RegistrationPhoneState.Failed -> {
                     showRegisteredPhoneCheckLoading(false)
+
+                    val message = it.throwable?.let { it1 ->
+                        ErrorHandler.getErrorMessagePair(context,
+                            it1, ErrorHandler.Builder()).first.orEmpty()
+                    }
+                    redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, message.orEmpty())
 
                     when (it.throwable) {
                         is AkamaiErrorException -> {
@@ -290,13 +327,17 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (it.data.data.isValid) {
+                        redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPnPageOptionalEvent(RedefineRegisterEmailAnalytics.ACTION_SUCCESS, parameter.isRequiredInputPhone)
                         showDialogConfirmPhone(binding?.fieldInputPhone?.editText?.text.toString())
                     } else {
                         val message = it.data.data.message
+                        redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPnPageOptionalEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, message)
                         onUserProfileValidateFailed(MessageErrorException(message))
                     }
                 }
                 is Fail -> {
+                    val message = ErrorHandler.getErrorMessagePair(context, it.throwable, ErrorHandler.Builder()).first.orEmpty()
+                    redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPnPageOptionalEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, message)
                     onUserProfileValidateFailed(it.throwable)
                 }
             }
@@ -433,14 +474,17 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             RegisteredDialog.createRedefineRegisterInputPhoneOfferLogin(requireActivity(), phone)
 
         offerLoginDialog.setPrimaryCTAClickListener {
+            redefineRegisterEmailAnalytics.sendClickYaMasukTerdaftarPhoneNumberEvent(parameter.isRequiredInputPhone)
             goToPhoneLogin()
             offerLoginDialog.dismiss()
         }
 
         offerLoginDialog.setSecondaryCTAClickListener {
+            redefineRegisterEmailAnalytics.sendClickUbahTerdaftarPhoneNumberEvent(parameter.isRequiredInputPhone)
             offerLoginDialog.dismiss()
         }
 
+        redefineRegisterEmailAnalytics.sendViewPopUpPhoneNumberRegisteredPageEvent(parameter.isRequiredInputPhone)
         offerLoginDialog.show()
     }
 
@@ -449,6 +493,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             RegisteredDialog.createRedefineRegisterInputPhoneOfferSuccess(requireActivity(), phone)
 
         confirmDialog.setPrimaryCTAClickListener {
+            redefineRegisterEmailAnalytics.sendClickYaBenarPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_CLICK, parameter.isRequiredInputPhone)
             goToVerification(
                 phone,
                 requireActivity()
@@ -457,6 +502,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
         }
 
         confirmDialog.setSecondaryCTAClickListener {
+            redefineRegisterEmailAnalytics.sendClickUbahBenarPhoneNumberEvent(parameter.isRequiredInputPhone)
             confirmDialog.dismiss()
         }
 
