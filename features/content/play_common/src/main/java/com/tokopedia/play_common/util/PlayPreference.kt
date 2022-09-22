@@ -14,7 +14,7 @@ class PlayPreference @Inject constructor(
     companion object {
         private const val PLAY_PREFERENCE = "play_preference"
 
-        private const val A_DAY_IN_MILLIS : Long = 86400000L
+        private const val A_DAY_IN_MILLIS : Long = 86400000L // add delay for 5-10 s
 
         private const val FORMAT_ONE_TAP_ONBOARDING = "one_tap_onboarding_%s"
         private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
