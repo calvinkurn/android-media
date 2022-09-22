@@ -94,7 +94,7 @@ class TrackingRepository(
             "detail" to queryParam
         )
 
-        ServerLogger.log(Priority.SF, EMBRACE_CUSTOMER_TAG, embraceMap)
+        ServerLogger.log(Priority.P2, EMBRACE_CUSTOMER_TAG, embraceMap)
     }
 
     fun delete(data: List<Tracking>) {
