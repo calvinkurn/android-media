@@ -87,7 +87,6 @@ object MediaLoaderTracker : CoroutineScope {
         loadTime: String = "",
         exception: GlideException?
     ) {
-
         val pageName = try {
             context.javaClass.name.split(".").last()
         } catch (e: Throwable) {
