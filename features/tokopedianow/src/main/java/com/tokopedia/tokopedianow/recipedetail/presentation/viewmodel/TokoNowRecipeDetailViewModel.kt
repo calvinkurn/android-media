@@ -217,11 +217,12 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     }
 
     private fun getAddress() {
-        getAddressUseCase.getStateChosenAddress( {
+        getAddressUseCase.getStateChosenAddress({
             addressData.updateAddressData(it)
             checkAddressData()
-        },{
-
+        }, {
+            hideLoading()
+            showError()
         }, GET_ADDRESS_SOURCE)
     }
 
@@ -230,7 +231,9 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
             layoutItemList.updateProductQuantity(miniCartData)
             layoutItemList.updateDeletedProductQuantity(miniCartData)
             _layoutList.postValue(layoutItemList)
-        }) {}
+        }) {
+            // do nothing
+        }
     }
 
     private fun getRecipeTitle() = _recipeInfo.value?.title.orEmpty()
