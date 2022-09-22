@@ -16,6 +16,7 @@ import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContain
 import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleListActivity
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantFragment
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantMultilocFragment
+import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListFragment
 import dagger.Component
 
 @TokopediaFlashSaleScope
@@ -39,4 +40,5 @@ interface TokopediaFlashSaleComponent {
 
     fun inject(fragment: ManageProductNonVariantFragment)
     fun inject(fragment: ManageProductNonVariantMultilocFragment)
+    fun inject(fragment: FlashSaleManageProductListFragment)
 }

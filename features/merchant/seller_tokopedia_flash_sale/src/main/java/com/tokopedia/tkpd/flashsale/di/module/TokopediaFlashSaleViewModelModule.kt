@@ -11,6 +11,7 @@ import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContain
 import com.tokopedia.tkpd.flashsale.presentation.detail.viewmodel.CampaignDetailBottomSheetViewModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailViewModel
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantViewModel
+import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListListViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 
@@ -50,4 +51,10 @@ abstract class TokopediaFlashSaleViewModelModule {
     @IntoMap
     @ViewModelKey(ManageProductNonVariantViewModel::class)
     internal abstract fun provideManageProductNonVariantViewModel(viewModel: ManageProductNonVariantViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FlashSaleManageProductListListViewModel::class)
+    internal abstract fun provideFlashSaleManageProductListListViewModel(viewModel: FlashSaleManageProductListListViewModel): ViewModel
+
 }

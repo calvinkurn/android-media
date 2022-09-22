@@ -540,10 +540,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupChooseProductRedirection() {
         binding?.btnRegister?.setOnClickListener {
-            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId)
+            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId, tabName)
         }
         upcomingCdpMidBinding?.btnCheckReason?.setOnClickListener {
-            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId)
+            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId, tabName)
         }
     }
 

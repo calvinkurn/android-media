@@ -55,7 +55,7 @@ class DoFlashSaleProductReserveUseCase @Inject constructor(
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<DoFlashSaleProductReserveResponse>()
-        return mapToResult(data.doFlashSaleProductReserve.responseHeader)
+        return mapToResult(data.doFlashSaleProductReserve.responseHeader, param.reservationId)
     }
 
     private fun buildRequest(param: Param): GraphqlRequest {
@@ -76,9 +76,12 @@ class DoFlashSaleProductReserveUseCase @Inject constructor(
         )
     }
 
-    private fun mapToResult(responseHeader: DoFlashSaleProductReserveResponse.ResponseHeader) =
+    private fun mapToResult(
+        responseHeader: DoFlashSaleProductReserveResponse.ResponseHeader,
+        reservationId: String
+    ) =
         with(responseHeader) {
-            ProductReserveResult(success, errorMessage.joinToString("\n"))
+            ProductReserveResult(success, errorMessage.joinToString("\n"), reservationId)
         }
 
     data class Param(
