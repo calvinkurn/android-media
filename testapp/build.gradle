@@ -19,6 +19,12 @@ kapt {
     correctErrorTypes = true
     generateStubs = false
 }
+def isEnableMacrobenchmarkUtil() {
+    if (project.hasProperty('enableMacrobenchmarkUtil')?: "false") {
+        return "true";
+    }
+    return "false";
+}
 android {
     packagingOptions {
         exclude 'META-INF/**'
@@ -42,12 +48,14 @@ android {
             zipAlignEnabled false
             testCoverageEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
+            buildConfigField "boolean", "ENABLE_MACROBENCHMARK_UTIL", isEnableMacrobenchmarkUtil()
             ext.enableHansel = false
             ext.enableCrashlytics = false
         }
         release {
             minifyEnabled true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
+            buildConfigField "boolean", "ENABLE_MACROBENCHMARK_UTIL", isEnableMacrobenchmarkUtil()
             signingConfig signingConfigs.debug
         }
     }

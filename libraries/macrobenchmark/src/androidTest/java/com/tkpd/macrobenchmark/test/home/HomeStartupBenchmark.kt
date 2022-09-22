@@ -22,10 +22,14 @@ import org.junit.runners.Parameterized
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
 class HomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
-    @Before
-    fun setupEnvironment() {
-        MacroDevOps.setupEnvironment(MacroIntent.Home.getHomeMacroSetupIntent())
+    override fun setupEnvironment() {
+        MacroDevOps.setupEnvironment(MacroIntent.Session.getSessionMacroSetupIntent())
     }
+
+    override fun setupMock() {
+        MacroDevOps.setupEnvironment(MacroIntent.Mock.getHomeMockIntent())
+    }
+
     override fun getIntent() = MacroIntent.Home.getHomeIntent()
 
     override fun waitUntil() {

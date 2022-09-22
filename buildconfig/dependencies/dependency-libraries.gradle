@@ -3,7 +3,7 @@ ext {
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24.5",
-            globalconfig            : "com.tokopedia.config:global_config:1.0.16",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.17",
             url                     : "com.tokopedia.url:url:1.0.13",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.6",
@@ -116,5 +116,6 @@ ext {
             screenRecorder          : ":libraries:screen_recorder",
             unitTest                : ":libraries:unit_test",
             telemetry               : ":libraries:telemetry",
+            macrobenchmarkUtil               : ":libraries:macrobenchmark_util",
     ]
 }

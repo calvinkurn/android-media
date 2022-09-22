@@ -4,6 +4,7 @@ import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.MainThread;
@@ -16,6 +17,7 @@ import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.fakeresponse.FakeResponseInterceptorProvider;
 import com.tokopedia.graphql.FingerprintManager;
+import com.tokopedia.graphql.MacroInterceptorProvider;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
@@ -158,6 +160,19 @@ public class GraphqlClient {
     @NotNull
     public static TkpdOkHttpBuilder getTkpdOkHttpBuilder(@NonNull Context context) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
+        if (GlobalConfig.ENABLE_MACROBENCHMARK_UTIL) {
+            try {
+                Log.d("devfik","Macrobenchmark util implement mock");
+                String className = "com.tokopedia.macrobenchmark_util.env.interceptor.mock.MockInterceptor";
+                Object mockInterceptorClass = MacroInterceptorProvider.INSTANCE.get(className, context);
+
+                tkpdOkHttpBuilder.addInterceptor((Interceptor) mockInterceptorClass);
+            } catch (Exception e) {
+                Log.d("devfik","Macrobenchmark util exception "+e.getMessage());
+
+                e.printStackTrace();
+            }
+        }
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
 
