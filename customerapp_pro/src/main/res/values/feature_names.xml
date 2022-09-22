@@ -154,7 +154,7 @@
     <string name="label_category">category</string>
     <string name="hotlist_label">hotlist</string>
     <string name="label_affiliate">Affiliate</string>
-
+    <string name="title_category_epharmacy">E-Pharmacy</string>
 
     <!--Contact Us-->
     <string name="title_module_contact_us">Pusat Bantuan</string>
@@ -339,6 +339,9 @@
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
     <string name="title_wishlist_v2">Wishlist</string>
+    <string name="page_name_wishlist_collection">Wishlist Collection</string>
+    <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
+    <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
 
     <!-- Dynamic feature for cart -->
     <string name="checkout_module_title_activity_cart">Keranjang</string>

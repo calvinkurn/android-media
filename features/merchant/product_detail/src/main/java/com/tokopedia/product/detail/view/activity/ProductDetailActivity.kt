@@ -53,6 +53,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val PRODUCT_DETAIL_TAG = "productDetailTag"
 
         private const val AFFILIATE_HOST = "affiliate"
+        private const val PARAM_CAMPAIGN_ID = "campaign_id"
+        private const val PARAM_VARIANT_ID = "variant_id"
 
         @JvmStatic
         fun createIntent(context: Context, productUrl: String) =
@@ -87,6 +89,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var affiliateChannel: String? = null
     private var userSessionInterface: UserSessionInterface? = null
     private var productDetailComponent: ProductDetailComponent? = null
+    private var campaignId: String? = null
+    private var variantId: String? = null
 
     //Performance Monitoring
     var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -221,7 +225,9 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             layoutId,
             extParam,
             getSource(),
-            affiliateChannel = affiliateChannel
+            affiliateChannel = affiliateChannel,
+            campaignId = campaignId,
+            variantId = variantId
     )
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
@@ -257,6 +263,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             affiliateUniqueId = uri.getQueryParameter(PARAM_AFFILIATE_UNIQUE_ID)
             extParam = uri.getQueryParameter(PARAM_EXT_PARAM)
             affiliateChannel = uri.getQueryParameter(PARAM_CHANNEL)
+            campaignId = uri.getQueryParameter(PARAM_CAMPAIGN_ID)
+            variantId = uri.getQueryParameter(PARAM_VARIANT_ID)
         }
         bundle?.let {
             warehouseId = it.getString("warehouse_id")

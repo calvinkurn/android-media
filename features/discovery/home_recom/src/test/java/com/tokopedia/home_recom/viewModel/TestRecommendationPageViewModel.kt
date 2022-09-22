@@ -593,7 +593,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
@@ -623,7 +624,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
@@ -658,7 +660,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
 
@@ -691,7 +694,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } throws Exception()
@@ -734,5 +738,150 @@ class TestRecommendationPageViewModel {
 
         assert(viewModel.recommendationListLiveData.value!=null)
         assert(viewModel.recommendationListLiveData.value?.filterIsInstance<RecommendationCPMDataModel>()?.isNotEmpty()==true)
+    }
+
+    @Test
+    fun `given success response when get topads status with empty topads then topads product still false`() {
+        val productId = ""
+        val queryParam = ""
+        val errorCode = 200
+        val topadsIsAdsQuery = TopadsIsAdsQuery(
+            TopAdsGetDynamicSlottingData(
+                productList = listOf(),
+                status = TopadsStatus(error_code = errorCode)
+            )
+        )
+
+        every { remoteConfig.getLong(any(),any()) } returns 5000L
+        coEvery { viewModel.recommendationListLiveData.value } returns listOf(ProductInfoDataModel(
+            ProductDetailData()
+        ))
+
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData?.isTopads == false)
+
+        every {
+            getTopadsIsAdsUseCase.setParams(
+                productId = productId,
+                productKey = any(),
+                shopDomain = any(),
+                urlParam = queryParam,
+                pageName = any(),
+                src = any()
+            )
+        } just runs
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
+
+        viewModel.getProductTopadsStatus(productId, queryParam)
+
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData?.isTopads == false)
+    }
+
+    @Test
+    fun `given product info with null product detail when get topads data then product detail still null`() {
+        val productId = ""
+        val queryParam = ""
+        val errorCode = 200
+        val topadsIsAdsQuery = TopadsIsAdsQuery(
+            TopAdsGetDynamicSlottingData(
+                productList = listOf(),
+                status = TopadsStatus(error_code = errorCode)
+            )
+        )
+
+        every { remoteConfig.getLong(any(),any()) } returns 5000L
+        coEvery { viewModel.recommendationListLiveData.value } returns listOf(ProductInfoDataModel())
+
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData == null)
+
+        every {
+            getTopadsIsAdsUseCase.setParams(
+                productId = productId,
+                productKey = any(),
+                shopDomain = any(),
+                urlParam = queryParam,
+                pageName = any(),
+                src = any()
+            )
+        } just runs
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
+
+        viewModel.getProductTopadsStatus(productId, queryParam)
+
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData == null)
+    }
+
+    @Test
+    fun `given empty recommendation list when get topads data then recommendation list still empty`() {
+        val productId = ""
+        val queryParam = ""
+        val errorCode = 200
+        val topadsIsAdsQuery = TopadsIsAdsQuery(
+            TopAdsGetDynamicSlottingData(
+                productList = listOf(),
+                status = TopadsStatus(error_code = errorCode)
+            )
+        )
+
+        every { remoteConfig.getLong(any(),any()) } returns 5000L
+        coEvery { viewModel.recommendationListLiveData.value } returns listOf()
+
+        every {
+            getTopadsIsAdsUseCase.setParams(
+                productId = productId,
+                productKey = any(),
+                shopDomain = any(),
+                urlParam = queryParam,
+                pageName = any(),
+                src = any()
+            )
+        } just runs
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
+
+        viewModel.getProductTopadsStatus(productId, queryParam)
+
+        assert(viewModel.recommendationListLiveData.value?.isEmpty() == true)
+    }
+
+    @Test
+    fun `given something`() {
+        val queryParam = "?ref=${RecommendationPageViewModel.PARAM_RECOMPUSH}"
+        val productId = ""
+        val isChargeTopAds = true
+        val clickUrlTopAds = "url_test"
+        val productImageUrl = "image_url_test"
+        val errorCode = 200
+        val topadsIsAdsQuery = TopadsIsAdsQuery(
+            TopAdsGetDynamicSlottingData(
+                productList = listOf(
+                    TopAdsGetDynamicSlottingDataProduct(
+                        isCharge = isChargeTopAds,
+                        clickUrl = clickUrlTopAds,
+                        product = TopadsProduct(image = Image(m_url = productImageUrl))
+                    )),
+                status = TopadsStatus(error_code = errorCode)
+            )
+        )
+
+        every { remoteConfig.getLong(any(),any()) } returns 5000L
+        coEvery { viewModel.recommendationListLiveData.value } returns listOf(ProductInfoDataModel(
+            ProductDetailData()
+        ))
+        every {
+            getTopadsIsAdsUseCase.setParams(
+                productId = productId,
+                productKey = any(),
+                shopDomain = any(),
+                urlParam = queryParam,
+                pageName = any(),
+                src = any()
+            )
+        } just runs
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
+
+        viewModel.getProductTopadsStatus(productId, queryParam)
+
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData?.isTopads == isChargeTopAds)
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData?.clickUrl == clickUrlTopAds)
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData?.trackerImageUrl == productImageUrl)
     }
 }

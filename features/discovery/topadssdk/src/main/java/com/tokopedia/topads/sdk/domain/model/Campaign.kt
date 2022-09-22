@@ -17,8 +17,12 @@ data class Campaign(
 
     @SerializedName(KEY_DISCOUNT_PERCENTAGE)
     @Expose
-    var discountPercentage: Int = 0
+    var discountPercentageSet: Float = 0F
 ) : Parcelable {
+
+    val discountPercentage: Int
+        get() = discountPercentageSet.toInt()
+
 
     constructor(jSONObject: JSONObject) : this() {
         setOriginalPriceFromJSONObject(jSONObject)
@@ -35,18 +39,18 @@ data class Campaign(
     @Throws(JSONException::class)
     private fun setDiscountPercentageFromJSONObject(jSONObject: JSONObject) {
         if (!jSONObject.isNull(KEY_DISCOUNT_PERCENTAGE)) {
-            discountPercentage = jSONObject.getInt(KEY_DISCOUNT_PERCENTAGE)
+            discountPercentageSet = jSONObject.getDouble(KEY_DISCOUNT_PERCENTAGE).toFloat()
         }
     }
 
     constructor(parcel: Parcel) : this() {
         parcel.readString()
-        parcel.readInt()
+        parcel.readFloat()
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(originalPrice)
-        dest.writeInt(discountPercentage)
+        dest.writeFloat(discountPercentageSet)
     }
 
     override fun describeContents(): Int {

@@ -1703,7 +1703,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         it.applicationContext)
                 locationDetectorHelper.getLocation(onGetLocation(), it,
                         LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                        "")
+                        rationaleText = "")
                 true
             }.subscribeOn(Schedulers.io()).subscribe({ }) { }
         }
