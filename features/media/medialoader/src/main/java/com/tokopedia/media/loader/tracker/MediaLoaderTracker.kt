@@ -52,7 +52,7 @@ object MediaLoaderTracker : CoroutineScope {
         if (isIcon.value) return
 
         val pageName = try {
-            context.javaClass.name.split(".").last()
+            context.javaClass.name.split(".").lastOrNull()
         } catch (e: Throwable) {
             PAGE_NAME_NOT_FOUND
         }
