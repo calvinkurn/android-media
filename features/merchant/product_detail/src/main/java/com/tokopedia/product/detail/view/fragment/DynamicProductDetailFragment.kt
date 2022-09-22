@@ -76,6 +76,7 @@ import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -171,8 +172,10 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_WISHLIST
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_X_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_VERTICAL_LOADING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOVE_WISHLIST
@@ -317,7 +320,9 @@ open class DynamicProductDetailFragment :
             layoutId: String? = null,
             extParam: String? = null,
             query: String? = null,
-            affiliateChannel: String? = null
+            affiliateChannel: String? = null,
+            campaignId: String? = null,
+            variantId: String? = null
         ) = DynamicProductDetailFragment().also {
             it.arguments = Bundle().apply {
                 productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
@@ -375,6 +380,18 @@ open class DynamicProductDetailFragment :
                     putString(
                         ProductDetailConstant.ARG_EXT_PARAM,
                         extParam
+                    )
+                }
+                if (campaignId != null) {
+                    putString(
+                        ProductDetailConstant.ARG_CAMPAIGN_ID,
+                        campaignId
+                    )
+                }
+                if (variantId != null) {
+                    putString(
+                        ProductDetailConstant.ARG_VARIANT_ID,
+                        variantId
                     )
                 }
                 putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
@@ -438,6 +455,9 @@ open class DynamicProductDetailFragment :
     private var urlQuery: String = ""
     private var affiliateChannel: String = ""
     private var alreadyShowMultilocBottomSheet: Boolean = false
+    private var verticalRecommendationTrackDataModel: ComponentTrackDataModel? = null
+    private var campaignId: String = ""
+    private var variantId: String = ""
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -579,6 +599,7 @@ open class DynamicProductDetailFragment :
         observeTopAdsIsChargeData()
         observeDeleteCart()
         observePlayWidget()
+        observeVerticalRecommendation()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -622,6 +643,8 @@ open class DynamicProductDetailFragment :
             extParam = it.getString(ProductDetailConstant.ARG_EXT_PARAM, "")
             urlQuery = it.getString(ProductDetailConstant.ARG_QUERY_PARAMS, "")
             affiliateChannel = it.getString(ProductDetailConstant.ARG_CHANNEL, "")
+            campaignId = it.getString(ProductDetailConstant.ARG_CAMPAIGN_ID, "")
+            variantId = it.getString(ProductDetailConstant.ARG_VARIANT_ID, "")
         }
         activity?.let {
             sharedViewModel = ViewModelProvider(it).get(ProductDetailSharedViewModel::class.java)
@@ -2409,6 +2432,7 @@ open class DynamicProductDetailFragment :
         viewLifecycleOwner.observe(viewModel.singleVariantData) {
             val listOfVariantLevelOne = listOf(it)
             pdpUiUpdater?.updateVariantData(listOfVariantLevelOne)
+            updateUi()
         }
     }
 
@@ -2649,6 +2673,48 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    /**
+     * When Vertical Recommendation Exists, will attach endless scroll listener
+     * otherwise, the listener will be remove from recyclerView
+     */
+    private fun observeVerticalRecommendation() {
+        viewLifecycleOwner.observe(viewModel.verticalRecommendation) { data ->
+            data.doSuccessOrFail({
+                successFetchRecommendationVertical(it.data)
+            }, {
+                removeRecommendationVertical()
+            })
+            updateUi()
+        }
+    }
+
+    private fun successFetchRecommendationVertical(recommendationWidget: RecommendationWidget) {
+        if (recommendationWidget.currentPage == DEFAULT_PAGE_NUMBER && recommendationWidget.recommendationItemList.isEmpty()) {
+            pdpUiUpdater?.removeEmptyRecommendation(recommendationWidget)
+            return
+        }
+
+        pdpUiUpdater?.updateVerticalRecommendationData(recommendationWidget)
+        endlessScrollListener?.updateStateAfterGetData()
+
+        if (recommendationWidget.hasNext) {
+            addEndlessScrollListener {
+                val page =
+                    pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
+                viewModel.getVerticalRecommendationData(
+                    recommendationWidget.pageName,
+                    page,
+                    productId
+                )
+            }
+        } else removeRecommendationVertical()
+    }
+
+    private fun removeRecommendationVertical() {
+        pdpUiUpdater?.removeComponent(PDP_VERTICAL_LOADING)
+        removeEndlessScrollListener()
+    }
+
     private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
         view?.showToasterSuccess(
             result.data.message.firstOrNull()
@@ -2783,8 +2849,8 @@ open class DynamicProductDetailFragment :
     }
 
     private fun updateUi() {
-        val newData = pdpUiUpdater?.mapOfData?.values?.toList()
-        submitList(newData ?: listOf())
+        val newData = pdpUiUpdater?.getCurrentDataModels().orEmpty()
+        submitList(newData)
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
@@ -2944,8 +3010,19 @@ open class DynamicProductDetailFragment :
         val navigation = binding?.pdpNavigation
         getRecyclerView()?.let { recyclerView ->
             if (items.isEmpty()) navigation?.stop(recyclerView)
-            else navigation?.start(recyclerView, items, this)
+            else {
+                val offsetY = getNavTabBarOffset(isToolbarTransparent = data.isToolbarTransparent)
+                navigation?.start(recyclerView, items, this, offsetY =  offsetY)
+            }
         }
+    }
+
+    private fun getNavTabBarOffset(
+        isToolbarTransparent: Boolean
+    ) = if (isToolbarTransparent) {
+        navToolbar?.height.orZero()
+    } else {
+        0
     }
 
     override fun onButtonFollowNplClick() {
@@ -3660,7 +3737,9 @@ open class DynamicProductDetailFragment :
             ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
             buyerDistrictId = viewModel.getUserLocationCache().district_id,
             sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
-            lcaWarehouseId = getLcaWarehouseId()
+            lcaWarehouseId = getLcaWarehouseId(),
+            campaignId = campaignId,
+            variantId = variantId
         )
     }
 
@@ -5348,4 +5427,14 @@ open class DynamicProductDetailFragment :
         shopDomain.orEmpty(),
         productKey.orEmpty()
     )
+
+    override fun startVerticalRecommendation(pageName: String) {
+        viewModel.getVerticalRecommendationData(pageName = pageName, productId = productId)
+    }
+
+    override fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel) {
+        verticalRecommendationTrackDataModel = componentTrackDataModel
+    }
+
+    override fun getRecommendationVerticalTrackData(): ComponentTrackDataModel? = verticalRecommendationTrackDataModel
 }

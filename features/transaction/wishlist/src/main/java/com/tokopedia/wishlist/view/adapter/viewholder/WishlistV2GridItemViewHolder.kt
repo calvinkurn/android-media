@@ -12,6 +12,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2GridItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
+import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils.clickWithDebounce
 
 class WishlistV2GridItemViewHolder(private val binding: WishlistV2GridItemBinding,
                                    private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
@@ -80,7 +81,7 @@ class WishlistV2GridItemViewHolder(private val binding: WishlistV2GridItemBindin
         binding.wishlistCheckbox.gone()
         buttonSecondary.visible()
         rlPrimaryButton.visible()
-        binding.pcGridItem.setOnClickListener {
+        binding.pcGridItem.clickWithDebounce {
             actionListener?.onProductItemClicked(item.wishlistItem, position)
         }
     }

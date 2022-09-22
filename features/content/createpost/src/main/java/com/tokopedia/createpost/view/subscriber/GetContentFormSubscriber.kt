@@ -54,7 +54,6 @@ class GetContentFormSubscriber(private val view: CreatePostContract.View?,
             return
         }
         if (checkQuotaQuery.data.number == 0) {
-            view?.onErrorNoQuota()
             return
         }
     }

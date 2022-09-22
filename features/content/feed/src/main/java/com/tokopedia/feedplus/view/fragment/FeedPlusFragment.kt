@@ -2049,13 +2049,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
         activityId: String,
         productId: String,
         shopId: String,
+        isFollowed: Boolean,
         productList: List<FeedXProduct>
     ) {
         feedAnalytics.eventImpressionProduct(
             activityId,
             productId,
             productList,
-            shopId
+            shopId,
+            isFollowed
         )
     }
 

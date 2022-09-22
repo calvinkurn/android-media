@@ -44,6 +44,7 @@
     <!-- single bundle item mapping -->
     <string name="preorder_prefix">PO %1s</string>
     <string name="preorder_time_unit_day">hari</string>
+    <string name="preorder_time_unit_week">minggu</string>
     <string name="preorder_time_unit_month">bulan</string>
     <string name="bundle_item_title_prefix">Paket isi %1d</string>
 

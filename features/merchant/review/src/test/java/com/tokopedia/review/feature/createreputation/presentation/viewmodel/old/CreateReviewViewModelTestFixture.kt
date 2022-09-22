@@ -5,13 +5,7 @@ import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.review.common.data.ProductrevReviewImageAttachment
 import com.tokopedia.review.common.data.ProductrevReviewVideoAttachment
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
-import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
-import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
-import com.tokopedia.review.feature.createreputation.domain.usecase.GetReviewTemplatesUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
-import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevGetPostSubmitBottomSheetUseCase
-import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
-import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -23,16 +17,7 @@ import org.mockito.ArgumentMatchers
 abstract class CreateReviewViewModelTestFixture {
 
     @RelaxedMockK
-    lateinit var getProductReputationForm: GetProductReputationForm
-
-    @RelaxedMockK
-    lateinit var getProductIncentiveOvo: GetProductIncentiveOvo
-
-    @RelaxedMockK
     lateinit var getReviewDetailUseCase: ProductrevGetReviewDetailUseCase
-
-    @RelaxedMockK
-    lateinit var submitReviewUseCase: ProductrevSubmitReviewUseCase
 
     @RelaxedMockK
     lateinit var uploaderUseCase: UploaderUseCase
@@ -42,15 +27,6 @@ abstract class CreateReviewViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var editReviewUseCase: ProductrevEditReviewUseCase
-
-    @RelaxedMockK
-    lateinit var getReviewTemplatesUseCase: GetReviewTemplatesUseCase
-
-    @RelaxedMockK
-    lateinit var getBadRatingCategoryUseCase: GetBadRatingCategoryUseCase
-
-    @RelaxedMockK
-    lateinit var getPostSubmitBottomSheetUseCase: ProductrevGetPostSubmitBottomSheetUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -81,16 +57,10 @@ abstract class CreateReviewViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = CreateReviewViewModel(
             CoroutineTestDispatchersProvider,
-            getProductReputationForm,
-            getProductIncentiveOvo,
             getReviewDetailUseCase,
-            submitReviewUseCase,
             uploaderUseCase,
             editReviewUseCase,
             userSession,
-            getReviewTemplatesUseCase,
-            getBadRatingCategoryUseCase,
-            getPostSubmitBottomSheetUseCase
         )
     }
 }

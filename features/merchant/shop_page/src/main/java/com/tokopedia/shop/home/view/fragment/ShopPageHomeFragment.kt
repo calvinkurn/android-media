@@ -1645,7 +1645,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             bundlePosition = bundlePosition,
             clickedProduct = selectedProduct
         )
-        goToPDP(selectedProduct.productId)
+        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
@@ -1706,7 +1706,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             clickedProduct = selectedProduct,
             selectedPackage = selectedSingleBundle.minOrderWording
         )
-        goToPDP(selectedProduct.productId)
+        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun addMultipleBundleToCart(
@@ -2162,7 +2162,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                     shopHomeProductViewModel.isShowFreeOngkir
                 )
             )
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -2326,7 +2326,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                 shopHomeCarousellProductUiModel?.name ?: "",
                 customDimensionShopPage
             )
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -2357,7 +2357,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                 customDimensionShopPage,
                     shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
             )
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -2587,7 +2587,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                     shopHomeProductViewModel.isShowFreeOngkir
                 )
             )
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -2677,7 +2677,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                     shopHomeProductUiModel.isShowFreeOngkir
                 )
             )
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -2972,33 +2972,15 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
-    fun goToPDP(productId: String) {
-        val pdpAppLink = getPdpAppLink(productId)
+    fun goToPDP(pdpAppLink: String) {
+        val updatedPdpAppLink = createAffiliateLink(pdpAppLink)
         context?.let {
             val intent = RouteManager.getIntent(
                 context,
-                pdpAppLink
+                updatedPdpAppLink
             )
             startActivity(intent)
         }
-    }
-
-    fun goToPDPWithAppLink(appLinkPdp: String = "") {
-        context?.let {
-            val intent = RouteManager.getIntent(
-                context,
-                createAffiliateLink(appLinkPdp)
-            )
-            startActivity(intent)
-        }
-    }
-
-    private fun getPdpAppLink(productId: String): String {
-        val basePdpAppLink = UriUtil.buildUri(
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
-        )
-        return createAffiliateLink(basePdpAppLink)
     }
 
     private fun createAffiliateLink(basePdpAppLink: String): String {
@@ -3249,7 +3231,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             )
         }
         shopHomeProductViewModel?.let {
-            goToPDP(it.id ?: "")
+            goToPDP(it.productUrl)
         }
     }
 
@@ -3368,7 +3350,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int) {
-        goToPDP(model.id ?: "")
+        goToPDP(model.productUrl)
     }
 
     override fun onFlashSaleProductImpression(
@@ -4086,7 +4068,7 @@ shopHomeAdapter.itemCount
                 product = product,
                 position = position
             )
-            goToPDPWithAppLink(product.productUrl.orEmpty())
+            goToPDP(product.productUrl.orEmpty())
         }
 
         override fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {

@@ -6,13 +6,15 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter.*
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 
-data class TokoNowProductCardUiModel (
+data class TokoNowProductCardUiModel(
     val productId: String,
     val shopId: String,
     val quantity: Int,
     var parentId: String,
     var product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType val type: String
+    @TokoNowLayoutType val type: String,
+    val position: Int,
+    val headerName: String
 ): Visitable<TokoNowProductCardTypeFactory>, ImpressHolder() {
 
     override fun type(typeFactory: TokoNowProductCardTypeFactory): Int {

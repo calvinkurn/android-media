@@ -1,6 +1,7 @@
 package com.tokopedia.topupbills.searchnumber.view
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -42,9 +43,9 @@ class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity(), HasCompone
     }
 
     companion object {
-        fun newInstance(activity: Activity, clientNumberType: String,
+        fun newInstance(context: Context, clientNumberType: String,
                         number: String, numberList: List<TopupBillsSearchNumberDataModel>): Intent {
-            val intent = Intent(activity, DigitalSearchNumberActivity::class.java)
+            val intent = Intent(context, DigitalSearchNumberActivity::class.java)
             intent.putExtra(EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
             intent.putExtra(EXTRA_CLIENT_NUMBER, number)
             intent.putParcelableArrayListExtra(EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)

@@ -108,6 +108,8 @@ const val PRODUCT_INACTIVE = 4
 
 const val SHOP_INACTIVE = 5
 
+const val SHOP_CLOSED = 6
+
 const val TRAFFIC_TYPE = "TRAFFIC"
 
 const val PRODUCT_TYPE = "PRODUCT"
@@ -152,3 +154,9 @@ const val PAGE_ANNOUNCEMENT_ALL = 0
 const val PAGE_ANNOUNCEMENT_HOME = 1
 const val PAGE_ANNOUNCEMENT_PROMOSIKAN = 2
 const val PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY = 3
+
+const val AFFILIATE_SHOP_ADP = "aff_shop_adp"
+
+const val PAGE_TYPE_PDP = "pdp"
+
+const val PAGE_TYPE_SHOP = "shop"
