@@ -18,7 +18,10 @@ import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantMultilocAdapter
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.item.ManageProductVariantItem
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.mapper.ManageVariantMapper.toMultiWarehouseVariantItem
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.mapper.ManageVariantMapper.toSingleWarehouseVariantItem
 import timber.log.Timber
 
 class ManageProductVariantFragment :
@@ -83,8 +86,18 @@ class ManageProductVariantFragment :
         )
         textProductOriginalPrice?.gone()
         textTotalStock?.gone()
-        adapter?.submit(viewModel.getListItemData())
+        setupListData()
         buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
+    }
+
+    private fun setupListData() {
+        viewModel.getProductData().childProducts.forEach { childProduct ->
+            if (childProduct.isMultiwarehouse) {
+                adapter?.addItem(childProduct.toMultiWarehouseVariantItem())
+            } else {
+                adapter?.addItem(childProduct.toSingleWarehouseVariantItem())
+            }
+        }
     }
 
     private fun setupObservers() {
@@ -117,6 +130,7 @@ class ManageProductVariantFragment :
     override fun createAdapterInstance(): CompositeAdapter {
         return CompositeAdapter.Builder()
             .add(ManageProductVariantAdapter(listener = this, product = viewModel.getProductData()))
+            .add(ManageProductVariantMultilocAdapter(listener = this, product = viewModel.getProductData()))
             .build()
     }
 

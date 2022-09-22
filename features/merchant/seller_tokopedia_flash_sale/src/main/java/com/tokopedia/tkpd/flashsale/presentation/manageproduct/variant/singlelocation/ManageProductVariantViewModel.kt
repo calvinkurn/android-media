@@ -20,7 +20,8 @@ class ManageProductVariantViewModel @Inject constructor(
     private lateinit var productData: ReservedProduct.Product
 
     private val _isInputPageValid: MutableLiveData<Boolean> = MutableLiveData()
-    val isInputPageValid: LiveData<Boolean> get() = _isInputPageValid
+    val isInputPageValid: LiveData<Boolean>
+        get() = _isInputPageValid
 
     fun validateInput(
         criteria: ReservedProduct.Product.ProductCriteria,
@@ -79,28 +80,5 @@ class ManageProductVariantViewModel @Inject constructor(
     fun calculatePercent(priceInput: Long, originalPrice: Long): String {
         return round((priceInput.toDouble() / originalPrice.toDouble()) * NumericalNormalizationConstant.BULK_APPLY_PERCENT_NORMALIZATION).toInt()
             .toString()
-    }
-
-    fun getListItemData() = getProductData().toListItem()
-
-    private fun ReservedProduct.Product.toListItem(): List<ManageProductVariantItem> {
-        return this.childProducts.map {
-            ManageProductVariantItem(
-                disabledReason = it.disabledReason,
-                isDisabled =  it.isDisabled,
-                isMultiwarehouse = it.isMultiwarehouse,
-                isToggleOn = it.isToggleOn,
-                name = it.name,
-                picture = it.picture,
-                price = it.price,
-                productCriteria = it.productCriteria,
-                discountSetup = it.discountSetup,
-                productId = it.productId,
-                sku = it.sku,
-                stock = it.stock,
-                url = it.url,
-                warehouses = it.warehouses
-            )
-        }
     }
 }

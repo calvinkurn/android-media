@@ -1251,7 +1251,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             val childProduct = ReservedProduct.Product.ChildProduct(
                 disabledReason = "i don't know",
                 isDisabled = false,
-                isMultiwarehouse = false,
+                isMultiwarehouse = child %2 != 0,
                 isToggleOn = false,
                 name = "product child $child",
                 picture = "",
@@ -1305,7 +1305,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                             stock = 0,
                         ),
                         isDilayaniTokopedia = false,
-                        isToggleOn = true,
+                        isToggleOn = false,
                         isDisabled = false,
                         disabledReason = "",
                     )

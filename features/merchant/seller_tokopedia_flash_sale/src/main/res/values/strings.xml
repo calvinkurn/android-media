@@ -182,6 +182,8 @@
     <string name="stfs_inactive_variant_bulk_apply_place_holder">Aktifkan varian untuk Atur Sekaligus</string>
     <string name="stfs_avp_variant_count_placeholder">%d Varian Produk</string>
     <string name="stfs_avp_price_range_placeholder">%s - %2s</string>
+    <string name="stfs_avp_stock_placeholder">Stok: %d di %2d Lokasi</string>
+    <string name="stfs_avp_location_placeholder">Promo dipasang di %d lokasi</string>
 
     <!--Choose Product-->
     <string name="chooseproduct_fs_tokopedia_page_title">Tambah Produk Campaign</string>
