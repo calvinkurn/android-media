@@ -100,7 +100,7 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
     }
 
     private fun getDismissPendingIntent(): PendingIntent {
-        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel, true)
         intent.action = CMConstant.ReceiverAction.ACTION_CAROUSEL_NOTIFICATION_DISMISS
         return getPendingIntent(context, intent, requestCode)
     }

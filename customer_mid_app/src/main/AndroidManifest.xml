@@ -49,6 +49,7 @@
             android:name="com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link"
+            android:exported="true"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
