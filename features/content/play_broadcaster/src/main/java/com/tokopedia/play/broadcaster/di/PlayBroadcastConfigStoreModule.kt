@@ -37,5 +37,9 @@ abstract class PlayBroadcastConfigStoreModule {
 
     @Binds
     @ActivityRetainedScope
+    abstract fun bindBroadcastUGCConfigStore(configStore: UGCConfigStoreImpl): UGCConfigStore
+
+    @Binds
+    @ActivityRetainedScope
     abstract fun bindHydraConfigStore(configStore: HydraConfigStoreImpl): HydraConfigStore
 }
