@@ -1,12 +1,12 @@
 package com.tokopedia.chatbot.websocket
 
 import android.util.Log
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.teleporter.Teleporter.gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.websocket.RxWebSocket
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -56,7 +56,7 @@ class ChatbotWebSocketImpl(
 
     private var mWebSocket: WebSocket? = null
 
-    var onChatListener : OnOpenListener? = null
+    var onChatListener : ChatbotSocketStateListener? = null
 
     private var webSocketListener = object : WebSocketListener() {
 
@@ -103,8 +103,9 @@ class ChatbotWebSocketImpl(
         return webSocketFlow.filterNotNull().flowOn(dispatchers.main)
     }
 
-    override fun send(message: String, interceptors: List<Interceptor>?) {
-        mWebSocket?.send(message)
+    //TODO add null check
+    override fun send(message: JsonObject?, interceptors: List<Interceptor>?) {
+        mWebSocket?.send(message.toString())
     }
 
     override fun connect(url: String) {
@@ -120,10 +121,7 @@ class ChatbotWebSocketImpl(
         }
     }
 
-    override fun setOnOpenListener(listener : OnOpenListener) {
+    override fun setOnOpenListener(listener : ChatbotSocketStateListener) {
         onChatListener = listener
     }
-}
-interface OnOpenListener {
-    fun onOpen()
 }

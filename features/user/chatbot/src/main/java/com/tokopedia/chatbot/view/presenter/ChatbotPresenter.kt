@@ -65,7 +65,7 @@ import com.tokopedia.chatbot.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
-import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
+import com.tokopedia.chatbot.domain.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
@@ -96,10 +96,8 @@ import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
 import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
-import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
-import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_CODE
@@ -108,9 +106,9 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
+import com.tokopedia.chatbot.websocket.ChatbotSocketStateListener
 import com.tokopedia.chatbot.websocket.ChatbotWebSocket
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
-import com.tokopedia.chatbot.websocket.OnOpenListener
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -128,12 +126,10 @@ import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -237,52 +233,51 @@ class ChatbotPresenter @Inject constructor(
 
     private fun sendReadEventWebSocket2(messageId: String) {
         chatbotWebSocket.send(
-            getReadMessageWebSocket(messageId).toString(),
+            ChatbotSendableWebSocketParam.getReadMessageWebSocket(messageId),
+            listInterceptor
+        )
+    }
+
+    //NOT USED
+    private fun sendReadEvent2(messageId: String) {
+        chatbotWebSocket.send(
+            ChatbotSendableWebSocketParam.getReadMessage(messageId),
             listInterceptor
         )
     }
 
     private var socketJob: Job? = null
 
-    fun connectWebSocket2(messageId: String) {
-        socketJob?.cancel()
-
-        chatbotWebSocket.setOnOpenListener(object : OnOpenListener {
+    private fun setUpSocketOpenedListener(messageId: String) {
+        chatbotWebSocket.setOnOpenListener(object : ChatbotSocketStateListener {
             override fun onOpen() {
                 Log.d("Eren", "onOpen: TATAKAE")
                 sendReadEventWebSocket2(messageId)
             }
         })
+    }
+
+    fun connectWebSocket2(messageId: String) {
+        socketJob?.cancel()
+        setUpSocketOpenedListener(messageId)
         val webSocketUrl = ChatbotUrl.getPathWebsocket(userSession.deviceId, userSession.userId)
 
-//        socketJob = launchCatchError(
-//            block = {
-//                if (!isActive) return@launchCatchError
-//
-//                chatbotWebSocket.connect(webSocketUrl)
-//
-//                chatbotWebSocket
-//                    .getDataFromSocketAsFlow()
-//                    .collect {
-//                        handleWebSocketResponse(it, messageId)
-//                    }
-//            },
-//            onError = {
-//                Log.d("Eren", "connectWebSocket2: $it")
-//            }
-//        )
+        socketJob = launchCatchError(
+            block = {
+                if (!isActive) return@launchCatchError
 
-        socketJob = GlobalScope.launch {
-            if (!isActive) return@launch
+                chatbotWebSocket.connect(webSocketUrl)
 
-            chatbotWebSocket.connect(webSocketUrl)
-
-            chatbotWebSocket
-                .getDataFromSocketAsFlow()
-                .collect {
-                    handleWebSocketResponse(it, messageId)
-                }
-        }
+                chatbotWebSocket
+                    .getDataFromSocketAsFlow()
+                    .collect {
+                        handleWebSocketResponse(it, messageId)
+                    }
+            },
+            onError = {
+                Log.d("Eren", "connectWebSocket2: $it")
+            }
+        )
     }
 
     override fun connectWebSocket(messageId: String) {
@@ -300,7 +295,7 @@ class ChatbotPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
                 }
-                sendReadEventWebSocket(messageId)
+                sendReadEventWebSocket2(messageId)
                 view.showErrorWebSocket(false)
                 view.sendInvoiceForArticle()
             }
@@ -390,8 +385,6 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
-
-
     private fun handleReplyBubble(agentMode: ReplyBubbleAttributes) {
         if (agentMode != null) {
             if (agentMode.sessionChange.mode == MODE_AGENT) {
@@ -464,26 +457,18 @@ class ChatbotPresenter @Inject constructor(
 
     override fun sendReadEvent(messageId: String) {
         RxWebSocket.send(
-            SendChatbotWebsocketParam.getReadMessage(messageId),
+            ChatbotSendableWebSocketParam.getReadMessage(messageId),
             listInterceptor
         )
     }
 
-    private fun sendReadEventWebSocket(messageId: String) {
-        RxWebSocket.send(
-            getReadMessageWebSocket(messageId),
-            listInterceptor
-        )
-    }
+//    private fun sendReadEventWebSocket(messageId: String) {
+//        RxWebSocket.send(
+//            ChatbotSendableWebSocketParam.getReadMessageWebSocket(messageId),
+//            listInterceptor
+//        )
+//    }
 
-    private fun getReadMessageWebSocket(messageId: String): JsonObject {
-        val json = JsonObject()
-        json.addProperty("code", EVENT_TOPCHAT_READ_MESSAGE)
-        val data = JsonObject()
-        data.addProperty("msg_id", messageId.convertMessageIdToLong())
-        json.add("data", data)
-        return json
-    }
 
     override fun sendRating(
         messageId: String,
@@ -525,8 +510,8 @@ class ChatbotPresenter @Inject constructor(
         startTime: String,
         opponentId: String
     ) {
-        RxWebSocket.send(
-            SendChatbotWebsocketParam.generateParamSendBubbleAction(
+        chatbotWebSocket.send(
+            ChatbotSendableWebSocketParam.generateParamSendBubbleAction(
                 messageId,
                 selected,
                 startTime,
@@ -550,7 +535,7 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 view.onReceiveMessageEvent(mapToVisitable(pojo))
-                sendReadEventWebSocket(messageId)
+                sendReadEventWebSocket2(messageId)
             }
         }
     }
@@ -565,7 +550,7 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 view.onReceiveMessageEvent(mapToVisitable(pojo))
- //               sendReadEventWebSocket(messageId)
+                sendReadEventWebSocket2(messageId)
             }
         }
     }
@@ -584,7 +569,7 @@ class ChatbotPresenter @Inject constructor(
     ) {
         if (!isArticleEntry) {
             RxWebSocket.send(
-                SendChatbotWebsocketParam.generateParamSendInvoice(
+                ChatbotSendableWebSocketParam.generateParamSendInvoice(
                     messageId,
                     invoiceLinkPojo,
                     startTime,
@@ -594,11 +579,10 @@ class ChatbotPresenter @Inject constructor(
             )
         } else {
             RxWebSocket.send(
-                SendChatbotWebsocketParam.generateParamInvoiceSendByArticle(
+                ChatbotSendableWebSocketParam.generateParamInvoiceSendByArticle(
                     messageId,
                     invoiceLinkPojo,
                     startTime,
-                    opponentId,
                     usedBy
                 ),
                 listInterceptor
@@ -613,7 +597,7 @@ class ChatbotPresenter @Inject constructor(
         opponentId: String
     ) {
         RxWebSocket.send(
-            SendChatbotWebsocketParam.generateParamSendQuickReply(
+            ChatbotSendableWebSocketParam.generateParamSendQuickReply(
                 messageId,
                 quickReply,
                 startTime,
@@ -632,11 +616,10 @@ class ChatbotPresenter @Inject constructor(
         usedBy: String
     ) {
         RxWebSocket.send(
-            SendChatbotWebsocketParam.generateParamSendQuickReplyEventArticle(
+            ChatbotSendableWebSocketParam.generateParamSendQuickReplyEventArticle(
                 messageId,
                 quickReply,
                 startTime,
-                opponentId,
                 event,
                 usedBy
             ),
@@ -654,8 +637,8 @@ class ChatbotPresenter @Inject constructor(
         startTime: String,
         opponentId: String
     ) {
-        RxWebSocket.send(
-            SendChatbotWebsocketParam.generateParamSendMessage(
+        chatbotWebSocket.send(
+            ChatbotSendableWebSocketParam.generateParamSendMessage(
                 messageId,
                 sendMessage,
                 startTime,
@@ -712,7 +695,7 @@ class ChatbotPresenter @Inject constructor(
                     override fun onNext(t: ImageUploadDomainModel<ChatbotUploadImagePojo>) {
                         t.dataResultImageUpload.data?.run {
                             sendUploadedImageToWebsocket(
-                                ChatbotSendWebsocketParam
+                                ChatbotSendableWebSocketParam
                                     .generateParamSendImage(
                                         messageId,
                                         this.picSrc,
@@ -758,12 +741,11 @@ class ChatbotPresenter @Inject constructor(
                     val restResponse = t?.get(token)
                     val uploadSecureResponse: UploadSecureResponse? = restResponse?.getData()
                     sendUploadedImageToWebsocket(
-                        ChatbotSendWebsocketParam
+                        ChatbotSendableWebSocketParam
                             .generateParamUploadSecureSendImage(
                                 messageId,
                                 uploadSecureResponse?.uploadSecureData?.urlImage ?: "",
                                 imageUploadViewModel.startTime,
-                                opponentId,
                                 userSession.name
                             )
                     )
@@ -820,8 +802,8 @@ class ChatbotPresenter @Inject constructor(
         if (isValidReply(sendMessage)) {
             onSendingMessage()
             if (parentReply == null) {
-                RxWebSocket.send(
-                    ChatbotSendWebsocketParam.generateParamSendMessage(
+                chatbotWebSocket.send(
+                    ChatbotSendableWebSocketParam.generateParamSendMessage(
                         messageId,
                         sendMessage,
                         startTime,
@@ -830,8 +812,8 @@ class ChatbotPresenter @Inject constructor(
                     listInterceptor
                 )
             } else {
-                RxWebSocket.send(
-                    ChatbotSendWebsocketParam.generateParamSendMessageWithReplyBubble(
+                chatbotWebSocket.send(
+                    ChatbotSendableWebSocketParam.generateParamSendMessageWithReplyBubble(
                         messageId,
                         sendMessage,
                         startTime,
@@ -839,49 +821,6 @@ class ChatbotPresenter @Inject constructor(
                     ),
                     listInterceptor
                 )
-            }
-        }
-    }
-
-    fun sendMessage2(
-        messageId: String,
-        sendMessage: String,
-        startTime: String,
-        opponentId: String,
-        parentReply: ParentReply?,
-        onSendingMessage: () -> Unit
-    ) {
-        if (isValidReply(sendMessage)) {
-            onSendingMessage()
-            if (parentReply == null) {
-                chatbotWebSocket.send(
-                    ChatbotSendWebsocketParam.generateParamSendMessage(
-                        messageId,
-                        sendMessage,
-                        startTime,
-                        opponentId
-                    ).toString(),
-                    listInterceptor
-                )
-//                RxWebSocket.send(
-//                    ChatbotSendWebsocketParam.generateParamSendMessage(
-//                        messageId,
-//                        sendMessage,
-//                        startTime,
-//                        opponentId
-//                    ),
-//                    listInterceptor
-//                )
-            } else {
-//                RxWebSocket.send(
-//                    ChatbotSendWebsocketParam.generateParamSendMessageWithReplyBubble(
-//                        messageId,
-//                        sendMessage,
-//                        startTime,
-//                        parentReply
-//                    ),
-//                    listInterceptor
-//                )
             }
         }
     }
@@ -895,11 +834,10 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun sendUploadedImageToWebsocket(json: JsonObject) {
-        val list = ArrayList<Interceptor>()
-        list.add(tkpdAuthInterceptor)
-        list.add(fingerprintInterceptor)
-
-        RxWebSocket.send(json, list)
+        val interceptors = ArrayList<Interceptor>()
+        interceptors.add(tkpdAuthInterceptor)
+        interceptors.add(fingerprintInterceptor)
+        chatbotWebSocket.send(json, interceptors)
     }
 
     private fun createRequestBody(content: String): RequestBody {
@@ -1000,7 +938,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun destroyWebSocket2() {
-        //     socketJob?.cancel()
+        socketJob?.cancel()
         chatbotWebSocket.close()
     }
 

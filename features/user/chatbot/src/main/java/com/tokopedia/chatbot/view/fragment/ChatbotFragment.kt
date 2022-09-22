@@ -1083,7 +1083,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val sendMessage = replyEditText.text.toString()
         val startTime = SendableUiModel.generateStartTime()
 
-        presenter.sendMessage2(
+        presenter.sendMessage(
             messageId,
             sendMessage,
             startTime,
