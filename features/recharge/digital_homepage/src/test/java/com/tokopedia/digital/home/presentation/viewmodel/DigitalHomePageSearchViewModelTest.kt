@@ -1,12 +1,12 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.digital.home.domain.DigitalHomepageSearchByDynamicIconUseCase
+import com.tokopedia.digital.home.domain.SearchAutoCompleteHomePageUseCase
+import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
+import com.tokopedia.digital.home.model.DigitalHomePageSearchNewModel
 import com.tokopedia.digital.home.model.Tracking
-import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchByDynamicIconUseCase
-import com.tokopedia.digital.home.old.domain.SearchAutoCompleteHomePageUseCase
-import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
-import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.digital.home.old.model.DigitalHomePageSearchNewModel
+import com.tokopedia.digital.home.presentation.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -48,14 +48,20 @@ class DigitalHomePageSearchViewModelTest {
         MockKAnnotations.init(this)
 
         digitalHomePageSearchViewModel =
-                DigitalHomePageSearchViewModel(searchCategoryHomePageUseCase, searchCategoryByDynamicIconUseCase,
-                        searchAutoCompleteHomePageUseCase, CoroutineTestDispatchersProvider)
+            DigitalHomePageSearchViewModel(
+                searchCategoryHomePageUseCase, searchCategoryByDynamicIconUseCase,
+                searchAutoCompleteHomePageUseCase, CoroutineTestDispatchersProvider
+            )
     }
 
     @Test
     fun getSearchCategoryList_Success() {
         coEvery { searchCategoryHomePageUseCase.searchCategoryList(any(), any(), any()) } returns
-               DigitalHomePageSearchNewModel(false, Tracking(), "test", listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
+            DigitalHomePageSearchNewModel(
+                false, Tracking(), "test", listOf(
+                    DigitalHomePageSearchCategoryModel(searchQuery = "test")
+                )
+            )
 
         digitalHomePageSearchViewModel.searchCategoryList(DummyDigitalQueryInterface(), "test")
         val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
@@ -67,8 +73,8 @@ class DigitalHomePageSearchViewModelTest {
 
     @Test
     fun getSearchCategoryList_Fail() {
-        coEvery{ searchCategoryHomePageUseCase.searchCategoryList(any(), any(), any()) } throws
-                MessageErrorException()
+        coEvery { searchCategoryHomePageUseCase.searchCategoryList(any(), any(), any()) } throws
+            MessageErrorException()
 
         digitalHomePageSearchViewModel.searchCategoryList(DummyDigitalQueryInterface(), "test")
         val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
@@ -80,7 +86,12 @@ class DigitalHomePageSearchViewModelTest {
         //given
         coEvery {
             searchCategoryByDynamicIconUseCase.searchCategoryList(any(), any())
-        } returns DigitalHomePageSearchNewModel(false, Tracking(), "test", listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
+        } returns DigitalHomePageSearchNewModel(
+            false,
+            Tracking(),
+            "test",
+            listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test"))
+        )
 
         //when
         digitalHomePageSearchViewModel.searchByDynamicIconsCategory("", 0, listOf())
@@ -96,8 +107,8 @@ class DigitalHomePageSearchViewModelTest {
     @Test
     fun getSearchCategoryByDynamicIcons_Fail() {
         //given
-        coEvery{ searchCategoryByDynamicIconUseCase.searchCategoryList(any(), any()) } throws
-                MessageErrorException()
+        coEvery { searchCategoryByDynamicIconUseCase.searchCategoryList(any(), any()) } throws
+            MessageErrorException()
 
         //when
         digitalHomePageSearchViewModel.searchByDynamicIconsCategory("", 0, listOf())
@@ -108,7 +119,7 @@ class DigitalHomePageSearchViewModelTest {
     }
 
     @Test
-    fun getMapSearchAutoComplete(){
+    fun getMapSearchAutoComplete() {
         //when
         val searchParamResult = digitalHomePageSearchViewModel.mapAutoCompleteParams(searchQuery)
 
@@ -121,7 +132,12 @@ class DigitalHomePageSearchViewModelTest {
         //given
         coEvery {
             searchAutoCompleteHomePageUseCase.searchAutoCompleteList(any(), any())
-        } returns DigitalHomePageSearchNewModel(true, Tracking(), "test", listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
+        } returns DigitalHomePageSearchNewModel(
+            true,
+            Tracking(),
+            "test",
+            listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test"))
+        )
 
         //when
         digitalHomePageSearchViewModel.searchAutoComplete(mapSearchParam, "paket")
@@ -138,8 +154,8 @@ class DigitalHomePageSearchViewModelTest {
     @Test
     fun getSearchAutoComplete_Fail() {
         //given
-        coEvery{ searchAutoCompleteHomePageUseCase.searchAutoCompleteList(any(), any()) } throws
-                MessageErrorException()
+        coEvery { searchAutoCompleteHomePageUseCase.searchAutoCompleteList(any(), any()) } throws
+            MessageErrorException()
 
         //when
         digitalHomePageSearchViewModel.searchAutoComplete(mapSearchParam, searchQuery)
@@ -200,7 +216,7 @@ class DigitalHomePageSearchViewModelTest {
     }
 
     @Test
-    fun getJob(){
+    fun getJob() {
         //given
         val job = Job()
 
@@ -209,5 +225,15 @@ class DigitalHomePageSearchViewModelTest {
 
         //then
         assertEquals(job, digitalHomePageSearchViewModel.job)
+    }
+
+    @Test(expected = UninitializedPropertyAccessException::class)
+    fun getJobUninitialized() {
+        //given
+
+        //when
+        digitalHomePageSearchViewModel.job
+
+        //then
     }
 }

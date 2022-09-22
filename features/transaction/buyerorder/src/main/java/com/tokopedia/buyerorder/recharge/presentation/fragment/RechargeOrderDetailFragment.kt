@@ -18,7 +18,7 @@ import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.databinding.FragmentRechargeOrderDetailBinding
 import com.tokopedia.buyerorder.detail.analytics.OrderListAnalyticsUtils
 import com.tokopedia.buyerorder.detail.data.OrderCategory
-import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity
+import com.tokopedia.buyerorder.detail.revamp.activity.SeeInvoiceActivity
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
