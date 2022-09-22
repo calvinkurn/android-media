@@ -60,21 +60,19 @@
         app:typographyWeight="bold"
         tools:text="Rp.500000000000000000000000" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_free_ongkir"
         android:layout_width="wrap_content"
-        android:layout_height="16dp"
+        android:layout_height="20dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
-        android:contentDescription="@null"
-        android:visibility="visible"
         android:adjustViewBounds="true"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@+id/txt_main_price"
         app:layout_constraintEnd_toStartOf="@+id/fab_detail_pdp"
         app:layout_constraintStart_toEndOf="@+id/txt_main_price"
         app:layout_constraintTop_toTopOf="@+id/txt_main_price"
+        app:unify_image_corner_radius="0"
         tools:srcCompat="@drawable/ic_af_byme_square" />
 
     <ImageView
@@ -110,9 +108,9 @@
             android:layout_marginRight="4dp"
             android:background="@drawable/bg_product_detail_cashback"
             android:paddingLeft="4dp"
-            android:paddingTop="@dimen/dp_3"
+            android:paddingTop="3dp"
             android:paddingRight="4dp"
-            android:paddingBottom="@dimen/dp_3"
+            android:paddingBottom="3dp"
             android:textColor="@color/Unify_G500"
             android:visibility="gone"
             app:typographyType="small"
@@ -120,22 +118,14 @@
             tools:text="Cashback 3%"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifycomponents.Label
             android:id="@+id/text_discount_red"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
-            android:background="@drawable/bg_discount_label"
-            android:paddingLeft="4dp"
-            android:paddingTop="@dimen/dp_3"
-            android:paddingRight="4dp"
-            android:paddingBottom="@dimen/dp_3"
-            android:textColor="@color/Unify_Y500"
             android:visibility="gone"
-            app:typographyType="small"
-            app:typographyWeight="bold"
+            app:labelType="highlight_light_red"
             tools:text="50%"
             tools:visibility="visible" />
 

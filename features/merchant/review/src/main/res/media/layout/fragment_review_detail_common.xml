@@ -7,7 +7,7 @@
     android:background="@color/review_dms_fragment_review_detail_common_background"
     app:layout_constraintBottom_toBottomOf="parent">
 
-    <com.tokopedia.review.feature.media.detail.presentation.widget.ReviewDetailBasicInfo
+    <com.tokopedia.review.feature.media.detail.presentation.widget.SimpleReviewDetailBasicInfo
         android:id="@+id/review_detail_basic_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

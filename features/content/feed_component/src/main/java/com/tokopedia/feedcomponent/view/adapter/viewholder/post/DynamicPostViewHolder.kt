@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
-import android.content.Context
 import android.os.Handler
 import android.text.SpannableString
 import android.text.TextUtils
@@ -42,7 +41,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -107,7 +105,7 @@ open class DynamicPostViewHolder(v: View,
         }
 
         bindTitle(element.title, element.template.cardpost.title)
-        bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName, "")
+        bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName, "", element.caption.text)
         bindCaption(element.caption, element.template.cardpost.body, element.trackingPostModel)
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
         bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
@@ -147,7 +145,7 @@ open class DynamicPostViewHolder(v: View,
         return template.text || template.textBadge || template.ctaLink
     }
 
-    private fun bindHeader(postId: String, header: Header, template: TemplateHeader, activityName: String, shopId: String) {
+    private fun bindHeader(postId: String, header: Header, template: TemplateHeader, activityName: String, shopId: String, caption: String) {
         itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
             itemView.authorImage.shouldShowWithAction(template.avatar) {
                 if (!TextUtils.isEmpty(header.avatar)) {
@@ -210,11 +208,11 @@ open class DynamicPostViewHolder(v: View,
                                 header.deletable,
                                 header.editable,
                                 true,
+                                header.followCta.authorID,
                                 "",
                                 "",
                                 "",
-                                "",
-                                ""
+                                caption,
                         )
                     }
                 } else{
@@ -673,20 +671,14 @@ open class DynamicPostViewHolder(v: View,
             shopId: String = "",
             mediaType: String = "",
             isTopads:Boolean = false,
-            playChannelId: String = ""
+            playChannelId: String = "",
+            weblink: String = ""
         )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
-        fun onPostTagItemBSClick(
-            positionInFeed: Int,
-            redirectUrl: String,
-            postTagItem: FeedXProduct,
-            itemPosition: Int,
-            mediaType: String
-        )
         fun onFullScreenCLick(
                 feedXCard: FeedXCard,
                 positionInFeed: Int,
@@ -702,19 +694,17 @@ open class DynamicPostViewHolder(v: View,
                 time:Long,
                 hitTrackerApi:Boolean
         )
+        fun sendWatchVODTracker(
+            feedXCard: FeedXCard,
+            playChannelId: String,
+            rowNumber: Int,
+            time: Long
+        )
         fun onPostTagBubbleClick(
                 positionInFeed: Int,
                 redirectUrl: String,
                 postTagItem: FeedXProduct,
                 adClickUrl: String
-        )
-        fun onPostTagItemBSImpression(
-            activityId: String,
-            postTagItemList: List<FeedXProduct>,
-            type: String,
-            shopId: String,
-            isFollowed: Boolean,
-            mediaType: String
         )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
@@ -752,11 +742,6 @@ open class DynamicPostViewHolder(v: View,
             mediaType: String
         )
 
-        fun onBottomSheetMenuClicked(
-            item: ProductPostTagViewModelNew,
-            context: Context,
-            shopId: String = ""
-        )
 
         fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String)
 

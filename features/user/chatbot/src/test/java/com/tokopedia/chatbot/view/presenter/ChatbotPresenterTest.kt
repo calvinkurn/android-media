@@ -2,31 +2,61 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.chat_common.domain.SendWebsocketParam
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
+import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
+import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
+import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
-import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
-import com.tokopedia.chatbot.domain.usecase.*
+import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
+import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
+import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
+import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
+import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.mockkObject
+import io.mockk.runs
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import org.junit.After
+import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -58,6 +88,7 @@ class ChatbotPresenterTest {
     private lateinit var getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
     private lateinit var checkUploadSecureUseCase: CheckUploadSecureUseCase
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
+    private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
 
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
@@ -87,6 +118,7 @@ class ChatbotPresenterTest {
         getTopBotNewSessionUseCase = mockk(relaxed = true)
         checkUploadSecureUseCase = mockk(relaxed = true)
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
+        getExistingChatMapper = mockk(relaxed = true)
 
         presenter = spyk(
             ChatbotPresenter(
@@ -107,7 +139,8 @@ class ChatbotPresenterTest {
                 getResolutionLinkUseCase,
                 getTopBotNewSessionUseCase,
                 checkUploadSecureUseCase,
-                chatBotSecureImageUploadUseCase
+                chatBotSecureImageUploadUseCase,
+                getExistingChatMapper
             )
         )
 
@@ -121,6 +154,373 @@ class ChatbotPresenterTest {
         Dispatchers.resetMain()
     }
 
+
+    @Test
+    fun `sendMessage without parent reply`() {
+        mockkObject(RxWebSocket)
+        mockkObject(ChatbotSendWebsocketParam)
+
+        every {
+            ChatbotSendWebsocketParam.generateParamSendMessage(any(), any(), any(), any())
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                ChatbotSendWebsocketParam.generateParamSendMessage(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        } just runs
+
+        presenter.sendMessage("", "123", "", "", null) {}
+
+        verify {
+            RxWebSocket.send(
+                ChatbotSendWebsocketParam.generateParamSendMessage(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        }
+    }
+
+    @Test
+    fun `sendMessage with parent reply`() {
+        mockkObject(RxWebSocket)
+        mockkObject(ChatbotSendWebsocketParam)
+
+        every {
+            ChatbotSendWebsocketParam.generateParamSendMessageWithReplyBubble(
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                ChatbotSendWebsocketParam.generateParamSendMessageWithReplyBubble(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        } just runs
+
+        presenter.sendMessage("", "123", "", "", ParentReply()) {}
+
+        verify {
+            RxWebSocket.send(
+                ChatbotSendWebsocketParam.generateParamSendMessageWithReplyBubble(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ), any()
+            )
+        }
+
+    }
+
+    @Test
+    fun `getBottomChat success when chat ratings list is not empty`() {
+        val expectedResponse = GetExistingChatPojo()
+        val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
+        var chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
+
+        coEvery {
+            getExistingChatUseCase.getBottomChat(any())
+        } returns expectedResponse
+
+        every {
+            getExistingChatMapper.map(expectedResponse)
+        } returns chatroomViewModel
+
+        every {
+            presenter.getChatRatingData(any())
+        } returns chatRatingListInput
+
+        coEvery {
+            presenter.getChatRatingList(any(), any(), any())
+        }
+
+        presenter.getBottomChat("123456", { viewModel, chatReplies -> }, {}, {})
+
+        verify {
+            presenter.getChatRatingList(chatRatingListInput, any(), any())
+        }
+
+    }
+
+    @Test
+    fun `getBottomChat success when chat ratings list is empty`() {
+        val expectedResponse = GetExistingChatPojo()
+        var chatroomViewModel = ChatroomViewModel(mockk())
+        val chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
+
+        coEvery {
+            getExistingChatUseCase.getBottomChat(any())
+        } returns expectedResponse
+
+        every {
+            getExistingChatMapper.map(expectedResponse)
+        } returns chatroomViewModel
+
+        every {
+            presenter.getChatRatingData(any())
+        } returns chatRatingListInput
+
+        presenter.getBottomChat("123456", { viewModel, chatReplies ->
+            chatroomViewModel = viewModel!!
+        }, {}, {})
+
+        Assert.assertEquals(
+            chatroomViewModel, getExistingChatMapper.map(expectedResponse)
+        )
+    }
+
+    @Test
+    fun `getBottomChat failure`() {
+        val exception = mockk<Exception>()
+        var result: Throwable? = null
+
+        coEvery {
+            getExistingChatUseCase.getBottomChat(any())
+        } throws exception
+
+        presenter.getBottomChat("123", { chatroomViewModel, chatReplies -> }, { exception ->
+            result = exception
+        }, {})
+
+        Assert.assertEquals(
+            exception, (result as Exception)
+        )
+
+    }
+
+    @Test
+    fun `getTopChat when inputList is not empty success`() {
+
+        val expectedResponse = GetExistingChatPojo()
+        val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
+        var chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
+
+
+        coEvery {
+            getExistingChatUseCase.getTopChat(any())
+        } returns expectedResponse
+
+        every {
+            getExistingChatMapper.map(expectedResponse)
+        } returns chatroomViewModel
+
+        every {
+            presenter.getChatRatingData(any())
+        } returns chatRatingListInput
+
+        coEvery {
+            presenter.getChatRatingList(any(), any(), any())
+        }
+
+        // When
+        presenter.getTopChat("123456", { viewModel, chatReplies -> }, {}, {})
+
+        verify {
+            presenter.getChatRatingList(chatRatingListInput, any(), any())
+        }
+
+    }
+
+    @Test
+    fun `getTopChat when inputList is empty success`() {
+        val expectedResponse = GetExistingChatPojo()
+        var chatroomViewModel = ChatroomViewModel(mockk())
+        val chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
+
+        coEvery {
+            getExistingChatUseCase.getTopChat(any())
+        } returns expectedResponse
+
+        every {
+            getExistingChatMapper.map(expectedResponse)
+        } returns chatroomViewModel
+
+        every {
+            presenter.getChatRatingData(any())
+        } returns chatRatingListInput
+
+        presenter.getTopChat("123456", { viewModel, chatReplies ->
+            chatroomViewModel = viewModel!!
+        }, {}, {})
+
+        Assert.assertEquals(
+            chatroomViewModel, getExistingChatMapper.map(expectedResponse)
+        )
+    }
+
+    @Test
+    fun `getTopChat throws exception - failure`() {
+        val exception = mockk<Exception>()
+        var result: Throwable? = null
+
+        coEvery {
+            getExistingChatUseCase.getTopChat(any())
+        } throws exception
+
+        presenter.getTopChat("123", { chatroomViewModel, chatReplies -> }, { exception ->
+            result = exception
+        }, {})
+
+        Assert.assertEquals(
+            exception, (result as Exception)
+        )
+
+    }
+
+    @Test
+    fun `getExistingChat does not get called if messageId is empty`() {
+
+        coEvery {
+            getExistingChatUseCase.getFirstPageChat(any())
+        }
+
+        presenter.getExistingChat("", {}, { chatroomViewModel, chatReplies -> }, {})
+
+        verify(exactly = 0) {
+            presenter.getChatRatingData(any())
+        }
+    }
+
+    @Test
+    fun `getExistingChat - when input List is empty calls getChatRatingList - Success`() {
+        val expectedResponse = GetExistingChatPojo()
+        val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
+        var chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
+
+
+        coEvery {
+            getExistingChatUseCase.getFirstPageChat(any())
+        } returns expectedResponse
+
+        every {
+            getExistingChatMapper.map(expectedResponse)
+        } returns chatroomViewModel
+
+        every {
+            presenter.getChatRatingData(any())
+        } returns chatRatingListInput
+
+        coEvery {
+            presenter.getChatRatingList(any(), any(), any())
+        }
+
+        // When
+        presenter.getExistingChat("123456", { }, { viewModel, chatReplies -> }, {})
+
+        verify {
+            presenter.getChatRatingList(chatRatingListInput, any(), any())
+        }
+    }
+
+    @Test
+    fun `getExistingChat Failure`() {
+        val exception = mockk<Exception>()
+        var result: Throwable? = null
+
+        coEvery {
+            getExistingChatUseCase.getFirstPageChat(any())
+        } throws exception
+
+        presenter.getExistingChat("123", { exception ->
+            result = exception
+        }, { chatroomViewModel, chatReplies -> }, {})
+
+        Assert.assertEquals(
+            exception, (result as Exception)
+        )
+    }
+
+    @Test
+    fun `getChatRatingList success`() {
+        val response = mockk<GraphqlResponse>(relaxed = true)
+        val ratingListResponse = ChipGetChatRatingListResponse(mockk())
+        var expectedChatRatingList =
+            mockk<ChipGetChatRatingListResponse.ChipGetChatRatingList>(relaxed = true)
+
+        coEvery {
+            chipGetChatRatingListUseCase.getChatRatingList(any())
+        } returns response
+
+        every {
+            response.getData<ChipGetChatRatingListResponse>(ChipGetChatRatingListResponse::class.java)
+        } returns ratingListResponse
+
+        presenter.getChatRatingList(ChipGetChatRatingListInput(), "123456") { chipGetChatRatingList ->
+            expectedChatRatingList = chipGetChatRatingList!!
+        }
+
+        Assert.assertEquals(
+            expectedChatRatingList, ratingListResponse.chipGetChatRatingList
+        )
+
+    }
+
+    @Test
+    fun `getChatRatingList failure`() {
+
+        val exception = mockk<Exception>()
+        coEvery {
+            chipGetChatRatingListUseCase.getChatRatingList(any())
+        } throws exception
+
+        presenter.getChatRatingList(ChipGetChatRatingListInput(),"123456", {})
+
+        verify {
+            exception.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `clearGetChatUseCase success`() {
+
+        val expectedMinReplyTime = ""
+
+        every {
+            getExistingChatUseCase.reset()
+        } just runs
+
+        presenter.clearGetChatUseCase()
+
+        assertEquals(
+            expectedMinReplyTime,
+            ""
+        )
+
+    }
+
+    @Test
+    fun `setBeforeReplyTime success`() {
+
+        val expectedBeforeReplyTime = "123"
+
+        every {
+            getExistingChatUseCase.updateMinReplyTime(any())
+        } just runs
+
+        presenter.setBeforeReplyTime("123")
+
+        assertEquals(
+            expectedBeforeReplyTime,
+            "123"
+        )
+    }
 
     @Test
     fun `checkUploadSecure is true run uploadUsingSecureUpload`() {
@@ -259,7 +659,7 @@ class ChatbotPresenterTest {
             chipSubmitChatCsatUseCase.execute(any(), any())
         } just runs
 
-        presenter.submitChatCsat(ChipSubmitChatCsatInput(), {}, {})
+        presenter.submitChatCsat("123456", ChipSubmitChatCsatInput(), {}, {})
 
         verify {
             chipSubmitChatCsatUseCase.execute(any(), any())
@@ -488,20 +888,20 @@ class ChatbotPresenterTest {
     @Test
     fun `sendReadEvent success`() {
         mockkObject(RxWebSocket)
-        mockkObject(SendWebsocketParam)
+        mockkObject(SendChatbotWebsocketParam)
 
         every {
-            SendWebsocketParam.getReadMessage(any())
+            SendChatbotWebsocketParam.getReadMessage(any())
         } returns mockk(relaxed = true)
 
         every {
-            RxWebSocket.send(SendWebsocketParam.getReadMessage(any()), any())
+            RxWebSocket.send(SendChatbotWebsocketParam.getReadMessage(any()), any())
         } just runs
 
-        presenter.sendReadEvent("")
+        presenter.sendReadEvent("123")
 
         verify {
-            RxWebSocket.send(SendWebsocketParam.getReadMessage(any()), any())
+            RxWebSocket.send(SendChatbotWebsocketParam.getReadMessage(any()), any())
         }
 
     }
@@ -509,15 +909,15 @@ class ChatbotPresenterTest {
     @Test
     fun `sendMessageWithWebsocket success`() {
         mockkObject(RxWebSocket)
-        mockkObject(SendWebsocketParam)
+        mockkObject(SendChatbotWebsocketParam)
 
         every {
-            SendWebsocketParam.generateParamSendMessage(any(), any(), any(), any())
+            SendChatbotWebsocketParam.generateParamSendMessage(any(), any(), any(), any())
         } returns mockk(relaxed = true)
 
         every {
             RxWebSocket.send(
-                SendWebsocketParam.generateParamSendMessage(
+                SendChatbotWebsocketParam.generateParamSendMessage(
                     any(),
                     any(),
                     any(),
@@ -526,11 +926,11 @@ class ChatbotPresenterTest {
             )
         } just runs
 
-        presenter.sendMessageWithWebsocket("", "", "", "")
+        presenter.sendMessageWithWebsocket("123", "", "", "")
 
         verify {
             RxWebSocket.send(
-                SendWebsocketParam.generateParamSendMessage(
+                SendChatbotWebsocketParam.generateParamSendMessage(
                     any(),
                     any(),
                     any(),

@@ -6,11 +6,11 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.travel.country_code.DummyGqlQueryInterface
 import com.tokopedia.travel.country_code.data.TravelPhoneCodeAttribute
 import com.tokopedia.travel.country_code.data.TravelPhoneCodeCountry
 import com.tokopedia.travel.country_code.data.TravelPhoneCodeEntity
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
-import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -80,7 +80,7 @@ class TravelCountryCodeUseCaseTest{
         )
 
         runBlockingTest{
-            val result = useCase.execute(TravelCountryCodeGqlQuery.ALL_COUNTRY)
+            val result = useCase.execute(DummyGqlQueryInterface())
 
             assertTrue(result is Success)
             assertFalse(result is Fail)
@@ -113,7 +113,7 @@ class TravelCountryCodeUseCaseTest{
         )
 
         runBlockingTest{
-            val result = useCase.execute(TravelCountryCodeGqlQuery.ALL_COUNTRY)
+            val result = useCase.execute(DummyGqlQueryInterface())
 
             assertTrue(result is Fail)
             assertFalse(result is Success)
@@ -147,7 +147,7 @@ class TravelCountryCodeUseCaseTest{
             false
         ))
 
-        useCase.createObservable(TravelCountryCodeGqlQuery.ALL_COUNTRY)
+        useCase.createObservable(DummyGqlQueryInterface())
 
         verify { gql.createObservable(any()) }
     }
@@ -165,7 +165,7 @@ class TravelCountryCodeUseCaseTest{
             false
         ))
 
-        useCase.createObservable(TravelCountryCodeGqlQuery.ALL_COUNTRY)
+        useCase.createObservable(DummyGqlQueryInterface())
 
         verify { gql.createObservable(any()) }
     }

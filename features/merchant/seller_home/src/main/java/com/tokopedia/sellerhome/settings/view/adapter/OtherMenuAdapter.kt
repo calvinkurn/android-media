@@ -96,12 +96,6 @@ class OtherMenuAdapter(
             context?.startActivity(intent)
         },
         DividerUiModel(),
-        PrintingMenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_product_package).orEmpty(),
-            iconUnify = IconUnify.PACKAGE
-        ) {
-            listener.goToPrintingPage()
-        },
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_finance_service).orEmpty(),
             clickApplink = null,
@@ -202,8 +196,6 @@ class OtherMenuAdapter(
 
 
     interface Listener {
-        fun goToPrintingPage()
         fun goToSettings()
     }
-
 }

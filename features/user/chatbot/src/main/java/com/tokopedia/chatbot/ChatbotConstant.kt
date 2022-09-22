@@ -7,6 +7,11 @@ object ChatbotConstant {
     const val REQUEST_SUBMIT_FEEDBACK = 909
     const val REQUEST_SUBMIT_CSAT = 911
     const val ONE_SECOND_IN_MILLISECONDS = 1000
+    const val MODE_AGENT = "agent"
+    const val MODE_BOT = "bot"
+    const val TOKOPEDIA_CARE = "Tokopedia Care"
+    const val TANYA = "Tanya"
+    const val REPLY_AGENT_NAME = "{.Name}"
     const val RENDER_INVOICE_LIST_AND_BUTTON_ACTION = 1
 
     object CsatRating {
@@ -39,6 +44,7 @@ object ChatbotConstant {
 
     object AttachmentType {
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
+        const val TYPE_REPLY_BUBBLE = "28"
         const val SESSION_CHANGE = "31"
     }
 
@@ -61,6 +67,29 @@ object ChatbotConstant {
         const val ARTICLE_ENTRY = "article_entry"
         const val FALSE = "false"
     }
+
+    object NewRelic {
+        //New Relic Key For Logging
+        const val KEY_CHATBOT_ERROR = "CHATBOT_ANDROID_ERROR"
+        //Keys for each GQL
+        const val KEY_SECURE_UPLOAD = "CHATBOT_SECURE_UPLOAD"
+        const val KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY = "CHATBOT_SECURE_UPLOAD_AVAILABILITY"
+        const val KEY_CHATBOT_GET_CHATLIST_RATING = "CHATBOT_GET_CHATLIST_RATING"
+        const val KEY_CHATBOT_SUBMIT_CHAT_CSAT = "CHATBOT_SUBMIT_CHAT_CSAT"
+        const val KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION = "CHATBOT_SUBMIT_HELPFULL_QUESTION"
+        const val KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME = "CHATBOT_GET_EXISTING_CHAT_FIRST_TIME"
+        const val KEY_CHATBOT_GET_EXISTING_CHAT_TOP = "CHATBOT_GET_EXISTING_CHAT_TOP"
+        const val KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM = "CHATBOT_GET_EXISTING_CHAT_BOTTOM"
+        const val KEY_CHATBOT_GET_LINK_FOR_REDIRECTION = "CHATBOT_GET_LINK_FOR_REDIRECTION"
+        const val KEY_CHATBOT_TICKER = "CHATBOT_TICKER"
+        const val KEY_CHATBOT_NEW_SESSION = "CHATBOT_NEW_SESSION"
+        const val KEY_CHATBOT_LEAVE_QUEUE = "CHATBOT_LEAVE_QUEUE"
+        const val KEY_CHATBOT_SEND_RATING = "CHATBOT_SEND_RATING"
+        const val KEY_CHATBOT_RATING_REASON = "CHATBOT_RATING_REASON"
+        const val KEY_CHATBOT_CSAT_RATING = "CHATBOT_CSAT_RATING"
+        const val KEY_CHATBOT_SOCKET_EXCEPTION = "CHATBOT_SOCKET_EXCEPTION"
+    }
+
 
     const val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"
 

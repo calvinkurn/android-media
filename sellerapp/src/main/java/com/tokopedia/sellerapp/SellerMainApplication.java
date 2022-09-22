@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -95,7 +96,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
-        GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_sellerapp_anniv;
+        GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_sellerapp;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.APPLICATION_ID = BuildConfig.APPLICATION_ID;
@@ -245,15 +246,13 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             String version = versions.getFirst();
             String suffixVersion = versions.getSecond();
 
-            if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
-                GlobalConfig.VERSION_NAME = version;
-                com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
-                com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
-            } else {
+            if (TextUtils.isEmpty(suffixVersion)) {
                 GlobalConfig.VERSION_NAME = pInfo.versionName;
-                com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
+            } else {
+                GlobalConfig.VERSION_NAME = version;
+                GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
             }
-            com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = pInfo.versionName;// save raw version name
+            GlobalConfig.RAW_VERSION_NAME = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

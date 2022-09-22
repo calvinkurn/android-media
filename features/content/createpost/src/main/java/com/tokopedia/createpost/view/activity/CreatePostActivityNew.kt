@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.createpost.common.SHOP_ID_PARAM
+import com.tokopedia.createpost.common.USER_ID_PARAM
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
@@ -57,6 +59,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
 
     var selectedFeedAccount: FeedAccountUiModel = FeedAccountUiModel.Empty
+    var isOpenFrom: String = ""
 
     protected val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
 
@@ -159,6 +162,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         const val PARAM_MEDIA_PREVIEW = "media_preview"
         const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
         private const val DEFAULT_CACHE_DURATION = 7L
+
+        const val PARAM_POST_ID = "post_id"
+        const val PARAM_TYPE = "author_type"
 
         var isEditState: Boolean = false
         var isOpenedFromPreview: Boolean = false
@@ -285,16 +291,20 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         createPostAnalytics.eventClickPostOnPreviewPage()
         KeyboardHandler.hideSoftKeyboard(this)
         val cacheManager = SaveInstanceCacheManager(this, true)
-        val createPostViewModel = (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData()
-        createPostViewModel.authorType = selectedFeedAccount.type
+        val createPostViewModel = (fragment as? BaseCreatePostFragmentNew)?.getLatestCreatePostData()
+        createPostViewModel?.authorType = selectedFeedAccount.type
         cacheManager.put(
             CreatePostViewModel.TAG,
             createPostViewModel,
             TimeUnit.DAYS.toMillis(DEFAULT_CACHE_DURATION)
         )
         SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
-        goToFeed(createPostViewModel)
-        finish()
+
+        when (isOpenFrom) {
+            BundleData.VALUE_IS_OPEN_FROM_USER_PROFILE -> goToUserProfile()
+            BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE -> goToShopPage()
+            else -> createPostViewModel?.let { goToFeed(it) }
+        }
     }
 
     private fun goToFeed(createPostViewModel: CreatePostViewModel) {
@@ -307,7 +317,24 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             intent.putExtra(PARAM_MEDIA_PREVIEW,
                 if (!isEditState) createPostViewModel.completeImageList.first().path else "")
             startActivity(intent)
+            finish()
         }
+    }
+
+    private fun goToUserProfile() {
+        val appLink = ApplinkConst.PROFILE_SUCCESS_POST.replace(USER_ID_PARAM, userSession.userId)
+        val intent = RouteManager.getIntent(this, appLink)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        startActivity(intent)
+        finish()
+    }
+
+    private fun goToShopPage() {
+        val appLink = ApplinkConst.SHOP.replace(SHOP_ID_PARAM, userSession.shopId)
+        val intent = RouteManager.getIntent(this, appLink)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        startActivity(intent)
+        finish()
     }
 
     private fun setupView() {
@@ -319,6 +346,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         mFeedAccountList.addAll(feedAccountList)
 
         val selectedFeedAccountId = intent.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
+        isOpenFrom = intent.extras?.getString(BundleData.KEY_IS_OPEN_FROM, "") ?: ""
         selectedFeedAccount = if (mFeedAccountList.isEmpty()) FeedAccountUiModel.Empty
         else mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId }
             ?: mFeedAccountList.first()
@@ -370,6 +398,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     private fun backWithActionResult() {
         val intent = Intent().apply {
             putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedFeedAccount.id)
+            putExtra(BundleData.KEY_IS_OPEN_FROM, isOpenFrom)
         }
         setResult(Activity.RESULT_OK, intent)
         finish()

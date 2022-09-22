@@ -60,6 +60,7 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
+import com.tokopedia.topchat.common.websocket.WebsocketPayloadGenerator
 import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withIndex
@@ -69,6 +70,7 @@ import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
+import com.tokopedia.topchat.stub.common.DefaultWebsocketPayloadFakeGenerator
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
@@ -191,6 +193,9 @@ abstract class TopchatRoomTest {
     @Inject
     lateinit var remoteConfig: RemoteConfig
 
+    @Inject
+    lateinit var webSocketPayloadGenerator : DefaultWebsocketPayloadFakeGenerator
+
     protected open lateinit var activity: TopChatRoomActivityStub
 
     protected var firstPageChatAsBuyer = GetExistingChatPojo()
@@ -266,6 +271,8 @@ abstract class TopchatRoomTest {
     protected open fun setupResponse() {
         firstPageChatAsSeller = getChatUseCase.defaultChatWithSellerResponse
         firstPageChatAsBuyer = getChatUseCase.defaultChatWithBuyerResponse
+        firstPageChatBroadcastAsBuyer = getChatUseCase.defaultBroadCastChatWithBuyerResponse
+
         chatAttachmentResponse = AndroidFileUtil.parse(
             "success_get_chat_attachments.json",
             ChatAttachmentResponse::class.java
@@ -277,10 +284,6 @@ abstract class TopchatRoomTest {
         stickerListAsBuyer = AndroidFileUtil.parse(
             "success_chat_bundle_sticker.json",
             StickerResponse::class.java
-        )
-        firstPageChatBroadcastAsBuyer = AndroidFileUtil.parse(
-            "success_get_chat_broadcast.json",
-            GetExistingChatPojo::class.java
         )
         getShopFollowingStatus = AndroidFileUtil.parse(
             "success_get_shop_following_status.json",
@@ -362,6 +365,13 @@ abstract class TopchatRoomTest {
             "start_time",
             exStartTime
         )
+    }
+
+    protected fun changeResponseWebSocket(
+        response: WebSocketResponse,
+        webSocketModifier: (WebSocketResponse) -> Unit
+    ) {
+        webSocketModifier(response)
     }
 
     protected fun clickAttachProductMenu() {

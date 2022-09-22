@@ -1,0 +1,11 @@
+{
+  "message": "validation error",
+  "path": [
+    "feedXProfileSubmit"
+  ],
+  "extensions": {
+    "code": 11001,
+    "developerMessage": "[{\"key\":\"Biography\",\"value\":\"Tidak boleh mengandung kata sensitif.\"},{\"key\":\"Username\",\"value\":\"Username ini sudah dipakai orang lain.\"}]",
+    "timestamp": "2022-02-21 21:41:02.138596135 +0700 WIB m=+510.545754669"
+  }
+}

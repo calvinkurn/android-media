@@ -9,13 +9,7 @@ object ApplinkConstInternalContent {
     const val INTERNAL_AFFILIATE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_AFFILIATE"
     const val INTERNAL_CONTENT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_CONTENT"
 
-    const val INTERNAL_CONTENT_CREATE_POST = "$INTERNAL_CONTENT/create_post/"
-    const val INTERNAL_CONTENT_DRAFT_POST = "$INTERNAL_CONTENT/draft/"
-    const val INTERNAL_AFFILIATE_CREATE_POST = "$INTERNAL_AFFILIATE/create_post/"
     const val INTERNAL_AFFILIATE_CREATE_POST_V2 = "$INTERNAL_AFFILIATE/create_post_v2/"
-    const val INTERNAL_AFFILIATE_DRAFT_POST = "$INTERNAL_AFFILIATE/draft/"
-    const val AFFILIATE_EDIT = "$INTERNAL_CONTENT/affiliate/{id}/edit"
-    const val SHOP_POST_EDIT = "$INTERNAL_CONTENT/content-shop/{id}/edit"
     const val INTERNAL_PRODUCT_PICKER_FROM_SHOP = "$INTERNAL_CONTENT/productpickerfromshop/"
     const val INTERNAL_FEED_AUTOCOMPLETE = "$INTERNAL_CONTENT/feed_autocomplete"
     const val INTERNAL_FEED_CREATION_PRODUCT_SEARCH = "$INTERNAL_CONTENT/creation_product_search"
@@ -31,7 +25,7 @@ object ApplinkConstInternalContent {
 
     const val SHOP_POST_PICKER = "$INTERNAL_CONTENT/content-shop/picker"
 
-    const val PROFILE_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://people/{user_id}/"
+    const val PROFILE_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://people/{user_id}"
 
     const val HOST_PLAY = "play"
     const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"

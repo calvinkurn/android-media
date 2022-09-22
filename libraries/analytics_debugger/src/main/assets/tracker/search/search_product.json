@@ -18,7 +18,8 @@
       "pageSource": ".*",
       "searchFilter": ".*",
       "androidId": ".*",
-      "component": ".+"
+      "component": ".+",
+      "externalReference" : ".*"
     },
     {
       "event": "view_item_list",
@@ -41,7 +42,9 @@
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension40": "/searchproduct - topads productlist - \\d+ - component:.+",
           "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
-          "dimension90": ".*"
+          "dimension90": ".*",
+          "dimension115": ".*",
+          "dimension131": ".*"
         }
       ]
     },
@@ -73,7 +76,10 @@
           "dimension88": "search - product",
           "dimension90": ".*",
           "dimension96": ".*",
-          "dimension100": ".*"
+          "dimension99": ".*",
+          "dimension100": ".*",
+          "dimension115": ".*",
+          "dimension131": ".*"
         }
       ]
     },
@@ -98,7 +104,9 @@
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension40": ".*",
           "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
-          "dimension90": ".*"
+          "dimension90": ".*",
+          "dimension115": ".*",
+          "dimension131": ".*"
         }
       ]
     },
@@ -131,7 +139,10 @@
           "dimension88": "search - product",
           "dimension90": ".*",
           "dimension96": ".*",
-          "dimension100": ".*"
+          "dimension99": ".*",
+          "dimension100": ".*",
+          "dimension115": ".*",
+          "dimension131": ".*"
         }
       ]
     }

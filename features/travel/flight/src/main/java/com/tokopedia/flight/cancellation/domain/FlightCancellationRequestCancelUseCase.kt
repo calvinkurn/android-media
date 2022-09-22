@@ -1,13 +1,14 @@
 package com.tokopedia.flight.cancellation.domain
 
-import com.tokopedia.flight.cancellation.data.FlightCancellationGQLQuery
 import com.tokopedia.flight.cancellation.data.FlightCancellationRequestEntity
+import com.tokopedia.flight.cancellation.data.QueryCancelRequest
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import javax.inject.Inject
 
 /**
@@ -20,7 +21,7 @@ class FlightCancellationRequestCancelUseCase @Inject constructor(
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         useCase.clearRequest()
 
-        val graphqlRequest = GraphqlRequest(FlightCancellationGQLQuery.CANCEL_REQUEST,
+        val graphqlRequest = GraphqlRequest(QueryCancelRequest(),
                 FlightCancellationRequestEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)
 
@@ -37,7 +38,7 @@ class FlightCancellationRequestCancelUseCase @Inject constructor(
                     PARAM_DATA to mapOf(
                             PARAM_INVOICE_ID to invoiceId,
                             PARAM_REASON to reason,
-                            PARAM_REASON_ID to reasonId.toInt(),
+                            PARAM_REASON_ID to reasonId.toIntSafely(),
                             PARAM_ATTACHMENT to arrayListOf<String>(),
                             PARAM_DETAIL to transform(cancellationList)
                     )

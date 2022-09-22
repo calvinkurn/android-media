@@ -23,7 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.MutationDeleteRecentSearchUUID
 import com.tokopedia.hotel.databinding.FragmentHotelRecommendationBinding
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
@@ -38,6 +38,7 @@ import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchListener
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
 import com.tokopedia.locationmanager.LocationDetectorHelper
+import com.tokopedia.locationmanager.RequestLocationType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -224,12 +225,12 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     override fun onDeleteRecentSearchItem(uuid: String) {
         if (recentSearchAdapter.itemCount == 0) recentSearchLayout.visibility = View.GONE
-        destinationViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH_UUID, uuid)
+        destinationViewModel.deleteRecentSearch(MutationDeleteRecentSearchUUID(), uuid)
     }
 
     override fun onDeleteAllRecentSearch() {
         recentSearchLayout.visibility = View.GONE
-        destinationViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH_UUID, "")
+        destinationViewModel.deleteRecentSearch(MutationDeleteRecentSearchUUID(), "")
     }
 
     override fun onItemClicked(recentSearch: RecentSearch) {
@@ -306,7 +307,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
         activity?.let {
             permissionCheckerHelper.checkPermission(it,
-                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION,
                     object : PermissionCheckerHelper.PermissionCheckListener {
                         override fun onPermissionDenied(permissionText: String) {
                             permissionCheckerHelper.onPermissionDenied(it, permissionText)
@@ -317,9 +318,12 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                         }
 
                         override fun onPermissionGranted() {
-                            locationDetectorHelper.getLocation(destinationViewModel.onGetLocation(), requireActivity(),
-                                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                    requireActivity().getString(R.string.hotel_destination_need_permission))
+                            locationDetectorHelper.getLocation(
+                                destinationViewModel.onGetLocation(),
+                                requireActivity(),
+                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                RequestLocationType.APPROXIMATE,
+                                requireActivity().getString(R.string.hotel_destination_need_permission))
                         }
 
                     }, getString(R.string.hotel_destination_need_permission))

@@ -5,7 +5,6 @@ import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.fileExtension
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
 import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase

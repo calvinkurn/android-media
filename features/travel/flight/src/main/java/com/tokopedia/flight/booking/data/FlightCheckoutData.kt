@@ -90,7 +90,7 @@ data class FlightCheckoutData(
 
             @SerializedName("itemsPrice")
             @Expose
-            val itemsPrice: List<Int> = listOf(),
+            val itemsPrice: List<Double> = listOf(),
 
             @SerializedName("signature")
             @Expose

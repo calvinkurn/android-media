@@ -31,7 +31,7 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
     private lateinit var touchViewPager: TouchViewPager
     private lateinit var transactionNotFoundButton: UnifyButton
     private lateinit var context: FragmentActivity
-    private var messageId: Int = 0
+    private var messageId: Long = 0
     private lateinit var listener: TransactionInvoiceBottomSheetListener
 
     init {
@@ -42,7 +42,7 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
 
     companion object {
         @JvmStatic
-        fun newInstance(context: FragmentActivity, messageId: Int,
+        fun newInstance(context: FragmentActivity, messageId: Long,
                         listener: TransactionInvoiceBottomSheetListener): TransactionInvoiceBottomSheet {
             return TransactionInvoiceBottomSheet().apply {
                 this.context = context

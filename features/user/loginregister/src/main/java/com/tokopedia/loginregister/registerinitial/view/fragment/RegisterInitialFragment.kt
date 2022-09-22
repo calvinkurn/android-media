@@ -14,11 +14,15 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.util.Patterns
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -29,6 +33,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -40,6 +45,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
+import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
+import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.header.HeaderUnify
@@ -65,14 +72,7 @@ import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
-import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
-import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
-import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
-import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
-import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
-import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.const.LoginConstants
-import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -80,6 +80,7 @@ import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialRouter
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
@@ -87,7 +88,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
-import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
@@ -110,7 +110,6 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_initial_register.*
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author by nisie on 10/24/18.
@@ -144,11 +143,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private var isShowBanner: Boolean = false
     private var isHitRegisterPushNotif: Boolean = false
     private var activityShouldEnd: Boolean = true
-    private var enableOvoRegister: Boolean = false
     private var validateToken: String = ""
-
-    @Inject
-    lateinit var externalRegisterPreference: ExternalRegisterPreference
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -158,9 +153,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var registerAnalytics: RegisterAnalytics
-
-    @Inject
-    lateinit var ovoCreationAnalytics: OvoCreationAnalytics
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -177,8 +169,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
 
-    private var isRegisterOvo = false
-
     override fun onStart() {
         super.onStart()
         activity?.let {
@@ -193,8 +183,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     override fun getScreenName(): String {
         return RegisterAnalytics.SCREEN_REGISTER_INITIAL
     }
-
-    private fun useOvoRegister(): Boolean = enableOvoRegister
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -222,18 +210,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         userSession.logoutSession()
     }
 
-    private fun checkForOvoResume(){
-        if(isRegisterOvo){
-            if(externalRegisterPreference.isNeedContinue()){
-                goToRegisterWithPhoneNumber(externalRegisterPreference.getPhone())
-                externalRegisterPreference.isNeedContinue(false)
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
-        checkForOvoResume()
         activity?.let {
             if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
                 it.setResult(Activity.RESULT_OK)
@@ -304,7 +282,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
             isShowTicker = firebaseRemoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
             isShowBanner = firebaseRemoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_BANNER_REGISTER, false)
             isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
-            enableOvoRegister = firebaseRemoteConfig.getBoolean(ExternalRegisterConstants.CONFIG_EXTERNAL_REGISTER, false)
         }
     }
 
@@ -385,12 +362,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 }
             }
         })
-        registerInitialViewModel.checkOvoResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessCheckOvoAcc(it.data)
-                is Fail -> onErrorCheckovoAcc(it.throwable)
-            }
-        })
         combineLoginTokenAndValidateToken = registerInitialViewModel.loginTokenAfterSQResponse
                 .combineWith(registerInitialViewModel.validateToken) { loginToken: Result<LoginTokenPojo>?, validateToken: String? ->
                     if (loginToken is Fail) {
@@ -458,84 +429,11 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun onSuccessCheckOvoAcc(checkOvoResponse: CheckOvoResponse) {
-        dismissProgressBar()
-        checkOvoResponse?.data?.run {
-            if (isAllow) {
-                if (isRegistered) {
-                    showConnectOvoDialog()
-                } else {
-                    showRegisterOvoDialog()
-                }
-            } else {
-                phoneNumber?.run {
-                    goToRegisterWithPhoneNumber(this)
-                }
-            }
-        }
-    }
-
     fun doRegisterCheck() {
         showProgressBar()
         phoneNumber?.run {
             registerInitialViewModel.registerCheck(removeSymbolPhone(this))
         }
-    }
-
-    fun showRegisterOvoDialog() {
-        activity?.let {
-            ovoCreationAnalytics.trackViewOvoRegisterDialog()
-            phoneNumber?.run {
-                OvoAccountDialog.showRegisterDialogUnify(it, this, object : BaseDialogConnectAccListener {
-                    override fun onDialogPositiveBtnClicked() {
-                        isRegisterOvo = true
-                        ovoCreationAnalytics.trackClickCreateOvo()
-                        goToOvoAddName(this@run)
-                    }
-
-                    override fun onDialogNegativeBtnClicked() {
-                        phoneNumber?.run {
-                            ovoCreationAnalytics.trackClickRegTkpdOnly()
-                            goToRegisterWithPhoneNumber(this)
-                        }
-                    }
-                })
-            }
-        }
-    }
-
-    fun showConnectOvoDialog() {
-        activity?.let {
-            ovoCreationAnalytics.trackViewOvoConnectDialog()
-            OvoAccountDialog.showConnectDialogUnify(it, object : BaseDialogConnectAccListener {
-                override fun onDialogPositiveBtnClicked() {
-                    isRegisterOvo = true
-                    ovoCreationAnalytics.trackClickConnectOvo()
-                    goToOvoAddName(phoneNumber ?: "")
-                }
-
-                override fun onDialogNegativeBtnClicked() {
-                    phoneNumber?.run {
-                        ovoCreationAnalytics.trackClickConnectTkpdOnly()
-                        goToRegisterWithPhoneNumber(this)
-                    }
-                }
-            })
-        }
-    }
-
-    fun goToOvoAddName(phone: String) {
-        activity?.let {
-            val formattedPhone = removeSymbolPhone(phone)
-            val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.OVO_ADD_NAME)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, formattedPhone)
-            startActivityForResult(intent, ExternalRegisterConstants.REQUEST_OVO_REGISTER)
-        }
-    }
-
-    private fun onErrorCheckovoAcc(throwable: Throwable) {
-        dismissProgressBar()
-        doRegisterCheck()
     }
 
     private fun onSuccessGetProvider(discoverData: DiscoverData) {
@@ -676,9 +574,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 setTempPhoneNumber(registerCheckData.view)
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
-                } else if (registerCheckData.isShowRegisterOvo && useOvoRegister()) {
-                    showProgressBar()
-                    registerInitialViewModel.checkHasOvoAccount(registerCheckData.view)
                 } else {
                     showProceedWithPhoneDialog(registerCheckData.view)
                 }
@@ -800,7 +695,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 RegisterConstants.Request.REQUEST_CHANGE_NAME -> { onActivityResultChangeName(resultCode) }
                 RegisterConstants.Request.REQUEST_OTP_VALIDATE -> { onActivityResultOtpValidate(resultCode, data) }
                 RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE -> { onActivityResultPendingOtpValidate(resultCode, data) }
-                ExternalRegisterConstants.REQUEST_OVO_REGISTER -> { onActivityResultOvoRegistration(resultCode) }
                 else -> { super.onActivityResult(requestCode, resultCode, data) }
             }
         }
@@ -949,12 +843,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
             Activity.RESULT_CANCELED -> {
                 activity?.setResult(Activity.RESULT_CANCELED)
             }
-        }
-    }
-
-    private fun onActivityResultOvoRegistration(resultCode: Int) {
-        if (resultCode == Activity.RESULT_CANCELED) {
-            phoneNumber?.run { goToRegisterWithPhoneNumber(this) }
         }
     }
 
@@ -1189,6 +1077,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     override fun onSuccessRegister() {
         activityShouldEnd = true
         registerPushNotif()
+        submitIntegrityApi()
+
         activity?.let {
             val bundle = Bundle()
 
@@ -1199,6 +1089,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
             if (!isSmartRegister) {
                 bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
             }
+
+            TkpdFirebaseAnalytics.getInstance(it).setUserId(userSession.userId)
 
             it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
             it.finish()
@@ -1214,7 +1106,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private fun isFromAtc(): Boolean = source == LoginConstants.SourcePage.SOURCE_ATC
 
     private fun onGoToChangeName() {
-        registerInitialRouter.goToChangeName(this)
+        registerInitialRouter.goToChangeName(this, validateToken)
     }
 
     private fun onGoToForbiddenPage() {
@@ -1366,6 +1258,12 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun submitIntegrityApi() {
+        context?.let {
+            IntegrityApiWorker.scheduleWorker(it.applicationContext, IntegrityApiConstant.EVENT_REGISTER)
+        }
+    }
+
     private fun showPopupErrorAkamai() {
         dismissProgressBar()
         PopupErrorDialog.showPopupErrorAkamai(context)
@@ -1413,7 +1311,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
                 context?.let {
-                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, page))
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.TERM_PRIVACY, page))
                 }
             }
 

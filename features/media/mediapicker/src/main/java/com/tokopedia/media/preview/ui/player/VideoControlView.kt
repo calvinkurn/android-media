@@ -179,8 +179,8 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
     }
 
     companion object {
-        private const val HIDE_DELAY_SCRUBBER = 3000L
-        private const val PLAY_DELAY_SCRUBBER = 1000L
-        private const val ANIMATION_DURATION = 200L
+        const val HIDE_DELAY_SCRUBBER = 3000L
+        const val PLAY_DELAY_SCRUBBER = 1000L
+        const val ANIMATION_DURATION = 200L
     }
 }

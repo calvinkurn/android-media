@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -50,6 +51,7 @@ import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckou
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
@@ -60,6 +62,9 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.build
@@ -97,6 +102,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
     lateinit var cartDetailInfoAdapter: DigitalCartDetailInfoAdapter
     lateinit var myBillsAdapter: DigitalMyBillsAdapter
+
+    val remoteConfig: RemoteConfig by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
 
     override fun getScreenName(): String = ""
 
@@ -174,7 +183,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 addToCartViewModel.addToCart(
                     it,
                     getDigitalIdentifierParam(),
-                    digitalSubscriptionParams
+                    digitalSubscriptionParams,
+                    remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
                 )
             }
         }
@@ -371,7 +381,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         showPromoTicker()
 
         checkoutBottomViewWidget.setCheckoutButtonListener {
-            viewModel.proceedToCheckout(getDigitalIdentifierParam())
+            viewModel.proceedToCheckout(
+                getDigitalIdentifierParam(),
+                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+            )
         }
 
         checkoutBottomViewWidget.setOnClickConsentListener {
@@ -398,9 +411,14 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             } else if (errMsg == ErrorNetMessage.MESSAGE_ERROR_SERVER || errMsg == ErrorNetMessage.MESSAGE_ERROR_DEFAULT) {
                 viewEmptyState.setType(GlobalError.SERVER_ERROR)
             } else {
-                viewEmptyState.errorTitle.text = getString(R.string.digital_checkout_empty_state_title)
+                viewEmptyState.errorTitle.text =
+                    getString(R.string.digital_checkout_empty_state_title)
                 viewEmptyState.errorIllustration.loadImage(getString(R.string.digital_cart_default_error_img_url))
-                viewEmptyState.errorDescription.text = getString(com.tokopedia.digital_checkout.R.string.digital_cart_error_message, errMsg, errCode)
+                viewEmptyState.errorDescription.text = getString(
+                    com.tokopedia.digital_checkout.R.string.digital_cart_error_message,
+                    errMsg,
+                    errCode
+                )
             }
 
             viewEmptyState.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
@@ -675,7 +693,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun interruptRequestTokenVerification(phoneNumber: String?) {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
@@ -699,8 +717,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun sendGetCartAndCheckoutAnalytics() {
         digitalAnalytics.sendCartScreen()
         rechargeAnalytics.trackAddToCartRechargePushEventRecommendation(
-            cartPassData?.categoryId?.toIntOrNull()
-                ?: 0
+            cartPassData?.categoryId?.toIntSafely() ?: 0
         )
     }
 
@@ -750,7 +767,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             )
 
             val descriptionArray =
-                context?.resources?.getStringArray(com.tokopedia.digital_checkout.R.array.subscription_more_info_bottomsheet_description) ?: emptyArray()
+                context?.resources?.getStringArray(com.tokopedia.digital_checkout.R.array.subscription_more_info_bottomsheet_description)
+                    ?: emptyArray()
             descriptionArray.forEachIndexed { index, text ->
                 val simpleWidget = DigitalCheckoutSimpleWidget(it)
                 simpleWidget.setContent("${index + 1}.", text)
@@ -794,7 +812,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         else inputPriceHolderView.getPriceInput()?.toDouble()
     }
 
-    private fun getDimensionPixelSize(@DimenRes id: Int): Int{
+    private fun getDimensionPixelSize(@DimenRes id: Int): Int {
         return context?.resources?.getDimensionPixelSize(id) ?: 0
     }
 
