@@ -1724,19 +1724,17 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
     private fun showToastOnSuccessReminderSetForFSTorRS(card: FeedXCard) {
         when{
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.isFlashSaleToko -> showToast(
-                requireContext().getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_fst_message)
-                    ?: "",
+                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_fst_message),
                 Toaster.TYPE_NORMAL
             )
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.isRilisanSpl -> showToast(
-                requireContext().getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_rs_message)
-                    ?: "",
+                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_rs_message),
                 Toaster.TYPE_NORMAL
             )
             card.campaign.reminder is FeedASGCUpcomingReminderStatus.Off -> showToast(
-                requireContext().getString(
+                getString(
                     com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_deactivate_message
-                ) ?: "", Toaster.TYPE_NORMAL
+                ) , Toaster.TYPE_NORMAL
             )
         }
     }
