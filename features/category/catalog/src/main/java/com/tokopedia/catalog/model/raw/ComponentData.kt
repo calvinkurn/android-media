@@ -72,8 +72,8 @@ data class ComponentData(
             @Expose
             @SerializedName("sub_card")
             val subcard: ArrayList<Subcard>? = arrayListOf(),
-
-            var isExpanded: Boolean = false
+            @Expose @SerializedName("is_expanded")
+            var isExpanded: Boolean? = false
     ) : Parcelable
     {
             @Parcelize
@@ -92,13 +92,13 @@ data class ComponentData(
 
     data class ComparedData (
             @SerializedName("id")
-            val id: String,
+            val id: String?,
             @SerializedName("brand")
-            val brand: String,
+            val brand: String?,
             @SerializedName("name")
-            val name: String,
+            val name: String?,
             @SerializedName("url")
-            val url: String,
+            val url: String?,
             @SerializedName("catalogImage")
             val catalogImage: ArrayList<CatalogImage>?,
             @SerializedName( "marketPrice")
