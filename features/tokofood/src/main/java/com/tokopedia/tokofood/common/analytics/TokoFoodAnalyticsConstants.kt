@@ -109,5 +109,9 @@ object TokoFoodAnalyticsConstants {
     const val TRACKER_ID_35787 = "35787"
     const val CLICK_OTHER_BRANCHES = "click cabang lain"
     const val TRACKER_ID_35788 = "35788"
+    const val VIEW_ADDRESS_WIDGET_IN_SRP_TOKOFOOD = "view address widget in SRP tokofood"
+    const val TRACKER_ID_36853 = "36853"
+    const val VIEW_MERCHANT_CARD_IN_SRP_TOKOFOOD = "view merchant card in SRP tokofood"
+    const val TRACKER_ID_36854 = "36854"
 
 }

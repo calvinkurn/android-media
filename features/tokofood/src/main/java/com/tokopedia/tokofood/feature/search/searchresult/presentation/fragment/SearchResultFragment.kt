@@ -24,7 +24,9 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -95,6 +97,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private val loadMoreListener by lazy(LazyThreadSafetyMode.NONE) {
         createLoadMoreListener()
     }
+    private val addressWidgetImpressHolder = ImpressHolder()
 
     private var binding by autoClearedNullable<FragmentSearchResultBinding>()
     private var searchResultViewUpdateListener: SearchResultViewUpdateListener? = null
@@ -186,6 +189,16 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun onClickRetryError() {
         viewModel.getInitialMerchantSearchResult(searchParameter)
+    }
+
+    override fun onImpressMerchant(merchant: Merchant, position: Int) {
+        analytics.sendMerchantCardImpressionTracking(
+            destinationId = getDestinationId(),
+            keyword = keyword,
+            merchant = merchant,
+            sortValue = viewModel.getCurrentSortValue(),
+            index = position
+        )
     }
 
     override fun onClickMerchant(merchant: Merchant, position: Int) {
@@ -303,7 +316,12 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun setupAddressWidget() {
-        binding?.addressTokofoodSearchResult?.bindChooseAddress(this)
+        binding?.addressTokofoodSearchResult?.run {
+            bindChooseAddress(this@SearchResultFragment)
+            addOnImpressionListener(addressWidgetImpressHolder) {
+                analytics.sendAddressWidgetImpressionTracking(getDestinationId())
+            }
+        }
     }
 
     private fun collectFlows() {

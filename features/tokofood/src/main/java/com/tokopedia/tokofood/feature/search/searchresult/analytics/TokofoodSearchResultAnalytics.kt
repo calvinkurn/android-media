@@ -163,6 +163,29 @@ class TokofoodSearchResultAnalytics @Inject constructor(private val userSession:
             .send()
     }
 
+    fun sendAddressWidgetImpressionTracking(
+        destinationId: String
+    ) {
+        val dataLayer = Bundle().apply {
+            setEventInfo(
+                eventName = TokoFoodAnalyticsConstants.VIEW_ITEM,
+                eventAction = TokoFoodAnalyticsConstants.VIEW_MINI_FILTER_TOKOFOOD,
+                eventCategory = TokoFoodAnalyticsConstants.TOKOFOOD_SEARCH_RESULT_PAGE,
+                eventLabel = String.EMPTY
+            )
+            putParcelableArrayList(TokoFoodAnalyticsConstants.KEY_EE_PROMOTIONS, arrayListOf<Bundle>())
+            setAdditionalInfo()
+            putTrackerId(TokoFoodAnalyticsConstants.TRACKER_ID_36853)
+            putDestinationId(destinationId)
+            setCurrentUserId()
+        }
+
+        tracker.sendEnhanceEcommerceEvent(
+            TokoFoodAnalyticsConstants.VIEW_ITEM,
+            dataLayer
+        )
+    }
+
     fun sendAddressWidgetClickTracking(destinationId: String) {
         Tracker.Builder()
             .setEvent(TokoFoodAnalyticsConstants.CLICK_PG)
@@ -179,6 +202,33 @@ class TokofoodSearchResultAnalytics @Inject constructor(private val userSession:
             .setUserId(userSession.userId)
             .build()
             .send()
+    }
+
+    fun sendMerchantCardImpressionTracking(
+        destinationId: String,
+        keyword: String,
+        merchant: Merchant,
+        sortValue: String,
+        index: Int
+    ) {
+        val dataLayer = Bundle().apply {
+            setEventInfo(
+                eventName = TokoFoodAnalyticsConstants.VIEW_ITEM,
+                eventAction = TokoFoodAnalyticsConstants.VIEW_MERCHANT_CARD_IN_SRP_TOKOFOOD,
+                eventCategory = TokoFoodAnalyticsConstants.TOKOFOOD_SEARCH_RESULT_PAGE,
+                eventLabel = keyword
+            )
+            putPromotions(merchant, sortValue, index)
+            setAdditionalInfo()
+            putTrackerId(TokoFoodAnalyticsConstants.TRACKER_ID_36854)
+            putDestinationId(destinationId)
+            setCurrentUserId()
+        }
+
+        tracker.sendEnhanceEcommerceEvent(
+            TokoFoodAnalyticsConstants.VIEW_ITEM,
+            dataLayer
+        )
     }
 
     fun sendMerchantCardClickTracking(

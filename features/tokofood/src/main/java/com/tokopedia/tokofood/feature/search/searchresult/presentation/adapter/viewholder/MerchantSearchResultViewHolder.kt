@@ -46,9 +46,8 @@ class MerchantSearchResultViewHolder(
         setViewDividerCategoryPriceLevel(merchant.merchantCategories, merchant.priceLevel)
         setMerchantClosed(merchant.isClosed)
         setOtherBranchButton(merchant)
-        binding?.root?.setOnClickListener {
-            listener?.onClickMerchant(merchant, adapterPosition)
-        }
+        addImpressionListener(merchant)
+        setOnClickListener(merchant)
     }
 
     private fun setImageMerchant(imageUrl: String) {
@@ -220,6 +219,18 @@ class MerchantSearchResultViewHolder(
         }
     }
 
+    private fun addImpressionListener(merchant: Merchant) {
+        binding?.root?.addOnImpressionListener(merchant) {
+            listener?.onImpressMerchant(merchant, adapterPosition)
+        }
+    }
+
+    private fun setOnClickListener(merchant: Merchant) {
+        binding?.root?.setOnClickListener {
+            listener?.onClickMerchant(merchant, adapterPosition)
+        }
+    }
+
     private fun getCategoryString(categories: List<String>): String {
         return categories.joinToString()
     }
@@ -251,6 +262,7 @@ class MerchantSearchResultViewHolder(
 
     interface TokoFoodMerchantSearchResultListener {
         fun onClickMerchant(merchant: Merchant, position: Int)
+        fun onImpressMerchant(merchant: Merchant, position: Int)
         fun onBranchButtonClicked(merchant: Merchant)
     }
 
