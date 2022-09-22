@@ -110,6 +110,7 @@ class VariantViewHolder(
                     triggerListener(product, discount)
                 }
             }
+            triggerListener(product, discount)
         }
     }
 

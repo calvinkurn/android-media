@@ -8,16 +8,17 @@ import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
+import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantAdapter
-import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
 import timber.log.Timber
@@ -30,7 +31,7 @@ class ManageProductVariantFragment :
         fun newInstance(product: ReservedProduct.Product?): ManageProductVariantFragment {
             val fragment = ManageProductVariantFragment()
             val bundle = Bundle()
-            bundle.putParcelable(BundleConstant.BUNDLE_KEY_PRODUCT, product)
+            bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
             fragment.arguments = bundle
             return fragment
         }
@@ -40,7 +41,7 @@ class ManageProductVariantFragment :
 
     //argument
     private val product by lazy {
-        arguments?.getParcelable<ReservedProduct.Product>(BundleConstant.BUNDLE_KEY_PRODUCT)
+        arguments?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
     }
 
     //viewModel
@@ -121,6 +122,21 @@ class ManageProductVariantFragment :
         activity?.finish()
     }
 
+    override fun onWidgetBulkApplyClicked() {
+        val product = viewModel.getProductData()
+        val param = BulkApplyMapper.mapProductToBulkParam(context ?: return, product)
+        val bSheet = ProductBulkApplyBottomSheet.newInstance(param)
+        bSheet.setOnApplyClickListener {
+            val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
+            val inputAdapter = ManageProductVariantAdapter(this).apply {
+                setDataList(appliedProduct)
+            }
+            rvManageProductDetail?.adapter = inputAdapter
+            viewModel.setupInitiateProductData(appliedProduct)
+        }
+        bSheet.show(childFragmentManager, "")
+    }
+
     override fun createAdapterInstance(): ManageProductVariantAdapter {
         return ManageProductVariantAdapter(this).apply {
             setDataList(viewModel.getProductData())
@@ -156,8 +172,9 @@ class ManageProductVariantFragment :
         val items = adapter?.getDataList()
         val selectedItem = items?.get(index)
         if (selectedItem != null) {
-            viewModel.validateInputPage(selectedItem, selectedItem.productCriteria)
+            viewModel.validateInputPage(selectedItem.productCriteria)
         }
+
         return viewModel.validateInput(
             criteria = selectedItem?.productCriteria ?: product.productCriteria,
             discountSetup = discountSetup

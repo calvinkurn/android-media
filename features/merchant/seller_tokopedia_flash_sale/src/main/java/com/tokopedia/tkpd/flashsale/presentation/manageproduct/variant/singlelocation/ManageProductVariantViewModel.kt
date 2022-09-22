@@ -60,13 +60,12 @@ class ManageProductVariantViewModel @Inject constructor(
     }
 
     fun validateInputPage(
-        childProduct: ReservedProduct.Product.ChildProduct,
         criteria: ReservedProduct.Product.ProductCriteria
     ) {
         if (productData.childProducts.any { it.isToggleOn }) {
             _isInputPageValid.value = productData.childProducts
                 .filter { it.isToggleOn }
-                .all { validateInput(criteria, childProduct.discountSetup).isAllFieldValid() }
+                .all { validateInput(criteria, it.discountSetup).isAllFieldValid() }
         } else {
             _isInputPageValid.value = false
         }
