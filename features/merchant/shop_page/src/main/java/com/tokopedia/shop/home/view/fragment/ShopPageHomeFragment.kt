@@ -2945,11 +2945,11 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     fun goToPDP(pdpAppLink: String) {
-        val pdpAppLink = createAffiliateLink(pdpAppLink)
+        val updatedPdpAppLink = createAffiliateLink(pdpAppLink)
         context?.let {
             val intent = RouteManager.getIntent(
                 context,
-                pdpAppLink
+                updatedPdpAppLink
             )
             startActivity(intent)
         }

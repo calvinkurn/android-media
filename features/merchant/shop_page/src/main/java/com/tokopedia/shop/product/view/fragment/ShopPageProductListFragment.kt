@@ -1020,13 +1020,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun goToPDP(productAppLink: String, attribution: String?, listNameOfProduct: String) {
-        val pdpAppLink = createAffiliateLink(productAppLink)
+    private fun goToPDP(pdpAppLink: String, attribution: String?, listNameOfProduct: String) {
+        val updatedPdpAppLink = createAffiliateLink(pdpAppLink)
         context?.let {
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            val intent = RouteManager.getIntent(context, pdpAppLink)
+            val intent = RouteManager.getIntent(context, updatedPdpAppLink)
             startActivity(intent)
         }
     }

@@ -307,7 +307,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun initAffiliateCookie() {
-        viewModel?.initAffiliateCookie(
+        viewModel.initAffiliateCookie(
             affiliateCookieHelper,
             shopId.orEmpty()
         )
@@ -1088,19 +1088,19 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-    private fun getProductIntent(productAppLink: String, attribution: String?, listNameOfProduct: String): Intent? {
+    private fun getProductIntent(pdpAppLink: String, attribution: String?, listNameOfProduct: String): Intent? {
         return if (context != null) {
-            val pdpAppLink = createPdpAffiliateLink(productAppLink)
+            val updatedPdpAppLink = createPdpAffiliateLink(pdpAppLink)
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            RouteManager.getIntent(context, pdpAppLink)
+            RouteManager.getIntent(context, updatedPdpAppLink)
         } else {
             null
         }
     }
 
-    fun createPdpAffiliateLink(basePdpAppLink: String): String {
+    private fun createPdpAffiliateLink(basePdpAppLink: String): String {
         return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 
