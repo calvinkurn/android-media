@@ -10,22 +10,21 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
-import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
-import com.tokopedia.tokofood.feature.search.common.presentation.uimodel.TokofoodSearchErrorStateUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodFilterSortUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodSearchMerchantUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodFilterSortMapper
+import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.getActiveCount
+import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.resetParams
+import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.setAppliedInputState
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodMerchantSearchResultMapper
+import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper
+import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodSearchResultHelper.hasFilterSortApplied
 import com.tokopedia.tokofood.feature.search.searchresult.domain.response.TokofoodSearchMerchantResponse
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithoutFilterUiModel
@@ -187,21 +186,14 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     }
 
     fun openDetailFilterBottomSheet() {
-        launchCatchError(
-            block = {
-                val dynamicFilterModelData = dynamicFilterModel.value?.let {
-                    getDynamicFilterModel(it.data)
-                }
-                _uiEventFlow.emit(
-                    TokofoodSearchUiEvent(
-                        state = TokofoodSearchUiEvent.EVENT_OPEN_DETAIL_BOTTOMSHEET,
-                        data = dynamicFilterModelData
-                    )
-                )
-            },
-            onError = {
-                sendFailureEvent(TokofoodSearchUiEvent.EVENT_FAILED_LOAD_FILTER, it)
-            }
+        val dynamicFilterModelData = dynamicFilterModel.value?.let {
+            getDynamicFilterModel(it.data)
+        }
+        _uiEventFlow.tryEmit(
+            TokofoodSearchUiEvent(
+                state = TokofoodSearchUiEvent.EVENT_OPEN_DETAIL_BOTTOMSHEET,
+                data = dynamicFilterModelData
+            )
         )
         if (dynamicFilterModel.value == null) {
             loadDetailSortFilter()
@@ -256,10 +248,12 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     }
 
     fun showQuickSortBottomSheet(sort: List<Sort>) {
-        sort.firstOrNull()?.key?.let { currentKey ->
-            currentSearchParameterMap.value?.get(currentKey)?.let { selectedSortValue ->
-                showQuickSortBottomSheet(sort, selectedSortValue)
-            }
+        val firstSort = sort.firstOrNull()
+        val sortKey = firstSort?.key
+        sortKey?.let { currentKey ->
+            val currentParameters = currentSearchParameterMap.value
+            val currentValue = currentParameters?.get(currentKey)
+            showQuickSortBottomSheet(sort, currentValue.orEmpty())
         }
     }
 
@@ -276,24 +270,6 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     private fun setIndicatorCount() {
         currentSearchParameterMap.value?.let { searchParameter ->
             _appliedFilterCount.tryEmit(searchParameter.getActiveCount())
-        }
-    }
-
-    private fun HashMap<String, String>.resetParams(queryParams: Map<String, String>) {
-        clear()
-        putAll(queryParams)
-    }
-
-    private fun HashMap<String, String>.getActiveCount(): Int {
-        val searchMap = filter { it.value.isNotEmpty() }
-        return getSortFilterCount(searchMap)
-    }
-
-    private fun HashMap<String, String>.getSearchQuery(): String {
-        return when {
-            contains(SearchApiConst.Q) -> get(SearchApiConst.Q).orEmpty()
-            contains(SearchApiConst.KEYWORD) -> get(SearchApiConst.KEYWORD).orEmpty()
-            else -> String.EMPTY
         }
     }
 
@@ -373,40 +349,23 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         return withContext(dispatcher.io) {
             val localCacheModel = localCacheModelLiveData.value
             val pageKey = pageKeyLiveData.value
-            val searchParameter = getCurrentSearchParameter()
+            val searchParameter = TokofoodSearchResultHelper.getCurrentSearchParameter(currentSearchParameterMap.value)
             tokofoodSearchMerchantUseCase.execute(localCacheModel, searchParameter, pageKey)
         }
     }
-
-    private fun getCurrentSearchParameter(): HashMap<String, String> {
-        return currentSearchParameterMap.value ?: hashMapOf()
-    }
-
     private fun shouldLoadMore(lastVisibleItemIndex: Int, itemCount: Int): Boolean {
         val lastItemIndex = itemCount - Int.ONE
         val scrolledToLastItem = (lastVisibleItemIndex == lastItemIndex
                 && lastVisibleItemIndex.isMoreThanZero())
-        val hasNextPage = !pageKeyLiveData.value.isNullOrEmpty()
-        val containsOtherState = getIsVisitableContainOtherStates()
+        val hasNextPage = TokofoodSearchResultHelper.getIsHasNextPage(pageKeyLiveData.value)
+        val containsOtherState =
+            tokofoodMerchantSearchResultMapper.getIsVisitableContainOtherStates(currentVisitables.value)
 
         return scrolledToLastItem && hasNextPage && !containsOtherState
     }
 
-    /**
-     * Checks whether the visitable has other models other than merchant item
-     *
-     * @return  isVisitableContainsOtherStates
-     */
-    private fun getIsVisitableContainOtherStates(): Boolean {
-        val layoutList = currentVisitables.value.orEmpty()
-        return layoutList.find {
-            it is TokoFoodProgressBarUiModel || it is TokoFoodErrorStateUiModel || it is TokofoodSearchErrorStateUiModel ||
-                    it is MerchantSearchEmptyWithFilterUiModel || it is MerchantSearchEmptyWithoutFilterUiModel
-        } != null
-    }
-
     private fun getInitialSearchResultSuccessState(searchResult: TokofoodSearchMerchantResponse): TokofoodSearchUiState {
-        val currentSearchParameterMap = getCurrentSearchParameter()
+        val currentSearchParameterMap = TokofoodSearchResultHelper.getCurrentSearchParameter(currentSearchParameterMap.value)
         pageKeyLiveData.value = searchResult.tokofoodSearchMerchant.nextPageKey
         return when {
             searchResult.tokofoodSearchMerchant.merchants.isEmpty() && currentSearchParameterMap.hasFilterSortApplied() -> {
@@ -431,14 +390,6 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         )
     }
 
-    private fun HashMap<String, String>.hasFilterSortApplied(): Boolean {
-        return if (contains(SearchApiConst.Q)) {
-            entries.filter { it.value.isNotBlank() }.size > Int.ONE
-        } else {
-            entries.filter { it.value.isNotBlank() }.size > Int.ZERO
-        }
-    }
-
     private fun getVisitablesFlow(uiState: TokofoodSearchUiState): Flow<Result<List<Visitable<*>>>> {
         return flow {
             val visitables =
@@ -456,16 +407,16 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                         getEmptyWithFilterState()
                     }
                     TokofoodSearchUiState.STATE_SUCCESS_LOAD_INITIAL -> {
-                        getSuccessLoadSearchResultInitial(uiState)
+                        tokofoodMerchantSearchResultMapper.getSuccessLoadSearchResultInitial(uiState.data)
                     }
                     TokofoodSearchUiState.STATE_SUCCESS_LOAD_MORE -> {
-                        getSuccessLoadSearchResultMore(uiState)
-                    }
-                    TokofoodSearchUiState.STATE_ERROR_INITIAL -> {
-                        getErrorSearchResultInitial(uiState)
+                        tokofoodMerchantSearchResultMapper.getSuccessLoadSearchResultMore(
+                            uiState.data,
+                            currentVisitables.value
+                        )
                     }
                     else -> {
-                        listOf()
+                        tokofoodMerchantSearchResultMapper.getErrorSearchResultInitial(uiState.throwable)
                     }
                 }
             currentVisitables.value = visitables
@@ -474,7 +425,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     }
 
     private fun getLoadingInitialState(): List<Visitable<*>> {
-        return listOf(TokoFoodCategoryLoadingStateUiModel(""))
+        return listOf(TokoFoodCategoryLoadingStateUiModel(String.EMPTY))
     }
 
     private fun getLoadingMoreState(): List<Visitable<*>> {
@@ -482,34 +433,12 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     }
 
     private fun getEmptyWithoutFilterState(): List<Visitable<*>> {
-        val currentKeyword = currentSearchParameterMap.value?.getSearchQuery()
-        return listOf(MerchantSearchEmptyWithoutFilterUiModel(currentKeyword.orEmpty()))
+        val currentKeyword = TokofoodSearchResultHelper.getCurrentKeyword(currentSearchParameterMap.value)
+        return listOf(MerchantSearchEmptyWithoutFilterUiModel(currentKeyword))
     }
 
     private fun getEmptyWithFilterState(): List<Visitable<*>> {
         return listOf(MerchantSearchEmptyWithFilterUiModel)
-    }
-
-    private fun getSuccessLoadSearchResultInitial(uiState: TokofoodSearchUiState): List<Visitable<*>> {
-        return (uiState.data as? TokofoodSearchMerchantResponse)?.let { response ->
-            tokofoodMerchantSearchResultMapper.mapResponseToVisitables(response)
-        }.orEmpty()
-    }
-
-    private fun getSuccessLoadSearchResultMore(uiState: TokofoodSearchUiState): List<Visitable<*>> {
-        return (uiState.data as? TokofoodSearchMerchantResponse)?.let { response ->
-            currentVisitables.value.orEmpty()
-                .filter { it !is TokoFoodProgressBarUiModel } + tokofoodMerchantSearchResultMapper.mapResponseToVisitables(
-                response
-            )
-        }.orEmpty()
-    }
-
-    private fun getErrorSearchResultInitial(uiState: TokofoodSearchUiState): List<Visitable<*>> {
-        return uiState.throwable?.let {
-            val globalErrorType = it.getGlobalErrorType()
-            listOf(TokofoodSearchErrorStateUiModel(globalErrorType))
-        }.orEmpty()
     }
 
     private fun showQuickSortBottomSheet(sortList: List<Sort>,
@@ -540,9 +469,7 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         val updatedDataValue = dataValue.apply {
             filter.forEach { filter ->
                 filter.options.forEach { option ->
-                    option.inputState = currentSearchParameterMap.value?.get(option.key)?.takeIf { it.isNotBlank() }.let { selectedParams ->
-                        (selectedParams?.split(PARAM_VALUES_DIVIDER)?.contains(option.value) == true).toString()
-                    }
+                    option.setAppliedInputState(currentSearchParameterMap.value)
                 }
             }
         }
@@ -562,8 +489,6 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         private const val MIN_SEARCH_KEYWORD_LENGTH = 3
 
         private const val SHARING_DELAY_MILLIS = 5000L
-
-        private const val PARAM_VALUES_DIVIDER = "#"
     }
 
 }

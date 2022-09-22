@@ -1,9 +1,12 @@
 package com.tokopedia.tokofood.feature.search.searchresult.domain.mapper
 
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
