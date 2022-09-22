@@ -8,7 +8,6 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.base.UseCase
 import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQuery
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationUseCaseRequest
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
