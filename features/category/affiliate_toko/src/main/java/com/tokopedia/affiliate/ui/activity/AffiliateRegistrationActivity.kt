@@ -155,7 +155,7 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
     companion object{
         private const val PRODUCT_ID_KEY = "productId"
-        fun newInstance(context: Context, productId: String?) {
+        fun newInstance(context: Context, productId: String? = null) {
             context.startActivity(
                 Intent(context, AffiliateRegistrationActivity::class.java).apply {
                     putExtra(PRODUCT_ID_KEY, productId)
