@@ -105,9 +105,9 @@ subprojects {
                 substitute module('com.google.code.gson:gson') with module("com.google.code.gson:gson:$gsonDebugVersion")
                 substitute module("androidx.room:room-runtime") with module("androidx.room:room-runtime:$roomVersion")
                 substitute module("androidx.room:room-compiler") with module("androidx.room:room-compiler:$roomVersion")
+                substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.debugToolsDependencies.chuckNoop)
 
                 if (!rootProject.ext.debugToolsEnabled) {
-                    substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.debugToolsDependencies.chuckNoop)
                     substitute module(rootProject.ext.tkpdInternalLibDependencies.fakeresponse) with module(rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp)
                 }
             }
