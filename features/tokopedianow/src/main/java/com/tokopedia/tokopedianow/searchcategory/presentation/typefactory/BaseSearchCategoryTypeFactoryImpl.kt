@@ -26,7 +26,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseCho
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.*
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.LoadingMoreViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductCountViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.QuickFilterViewHolder
@@ -68,7 +68,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(productItemDataView: ProductItemDataView) = ProductItemViewHolder.LAYOUT
 
-    override fun type(viewModel: LoadingMoreModel) = LoadingMoreViewHolder.LAYOUT
+    override fun type(viewModel: LoadingMoreModel) = TokoNowLoadingMoreViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowEmptyStateNoResultUiModel) = TokoNowEmptyStateNoResultViewHolder.LAYOUT
 
@@ -109,7 +109,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             ProductCountViewHolder.LAYOUT -> ProductCountViewHolder(
                 itemView = view
             )
-            LoadingMoreViewHolder.LAYOUT -> LoadingMoreViewHolder(
+            TokoNowLoadingMoreViewHolder.LAYOUT -> TokoNowLoadingMoreViewHolder(
                 itemView = view
             )
             TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(
