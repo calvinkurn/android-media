@@ -498,11 +498,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private fun openWebLink(urlStr: String?) {
         urlStr?.let {
+            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlStr
             activity?.apply {
-                RouteManager.route(
-                    this,
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlStr)
-                )
+                RouteManager.route(this, webViewAppLink)
             }
         }
     }
