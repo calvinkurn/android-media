@@ -24,8 +24,6 @@ class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
     private var criteriaCheckingResults: List<CriteriaCheckingResult> = emptyList()
     private var productName: String = ""
     private var productImageUrl: String = ""
-    private val isVariant: Boolean by lazy { criteriaCheckingResults.size > SINGLE_PRODUCT_COUNT }
-    private val isMultiLoc: Boolean by lazy { criteriaCheckingResults.firstOrNull { it.isMultiloc } != null }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,6 +45,8 @@ class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
         clearContentPadding = true
         setChild(binding?.root)
         setTitle(getString(R.string.commonbs_category_criteria_check_title))
+        val isVariant = criteriaCheckingResults.size > SINGLE_PRODUCT_COUNT
+        val isMultiLoc = criteriaCheckingResults.firstOrNull { it.isMultiloc } != null
         binding?.tfDescription?.text = when {
             !isVariant && !isMultiLoc -> getString(R.string.commonbs_criteria_single_check_description)
             isVariant && !isMultiLoc -> getString(R.string.commonbs_criteria_variant_check_description)
@@ -73,7 +73,7 @@ class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
 
     private fun onListTickerClick(list: List<CriteriaCheckingResult.LocationCheckingResult>) {
         val bottomSheet = LocationCriteriaCheckBottomSheet()
-        bottomSheet.show(list, childFragmentManager, "", isVariant)
+        bottomSheet.show(list, childFragmentManager, "", criteriaCheckingResults.size > SINGLE_PRODUCT_COUNT)
     }
 
     fun setProductPreview(productName: String, productImageUrl: String) {
