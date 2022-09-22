@@ -227,7 +227,7 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
         val negativeKeywordCount = negativeKeywordOptions.size
         assert(keywordFilterItemList.size == negativeKeywordCount) {
             "Keyword filter item size is ${keywordFilterItemList.size}, " +
-                    "expected is $negativeKeywordCount"
+                "expected is $negativeKeywordCount"
         }
 
         keywordFilterItemList.forEachIndexed { index, keywordFilterItem ->
