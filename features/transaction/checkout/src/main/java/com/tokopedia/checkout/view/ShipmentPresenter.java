@@ -218,6 +218,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private boolean isPurchaseProtectionPage = false;
     private boolean isShowOnboarding;
     private boolean isIneligiblePromoDialogEnabled;
+    private boolean isBoUnstackEnabled = false;
     private String cartData = "";
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
@@ -733,6 +734,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         setLastApplyData(cartShipmentAddressFormData.getLastApplyData());
+        isBoUnstackEnabled = cartShipmentAddressFormData.getLastApplyData().getAdditionalInfo().getBebasOngkirInfo().isBoUnstackEnabled();
 
         setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
                 cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null,
@@ -2226,7 +2228,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         new GetCourierRecommendationSubscriber(
                                 getView(), this, shipperId, spId, itemPosition,
                                 shippingCourierConverter, shipmentCartItemModel,
-                                isInitialLoad, isTradeInDropOff, isForceReload
+                                isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled
                         ));
     }
 

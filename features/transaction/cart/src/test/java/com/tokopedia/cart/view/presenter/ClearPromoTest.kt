@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import io.mockk.Runs
@@ -67,4 +68,20 @@ class ClearPromoTest : BaseCartTest() {
         }
     }
 
+    @Test
+    fun `WHEN clear all bo THEN should hit clear`() {
+        // GIVEN
+        val clearPromoModel = ClearPromoUiModel()
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
+
+        // WHEN
+        cartListPresenter.clearAllBo(ClearPromoOrderData())
+
+        // THEN
+        verify {
+            clearCacheAutoApplyStackUseCase.setParams(any())
+        }
+    }
 }

@@ -21,7 +21,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearprom
 import io.mockk.coEvery
 import org.junit.Assert.assertNotNull
 import org.junit.Test
-import java.lang.Exception
 
 class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
 
@@ -177,6 +176,28 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
+    fun `WHEN clear promo and has preselected global promo THEN should include in global codes clear promo param`() {
+        // given
+        val promoList = provideCurrentSelectedExpandedGlobalPromoData()
+        val promoAttempted = promoList[0] as PromoListItemUiModel
+        promoAttempted.uiState.isPreSelected = true
+        val response = provideClearPromoResponseSuccess()
+        val clearPromoParam = ClearPromoRequest()
+        viewModel.setPromoListValue(promoList)
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
+            firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
+        }
+
+        //when
+        viewModel.clearPromo(ValidateUsePromoRequest(), ArrayList(), clearPromoParam)
+
+        //then
+        assert(clearPromoParam.orderData.codes.isNotEmpty())
+        assert(clearPromoParam.orderData.orders.isEmpty())
+    }
+
+    @Test
     fun `WHEN clear promo and show ineligible global promo THEN should not include in global codes clear promo param`() {
         // given
         val promoList = providePromoListGlobalParentNotEnabled()
@@ -294,6 +315,54 @@ class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
 
         //then
         assert(clearPromoParam.orderData.orders.isEmpty())
+    }
+
+    @Test
+    fun `WHEN clear promo and has preselected merchant promo THEN should include in order code clear promo param`() {
+        // given
+        val promoList = provideCurrentSelectedExpandedMerchantPromoData()
+        val merchantPromo = promoList[0] as PromoListItemUiModel
+        merchantPromo.uiState.isPreSelected = true
+        val applyPromoParam = provideApplyPromoEmptyRequest()
+        val response = provideClearPromoResponseSuccess()
+        val clearPromoParam = ClearPromoRequest()
+        viewModel.setPromoListValue(promoList)
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
+            firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
+        }
+
+        //when
+        viewModel.clearPromo(applyPromoParam, ArrayList(), clearPromoParam)
+
+        //then
+        assert(clearPromoParam.orderData.codes.isEmpty())
+        assert(clearPromoParam.orderData.orders.isNotEmpty())
+        assert(clearPromoParam.orderData.orders[0].codes.isNotEmpty())
+    }
+
+    @Test
+    fun `WHEN clear promo and has preselected BO promo THEN should include in order code clear promo param`() {
+        // given
+        val promoList = providePromoListWithBoPlusAsRecommendedPromo()
+        val boPromo = promoList[1] as PromoListItemUiModel
+        boPromo.uiState.isPreSelected = true
+        val applyPromoParam = provideApplyPromoEmptyRequest()
+        val response = provideClearPromoResponseSuccess()
+        val clearPromoParam = ClearPromoRequest()
+        viewModel.setPromoListValue(promoList)
+        coEvery { clearCacheAutoApplyUseCase.setParams(any()) } returns clearCacheAutoApplyUseCase
+        coEvery { clearCacheAutoApplyUseCase.execute(any(), any()) } answers {
+            firstArg<(ClearPromoUiModel) -> Unit>().invoke(mapUiModel(response))
+        }
+
+        //when
+        viewModel.clearPromo(applyPromoParam, ArrayList(), clearPromoParam)
+
+        //then
+        assert(clearPromoParam.orderData.codes.isEmpty())
+        assert(clearPromoParam.orderData.orders.isNotEmpty())
+        assert(clearPromoParam.orderData.orders[0].codes.isNotEmpty())
     }
 
     @Test
