@@ -3,10 +3,8 @@ package com.tokopedia.home_recom.topads
 import android.app.Activity
 import android.app.Instrumentation
 import android.view.View
-import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.test.rule.ActivityTestRule
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -14,6 +12,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.activity.HomeRecommendationActivityTest
+import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
@@ -65,6 +64,9 @@ class HomeRecomTopAdsVerificationTest {
         val itemCount = recyclerView.adapter?.itemCount?:0
 
         val itemList = recyclerView.getItemList()
+
+        waitForData()
+
         topAdsCount = calculateTopAdsCount(itemList)
 
         for (i in 0 until itemCount) {
@@ -86,6 +88,11 @@ class HomeRecomTopAdsVerificationTest {
         var count = 0
 
         when (item) {
+            is ProductInfoDataModel -> {
+                if (item.isGetTopAds && item.productDetailData?.isTopads == true) {
+                    count++
+                }
+            }
             is RecommendationItemDataModel -> {
                 if (item.productItem.isTopAds) count++
             }
