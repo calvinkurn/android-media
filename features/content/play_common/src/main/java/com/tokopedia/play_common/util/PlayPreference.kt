@@ -1,11 +1,7 @@
 package com.tokopedia.play_common.util
 
 import android.content.Context
-import android.util.Log
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.utils.date.DateUtil
-import com.tokopedia.utils.date.addTimeToSpesificDate
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -17,6 +13,8 @@ class PlayPreference @Inject constructor(
 
     companion object {
         private const val PLAY_PREFERENCE = "play_preference"
+
+        private const val A_DAY_IN_MILLIS : Long = 86400000L
 
         private const val FORMAT_ONE_TAP_ONBOARDING = "one_tap_onboarding_%s"
         private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
@@ -65,38 +63,24 @@ class PlayPreference @Inject constructor(
      * check last visit
      */
 
-    private fun countDays(time: Long) : Long  {
-        val diff = System.currentTimeMillis() - time
-        return diff
-    }
+    private val currentTime: Long
+        get() =  System.currentTimeMillis()
 
-    private val diffDay: Long get() {
-        val lastVisit = sharedPref.getLong(SWIPE_ONBOARDING, 0L)
-        val diff = System.currentTimeMillis() - lastVisit
-        Log.d("sukses diff", diff.toString())
-        return diff
-    }
+    private val diffDay: Long
+        get() {
+            return currentTime - lastVisit
+        }
 
-    private val dayPlusOne: Long get(){ //by lazy
-        return DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DAY_OF_MONTH, 1).time
-    }
+    private val lastVisit: Long get() =
+        sharedPref.getLong(SWIPE_ONBOARDING, currentTime)
 
     fun setCoachMark() { // first channel event
-        if (isCoachMark()) { // move to val get ambil sendiri
-            Log.d("sukses", "in")
+        if (isCoachMark()) {
             sharedPref.edit().putLong(SWIPE_ONBOARDING, System.currentTimeMillis()).apply()
-
-
-            //coba delay get urrent time millis
         }
-        Log.d("sukses", "out")
     }
-
-    //day should be this time + 1
 
     fun isCoachMark(): Boolean {
-        return diffDay >= dayPlusOne
+        return diffDay >= A_DAY_IN_MILLIS
     }
-
-    //AB TEST if variant x
 }
