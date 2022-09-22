@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.viewmodel
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
