@@ -139,9 +139,16 @@ object RecipeDetailMapper {
         addressData: TokoNowLocalAddress
     ): RecipeTabUiModel {
         val isOutOfCoverage = addressData.isOutOfCoverage()
+        val ingredientsResponse = response.ingredients
 
-        val ingredients = response.ingredients.map {
-            IngredientUiModel(it.name, formatFloatToString(it.quantity), it.unit)
+        val ingredients = ingredientsResponse.mapIndexed { index, ingredient ->
+            val isLastItem = index == ingredientsResponse.count() - 1
+            IngredientUiModel(
+                ingredient.name,
+                formatFloatToString(ingredient.quantity),
+                ingredient.unit,
+                isLastItem
+            )
         }
 
         val instruction = InstructionUiModel(response.instruction)

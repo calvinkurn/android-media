@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeIngredientBinding
 import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailComponent
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeIngredientAdapter
@@ -17,9 +16,7 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeIngred
 import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.OutOfCoverageViewHolder.OutOfCoverageListener
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
-import com.tokopedia.tokopedianow.recipedetail.presentation.viewmodel.TokoNowRecipeIngredientViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import javax.inject.Inject
 
 class TokoNowRecipeIngredientFragment : Fragment(), RecipeProductListener, OutOfCoverageListener {
 
@@ -29,9 +26,6 @@ class TokoNowRecipeIngredientFragment : Fragment(), RecipeProductListener, OutOf
             return TokoNowRecipeIngredientFragment()
         }
     }
-
-    @Inject
-    lateinit var viewModel: TokoNowRecipeIngredientViewModel
 
     private var items: List<Visitable<*>> = emptyList()
     private var adapter: RecipeIngredientAdapter? = null
@@ -55,8 +49,6 @@ class TokoNowRecipeIngredientFragment : Fragment(), RecipeProductListener, OutOf
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        observeLiveData()
-        onViewCreated()
     }
 
     override fun onAttach(context: Context) {
@@ -110,20 +102,12 @@ class TokoNowRecipeIngredientFragment : Fragment(), RecipeProductListener, OutOf
             adapter = this@TokoNowRecipeIngredientFragment.adapter
             layoutManager = LinearLayoutManager(context)
         }
-    }
 
-    private fun observeLiveData() {
-        observe(viewModel.itemList) {
-            submitList(it)
-        }
+        submitList(items)
     }
 
     private fun submitList(items: List<Visitable<*>>) {
         adapter?.submitList(items)
-    }
-
-    private fun onViewCreated() {
-        viewModel.onViewCreated(items)
     }
 
     private fun injectDependencies() {
