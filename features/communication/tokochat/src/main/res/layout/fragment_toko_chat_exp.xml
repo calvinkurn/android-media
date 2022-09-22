@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditText
+        android:id="@+id/order_id_edt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/clear_btn"
+        android:hint="Order Id" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/clear_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/order_id_edt"
+        app:layout_constraintLeft_toRightOf="@id/order_id_edt"
+        app:layout_constraintRight_toLeftOf="@id/go_btn"
+        app:layout_constraintBottom_toBottomOf="@id/order_id_edt"
+        android:text="Reset"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/go_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/clear_btn"
+        app:layout_constraintLeft_toRightOf="@id/clear_btn"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/clear_btn"
+        android:layout_marginStart="4dp"
+        android:text="Go"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_typing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/order_id_edt"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/main_scrollview"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <TextView
+            android:id="@+id/connection_status_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/counter_tv"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="none"/>
+
+        <TextView
+            android:id="@+id/counter_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/connection_status_tv"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="8dp"
+            android:text="none"/>
+
+        <TextView
+            android:id="@+id/typing_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/counter_tv"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="8dp"
+            android:text="|  Typing status :"/>
+
+        <TextView
+            android:id="@+id/typing_status_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/typing_tv"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="8dp"
+            android:text="none"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/chat_list_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="8dp"
+            android:text="Chat list"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_typing"
+        app:layout_constraintBottom_toTopOf="@id/main_scrollview"
+        android:background="@color/Unify_NN600"/>
+
+    <ScrollView
+        android:id="@+id/main_scrollview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_typing"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/main_edt"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp">
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/main_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:typographyType="body_2"
+            android:text="Hi from chat service fragment!"/>
+    </ScrollView>
+
+    <EditText
+        android:id="@+id/main_edt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/main_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Msg Here"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/main_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/main_edt"
+        app:layout_constraintLeft_toRightOf="@id/main_edt"
+        app:layout_constraintRight_toLeftOf="@id/loadmore_btn"
+        app:layout_constraintBottom_toBottomOf="@id/main_edt"
+        android:text="Send"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/loadmore_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/main_edt"
+        app:layout_constraintLeft_toRightOf="@id/main_btn"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/main_edt"
+        android:layout_marginStart="8dp"
+        android:text="More"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

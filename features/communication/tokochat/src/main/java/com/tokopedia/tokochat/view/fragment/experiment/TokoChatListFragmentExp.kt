@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.view.fragment
+package com.tokopedia.tokochat.view.fragment.experiment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,15 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.tokochat.databinding.FragmentTokoChatListBinding
+import com.tokopedia.tokochat.databinding.FragmentTokoChatListExpBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class TokoChatListFragment: BaseDaggerFragment() {
+//TODO: Delete this after experiment
+class TokoChatListFragmentExp: BaseDaggerFragment() {
 
-    private var binding: FragmentTokoChatListBinding? by autoClearedNullable()
+    private var binding: FragmentTokoChatListExpBinding? by autoClearedNullable()
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -26,7 +27,7 @@ class TokoChatListFragment: BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentTokoChatListBinding.inflate(
+        binding = FragmentTokoChatListExpBinding.inflate(
             LayoutInflater.from(context),
             container,
             false
@@ -58,20 +59,20 @@ class TokoChatListFragment: BaseDaggerFragment() {
     }
 
     companion object {
-        private const val TAG = "TokoChatListFragment"
+        private const val TAG = "TokoChatListFragmentExp"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle,
-        ): TokoChatListFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? TokoChatListFragment
+        ): TokoChatListFragmentExp {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? TokoChatListFragmentExp
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                TokoChatListFragment::class.java.name
+                TokoChatListFragmentExp::class.java.name
             ).apply {
                 arguments = bundle
-            } as TokoChatListFragment
+            } as TokoChatListFragmentExp
         }
     }
 }

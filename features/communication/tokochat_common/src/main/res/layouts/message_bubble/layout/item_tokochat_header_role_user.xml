@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:orientation="horizontal"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvRole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Budi Santoso" />
+
+    <ImageView
+        android:id="@+id/img_sr_blue_dot"
+        android:layout_width="@dimen/dp_topchat_6"
+        android:layout_height="@dimen/dp_topchat_6"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/dp_topchat_4"
+        android:layout_marginLeft="@dimen/dp_topchat_4"
+        android:visibility="gone"
+        app:srcCompat="@drawable/circle_blue_notification"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDot"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/spacing_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl1"
+        android:gravity="center_vertical"
+        android:text="●"
+        android:textColor="@color/Unify_N700_96"
+        android:textStyle="normal"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Admin"
+        tools:visibility="visible" />
+
+</merge>
