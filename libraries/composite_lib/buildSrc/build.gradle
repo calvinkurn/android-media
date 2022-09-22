@@ -32,8 +32,8 @@ task createClasspathManifest {
     }
 }
 
-compileKotlin { kotlinOptions { jvmTarget = "11" } }
-compileTestKotlin { kotlinOptions { jvmTarget = "11" } }
+compileKotlin { kotlinOptions { jvmTarget = JavaVersion.VERSION_11 } }
+compileTestKotlin { kotlinOptions { jvmTarget = JavaVersion.VERSION_11 } }
 
 dependencies {
     testRuntimeOnly files(createClasspathManifest)

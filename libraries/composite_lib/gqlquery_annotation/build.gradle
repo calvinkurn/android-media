@@ -18,12 +18,12 @@ buildscript {
 
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_11
     }
 }
 compileTestKotlin {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_11
     }
 }
 

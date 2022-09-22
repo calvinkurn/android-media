@@ -11,7 +11,7 @@ android {
     }
     // For Kotlin projects
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_11
     }
     buildFeatures {
         viewBinding true
