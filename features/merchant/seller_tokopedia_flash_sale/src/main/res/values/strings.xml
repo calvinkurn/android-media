@@ -196,4 +196,9 @@
     <string name="chooseproduct_filter_criteria_text">Memenuhi Kriteria</string>
     <string name="chooseproduct_filter_category_text">Semua Kategori</string>
 
+    <!-- Bulk Apply -->
+    <string name="bulk_apply_title">Atur Sekaligus</string>
+    <string name="bulk_apply_text_stock">Stok Campaign</string>
+    <string name="bulk_apply_text_stock_description">Stok wajib %1d - %2d</string>
+
 </resources>

@@ -327,6 +327,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         setupUpcomingMid(flashSale, campaignStatus)
         setupUpcomingBody(flashSale)
         setupUpcomingButton()
+        setupChooseProductRedirection()
     }
 
     private fun setupUpcomingHeader(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
