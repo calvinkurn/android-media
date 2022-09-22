@@ -157,7 +157,7 @@ class ShippingOccWidget: ConstraintLayout {
 
     fun renderBboShipping(
         logisticPromoUiModel: LogisticPromoUiModel,
-        onChangeCourierListener: () -> Unit
+        onChangeDurationListener: () -> Unit
     ) {
         binding?.apply {
             val formattedFreeShippingChosenCourierTitle = HtmlLinkHelper(
@@ -185,7 +185,7 @@ class ShippingOccWidget: ConstraintLayout {
                 tvShippingCourierEta,
                 btnChangeCourier
             ) {
-                onChangeCourierListener.invoke()
+                onChangeDurationListener.invoke()
             }
         }
     }
@@ -194,7 +194,7 @@ class ShippingOccWidget: ConstraintLayout {
         serviceName: String?,
         shippingPrice: Int,
         serviceEta: String?,
-        onChangeCourierListener: () -> Unit
+        onChangeDurationListener: () -> Unit
     ) {
         binding?.apply {
             tvShippingCourier.text = root.context.getString(
@@ -220,7 +220,7 @@ class ShippingOccWidget: ConstraintLayout {
                 tvShippingCourierEta,
                 btnChangeCourier
             ) {
-                onChangeCourierListener.invoke()
+                onChangeDurationListener.invoke()
             }
         }
     }

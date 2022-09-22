@@ -114,22 +114,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             serviceName = shipping.serviceName,
             shipperName = shipping.shipperName ?: "",
             onChangeDurationListener = {
-                if (profile.enable) {
-                    val shippingRecommendationData = shipment.shippingRecommendationData
-                    if (shippingRecommendationData != null) {
-                        val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                        val logisticPromoList = shippingRecommendationData.listLogisticPromo
-                        if (logisticPromoList.isNotEmpty()) {
-                            list.addAll(0, logisticPromoList + listOf<RatesViewModelType>(DividerModel()))
-                            logisticPromoList.forEach { promo ->
-                                if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
-                                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
-                                }
-                            }
-                        }
-                        listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), list)
-                    }
-                }
+                onChangeDuration(shipping)
             }
         )
     }
@@ -151,23 +136,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     private fun renderBboShipping(shipping: OrderShipment, logisticPromoUiModel: LogisticPromoUiModel) {
         binding.shippingOccWidget.renderBboShipping(
             logisticPromoUiModel = logisticPromoUiModel,
-            onChangeCourierListener = {
-                if (profile.enable) {
-                    val shippingRecommendationData = shipment.shippingRecommendationData
-                    if (shippingRecommendationData != null) {
-                        val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                        val logisticPromoList = shippingRecommendationData.listLogisticPromo
-                        if (logisticPromoList.isNotEmpty()) {
-                            list.addAll(0, logisticPromoList + listOf<RatesViewModelType>(DividerModel()))
-                            logisticPromoList.forEach { promo ->
-                                if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
-                                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
-                                }
-                            }
-                        }
-                        listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), list)
-                    }
-                }
+            onChangeDurationListener = {
+                onChangeDuration(shipping)
             }
         )
     }
@@ -178,25 +148,29 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             serviceName = shipping.serviceName,
             shippingPrice = shipping.shippingPrice ?: 0,
             serviceEta = shipping.serviceEta,
-            onChangeCourierListener = {
-                if (profile.enable) {
-                    val shippingRecommendationData = shipment.shippingRecommendationData
-                    if (shippingRecommendationData != null) {
-                        val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                        val logisticPromoList = shippingRecommendationData.listLogisticPromo
-                        if (logisticPromoList.isNotEmpty()) {
-                            list.addAll(0, logisticPromoList + listOf<RatesViewModelType>(DividerModel()))
-                            logisticPromoList.forEach { promo ->
-                                if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
-                                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
-                                }
-                            }
-                        }
-                        listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), list)
-                    }
-                }
+            onChangeDurationListener = {
+                onChangeDuration(shipping)
             }
         )
+    }
+
+    private fun onChangeDuration(shipping: OrderShipment) {
+        if (profile.enable) {
+            val shippingRecommendationData = shipment.shippingRecommendationData
+            if (shippingRecommendationData != null) {
+                val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
+                val logisticPromoList = shippingRecommendationData.listLogisticPromo
+                if (logisticPromoList.isNotEmpty()) {
+                    list.addAll(0, logisticPromoList + listOf<RatesViewModelType>(DividerModel()))
+                    logisticPromoList.forEach { promo ->
+                        if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                        }
+                    }
+                }
+                listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), list)
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -206,50 +180,37 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             shippingPrice = shipping.shippingPrice ?: 0,
             eta = eta,
             onChangeCourierListener = {
-                if (profile.enable) {
-                    val shippingRecommendationData = shipment.shippingRecommendationData
-                    if (shippingRecommendationData != null) {
-                        val list: ArrayList<RatesViewModelType> = ArrayList()
-                        for (shippingDurationViewModel in shippingRecommendationData.shippingDurationUiModels) {
-                            if (shippingDurationViewModel.isSelected) {
-                                if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
-                                    list.add(NotifierModel())
-                                }
-                                val filteredList = shippingDurationViewModel.shippingCourierViewModelList
-                                    .filter { !it.productData.isUiRatesHidden }
-                                list.addAll(filteredList)
-                                break
-                            }
-                        }
-                        listener.chooseCourier(shipping, list)
-                    }
-                }
+                onChangeCourier(shipping)
             }
         )
+    }
+
+    private fun onChangeCourier(shipping: OrderShipment) {
+        if (profile.enable) {
+            val shippingRecommendationData = shipment.shippingRecommendationData
+            if (shippingRecommendationData != null) {
+                val list: ArrayList<RatesViewModelType> = ArrayList()
+                for (shippingDurationViewModel in shippingRecommendationData.shippingDurationUiModels) {
+                    if (shippingDurationViewModel.isSelected) {
+                        if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
+                            list.add(NotifierModel())
+                        }
+                        val filteredList = shippingDurationViewModel.shippingCourierViewModelList
+                            .filter { !it.productData.isUiRatesHidden }
+                        list.addAll(filteredList)
+                        break
+                    }
+                }
+                listener.chooseCourier(shipping, list)
+            }
+        }
     }
 
     private fun renderShippingCourierWithoutEta(shipping: OrderShipment) {
         binding.shippingOccWidget.renderShippingCourierWithoutEta(
             shippingPrice = shipping.shippingPrice ?: 0,
             onChangeCourierListener = {
-                if (profile.enable) {
-                    val shippingRecommendationData = shipment.shippingRecommendationData
-                    if (shippingRecommendationData != null) {
-                        val list: ArrayList<RatesViewModelType> = ArrayList()
-                        for (shippingDurationViewModel in shippingRecommendationData.shippingDurationUiModels) {
-                            if (shippingDurationViewModel.isSelected) {
-                                if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
-                                    list.add(NotifierModel())
-                                }
-                                val filteredList = shippingDurationViewModel.shippingCourierViewModelList
-                                    .filter { !it.productData.isUiRatesHidden }
-                                list.addAll(filteredList)
-                                break
-                            }
-                        }
-                        listener.chooseCourier(shipping, list)
-                    }
-                }
+                onChangeCourier(shipping)
             }
         )
     }
