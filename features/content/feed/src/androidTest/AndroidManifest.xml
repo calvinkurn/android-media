@@ -11,5 +11,8 @@
         <activity
             android:name=".InstrumentationFeedPlusTestActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity android:name=".container.FeedContainerTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 </manifest>

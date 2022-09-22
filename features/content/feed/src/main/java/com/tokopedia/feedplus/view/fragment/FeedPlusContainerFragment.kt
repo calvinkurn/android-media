@@ -80,6 +80,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
+import com.tokopedia.feedplus.view.di.FeedInjector
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.feedcomponent.R as feedComponentR
@@ -359,11 +360,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
-        DaggerFeedContainerComponent.builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .build().inject(this)
+        FeedInjector.get(requireContext())
+            .inject(this)
     }
 
     override fun onScrollToTop() {
