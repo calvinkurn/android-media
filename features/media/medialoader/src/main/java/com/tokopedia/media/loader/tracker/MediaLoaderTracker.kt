@@ -10,7 +10,9 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.media.common.util.NetworkManager
 import com.tokopedia.media.loader.utils.ServerIpAddressLocator
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
 data class MediaLoaderTrackerParam(
