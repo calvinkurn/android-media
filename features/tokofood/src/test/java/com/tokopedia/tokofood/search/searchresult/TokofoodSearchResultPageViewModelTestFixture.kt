@@ -14,6 +14,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.domain.response.Tokofo
 import com.tokopedia.tokofood.feature.search.searchresult.domain.response.TokofoodSearchMerchantResponse
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodFilterSortUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodSearchMerchantUseCase
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeChipUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodFilterItemUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiState
@@ -207,10 +208,10 @@ open class TokofoodSearchResultPageViewModelTestFixture {
     }
 
     protected fun onGetQuickFilterPriceRangeUiModels_shouldReturn(filter: Filter,
-                                                                  uiModels: List<PriceRangeFilterCheckboxItemUiModel>) {
+                                                                  uiModel: PriceRangeChipUiModel) {
         coEvery {
             tokofoodFilterSortMapper.getQuickFilterPriceRangeUiModels(filter)
-        } returns uiModels
+        } returns uiModel
     }
 
     protected fun onGetCurrentSortKey_shouldReturn(uiModels: List<TokofoodSortFilterItemUiModel>?,

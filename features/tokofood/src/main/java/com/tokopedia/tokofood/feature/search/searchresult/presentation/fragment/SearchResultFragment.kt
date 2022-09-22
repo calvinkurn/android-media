@@ -50,6 +50,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.v
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.bottomsheet.TokofoodQuickPriceRangeBottomsheet
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.bottomsheet.TokofoodQuickSortBottomSheet
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.customview.TokofoodSearchFilterTab
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeChipUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiEvent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
@@ -553,8 +554,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun onOpenQuickFilterPriceRangeBottomSheet(data: Any?) {
         hideKeyboard()
-        (data as? List<*>)?.filterIsInstance(PriceRangeFilterCheckboxItemUiModel::class.java)?.let { uiModels ->
-            TokofoodQuickPriceRangeBottomsheet.createInstance(uiModels, this)
+        (data as? PriceRangeChipUiModel)?.let { uiModel ->
+            TokofoodQuickPriceRangeBottomsheet.createInstance(uiModel, this)
                 .show(parentFragmentManager)
         }
     }

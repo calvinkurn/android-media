@@ -17,6 +17,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.Tokofoo
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithoutFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchResultUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeChipUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiEvent
 import com.tokopedia.tokofood.utils.collectFromSharedFlow
@@ -997,11 +998,15 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
     fun `when showQuickFilterBottomSheet price range filter should emit open filter range bottomsheet event`() {
         val filter =
             Filter(templateName = Filter.TEMPLATE_PRICING_FOOD)
-        val expectedUiModels = listOf(
-            PriceRangeFilterCheckboxItemUiModel(Option())
-        )
+        val expectedUiModel =
+            PriceRangeChipUiModel(
+                listOf(
+                    PriceRangeFilterCheckboxItemUiModel(Option())
+                ),
+                filter.subTitle
+            )
 
-        onGetQuickFilterPriceRangeUiModels_shouldReturn(filter, expectedUiModels)
+        onGetQuickFilterPriceRangeUiModels_shouldReturn(filter, expectedUiModel)
 
         viewModel.uiEventFlow.collectFromSharedFlow(
             whenAction = {
@@ -1017,11 +1022,15 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
     @Test
     fun `when showQuickFilterBottomSheet normal filter should emit open normal bottomsheet event`() {
         val filter = Filter()
-        val expectedUiModels = listOf(
-            PriceRangeFilterCheckboxItemUiModel(Option())
-        )
+        val expectedUiModel =
+            PriceRangeChipUiModel(
+                listOf(
+                    PriceRangeFilterCheckboxItemUiModel(Option())
+                ),
+                filter.subTitle
+            )
 
-        onGetQuickFilterPriceRangeUiModels_shouldReturn(filter, expectedUiModels)
+        onGetQuickFilterPriceRangeUiModels_shouldReturn(filter, expectedUiModel)
 
         viewModel.uiEventFlow.collectFromSharedFlow(
             whenAction = {

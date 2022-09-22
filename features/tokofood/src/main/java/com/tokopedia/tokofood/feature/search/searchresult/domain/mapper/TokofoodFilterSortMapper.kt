@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeChipUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodFilterItemUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
@@ -48,12 +49,13 @@ class TokofoodFilterSortMapper @Inject constructor() {
         }
     }
 
-    fun getQuickFilterPriceRangeUiModels(filter: Filter): List<PriceRangeFilterCheckboxItemUiModel> {
-        return filter.options.map {
+    fun getQuickFilterPriceRangeUiModels(filter: Filter): PriceRangeChipUiModel {
+        val uiModels =  filter.options.map {
             PriceRangeFilterCheckboxItemUiModel(it).apply {
                 isSelected = it.inputState.toBoolean()
             }
         }
+        return PriceRangeChipUiModel(uiModels, filter.subTitle)
     }
 
     fun getCurrentSortKey(uiModels: List<TokofoodSortFilterItemUiModel>?): String {
