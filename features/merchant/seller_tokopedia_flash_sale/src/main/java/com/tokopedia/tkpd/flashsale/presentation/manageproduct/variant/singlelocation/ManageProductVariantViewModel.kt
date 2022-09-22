@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.item.ManageProductVariantItem
 import com.tokopedia.tkpd.flashsale.util.constant.NumericalNormalizationConstant
 import javax.inject.Inject
 import kotlin.math.round
@@ -61,7 +60,7 @@ class ManageProductVariantViewModel @Inject constructor(
     }
 
     fun validateInputPage(
-        childProduct: ManageProductVariantItem,
+        childProduct: ReservedProduct.Product.ChildProduct,
         criteria: ReservedProduct.Product.ProductCriteria
     ) {
         if (productData.childProducts.any { it.isToggleOn }) {

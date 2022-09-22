@@ -1,12 +1,13 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation
 
+import android.app.Activity
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
-import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
@@ -16,16 +17,13 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singleloc
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantMultilocAdapter
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.item.ManageProductVariantItem
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.mapper.ManageVariantMapper.toMultiWarehouseVariantItem
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.mapper.ManageVariantMapper.toSingleWarehouseVariantItem
 import timber.log.Timber
 
 class ManageProductVariantFragment :
-    BaseCampaignManageProductDetailFragment<CompositeAdapter>(),
+    BaseCampaignManageProductDetailFragment<ManageProductVariantAdapter>(),
     ManageProductVariantListener {
 
     companion object {
@@ -86,18 +84,8 @@ class ManageProductVariantFragment :
         )
         textProductOriginalPrice?.gone()
         textTotalStock?.gone()
-        setupListData()
+        imageIconProduct?.gone()
         buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
-    }
-
-    private fun setupListData() {
-        viewModel.getProductData().childProducts.forEach { childProduct ->
-            if (childProduct.isMultiwarehouse) {
-                adapter?.addItem(childProduct.toMultiWarehouseVariantItem())
-            } else {
-                adapter?.addItem(childProduct.toSingleWarehouseVariantItem())
-            }
-        }
     }
 
     private fun setupObservers() {
@@ -125,13 +113,18 @@ class ManageProductVariantFragment :
 
     override fun onSubmitButtonClicked() {
         Timber.tag("Masuk").d(viewModel.getProductData().toString())
+        val bundle = Bundle()
+        val intent = Intent()
+        bundle.putParcelable(BUNDLE_KEY_PRODUCT, viewModel.getProductData())
+        intent.putExtras(bundle)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
-    override fun createAdapterInstance(): CompositeAdapter {
-        return CompositeAdapter.Builder()
-            .add(ManageProductVariantAdapter(listener = this, product = viewModel.getProductData()))
-            .add(ManageProductVariantMultilocAdapter(listener = this, product = viewModel.getProductData()))
-            .build()
+    override fun createAdapterInstance(): ManageProductVariantAdapter {
+        return ManageProductVariantAdapter(this).apply {
+            setDataList(viewModel.getProductData())
+        }
     }
 
     private fun setWidgetBulkApplyState(items: List<ReservedProduct.Product.ChildProduct>) {
@@ -160,7 +153,7 @@ class ManageProductVariantFragment :
         product: ReservedProduct.Product,
         discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
     ): ValidationResult {
-        val items = adapter?.getItems()?.filterIsInstance<ManageProductVariantItem>()
+        val items = adapter?.getDataList()
         val selectedItem = items?.get(index)
         if (selectedItem != null) {
             viewModel.validateInputPage(selectedItem, selectedItem.productCriteria)
