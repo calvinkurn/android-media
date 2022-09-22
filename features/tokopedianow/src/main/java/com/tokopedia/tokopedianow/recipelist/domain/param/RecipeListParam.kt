@@ -59,11 +59,7 @@ class RecipeListParam {
                 putString(PARAM_SOURCE_PAGE, sourcePage)
             }
 
-            queryParams = if(queryParams.isEmpty()) {
-                generateQueryParams()
-            } else {
-                queryParams
-            }
+            queryParams = generateQueryParams()
 
             putString(PARAM_QUERY_PARAM, queryParams)
         }.parameters
