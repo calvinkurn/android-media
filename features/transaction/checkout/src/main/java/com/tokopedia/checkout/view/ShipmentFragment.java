@@ -575,6 +575,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentNewUpsellModel.isShow()) {
             shipmentAdapter.addNewUpsellData(shipmentNewUpsellModel);
         }
+        isPlusSelected = shipmentNewUpsellModel.isSelected();
         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
         StringBuilder cartIdsStringBuilder = new StringBuilder();
         for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
