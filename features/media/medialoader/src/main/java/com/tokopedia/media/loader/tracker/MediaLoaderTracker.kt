@@ -123,7 +123,6 @@ object MediaLoaderTracker : CoroutineScope {
         }, onError = {})
     }
 
-
     private fun MediaLoaderTrackerParam.toMap(context: Context): Map<String, String> {
         val mediaSetting = MediaSettingPreferences(context)
         val mediaSettingIndex = mediaSetting.qualitySettings()
