@@ -36,7 +36,7 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
-    lateinit var affiliateRegistrationSharedViewModel: AffiliateRegistrationSharedViewModel
+    private lateinit var affiliateRegistrationSharedViewModel: AffiliateRegistrationSharedViewModel
 
     private var productId: String? = null
 
@@ -65,24 +65,29 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
 
     private fun initObserver() {
-        affiliateRegistrationSharedViewModel.getUserAction().observe(this,
-             {
-            when(it){
+        affiliateRegistrationSharedViewModel.getUserAction().observe(this) {
+            when (it) {
                 AffiliateRegistrationSharedViewModel.UserAction.NaigateToPortFolio -> {
-                    openFragment(AffiliatePortfolioFragment.getFragmentInstance(),AffiliatePortfolioFragment.TAG)
+                    openFragment(
+                        AffiliatePortfolioFragment.getFragmentInstance(),
+                        AffiliatePortfolioFragment.TAG
+                    )
                 }
                 AffiliateRegistrationSharedViewModel.UserAction.NaigateToTermsAndFragment -> {
-                    openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(),AffiliateTermsAndConditionFragment.TAG)
+                    openFragment(
+                        AffiliateTermsAndConditionFragment.getFragmentInstance(),
+                        AffiliateTermsAndConditionFragment.TAG
+                    )
                 }
                 AffiliateRegistrationSharedViewModel.UserAction.RegistrationSucces -> {
                     showSplashScreen()
                 }
                 else -> {}
             }
-        })
+        }
     }
 
-    var showingSplashScreen = false
+    private var showingSplashScreen = false
     private fun showSplashScreen() {
         showingSplashScreen = true
         findViewById<FrameLayout>(R.id.parent_view)?.hide()
@@ -96,12 +101,14 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
         splashHandler?.postDelayed(splashRunnable, AFFILIATE_SPLASH_TIME)
     }
 
-    var splashHandler: Handler? = null
+    private var splashHandler: Handler? = null
 
     private val splashRunnable = Runnable {
         findViewById<Group>(R.id.splash_group)?.hide()
-        if (productId.isNullOrEmpty()) {
+        if (productId == null) {
             openAffiliate()
+        } else if (productId?.isEmpty() == true) {
+            finish()
         } else {
             openPdp()
         }
