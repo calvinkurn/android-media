@@ -47,7 +47,13 @@ data class ComponentData(
         @Expose @SerializedName("reviews")
         val reviews: ArrayList<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>?,
         @Expose @SerializedName("totalHelpfulReview")
-        val totalHelpfulReview: String?
+        val totalHelpfulReview: String?,
+        @Expose
+        @SerializedName("spec_list")
+        var specList: ArrayList<SpecList>? = arrayListOf(),
+        @Expose
+        @SerializedName("compared_data")
+        val comparedData: ComparedData? = null
 
 ){
     @Parcelize
@@ -58,6 +64,46 @@ data class ComponentData(
             val value: String
     ) : Parcelable
 
+    @Parcelize
+    data class SpecList(
+            @Expose
+            @SerializedName("title")
+            val comparisonTitle: String?,
+            @Expose
+            @SerializedName("sub_card")
+            val subcard: ArrayList<Subcard>? = arrayListOf(),
+            @Expose @SerializedName("is_expanded")
+            var isExpanded: Boolean? = false
+    ) : Parcelable
+    {
+            @Parcelize
+            data class Subcard(
+                    @SerializedName("sub_title")
+                    val subTitle: String?,
+                    @SerializedName("left_data")
+                    val leftData: String?,
+                    @SerializedName("right_data")
+                    val rightData: String?,
+
+                    val featureLeftData: ComparisonNewModel?,
+                    val featureRightData: ComparisonNewModel?,
+            ) : Parcelable
+    }
+
+    data class ComparedData (
+            @SerializedName("id")
+            val id: String?,
+            @SerializedName("brand")
+            val brand: String?,
+            @SerializedName("name")
+            val name: String?,
+            @SerializedName("url")
+            val url: String?,
+            @SerializedName("catalogImage")
+            val catalogImage: ArrayList<CatalogImage>?,
+            @SerializedName( "marketPrice")
+            val marketPrice: List<CatalogResponseData.CatalogGetDetailModular.BasicInfo.MarketPrice>?
+    )
 }
 
 @Parcelize
@@ -92,6 +138,15 @@ data class ComparisionModel(
 
         val key : String?,
         val value : String?) : Parcelable
+
+@Parcelize
+data class ComparisonNewModel(
+        val id: String?,
+        val brand: String?,
+        val name: String?,
+        val price: String?,
+        val imageUrl: String?,
+) : Parcelable
 
 @Parcelize
 data class ReviewComponentData(

@@ -931,8 +931,8 @@ class UserProfileFragment @Inject constructor(
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
         val desc = buildString {
-            append("Lihat foto & video menarik dari Tokopedia ${viewModel.displayName}")
-            if(viewModel.profileUsername.isBlank()) append(" (${getUsernameWithAdd()})")
+            append("Lihat foto & video menarik dari ${viewModel.displayName}")
+            if(viewModel.profileUsername.isNotBlank()) append(" (${getUsernameWithAdd()})")
             append(", yuk! \uD83D\uDE0D")
         }
 
