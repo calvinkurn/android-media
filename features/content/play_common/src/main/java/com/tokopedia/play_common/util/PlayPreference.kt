@@ -1,7 +1,11 @@
 package com.tokopedia.play_common.util
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -13,8 +17,6 @@ class PlayPreference @Inject constructor(
 
     companion object {
         private const val PLAY_PREFERENCE = "play_preference"
-
-        val DAY = 86400000L
 
         private const val FORMAT_ONE_TAP_ONBOARDING = "one_tap_onboarding_%s"
         private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
@@ -64,16 +66,37 @@ class PlayPreference @Inject constructor(
      */
 
     private fun countDays(time: Long) : Long  {
-        return System.currentTimeMillis() - time
+        val diff = System.currentTimeMillis() - time
+        return diff
     }
 
-    fun setCoachMark() {
-        if (countDays(sharedPref.getLong(SWIPE_ONBOARDING, 0L)) >= DAY) {
-            sharedPref.edit().putLong(SWIPE_ONBOARDING, System.currentTimeMillis()).apply()
-        }
+    private val diffDay: Long get() {
+        val lastVisit = sharedPref.getLong(SWIPE_ONBOARDING, 0L)
+        val diff = System.currentTimeMillis() - lastVisit
+        Log.d("sukses diff", diff.toString())
+        return diff
     }
+
+    private val dayPlusOne: Long get(){ //by lazy
+        return DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DAY_OF_MONTH, 1).time
+    }
+
+    fun setCoachMark() { // first channel event
+        if (isCoachMark()) { // move to val get ambil sendiri
+            Log.d("sukses", "in")
+            sharedPref.edit().putLong(SWIPE_ONBOARDING, System.currentTimeMillis()).apply()
+
+
+            //coba delay get urrent time millis
+        }
+        Log.d("sukses", "out")
+    }
+
+    //day should be this time + 1
 
     fun isCoachMark(): Boolean {
-        return countDays(sharedPref.getLong(SWIPE_ONBOARDING, 0L)) >= DAY
+        return diffDay >= dayPlusOne
     }
+
+    //AB TEST if variant x
 }

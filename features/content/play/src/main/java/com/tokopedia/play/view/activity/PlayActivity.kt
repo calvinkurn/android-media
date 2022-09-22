@@ -284,6 +284,7 @@ class PlayActivity : BaseActivity(),
     private fun observeFirstChannelEvent() {
         viewModel.observableFirstChannelEvent.observe(this, EventObserver {
             swipeContainerView.reset()
+            playPreference.setCoachMark()
         })
     }
 
