@@ -243,7 +243,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
-                        if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
+                        analytic.ugcClickAccount()
+                        if (parentViewModel.channelTitle.isNotEmpty()) {
+                            analytic.ugcClickAccountAndHaveDraft()
+                            getSwitchAccountConfirmationDialog(contentAccount).show()
+                        }
                         else parentViewModel.submitAction(SwitchAccount)
                         viewModel.setFromSwitchAccount(true)
                     }
@@ -306,6 +310,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 }
 
                 setOnAccountClickListener {
+                    analytic.ugcClickAccountDropdown()
                     hideCoachMarkSwitchAccount()
                     showAccountBottomSheet()
                 }
@@ -865,7 +870,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 )
                 setPrimaryCTAText(getString(R.string.play_bro_switch_account_primary_cta_dialog))
                 setPrimaryCTAClickListener {
-                    if (switchAccountConfirmationDialog.isShowing) dismiss()
+                    if (switchAccountConfirmationDialog.isShowing) {
+                        analytic.ugcClickCancelSwitchAccount()
+                        dismiss()
+                    }
                 }
                 setSecondaryCTAText(
                     if (contentAccount.isShop) getString(R.string.play_bro_switch_account_secondary_cta_shop_dialog)
@@ -873,7 +881,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 )
                 setSecondaryCTAClickListener {
                     parentViewModel.submitAction(SwitchAccount)
-                    if (switchAccountConfirmationDialog.isShowing) dismiss()
+                    if (switchAccountConfirmationDialog.isShowing) {
+                        analytic.ugcClickConfirmSwitchAccount()
+                        dismiss()
+                    }
                 }
             }
         }
