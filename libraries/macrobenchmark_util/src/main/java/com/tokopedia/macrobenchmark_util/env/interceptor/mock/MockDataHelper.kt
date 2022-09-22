@@ -1,7 +1,6 @@
 package com.tokopedia.macrobenchmark_util.env.interceptor.mock
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.tokopedia.macrobenchmark_util.env.mock.MockModelConfig
@@ -29,7 +28,6 @@ object MockDataHelper {
     suspend fun addMock(context: Context, gqlKey: String, response: String) {
         context.dataStore.edit { mock_response ->
             mock_response[stringPreferencesKey(gqlKey)] = response
-            Log.d("devfik", "Mock set: "+gqlKey)
         }
         context.dataStore.data
             .map { preferences ->

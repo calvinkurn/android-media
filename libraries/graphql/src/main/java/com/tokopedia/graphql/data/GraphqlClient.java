@@ -4,7 +4,6 @@ import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.MainThread;
@@ -162,14 +161,11 @@ public class GraphqlClient {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
         if (GlobalConfig.ENABLE_MACROBENCHMARK_UTIL) {
             try {
-                Log.d("devfik","Macrobenchmark util implement mock");
                 String className = "com.tokopedia.macrobenchmark_util.env.interceptor.mock.MockInterceptor";
                 Object mockInterceptorClass = MacroInterceptorProvider.INSTANCE.get(className, context);
 
                 tkpdOkHttpBuilder.addInterceptor((Interceptor) mockInterceptorClass);
             } catch (Exception e) {
-                Log.d("devfik","Macrobenchmark util exception "+e.getMessage());
-
                 e.printStackTrace();
             }
         }

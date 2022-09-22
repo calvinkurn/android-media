@@ -1,7 +1,6 @@
 package com.tokopedia.macrobenchmark_util.env.interceptor.mock
 
 import android.content.Context
-import android.util.Log
 import androidx.annotation.Keep
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -28,7 +27,6 @@ class MockInterceptor(val applicationContext: Context) : Interceptor {
             val mockResponse = applicationContext?.dataStore?.data?.let {
                 it.map { preferences ->
                     // No type safety.
-                    Log.d("devfik", "Interceptor size: "+preferences.asMap().size)
                     preferences[stringPreferencesKey(gqlKey)] ?: ""
                 }.first()
             }
@@ -70,13 +68,10 @@ class MockInterceptor(val applicationContext: Context) : Interceptor {
                 return if (responseString.isNotEmpty()) {
                     mockResponse(requestBody.newBuilder().build(), responseString)
                 } else {
-                    Log.d("MockInterceptorErr", "response empty")
-
                     chain.proceed(chain.request())
                 }
             }
         } catch (e: IOException) {
-            Log.d("MockInterceptorErr", "${e.message}")
             return chain.proceed(chain.request())
         }
         return chain.proceed(chain.request())
