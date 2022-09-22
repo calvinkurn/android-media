@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 data class ReservedProduct(
-    val products : List<Product>,
+    val products: List<Product>,
     val totalProduct: Int
 ) {
     @Parcelize
@@ -32,15 +32,21 @@ data class ReservedProduct(
             val picture: String,
             val price: Price,
             val productCriteria: ProductCriteria,
-            val discountSetup: Warehouse.DiscountSetup,
+            var discountSetup: Warehouse.DiscountSetup = Warehouse.DiscountSetup(
+                0,
+                0,
+                0
+            ),
             val productId: Long,
             val sku: String,
             val stock: Int,
             val url: String,
             val warehouses: List<Warehouse>
         ) : Parcelable
+
         @Parcelize
         data class Price(val lowerPrice: Long, val price: Long, val upperPrice: Long) : Parcelable
+
         @Parcelize
         data class ProductCriteria(
             val criteriaId: Long,

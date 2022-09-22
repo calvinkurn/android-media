@@ -1290,7 +1290,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                             stock = 0,
                         ),
                         isDilayaniTokopedia = false,
-                        isToggleOn = true,
+                        isToggleOn = false,
                         isDisabled = false,
                         disabledReason = "",
                     ),
