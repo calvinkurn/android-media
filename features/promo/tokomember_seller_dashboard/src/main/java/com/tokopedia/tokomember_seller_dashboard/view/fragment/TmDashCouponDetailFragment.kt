@@ -2,7 +2,6 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.content.res.ColorStateList
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -512,8 +511,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
         val couponImages:ArrayList<String> = ArrayList()
         tmCouponDetailVm.couponDetailResult.value?.data?.merchantPromotionGetMVDataByID?.data?.let {
            couponImages.apply {
-               it.voucherImage?.let { it1 -> add(it1) }
                it.voucherImageSquare?.let { it1 -> add(it1) }
+               it.voucherImage?.let { it1 -> add(it1) }
                it.voucherImagePortrait?.let { it1 -> add(it1) }
            }
             shareBmThumbnailTitle = it.voucherName ?: ""
@@ -522,10 +521,10 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             init(this@TmDashCouponDetailFragment)
             setMetaData(
                 tnTitle = shareBmThumbnailTitle,
-                tnImage = AVATAR_IMAGE,
+                tnImage = if(couponImages.isNotEmpty()) couponImages[0] else AVATAR_IMAGE,
                 imageList = couponImages
             )
-            setOgImageUrl(AVATAR_IMAGE)
+            setOgImageUrl(if(couponImages.isNotEmpty()) couponImages[0] else AVATAR_IMAGE)
         }
         shareBottomSheet?.show(childFragmentManager,this,null)
         val bottomSheetTitle = requireContext().resources.getString(R.string.tm_share_bottomsheet_title)
@@ -538,9 +537,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
            id = couponData?.galadrielVoucherId.toString()
            type = LinkerData.PROMO_TYPE
-           name = couponData?.voucherName ?: ""
-           uri  = createVoucherWeblink(couponData?.weblink ?: "")
-           description = couponData?.voucherName ?: ""
+           uri  = couponData?.weblink.orEmpty()
+           deepLink = couponData?.applink.orEmpty()
            feature = shareModel.feature
            channel = shareModel.channel
            campaign = shareModel.campaign
@@ -573,18 +571,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
     override fun onCloseOptionClicked() {
         shareBottomSheet?.dismiss()
     }
-
-
-    private fun createVoucherWeblink(weblink:String):String{
-        val url = Uri.parse(weblink)
-        val segments = url.pathSegments
-        if(segments.size>0){
-            val shopDomain = segments[0]
-            val voucherId = segments[2]
-            return "${url.scheme}://${url.host}/${shopDomain}/voucher-detail/${voucherId}"
-        }
-        return ""
-    }
+    
 
     companion object{
         fun newInstance(voucherId:Int) : TmDashCouponDetailFragment {
