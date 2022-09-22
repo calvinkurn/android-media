@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -56,6 +58,8 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
 
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeListBinding>()
 
+    private val loadMoreListener by lazy { createLoadMoreListener() }
+
     private var navToolbar: TokoNowNavToolbar? = null
 
     abstract val viewModel: BaseTokoNowRecipeListViewModel
@@ -83,6 +87,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
         setupSwipeRefreshLayout()
         setupRecyclerView()
         observeLiveData()
+        onViewCreated()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -94,12 +99,13 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
                 val filters = data
                     ?.getParcelableArrayListExtra<SelectedFilter>(EXTRA_SELECTED_FILTER).orEmpty()
                 viewModel.applyFilter(filters)
+                addLoadMoreListener()
             }
         }
     }
 
     override fun onClickRetryButton() {
-        viewModel.refreshPage()
+        onRefreshPage()
     }
 
     override fun viewModel() = viewModel
@@ -163,7 +169,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
 
     private fun setupSwipeRefreshLayout() {
         binding?.swipeRefreshLayout?.setOnRefreshListener {
-            binding?.swipeRefreshLayout?.isRefreshing = false
+            onRefreshPage()
         }
     }
 
@@ -172,11 +178,13 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
             adapter = this@BaseTokoNowRecipeListFragment.adapter
             layoutManager = LinearLayoutManager(context)
         }
+        addLoadMoreListener()
     }
 
     private fun observeLiveData() {
         observe(viewModel.visitableList) {
             submitList(it)
+            resetSwipeRefresh()
         }
 
         observe(viewModel.showProgressBar) {
@@ -190,6 +198,16 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
         observe(viewModel.searchKeyword) {
             setSearchbarText(it)
         }
+
+        observe(viewModel.removeScrollListener) { shouldRemove ->
+            if(shouldRemove) {
+                removeLoadMoreListener()
+            }
+        }
+    }
+
+    private fun onViewCreated() {
+        viewModel.onViewCreated()
     }
 
     private fun submitList(items: List<Visitable<*>>) {
@@ -222,5 +240,42 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
 
     private fun goToBookmarkPage() {
         RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK)
+    }
+
+    private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+                val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
+                viewModel.onScroll(lastVisibleItemIndex)
+            }
+        }
+    }
+
+    private fun setupLoadMoreListener() {
+        removeLoadMoreListener()
+        addLoadMoreListener()
+    }
+
+    private fun addLoadMoreListener() {
+        binding?.recyclerView?.post {
+            binding?.recyclerView?.addOnScrollListener(loadMoreListener)
+        }
+    }
+
+    private fun removeLoadMoreListener() {
+        binding?.recyclerView?.post {
+            binding?.recyclerView?.removeOnScrollListener(loadMoreListener)
+        }
+    }
+
+    private fun resetSwipeRefresh() {
+        binding?.swipeRefreshLayout?.isRefreshing = false
+    }
+
+    private fun onRefreshPage() {
+        setupLoadMoreListener()
+        viewModel.refreshPage()
     }
 }

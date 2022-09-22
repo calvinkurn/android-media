@@ -1,7 +1,9 @@
 package com.tokopedia.tokopedianow.recipelist.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel.ChipType.MORE_FILTER
@@ -65,9 +67,18 @@ object RecipeListMapper {
                 isBookmarked = it.isBookmarked
             )
         }
-        val recipeCount = RecipeCountUiModel(response.metadata.total)
-
-        add(recipeCount)
         addAll(recipeItems)
+    }
+
+    fun MutableList<Visitable<*>>.addRecipeCount(response: GetRecipeListResponse) {
+        add(RecipeCountUiModel(response.metadata.total))
+    }
+
+    fun MutableList<Visitable<*>>.removeHeaderItem() {
+        removeFirst { it is RecipeHeaderUiModel }
+    }
+
+    fun MutableList<Visitable<*>>.removeLoadMoreItem() {
+        removeFirst { it is LoadingMoreModel }
     }
 }

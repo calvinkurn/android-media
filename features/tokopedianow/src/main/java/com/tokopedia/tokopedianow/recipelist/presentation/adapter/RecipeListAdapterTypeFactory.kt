@@ -3,9 +3,11 @@ package com.tokopedia.tokopedianow.recipelist.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowServerErrorTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeCountUiModel
@@ -35,6 +37,8 @@ class RecipeListAdapterTypeFactory(
 
     override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
 
+    override fun type(viewModel: LoadingMoreModel?): Int = TokoNowLoadingMoreViewHolder.LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RecipeHeaderViewHolder.LAYOUT -> RecipeHeaderViewHolder(parent)
@@ -42,6 +46,7 @@ class RecipeListAdapterTypeFactory(
             RecipeViewHolder.LAYOUT -> RecipeViewHolder(parent, recipeItemListener)
             RecipeFilterViewHolder.LAYOUT -> RecipeFilterViewHolder(parent, recipeFilterListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(parent, serverErrorListener)
+            TokoNowLoadingMoreViewHolder.LAYOUT -> TokoNowLoadingMoreViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
