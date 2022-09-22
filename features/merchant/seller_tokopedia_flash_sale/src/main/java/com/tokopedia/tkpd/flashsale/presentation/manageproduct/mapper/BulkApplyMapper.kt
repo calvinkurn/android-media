@@ -58,6 +58,8 @@ object BulkApplyMapper {
                 name = cp.name,
                 picture = cp.picture,
                 price = cp.price,
+                productCriteria = cp.productCriteria,
+                discountSetup = cp.discountSetup,
                 productId = cp.productId,
                 sku = cp.sku,
                 stock = cp.stock,

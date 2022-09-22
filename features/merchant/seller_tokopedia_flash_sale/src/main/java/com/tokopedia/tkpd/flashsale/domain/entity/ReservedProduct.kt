@@ -31,6 +31,8 @@ data class ReservedProduct(
             val name: String,
             val picture: String,
             val price: Price,
+            val productCriteria: ProductCriteria,
+            val discountSetup: Warehouse.DiscountSetup,
             val productId: Long,
             val sku: String,
             val stock: Int,

@@ -180,6 +180,8 @@
     <string name="stfs_stfs_manage_variant_title">Atur Variant Produk</string>
     <string name="stfs_active_variant_bulk_apply_place_holder">Atur Sekaligus %d varian</string>
     <string name="stfs_inactive_variant_bulk_apply_place_holder">Aktifkan varian untuk Atur Sekaligus</string>
+    <string name="stfs_avp_variant_count_placeholder">%d Varian Produk</string>
+    <string name="stfs_avp_price_range_placeholder">%s - %2s</string>
 
     <!--Choose Product-->
     <string name="chooseproduct_fs_tokopedia_page_title">Tambah Produk Campaign</string>

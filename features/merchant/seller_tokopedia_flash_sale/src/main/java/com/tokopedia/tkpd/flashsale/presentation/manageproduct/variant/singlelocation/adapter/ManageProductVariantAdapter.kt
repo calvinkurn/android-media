@@ -51,11 +51,15 @@ class ManageProductVariantAdapter(
         }
 
         fun bind(item: ManageProductVariantItem) {
-            val discount = item.warehouses.first().discountSetup
-            val criteria = product.productCriteria
+            val discount = item.discountSetup
+            val criteria = item.productCriteria
             binding.containerLayoutProductParent.apply {
                 textParentTitle.text = item.name
-                textParentOriginalPrice.text = item.price.price.getCurrencyFormatted()
+                textParentOriginalPrice.text = root.context.getString(
+                    R.string.stfs_avp_price_range_placeholder,
+                    item.price.lowerPrice.getCurrencyFormatted(),
+                    item.price.upperPrice.getCurrencyFormatted()
+                )
                 textParentTotalStock.text = root.context.getString(
                     R.string.manageproductnonvar_stock_total_format,
                     item.stock

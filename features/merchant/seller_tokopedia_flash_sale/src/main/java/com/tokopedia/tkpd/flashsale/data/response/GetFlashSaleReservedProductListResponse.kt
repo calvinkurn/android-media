@@ -90,6 +90,10 @@ data class GetFlashSaleReservedProductListResponse(
                 @SuppressLint("Invalid Data Type")
                 @SerializedName("price")
                 val price: Price = Price(),
+                @SerializedName("product_criteria")
+                val productCriteria: ProductCriteria = ProductCriteria(),
+                @SerializedName("discount_setup")
+                val discountSetup: Warehouse.DiscountSetup = Warehouse.DiscountSetup(),
                 @SerializedName("product_id")
                 val productId: Long = 0,
                 @SerializedName("sku")

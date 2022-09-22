@@ -1260,6 +1260,20 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     child*2000L,
                     child*3000L
                 ),
+                productCriteria = ReservedProduct.Product.ProductCriteria(
+                    criteriaId = 0,
+                    maxCustomStock = 10,
+                    maxDiscount = 99,
+                    maxFinalPrice = 10000,
+                    minCustomStock = 10,
+                    minDiscount = 1,
+                    minFinalPrice = 100
+                ),
+                discountSetup =ReservedProduct.Product.Warehouse.DiscountSetup(
+                    discount = 0,
+                    price = 0,
+                    stock = 0,
+                ),
                 productId = child.toLong(),
                 sku = "SKU-$child",
                 stock = 80,

@@ -50,23 +50,23 @@ class ManageProductVariantViewModel @Inject constructor(
 
     fun setDiscountValue(itemPosition: Int, priceValue: Long, discountValue: Int) {
         val selectedItem = productData.childProducts[itemPosition]
-        selectedItem.warehouses.first().discountSetup.price = priceValue
-        selectedItem.warehouses.first().discountSetup.discount = discountValue
+        selectedItem.discountSetup.price = priceValue
+        selectedItem.discountSetup.discount = discountValue
     }
 
     fun setStockValue(itemPosition: Int, stockValue: Long) {
         val selectedItem = productData.childProducts[itemPosition]
-        selectedItem.warehouses.first().discountSetup.stock = stockValue
+        selectedItem.discountSetup.stock = stockValue
     }
 
     fun validateInputPage(
-        warehouses: List<ReservedProduct.Product.Warehouse>,
+        childProduct: ManageProductVariantItem,
         criteria: ReservedProduct.Product.ProductCriteria
     ) {
         if (productData.childProducts.any { it.isToggleOn }) {
             _isInputPageValid.value = productData.childProducts
                 .filter { it.isToggleOn }
-                .all { validateInput(criteria, warehouses.first().discountSetup).isAllFieldValid() }
+                .all { validateInput(criteria, childProduct.discountSetup).isAllFieldValid() }
         } else {
             _isInputPageValid.value = false
         }
@@ -93,6 +93,8 @@ class ManageProductVariantViewModel @Inject constructor(
                 name = it.name,
                 picture = it.picture,
                 price = it.price,
+                productCriteria = it.productCriteria,
+                discountSetup = it.discountSetup,
                 productId = it.productId,
                 sku = it.sku,
                 stock = it.stock,

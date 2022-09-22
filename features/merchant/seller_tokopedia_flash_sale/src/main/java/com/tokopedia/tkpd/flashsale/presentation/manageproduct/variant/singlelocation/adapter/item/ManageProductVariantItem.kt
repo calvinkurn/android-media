@@ -11,6 +11,8 @@ data class ManageProductVariantItem(
     val name: String,
     val picture: String,
     val price: ReservedProduct.Product.Price,
+    val productCriteria: ReservedProduct.Product.ProductCriteria,
+    val discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup,
     val productId: Long,
     val sku: String,
     val stock: Int,

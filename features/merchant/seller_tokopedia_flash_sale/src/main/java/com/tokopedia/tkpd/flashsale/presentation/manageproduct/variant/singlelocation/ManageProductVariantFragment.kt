@@ -9,6 +9,7 @@ import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantAdapter
@@ -58,8 +59,8 @@ class ManageProductVariantFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         product?.let { viewModel.setupInitiateProductData(it) }
+        super.onViewCreated(view, savedInstanceState)
         setupPage(viewModel.getProductData())
         setupWidgetBulkApply(
             getString(R.string.stfs_inactive_variant_bulk_apply_place_holder),
@@ -73,10 +74,15 @@ class ManageProductVariantFragment :
             productImageUrl = product.picture,
             productName = product.name,
             productOriginalPriceFormatted = product.price.price.getCurrencyFormatted(),
-            productTotalVariantFormatted = product.childProducts.count().toString(),
+            productTotalVariantFormatted = getString(
+                R.string.stfs_avp_variant_count_placeholder,
+                product.childProducts.count()
+            ),
             productStockTextFormatted = product.stock.toString(),
             isShowWidgetBulkApply = true
         )
+        textProductOriginalPrice?.gone()
+        textTotalStock?.gone()
         adapter?.submit(viewModel.getListItemData())
         buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
     }
@@ -140,14 +146,15 @@ class ManageProductVariantFragment :
         product: ReservedProduct.Product,
         discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
     ): ValidationResult {
-        product.productCriteria.let {
-            val selectedItem = adapter?.getItems()?.filterIsInstance<ManageProductVariantItem>()
-            val warehouses = selectedItem?.get(index)?.warehouses
-            if (warehouses != null) {
-                viewModel.validateInputPage(warehouses, it)
-            }
+        val items = adapter?.getItems()?.filterIsInstance<ManageProductVariantItem>()
+        val selectedItem = items?.get(index)
+        if (selectedItem != null) {
+            viewModel.validateInputPage(selectedItem, selectedItem.productCriteria)
         }
-        return viewModel.validateInput(product.productCriteria, discountSetup)
+        return viewModel.validateInput(
+            criteria = selectedItem?.productCriteria ?: product.productCriteria,
+            discountSetup = discountSetup
+        )
     }
 
     override fun onToggleSwitch(index: Int, isChecked: Boolean) {
