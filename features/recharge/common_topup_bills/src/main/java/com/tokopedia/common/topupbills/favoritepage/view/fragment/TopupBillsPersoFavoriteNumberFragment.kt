@@ -113,22 +113,6 @@ class TopupBillsPersoFavoriteNumberFragment :
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
     private var clientNumbers: List<TopupBillsPersoFavNumberDataView> = listOf()
 
-    private val getSearchTextWatcher = object : android.text.TextWatcher {
-        override fun afterTextChanged(text: android.text.Editable?) {
-            text?.let {
-                filterData(text.toString())
-            }
-        }
-
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            //do nothing
-        }
-
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            //do nothing
-        }
-    }
-
     override fun initInjector() {
         getComponent(CommonTopupBillsComponent::class.java).inject(this)
     }
