@@ -22,7 +22,7 @@ internal object HotelDeleteRecentSearchUUIDMutation{
 @GqlQuery("MutationDeleteRecentSearch", DELETE_RECENT_SEARCH)
 internal object HotelDeleteRecentSearchMutation{
     const val DELETE_RECENT_SEARCH = """
-        mutation {
+        mutation travelRecentSearchDelete() {
             travelRecentSearchDelete(
               dataType : HOTEL
             ){
