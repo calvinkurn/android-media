@@ -65,7 +65,7 @@ index 22c388c24679..b7ea1cc08158 100644
  //Installing Git Hooks
  task installGitHooks {
 diff --git a/buildconfig/dependencies/dependencies.gradle b/buildconfig/dependencies/dependencies.gradle
-index 4da24bb0d559..8fa8f5532e6e 100755
+index 3c7b4c2c0f31..698b20773f39 100755
 --- a/buildconfig/dependencies/dependencies.gradle
 +++ b/buildconfig/dependencies/dependencies.gradle
 @@ -1,6 +1,6 @@
@@ -85,7 +85,7 @@ index 4da24bb0d559..8fa8f5532e6e 100755
      lifeCycleVersion = "2.2.0"
      lifeCycleExtensionsVersion = "2.2.0"
      archCoreVersion = "2.1.0"
-@@ -39,7 +39,7 @@ ext {
+@@ -40,7 +40,7 @@ ext {
      apolloVersion = '0.3.0'
      lottieVersion = '3.4.1'
      cardioVersion = '5.5.1'
@@ -94,7 +94,7 @@ index 4da24bb0d559..8fa8f5532e6e 100755
      sqliteFrameworkVersion = '2.1.0'
      multiDexVersion = '2.0.0'
      twitter4JVersion = '4.0.7'
-@@ -77,7 +77,7 @@ ext {
+@@ -78,7 +78,7 @@ ext {
      kotlinTestVersion = '1.5.30'
      KotlinMockitoVersion = '1.5.0'
      SpekVersion = "1.1.5"
@@ -103,7 +103,7 @@ index 4da24bb0d559..8fa8f5532e6e 100755
      googleServiceGradleVersion = '4.3.3'
      chuckerVersion = '4.0.6-tkpd'
      sliceVersion = '1.0.0-alpha6'
-@@ -248,7 +248,7 @@ ext {
+@@ -249,7 +249,7 @@ ext {
              chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
              roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
              lottie                : "com.airbnb.android:lottie:$lottieVersion",
@@ -218,7 +218,7 @@ index 9e2f06e131b4..c6f528e51cf5 100644
      implementation projectOrAar(rootProject.ext.features.csat_rating)
      implementation projectOrAar(rootProject.ext.features.resourcesCommon)
 diff --git a/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java b/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java
-index 795012f7189d..0fef70b43ad0 100644
+index 9c91175c8dc2..6282ebcc255c 100644
 --- a/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java
 +++ b/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java
 @@ -89,6 +89,7 @@ import com.tokopedia.unifyprinciples.Typography;
@@ -620,10 +620,18 @@ index e30e53311488..b40cf40dc624 100644
  
  dependencies {
 diff --git a/dynamic-features/common/df_alpha_testing/build.gradle b/dynamic-features/common/df_alpha_testing/build.gradle
-index fad66fcdd64b..e1c8fe7ee2c3 100644
+index fad66fcdd64b..d780f912292d 100644
 --- a/dynamic-features/common/df_alpha_testing/build.gradle
 +++ b/dynamic-features/common/df_alpha_testing/build.gradle
-@@ -28,6 +28,12 @@ android {
+@@ -1,6 +1,7 @@
+ apply plugin: 'com.android.dynamic-feature'
+ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+ apply plugin: 'io.hansel.preprocessor.feature'
++apply plugin: 'robust'
+
+ buildscript {
+     repositories {
+@@ -28,6 +29,12 @@ android {
          targetSdkVersion rootProject.ext.targetSdkVersion
      }
  
@@ -711,6 +719,18 @@ index 8d039c791be1..e32814956c9e 100644
      // Specifies 4 flavor dimensions.
      flavorDimensions "tier", "client"
  
+diff --git a/dynamic-features/digital/df_digital/build.gradle b/dynamic-features/digital/df_digital/build.gradle
+index 04921360a912..c66b21684733 100644
+--- a/dynamic-features/digital/df_digital/build.gradle
++++ b/dynamic-features/digital/df_digital/build.gradle
+@@ -1,6 +1,7 @@
+ apply plugin: 'com.android.dynamic-feature'
+ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+ apply plugin: 'io.hansel.preprocessor.feature'
++apply plugin: 'robust'
+
+ buildscript {
+     repositories {
 diff --git a/dynamic-features/entertainment/df_entertainment/build.gradle b/dynamic-features/entertainment/df_entertainment/build.gradle
 index e1a325a43b02..906f7338784c 100644
 --- a/dynamic-features/entertainment/df_entertainment/build.gradle
@@ -762,10 +782,18 @@ index 81c69a5b9606..d99309c3aaf9 100644
      flavorDimensions "tier", "client"
  
 diff --git a/dynamic-features/merchant/df_merchant_nonlogin/build.gradle b/dynamic-features/merchant/df_merchant_nonlogin/build.gradle
-index 700870c0e094..b07781ea5d6c 100644
+index 700870c0e094..4a11e3f6e572 100644
 --- a/dynamic-features/merchant/df_merchant_nonlogin/build.gradle
 +++ b/dynamic-features/merchant/df_merchant_nonlogin/build.gradle
-@@ -28,6 +28,12 @@ android {
+@@ -1,6 +1,7 @@
+ apply plugin: 'com.android.dynamic-feature'
+ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+ apply plugin: 'io.hansel.preprocessor.feature'
++apply plugin: 'robust'
+
+ buildscript {
+     repositories {
+@@ -28,6 +29,12 @@ android {
          targetSdkVersion rootProject.ext.targetSdkVersion
      }
  
@@ -929,6 +957,18 @@ index 47209140bb9b..357374b726e4 100644
      // Specifies 4 flavor dimensions.
      flavorDimensions "tier", "client"
  
+diff --git a/dynamic-features/tokofood/df_tokofood/build.gradle b/dynamic-features/tokofood/df_tokofood/build.gradle
+index 71107832d292..818787906c18 100644
+--- a/dynamic-features/tokofood/df_tokofood/build.gradle
++++ b/dynamic-features/tokofood/df_tokofood/build.gradle
+@@ -1,6 +1,7 @@
+ apply plugin: 'com.android.dynamic-feature'
+ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+ apply plugin: 'io.hansel.preprocessor.feature'
++apply plugin: 'robust'
+
+ buildscript {
+     repositories {
 diff --git a/dynamic-features/tokopedianow/df_tokopedianow/build.gradle b/dynamic-features/tokopedianow/df_tokopedianow/build.gradle
 index 4232500d80d3..b2f5d7c014f3 100644
 --- a/dynamic-features/tokopedianow/df_tokopedianow/build.gradle
@@ -980,10 +1020,18 @@ index d2eebf8e610e..0b6cd964fdc4 100644
      flavorDimensions "tier", "client"
  
 diff --git a/dynamic-features/travel/df_travel_lib/build.gradle b/dynamic-features/travel/df_travel_lib/build.gradle
-index ec21958bea16..db5172d6f819 100644
+index ec21958bea16..2943a6ae5564 100644
 --- a/dynamic-features/travel/df_travel_lib/build.gradle
 +++ b/dynamic-features/travel/df_travel_lib/build.gradle
-@@ -28,6 +28,12 @@ android {
+@@ -1,6 +1,7 @@
+ apply plugin: 'com.android.dynamic-feature'
+ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+ apply plugin: 'io.hansel.preprocessor.feature'
++apply plugin: 'robust'
+
+ buildscript {
+     repositories {
+@@ -28,6 +29,12 @@ android {
          targetSdkVersion rootProject.ext.targetSdkVersion
      }
  
@@ -1641,10 +1689,10 @@ index 31023fdc74cb..8bc7a5b83762 100644
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/payment/pms/build.gradle b/features/payment/pms/build.gradle
-index 14aa17fe96b3..b727d6d13eb0 100644
+index 1d74fccc9048..7964698b0df6 100644
 --- a/features/payment/pms/build.gradle
 +++ b/features/payment/pms/build.gradle
-@@ -19,12 +19,12 @@ buildscript {
+@@ -20,12 +20,12 @@ buildscript {
  
  android {
      compileOptions {
@@ -1808,7 +1856,7 @@ index 79de6e96bd8b..835715827559 100644
      buildFeatures {
          viewBinding true
 diff --git a/features/transaction/buyerorder/build.gradle b/features/transaction/buyerorder/build.gradle
-index e16fc8158d48..d00242b6e86b 100644
+index 315c2ba8548a..f02e6ed220e3 100644
 --- a/features/transaction/buyerorder/build.gradle
 +++ b/features/transaction/buyerorder/build.gradle
 @@ -21,7 +21,7 @@ android {

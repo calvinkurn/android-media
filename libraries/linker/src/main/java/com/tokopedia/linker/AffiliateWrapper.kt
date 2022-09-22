@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.linker.LinkerConstants.*
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.*
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -120,7 +121,7 @@ class AffiliateWrapper {
         affiliateGenerateLinkInput.link = ArrayList()
         val linkData = Link()
         linkData.uRL = data.uri
-        linkData.type = PDP_LABEL
+        linkData.type = getAffiliateLinkType(data.linkAffiliateType)
         linkData.identifier = data.id
         linkData.identifierType = 0
         linkData.additionalParams = ArrayList()
@@ -136,6 +137,11 @@ class AffiliateWrapper {
         additionalParam.key = key
         additionalParam.value = value ?: ""
         linkData.additionalParams?.add(additionalParam)
+    }
+
+    private fun getAffiliateLinkType(type: String?): String {
+        if (type.isNullOrBlank()) return AffiliateLinkType.PDP.value
+        return type
     }
 
     private fun getAffiliateChannelCode(channel:String?) : Int{

@@ -52,7 +52,7 @@ import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
-import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity;
+import com.tokopedia.buyerorder.detail.revamp.activity.SeeInvoiceActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.RechargeWidgetAdapter;
 import com.tokopedia.buyerorder.detail.view.customview.CopyableDetailItemView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;

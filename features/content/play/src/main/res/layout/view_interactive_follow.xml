@@ -11,7 +11,6 @@
 
     <com.tokopedia.play_common.view.game.GameHeaderView
         android:id="@+id/header_view"
-        app:layout_constraintWidth_percent="0.6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,7 +23,6 @@
 
     <com.tokopedia.play_common.view.RoundedLinearLayout
         android:layout_width="0dp"
-        app:layout_constraintWidth_percent="0.6"
         android:layout_height="wrap_content"
         android:background="@color/Unify_Background"
         android:gravity="center_horizontal"
