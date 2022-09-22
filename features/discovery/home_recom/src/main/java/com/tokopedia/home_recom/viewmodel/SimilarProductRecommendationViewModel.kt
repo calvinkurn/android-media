@@ -19,17 +19,14 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilter
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.extension.toRecommendationWidget
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import rx.Subscriber
 import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
@@ -42,7 +39,6 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
         private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-        private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
         private val getRecommendationFilterChips: GetRecommendationFilterChips,
         private val dispatcher: RecommendationDispatcher

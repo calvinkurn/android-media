@@ -9,8 +9,6 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
-import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -24,7 +22,6 @@ import io.mockk.*
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
-import rx.Subscriber
 import java.util.concurrent.TimeoutException
 
 class TestSimilarProductRecommendationViewModel {
@@ -35,13 +32,11 @@ class TestSimilarProductRecommendationViewModel {
     private val getSingleRecommendationUseCase = mockk<GetSingleRecommendationUseCase>(relaxed = true)
     private val addToWishlistV2UseCase = mockk<AddToWishlistV2UseCase>(relaxed = true)
     private val deleteWishlistV2UseCase = mockk<DeleteWishlistV2UseCase>(relaxed = true)
-    private val topAdsWishlishedUseCase = mockk<TopAdsWishlishedUseCase>(relaxed = true)
     private val getRecommendationFilterChips = mockk<GetRecommendationFilterChips>(relaxed = true)
 
     private val viewModel = spyk(SimilarProductRecommendationViewModel(
             dispatcher = RecommendationDispatcherTest(),
             singleRecommendationUseCase = getSingleRecommendationUseCase,
-            topAdsWishlishedUseCase = topAdsWishlishedUseCase,
             userSessionInterface = userSession,
             getRecommendationFilterChips = getRecommendationFilterChips,
             addToWishlistV2UseCase = addToWishlistV2UseCase,
@@ -141,38 +136,6 @@ class TestSimilarProductRecommendationViewModel {
 
         verify { deleteWishlistV2UseCase.setParams(recommendation.productId.toString(), userSession.userId) }
         coVerify { deleteWishlistV2UseCase.executeOnBackground() }
-    }
-
-    @Test
-    fun `get success add topads wishlist from network`(){
-        var status: Boolean? = null
-        val slot = slot<Subscriber<WishlistModel>>()
-        val mockWishlistModel = mockk<WishlistModel>(relaxed = true)
-        val mockData = mockk<WishlistModel.Data>(relaxed = true)
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
-        every { mockWishlistModel.data } returns mockData
-        every { mockData.isSuccess } returns true
-        every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
-            slot.captured.onNext(mockWishlistModel)
-        }
-        viewModel.addWishlist(recommendation.copy(isTopAds = true)) { success, _ ->
-            status = success
-        }
-        assert(status == true)
-    }
-
-    @Test
-    fun `get error add topads wishlist from network`(){
-        var status: Boolean? = null
-        val slot = slot<Subscriber<WishlistModel>>()
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
-        every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
-            slot.captured.onError(mockk())
-        }
-        viewModel.addWishlist(recommendation.copy(isTopAds = true)) { success, _ ->
-            status = success
-        }
-        assert(status == false)
     }
 
     @Test
