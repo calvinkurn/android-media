@@ -213,6 +213,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showStatusPending() {
+        hideRejectedReason()
+
         viewBinding?.mainImage?.loadImage(KycUrl.ICON_WAITING)
         viewBinding?.title?.setText(R.string.kyc_pending_title)
         viewBinding?.text?.setText(R.string.kyc_pending_text)
@@ -315,11 +317,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun hideRejectedReason() {
-        viewBinding?.clReason?.visibility = View.GONE
-        viewBinding?.txtReason1?.visibility = View.GONE
-        viewBinding?.icX1?.visibility = View.GONE
-        viewBinding?.txtReason2?.visibility = View.GONE
-        viewBinding?.icX2?.visibility = View.GONE
+        viewBinding?.clReason?.hide()
     }
 
     private fun hideKycBenefit() {
