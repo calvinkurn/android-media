@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProduct
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
+import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastUGCAnalytic
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
@@ -105,6 +106,7 @@ class PlayBroadcastModule {
         summaryAnalytic: PlayBroadcastSummaryAnalytic,
         scheduleAnalytic: PlayBroScheduleAnalytic,
         pinProductAnalytic: PlayBroadcastPinProductAnalytic,
+        ugcAnalytic: PlayBroadcastUGCAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -116,6 +118,7 @@ class PlayBroadcastModule {
             summaryAnalytic,
             scheduleAnalytic,
             pinProductAnalytic,
+            ugcAnalytic
         )
     }
 
