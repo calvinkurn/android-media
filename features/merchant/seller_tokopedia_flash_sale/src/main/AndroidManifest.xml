@@ -43,7 +43,16 @@
 
         <activity
             android:name="com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.ManageProductVariantActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
             android:exported="false" />
+
     </application>
 
 </manifest>
