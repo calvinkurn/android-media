@@ -1115,7 +1115,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             onGoToForbiddenPage()
         } else {
             activity?.let {
-                NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
+                NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage.removeErrorCode()) {
                     context?.run {
                         viewModel.discoverLogin()
                     }
@@ -1414,7 +1414,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 if (errorMessage.removeErrorCode() == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
-                    onErrorLogin(it, errorMessage)
+                    onErrorLogin(it, errorMessage.removeErrorCode())
                 }
             }
         }
@@ -1452,7 +1452,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun showGetAdminTypeError(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        val errorMessage = ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder()).first.orEmpty()
         showToaster(errorMessage)
         dismissLoadingLogin()
     }
@@ -1495,7 +1495,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (it is AkamaiErrorException) {
                 showPopupErrorAkamai()
             } else {
-                val errorMessage = ErrorHandler.getErrorMessage(context, it)
+                val errorMessage = ErrorHandler.getErrorMessagePair(context, it, ErrorHandler.Builder()).first.orEmpty()
                 NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
                     viewModel.reloginAfterSQ(tempValidateToken)
                 }.showRetrySnackbar()
@@ -1997,7 +1997,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 withErrorCode(withErrorCode)
                 className = mClassName
             }.build())
-        return message
+        return message.removeErrorCode()
     }
 
     private fun autoFillWithDataFromLatestLoggedIn() {

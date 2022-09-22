@@ -165,7 +165,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                         if(this.contains(ALREADY_REGISTERED)){
                             showInfo()
                         } else {
-                            onErrorRegister(errorMessage)
+                            onErrorRegister(errorMessage.removeErrorCode())
                         }
                     }
                 } else {
