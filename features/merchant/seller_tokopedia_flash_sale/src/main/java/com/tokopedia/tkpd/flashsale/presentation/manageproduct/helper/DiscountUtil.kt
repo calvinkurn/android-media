@@ -5,7 +5,7 @@ import kotlin.math.roundToInt
 
 object DiscountUtil {
     fun calculatePrice(percentInput: Long, originalPrice: Long): Long {
-        return (BULK_APPLY_PERCENT_NORMALIZATION - (percentInput * originalPrice / BULK_APPLY_PERCENT_NORMALIZATION))
+        return originalPrice - (percentInput * originalPrice / BULK_APPLY_PERCENT_NORMALIZATION)
     }
 
     fun calculatePercent(priceInput: Long, originalPrice: Long): Int {

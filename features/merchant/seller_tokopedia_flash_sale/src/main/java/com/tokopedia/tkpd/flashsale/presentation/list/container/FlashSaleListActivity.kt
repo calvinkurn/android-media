@@ -51,7 +51,7 @@ class FlashSaleListActivity : BaseSimpleActivity() {
                     warehouseId = 123,
                     name = "JKT",
                     stock = 1,
-                    price = 100,
+                    price = 1000,
                     discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
                         discount = 0,
                         price = 0,
@@ -66,7 +66,7 @@ class FlashSaleListActivity : BaseSimpleActivity() {
                     warehouseId = 122,
                     name = "JKTSEL",
                     stock = 10,
-                    price = 200,
+                    price = 2000,
                     discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
                         discount = 0,
                         price = 0,

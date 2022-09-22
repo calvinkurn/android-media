@@ -17,29 +17,33 @@ object BulkApplyMapper {
         warehouses: List<Warehouse>,
         result: ProductBulkApplyResult
     ): List<Warehouse> {
-        return warehouses.filter { it.isToggleOn }.map {
-            Warehouse(
-                warehouseId = it.warehouseId,
-                name = it.name,
-                stock = it.stock,
-                price = it.price,
-                discountSetup = when (result.discountType) {
-                    DiscountType.RUPIAH -> DiscountSetup(
-                        discount = DiscountUtil.calculatePercent(result.discountAmount, it.price),
-                        price = result.discountAmount,
-                        stock = result.stock.toLong()
-                    )
-                    DiscountType.PERCENTAGE -> DiscountSetup(
-                        discount = result.discountAmount.toInt(),
-                        price = DiscountUtil.calculatePrice(result.discountAmount, it.price),
-                        stock = result.stock.toLong()
-                    )
-                },
-                isDilayaniTokopedia = it.isDilayaniTokopedia,
-                isToggleOn = it.isToggleOn,
-                isDisabled = it.isDisabled,
-                disabledReason = it.disabledReason
-            )
+        return warehouses.map {
+            if (it.isToggleOn) {
+                Warehouse(
+                    warehouseId = it.warehouseId,
+                    name = it.name,
+                    stock = it.stock,
+                    price = it.price,
+                    discountSetup = when (result.discountType) {
+                        DiscountType.RUPIAH -> DiscountSetup(
+                            discount = DiscountUtil.calculatePercent(result.discountAmount, it.price),
+                            price = result.discountAmount,
+                            stock = result.stock.toLong()
+                        )
+                        DiscountType.PERCENTAGE -> DiscountSetup(
+                            discount = result.discountAmount.toInt(),
+                            price = DiscountUtil.calculatePrice(result.discountAmount, it.price),
+                            stock = result.stock.toLong()
+                        )
+                    },
+                    isDilayaniTokopedia = it.isDilayaniTokopedia,
+                    isToggleOn = it.isToggleOn,
+                    isDisabled = it.isDisabled,
+                    disabledReason = it.disabledReason
+                )
+            } else {
+                it
+            }
         }
     }
 

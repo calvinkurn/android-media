@@ -40,6 +40,7 @@ class ManageProductNonVariantMultilocFragment :
     private val product by lazy {
         arguments?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
     }
+    var inputAdapter = ManageProductNonVariantMultilocAdapter()
 
     override fun getScreenName(): String = ManageProductNonVariantMultilocFragment::class.java.canonicalName.orEmpty()
 
@@ -54,10 +55,15 @@ class ManageProductNonVariantMultilocFragment :
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         setupPage()
+        setupProductInput()
         setupObservers()
     }
 
-    override fun createAdapterInstance() = ManageProductNonVariantMultilocAdapter().apply {
+    private fun setupProductInput() {
+        viewModel.setProduct(product ?: return)
+    }
+
+    override fun createAdapterInstance() = inputAdapter.apply {
         product?.let {
             setDataList(it)
             setListener(this@ManageProductNonVariantMultilocFragment)
@@ -75,11 +81,12 @@ class ManageProductNonVariantMultilocFragment :
     }
 
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
-        product?.productCriteria?.let {
-            val warehouses = (adapter as ManageProductNonVariantMultilocAdapter).getDataList()
-            viewModel.checkEnableBulkApply(warehouses)
-            viewModel.getBulkApplyCaption(warehouses)
-            viewModel.validateInputPage(warehouses, it)
+        product?.let {
+            val warehouses = inputAdapter.getDataList()
+            val prd = it.copy(
+                warehouses = warehouses
+            )
+            viewModel.setProduct(prd)
         }
         return viewModel.validateInput(criteria, discountSetup)
     }
@@ -97,14 +104,17 @@ class ManageProductNonVariantMultilocFragment :
     }
 
     override fun onWidgetBulkApplyClicked() {
+        val product = viewModel.product.value
         val param = BulkApplyMapper.mapProductToBulkParam(context ?: return, product ?: return)
         val bSheet = ProductBulkApplyBottomSheet.newInstance(param)
         bSheet.setOnApplyClickListener{
-            val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product ?: return@setOnApplyClickListener, it)
-            rvManageProductDetail?.adapter = ManageProductNonVariantMultilocAdapter().apply {
+            val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
+            inputAdapter = ManageProductNonVariantMultilocAdapter().apply {
                 setDataList(appliedProduct)
                 setListener(this@ManageProductNonVariantMultilocFragment)
             }
+            rvManageProductDetail?.adapter = inputAdapter
+            viewModel.setProduct(appliedProduct)
         }
         bSheet.show(childFragmentManager, "")
     }

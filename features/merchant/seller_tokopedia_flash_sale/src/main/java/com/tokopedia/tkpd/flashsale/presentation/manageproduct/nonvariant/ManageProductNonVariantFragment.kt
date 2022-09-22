@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
-import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -15,7 +14,6 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Produc
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapter
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapterListener
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantActivity.Companion.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import javax.inject.Inject
@@ -114,7 +112,7 @@ class ManageProductNonVariantFragment :
                 productStockTextFormatted = getString(R.string.manageproductnonvar_stock_total_format, it.stock)
             )
             buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
-            viewModel.checkMultiloc(it)
+            viewModel.setProduct(it)
         }
     }
 

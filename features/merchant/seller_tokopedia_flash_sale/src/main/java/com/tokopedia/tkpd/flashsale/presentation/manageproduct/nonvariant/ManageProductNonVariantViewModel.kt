@@ -2,11 +2,11 @@ package com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
-import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
@@ -18,17 +18,27 @@ class ManageProductNonVariantViewModel @Inject constructor(
     private val errorMessageHelper: ErrorMessageHelper
 ) : BaseViewModel(dispatchers.main){
 
-    private val _isMultiloc: MutableLiveData<Boolean> = MutableLiveData()
-    val isMultiloc: LiveData<Boolean> get() = _isMultiloc
+    private val _product: MutableLiveData<ReservedProduct.Product> = MutableLiveData()
+    val product: LiveData<ReservedProduct.Product> get() = _product
 
-    private val _enableBulkApply: MutableLiveData<Boolean> = MutableLiveData()
-    val enableBulkApply: LiveData<Boolean> get() = _enableBulkApply
+    val isMultiloc = Transformations.map(product) {
+        it.isMultiWarehouse
+    }
 
-    private val _bulkApplyCaption: MutableLiveData<String> = MutableLiveData()
-    val bulkApplyCaption: LiveData<String> get() = _bulkApplyCaption
+    val enableBulkApply = Transformations.map(product) {
+        it.warehouses.any { warehouse -> warehouse.isToggleOn }
+    }
 
-    private val _isInputPageValid: MutableLiveData<Boolean> = MutableLiveData()
-    val isInputPageValid: LiveData<Boolean> get() = _isInputPageValid
+    val bulkApplyCaption  = Transformations.map(product) {
+        errorMessageHelper.getBulkApplyCaption(it.warehouses)
+    }
+
+    val isInputPageValid = Transformations.map(product) {
+        val criteria = it.productCriteria
+        it.warehouses
+            .filter { warehouse -> warehouse.isToggleOn }
+            .all { warehouse -> validateInput(criteria, warehouse.discountSetup).isAllFieldValid() }
+    }
 
     fun validateInput(
         criteria: ProductCriteria,
@@ -43,29 +53,15 @@ class ManageProductNonVariantViewModel @Inject constructor(
         )
     }
 
-    fun checkMultiloc(product: ReservedProduct.Product) {
-        _isMultiloc.value = product.isMultiWarehouse
-    }
-
-    fun checkEnableBulkApply(warehouses: List<Warehouse>) {
-        _enableBulkApply.value = warehouses.any { it.isToggleOn }
-    }
-
-    fun getBulkApplyCaption(warehouses: List<Warehouse>) {
-        _bulkApplyCaption.value = errorMessageHelper.getBulkApplyCaption(warehouses)
-    }
-
-    fun validateInputPage(warehouses: List<Warehouse>, criteria: ProductCriteria) {
-        _isInputPageValid.value = warehouses
-            .filter { it.isToggleOn }
-            .all { validateInput(criteria, it.discountSetup).isAllFieldValid() }
-    }
-
     fun calculatePrice(percentInput: Long, originalPrice: Long): String {
         return DiscountUtil.calculatePrice(percentInput, originalPrice).toString()
     }
 
     fun calculatePercent(priceInput: Long, originalPrice: Long): String {
         return DiscountUtil.calculatePercent(priceInput, originalPrice).toString()
+    }
+
+    fun setProduct(product: ReservedProduct.Product) {
+        _product.value = product
     }
 }
