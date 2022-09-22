@@ -38,6 +38,6 @@ class SearchContainerViewModel @Inject constructor(
     }
 
     companion object {
-        const val KEYWORD_TYPING_DEBOUNCE = 500L
+        const val KEYWORD_TYPING_DEBOUNCE = 300L
     }
 }
