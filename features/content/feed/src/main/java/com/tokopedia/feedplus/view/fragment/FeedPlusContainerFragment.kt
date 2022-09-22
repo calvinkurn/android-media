@@ -667,7 +667,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         ivFeedUser.onUrlLoaded = { isSuccess ->
             if(!isSuccess) {
                 ivFeedUser.post {
-                    ivFeedUser.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_user_profile_default))
+                    ivFeedUser.setImageDrawable(MethodChecker.getDrawable(requireContext(), R.drawable.ic_user_profile_default))
                 }
             }
         }
