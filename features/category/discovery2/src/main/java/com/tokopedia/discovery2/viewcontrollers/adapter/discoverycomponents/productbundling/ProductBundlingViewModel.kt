@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.productbundlingusecase.ProductBundlingUseCase
@@ -27,6 +28,9 @@ class ProductBundlingViewModel(val application: Application, val components: Com
     @Inject
     lateinit var productBundlingUseCase: ProductBundlingUseCase
 
+    @Inject
+    lateinit var coroutineDispatchers: CoroutineDispatchers
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -42,10 +46,14 @@ class ProductBundlingViewModel(val application: Application, val components: Com
     fun fetchProductBundlingData() {
         launchCatchError(block = {
             productBundlingUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
-            if(!components.data.isNullOrEmpty()){
-                bundledProductData.value = components.data?.let { DiscoveryDataMapper().mapListToBundleProductList(it) }
+            if (!components.data.isNullOrEmpty()) {
+                bundledProductData.value = components.data?.let {
+                    withContext(coroutineDispatchers.default) {
+                        DiscoveryDataMapper().mapListToBundleProductList(it)
+                    }
+                }
                 _emptyBundleData.value = false
-            }else{
+            } else {
                 _emptyBundleData.value = true
             }
         }, onError = {

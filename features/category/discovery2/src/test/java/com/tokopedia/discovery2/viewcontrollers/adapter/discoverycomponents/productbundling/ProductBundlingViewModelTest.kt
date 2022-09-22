@@ -2,10 +2,11 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.usecase.productbundlingusecase.ProductBundlingUseCase
-import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,9 @@ import org.junit.Rule
 import org.junit.Test
 
 class ProductBundlingViewModelTest {
+
+    @get:Rule
+    val rule1 = CoroutineTestRule()
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -52,6 +56,17 @@ class ProductBundlingViewModelTest {
         viewModel.productBundlingUseCase = productBundlingUseCase
 
         assert(viewModel.productBundlingUseCase === productBundlingUseCase)
+    }
+
+    @Test
+    fun `test for dispatchers useCase`() {
+        val viewModel: ProductBundlingViewModel =
+            spyk(ProductBundlingViewModel(application, componentsItem, 99))
+
+        val dispacherUseCase = mockk<CoroutineDispatchers>()
+        viewModel.coroutineDispatchers = dispacherUseCase
+
+        assert(viewModel.coroutineDispatchers === dispacherUseCase)
     }
 
     /****************************************** test for component ****************************************/
@@ -106,7 +121,10 @@ class ProductBundlingViewModelTest {
 
     @Test
     fun `test for onAttachToViewHolder when loadFirstPageComponents returns true with list`() {
+        mockkStatic(Dispatchers::class)
+        every { Dispatchers.Default } returns TestCoroutineDispatcher()
         viewModel.productBundlingUseCase = productBundlingUseCase
+        viewModel.coroutineDispatchers = rule1.dispatchers
         val list = ArrayList<DataItem>()
         val item = DataItem(name = "product_bundling")
         list.add(item)
@@ -118,6 +136,7 @@ class ProductBundlingViewModelTest {
         viewModel.onAttachToViewHolder()
 
         TestCase.assertEquals(viewModel.getBundledProductDataList().value != null, true)
+        unmockkStatic(Dispatchers::class)
     }
 
     @Test
