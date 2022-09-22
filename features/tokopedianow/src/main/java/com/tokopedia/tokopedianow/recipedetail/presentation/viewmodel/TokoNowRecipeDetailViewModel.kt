@@ -217,11 +217,12 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     }
 
     private fun getAddress() {
-        getAddressUseCase.getStateChosenAddress( {
+        getAddressUseCase.getStateChosenAddress({
             addressData.updateAddressData(it)
             checkAddressData()
-        },{
-
+        }, {
+            hideLoading()
+            showError()
         }, GET_ADDRESS_SOURCE)
     }
 
