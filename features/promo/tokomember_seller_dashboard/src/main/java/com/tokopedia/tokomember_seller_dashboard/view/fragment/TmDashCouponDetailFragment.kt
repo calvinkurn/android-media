@@ -536,7 +536,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
         val couponData = tmCouponDetailVm.couponDetailResult.value?.data?.merchantPromotionGetMVDataByID?.data
        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
            id = couponData?.galadrielVoucherId.toString()
-           type = LinkerData.PROMO_TYPE
+           type = LinkerData.MERCHANT_VOUCHER
            uri  = couponData?.weblink.orEmpty()
            deepLink = couponData?.applink.orEmpty()
            feature = shareModel.feature
