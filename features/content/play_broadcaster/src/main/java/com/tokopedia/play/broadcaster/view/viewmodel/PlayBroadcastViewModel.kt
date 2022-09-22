@@ -235,9 +235,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
+    @Suppress("MagicNumber")
     private val _quizFormUiState = combine(
         _quizFormData, _quizFormState, _quizIsNeedToUpdateUI,
-    ) { quizFormData, quizFormState, quizIsNeedToUpdateUI  ->
+    ) { quizFormData, quizFormState, quizIsNeedToUpdateUI ->
         QuizFormUiState(
             quizFormData = quizFormData,
             quizFormState = quizFormState,
@@ -532,26 +533,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
-            val gameConfig = repo.getInteractiveConfig()
+            val gameConfig = repo.getInteractiveConfig(authorId, authorType)
 
-            _interactiveConfig.value = setupInteractiveConfig(
-                mergeInteractiveConfigWithPreference(gameConfig)
-            )
+            _interactiveConfig.value = mergeInteractiveConfigWithPreference(gameConfig)
 
             if (!gameConfig.isNoGameActive()) {
                 initQuizFormData()
                 handleActiveInteractive()
             }
         }) { }
-    }
-
-    private fun setupInteractiveConfig(gameConfig: InteractiveConfigUiModel): InteractiveConfigUiModel {
-        return if (authorType == TYPE_USER) {
-            gameConfig.copy(
-                giveawayConfig = gameConfig.giveawayConfig.copy(isActive = false),
-                quizConfig = gameConfig.quizConfig.copy(isGiftActive = false)
-            )
-        } else gameConfig
     }
 
     private fun mergeInteractiveConfigWithPreference(

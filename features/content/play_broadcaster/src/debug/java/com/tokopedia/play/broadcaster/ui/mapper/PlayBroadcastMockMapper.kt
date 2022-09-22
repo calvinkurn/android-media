@@ -6,6 +6,7 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
@@ -212,9 +213,9 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     )
 
     @Suppress("MagicNumber")
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
+    override fun mapInteractiveConfig(authorType: String, response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
         giveawayConfig = GiveawayConfigUiModel(
-            isActive = true,
+            isActive = authorType == TYPE_SHOP,
             nameGuidelineHeader = "Mau kasih hadiah apa?",
             nameGuidelineDetail = "Contoh: Giveaway Sepatu, Tas Rp50 rb, Diskon 90%, Kupon Ongkir, HP Gratis, dll.",
             timeGuidelineHeader = "Kapan game-nya mulai?",
@@ -224,7 +225,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         ),
         quizConfig = QuizConfigUiModel(
             isActive = true,
-            isGiftActive = true,
+            isGiftActive = authorType == TYPE_SHOP,
             maxTitleLength = 30,
             maxChoicesCount = 3,
             minChoicesCount = 2,

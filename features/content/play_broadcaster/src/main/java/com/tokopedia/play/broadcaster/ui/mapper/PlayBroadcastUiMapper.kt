@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
@@ -308,7 +309,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             buttonTitle = bannedEvent.btnText
         )
 
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
+    override fun mapInteractiveConfig(authorType: String, response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
         val interactiveDuration = response.interactiveConfig.tapTapConfig.interactiveDuration
 
         val quizDurationInMs = response.interactiveConfig.quizConfig.quizDurationsInSeconds.map {
@@ -317,7 +318,7 @@ class PlayBroadcastUiMapper @Inject constructor(
 
         return InteractiveConfigUiModel(
             giveawayConfig = GiveawayConfigUiModel(
-                isActive = response.interactiveConfig.tapTapConfig.isActive,
+                isActive = if (authorType == TYPE_SHOP) response.interactiveConfig.tapTapConfig.isActive else false,
                 nameGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineHeader,
                 nameGuidelineDetail = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineDetail,
                 timeGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveTimeGuidelineHeader,
@@ -330,7 +331,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             ),
             quizConfig = QuizConfigUiModel(
                 isActive = response.interactiveConfig.quizConfig.isActive,
-                isGiftActive = true,
+                isGiftActive = authorType == TYPE_SHOP,
                 maxTitleLength = response.interactiveConfig.quizConfig.maxTitleLength,
                 maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,
                 minChoicesCount = response.interactiveConfig.quizConfig.minChoicesCount,

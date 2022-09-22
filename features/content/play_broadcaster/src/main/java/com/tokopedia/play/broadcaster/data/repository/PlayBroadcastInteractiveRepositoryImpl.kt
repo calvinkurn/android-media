@@ -43,13 +43,14 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) : PlayBroadcastInteractiveRepository {
 
-    override suspend fun getInteractiveConfig(): InteractiveConfigUiModel =
+    override suspend fun getInteractiveConfig(authorId: String, authorType: String): InteractiveConfigUiModel =
         withContext(dispatchers.io) {
             val response = getInteractiveConfigUseCase.apply {
+                //gonna change this with authorId after be team confirms
                 setRequestParams(GetInteractiveConfigUseCase.createParams(userSession.shopId))
             }.executeOnBackground()
 
-            return@withContext mapper.mapInteractiveConfig(response)
+            return@withContext mapper.mapInteractiveConfig(authorType, response)
         }
 
     override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel =
