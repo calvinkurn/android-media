@@ -231,7 +231,9 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
             layoutItemList.updateProductQuantity(miniCartData)
             layoutItemList.updateDeletedProductQuantity(miniCartData)
             _layoutList.postValue(layoutItemList)
-        }) {}
+        }) {
+            // do nothing
+        }
     }
 
     private fun getRecipeTitle() = _recipeInfo.value?.title.orEmpty()
