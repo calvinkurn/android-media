@@ -9,11 +9,11 @@ import com.google.gson.annotations.SerializedName
 data class ChatWebSocketResponse(
     @SerializedName("type")
     @Expose
-    val type : String = "",
+    val type: String = "",
 
     @SerializedName("code")
     @Expose
-    val code : Int = 0,
+    val code: Int = 0,
 
     @SerializedName("data")
     @Expose

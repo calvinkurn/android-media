@@ -619,11 +619,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun loadChatHistory() {
         loadInitialData()
-        presenter.connectWebSocket(messageId)
+        presenter.connectWebSocket2(messageId)
     }
 
     override fun startNewSession() {
-        presenter.connectWebSocket(messageId)
+        presenter.connectWebSocket2(messageId)
     }
 
     override fun blockTyping() {
@@ -819,7 +819,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         managePreviousStateOfBubble(visitable)
         mapMessageToList(visitable)
         getViewState()?.hideEmptyMessage(visitable)
-        getViewState()?.onCheckToHideQuickReply(visitable)
+//        getViewState()?.onCheckToHideQuickReply(visitable)
     }
 
     private fun managePreviousStateOfBubble(visitable: Visitable<*>) {
@@ -1083,7 +1083,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val sendMessage = replyEditText.text.toString()
         val startTime = SendableUiModel.generateStartTime()
 
-        presenter.sendMessage(
+        presenter.sendMessage2(
             messageId,
             sendMessage,
             startTime,

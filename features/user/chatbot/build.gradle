@@ -73,6 +73,7 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 }
 
 project.ext {

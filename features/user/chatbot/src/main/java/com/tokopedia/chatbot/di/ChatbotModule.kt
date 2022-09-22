@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.res.Resources
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManagerImpl
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
+import com.tokopedia.chatbot.websocket.ChatbotWebSocket
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.imageuploader.di.ImageUploaderModule
@@ -31,7 +34,7 @@ import dagger.Provides
 @Module(includes = arrayOf(ImageUploaderModule::class))
 class ChatbotModule {
 
-    constructor(context: Context){
+    constructor(context: Context) {
         thisContext = context
     }
 
@@ -57,29 +60,40 @@ class ChatbotModule {
 
     @ChatbotScope
     @Provides
-    fun provideChatTkpdAuthInterceptor(@ApplicationContext context: Context,
-                                       networkRouter: NetworkRouter,
-                                       userSessionInterface: UserSessionInterface): TkpdAuthInterceptor {
+    fun provideChatTkpdAuthInterceptor(
+        @ApplicationContext context: Context,
+        networkRouter: NetworkRouter,
+        userSessionInterface: UserSessionInterface
+    ): TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
     @ChatbotScope
     @Provides
-    fun provideFingerprintInterceptor(networkRouter: NetworkRouter,
-                                      userSession: UserSessionInterface): FingerprintInterceptor {
+    fun provideFingerprintInterceptor(
+        networkRouter: NetworkRouter,
+        userSession: UserSessionInterface
+    ): FingerprintInterceptor {
         return FingerprintInterceptor(networkRouter, userSession)
     }
 
     @Provides
     fun provideUploadImageUseCase(
-            @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
-            @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
-            @ImageUploaderQualifier gson: Gson,
-            @ImageUploaderQualifier userSession: UserSessionInterface,
-            @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils):
-            UploadImageUseCase<ChatbotUploadImagePojo> {
-        return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession,
-                ChatbotUploadImagePojo::class.java, imageUploaderUtils)
+        @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
+        @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
+        @ImageUploaderQualifier gson: Gson,
+        @ImageUploaderQualifier userSession: UserSessionInterface,
+        @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils
+    ):
+        UploadImageUseCase<ChatbotUploadImagePojo> {
+        return UploadImageUseCase(
+            uploadImageRepository,
+            generateHostRepository,
+            gson,
+            userSession,
+            ChatbotUploadImagePojo::class.java,
+            imageUploaderUtils
+        )
     }
 
     @ChatbotScope
@@ -90,7 +104,7 @@ class ChatbotModule {
 
     @ChatbotScope
     @Provides
-    internal fun provideChatbotCacheManager(@ApplicationContext context: Context): ChatbotCacheManager{
+    internal fun provideChatbotCacheManager(@ApplicationContext context: Context): ChatbotCacheManager {
         val chatbotCacheManager = context.getSharedPreferences("chatbotCache", Context.MODE_PRIVATE)
         return ChatbotCacheManagerImpl(chatbotCacheManager)
     }
@@ -103,7 +117,22 @@ class ChatbotModule {
 
     @ChatbotScope
     @Provides
-    fun provideGetUserNameForReplyBubble(userSession: UserSessionInterface) : GetUserNameForReplyBubble {
+    fun provideGetUserNameForReplyBubble(userSession: UserSessionInterface): GetUserNameForReplyBubble {
         return GetUserNameForReplyBubble(userSession)
+    }
+
+    @ChatbotScope
+    @Provides
+    fun provideChatbotWebSocket(
+        tkpdAuthInterceptor: TkpdAuthInterceptor,
+        fingerprintInterceptor: FingerprintInterceptor,
+        userSession: UserSessionInterface,
+        dispatcher: CoroutineDispatchers,
+    ): ChatbotWebSocket {
+        return ChatbotWebSocketImpl(
+            arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor),
+            userSession.accessToken,
+            dispatcher,
+        )
     }
 }

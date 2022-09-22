@@ -12,4 +12,6 @@ interface ChatbotWebSocket {
     fun connect(url : String)
 
     fun close()
+
+    fun setOnOpenListener(listener : OnOpenListener)
 }

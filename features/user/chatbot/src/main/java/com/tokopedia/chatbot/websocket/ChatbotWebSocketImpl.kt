@@ -1,14 +1,14 @@
 package com.tokopedia.chatbot.websocket
 
+import android.util.Log
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.teleporter.Teleporter.gson
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.url.TokopediaUrl
-import kotlinx.coroutines.Dispatchers
+import com.tokopedia.websocket.RxWebSocket
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.Interceptor
@@ -23,11 +23,11 @@ import java.util.concurrent.TimeUnit
 
 class ChatbotWebSocketImpl(
     interceptors: List<Interceptor>?,
-    private val accessToken : String,
+    private val accessToken: String,
+    private val dispatchers: CoroutineDispatchers,
+) : ChatbotWebSocket {
 
-    ) : ChatbotWebSocket {
-
-    private val client : OkHttpClient
+    private val client: OkHttpClient
 
     init {
 
@@ -39,7 +39,6 @@ class ChatbotWebSocketImpl(
             }
         }
         client = builder.build()
-
     }
 
     private fun getRequest(url: String, accessToken: String): Request {
@@ -51,43 +50,57 @@ class ChatbotWebSocketImpl(
             .build()
     }
 
-    private val webSocketFlow: MutableSharedFlow<ChatbotWebSocketAction?>
-        = MutableSharedFlow()
+    private val webSocketFlow: MutableSharedFlow<ChatbotWebSocketAction?> = MutableSharedFlow(
+        extraBufferCapacity = 100
+    )
 
     private var mWebSocket: WebSocket? = null
 
-    private var webSocketListener = object : WebSocketListener(){
+    var onChatListener : OnOpenListener? = null
+
+    private var webSocketListener = object : WebSocketListener() {
 
         override fun onOpen(webSocket: WebSocket, response: Response) {
+            Log.d("Eren", " In IMPL onOpen: ")
             mWebSocket = webSocket
+            onChatListener?.onOpen()
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
-            val newMessage = ChatbotWebSocketAction.NewMessage(gson.fromJson(text, ChatWebSocketResponse::class.java))
+            Log.d("Eren", " In IMPL onMessage(text): ")
+            val newMessage = ChatbotWebSocketAction.NewMessage(
+                gson.fromJson(
+                    text,
+                    ChatWebSocketResponse::class.java
+                )
+            )
             webSocketFlow.tryEmit(newMessage)
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+            Log.d("Eren", " In IMPL onMessage(bytes): ")
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+            Log.d("Eren", " In IMPL onFailure: $t")
             mWebSocket = null
             webSocketFlow.tryEmit(ChatbotWebSocketAction.Closed(ChatbotWebSocketException(t)))
-
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+            Log.d("Eren", " In IMPL onClosing: $reason $code")
             webSocket.close(1000, "Closing Socket")
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+            Log.d("Eren", " In IMPL onClosed: $reason $code")
             mWebSocket = null
         }
-
     }
 
+    //TODO change this
     override fun getDataFromSocketAsFlow(): Flow<ChatbotWebSocketAction> {
-        return webSocketFlow.filterNotNull().flowOn(Dispatchers.IO)
+        return webSocketFlow.filterNotNull().flowOn(dispatchers.main)
     }
 
     override fun send(message: String, interceptors: List<Interceptor>?) {
@@ -106,4 +119,11 @@ class ChatbotWebSocketImpl(
             Timber.log(1, e)
         }
     }
+
+    override fun setOnOpenListener(listener : OnOpenListener) {
+        onChatListener = listener
+    }
+}
+interface OnOpenListener {
+    fun onOpen()
 }
