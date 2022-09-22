@@ -9,14 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeInstructionBinding
 import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailComponent
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeInstructionAdapter
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeInstructionAdapterTypeFactory
-import com.tokopedia.tokopedianow.recipedetail.presentation.viewmodel.TokoNowRecipeInstructionViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import javax.inject.Inject
 
 class TokoNowRecipeInstructionFragment: Fragment() {
 
@@ -25,9 +22,6 @@ class TokoNowRecipeInstructionFragment: Fragment() {
             return TokoNowRecipeInstructionFragment()
         }
     }
-
-    @Inject
-    lateinit var viewModel: TokoNowRecipeInstructionViewModel
 
     private val adapter by lazy { RecipeInstructionAdapter(RecipeInstructionAdapterTypeFactory()) }
 
@@ -50,12 +44,7 @@ class TokoNowRecipeInstructionFragment: Fragment() {
             adapter = this@TokoNowRecipeInstructionFragment.adapter
             layoutManager = LinearLayoutManager(context)
         }
-
-        observe(viewModel.itemList) {
-            submitList(it)
-        }
-
-        viewModel.onViewCreated(items)
+        submitList(items)
     }
 
     override fun onAttach(context: Context) {

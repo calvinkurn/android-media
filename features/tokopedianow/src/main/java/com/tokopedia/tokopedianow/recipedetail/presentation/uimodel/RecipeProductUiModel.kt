@@ -22,9 +22,12 @@ data class RecipeProductUiModel(
     val discountPercentage: String = "",
     val similarProducts: List<RecipeProductUiModel> = emptyList(),
     val categoryId: String = "",
-    val position: Int = 0,
-    val impressHolder: ImpressHolder = ImpressHolder()
+    val position: Int = 0
 ) : Visitable<RecipeProductTypeFactory>, Parcelable {
+
+    val impressHolder
+        get() = ImpressHolder()
+
     override fun type(typeFactory: RecipeProductTypeFactory): Int {
         return typeFactory.type(this)
     }
