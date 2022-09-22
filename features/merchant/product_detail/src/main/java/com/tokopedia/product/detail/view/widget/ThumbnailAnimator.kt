@@ -5,6 +5,8 @@ import android.animation.ValueAnimator
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.animation.PathInterpolatorCompat
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
 class ThumbnailAnimator(val view: View) {
@@ -33,6 +35,17 @@ class ThumbnailAnimator(val view: View) {
         }
     }
 
+    private fun createHeightAnimator2(end: Int): Animator {
+        return ValueAnimator.ofInt(end).apply {
+            interpolator = PathInterpolatorCompat.create(CUBIC_BEZIER_X1, CUBIC_BEZIER_Y2, CUBIC_BEZIER_X2, CUBIC_BEZIER_Y1)
+            addUpdateListener { newValue ->
+                val layoutParamsCopy = view.layoutParams
+                layoutParamsCopy.height = (newValue.animatedValue as Int)
+                view.layoutParams = layoutParamsCopy
+            }
+        }
+    }
+
     fun animateShow() {
         val measuredWrapHeight = calculateWrapHeight()
         val anim = createHeightAnimator(end = measuredWrapHeight)
@@ -43,7 +56,29 @@ class ThumbnailAnimator(val view: View) {
 
             override fun onAnimationEnd(animation: Animator?) {}
 
-            override fun onAnimationCancel(animation: Animator?) {}
+            override fun onAnimationCancel(animation: Animator?) {
+                view.show()
+            }
+
+            override fun onAnimationRepeat(animation: Animator?) {}
+        })
+        anim.duration = ANIMATE_SHOW_DURATION
+        anim.start()
+    }
+
+    fun animateHide() {
+        val measuredWrapHeight = calculateWrapHeight()
+        val anim = createHeightAnimator2(end = measuredWrapHeight)
+        anim.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator?) {
+                view.hide()
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {}
+
+            override fun onAnimationCancel(animation: Animator?) {
+                view.hide()
+            }
 
             override fun onAnimationRepeat(animation: Animator?) {}
         })
