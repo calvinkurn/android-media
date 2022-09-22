@@ -764,6 +764,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         const val TOP_ADS_HEADLINE_ABOVE_RECOM = "variant1"
         const val TOP_ADS_HEADLINE_BELOW_RECOM = "variant2"
         const val REQUEST_CODE_TOKOMEMBER = 7
-        const val CARD_NUMBER_MASKING_UNICODE = "\u00b7\u00b7\u00b7\u00b7 "
+
+        const val CARD_NUMBER_MASKING_UNICODE = "\u25CF\u25CF\u25CF\u25CF "
+        const val LAST_NUMBERS = 4
     }
 }
