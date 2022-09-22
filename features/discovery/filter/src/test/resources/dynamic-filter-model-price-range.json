@@ -4,6 +4,7 @@
       {
         "title": "Rentang harga",
         "subtitle": "",
+        "templateName": "template_pricing_food",
         "options": [
           {
             "name": "$",

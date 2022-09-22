@@ -199,10 +199,13 @@ internal class SortFilterBottomSheetViewModel {
         return PriceRangeFilterCheckboxUiModel(
             filter = priceFilter,
             priceRangeList = priceFilter.options.map {
+                val option = it.apply {
+                    updateInputState()
+                }
                 PriceRangeFilterCheckboxItemUiModel(
-                    option = it
+                    option = option
                 ).apply {
-                    isSelected = it.inputState.toBoolean()
+                    isSelected = option.inputState.toBoolean()
                 }
             }.toMutableList(),
             priceRangeLabel = priceFilter.title

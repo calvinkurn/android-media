@@ -9,6 +9,8 @@ import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterItemDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxUiModel
+import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -126,6 +128,8 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
                 this.assertAsPriceFilterViewModel(expectedFilter)
             expectedFilter.isKeywordFilter ->
                 this.assertAsKeywordFilterDataView(expectedFilter)
+            expectedFilter.isPriceRangeCheckboxFilter ->
+                this.assertAsPriceRangeCheckboxDataView(expectedFilter)
             else ->
                 this.assertAsFilterViewModel(expectedFilter)
         }
@@ -189,6 +193,26 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
         }
     }
 
+    private fun Visitable<*>.assertAsPriceRangeCheckboxDataView(expectedFilter: Filter) {
+        val filterRangeCheckboxUiModel = this as PriceRangeFilterCheckboxUiModel
+        val actualKeywordFilter = filterRangeCheckboxUiModel.filter
+        assert(actualKeywordFilter == expectedFilter) {
+            "Keyword filter is $actualKeywordFilter.\nExpected $expectedFilter"
+        }
+
+        val priceRangeItemList = filterRangeCheckboxUiModel.priceRangeList
+        val priceRangeOptions = expectedFilter.options
+        val priceRangeOptionCount = priceRangeOptions.size
+        assert(priceRangeItemList.size == priceRangeOptionCount) {
+            "Price range checkbox item size is ${priceRangeItemList.size}, " +
+                "expected is $priceRangeOptionCount"
+        }
+
+        priceRangeItemList.forEachIndexed { index, priceRangeItem ->
+            priceRangeItem.assertPriceRangeItem(priceRangeItem.option)
+        }
+    }
+
     private fun Visitable<*>.assertAsKeywordFilterDataView(expectedFilter: Filter) {
         val keywordFilterDataView = this as KeywordFilterDataView
         val actualKeywordFilter = keywordFilterDataView.filter
@@ -203,11 +227,17 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
         val negativeKeywordCount = negativeKeywordOptions.size
         assert(keywordFilterItemList.size == negativeKeywordCount) {
             "Keyword filter item size is ${keywordFilterItemList.size}, " +
-                "expected is $negativeKeywordCount"
+                    "expected is $negativeKeywordCount"
         }
 
         keywordFilterItemList.forEachIndexed { index, keywordFilterItem ->
             keywordFilterItem.assertKeywordFilterItem(negativeKeywordOptions[index])
+        }
+    }
+
+    private fun PriceRangeFilterCheckboxItemUiModel.assertPriceRangeItem(expectedOption: Option) {
+        assert(option.name == expectedOption.name) {
+            "Option name is ${option.name}.\nExpected is ${expectedOption.name}"
         }
     }
 

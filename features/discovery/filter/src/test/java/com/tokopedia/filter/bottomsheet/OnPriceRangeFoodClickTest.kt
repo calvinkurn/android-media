@@ -36,7 +36,7 @@ internal class OnPriceRangeFoodClickTest: SortFilterBottomSheetViewModelTestFixt
 
     private fun `When an Checkbox Option is Clicked And Applied`(priceRangeFilterCheckboxItemUiModel: PriceRangeFilterCheckboxItemUiModel,
                                                                  isSelected: Boolean) {
-        sortFilterBottomSheetViewModel.onPriceRangeFoodClick(priceRangeFilterCheckboxItemUiModel, isSelected)
+        sortFilterBottomSheetViewModel.onPriceRangeFilterCheckboxClick(priceRangeFilterCheckboxItemUiModel, isSelected)
         sortFilterBottomSheetViewModel.applySortFilter()
     }
 
