@@ -5,6 +5,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.mapper.ChannelMapper.mapToChannelModel
@@ -37,24 +38,25 @@ object LeftCarouselAtcMapper {
         )
 
         // Add mix left carousel products
-        channelModel.channelGrids.forEach {
+        channelModel.channelGrids.forEachIndexed { index, channelGrid ->
             productList.add(
                 HomeLeftCarouselAtcProductCardUiModel(
-                    id = it.id,
-                    brandId = it.brandId,
-                    categoryId = it.categoryId,
-                    parentProductId = it.parentProductId,
-                    shopId = it.shopId,
-                    shopName = it.shop.shopName,
-                    appLink = it.applink,
+                    id = channelGrid.id,
+                    brandId = channelGrid.brandId,
+                    categoryId = channelGrid.categoryId,
+                    parentProductId = channelGrid.parentProductId,
+                    shopId = channelGrid.shopId,
+                    shopName = channelGrid.shop.shopName,
+                    appLink = channelGrid.applink,
                     channelId = channelModel.id,
                     channelHeaderName = channelModel.channelHeader.name,
                     channelPageName = channelModel.pageName,
                     channelType = channelModel.type,
-                    recommendationType = it.recommendationType,
-                    warehouseId = it.warehouseId,
-                    campaignCode = it.campaignCode,
-                    productCardModel = mapToProductCardModel(it, miniCartData)
+                    recommendationType = channelGrid.recommendationType,
+                    warehouseId = channelGrid.warehouseId,
+                    campaignCode = channelGrid.campaignCode,
+                    productCardModel = mapToProductCardModel(channelGrid, miniCartData),
+                    position = index + ADDITIONAL_POSITION
                 )
             )
         }
@@ -129,7 +131,9 @@ object LeftCarouselAtcMapper {
                 ratingCount = channelGrid.rating,
                 countSoldRating = channelGrid.ratingFloat,
                 reviewCount = channelGrid.countReview,
-                variant = ProductCardModel.Variant(quantity)
+                variant = if (!channelGrid.isOutOfStock) ProductCardModel.Variant(
+                    quantity = quantity
+                ) else null
             )
         } else {
             ProductCardModel(
@@ -162,11 +166,11 @@ object LeftCarouselAtcMapper {
                 ratingCount = channelGrid.rating,
                 countSoldRating = channelGrid.ratingFloat,
                 reviewCount = channelGrid.countReview,
-                nonVariant = ProductCardModel.NonVariant(
+                nonVariant = if (!channelGrid.isOutOfStock) ProductCardModel.NonVariant(
                     quantity = quantity,
                     minQuantity = channelGrid.minOrder,
                     maxQuantity = channelGrid.stock
-                )
+                ) else null
             )
         }
     }
