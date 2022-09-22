@@ -254,7 +254,8 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
             renderList(it, viewModel.hasNextPage)
         }
         viewModel.criteriaList.observe(viewLifecycleOwner) {
-            binding?.scrollViewCategory?.isVisible = it.isNotEmpty()
+            binding?.tvTitleCriteria?.isVisible = it.isNotEmpty()
+            binding?.rvCategory?.isVisible = it.isNotEmpty()
             criteriaSelectionAdapter.setDataList(it)
         }
         viewModel.categoryAllList.observe(viewLifecycleOwner) {

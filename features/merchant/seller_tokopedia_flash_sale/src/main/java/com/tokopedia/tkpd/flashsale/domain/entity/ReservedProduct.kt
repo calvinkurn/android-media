@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.flashsale.domain.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 
@@ -7,6 +10,7 @@ data class ReservedProduct(
     val products: List<Product>,
     val totalProduct: Int
 ) {
+    @Parcelize
     data class Product(
         val childProducts: List<ChildProduct>,
         val isMultiWarehouse: Boolean,
@@ -20,7 +24,8 @@ data class ReservedProduct(
         val stock: Int,
         val url: String,
         val warehouses: List<Warehouse>
-    ) {
+    ) : Parcelable {
+
         fun getTotalLocation(): Int {
             return if (isParentProduct) {
                 childProducts.sumOf {
@@ -111,6 +116,7 @@ data class ReservedProduct(
             return filteredWarehouse(warehouses).map { it.discountSetup.discount }
         }
 
+        @Parcelize
         data class ChildProduct(
             val disabledReason: String,
             val isDisabled: Boolean,
@@ -124,15 +130,10 @@ data class ReservedProduct(
             val stock: Int,
             val url: String,
             val warehouses: List<Warehouse>
-        ) {
-            data class Price(
-                val lowerPrice: String,
-                val price: String,
-                val upperPrice: String
-            )
-        }
-
-        data class Price(val lowerPrice: Long, val price: Long, val upperPrice: Long)
+        ) : Parcelable
+        @Parcelize
+        data class Price(val lowerPrice: Long, val price: Long, val upperPrice: Long) : Parcelable
+        @Parcelize
         data class ProductCriteria(
             val criteriaId: Long,
             val maxCustomStock: Int,
@@ -141,8 +142,9 @@ data class ReservedProduct(
             val minCustomStock: Int,
             val minDiscount: Long,
             val minFinalPrice: Long,
-        )
+        ) : Parcelable
 
+        @Parcelize
         data class Warehouse(
             val warehouseId: Long,
             val name: String,
@@ -150,15 +152,16 @@ data class ReservedProduct(
             val price: Long,
             val discountSetup: DiscountSetup,
             val isDilayaniTokopedia: Boolean,
-            val isToggleOn: Boolean,
+            var isToggleOn: Boolean,
             val isDisabled: Boolean,
             val disabledReason: String
-        ) {
+        ) : Parcelable {
+            @Parcelize
             data class DiscountSetup(
-                val discount: Int,
-                val price: Long,
-                val stock: Long
-            )
+                var discount: Int,
+                var price: Long,
+                var stock: Long
+            ) : Parcelable
         }
     }
 }

@@ -38,6 +38,12 @@
             android:exported="false" />
 
         <activity
+            android:name="com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
             android:name="com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"

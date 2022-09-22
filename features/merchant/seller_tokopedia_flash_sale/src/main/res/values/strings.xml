@@ -190,6 +190,21 @@
     <string name="chooseproduct_filter_criteria_text">Memenuhi Kriteria</string>
     <string name="chooseproduct_filter_category_text">Semua Kategori</string>
 
+    <!--Manage Product-->
+    <string name="manageproductnonvar_stock_title">Stok Campaign</string>
+    <string name="manageproductnonvar_stock_subtitle">Stok wajib %1d - %2d</string>
+    <string name="manageproductnonvar_save">Simpan</string>
+    <string name="manageproductnonvar_title">Atur Produk</string>
+    <string name="manageproductnonvar_stock_total_format">Total Stok: %d</string>
+    <string name="manageproductnonvar_min_message_format">Min. %s</string>
+    <string name="manageproductnonvar_max_message_format">Maks. %s</string>
+    <string name="manageproductnonvar_range_message_format">%s-%s</string>
+
+    <!-- Bulk Apply -->
+    <string name="bulk_apply_title">Atur Sekaligus</string>
+    <string name="bulk_apply_text_stock">Stok Campaign</string>
+    <string name="bulk_apply_text_stock_description">Stok wajib %1d - %2d</string>
+
 
     <!--    Manage product list-->
     <string name="stfs_manage_product_list_title">Atur Produk</string>
