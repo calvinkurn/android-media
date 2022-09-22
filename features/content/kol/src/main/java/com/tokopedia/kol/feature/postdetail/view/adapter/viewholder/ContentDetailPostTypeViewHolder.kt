@@ -45,7 +45,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import com.tokopedia.feedcomponent.R as feedComponentR
-import com.tokopedia.kol.R as kolR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     context: Context,
@@ -477,11 +477,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         val view = feedXCard.views
         if (feedXCard.like.isLiked) {
             val colorGreen =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                MethodChecker.getColor(context, unifyR.color.Unify_G500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
             val colorGrey =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                MethodChecker.getColor(context, unifyR.color.Unify_N700_96)
             likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
         }
         if (view.count != 0) {
@@ -512,11 +512,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
         if (like.isLiked) {
             val colorGreen =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                MethodChecker.getColor(context, unifyR.color.Unify_G500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
             val colorGrey =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                MethodChecker.getColor(context, unifyR.color.Unify_N700_96)
             likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
         }
         if (like.likedBy.isNotEmpty() || like.count != 0) {
@@ -846,7 +846,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 ds.isUnderlineText = false
                 ds.color = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N600
+                    unifyR.color.Unify_N600
                 )
             }
         }
@@ -867,7 +867,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                             .replace("\n", "<br/>")
                             .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
                             .plus("... ")
-                            .plus("<font color='${ColorUtil.getColorFromResToString(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)}'>" + "<b>")
+                            .plus("<font color='${ColorUtil.getColorFromResToString(context, unifyR.color.Unify_N400)}'>" + "<b>")
                             .plus(context.getString(feedComponentR.string.feed_component_read_more_button))
                             .plus("</b></font>")
                     )
@@ -939,7 +939,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     }
 
     private val colorLinkHashtag: Int
-        get() = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+        get() = MethodChecker.getColor(context, unifyR.color.Unify_G400)
 
 
     private fun hasSecondLine(caption: String): Boolean {
@@ -1007,7 +1007,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             primaryColor = Color.parseColor(color),
             secondaryColor = MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                unifyR.color.Unify_N0
             ),
         )
     }
@@ -1018,7 +1018,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 colorArray = it,
                 secondaryColor = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    unifyR.color.Unify_N0
                 ),
             )
         }
@@ -1087,7 +1087,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             ),
             secondaryColor = MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                unifyR.color.Unify_N0
             ),
         )
     }
@@ -1096,11 +1096,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         changeCTABtnColor(
             primaryColor = MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_G500
+                unifyR.color.Unify_G500
             ),
             secondaryColor = MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                unifyR.color.Unify_N0
             ),
         )
     }
@@ -1111,11 +1111,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         changeCTABtnColor(
             primaryColor = MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN50
+                unifyR.color.Unify_NN50
             ),
             secondaryColor = MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                unifyR.color.Unify_NN600
             ),
         )
     }

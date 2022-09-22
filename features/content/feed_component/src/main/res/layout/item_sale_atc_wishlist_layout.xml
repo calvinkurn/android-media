@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:paddingStart="@dimen/unify_space_4"
+    android:paddingStart="4dp"
     android:layout_height="wrap_content">
 
         <FrameLayout
@@ -28,11 +28,11 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_add_to_cart"
-            android:layout_height="@dimen/unify_space_32"
+            android:layout_height="32dp"
             android:layout_width="0dp"
             android:text="@string/btn_add_to_cart_text"
-            android:layout_marginStart="@dimen/unify_space_8"
-            android:layout_marginEnd="@dimen/unify_space_8"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"

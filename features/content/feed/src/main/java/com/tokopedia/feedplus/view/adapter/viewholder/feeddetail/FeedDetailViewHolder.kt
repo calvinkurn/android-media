@@ -143,7 +143,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
         )
         itemView.run {
             progressBar.progressBarColor = progressBarColor
-            val value = (((item.product.stockSoldPercentage) * 100) / 100).roundToInt()
+            val value = (item.product.stockSoldPercentage).roundToInt()
             progressBar.setValue(value, true)
             stockText.text = item.product.stockWording
             stockProgressBarLayout.visible()

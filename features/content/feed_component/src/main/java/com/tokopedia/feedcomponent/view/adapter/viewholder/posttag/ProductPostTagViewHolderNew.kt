@@ -149,7 +149,7 @@ class ProductPostTagViewHolderNew(
             ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
         )
 
-        val value = (((item.product.stockSoldPercentage) * 100) / 100).roundToInt()
+        val value = (item.product.stockSoldPercentage).roundToInt()
         stockProgressBar.setValue(value, true)
         stockProgressBar.progressBarColor = progressBarColor
         stockText.text = item.product.stockWording
