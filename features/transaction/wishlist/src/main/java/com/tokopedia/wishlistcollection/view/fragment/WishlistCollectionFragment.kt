@@ -1,7 +1,6 @@
 package com.tokopedia.wishlistcollection.view.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -10,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -72,6 +72,7 @@ import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewMod
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+@Keep
 class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener,
     BottomSheetKebabMenuWishlistCollectionItem.ActionListener, ActionListenerFromCollectionPage,
     BottomSheetUpdateWishlistCollectionName.ActionListener,
@@ -696,7 +697,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_COLLECTION_DETAIL && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_COLLECTION_DETAIL) {
             getWishlistCollections()
             binding?.run { rvWishlistCollection.scrollToPosition(0) }
 
@@ -750,13 +751,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             )
         }
         activity?.let {
-            if (recommendationItem.appUrl.isNotEmpty()) {
-                RouteManager.route(it, recommendationItem.appUrl)
+            val intent = if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.getIntent(it, recommendationItem.appUrl)
             } else {
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     recommendationItem.productId.toString())
-                startActivity(intent)
             }
+            startActivityForResult(intent, REQUEST_CODE_COLLECTION_DETAIL)
         }
     }
 

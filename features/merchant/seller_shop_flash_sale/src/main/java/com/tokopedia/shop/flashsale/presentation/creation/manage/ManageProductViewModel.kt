@@ -140,7 +140,7 @@ class ManageProductViewModel @Inject constructor(
         }
     }
 
-    private fun isProductInfoComplete(productMapData: SellerCampaignProductList.ProductMapData): Boolean {
+    fun isProductInfoComplete(productMapData: SellerCampaignProductList.ProductMapData): Boolean {
         return when {
             productMapData.discountedPrice.isZero() -> false
             productMapData.discountPercentage.isZero() -> false

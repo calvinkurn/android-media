@@ -64,9 +64,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
-import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.seller_migration_common.presentation.util.setupBottomSheetFeedSellerMigration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
@@ -80,6 +77,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
+import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.feedcomponent.R as feedComponentR
 
 
@@ -109,16 +107,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
-        const val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
         const val FEED_BACKGROUND_CROSSFADER_DURATION = 200
         const val FEED_FRAGMENT_INDEX = 0
 
-        const val TITLE = "title"
-        const val SUB_TITLE = "subtitle"
-        const val TOOLBAR_ICON_URL = "icon_url"
-        const val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
-        const val APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
-        const val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
         private const val BROADCAST_FEED = "BROADCAST_FEED"
         const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
 
@@ -519,12 +510,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    private fun enableContentCreationNewFlow(): Boolean {
-        val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
-        return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
-    }
-
-
     private fun setViewPager() {
         view_pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
@@ -630,28 +615,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                         try {
                             fabFeed.menuOpen = false
                             entryPointAnalytic.clickCreatePostEntryPoint()
-                            val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
-                            if (shouldShowNewContentCreationFlow) {
-                                val authors = viewModel.feedContentForm.authors
-                                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                                intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
-                                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
-                                    MAX_MULTI_SELECT_ALLOWED_VALUE)
-                                intent.putExtra(TITLE,
-                                    getString(feedComponentR.string.feed_post_sebagai))
-                                val name: String = MethodChecker.fromHtml(authors.first().name).toString()
-                                intent.putExtra(SUB_TITLE, name)
-                                intent.putExtra(TOOLBAR_ICON_URL,
-                                    authors.first().thumbnail
-                                )
-                                intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
-                                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                startActivity(intent)
-                                TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
-                            } else {
-                                openBottomSheetToFollowOldFlow()
-                            }
+
+                            val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                            intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                            intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
+                            intent.putExtra(BundleData.TITLE, getString(feedComponentR.string.feed_post_sebagai))
+                            intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                            startActivity(intent)
+                            TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+
                         } catch (e: Exception) {
                             Timber.e(e)
                         }
@@ -751,24 +723,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun canGoToExplore(): Boolean {
         return pagerAdapter.isContextExploreExist
-    }
-
-    private fun goToCreateAffiliate() {
-        if (context != null) {
-            if (affiliatePreference.isFirstTimeEducation(userSession.userId)) {
-
-                val intent = RouteManager.getIntent(
-                        context,
-                        ApplinkConst.DISCOVERY_PAGE.replace("{page_id}", DISCOVERY_BY_ME)
-                )
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                startActivity(intent)
-                affiliatePreference.setFirstTimeEducation(userSession.userId)
-
-            } else {
-                RouteManager.route(context, ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1")
-            }
-        }
     }
 
     fun hideAllFab() {
@@ -899,22 +853,4 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             postProgressUpdateView?.hide()
         }
     }
-
-    private fun openBottomSheetToFollowOldFlow() {
-        when {
-            isSellerMigrationEnabled(context) -> {
-                val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
-                val createPostAppLink = ApplinkConst.CONTENT_CREATE_POST
-                val intent = SellerMigrationActivity.createIntent(
-                        context = requireContext(),
-                        featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                        screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
-                        appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
-                setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
-
-            }
-        }
-    }
-
-
 }

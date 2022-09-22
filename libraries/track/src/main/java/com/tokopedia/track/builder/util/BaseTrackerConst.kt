@@ -82,6 +82,10 @@ abstract class BaseTrackerConst {
         const val KEY = "campaignCode"
     }
 
+    protected object TrackerId{
+        const val KEY = "trackerId"
+    }
+
     protected object ItemList {
         const val KEY = "item_list"
     }

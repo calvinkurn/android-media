@@ -417,7 +417,6 @@ object DeeplinkMapper {
             DLP.matchPattern(ApplinkConst.CONTENT_DETAIL,
                     targetDeeplink = { _, _, deeplink, _ -> getKolDeepLink(deeplink) }),
             DLP.host(ApplinkConst.KOL_YOUTUBE_HOST_BASE) { _, _, deeplink, _ -> getKolDeepLink(deeplink) },
-            DLP.matchPattern(ApplinkConst.CONTENT_DRAFT_POST) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY) { _, _, deeplink, _ -> getDiscoveryDeeplink(deeplink) },
             DLP(DLPLogic { _, uri, _ -> matchWithHostAndHasPath(uri, ApplinkConst.HOST_CATEGORY_P) },
                     targetDeeplink = { _, uri, _, _ -> getRegisteredCategoryNavigation(uri) }),
@@ -497,10 +496,8 @@ object DeeplinkMapper {
             DLP.host(ApplinkConst.WEBVIEW_PARENT_HOME_HOST) { _, _, _, _ -> ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME },
             DLP.host(ApplinkConst.BROWSER_HOST) { _, _, _, _ -> ApplinkConstInternalGlobal.BROWSER },
             DLP.startWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
-            DLP.startWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
             DLP.startWith(ApplinkConst.FEED_CREATION_PRODUCT_SEARCH) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
             DLP.startWith(ApplinkConst.FEED_CREATION_SHOP_SEARCH) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
-            DLP.matchPattern(ApplinkConst.AFFILIATE_DRAFT_POST) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
             DLP.host(ApplinkConst.AFFILIATE_PRODUCT_PICKER_FROM_SHOP_HOST) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
             DLP.exact(ApplinkConst.REVIEW_REMINDER_PREVIOUS, ApplinkConstInternalSellerapp.REVIEW_REMINDER),
             DLP.matchPattern(ApplinkConst.IMAGE_PICKER_V2) { _, _, deeplink, _ -> DeeplinkMapperImagePicker.getImagePickerV2Deeplink(deeplink) },
@@ -522,7 +519,8 @@ object DeeplinkMapper {
                         idList?.lastOrNull() ?: "")
             }),
             DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
-            DLP.matchPattern(ApplinkConst.RESOLUTION_SUCCESS) { _, uri, _, _ -> ApplinkConstInternalOperational.buildApplinkResolution(uri)}
+            DLP.matchPattern(ApplinkConst.RESOLUTION_SUCCESS) { _, uri, _, _ -> ApplinkConstInternalOperational.buildApplinkResolution(uri)},
+            DLP.exact(ApplinkConst.DISCOVERY_SEARCH_UNIVERSAL) { _, _, deeplink, _ -> getRegisteredNavigationSearch(deeplink) }
         )
 
     fun getTokopediaSchemeList():List<DLP>{
@@ -637,7 +635,6 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.CAMPAIGN_LIST -> ApplinkConstInternalSellerapp.CAMPAIGN_LIST
             ApplinkConst.SellerApp.CENTRALIZED_PROMO -> ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
             ApplinkConst.SellerApp.PLAY_BROADCASTER -> ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
-            ApplinkConst.SellerApp.CONTENT_CREATE_POST -> ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST
             ApplinkConst.SellerApp.SELLER_SHIPPING_EDITOR -> ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING
             ApplinkConst.SellerApp.REVIEW_REMINDER -> ApplinkConstInternalSellerapp.REVIEW_REMINDER
             ApplinkConst.SellerApp.STATISTIC_DASHBOARD -> DeepLinkMapperStatistic.getStatisticAppLink(uri)
