@@ -36,7 +36,7 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
-    private lateinit var affiliateRegistrationSharedViewModel: AffiliateRegistrationSharedViewModel
+    private var affiliateRegistrationSharedViewModel: AffiliateRegistrationSharedViewModel? = null
 
     private var productId: String? = null
 
@@ -65,7 +65,7 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
 
 
     private fun initObserver() {
-        affiliateRegistrationSharedViewModel.getUserAction().observe(this) {
+        affiliateRegistrationSharedViewModel?.getUserAction()?.observe(this) {
             when (it) {
                 AffiliateRegistrationSharedViewModel.UserAction.NaigateToPortFolio -> {
                     openFragment(
