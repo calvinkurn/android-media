@@ -285,7 +285,7 @@ abstract class BaseNotification internal constructor(
     }
 
     internal fun createDismissPendingIntent(notificationId: Int, requestCode: Int): PendingIntent {
-        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel, true)
         intent.action = CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS
         return getPendingIntent(context, intent, requestCode)
     }
@@ -296,10 +296,11 @@ abstract class BaseNotification internal constructor(
         private const val sdkLevel31 = 31
         fun getBaseBroadcastIntent(
             context: Context,
-            baseNotificationModel: BaseNotificationModel
+            baseNotificationModel: BaseNotificationModel,
+            isDismissIntent: Boolean = false
         ): Intent {
 
-            val intent = if (Build.VERSION.SDK_INT >= sdkLevel31) {
+            val intent = if (Build.VERSION.SDK_INT >= sdkLevel31 && !isDismissIntent) {
                Intent(context, CMReceiverActivity::class.java).apply {
                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                }
