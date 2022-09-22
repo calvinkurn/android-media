@@ -2,52 +2,39 @@ package com.tokopedia.tokochat.view.fragment.experiment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokochat.databinding.FragmentTokoChatListExpBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
-import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
 import javax.inject.Inject
 
 //TODO: Delete this after experiment
-class TokoChatListFragmentExp: BaseDaggerFragment() {
-
-    private var binding: FragmentTokoChatListExpBinding? by autoClearedNullable()
+class TokoChatListFragmentExp: BaseTokoChatFragment<FragmentTokoChatListExpBinding>() {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
 
     override fun getScreenName(): String = TAG
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentTokoChatListExpBinding.inflate(
+    override fun getViewBindingInflate(container: ViewGroup?): FragmentTokoChatListExpBinding {
+        return FragmentTokoChatListExpBinding.inflate(
             LayoutInflater.from(context),
             container,
             false
         )
-        return binding?.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViews()
-        initObservers()
+    override fun additionalSetup() {
+
     }
 
-    override fun initInjector() {
-        getComponent(TokoChatComponent::class.java).inject(this)
+    override fun initViews() {
+
     }
 
-    private fun initViews() {}
-
-    private fun initObservers() {
+    override fun initObservers() {
         viewModel.getAllChannels().observe(viewLifecycleOwner) {
             binding?.mainTv?.text = ""
             var messageText = ""
@@ -56,6 +43,10 @@ class TokoChatListFragmentExp: BaseDaggerFragment() {
             }
             binding?.mainTv?.text = messageText
         }
+    }
+
+    override fun initInjector() {
+        getComponent(TokoChatComponent::class.java).inject(this)
     }
 
     companion object {

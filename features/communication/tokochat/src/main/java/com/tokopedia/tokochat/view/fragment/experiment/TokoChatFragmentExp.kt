@@ -17,14 +17,13 @@ import com.tokopedia.tokochat.databinding.FragmentTokoChatExpBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.activity.TokoChatListActivity
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 //TODO: Delete this after experiment
-class TokoChatFragmentExp: BaseDaggerFragment() {
-
-    private var binding: FragmentTokoChatExpBinding? by autoClearedNullable()
+class TokoChatFragmentExp: BaseTokoChatFragment<FragmentTokoChatExpBinding>() {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -33,23 +32,16 @@ class TokoChatFragmentExp: BaseDaggerFragment() {
 
     override fun getScreenName(): String = TAG
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentTokoChatExpBinding.inflate(
+    override fun getViewBindingInflate(container: ViewGroup?): FragmentTokoChatExpBinding {
+        return FragmentTokoChatExpBinding.inflate(
             LayoutInflater.from(context),
             container,
             false
         )
-        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews()
-        initObservers()
         setupDummyChatService()
     }
 
@@ -57,9 +49,11 @@ class TokoChatFragmentExp: BaseDaggerFragment() {
         getComponent(TokoChatComponent::class.java).inject(this)
     }
 
-    private fun initViews() {
+    override fun additionalSetup() {
         AndroidThreeTen.init(context?.applicationContext)
+    }
 
+    override fun initViews() {
         binding?.goBtn?.setOnClickListener {
             viewModel.getChatHistory(channelUrl).removeObservers(viewLifecycleOwner)
             viewModel.deRegisterActiveChannel(channelUrl)
@@ -90,7 +84,7 @@ class TokoChatFragmentExp: BaseDaggerFragment() {
         binding?.mainEdt?.addTextChangedListener(getTextWatcherListener())
     }
 
-    private fun initObservers() {
+    override fun initObservers() {
         viewModel.error.observe(viewLifecycleOwner) {
             it.printStackTrace()
         }

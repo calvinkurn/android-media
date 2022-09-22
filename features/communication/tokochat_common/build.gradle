@@ -22,7 +22,7 @@ android {
     sourceSets {
         main {
             res {
-                srcDirs 'src/main/res', 'src/main/res/layouts/message_bubble', 'src/main/res/layouts/chatroom'
+                srcDirs 'src/main/res', 'src/main/res/layouts/message_bubble', 'src/main/res/layouts/chatroom', 'src/main/res/reply'
             }
         }
     }

@@ -2,20 +2,17 @@ package com.tokopedia.tokochat.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
-import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
+import com.tokopedia.tokochat_common.R
 import javax.inject.Inject
 
-class TokoChatFragment: BaseDaggerFragment() {
-
-    private var binding: FragmentTokoChatBinding? by autoClearedNullable()
+class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -26,26 +23,16 @@ class TokoChatFragment: BaseDaggerFragment() {
         getComponent(TokoChatComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentTokoChatBinding.inflate(
-            LayoutInflater.from(context),
-            container,
-            false
-        )
-        return binding?.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViews()
-    }
-
-    private fun initViews() {
+    override fun additionalSetup() {
         AndroidThreeTen.init(context?.applicationContext)
+    }
+
+    override fun initViews() {
+        chatroomRv = binding?.chatroomLayout?.findViewById(R.id.tokochat_chatroom_rv)
+    }
+
+    override fun initObservers() {
+
     }
 
     companion object {
@@ -64,5 +51,13 @@ class TokoChatFragment: BaseDaggerFragment() {
                 arguments = bundle
             } as TokoChatFragment
         }
+    }
+
+    override fun getViewBindingInflate(container: ViewGroup?): FragmentTokoChatBinding {
+        return FragmentTokoChatBinding.inflate(
+            LayoutInflater.from(context),
+            container,
+            false
+        )
     }
 }

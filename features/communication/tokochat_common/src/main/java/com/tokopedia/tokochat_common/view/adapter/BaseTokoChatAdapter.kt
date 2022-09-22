@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatMessageBubbleDelegate
 
-class BaseTokoChatAdapter: BaseCommonAdapter() {
+open class BaseTokoChatAdapter: BaseCommonAdapter() {
 
     init {
         delegatesManager.addDelegate(TokoChatMessageBubbleDelegate())
