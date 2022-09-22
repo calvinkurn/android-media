@@ -207,6 +207,9 @@
     },
     {
       "eventAction": "view product",
+      "userId": ".*",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet - is pinned product (true|false)",
@@ -217,9 +220,10 @@
           "item_name": ".*",
           "item_brand": ".*",
           "item_category": ".*",
-          "price": ".*",
+          "price": "\\d+\\..*",
           "item_variant": ".*",
-          "index": "\\d+(.\\d+)?"
+          "index": "\\d+(.\\d+)?",
+          "dimension40": "/groupchat - bottom sheet"
         }
       ],
       "item_list": "/groupchat - bottom sheet"
