@@ -9,12 +9,10 @@ import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
-import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProduct
+import com.tokopedia.tkpd.flashsale.domain.entity.*
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
-import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleDetailForSellerUseCase
-import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSubmittedProductListUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.*
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingRejectedItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
@@ -27,13 +25,18 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
 class CampaignDetailViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getFlashSaleDetailForSellerUseCase: GetFlashSaleDetailForSellerUseCase,
-    private val getFlashSaleSubmittedProductListUseCase: GetFlashSaleSubmittedProductListUseCase
+    private val getFlashSaleSubmittedProductListUseCase: GetFlashSaleSubmittedProductListUseCase,
+    private val doFlashSaleProductReserveUseCase: DoFlashSaleProductReserveUseCase,
+    private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
+    private val doFlashSaleSellerRegistrationUseCase: DoFlashSaleSellerRegistrationUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
     private var _campaign = MutableLiveData<Result<FlashSale>>()
@@ -44,13 +47,30 @@ class CampaignDetailViewModel @Inject constructor(
     val submittedProduct: LiveData<Result<List<DelegateAdapterItem>>>
         get() = _submittedProduct
 
-    private var _selectedItemsId = MutableLiveData<List<Long>>(listOf())
-    val selectedItemsId: LiveData<List<Long>>
-        get() = _selectedItemsId
+    private var _selectedProducts = MutableLiveData<List<Pair<Long, Long>>>(listOf())
+    val selectedProducts: LiveData<List<Pair<Long, Long>>>
+        get() = _selectedProducts
+
+    private val _productReserveResult = MutableLiveData<Pair<ProductReserveResult, String>>()
+    val productReserveResult: LiveData<Pair<ProductReserveResult, String>>
+        get() = _productReserveResult
+
+    private var _productDeleteResult = MutableLiveData<ProductDeleteResult>()
+    val productDeleteResult: LiveData<ProductDeleteResult>
+        get() = _productDeleteResult
+
+    private var _flashSaleRegistrationResult = MutableLiveData<FlashSaleRegistrationResult>()
+    val flashSaleRegistrationResult: LiveData<FlashSaleRegistrationResult>
+        get() = _flashSaleRegistrationResult
+
+    private val _error = MutableLiveData<Throwable>()
+    val error: LiveData<Throwable>
+        get() = _error
 
     private var campaignStatus = FlashSaleStatus.NO_REGISTERED_PRODUCT
-    private var selectedItemIds = mutableListOf<Long>()
+    private var selectedItems = mutableListOf<Pair<Long, Long>>()
     private var isOnCheckboxState = false
+    private var isTriggeredFromDelete = false
 
     companion object {
         private const val PAGE_SIZE = 10
@@ -58,6 +78,18 @@ class CampaignDetailViewModel @Inject constructor(
         private const val ADD_PRODUCT_TITLE = "Tambah Produk"
         private const val SELECTION_PROCESS_TITLE = "Proses Seleksi"
         private const val ACTIVE_PROMOTION_TITLE = "Promosi Aktif"
+    }
+
+    fun register(campaignId: Long) {
+        launchCatchError(
+            block = {
+                val result = doFlashSaleSellerRegistrationUseCase.execute(campaignId)
+                _flashSaleRegistrationResult.postValue(result)
+            },
+            onError = { error ->
+                _error.postValue(error)
+            }
+        )
     }
 
     fun getCampaignDetail(campaignId: Long) {
@@ -93,6 +125,42 @@ class CampaignDetailViewModel @Inject constructor(
             },
             onError = { error ->
                 _submittedProduct.postValue(Fail(error))
+            }
+        )
+    }
+
+    fun reserveProduct(campaignId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val reservationId = userSession.shopId + Date().time.toString()
+                val param = DoFlashSaleProductReserveUseCase.Param(
+                    campaignId = campaignId,
+                    reservationId = reservationId,
+                    productData = selectedItems
+                )
+                val result = doFlashSaleProductReserveUseCase.execute(param)
+                _productReserveResult.postValue(Pair(result, reservationId))
+            },
+            onError = { error ->
+                _error.postValue(error)
+            }
+        )
+    }
+
+    fun deleteProduct(campaignId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val params = DoFlashSaleProductDeleteUseCase.Param(
+                    campaignId = campaignId,
+                    productIds = selectedItems.map { it.first }
+                )
+                val result = doFlashSaleProductDeleteUseCase.execute(params)
+                _productDeleteResult.postValue(result)
+            },
+            onError = { error ->
+                _error.postValue(error)
             }
         )
     }
@@ -347,19 +415,25 @@ class CampaignDetailViewModel @Inject constructor(
         return startDate == endDate
     }
 
-    fun setSelectedItem(selectedItemId: Long) {
-        val isExist = selectedItemIds.any { it == selectedItemId }
+    fun setSelectedItem(selectedItem: Pair<Long, Long>) {
+        val isExist = this.selectedItems.any { it == selectedItem }
         if (isExist) {
             return
         } else {
-            selectedItemIds.add(selectedItemId)
-            _selectedItemsId.value = selectedItemIds
+            this.selectedItems.add(selectedItem)
+            _selectedProducts.value = this.selectedItems
         }
     }
 
-    fun removeSelectedItem(selectedItemId: Long) {
-        selectedItemIds.remove(selectedItemId)
-        _selectedItemsId.value = selectedItemIds
+    fun removeSelectedItem(selectedItemId: Pair<Long, Long>) {
+        selectedItems.remove(selectedItemId)
+        _selectedProducts.value = selectedItems
+    }
+
+    fun removeAllSelectedItems() {
+        selectedItems.clear()
+        setCheckBoxStateStatus(false)
+        setDeleteStateStatus(false)
     }
 
     fun getCampaignStatus(): FlashSaleStatus {
@@ -376,5 +450,13 @@ class CampaignDetailViewModel @Inject constructor(
 
     fun setCheckBoxStateStatus(isShown: Boolean) {
         this.isOnCheckboxState = isShown
+    }
+
+    fun isTriggeredFromDelete(): Boolean {
+        return this.isTriggeredFromDelete
+    }
+
+    fun setDeleteStateStatus(isTriggered: Boolean) {
+        this.isTriggeredFromDelete = isTriggered
     }
 }

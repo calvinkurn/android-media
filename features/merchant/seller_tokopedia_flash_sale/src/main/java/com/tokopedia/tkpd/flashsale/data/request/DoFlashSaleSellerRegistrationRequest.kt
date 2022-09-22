@@ -2,11 +2,9 @@ package com.tokopedia.tkpd.flashsale.data.request
 
 import com.google.gson.annotations.SerializedName
 
-data class DoFlashSaleProductDeleteRequest(
+data class DoFlashSaleSellerRegistrationRequest(
     @SerializedName("request_header")
     val requestHeader: CampaignParticipationRequestHeader,
     @SerializedName("campaign_id")
-    val campaignId: Long,
-    @SerializedName("product_ids")
-    val productIds: List<Long>
+    val campaignId: Long
 )

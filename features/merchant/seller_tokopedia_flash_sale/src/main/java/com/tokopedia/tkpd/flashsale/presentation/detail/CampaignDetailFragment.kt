@@ -12,21 +12,22 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
-import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_MONTH_ONLY
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
+import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
-import com.tokopedia.campaign.utils.extension.routeToUrl
-import com.tokopedia.header.HeaderUnify
+import com.tokopedia.campaign.utils.extension.doOnDelayFinished
+import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
-import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
@@ -43,10 +44,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.OnSel
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.WaitingForSelectionDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
-import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
-import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
-import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerFragment
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -61,6 +59,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         private const val ONGOING_TAB = "ongoing"
         private const val FINISHED_TAB = "finished"
         private const val PAGE_SIZE = 10
+        private const val DELAY = 1000L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
         private const val EMPTY_SUBMITTED_PRODUCT_URL =
@@ -162,9 +161,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeCampaignDetail()
-        loadCampaignDetailData()
         setupChooseProductRedirection()
+        observeCampaignDetail()
+        observeProductReserveResult()
+        observeDeletedProductResult()
+        observeCampaignRegistrationResult()
+        loadCampaignDetailData()
     }
 
     private fun observeCampaignDetail() {
@@ -186,23 +188,75 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             hideLoading()
             when (submittedProduct) {
                 is Success -> {
-                    productAdapter.addItems(submittedProduct.data)
+                    if (viewModel.isTriggeredFromDelete()) {
+                        productAdapter.submit(submittedProduct.data)
+                    } else {
+                        productAdapter.addItems(submittedProduct.data)
+                    }
                     setupSubmittedProductListData()
                 }
                 is Fail -> {
                     showGlobalError()
                 }
             }
+            viewModel.removeAllSelectedItems()
         }
     }
 
     private fun observeSelectedProductData() {
-        viewModel.selectedItemsId.observe(viewLifecycleOwner) { ids ->
+        viewModel.selectedProducts.observe(viewLifecycleOwner) { products ->
             cdpBodyBinding?.tpgSelectedProductCount?.text =
                 getString(
                     R.string.stfs_choosen_product_count_placeholder,
-                    ids.count()
+                    products.count()
                 )
+        }
+    }
+
+    private fun observeProductReserveResult() {
+        viewModel.productReserveResult.observe(viewLifecycleOwner) { result ->
+            val campaignId = flashSaleId
+            val reservationId = result.second
+            binding?.btnEdit?.isLoading = false
+            if (result.first.isSuccess) {
+                //TODO: Navigate to atur product page
+            } else {
+                showErrorToaster(result.first.errorMessage)
+            }
+        }
+    }
+
+    private fun observeDeletedProductResult() {
+        viewModel.productDeleteResult.observe(viewLifecycleOwner) { result ->
+            doOnDelayFinished(DELAY) {
+                if (result.isSuccess) {
+                    val selectedProductCount = viewModel.selectedProducts.value?.count()
+                    binding?.run {
+                        cardBottomButtonGroup.showToaster(
+                            getString(
+                                R.string.stfs_success_delete_product_message,
+                                selectedProductCount
+                            )
+                        )
+                    }
+                } else {
+                    showErrorToaster(result.errorMessage)
+                }
+                loadSubmittedProductListData(Int.ZERO)
+            }
+        }
+    }
+
+    private fun observeCampaignRegistrationResult() {
+        viewModel.flashSaleRegistrationResult.observe(viewLifecycleOwner) { result ->
+            doOnDelayFinished(DELAY) {
+                binding?.btnRegister?.isLoading = false
+                if (result.isSuccess) {
+                    navigateToChooseProductPage()
+                } else {
+                    showErrorToaster(result.errorMessage)
+                }
+            }
         }
     }
 
@@ -294,7 +348,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             val startSubmissionDate = flashSale.submissionStartDateUnix.formatTo(
                 DATE_MONTH_ONLY
             )
-            val endSubmissionDate = flashSale.submissionEndDateUnix.formatTo(DATE_MONTH_ONLY)
+            val endSubmissionDate = flashSale.submissionEndDateUnix.formatTo(DATE_YEAR_PRECISION)
             tgRegisterPeriod.text = getString(
                 R.string.register_period_value_placeholder_2,
                 startSubmissionDate,
@@ -373,6 +427,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 getString(R.string.stfs_title_ticker_upcoming_cdp_registration_close_state)
             tickerHeader.setTextDescription(getString(R.string.stfs_description_ticker_upcoming_cdp_registration_close_state))
             tgCampaignStatus.text = getString(R.string.registration_closed_in_label)
+            timer.gone()
         }
     }
 
@@ -435,14 +490,19 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val targetDate = flashSale.submissionEndDateUnix
         val onTimerFinished = { binding.timer.gone() }
         binding.timer.timerFormat = TimerUnifySingle.FORMAT_AUTO
-        binding.timer.targetDate = targetDate.removeTimeZone().toCalendar()
+        binding.timer.targetDate = targetDate.toCalendar()
         binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
         binding.timer.onFinish = onTimerFinished
     }
 
     private fun setupUpcomingButton() {
         binding?.run {
-            btnRegister.text = getString(R.string.label_register)
+            btnRegister.apply {
+                text = getString(R.string.label_register)
+                setOnClickListener {
+                    registerToCampaign()
+                }
+            }
             imageProductEligible.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
         }
     }
@@ -540,11 +600,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupChooseProductRedirection() {
         binding?.btnRegister?.setOnClickListener {
-            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId)
+            navigateToChooseProductPage()
         }
         upcomingCdpMidBinding?.btnCheckReason?.setOnClickListener {
-            ChooseProductActivity.start(context?: return@setOnClickListener, flashSaleId)
+            navigateToChooseProductPage()
         }
+    }
+
+    private fun navigateToChooseProductPage() {
+        ChooseProductActivity.start(context ?: return, flashSaleId)
     }
 
     private fun setWaitingForSelectionMidSection(flashSale: FlashSale) {
@@ -579,7 +643,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 getString(
                     R.string.product_eligible_for_selection_end_date_placeholder,
                     flashSale.reviewEndDateUnix.formatTo(
-                        DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
+                        DATE_YEAR_PRECISION
+                    ),
+                    flashSale.reviewEndDateUnix.formatTo(
+                        TIME_MINUTE_PRECISION_WITH_TIMEZONE
                     )
                 )
             )
@@ -608,7 +675,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 getString(
                     R.string.product_eligible_start_date_placeholder,
                     flashSale.startDateUnix.formatTo(
-                        DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
+                        DATE_YEAR_PRECISION
+                    ),
+                    flashSale.startDateUnix.formatTo(
+                        TIME_MINUTE_PRECISION_WITH_TIMEZONE
                     )
                 )
             )
@@ -652,7 +722,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun setupRegisteredTimer(binding: StfsCdpRegisteredMidBinding, flashSale: FlashSale) {
         val targetDate = flashSale.submissionEndDateUnix
         binding.timerRegistered.timerFormat = TimerUnifySingle.FORMAT_AUTO
-        binding.timerRegistered.targetDate = targetDate.removeTimeZone().toCalendar()
+        binding.timerRegistered.targetDate = targetDate.toCalendar()
         binding.timerRegistered.timerVariant = TimerUnifySingle.VARIANT_GENERAL
     }
 
@@ -682,8 +752,18 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             cardProductEligible.gone()
             cardBottomButtonGroup.isVisible = viewModel.getAddProductButtonVisibility()
             btnRegister.text = getString(R.string.stfs_add_product)
-            btnDelete.text = getString(R.string.stfs_label_delete)
-            btnEdit.text = getString(R.string.stfs_label_edit)
+            btnDelete.apply {
+                text = getString(R.string.stfs_label_delete)
+                setOnClickListener {
+                    showDeleteDialog()
+                }
+            }
+            btnEdit.apply {
+                text = getString(R.string.stfs_label_edit)
+                setOnClickListener {
+                    reserveProduct()
+                }
+            }
             if (isShown) {
                 btnRegister.gone()
                 btnDelete.visible()
@@ -697,13 +777,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onCheckBoxClicked(itemPosition: Int, isCheckBoxChecked: Boolean) {
-        val selectedProduct = productAdapter.getItems()[itemPosition]
-        val selectedProductId = selectedProduct.id() as Long
+        val selectedProduct = productAdapter.getItems().filterIsInstance<WaitingForSelectionItem>()
+        val selectedProductId = selectedProduct[itemPosition].productId
+        val selectedProductCriteriaId = selectedProduct[itemPosition].productCriteria.criteriaId
+        val param = Pair(selectedProductId, selectedProductCriteriaId)
 
         if (isCheckBoxChecked) {
-            viewModel.setSelectedItem(selectedProductId)
+            viewModel.setSelectedItem(param)
         } else {
-            viewModel.removeSelectedItem(selectedProductId)
+            viewModel.removeSelectedItem(param)
         }
     }
 
@@ -1043,6 +1125,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     /**
      * Reusable Method
      */
+
+    private fun registerToCampaign() {
+        binding?.btnRegister?.isLoading = true
+        viewModel.register(flashSaleId)
+    }
+
     private fun loadCampaignDetailData() {
         showLoading()
         viewModel.getCampaignDetail(flashSaleId)
@@ -1050,6 +1138,37 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun loadSubmittedProductListData(offset: Int) {
         viewModel.getSubmittedProduct(flashSaleId, offset)
+    }
+
+    private fun reserveProduct() {
+        binding?.btnEdit?.isLoading = true
+        viewModel.reserveProduct(flashSaleId)
+    }
+
+    private fun showDeleteDialog() {
+        val context = context ?: return
+        val selectedProductCount = viewModel.selectedProducts.value?.count()
+        val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.run {
+            setTitle(getString(R.string.stfs_delete_dialog_title, selectedProductCount))
+            setDescription(getString(R.string.stfs_delete_dialog_description))
+            setPrimaryCTAText(getString(R.string.stfs_delete_dialog_primary_cta_text))
+            setSecondaryCTAText(getString(R.string.stfs_delete_dialog_secondary_cta_text))
+            setPrimaryCTAClickListener {
+                dismiss()
+                showLoading()
+                deleteProduct()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+            show()
+        }
+    }
+
+    private fun deleteProduct() {
+        viewModel.setDeleteStateStatus(true)
+        viewModel.deleteProduct(flashSaleId)
     }
 
     private fun setHeaderCampaignPeriod(
@@ -1104,6 +1223,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 else -> true
             }
 
+            tpgSelectedProductCount.invisible()
+            tpgProductCount.visible()
+            btnSelectAllProduct.text = getString(R.string.stfs_choose_all_product_label)
             btnSelectAllProduct.isVisible = isShowButtonToggle
             tpgProductCount.isVisible = isShowProductListHeader
             tpgRegisterBodyTitle.isVisible = isShowProductListHeader
@@ -1163,7 +1285,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             adapter = productAdapter
         }
 
-        binding?.nsvContent?.enablePaging() {
+        binding?.nsvContent?.enablePaging {
             val isInCheckBoxState = viewModel.isOnCheckBoxState()
             val hasNextPage = productAdapter.itemCount >= PAGE_SIZE
             if (hasNextPage && !isInCheckBoxState) {
@@ -1182,10 +1304,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun hideLoading() {
-        binding?.run {
-            loader.gone()
-            llContent.show()
-            globalError.gone()
+        doOnDelayFinished(DELAY) {
+            binding?.run {
+                loader.gone()
+                llContent.show()
+                globalError.gone()
+            }
         }
     }
 
@@ -1200,6 +1324,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     loadCampaignDetailData()
                 }
             }
+        }
+    }
+
+    private fun showErrorToaster(msg: String = getString(R.string.stfs_global_error_message)) {
+        binding?.run {
+            cardBottomButtonGroup.showToasterError(msg)
         }
     }
 
