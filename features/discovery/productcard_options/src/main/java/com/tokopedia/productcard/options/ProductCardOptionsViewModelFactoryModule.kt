@@ -17,7 +17,6 @@ import javax.inject.Named
 
 @Module(includes = [
     WishlistUseCaseModule::class,
-    TopAdsWishlistUseCaseModule::class,
     UserSessionModule::class
 ])
 internal class ProductCardOptionsViewModelFactoryModule(

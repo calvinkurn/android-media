@@ -18,7 +18,6 @@ internal open class ProductCardOptionsViewModelTestFixtures {
 
     protected val addToWishlistV2UseCase = mockk<AddToWishlistV2UseCase>(relaxed = true)
     protected val deleteWishlistV2UseCase = mockk<DeleteWishlistV2UseCase>(relaxed = true)
-    protected val topAdsWishlistUseCase = mockk<UseCase<Boolean>>(relaxed = true)
     protected val addToCartUseCase = mockk<UseCase<AddToCartDataModel>>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected lateinit var productCardOptionsViewModel: ProductCardOptionsViewModel

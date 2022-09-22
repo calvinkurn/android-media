@@ -2,8 +2,6 @@ package com.tokopedia.productcard.options
 
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.productcard.options.testutils.TestException
-import com.tokopedia.productcard.options.testutils.complete
-import com.tokopedia.productcard.options.testutils.error
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase.WISHSLIST_URL
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -12,7 +10,6 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import io.mockk.*
 import org.junit.Test
-import rx.Subscriber
 
 internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTestFixtures() {
     
@@ -213,38 +210,6 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         )
     }
 
-    @Test
-    fun `Add Wishlist TopAds Product Success`() {
-        val userId = "123456"
-        val topAdsWishlistUrl = "https://dummy_topads_url_for_wishlist"
-        val topAdsWishlistRequestParams = slot<RequestParams>()
-        val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(
-                hasWishlist = true,
-                isWishlisted = false,
-                productId = "12345",
-                isTopAds = true,
-                topAdsWishlistUrl = topAdsWishlistUrl
-        )
-
-        `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
-        `Given user is logged in`(userId)
-        `Given add TopAds wishlist API will be successful`(topAdsWishlistRequestParams)
-
-        `When Click save to wishlist`()
-
-        `Then verify TopAds wishlist API is called with correct parameters`(topAdsWishlistRequestParams, topAdsWishlistUrl)
-        `Then should post wishlist event`()
-        `Then assert product card options model has wishlist result with isUserLoggedIn = true, isAddWishlist = true, and isSuccess = true`()
-    }
-
-    private fun `Given add TopAds wishlist API will be successful`(topAdsWishlistRequestParams: CapturingSlot<RequestParams>) {
-        every {
-            topAdsWishlistUseCase.execute(capture(topAdsWishlistRequestParams), any())
-        } answers {
-            secondArg<Subscriber<Boolean>>().complete(true)
-        }
-    }
-
     private fun `Then verify TopAds wishlist API is called with correct parameters`(
             topAdsWishlistRequestParams: CapturingSlot<RequestParams>,
             topAdsWishlistUrl: String
@@ -253,38 +218,6 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         val wishlistUrl = requestParams.getString(WISHSLIST_URL, "")
 
         wishlistUrl shouldBe topAdsWishlistUrl
-    }
-
-    @Test
-    fun `Add Wishlist TopAds Product Failed and throw Exception`() {
-        val userId = "123456"
-        val topAdsWishlistUrl = "https://dummy_topads_url_for_wishlist"
-        val testException = TestException()
-        val topAdsWishlistRequestParams = slot<RequestParams>()
-        val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(
-                hasWishlist = true,
-                isWishlisted = false,
-                productId = "12345",
-                isTopAds = true,
-                topAdsWishlistUrl = topAdsWishlistUrl
-        )
-
-        `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
-        `Given user is logged in`(userId)
-        `Given add TopAds wishlist API will fail`(topAdsWishlistRequestParams, testException)
-
-        `When Click save to wishlist`()
-
-        `Then assert error stack trace is printed`(testException)
-        `Then should post wishlist event`()
-    }
-
-    private fun `Given add TopAds wishlist API will fail`(topAdsWishlistRequestParams: CapturingSlot<RequestParams>, testException: Exception) {
-        every {
-            topAdsWishlistUseCase.execute(capture(topAdsWishlistRequestParams), any())
-        } answers {
-            secondArg<Subscriber<Boolean>>().error(testException)
-        }
     }
 
     @Test
