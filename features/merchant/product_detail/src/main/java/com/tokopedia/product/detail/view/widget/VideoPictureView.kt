@@ -30,6 +30,8 @@ import com.tokopedia.product.detail.view.adapter.ProductMainThumbnailListener
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.ThumbnailSmoothScroller
+import com.tokopedia.product.detail.view.util.animateCollapse
+import com.tokopedia.product.detail.view.util.animateExpand
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -43,7 +45,6 @@ class VideoPictureView @JvmOverloads constructor(
     private var mListener: DynamicProductDetailListener? = null
     private var videoPictureAdapter: VideoPictureAdapter? = null
     private var thumbnailAdapter: ProductMainThumbnailAdapter? = null
-    private var animator: ThumbnailAnimator? = null
     private var binding: WidgetVideoPictureBinding =
         WidgetVideoPictureBinding.inflate(LayoutInflater.from(context))
     private var pagerSelectedLastPosition = 0
@@ -59,13 +60,13 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun showThumbnail() {
         if (binding.pdpMainThumbnailRv.visibility == View.GONE) {
-            animator?.animateShow()
+            binding.pdpMainThumbnailRv.animateExpand()
         }
     }
 
     private fun hideThumbnail() {
         if (binding.pdpMainThumbnailRv.visibility == View.VISIBLE) {
-            animator?.animateHide()
+            binding.pdpMainThumbnailRv.animateCollapse()
         }
     }
 
@@ -170,13 +171,11 @@ class VideoPictureView @JvmOverloads constructor(
             false
         )
         binding.pdpMainThumbnailRv.adapter = thumbnailAdapter
-        animator = ThumbnailAnimator(binding.pdpMainThumbnailRv)
     }
 
     private fun isRollenceHideThumbnail(): Boolean {
         if (mListener?.showThumbnailImage() == false) {
             thumbnailAdapter = null
-            animator = null
             binding.pdpMainThumbnailRv.layoutParams.height = 0
             binding.pdpMainThumbnailRv.hide()
             return true
