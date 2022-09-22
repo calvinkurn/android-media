@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -77,6 +79,11 @@ class ManageProductNonVariantMultilocFragment :
     override fun getHeaderUnifyTitle() = getString(R.string.manageproductnonvar_title)
 
     override fun onSubmitButtonClicked() {
+        val bundle = Bundle()
+        val intent = Intent()
+        bundle.putParcelable(BUNDLE_KEY_PRODUCT, viewModel.product.value)
+        intent.putExtras(bundle)
+        activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
 
