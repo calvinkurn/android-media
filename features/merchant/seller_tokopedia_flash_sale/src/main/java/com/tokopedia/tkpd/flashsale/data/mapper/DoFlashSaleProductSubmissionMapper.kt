@@ -6,10 +6,11 @@ import javax.inject.Inject
 
 class DoFlashSaleProductSubmissionMapper @Inject constructor() {
 
-    fun map(response: DoFlashSaleProductSubmissionResponse): ProductSubmissionResult {
+    fun map(response: DoFlashSaleProductSubmissionResponse, totalSubmittedProduct: Long): ProductSubmissionResult {
         return ProductSubmissionResult(
             response.doFlashSaleProductSubmission.responseHeader.success,
-            response.doFlashSaleProductSubmission.responseHeader.errorMessage.firstOrNull().orEmpty()
+            response.doFlashSaleProductSubmission.responseHeader.errorMessage.firstOrNull().orEmpty(),
+            totalSubmittedProduct
         )
     }
 }

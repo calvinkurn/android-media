@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shimmering_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmer_product_image"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:loader_type="rect"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmer_right"
+        android:layout_width="0dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="14dp"
+        app:loader_type="rect"
+        app:layout_constraintLeft_toRightOf="@id/shimmer_product_image"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmer_small_bottom_1"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="8dp"
+        app:loader_type="rect"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_weight="0.6"
+        app:layout_constraintLeft_toRightOf="@id/shimmer_product_image"
+        app:layout_constraintRight_toLeftOf="@id/shimmer_small_bottom_2"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_right" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmer_small_bottom_2"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="8dp"
+        app:loader_type="rect"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintHorizontal_weight="0.2"
+        app:layout_constraintLeft_toRightOf="@id/shimmer_small_bottom_1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_right" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

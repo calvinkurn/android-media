@@ -33,6 +33,7 @@ import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChoosePr
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.MAX_PER_PAGE
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.viewmodel.ChooseProductViewModel
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
+import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListActivity
 import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -45,10 +46,11 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
 
     companion object {
         @JvmStatic
-        fun newInstance(flashSaleId: Long): ChooseProductFragment {
+        fun newInstance(flashSaleId: Long, tabName: String): ChooseProductFragment {
             val fragment = ChooseProductFragment()
             val bundle = Bundle()
             bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
+            bundle.putString(BundleConstant.BUNDLE_KEY_TAB_NAME, tabName)
             fragment.arguments = bundle
             return fragment
         }
@@ -61,6 +63,9 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
 
     private val flashSaleId by lazy {
         arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+    }
+    private val tabName by lazy {
+        arguments?.getString(BundleConstant.BUNDLE_KEY_TAB_NAME).orEmpty()
     }
     private val chooseProductAdapter = ChooseProductAdapter()
     private val criteriaSelectionAdapter = CriteriaSelectionAdapter(this)
@@ -285,9 +290,21 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
 
     private fun handleReserveResult(reserveResult: ProductReserveResult) {
         if (reserveResult.isSuccess) {
-            activity?.finish()
+            redirectToFlashSaleManageProductListPage(reserveResult.reservationId)
         } else {
             view?.showToasterError(reserveResult.errorMessage)
+        }
+    }
+
+    private fun redirectToFlashSaleManageProductListPage(reservationId: String) {
+        activity?.finish()
+        context?.let {
+            FlashSaleManageProductListActivity.start(
+                it,
+                reservationId,
+                flashSaleId.toString(),
+                tabName
+            )
         }
     }
 
