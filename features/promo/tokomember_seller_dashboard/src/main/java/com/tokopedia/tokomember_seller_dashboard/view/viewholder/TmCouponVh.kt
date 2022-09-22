@@ -18,19 +18,7 @@ import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallbac
 import com.tokopedia.tokomember_seller_dashboard.model.Actions
 import com.tokopedia.tokomember_seller_dashboard.model.TripleDotsItem
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
-import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DELETED
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_ENDED
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_MEMBER
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_NOT_STARTED
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_ON_GOING
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_PROCESSING
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_STOPPED
-import com.tokopedia.tokomember_seller_dashboard.util.COUPON_VIP
-import com.tokopedia.tokomember_seller_dashboard.util.DELETE
-import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
-import com.tokopedia.tokomember_seller_dashboard.util.EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.STOP
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
 import com.tokopedia.unifycomponents.ImageUnify
@@ -195,10 +183,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
                         val actions = Actions()
                         val tripleDots = arrayListOf<TripleDotsItem?>()
                         tripleDots.add(TripleDotsItem("Tambah Kuota", ADD_QUOTA))
-                        /*
-                            Not in phase 1
-                            tripleDots.add(TripleDotsItem("Bakikan", SHARE))
-                        */
+                        tripleDots.add(TripleDotsItem("Bagikan", SHARE))
                         tripleDots.add(TripleDotsItem("Hentikan Kupon", STOP))
                         actions.tripleDots = tripleDots
                         item.voucherTypeFormatted?.let { it2 ->

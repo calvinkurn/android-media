@@ -536,6 +536,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
         val couponData = tmCouponDetailVm.couponDetailResult.value?.data?.merchantPromotionGetMVDataByID?.data
        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
            id = couponData?.galadrielVoucherId.toString()
+           name = couponData?.voucherName.orEmpty()
            type = LinkerData.MERCHANT_VOUCHER
            uri  = couponData?.weblink.orEmpty()
            deepLink = couponData?.applink.orEmpty()
@@ -582,7 +583,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             }
         }
         private val layout = R.layout.tm_coupon_detail_container
-        private const val AVATAR_IMAGE = "https://s3-alpha-sig.figma.com/img/cbf3/9bb1/cbcb65989d6c190137df523b9fdc8c6d?Expires=1664150400&Signature=Y94MI9p13XBDqPCBDfQJJfLmoVvrgcvF8qE5E8agot48lwtGUdE6aecszIoQFkRxynCBklr~DP6BMxhNNlE6lfksUsA4uwvz8R8A9GBGiorVELMtwOsS95xd6SvYfoIz1FXsSAggw9~CoeH0ZihcIyPdpF4dQXYCP8GD2AbuPiMIfiD3eACNgGFOye5pzsXnu~ch5K9LhFklA3iiRIn-UjfsyPYwLBhVpsY0U5T8bUZJB46O8KlBaFkNEUu2m32rfMZKt9pehXLZcCxFQM3o8W58Rg5rr2L3dGZbBkUdCAS3Sfjf9rUhEH3h8eDMq7waIpVwqsiW~t3Vs2hiomUHMQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
+        const val AVATAR_IMAGE = "https://s3-alpha-sig.figma.com/img/cbf3/9bb1/cbcb65989d6c190137df523b9fdc8c6d?Expires=1664150400&Signature=Y94MI9p13XBDqPCBDfQJJfLmoVvrgcvF8qE5E8agot48lwtGUdE6aecszIoQFkRxynCBklr~DP6BMxhNNlE6lfksUsA4uwvz8R8A9GBGiorVELMtwOsS95xd6SvYfoIz1FXsSAggw9~CoeH0ZihcIyPdpF4dQXYCP8GD2AbuPiMIfiD3eACNgGFOye5pzsXnu~ch5K9LhFklA3iiRIn-UjfsyPYwLBhVpsY0U5T8bUZJB46O8KlBaFkNEUu2m32rfMZKt9pehXLZcCxFQM3o8W58Rg5rr2L3dGZbBkUdCAS3Sfjf9rUhEH3h8eDMq7waIpVwqsiW~t3Vs2hiomUHMQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
     }
 
     override fun refreshCouponList(action: String) {
