@@ -9,7 +9,8 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 
 class ManageProductNonVariantAdapter: RecyclerView.Adapter<ManageProductNonVariantAdapter.CriteriaViewHolder>() {
 
-    private var data: List<ReservedProduct.Product> = emptyList()
+    private var productCriteria: ReservedProduct.Product.ProductCriteria? = null
+    private var warehouses: List<ReservedProduct.Product.Warehouse> = emptyList()
     private var listener: ManageProductNonVariantAdapterListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
@@ -18,18 +19,21 @@ class ManageProductNonVariantAdapter: RecyclerView.Adapter<ManageProductNonVaria
         return CriteriaViewHolder(binding, listener)
     }
 
-    override fun getItemCount() = data.size
+    override fun getItemCount() = warehouses.size
 
     override fun onBindViewHolder(holder: CriteriaViewHolder, position: Int) {
-        data.getOrNull(position)?.let { menu ->
-            holder.bind(menu)
+        warehouses.getOrNull(position)?.let {
+            holder.bind(productCriteria ?: return, it)
         }
     }
 
-    fun setDataList(newData: List<ReservedProduct.Product>) {
-        data = newData
-        notifyItemRangeChanged(Int.ZERO, newData.size)
+    fun setDataList(newData: ReservedProduct.Product) {
+        warehouses = newData.warehouses
+        productCriteria = newData.productCriteria
+        notifyItemRangeChanged(Int.ZERO, newData.warehouses.size)
     }
+
+    fun getWarehouses() = warehouses
 
     fun setListener(listener: ManageProductNonVariantAdapterListener) {
         this.listener = listener
@@ -39,10 +43,9 @@ class ManageProductNonVariantAdapter: RecyclerView.Adapter<ManageProductNonVaria
         private val binding: StfsItemManageProductNonvariantBinding,
         private val listener: ManageProductNonVariantAdapterListener?
     ) : ManageProductNonVariantBaseViewHolder(binding.root, listener) {
-        fun bind(item: ReservedProduct.Product) {
+        fun bind(criteria: ReservedProduct.Product.ProductCriteria, warehouse: ReservedProduct.Product.Warehouse) {
             binding.mainLayout.apply {
-                val discount = item.warehouses.firstOrNull()?.discountSetup
-                val criteria = item.productCriteria
+                val discount = warehouse.discountSetup
                 setupInputField(criteria, discount)
                 setupListener(criteria, discount)
             }

@@ -83,10 +83,8 @@ class ManageProductNonVariantMultilocFragment :
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
         product?.let {
             val warehouses = inputAdapter.getDataList()
-            val prd = it.copy(
-                warehouses = warehouses
-            )
-            viewModel.setProduct(prd)
+            val newProduct = it.copy(warehouses = warehouses)
+            viewModel.setProduct(newProduct)
         }
         return viewModel.validateInput(criteria, discountSetup)
     }
