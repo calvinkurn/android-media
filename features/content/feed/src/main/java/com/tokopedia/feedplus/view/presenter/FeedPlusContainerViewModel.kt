@@ -1,7 +1,9 @@
 package com.tokopedia.feedplus.view.presenter
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentResponse
 import com.tokopedia.feedplus.data.pojo.FeedTabs
@@ -12,22 +14,20 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedplus.domain.usecase.GetContentFormForFeedUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import javax.inject.Inject
 
-class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDispatcher,
-                                                     private val useCase: GraphqlUseCase<FeedTabs.Response>,
-                                                     private val getWhitelistUseCase: GetWhitelistUseCase,
-                                                     private val getContentFormForFeedUseCase: GetContentFormForFeedUseCase)
-    : BaseViewModel(baseDispatcher){
+class FeedPlusContainerViewModel @Inject constructor(
+    private val dispatchers: CoroutineDispatchers,
+    private val useCase: GraphqlUseCase<FeedTabs.Response>,
+    private val getContentFormForFeedUseCase: GetContentFormForFeedUseCase,
+    private val repo: FeedPlusRepository
+) : BaseViewModel(dispatchers.main){
 
     val tabResp = MutableLiveData<Result<FeedTabs>>()
     val whitelistResp = MutableLiveData<Result<WhitelistDomain>>()
@@ -77,26 +77,13 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
 
     }
 
-    fun getWhitelist(authorListEmpty: Boolean) {
-        getWhitelistUseCase.clearRequest()
-        getWhitelistUseCase.setCacheStrategy(authorListEmpty)
-        getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
-                GetWhitelistUseCase.createRequestParams(WHITELIST_ENTRY_POINT))
-        )
-        getWhitelistUseCase.execute(RequestParams.EMPTY, object: Subscriber<GraphqlResponse>() {
-            override fun onNext(t: GraphqlResponse) {
-                val query = t.getData<WhitelistQuery>(WhitelistQuery::class.java)
-                whitelistResp.value = Success(getWhitelistDomain(query))
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable) {
-                whitelistResp.value = Fail(e)
-            }
-        })
-
+    fun getWhitelist() {
+        viewModelScope.launchCatchError(block = {
+            val response = repo.getWhitelist()
+            whitelistResp.value = Success(getWhitelistDomain(response))
+        }) {
+            whitelistResp.value = Fail(it)
+        }
     }
 
     private fun getWhitelistDomain(query: WhitelistQuery?): WhitelistDomain {

@@ -599,7 +599,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             goToExplore()
         }
         if (userSession.isLoggedIn) {
-            viewModel.getWhitelist(authorList.isEmpty())
+            viewModel.getWhitelist()
         }
     }
 
@@ -716,7 +716,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 if (userSession.isLoggedIn) {
-                    viewModel.getWhitelist(authorList.isEmpty())
+                    viewModel.getWhitelist()
                 }
             })
         }
