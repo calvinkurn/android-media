@@ -136,6 +136,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         const val KEY_NO_IMAGE = "no image"
         const val KEY_IMAGE_DEFAULT = "default"
         const val KEY_CONTEXTUAL_IMAGE = "contextual image"
+        const val KEY_PRODUCT_ID = "productId";
+
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -494,7 +496,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 tracker.onClickRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
                 dismiss()
                 if (deeplink.isNotEmpty()) {
-                    RouteManager.route(context, ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink)
+                    val affiliateDeeplink = Uri.parse(deeplink).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString()
+                    RouteManager.route(context, affiliateDeeplink)
                 } else {
                     RouteManager.route(context, ApplinkConst.AFFILIATE)
                 }
