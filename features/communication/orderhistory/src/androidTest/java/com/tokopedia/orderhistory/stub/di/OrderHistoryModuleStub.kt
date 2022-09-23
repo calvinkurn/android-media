@@ -9,7 +9,6 @@ import com.tokopedia.orderhistory.di.OrderHistoryContext
 import com.tokopedia.orderhistory.di.OrderHistoryScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
