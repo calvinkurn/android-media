@@ -352,6 +352,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             GoToVerificationParam(
                 email = viewModel.currentEmail,
                 otpType = RegisterConstants.OtpType.OTP_TYPE_REGISTER,
+                otpMode = OTP_MODE_EMAIL,
                 source = paramSource
             )
         )
@@ -399,6 +400,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        private const val OTP_MODE_EMAIL = "email"
         private const val STRING_FORMAT_EMAIL = "%s@%s"
         private const val DELIMITER_EMAIL = "@"
         private val SCREEN_NAME = RedefineRegisterEmailFragment::class.java.simpleName
