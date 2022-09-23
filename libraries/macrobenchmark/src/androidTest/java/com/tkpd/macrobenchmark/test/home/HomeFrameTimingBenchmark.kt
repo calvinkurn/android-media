@@ -1,7 +1,10 @@
 package com.tkpd.macrobenchmark.test.home
+import android.content.Intent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.tkpd.macrobenchmark.base.BaseFrameTimingBenchmark
 import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
@@ -22,6 +25,11 @@ import org.junit.runner.RunWith
 class HomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
         MacroDevOps.setupEnvironment(MacroIntent.Session.getSessionMacroSetupIntent())
+        MacroDevOps.setupEnvironment(MacroIntent.Home.getHomeIntent().apply {
+            this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        })
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
     }
 
     override fun setupMock() {
