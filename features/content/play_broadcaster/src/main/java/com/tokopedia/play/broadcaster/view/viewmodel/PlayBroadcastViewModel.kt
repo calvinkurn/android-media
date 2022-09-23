@@ -1485,7 +1485,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     )
                 )
                 getConfiguration(_selectedAccount.value)
-            }
+            } else throw Throwable()
         }, onError = {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList() }
         })
