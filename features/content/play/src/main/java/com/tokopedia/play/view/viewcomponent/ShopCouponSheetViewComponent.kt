@@ -60,7 +60,7 @@ class ShopCouponSheetViewComponent(
                 val index = layoutManagerVoucher.findFirstCompletelyVisibleItemPosition()
                 listener.onVouchersImpressed(
                     this@ShopCouponSheetViewComponent,
-                    voucherList[index].id
+                    voucherList.getOrNull(index)?.id ?: "0"
                 )
             }
         }
