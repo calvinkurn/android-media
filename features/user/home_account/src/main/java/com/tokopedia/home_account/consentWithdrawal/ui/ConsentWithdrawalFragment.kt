@@ -35,16 +35,17 @@ class ConsentWithdrawalFragment :
     ConsentWithdrawalListener.Mandatory,
     ConsentWithdrawalListener.Optional {
 
-    private var viewBinding by autoClearedNullable<FragmentConsentWithdrawalBinding>()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @JvmField @Inject
+    var viewModelFactory: ViewModelProvider.Factory? = null
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(
-            ConsentWithdrawalViewModel::class.java
-        )
+        viewModelFactory?.let {
+            ViewModelProvider(this, it).get(
+                ConsentWithdrawalViewModel::class.java
+            )
+        }
     }
 
+    private var viewBinding by autoClearedNullable<FragmentConsentWithdrawalBinding>()
     private val consentWithdrawalAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ConsentWithdrawalAdapter(this, this)
     }
@@ -75,17 +76,17 @@ class ConsentWithdrawalFragment :
         initRecyclerView()
 
         groupId = arguments?.getInt(ApplinkConstInternalUserPlatform.GROUP_ID).orZero()
-        viewModel.getConsentPurposeByGroup(groupId)
+        viewModel?.getConsentPurposeByGroup(groupId)
     }
 
     private fun initObserver() {
-        viewModel.consentPurpose.observe(viewLifecycleOwner) {
+        viewModel?.consentPurpose?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetConsentPurposes(it.data.consents)
                 is Fail -> onFailed(it.throwable)
             }
         }
-        viewModel.submitConsentPreference.observe(viewLifecycleOwner) {
+        viewModel?.submitConsentPreference?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessSubmitConsentPreference(it.data)
                 is Fail -> onFailed(it.throwable)
@@ -190,14 +191,14 @@ class ConsentWithdrawalFragment :
 
         if (isActive) {
             showDialog {
-                viewModel.submitConsentPreference(
+                viewModel?.submitConsentPreference(
                     position,
                     data.purposeId,
                     transactionType
                 )
             }
         } else {
-            viewModel.submitConsentPreference(
+            viewModel?.submitConsentPreference(
                 position,
                 data.purposeId,
                 transactionType
@@ -224,11 +225,11 @@ class ConsentWithdrawalFragment :
         dialog?.show()
     }
 
-    override fun onDestroy() {
-        viewModel.consentPurpose.removeObservers(viewLifecycleOwner)
-        viewModel.submitConsentPreference.removeObservers(viewLifecycleOwner)
+    override fun onDestroyView() {
+        viewModel?.consentPurpose?.removeObservers(viewLifecycleOwner)
+        viewModel?.submitConsentPreference?.removeObservers(viewLifecycleOwner)
 
-        super.onDestroy()
+        super.onDestroyView()
     }
 
     companion object {
