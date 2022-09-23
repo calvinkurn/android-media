@@ -1799,8 +1799,12 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     override fun clearAllBo(clearPromoOrderData: ClearPromoOrderData) {
-        clearCacheAutoApplyStackUseCase.setParams(ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
-                orderData = clearPromoOrderData))
+        clearCacheAutoApplyStackUseCase.setParams(
+            ClearPromoRequest(
+            OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                orderData = clearPromoOrderData
+        )
+        )
         compositeSubscription.add(
                 // Do nothing on subscribe
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
@@ -1828,7 +1832,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     private fun clearBo(shop: CartShopHolderData) {
-        clearCacheAutoApplyStackUseCase.setParams(ClearPromoRequest(
+        clearCacheAutoApplyStackUseCase.setParams(
+            ClearPromoRequest(
                 serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                 orderData = ClearPromoOrderData(
                         orders = listOf(
@@ -1843,7 +1848,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                 )
                         )
                 )
-        ))
+        )
+        )
         compositeSubscription.add(clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe())
         shop.boCode = ""
     }

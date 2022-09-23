@@ -65,7 +65,9 @@ class OrderSummaryPageActivityBoUnstackTest {
         promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
 
         val validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
-            status = "OK", errorCode = "200", promoUiModel = PromoUiModel(
+            status = "OK",
+            errorCode = "200",
+            promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(
                     PromoCheckoutVoucherOrdersItemUiModel(
                         code = "CASHBACK",
@@ -83,13 +85,19 @@ class OrderSummaryPageActivityBoUnstackTest {
             assertShipmentPromoRevamp(
                 hasPromo = true,
                 promoTitle = "Tersedia Bebas Ongkir",
-                promoSubtitle = "Estimasi tiba besok - 3 Feb")
+                promoSubtitle = "Estimasi tiba besok - 3 Feb"
+            )
 
             logisticInterceptor.customRatesResponsePath = RATES_NO_TICKER_BO_RESPONSE
 
-            intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, Intent().apply {
+            intending(anyIntent()).respondWith(
+                ActivityResult(
+                    Activity.RESULT_OK,
+                    Intent().apply {
                 putExtra(ARGS_VALIDATE_USE_DATA_RESULT, validateUsePromoRevampUiModel)
-            }))
+            }
+                )
+            )
             clickButtonPromo()
             assertShipmentPromoRevamp(false)
         }

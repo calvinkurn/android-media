@@ -194,8 +194,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                                 null
                         )
                     }
-                    shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) constructBboTickerTitle(logisticPromo) else null,
-                            logisticPromoShipping = null, isApplyLogisticPromo = false)
+                    shipping = shipping.copy(
+                        logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) constructBboTickerTitle(logisticPromo) else null,
+                            logisticPromoShipping = null,
+                        isApplyLogisticPromo = false
+                    )
                 } else if (logisticPromo != null && profileShipment.isDisableChangeCourier) {
                     shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null, isApplyLogisticPromo = false)
                 } else {
@@ -673,7 +676,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     shippingRecommendationData = shippingRecommendationData,
                     isApplyLogisticPromo = false,
                     logisticPromoShipping = null,
-                    logisticPromoTickerMessage = constructBboTickerTitle(logisticPromoViewModel))
+                    logisticPromoTickerMessage = constructBboTickerTitle(logisticPromoViewModel)
+            )
         }
         return orderShipment
     }

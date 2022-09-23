@@ -11,7 +11,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
 import timber.log.Timber
 
-class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContract.View,
+class GetBoPromoCourierRecommendationSubscriber(
+    private val view: ShipmentContract.View,
                                                 private val presenter: ShipmentContract.Presenter,
                                                 private val uniqueId: String,
                                                 private val promoCode: String,
@@ -21,7 +22,8 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
                                                 private val shippingCourierConverter: ShippingCourierConverter,
                                                 private val shipmentCartItemModel: ShipmentCartItemModel,
                                                 private val isTradeInDropOff: Boolean,
-                                                private val isForceReloadRates: Boolean) : Subscriber<ShippingRecommendationData?>() {
+                                                private val isForceReloadRates: Boolean
+) : Subscriber<ShippingRecommendationData?>() {
 
     override fun onCompleted() {}
     override fun onError(e: Throwable) {
@@ -43,8 +45,11 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
                             shippingCourierUiModel.isSelected = false
                         }
                         for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                            if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == spId &&
-                                            shippingCourierUiModel.productData.shipperId == shipperId)) {
+                            if (isTradeInDropOff || (
+                                shippingCourierUiModel.productData.shipperProductId == spId &&
+                                            shippingCourierUiModel.productData.shipperId == shipperId
+                            )
+                            ) {
                                 if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                     presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode, shipmentCartItemModel)
                                     presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
@@ -55,8 +60,12 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
                                 } else {
                                     shippingCourierUiModel.isSelected = true
                                     presenter.setShippingCourierViewModelsState(shippingDurationUiModel.shippingCourierViewModelList, shipmentCartItemModel.orderNumber)
-                                    view.renderCourierStateSuccess(generateCourierItemData(shippingCourierUiModel, shippingRecommendationData, logisticPromo),
-                                            itemPosition, isTradeInDropOff, isForceReloadRates)
+                                    view.renderCourierStateSuccess(
+                                        generateCourierItemData(shippingCourierUiModel, shippingRecommendationData, logisticPromo),
+                                            itemPosition,
+                                        isTradeInDropOff,
+                                        isForceReloadRates
+                                    )
                                     return
                                 }
                             }

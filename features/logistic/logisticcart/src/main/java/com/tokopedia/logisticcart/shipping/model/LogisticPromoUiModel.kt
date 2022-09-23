@@ -9,7 +9,8 @@ import kotlinx.parcelize.Parcelize
  * Created by fajarnuha on 29/03/19.
  */
 @Parcelize
-data class LogisticPromoUiModel(val promoCode: String = "",
+data class LogisticPromoUiModel(
+    val promoCode: String = "",
                                 val title: String = "",
                                 val description: String = "",
                                 val shipperName: String = "",

@@ -434,9 +434,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         validateUsePromoRevampUiModel?.let {
             it.promoUiModel.voucherOrderUiModels.let { voucherOrders ->
                 for (voucherOrderUiModel in voucherOrders) {
-                    if (voucherOrderUiModel.shippingId > 0
-                        && voucherOrderUiModel.spId > 0
-                        && voucherOrderUiModel.type == "logistic"
+                    if (voucherOrderUiModel.shippingId > 0 &&
+                        voucherOrderUiModel.spId > 0 &&
+                        voucherOrderUiModel.type == "logistic"
                     )
                         if (voucherOrderUiModel.messageUiModel.state == "green") {
                             applyBbo(voucherOrderUiModel.code)
@@ -461,9 +461,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun applyBbo(code: String) {
-        if (orderShipment.value.logisticPromoViewModel == null
-            || orderShipment.value.logisticPromoViewModel!!.promoCode != code
-            || !orderShipment.value.isApplyLogisticPromo
+        if (orderShipment.value.logisticPromoViewModel == null ||
+            orderShipment.value.logisticPromoViewModel!!.promoCode != code ||
+            !orderShipment.value.isApplyLogisticPromo
         ) {
             orderShipment.value = orderShipment.value.copy(
                 isApplyLogisticPromo = true,

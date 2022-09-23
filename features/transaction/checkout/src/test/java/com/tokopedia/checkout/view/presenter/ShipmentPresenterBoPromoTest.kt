@@ -1191,9 +1191,11 @@ class ShipmentPresenterBoPromoTest {
     @Test
     fun `WHEN get shipping rates success THEN should render success`() {
         // Given
-        presenter.initializePresenterData(CartShipmentAddressFormData(
+        presenter.initializePresenterData(
+            CartShipmentAddressFormData(
             cod = CodModel(counterCod = 1)
-        ))
+        )
+        )
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)

@@ -224,7 +224,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     activity?.finish()
                 }
             } else {
-
                 data?.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)?.let {
                     viewModel.lastValidateUsePromoRequest = it
                 }
@@ -239,11 +238,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)?.let {
                     //reset
                     viewModel.validateUsePromoRevampUiModel = null
-                    viewModel.updatePromoStateWithoutCalculate(PromoUiModel().apply {
+                    viewModel.updatePromoStateWithoutCalculate(
+                        PromoUiModel().apply {
                         titleDescription = it.successDataModel.defaultEmptyPromoMessage
                     })
                     viewModel.autoUnApplyBBO()
-                    //refresh shipping section and calculate total
+                    // refresh shipping section and calculate total
                     viewModel.reloadRates()
                 }
             }

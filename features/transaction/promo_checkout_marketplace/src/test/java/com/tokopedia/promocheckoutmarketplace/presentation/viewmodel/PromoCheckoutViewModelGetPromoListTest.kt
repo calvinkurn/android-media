@@ -316,7 +316,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
     @Test
     fun `WHEN reload action has selected expanded BO promo THEN should be added to request param`() {
-        //given
+        // given
         val promoList = providePromoListWithBoPlusAsRecommendedPromo()
         val selectedBoPromo = promoList[1] as PromoListItemUiModel
         selectedBoPromo.uiState.isSelected = true
@@ -329,10 +329,10 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
         }
         every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
-        //when
+        // when
         viewModel.getPromoList(promoRequest, "")
 
-        //then
+        // then
         assert(promoRequest.orders[2].codes.isNotEmpty())
         assert(promoRequest.orders[2].spId > 0)
         assert(promoRequest.orders[2].shippingId > 0)
@@ -606,7 +606,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
 
     @Test
     fun `WHEN get promo list with BO info bottom sheet data complete THEN bottom sheet isVisible state should be true`() {
-        //given
+        // given
         val newResponse = provideGetPromoListResponseBoPromoInfoDataComplete()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -614,16 +614,16 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(newResponse)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.boInfoBottomSheetUiModel.value?.uiState?.isVisible == true)
     }
 
     @Test
     fun `WHEN get promo list with BO info bottom sheet data incomplete THEN bottom sheet isVisible state should be false`() {
-        //given
+        // given
         val newResponse = provideGetPromoListResponseBoPromoInfoDataIncomplete()
 
         coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
@@ -631,10 +631,10 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(newResponse)
         }
 
-        //when
+        // when
         viewModel.getPromoList(PromoRequest(), "")
 
-        //then
+        // then
         assert(viewModel.boInfoBottomSheetUiModel.value?.uiState?.isVisible == false)
     }
 
