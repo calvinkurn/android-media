@@ -2,6 +2,7 @@ package com.tokopedia.media.editor.ui.adapter
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -34,7 +35,13 @@ class EditorViewPagerAdapter(
     private val currentPlayer: Array<Player?> = Array(editorList.size) { null }
 
     fun playVideo(index: Int) {
-        currentPlayer[index]?.playWhenReady = true
+        currentPlayer[index]?.let {
+            it.playWhenReady = true
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) {
+                it.previous()
+            }
+        }
     }
 
     fun stopVideo(index: Int) {

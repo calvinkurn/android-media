@@ -1,7 +1,6 @@
 package com.tokopedia.media.editor.ui.fragment
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -27,9 +26,9 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
-import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -180,6 +179,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         activeImageUrl = originalUrl
 
         viewModel.getEditState(originalUrl)?.let { editorUiModel ->
+            updateToolsContainerVisibility(editorUiModel.getOriginalUrl())
             viewBinding?.viewPager?.currentItem = clickedIndex
 
             viewBinding?.viewPager?.post {
@@ -293,10 +293,6 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
     private fun setPagerPageChangeListener(viewPager: EditorViewPager){
         viewPager.setOnPageChanged { position, isVideo ->
             thumbnailDrawerComponent.clickIndex(position)
-
-            editorToolComponent.container().apply {
-                if (isVideo) hide() else visible()
-            }
         }
     }
 
@@ -335,6 +331,17 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL
             ).show()
+        }
+    }
+
+    private fun updateToolsContainerVisibility(filePath: String){
+        val isVideo = isVideoFormat(filePath)
+        editorToolComponent.container().apply {
+            if (isVideo) {
+                hide()
+            } else {
+                visible()
+            }
         }
     }
 

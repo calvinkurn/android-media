@@ -40,6 +40,12 @@ class EditorViewPager(context: Context, attrSet: AttributeSet): ViewPager(contex
                 callback(position, isVideo)
             }
         })
+
+        editorAdapter?.let {
+            if (it.isVideo(INITIAL_VIEW_PAGER_INDEX)){
+                it.playVideo(INITIAL_VIEW_PAGER_INDEX)
+            }
+        }
     }
 
     fun playVideoPlayer(index: Int){
@@ -66,5 +72,9 @@ class EditorViewPager(context: Context, attrSet: AttributeSet): ViewPager(contex
 
     fun setOnPageChanged(callback: (position: Int, isVideo: Boolean) -> Unit){
         this.callback = callback
+    }
+
+    companion object{
+        private const val INITIAL_VIEW_PAGER_INDEX = 0
     }
 }
