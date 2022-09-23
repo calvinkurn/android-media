@@ -12,6 +12,7 @@ import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkA
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantAdapter
@@ -198,12 +199,14 @@ class ManageProductVariantFragment :
     }
 
     override fun calculatePrice(percentInput: Long, adapterPosition: Int): String {
-        val originalPrice = viewModel.getProductData().childProducts[adapterPosition].price.price
+        val originalPrice =
+            viewModel.getProductData().childProducts[adapterPosition].warehouses.firstOrNull()?.price.orZero()
         return viewModel.calculatePrice(percentInput, originalPrice)
     }
 
     override fun calculatePercent(priceInput: Long, adapterPosition: Int): String {
-        val originalPrice = viewModel.getProductData().childProducts[adapterPosition].price.price
+        val originalPrice =
+            viewModel.getProductData().childProducts[adapterPosition].warehouses.firstOrNull()?.price.orZero()
         return viewModel.calculatePercent(priceInput, originalPrice)
     }
 
