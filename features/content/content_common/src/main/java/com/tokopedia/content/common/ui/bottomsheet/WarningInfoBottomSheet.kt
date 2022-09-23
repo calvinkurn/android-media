@@ -61,7 +61,10 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
         isCancelable = false
         overlayClickDismiss = false
 
-        setCloseClickListener { mListener?.clickCloseIcon() }
+        setCloseClickListener {
+            dismiss()
+            mListener?.clickCloseIcon()
+        }
     }
 
     private fun setupView() = with(binding) {
