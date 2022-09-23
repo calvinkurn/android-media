@@ -8,6 +8,10 @@ class ExtractBranchLinkUseCase @Inject constructor(private val repository: Extra
 
     suspend operator fun invoke(branchUrl: String): BranchLinkResponse {
         val response = repository.getDeeplink(branchUrl)
-        return response.body()!!.data
+        if (response.isSuccessful && response.body() != null) {
+            return response.body()!!.data
+        } else {
+            throw Exception("response body is null")
+        }
     }
 }
