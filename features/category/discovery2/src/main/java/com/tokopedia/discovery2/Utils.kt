@@ -467,5 +467,11 @@ class Utils {
                 this
             }
         }
+
+        fun ComponentsItem.areFiltersApplied():Boolean{
+            return (selectedSort != null && selectedFilters != null) &&
+                (selectedSort?.isNotEmpty() == true ||
+                    selectedFilters?.isNotEmpty() == true)
+        }
     }
 }

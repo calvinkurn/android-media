@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.Constant.Calendar.STATIC
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
+import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
 import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
 import com.tokopedia.discovery2.Utils.Companion.isSaleOver
 import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
@@ -257,11 +258,7 @@ class DiscoveryPageDataMapper(
         }
         component.properties?.template = Constant.ProductTemplate.LIST
         component.componentsPerPage = COMPONENTS_PER_PAGE
-        val showEmptyState =
-            ((component.selectedSort != null && component.selectedFilters != null) &&
-                (component.selectedSort?.isNotEmpty() == true ||
-                    component.selectedFilters?.isNotEmpty() == true))
-        return parseProductVerticalList(component, showEmptyState)
+        return parseProductVerticalList(component, component.areFiltersApplied())
     }
 
     private fun addBannerTimerComp(component: ComponentsItem): Boolean {
