@@ -217,7 +217,7 @@ class ManageProductMultiLocationVariantDelegateAdapter(
 
                     val textInput = editable?.toString() ?: ""
                     val inputDigit = textInput.digitsOnly()
-                    val originalPrice = item.priceInStore.price.toDouble()
+                    val originalPrice = item.priceInWarehouse.toDouble()
 
                     val discountCalculation =
                         calculateDiscount(isPriceToPercentage, inputDigit, originalPrice)
