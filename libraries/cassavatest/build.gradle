@@ -27,5 +27,4 @@ dependencies {
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.networkDependencies.okHttp
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
 }
