@@ -78,6 +78,7 @@ class DoFlashSaleProductDeleteUseCase @Inject constructor(
 
     data class Param(
         val campaignId: Long,
-        val productIds: List<Long>
+        val productIds: List<Long>,
+        val reservationId: String = ""
     )
 }
