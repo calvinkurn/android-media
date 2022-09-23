@@ -10,6 +10,8 @@ import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
 import com.tokopedia.play.broadcaster.data.config.ProductConfigStoreImpl
 import com.tokopedia.play.broadcaster.data.config.TitleConfigStore
 import com.tokopedia.play.broadcaster.data.config.TitleConfigStoreImpl
+import com.tokopedia.play.broadcaster.data.config.UGCConfigStore
+import com.tokopedia.play.broadcaster.data.config.UGCConfigStoreImpl
 import dagger.Binds
 import dagger.Module
 
