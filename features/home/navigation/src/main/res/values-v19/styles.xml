@@ -2,6 +2,6 @@
 <resources>
     <style name="TokopediaTransparentStatus" parent="Theme.Tokopedia3">
         <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">@color/Unify_Background</item>
     </style>
 </resources>
