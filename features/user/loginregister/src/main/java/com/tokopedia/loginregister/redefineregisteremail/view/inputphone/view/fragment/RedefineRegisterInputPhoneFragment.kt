@@ -69,9 +69,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     @Inject
     lateinit var firebaseRemoteConfig: RemoteConfig
 
-    @Inject
-    lateinit var registerPreferences: RegisterPreferences
-
     private var _binding: FragmentRedefineRegisterInputPhoneBinding? = null
     private val binding get() = _binding
 
@@ -177,16 +174,11 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun submitForm() {
-        if (parameter.isRequiredInputPhone) {
-            viewModel.submitForm(
-                binding?.fieldInputPhone?.editText?.text.toString()
-            )
-        } else {
-            viewModel.userProfileValidate(
-                email = parameter.email,
-                phone = binding?.fieldInputPhone?.editText?.text.toString()
-            )
-        }
+        viewModel.submitForm(
+            binding?.fieldInputPhone?.editText?.text.toString(),
+            parameter.email,
+            parameter.isRequiredInputPhone
+        )
     }
 
     private fun registrationProsesObserver() {
@@ -221,8 +213,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 }
             }
         }
-
-
 
         viewModel.userPhoneUpdate.observe(viewLifecycleOwner) {
             when (it) {
@@ -318,7 +308,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     private fun actionAfterLoggedIn() {
         registerPushNotif()
-        registerPreferences.saveFirstInstallTime()
+        viewModel.saveFirstInstallTime()
         activity?.let {
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
             DataVisorWorker.scheduleWorker(it, true)

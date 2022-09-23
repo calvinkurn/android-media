@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.local.RegisterPreferences
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileUpdateUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileValidateUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateModel
@@ -32,8 +33,9 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private val getRegisterV2AndSaveSessionUseCase: GetRegisterV2AndSaveSessionUseCase,
     private val getUserProfileUpdateUseCase: GetUserProfileUpdateUseCase,
     private val getUserProfileValidateUseCase: GetUserProfileValidateUseCase,
+    private val registerPreferences: RegisterPreferences,
     private val userSession: UserSessionInterface,
-    dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private var phoneError = RESOURCE_NOT_CHANGED
@@ -172,6 +174,12 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
         }, {
             _userPhoneUpdate.value = Fail(it)
         })
+    }
+
+    fun saveFirstInstallTime() {
+        launchCatchError(dispatcher.io, {
+            registerPreferences.saveFirstInstallTime()
+        }, {})
     }
 
     companion object {
