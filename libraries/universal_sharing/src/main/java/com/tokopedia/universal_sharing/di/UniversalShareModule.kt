@@ -1,6 +1,5 @@
 package com.tokopedia.universal_sharing.di
 
-import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.universal_sharing.data.api.ExtractBranchLinkApi
 import com.tokopedia.universal_sharing.data.model.BranchLinkErrorResponse
@@ -12,7 +11,6 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import java.lang.Error
 
 @Module(includes = [UniversalShareModule.BindUniversalShareModule::class])
 class UniversalShareModule {
@@ -20,7 +18,8 @@ class UniversalShareModule {
     @Provides
     fun provideExtractBranchLinkApi(retrofitBuilder: Retrofit.Builder, logger: HttpLoggingInterceptor): ExtractBranchLinkApi {
         val baseUrl = "https://www.tokopedia.com/"
-        return retrofitBuilder.client(OkHttpClient.Builder()
+        return retrofitBuilder.client(
+                OkHttpClient.Builder()
                 .addInterceptor(logger)
                 .addInterceptor(ErrorResponseInterceptor(BranchLinkErrorResponse::class.java))
                 .build()).baseUrl(baseUrl).build().create(ExtractBranchLinkApi::class.java)

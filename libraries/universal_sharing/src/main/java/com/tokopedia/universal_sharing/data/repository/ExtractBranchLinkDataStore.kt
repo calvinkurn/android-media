@@ -13,6 +13,6 @@ class ExtractBranchLinkDataStore @Inject constructor(private val api: ExtractBra
     }
 
     companion object {
-        private val BRANCH_URL = "https://api.branch.io/v1/url"
+        private const val BRANCH_URL = "https://api.branch.io/v1/url"
     }
 }
