@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.feature.search.searchresult.domain.mapper
 
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
+import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
@@ -46,9 +46,9 @@ class TokofoodFilterSortMapper @Inject constructor() {
         }
     }
 
-    fun getQuickFilterPriceRangeUiModels(filter: Filter): List<PriceRangeFilterCheckboxItemUiModel> {
+    fun getQuickFilterPriceRangeUiModels(filter: Filter): List<OptionViewModel> {
         return filter.options.map {
-            PriceRangeFilterCheckboxItemUiModel(it).apply {
+            OptionViewModel(it).apply {
                 isSelected = it.inputState.toBoolean()
             }
         }

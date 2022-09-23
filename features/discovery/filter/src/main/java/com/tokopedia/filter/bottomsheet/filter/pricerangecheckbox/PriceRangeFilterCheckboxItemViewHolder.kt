@@ -1,14 +1,13 @@
-package com.tokopedia.filter.bottomsheet.pricerangecheckbox.item
+package com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox
 
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxViewHolder
+import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.databinding.FilterPriceRangeItemBinding
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.unifyprinciples.Typography
 import java.lang.StringBuilder
 
 class PriceRangeFilterCheckboxItemViewHolder(
@@ -16,7 +15,7 @@ class PriceRangeFilterCheckboxItemViewHolder(
     private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: PriceRangeFilterCheckboxItemUiModel, priceRangeSize: Int) {
+    fun bind(item: OptionViewModel, priceRangeSize: Int) {
         with(binding) {
             tvPriceRangeDollar.text =
                 MethodChecker.fromHtml(getPriceLevelString(item, priceRangeSize))
@@ -25,7 +24,7 @@ class PriceRangeFilterCheckboxItemViewHolder(
         }
     }
 
-    private fun bindCheckboxPriceRange(item: PriceRangeFilterCheckboxItemUiModel) {
+    private fun bindCheckboxPriceRange(item: OptionViewModel) {
         with(binding.cbPriceRange) {
             setOnCheckedChangeListener(null)
             isChecked = item.isSelected
@@ -41,7 +40,7 @@ class PriceRangeFilterCheckboxItemViewHolder(
     }
 
     private fun getPriceLevelString(
-        item: PriceRangeFilterCheckboxItemUiModel,
+        item: OptionViewModel,
         priceRangeSize: Int
     ): String {
         val priceBuilder = StringBuilder()

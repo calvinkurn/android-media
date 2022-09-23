@@ -3,7 +3,7 @@ package com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmode
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
+import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -23,7 +23,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
 
     private val _initialOptions = MutableLiveData<List<Option>>(listOf())
     private val _currentAppliedOptions = MutableLiveData<List<Option>>(listOf())
-    private val _currentUiModels = MutableLiveData<List<PriceRangeFilterCheckboxItemUiModel>>(listOf())
+    private val _currentUiModels = MutableLiveData<List<OptionViewModel>>(listOf())
 
     private val _appliedOptions = MutableSharedFlow<List<Option>>(Int.ONE)
 
@@ -57,8 +57,8 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
             replay = Int.ONE
         )
 
-    private val _currentUiModelsFlow = MutableSharedFlow<List<PriceRangeFilterCheckboxItemUiModel>>(Int.ONE)
-    val currentUiModelsFlow: SharedFlow<List<PriceRangeFilterCheckboxItemUiModel>>
+    private val _currentUiModelsFlow = MutableSharedFlow<List<OptionViewModel>>(Int.ONE)
+    val currentUiModelsFlow: SharedFlow<List<OptionViewModel>>
         get() = _currentUiModelsFlow
 
     fun resetUiModels() {
@@ -69,7 +69,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
     }
 
     fun setPriceRangeUiModel(
-        uiModel: PriceRangeFilterCheckboxItemUiModel,
+        uiModel: OptionViewModel,
         isSelected: Boolean
     ) {
         val appliedOptions = getCurrentAppliedOptions().toMutableList()
@@ -83,7 +83,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
         _appliedOptions.tryEmit(newAppliedOptions)
     }
 
-    fun setPriceRangeUiModels(uiModels: List<PriceRangeFilterCheckboxItemUiModel>,
+    fun setPriceRangeUiModels(uiModels: List<OptionViewModel>,
                               isInitialSet: Boolean = false) {
         val updatedOptions =
             uiModels.map {
