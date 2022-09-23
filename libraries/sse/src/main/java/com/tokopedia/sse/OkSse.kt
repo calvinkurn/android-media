@@ -1,4 +1,4 @@
-package com.tokopedia.play_common.sse.base
+package com.tokopedia.sse
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
