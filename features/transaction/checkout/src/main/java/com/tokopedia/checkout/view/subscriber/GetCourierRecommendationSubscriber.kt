@@ -11,16 +11,19 @@ import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
 import timber.log.Timber
 
-class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View,
-                                         private val presenter: ShipmentContract.Presenter,
-                                         private val shipperId: Int,
-                                         private val spId: Int,
-                                         private val itemPosition: Int,
-                                         private val shippingCourierConverter: ShippingCourierConverter,
-                                         private val shipmentCartItemModel: ShipmentCartItemModel,
-                                         private val isInitialLoad: Boolean,
-                                         private val isTradeInDropOff: Boolean,
-                                         private val isForceReloadRates: Boolean) : Subscriber<ShippingRecommendationData?>() {
+class GetCourierRecommendationSubscriber(
+    private val view: ShipmentContract.View,
+    private val presenter: ShipmentContract.Presenter,
+    private val shipperId: Int,
+    private val spId: Int,
+    private val itemPosition: Int,
+    private val shippingCourierConverter: ShippingCourierConverter,
+    private val shipmentCartItemModel: ShipmentCartItemModel,
+    private val isInitialLoad: Boolean,
+    private val isTradeInDropOff: Boolean,
+    private val isForceReloadRates: Boolean,
+    private val isBoUnstackEnabled: Boolean
+) : Subscriber<ShippingRecommendationData?>() {
     override fun onCompleted() {}
     override fun onError(e: Throwable) {
         Timber.d(e)
@@ -35,8 +38,9 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
         if (isInitialLoad || isForceReloadRates) {
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
-                if (!isForceReloadRates && shipmentCartItemModel.boCode.isNotEmpty()) {
-                    val logisticPromo = shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == shipmentCartItemModel.boCode && !it.disabled }
+                if (!isForceReloadRates && isBoUnstackEnabled && shipmentCartItemModel.boCode.isNotEmpty()) {
+                    val logisticPromo =
+                        shippingRecommendationData.listLogisticPromo.firstOrNull { it.promoCode == shipmentCartItemModel.boCode && !it.disabled }
                     if (logisticPromo != null) {
                         for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                             if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
@@ -45,16 +49,34 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                                 }
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId &&
-                                                    shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
+                                        shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId
+                                    ) {
                                         if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
-                                            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
-                                            view.logOnErrorLoadCourier(MessageErrorException(shippingCourierUiModel.productData.error?.errorMessage), itemPosition)
+                                            view.renderCourierStateFailed(
+                                                itemPosition,
+                                                isTradeInDropOff,
+                                                false
+                                            )
+                                            view.logOnErrorLoadCourier(
+                                                MessageErrorException(
+                                                    shippingCourierUiModel.productData.error?.errorMessage
+                                                ), itemPosition
+                                            )
                                             return
                                         } else {
                                             shippingCourierUiModel.isSelected = true
-                                            presenter.setShippingCourierViewModelsState(shippingDurationUiModel.shippingCourierViewModelList, shipmentCartItemModel.orderNumber)
-                                            view.renderCourierStateSuccess(generateCourierItemData(shippingCourierUiModel, shippingRecommendationData, logisticPromo),
-                                                    itemPosition, isTradeInDropOff, isForceReloadRates)
+                                            presenter.setShippingCourierViewModelsState(
+                                                shippingDurationUiModel.shippingCourierViewModelList,
+                                                shipmentCartItemModel.orderNumber
+                                            )
+                                            view.renderCourierStateSuccess(
+                                                generateCourierItemData(
+                                                    shippingCourierUiModel,
+                                                    shippingRecommendationData,
+                                                    logisticPromo
+                                                ),
+                                                itemPosition, isTradeInDropOff, isForceReloadRates
+                                            )
                                             return
                                         }
                                     }
@@ -70,21 +92,48 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                             }
                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                 if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == spId &&
-                                                shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden)) {
+                                        shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden)
+                                ) {
                                     if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
-                                        view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
-                                        view.logOnErrorLoadCourier(MessageErrorException(shippingCourierUiModel.productData.error?.errorMessage), itemPosition)
+                                        view.renderCourierStateFailed(
+                                            itemPosition,
+                                            isTradeInDropOff,
+                                            false
+                                        )
+                                        view.logOnErrorLoadCourier(
+                                            MessageErrorException(
+                                                shippingCourierUiModel.productData.error?.errorMessage
+                                            ), itemPosition
+                                        )
                                         return
                                     } else {
-                                        val courierItemData = generateCourierItemData(shippingCourierUiModel, shippingRecommendationData)
+                                        val courierItemData = generateCourierItemData(
+                                            shippingCourierUiModel,
+                                            shippingRecommendationData
+                                        )
                                         if (shippingCourierUiModel.productData.isUiRatesHidden && courierItemData.logPromoCode.isNullOrEmpty()) {
-                                            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
-                                            view.logOnErrorLoadCourier(MessageErrorException("rates ui hidden but no promo"), itemPosition)
+                                            view.renderCourierStateFailed(
+                                                itemPosition,
+                                                isTradeInDropOff,
+                                                false
+                                            )
+                                            view.logOnErrorLoadCourier(
+                                                MessageErrorException("rates ui hidden but no promo"),
+                                                itemPosition
+                                            )
                                             return
                                         }
                                         shippingCourierUiModel.isSelected = true
-                                        presenter.setShippingCourierViewModelsState(shippingDurationUiModel.shippingCourierViewModelList, shipmentCartItemModel.orderNumber)
-                                        view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff, isForceReloadRates)
+                                        presenter.setShippingCourierViewModelsState(
+                                            shippingDurationUiModel.shippingCourierViewModelList,
+                                            shipmentCartItemModel.orderNumber
+                                        )
+                                        view.renderCourierStateSuccess(
+                                            courierItemData,
+                                            itemPosition,
+                                            isTradeInDropOff,
+                                            isForceReloadRates
+                                        )
                                         return
                                     }
                                 }
@@ -94,15 +143,22 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
 
                     // corner case auto selection if BE default duration failed
                     if (shipmentCartItemModel.isAutoCourierSelection) {
-                        val shippingDuration = shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
+                        val shippingDuration =
+                            shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
                         if (shippingDuration != null) {
-                            val shippingCourier = shippingDuration.shippingCourierViewModelList.firstOrNull {
-                                it.productData.error?.errorMessage.isNullOrEmpty()
-                            }
+                            val shippingCourier =
+                                shippingDuration.shippingCourierViewModelList.firstOrNull {
+                                    it.productData.error?.errorMessage.isNullOrEmpty()
+                                }
                             if (shippingCourier != null) {
                                 shippingCourier.isSelected = true
-                                view.renderCourierStateSuccess(generateCourierItemData(shippingCourier, shippingRecommendationData),
-                                        itemPosition, isTradeInDropOff, isForceReloadRates)
+                                view.renderCourierStateSuccess(
+                                    generateCourierItemData(
+                                        shippingCourier,
+                                        shippingRecommendationData
+                                    ),
+                                    itemPosition, isTradeInDropOff, isForceReloadRates
+                                )
                                 return
                             }
                         }
@@ -117,8 +173,10 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                     for (productData in shippingDurationUiModel.serviceData.products) {
                         if (productData.shipperId == shipperId && productData.shipperProductId == spId) {
                             view.updateCourierBottomssheetHasData(
-                                    shippingDurationUiModel.shippingCourierViewModelList,
-                                    itemPosition, shipmentCartItemModel, shippingRecommendationData.preOrderModel
+                                shippingDurationUiModel.shippingCourierViewModelList,
+                                itemPosition,
+                                shipmentCartItemModel,
+                                shippingRecommendationData.preOrderModel
                             )
                             return
                         }
@@ -129,8 +187,13 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
         }
     }
 
-    private fun generateCourierItemData(shippingCourierUiModel: ShippingCourierUiModel, shippingRecommendationData: ShippingRecommendationData, logisticPromo: LogisticPromoUiModel? = null): CourierItemData {
-        var courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
+    private fun generateCourierItemData(
+        shippingCourierUiModel: ShippingCourierUiModel,
+        shippingRecommendationData: ShippingRecommendationData,
+        logisticPromo: LogisticPromoUiModel? = null
+    ): CourierItemData {
+        var courierItemData =
+            shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
 
         // Auto apply Promo Stacking Logistic
         var logisticPromoChosen = logisticPromo
@@ -147,6 +210,10 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
         } else if (isForceReloadRates) {
             logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
                 !it.disabled && it.isApplied
+            }
+        } else if (!isBoUnstackEnabled) {
+            logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
+                !it.disabled && it.shipperId == shipperId && it.shipperProductId == spId && it.promoCode.isNotEmpty()
             }
         }
         if (logisticPromoChosen?.shipperProductId != null && logisticPromoChosen.shipperProductId != courierItemData.shipperProductId) {

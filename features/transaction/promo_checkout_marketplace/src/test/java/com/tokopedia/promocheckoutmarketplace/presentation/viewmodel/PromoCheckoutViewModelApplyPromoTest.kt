@@ -419,10 +419,9 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         assert(request.orders.first().benefitClass == selectedBoData.benefitClass)
         assert(request.orders.first().shippingPrice == selectedBoData.shippingPrice)
     }
-    
     @Test
     fun `WHEN reapply promo BO from promo page THEN validate use request should contain shipping id and sp id from bo additional data`() {
-        //given
+        // given
         val request = provideApplyPromoEmptyRequest()
         request.orders.first().codes.add("PLUSAA")
         val response = provideApplyPromoMerchantResponseSuccess()
@@ -438,15 +437,15 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
             firstArg<(ValidateUsePromoRevampUiModel) -> Unit>().invoke(ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response.validateUsePromoRevamp))
         }
 
-        //when
+        // when
         viewModel.applyPromo(request, ArrayList())
 
-        //then
+        // then
         assert(request.orders.first().codes.intersect(selectedBo.uiData.boAdditionalData.map { it.code }).size == 1)
         assert(!request.orders.first().codes.contains(selectedBo.uiData.promoCode))
         assert(request.orders.first().shippingId == boAdditionalDataForCurrentUniqueId.shippingId)
         assert(request.orders.first().spId == boAdditionalDataForCurrentUniqueId.shipperProductId)
-        assert(request.orders.first().boCampaignId  == boAdditionalDataForCurrentUniqueId.boCampaignId)
+        assert(request.orders.first().boCampaignId == boAdditionalDataForCurrentUniqueId.boCampaignId)
         assert(request.orders.first().shippingSubsidy == boAdditionalDataForCurrentUniqueId.shippingSubsidy)
         assert(request.orders.first().benefitClass == boAdditionalDataForCurrentUniqueId.benefitClass)
         assert(request.orders.first().shippingPrice == boAdditionalDataForCurrentUniqueId.shippingPrice)
@@ -454,7 +453,7 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
 
     @Test
     fun `WHEN unapply promo BO THEN validate use request should not contain bo promo code`() {
-        //given
+        // given
         val request = provideApplyPromoEmptyRequest()
         request.orders.first().codes.add("PLUSAA")
         val response = provideApplyPromoMerchantResponseSuccess()
@@ -469,17 +468,17 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
             firstArg<(ValidateUsePromoRevampUiModel) -> Unit>().invoke(ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response.validateUsePromoRevamp))
         }
 
-        //when
+        // when
         viewModel.applyPromo(request, ArrayList())
 
-        //then
+        // then
         assert(request.orders.first().codes.intersect(selectedBo.uiData.boAdditionalData.map { it.code }).isEmpty())
         assert(!request.orders.first().codes.contains(selectedBo.uiData.promoCode))
     }
 
     @Test
     fun `WHEN apply promo BO failed THEN should see error code based on BO code in bo additional datas`() {
-        //given
+        // given
         val request = provideApplyPromoEmptyRequest()
         val response = provideApplyPromoBoResponseFailed()
         val promoList = providePromoListWithBoPlusAsRecommendedPromo()
@@ -493,10 +492,10 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
             firstArg<(ValidateUsePromoRevampUiModel) -> Unit>().invoke(ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response.validateUsePromoRevamp))
         }
 
-        //when
+        // when
         viewModel.applyPromo(request, ArrayList())
 
-        //then
+        // then
         assert(selectedBo.uiData.errorMessage.isNotEmpty())
     }
 

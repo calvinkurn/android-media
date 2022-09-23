@@ -557,6 +557,9 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                         }
                       }
                       poml_auto_applied
+                      bebas_ongkir_info {
+                        is_bo_unstack_enabled
+                      }
                     }
                     benefit_summary_info {
                       final_benefit_amount_str

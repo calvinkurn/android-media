@@ -76,7 +76,8 @@ data class RatesParam(
             po_time = builder.po_time,
             mvc = builder.mvc,
             bo_metadata = builder.bo_metadata,
-            cart_data = builder.cart_data)
+            cart_data = builder.cart_data
+    )
 
     fun toMap(): Map<String, Any?> = mapOf(
             "spids" to spids,

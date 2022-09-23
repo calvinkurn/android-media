@@ -45,8 +45,8 @@ data class CartShopHolderData(
         var addOnImgUrl: String = "",
         var addOnId: String = "",
         var warehouseId: Long = 0,
-        var isPo : Boolean = false,
-        var poDuration : String = "",
+        var isPo: Boolean = false,
+        var poDuration: String = "",
         var boCode: String = "",
 ) {
     val shouldValidateWeight: Boolean
