@@ -69,7 +69,6 @@
         layout="@layout/ui_component_tools_editor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
         app:layout_constraintBottom_toTopOf="@id/uc_drawer_thumbnail"/>
 
     <include
