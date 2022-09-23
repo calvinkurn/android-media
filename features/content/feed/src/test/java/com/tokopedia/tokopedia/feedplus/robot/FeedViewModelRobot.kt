@@ -2,14 +2,18 @@ package com.tokopedia.tokopedia.feedplus.robot
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.domain.usecase.*
+import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
+import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
+import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
+import com.tokopedia.kolcommon.domain.interactor.SubmitReportContentUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -29,15 +33,15 @@ class FeedViewModelRobot(
     private val userSession: UserSessionInterface,
     doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
     followKolPostGqlUseCase: FollowKolPostGqlUseCase,
-    likeKolPostUseCase: LikeKolPostUseCase,
+    likeKolPostUseCase: SubmitLikeContentUseCase,
     atcUseCase: AddToCartUseCase,
     trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-    deletePostUseCase: DeletePostUseCase,
+    deletePostUseCase: SubmitActionContentUseCase,
     sendTopAdsUseCase: SendTopAdsUseCase,
     playWidgetTools: PlayWidgetTools,
     getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
     getWhitelistNewUseCase: GetWhitelistNewUseCase,
-    sendReportUseCase: SendReportUseCase,
+    sendReportUseCase: SubmitReportContentUseCase,
     addWishListUseCase: AddWishListUseCase,
     addToWishlistV2UseCase: AddToWishlistV2UseCase,
     trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
@@ -81,19 +85,20 @@ class FeedViewModelRobot(
         userSession: UserSessionInterface = mockk(relaxed = true),
         doFavoriteShopUseCase: ToggleFavouriteShopUseCase = mockk(relaxed = true),
         followKolPostGqlUseCase: FollowKolPostGqlUseCase = mockk(relaxed = true),
-        likeKolPostUseCase: LikeKolPostUseCase = mockk(relaxed = true),
+        likeKolPostUseCase: SubmitLikeContentUseCase = mockk(relaxed = true),
         atcUseCase: AddToCartUseCase = mockk(relaxed = true),
         trackAffiliateClickUseCase: TrackAffiliateClickUseCase = mockk(relaxed = true),
-        deletePostUseCase: DeletePostUseCase = mockk(relaxed = true),
+        deletePostUseCase: SubmitActionContentUseCase = mockk(relaxed = true),
         sendTopAdsUseCase: SendTopAdsUseCase = mockk(relaxed = true),
         playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
         getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase = mockk(relaxed = true),
         getWhitelistNewUseCase: GetWhitelistNewUseCase = mockk(relaxed = true),
-        sendReportUseCase: SendReportUseCase = mockk(relaxed = true),
+        sendReportUseCase: SubmitReportContentUseCase = mockk(relaxed = true),
         addWishListUseCase: AddWishListUseCase = mockk(relaxed = true),
         addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true),
         trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase = mockk(relaxed = true),
-        feedXTrackViewerUseCase: FeedXTrackViewerUseCase = mockk(relaxed = true)
+        feedXTrackViewerUseCase: FeedXTrackViewerUseCase = mockk(relaxed = true),
+        fn: FeedViewModelRobot.() -> Unit = {}
     ) : FeedViewModelRobot{
         return FeedViewModelRobot(
             dispatcher = dispatcher,
@@ -113,6 +118,6 @@ class FeedViewModelRobot(
             addWishListUseCase = addWishListUseCase,
             trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
             feedXTrackViewerUseCase = feedXTrackViewerUseCase
-        )
+        ).apply(fn)
     }
 }
