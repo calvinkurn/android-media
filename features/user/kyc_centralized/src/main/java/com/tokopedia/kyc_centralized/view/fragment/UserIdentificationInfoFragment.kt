@@ -37,6 +37,7 @@ import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -146,7 +147,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             KycStatus.NOT_VERIFIED -> showStatusNotVerified(view)
             KycStatus.DEFAULT -> toggleNotFoundView(true)
             else -> onErrorGetUserProjectInfo(
-                    Throwable(String.format("%s (%s)",
+                    Throwable(String.format(Locale.getDefault(), "%s (%s)",
                             getString(R.string.user_identification_default_request_error_unknown),
                             KYCConstant.ERROR_STATUS_UNKNOWN)))
         }
