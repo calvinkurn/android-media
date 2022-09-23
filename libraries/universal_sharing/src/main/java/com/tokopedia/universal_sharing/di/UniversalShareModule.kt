@@ -22,7 +22,8 @@ class UniversalShareModule {
                 OkHttpClient.Builder()
                 .addInterceptor(logger)
                 .addInterceptor(ErrorResponseInterceptor(BranchLinkErrorResponse::class.java))
-                .build()).baseUrl(baseUrl).build().create(ExtractBranchLinkApi::class.java)
+                .build()
+        ).baseUrl(baseUrl).build().create(ExtractBranchLinkApi::class.java)
     }
 
     @Module
