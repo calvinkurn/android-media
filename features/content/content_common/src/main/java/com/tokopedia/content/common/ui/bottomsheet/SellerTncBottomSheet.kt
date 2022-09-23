@@ -68,7 +68,7 @@ class SellerTncBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        const val TAG = "SellerTncBottomSheet"
+        private const val TAG = "SellerTncBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,
