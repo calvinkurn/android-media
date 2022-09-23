@@ -1084,11 +1084,11 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
     }
 
     override fun onIngatkanSayaBtnImpressed(card: FeedXCard, positionInFeed: Int) {
-        viewModel.checkUpcomingCampaignInitialReminderStatus(card.campaign, positionInFeed)
+        viewModel.checkUpcomingCampaignInitialReminderStatus(card.campaign.campaignId, positionInFeed)
     }
 
     override fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int) {
-        viewModel.setUnsetReminder(card.campaign, positionInFeed)
+        viewModel.setUnsetReminder(card.campaign.campaignId, card.campaign.reminder, positionInFeed)
     }
 
     override fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int) {

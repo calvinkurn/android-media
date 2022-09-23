@@ -105,23 +105,23 @@ class ContentDetailViewModel @Inject constructor(
         }
     }
 
-    fun checkUpcomingCampaignInitialReminderStatus(campaign: FeedXCampaign, rowNumber: Int) {
+    fun checkUpcomingCampaignInitialReminderStatus(campaignId: Long, rowNumber: Int) {
        launchCatchError(block = {
-            val data = repository.checkUpcomingCampaign(campaignId = campaign.campaignId)
-            val reminderStatusRes = if (data) FeedASGCUpcomingReminderStatus.On(campaign.campaignId) else FeedASGCUpcomingReminderStatus.Off(campaign.campaignId)
-            _asgcReminderButtonInitialStatus.value = ContentDetailResult.Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.campaignId, reminderStatus = reminderStatusRes))
+            val data = repository.checkUpcomingCampaign(campaignId = campaignId)
+            val reminderStatusRes = if (data) FeedASGCUpcomingReminderStatus.On(campaignId) else FeedASGCUpcomingReminderStatus.Off(campaignId)
+            _asgcReminderButtonInitialStatus.value = ContentDetailResult.Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaignId, reminderStatus = reminderStatusRes))
         }) {
             _asgcReminderButtonInitialStatus.value = ContentDetailResult.Failure(it)
         }
     }
-    fun setUnsetReminder(campaign: FeedXCampaign, rowNumber: Int) {
+    fun setUnsetReminder(campaignId: Long, reminderStatus: FeedASGCUpcomingReminderStatus, rowNumber: Int) {
        launchCatchError(block = {
             val data = repository.subscribeUpcomingCampaign(
-                campaignId = campaign.campaignId,
-                reminderType = campaign.reminder
+                campaignId = campaignId,
+                reminderType = reminderStatus
             )
-            val reminderStatusRes = if (data.first) FeedASGCUpcomingReminderStatus.On(campaign.campaignId) else FeedASGCUpcomingReminderStatus.Off(campaign.campaignId)
-            _asgcReminderButtonStatus.value = ContentDetailResult.Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.campaignId, reminderStatus = reminderStatusRes))
+            val reminderStatusRes = if (data.first) FeedASGCUpcomingReminderStatus.On(campaignId) else FeedASGCUpcomingReminderStatus.Off(campaignId)
+            _asgcReminderButtonStatus.value = ContentDetailResult.Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaignId, reminderStatus = reminderStatusRes))
         }) {
             _asgcReminderButtonStatus.value = ContentDetailResult.Failure(it)
         }
