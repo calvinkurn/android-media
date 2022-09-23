@@ -173,6 +173,8 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                     TRENDING -> {
                         shopHomeCarouselProductListener.onPersonalizationTrendingCarouselProductItemClicked(
                             adapterPosition,
+                            carouselProductCardPosition,
+                            element,
                             productItem
                         )
                     }

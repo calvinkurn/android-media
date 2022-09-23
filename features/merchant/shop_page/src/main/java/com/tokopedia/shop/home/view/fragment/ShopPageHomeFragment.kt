@@ -2362,15 +2362,24 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     override fun onPersonalizationTrendingCarouselProductItemClicked(
+        parentPosition: Int,
         itemPosition: Int,
+        shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel,
         shopHomeProductViewModel: ShopHomeProductUiModel
     ) {
+        sendShopHomeWidgetClickedTracker(
+            ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
+            shopHomeCarousellProductUiModel.name,
+            shopHomeCarousellProductUiModel.widgetId,
+            ShopUtil.getActualPositionFromIndex(parentPosition)
+        )
         shopPageHomeTracking.clickProductPersonalizationTrendingWidget(
             itemPosition,
             shopHomeProductViewModel,
             shopId,
             userId
         )
+        goToPDP(shopHomeProductViewModel.productUrl)
     }
 
     override fun onCarouselPersonalizationProductItemClickAddToCart(

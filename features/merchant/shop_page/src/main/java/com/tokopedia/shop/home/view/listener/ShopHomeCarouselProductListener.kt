@@ -26,8 +26,10 @@ interface ShopHomeCarouselProductListener {
     )
 
     fun onPersonalizationTrendingCarouselProductItemClicked(
-        itemPosition: Int,
-        shopHomeProductViewModel: ShopHomeProductUiModel
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel,
+            shopHomeProductViewModel: ShopHomeProductUiModel
     )
 
     fun onCarouselProductItemImpression(
