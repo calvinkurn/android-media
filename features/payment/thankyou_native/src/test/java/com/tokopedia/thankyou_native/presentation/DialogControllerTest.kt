@@ -49,7 +49,8 @@ class DialogControllerTest {
                 gratifPopupCallback = callback,
                 screenName = screenName,
                 notificationEntryType = NotificationEntryType.ORGANIC,
-                timeout = GRATIF_TIMEOUT, closeCurrentActivity = true
+                timeout = GRATIF_TIMEOUT,
+                closeCurrentActivity = true
             )
         }
     }
