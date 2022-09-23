@@ -147,7 +147,7 @@ class PlayVoucherAnalyticImpl @Inject constructor(
 
     override fun clickCopyVoucher(voucherId: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEvent(KEY_TRACK_CLICK_GROUP_CHAT)
             .setEventAction("click copy on private voucher")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
             .setEventLabel("$channelId - $voucherId - $channelType")
