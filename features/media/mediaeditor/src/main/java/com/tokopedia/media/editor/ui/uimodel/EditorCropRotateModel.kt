@@ -47,7 +47,7 @@ data class EditorCropRotateModel(
                 isCrop = false,
                 isAutoCrop = false,
                 0,
-                Pair(1, 1)
+                Pair(0, 0)
             )
         }
     }
