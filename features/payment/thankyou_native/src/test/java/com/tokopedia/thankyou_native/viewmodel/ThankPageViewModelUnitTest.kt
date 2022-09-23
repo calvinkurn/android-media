@@ -137,6 +137,22 @@ class ThankPageViewModelUnitTest {
         Assert.assertEquals((viewModel.membershipRegisterData.value as Success).data,membershipRegisterData)
     }
 
+
+    @Test
+    fun failMembershipRegisterLiveData()
+    {
+        coEvery {
+            membershipRegisterUseCase.registerMembership("",any(),any())
+        }coAnswers {
+            thirdArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.registerTokomember("")
+        Assert.assertEquals(
+            (viewModel.membershipRegisterData.value as Fail).throwable,
+            mockThrowable
+        )
+    }
+
     @Test
     fun successTopTickerLiveData()
     {
