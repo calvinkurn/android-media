@@ -14,12 +14,9 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="TokopediaTransparentStatus" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowLightStatusBar">false</item>
+    <style name="TokopediaTransparentStatus" parent="Theme.Tokopedia3">
         <item name="android:windowBackground">@android:color/white</item>
-        <!--   Activity Main transition     -->
-        <item name="android:windowContentTransitions">true</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 </resources>
