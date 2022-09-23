@@ -25,7 +25,6 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
     }
 
     fun setItemToggleValue(itemPosition: Int, value: Boolean) {
-        reViewIsHasEmptyState(itemPosition, value)
         val selectedItem = variant.warehouses[itemPosition]
         selectedItem.isToggleOn = value
     }

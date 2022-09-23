@@ -11,7 +11,7 @@ import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailVaria
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.seller_tokopedia_flash_sale.R
-import kotlin.math.round
+import com.tokopedia.unifyprinciples.Typography
 
 
 class ManageProductMultiLocationVariantDelegateAdapter(
@@ -43,7 +43,6 @@ class ManageProductMultiLocationVariantDelegateAdapter(
 
     inner class ViewHolder(private val binding: LayoutCampaignManageProductDetailVariantItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
 
         var listenerOfDiscountInput: TextWatcher? = null
         var listenerOfPriceInput: TextWatcher? = null
@@ -85,8 +84,6 @@ class ManageProductMultiLocationVariantDelegateAdapter(
                         )
                     }
 
-
-
                     quantityEditor.setValue(item.stock.toInt())
                     quantityEditor.run {
                         fun isAllNotEmpty(): Boolean {
@@ -99,19 +96,22 @@ class ManageProductMultiLocationVariantDelegateAdapter(
                                     editTextOfDiscount?.text.isNullOrEmpty()
                         }
 
-                        setValueChangedListener { stock, _, _ ->
-                            onValidationQuantity.invoke(
-                                adapterPosition,
-                                stock.toLong(),
-                                isAllNotEmpty()
-                            ) { isValid, message ->
-                                textQuantityEditorSubTitle.setTextColor(
-                                    getColorStateOfMessage(
-                                        isValid
-                                    )
-                                )
-                                textQuantityEditorSubTitle.text = message
-                            }
+                        setAddClickListener {
+                            val qty = quantityEditor.getValue()
+                            setOnClickListenerOfQuantityEditor(
+                                qty,
+                                isAllNotEmpty(),
+                                textQuantityEditorSubTitle
+                            )
+                        }
+
+                        setSubstractListener {
+                            val qty = quantityEditor.getValue()
+                            setOnClickListenerOfQuantityEditor(
+                                qty,
+                                isAllNotEmpty(),
+                                textQuantityEditorSubTitle
+                            )
                         }
                     }
 
@@ -120,12 +120,55 @@ class ManageProductMultiLocationVariantDelegateAdapter(
                         item.productCriteria.minCustomStock,
                         item.productCriteria.maxCustomStock
                     )
+
+                    setWarningQuantity(item, textQuantityEditorSubTitle)
+
                     textQuantityEditorTitle.text =
                         binding.root.context.getString(R.string.stfs_title_qty_editor_title)
                 }
             }
+        }
 
+        private fun setOnClickListenerOfQuantityEditor(
+            stock: Int,
+            isAllNotEmpty: Boolean,
+            warningUI: Typography
+        ) {
+            onValidationQuantity.invoke(
+                adapterPosition,
+                stock.toLong(),
+                isAllNotEmpty
+            ) { isValid, message ->
+                warningUI.setTextColor(
+                    getColorStateOfMessage(
+                        isValid
+                    )
+                )
+                warningUI.text = message
+            }
+        }
 
+        private fun setWarningQuantity(
+            item: ManageProductMultiLocationVariantItem,
+            ui: Typography
+        ) {
+            ui.setTextColor(
+                getColorStateOfMessage(
+                    isQuantityIsInCriteria(
+                        item.stock.toInt(),
+                        item.productCriteria.minCustomStock,
+                        item.productCriteria.maxCustomStock
+                    )
+                )
+            )
+        }
+
+        private fun isQuantityIsInCriteria(
+            currentQuantity: Int,
+            minCriteria: Int,
+            maxCriteria: Int
+        ): Boolean {
+            return currentQuantity in minCriteria..maxCriteria
         }
 
         private fun TextFieldUnify2.setDiscountAmountListener(
@@ -181,8 +224,7 @@ class ManageProductMultiLocationVariantDelegateAdapter(
 
                     if (isPriceToPercentage) {
                         onDiscountAmountChanged(adapterPosition, inputDigit, discountCalculation)
-                    }
-                    else {
+                    } else {
                         onDiscountPercentageChange(adapterPosition, inputDigit, discountCalculation)
                     }
 

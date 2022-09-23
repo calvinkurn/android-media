@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian
 
-import android.app.Activity
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -133,6 +132,7 @@ class ManageProductMultiLocationVariantFragment :
             .add(ManageProductMultiLocationVariantDelegateAdapter(
                 onToggleSwitched = { position, isChecked ->
                     onToggleSwitched(position, isChecked)
+                    viewModel.checkAllValidationOfInputUser(position, isChecked)
                 },
                 onDiscountAmountChanged = { position, amount, discount ->
                     viewModel.setDiscountAmount(position, amount)
