@@ -29,7 +29,7 @@ fun isAccountLinkingDisplayed() {
         R.id.tv_desc_link_account,
         R.id.ic_link_account
     )
-    isGoneView(R.id.tv_linking_account)
+    isGoneView(R.id.privacyItemTextButotn)
 }
 
 fun isAccountNotLinkingDisplayed() {
