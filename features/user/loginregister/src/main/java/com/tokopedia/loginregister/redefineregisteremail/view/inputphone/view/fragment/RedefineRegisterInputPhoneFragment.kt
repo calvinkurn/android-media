@@ -71,9 +71,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     lateinit var firebaseRemoteConfig: RemoteConfig
 
     @Inject
-    lateinit var registerPreferences: RegisterPreferences
-
-    @Inject
     lateinit var redefineRegisterEmailAnalytics: RedefineRegisterEmailAnalytics
 
     private var _binding: FragmentRedefineRegisterInputPhoneBinding? = null
@@ -359,7 +356,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     private fun actionAfterLoggedIn() {
         registerPushNotif()
-        registerPreferences.saveFirstInstallTime()
+        viewModel.saveFirstInstallTime()
         activity?.let {
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
             DataVisorWorker.scheduleWorker(it, true)
