@@ -43,14 +43,13 @@ class OSChooseAddressWidgetView : FrameLayout {
     private var totalScrollUp: Int = 0
     private var itemView: View
     private var viewMaxHeight: Int = 0
-    private var viewMinHeight: Int = 0
     private var chooseAddressWidgetInitialized = false
     private lateinit var osContainerListener: OSContainerListener
     private var widget_choose_address: ChooseAddressWidget? = null
     private var motionlayout_choose_address: MotionLayout? = null
 
     companion object {
-        private const val HEIGHT_SCROLL_CHOOSE_ADDRESS = 20
+        private const val THRESHOLD_COLLAPSING_CHOOSE_ADDRESS = 20
     }
 
     fun getChooseAddressWidget(): ChooseAddressWidget? {
@@ -101,7 +100,7 @@ class OSChooseAddressWidgetView : FrameLayout {
             totalScrollUp = 0
         }
 
-        adjustCollapseExpandView(totalScrollUp <= HEIGHT_SCROLL_CHOOSE_ADDRESS, whenWidgetShow, whenWidgetGone)
+        adjustCollapseExpandView(totalScrollUp <= THRESHOLD_COLLAPSING_CHOOSE_ADDRESS, whenWidgetShow, whenWidgetGone)
     }
 
 
@@ -126,7 +125,7 @@ class OSChooseAddressWidgetView : FrameLayout {
         if (itemContext.isDeviceAnimationDisabled()) {
             this.show()
         } else {
-            if (this.measuredHeight <= HEIGHT_SCROLL_CHOOSE_ADDRESS) {
+            if (this.measuredHeight <= THRESHOLD_COLLAPSING_CHOOSE_ADDRESS) {
                 animationExpand?.start()
                 isExpand = true
                 motionlayout_choose_address?.setTransitionListener(object : MotionLayout.TransitionListener {
