@@ -1,8 +1,8 @@
 ext {
 
-    compileSdkVersion = 31
+    compileSdkVersion = 30
     minSdkVersion = 21
-    targetSdkVersion = 31
+    targetSdkVersion = 30
     buildToolsVersion = "30.0.2"
 
     jacocoVersion = "0.8.7"
@@ -12,7 +12,7 @@ ext {
     lifeCycleVersion = "2.2.0"
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
-    workManagerVersion = "2.7.1"
+    workManagerVersion = "2.7.0"
     startupRuntimeVersion = "1.1.0"
 
     biometricVersion = "1.1.0"
