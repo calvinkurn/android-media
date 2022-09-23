@@ -321,7 +321,7 @@ abstract class BaseNotification internal constructor(
                     context,
                     reqCode,
                     intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
             } else if (Build.VERSION.SDK_INT >= sdkLevel31 && intent.component?.className?.contains(
                     ACTIVITY_RECEIVER) == false) {
@@ -329,7 +329,7 @@ abstract class BaseNotification internal constructor(
                     context,
                     reqCode,
                     intent,
-                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                 )
             }
             else {
