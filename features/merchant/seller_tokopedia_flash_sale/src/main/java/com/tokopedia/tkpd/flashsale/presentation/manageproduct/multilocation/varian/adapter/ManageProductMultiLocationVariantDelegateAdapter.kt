@@ -85,31 +85,32 @@ class ManageProductMultiLocationVariantDelegateAdapter(
                     }
 
                     quantityEditor.setValue(item.stock.toInt())
-                    quantityEditor.run {
-                        fun isAllNotEmpty(): Boolean {
-                            val editTextOfAmount =
-                                textFieldPriceDiscountNominal.textInputLayout.editText
-                            val editTextOfDiscount =
-                                textFieldPriceDiscountPercentage.textInputLayout.editText
-                            return editTextOfAmount?.text.isNullOrEmpty()
-                                    &&
-                                    editTextOfDiscount?.text.isNullOrEmpty()
-                        }
 
+                    quantityEditor.run {
                         setAddClickListener {
+                            val isInputNotEmpty = isAllNotEmpty(
+                                textFieldPriceDiscountNominal,
+                                textFieldPriceDiscountPercentage
+                            )
+
                             val qty = quantityEditor.getValue()
                             setOnClickListenerOfQuantityEditor(
                                 qty,
-                                isAllNotEmpty(),
+                                isInputNotEmpty,
                                 textQuantityEditorSubTitle
                             )
                         }
 
                         setSubstractListener {
+                            val isInputNotEmpty = isAllNotEmpty(
+                                textFieldPriceDiscountNominal,
+                                textFieldPriceDiscountPercentage
+                            )
+
                             val qty = quantityEditor.getValue()
                             setOnClickListenerOfQuantityEditor(
                                 qty,
-                                isAllNotEmpty(),
+                                isInputNotEmpty,
                                 textQuantityEditorSubTitle
                             )
                         }
@@ -129,22 +130,44 @@ class ManageProductMultiLocationVariantDelegateAdapter(
             }
         }
 
+        private fun isAllNotEmpty(
+            textFieldPriceDiscountNominal: TextFieldUnify2,
+            textFieldPriceDiscountPercentage: TextFieldUnify2
+        ): Boolean {
+            val editTextOfAmount =
+                textFieldPriceDiscountNominal.textInputLayout.editText
+            val editTextOfDiscount =
+                textFieldPriceDiscountPercentage.textInputLayout.editText
+            return editTextOfAmount?.text.isNullOrEmpty()
+                    &&
+                    editTextOfDiscount?.text.isNullOrEmpty()
+        }
+
         private fun setOnClickListenerOfQuantityEditor(
             stock: Int,
             isAllNotEmpty: Boolean,
             warningUI: Typography
         ) {
-            onValidationQuantity.invoke(
-                adapterPosition,
-                stock.toLong(),
-                isAllNotEmpty
-            ) { isValid, message ->
+            onValidationCheck(stock, isAllNotEmpty) { isValid, message ->
                 warningUI.setTextColor(
                     getColorStateOfMessage(
                         isValid
                     )
                 )
                 warningUI.text = message
+            }
+        }
+
+        private fun onValidationCheck(
+            stock: Int,
+            isAllNotEmpty: Boolean, action: ((Boolean, String) -> Unit)? = null
+        ) {
+            onValidationQuantity.invoke(
+                adapterPosition,
+                stock.toLong(),
+                isAllNotEmpty
+            ) { isValid, message ->
+                action?.let { it(isValid, message) }
             }
         }
 

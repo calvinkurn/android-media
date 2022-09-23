@@ -84,7 +84,7 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
         return Pair(
             errorMessageHelper.getPriceMessage(
                 productData.productCriteria,
-                variant.warehouses[positionWarehouse].price
+                variant.warehouses[positionWarehouse].discountSetup
             ),
             errorMessageHelper.getDiscountMessage(
                 productData.productCriteria,

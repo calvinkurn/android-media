@@ -18,9 +18,9 @@ data class ManageProductMultiLocationVariantItem(
 
     @Parcelize
     data class Price(
-        val lowerPrice: String,
-        var price: String,
-        val upperPrice: String
+        val lowerPrice: Long,
+        var price: Long,
+        val upperPrice: Long
     ) : Parcelable
 
     @Parcelize
