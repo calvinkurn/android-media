@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.play.R
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.unifycomponents.R as unifyCompR
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -61,11 +61,11 @@ class ChooseAddressViewComponent(
 
         setupButtonView()
 
-        rootView.addOnImpressionListener(trackingField){
+        rootView.addImpressionListener(trackingField) {
             listener.onImpressedAddressWidget(this@ChooseAddressViewComponent)
         }
 
-        btnChoose.addOnImpressionListener(trackingField) {
+        btnChoose.addImpressionListener(trackingField) {
             listener.onImpressedBtnChoose(this@ChooseAddressViewComponent)
         }
     }

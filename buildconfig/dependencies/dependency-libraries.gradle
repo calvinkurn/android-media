@@ -116,6 +116,7 @@ ext {
             screenRecorder          : ":libraries:screen_recorder",
             unitTest                : ":libraries:unit_test",
             telemetry               : ":libraries:telemetry",
-            macrobenchmarkUtil               : ":libraries:macrobenchmark_util",
+            sse                     : ":libraries:sse",
+            macrobenchmarkUtil      : ":libraries:macrobenchmark_util",
     ]
 }
