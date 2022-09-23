@@ -5,8 +5,6 @@ import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.feedplus.data.pojo.FeedTabs
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import rx.Subscriber
 
 /**
  * Created By : Jonathan Darwin on September 23, 2022
@@ -53,10 +51,6 @@ class FakeFeedPlusRepository : FeedPlusRepository {
     }
 
     override suspend fun clearDynamicTabCache() {
-
-    }
-
-    override fun getFeedContentForm(subscriber: Subscriber<GraphqlResponse>) {
 
     }
 

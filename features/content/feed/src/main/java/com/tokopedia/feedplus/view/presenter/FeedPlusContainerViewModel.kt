@@ -29,7 +29,6 @@ class FeedPlusContainerViewModel @Inject constructor(
 
     val tabResp = MutableLiveData<Result<FeedTabs>>()
     val whitelistResp = MutableLiveData<Result<WhitelistDomain>>()
-    var feedContentForm = FeedContentForm()
 
     val isShowPostButton: Boolean
         get() = when(val whitelist = whitelistResp.value) {
@@ -50,23 +49,6 @@ class FeedPlusContainerViewModel @Inject constructor(
             tabResp.value = Fail(it)
             repo.clearDynamicTabCache()
         }
-    }
-
-    fun getContentForm(){
-        repo.getFeedContentForm(
-            object: Subscriber<GraphqlResponse>() {
-                override fun onNext(t: GraphqlResponse) {
-                    val query = t.getData<FeedContentResponse>(FeedContentResponse::class.java)
-                    feedContentForm = query.feedContentForm
-                }
-
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable) {
-                }
-            }
-        )
     }
 
     fun getWhitelist() {

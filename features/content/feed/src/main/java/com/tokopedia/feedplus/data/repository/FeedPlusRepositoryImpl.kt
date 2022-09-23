@@ -22,8 +22,7 @@ import javax.inject.Inject
 class FeedPlusRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getDynamicTabsUseCase: GraphqlUseCase<FeedTabs.Response>,
-    private val getWhitelistUseCase: GetWhitelistNewUseCase,
-    private val getContentFormForFeedUseCase: GetContentFormForFeedUseCase
+    private val getWhitelistUseCase: GetWhitelistNewUseCase
 ) : FeedPlusRepository {
 
     override suspend fun getWhitelist(): WhitelistQuery = withContext(dispatchers.io) {
@@ -37,13 +36,5 @@ class FeedPlusRepositoryImpl @Inject constructor(
 
     override suspend fun clearDynamicTabCache() {
         getDynamicTabsUseCase.clearCache()
-    }
-
-    override fun getFeedContentForm(subscriber: Subscriber<GraphqlResponse>) {
-        getContentFormForFeedUseCase.clearRequest()
-        getContentFormForFeedUseCase.execute(
-            GetContentFormForFeedUseCase.createRequestParams(mutableListOf(),"",""),
-            subscriber
-        )
     }
 }
