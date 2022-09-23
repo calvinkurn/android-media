@@ -22,6 +22,7 @@ class SellerTncBottomSheet : BottomSheetUnify() {
 
     override fun onDestroy() {
         super.onDestroy()
+        view = null
         mListener = null
     }
 
@@ -52,8 +53,9 @@ class SellerTncBottomSheet : BottomSheetUnify() {
         setTitle(getString(R.string.play_bro_tnc_title))
     }
 
-    fun initViews(tncList: List<TermsAndConditionUiModel>) {
-        view?.setTermsAndConditions(tncList)
+    fun initViews(tncList: List<TermsAndConditionUiModel>): SellerTncBottomSheet {
+        if (isAdded) view?.setTermsAndConditions(tncList)
+        return this
     }
 
     fun showNow(fragmentManager: FragmentManager) {
@@ -61,7 +63,7 @@ class SellerTncBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        const val TAG = "TNC_BOTTOM_SHEET"
+        private const val TAG = "SellerTncBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,
