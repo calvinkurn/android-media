@@ -42,7 +42,7 @@ object MacroIntent {
         }
 
         fun getHomeMockIntent(): Intent {
-            val intent = getMockSetupIntent(Config.Search)
+            val intent = getMockSetupIntent(Config.Home)
             intent.putMockData(HomeMockResponseConfig.KEY_QUERY_DYNAMIC_POSITION, R.raw.response_mock_data_dynamic_position)
             intent.putMockData(HomeMockResponseConfig.KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_1, R.raw.response_mock_data_dynamic_home_channel_atf_1)
             intent.putMockData(HomeMockResponseConfig.KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_2, R.raw.response_mock_data_dynamic_home_channel_atf_2)
@@ -52,7 +52,7 @@ object MacroIntent {
         }
 
         fun getSearchMockIntent(): Intent {
-            val intent = Mock.getMockSetupIntent(Mock.Config.Search)
+            val intent = getMockSetupIntent(Mock.Config.Search)
             intent.putMockData(SearchMockResponseConfig.KEY_QUERY_SEARCH_PRODUCT, R.raw.search_common_response)
             intent.putMockData(SearchMockResponseConfig.KEY_QUERY_KERO, R.raw.response_mock_choose_get_state_chosen_address)
             intent.putMockData(SearchMockResponseConfig.KEY_QUERY_TOPADS_BANNER, R.raw.response_mock_search_topads_tdn)
@@ -87,13 +87,6 @@ object MacroIntent {
             intent.data = Uri.parse("tokopedia-android-internal://home/navigation")
             return intent
         }
-
-        fun getHomeMacroSetupIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.data = Uri.parse("tokopedia-android-internal://home-setting/opt/macrobenchmark")
-            return intent
-        }
     }
 
     object App {
@@ -104,15 +97,7 @@ object MacroIntent {
         const val RV_RESOURCE_ID = "home_fragment_recycler_view"
 
         fun getAppLauncherIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://home-setting/opt/macrobenchmark")
-            return intent
-        }
-
-        fun getAppMacroSetupIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.data = Uri.parse("tokopedia-android-internal://home-setting/opt/macrobenchmark")
+            val intent = Mock.getMockSetupIntent(Mock.Config.Home)
             return intent
         }
     }
@@ -127,13 +112,6 @@ object MacroIntent {
         fun getOsIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://home/navigation?TAB_POSITION=2")
-            return intent
-        }
-
-        fun getOsMacroSetupIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.data = Uri.parse("tokopedia-android-internal://home-setting/opt/macrobenchmark")
             return intent
         }
     }
