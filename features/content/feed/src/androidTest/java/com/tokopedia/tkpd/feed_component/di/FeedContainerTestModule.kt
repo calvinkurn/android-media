@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
+import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
 import com.tokopedia.feedplus.view.di.FeedContainerScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -20,7 +21,10 @@ import kotlinx.coroutines.Dispatchers
  * Created By : Jonathan Darwin on September 22, 2022
  */
 @Module
-class FeedContainerTestModule {
+class FeedContainerTestModule(
+    private val mockUserSession: UserSessionInterface,
+    private val mockRepo: FeedPlusRepository
+) {
 
     @Provides
     fun provideGraphQlRepository(@ApplicationContext context: Context): GraphqlRepository {
@@ -37,11 +41,13 @@ class FeedContainerTestModule {
 
     @Provides
     @FeedContainerScope
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
+    fun provideUserSessionInterface(): UserSessionInterface = mockUserSession
 
     @Provides
     @FeedContainerScope
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Provides
+    @FeedContainerScope
+    fun provideFeedPlusRepository(): FeedPlusRepository = mockRepo
 }

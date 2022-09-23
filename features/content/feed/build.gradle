@@ -2,9 +2,11 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'de.mannodermaus.android-junit5'
+apply from: "../../../compile-instrument-test.gradle"
 
 android {
     testOptions {
+        animationsDisabled = true
         unitTests {
             includeAndroidResources = true
         }
@@ -141,13 +143,13 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.json
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
+    androidTestImplementation rootProject.ext.testDependencies.assertJCore
+    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation rootProject.ext.testDependencies.assertJCore
-    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
-    androidTestImplementation rootProject.ext.miscDependencies.dagger
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
 

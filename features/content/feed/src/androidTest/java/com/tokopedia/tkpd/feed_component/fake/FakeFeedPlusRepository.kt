@@ -13,21 +13,43 @@ import rx.Subscriber
  */
 class FakeFeedPlusRepository : FeedPlusRepository {
 
-    override suspend fun getWhitelist(): WhitelistQuery {
-        return WhitelistQuery(
-            whitelist = Whitelist(
-                authors = listOf(
-                    Author(
-                        type = "content-user",
-                        thumbnail = "https://images.tokopedia.net/img/cache/100-square/default_picture_user/default_toped-24.jpg"
-                    )
+    private var whitelistResponse = WhitelistQuery(
+        whitelist = Whitelist(
+            authors = listOf(
+                Author(
+                    type = "content-user",
+                    thumbnail = "https://images.tokopedia.net/img/cache/100-square/default_picture_user/default_toped-24.jpg"
                 )
             )
         )
+    )
+
+    private var dynamicTabsResponse: FeedTabs = FeedTabs(
+        feedData = listOf(
+            FeedTabs.FeedData(
+                isActive = true,
+                key = "feeds",
+                type = "feeds",
+                position = 1,
+                title = "Update"
+            ),
+            FeedTabs.FeedData(
+                isActive = true,
+                key = "explore",
+                type = "explore",
+                position = 2,
+                title = "Explore"
+            )
+        )
+    )
+
+
+    override suspend fun getWhitelist(): WhitelistQuery {
+        return whitelistResponse
     }
 
     override suspend fun getDynamicTabs(): FeedTabs {
-
+        return dynamicTabsResponse
     }
 
     override suspend fun clearDynamicTabCache() {
@@ -35,6 +57,14 @@ class FakeFeedPlusRepository : FeedPlusRepository {
     }
 
     override fun getFeedContentForm(subscriber: Subscriber<GraphqlResponse>) {
+        subscriber.onNext()
+    }
 
+    fun setWhitelistResponse(response: WhitelistQuery) {
+        this.whitelistResponse = response
+    }
+
+    fun setDynamicTabResponse(response: FeedTabs) {
+        this.dynamicTabsResponse = response
     }
 }
