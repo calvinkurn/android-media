@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian
+package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel

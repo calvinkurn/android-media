@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian
+package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian
 
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
@@ -18,9 +18,9 @@ import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian.adapter.ManageProductMultiLocationVariantDelegateAdapter
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian.adapter.ManageProductMultiLocationVariantItem
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian.adapter.ManageProductMultiLocationVariantItem.BundleConstant.toProductCriteriaInWarehouse
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductMultiLocationVariantDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductMultiLocationVariantItem
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductMultiLocationVariantItem.BundleConstant.toProductCriteriaInWarehouse
 
 //TODO WILLYBRODUS : CHANGE ALL logic method into ViewModel
 class ManageProductMultiLocationVariantFragment :
@@ -138,12 +138,12 @@ class ManageProductMultiLocationVariantFragment :
                 onDiscountAmountChanged = { position, amount, discount ->
                     viewModel.setDiscountAmount(position, amount)
                     viewModel.setDiscountPercentage(position, discount)
-                    viewModel.checkAllValidationOfInputUser(position ,INPUT_NOT_EMPTY_STATE)
+                    viewModel.checkAllValidationOfInputUser(position , INPUT_NOT_EMPTY_STATE)
                 },
                 onDiscountPercentageChange = { position, discount, amount ->
                     viewModel.setDiscountPercentage(position, discount)
                     viewModel.setDiscountAmount(position, amount)
-                    viewModel.checkAllValidationOfInputUser(position ,INPUT_NOT_EMPTY_STATE)
+                    viewModel.checkAllValidationOfInputUser(position , INPUT_NOT_EMPTY_STATE)
                 },
                 onValidationInputText = { position, isPriceToPercentage, action ->
                     val isValid =

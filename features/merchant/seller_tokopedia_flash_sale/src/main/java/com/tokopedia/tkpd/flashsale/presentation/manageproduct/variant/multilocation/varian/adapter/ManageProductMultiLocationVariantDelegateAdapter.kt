@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian.adapter
+package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter
 
 import android.text.Editable
 import android.text.TextWatcher
@@ -36,7 +36,7 @@ class ManageProductMultiLocationVariantDelegateAdapter(
 
     override fun bindViewHolder(
         item: ManageProductMultiLocationVariantItem,
-        viewHolder: ManageProductMultiLocationVariantDelegateAdapter.ViewHolder
+        viewHolder: ViewHolder
     ) {
         viewHolder.bind(item)
     }

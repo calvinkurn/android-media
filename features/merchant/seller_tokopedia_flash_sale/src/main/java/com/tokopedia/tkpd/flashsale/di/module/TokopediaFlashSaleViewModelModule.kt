@@ -13,7 +13,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.viewmodel.CampaignDetail
 import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailViewModel
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantViewModel
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListListViewModel
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian.ManageProductMultiLocationVariantViewModel
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.ManageProductMultiLocationVariantViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 

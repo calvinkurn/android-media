@@ -21,7 +21,9 @@ import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.ManageProductMultiLocationVariantActivity
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
+import timber.log.Timber
 
 class ManageProductVariantFragment :
     BaseCampaignManageProductDetailFragment<ManageProductVariantAdapter>(),
@@ -210,9 +212,19 @@ class ManageProductVariantFragment :
         return viewModel.calculatePercent(priceInput, originalPrice)
     }
 
+    override fun onMultiWarehouseClicked(adapterPosition: Int) {
+        val intent = ManageProductMultiLocationVariantActivity.start(
+            context ?: return,
+            viewModel.getProductData(),
+            adapterPosition
+        )
+        this@ManageProductVariantFragment.startActivityForResult(intent, Activity.RESULT_OK)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
+        Timber.tag("Masuk").d("Masuk")
+        if (requestCode == Activity.RESULT_OK) {
             val appliedProduct =
                 data?.extras?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
             if (appliedProduct != null) {

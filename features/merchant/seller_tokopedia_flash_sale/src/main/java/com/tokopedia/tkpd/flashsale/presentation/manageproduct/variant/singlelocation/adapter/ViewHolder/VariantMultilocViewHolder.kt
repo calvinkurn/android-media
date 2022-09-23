@@ -57,6 +57,9 @@ class VariantMultilocViewHolder(
                     getFilledWarehousesCount(item)
                 )
             }
+            container.setOnClickListener {
+                listener?.onMultiWarehouseClicked(adapterPosition)
+            }
         }
     }
 

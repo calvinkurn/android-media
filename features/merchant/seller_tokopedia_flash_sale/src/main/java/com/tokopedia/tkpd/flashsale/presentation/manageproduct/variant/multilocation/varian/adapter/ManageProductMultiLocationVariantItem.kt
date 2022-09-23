@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian.adapter
+package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter
 
 import android.os.Parcelable
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
@@ -34,7 +34,7 @@ data class ManageProductMultiLocationVariantItem(
         ) : Parcelable
 
     object BundleConstant {
-        fun ReservedProduct.Product.ProductCriteria.toProductCriteriaInWarehouse() : ProductCriteria{
+        fun ReservedProduct.Product.ProductCriteria.toProductCriteriaInWarehouse() : ProductCriteria {
             return ProductCriteria(
                 maxCustomStock = this.maxCustomStock,
                 minCustomStock = this.minCustomStock,
