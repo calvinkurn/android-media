@@ -306,6 +306,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         data.id,
                         data.typename,
                         data.author.id,
+                        data.followers.isFollowed,
                         listOf(data.products[position])
                     )
                 } else {
@@ -1499,6 +1500,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.id,
                 feedXCard.typename,
                 feedXCard.author.id,
+                feedXCard.followers.isFollowed,
                 listToBeImpressed
         )
     }

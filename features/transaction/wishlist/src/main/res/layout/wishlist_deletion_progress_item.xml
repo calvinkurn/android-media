@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_deletion_progress"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="8dp">
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/sticky_deletion_card"
+        android:layout_width="wrap_content"
+        android:layout_height="82dp"
+        app:cardBackgroundColor="@color/Unify_Background"
+        app:contentPaddingBottom="12dp"
+        app:contentPaddingLeft="16dp"
+        app:contentPaddingRight="16dp"
+        app:contentPaddingTop="12dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardPreventCornerOverlap="false"
+        android:layout_margin="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/deletion_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_alignParentTop="true"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/label_progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="12dp"
+                android:layout_below="@id/deletion_message"
+                app:typographyType="body_3"
+                android:layout_marginStart="8dp"
+                tools:text="80/100"/>
+
+            <com.tokopedia.unifycomponents.ProgressBarUnify
+                android:id="@+id/deletion_progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:unify_progress_bar_color_type="color_green"
+                android:layout_toStartOf="@id/label_progress_bar"
+                android:layout_alignTop="@id/label_progress_bar"
+                android:layout_alignBottom="@id/label_progress_bar"
+                android:layout_marginTop="11dp"
+                android:layout_marginStart="16dp"/>
+
+        </RelativeLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+</RelativeLayout>

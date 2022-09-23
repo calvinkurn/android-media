@@ -226,7 +226,7 @@ class KycUploadViewModel @Inject constructor(
         message: String = ""
     ) {
         serverLogger.log(Priority.P2, "KYC_UPLOAD_MONITORING", mapOf(
-            "type" to type,
+            "status" to type,
             "uploadTime" to "${uploadTime}ms",
             "encryptionTimeFileKtp" to "${encryptionTimeFileKtp}ms",
             "encryptionTimeFileFace" to "${encryptionTimeFileFace}ms",

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_TYPE
@@ -136,7 +137,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private fun getCurrentTitle() = txtGroupName?.textFieldInput?.text?.toString()
 
     private fun getCurrentDailyBudget(): Int {
-        return dailyBudget?.textFieldInput?.text.toString().removeCommaRawString().toInt()
+        return dailyBudget?.textFieldInput?.text.toString().removeCommaRawString().toIntOrZero()
     }
 
     private fun setCurrentDailyBudget(data: String) {

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
@@ -40,7 +41,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;

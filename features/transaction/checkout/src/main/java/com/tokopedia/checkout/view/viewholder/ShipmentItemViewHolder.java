@@ -54,6 +54,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
@@ -594,8 +595,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             ImageHandler.loadImageWithoutPlaceholderAndError(
                     imgFreeShipping, shipmentCartItemModel.getFreeShippingBadgeUrl()
             );
-            if (shipmentCartItemModel.isFreeShippingExtra()) {
-                imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe));
+            if (shipmentCartItemModel.isFreeShippingPlus()) {
+                imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus));
             } else {
                 imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo));
             }
@@ -1259,7 +1260,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
             if (shipmentCartItemModel.isCustomPinpointError()) {
                 renderErrorPinpointCourier();
-            } else if ((shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) || shipmentCartItemModel.isAutoCourierSelection()) {
+            } else if (shouldAutoLoadCourier(shipmentCartItemModel, recipientAddressModel)) {
                 if (!hasLoadCourier) {
                     ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
                             shipmentCartItemModel, recipientAddressModel);
@@ -1284,6 +1285,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 renderNoSelectedCourier(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, saveStateType);
             }
         }
+    }
+
+    private boolean shouldAutoLoadCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel) {
+        return (recipientAddressModel.isTradeIn() && recipientAddressModel.getSelectedTabIndex() != 0 && shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0 && !TextUtils.isEmpty(recipientAddressModel.getDropOffAddressName())) // trade in dropoff
+                || (recipientAddressModel.isTradeIn() && recipientAddressModel.getSelectedTabIndex() == 0 && shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0 && !TextUtils.isEmpty(recipientAddressModel.getProvinceName())) // trade in pickup
+                || (!recipientAddressModel.isTradeIn() && shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0 && !TextUtils.isEmpty(recipientAddressModel.getProvinceName())) // normal address
+                || shipmentCartItemModel.isAutoCourierSelection(); // tokopedia now
     }
 
     private void renderNoSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter, int saveStateType) {
@@ -1876,13 +1884,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     imgInsuranceInfo.setVisibility(View.GONE);
                 } else {
                     imgInsuranceInfo.setVisibility(View.VISIBLE);
-                    imgInsuranceInfo.setOnClickListener(view -> showBottomSheet(imgInsuranceInfo.getContext(),
+                    imgInsuranceInfo.setOnClickListener(view ->
+                        showInsuranceBottomSheet(
+                            imgInsuranceInfo.getContext(),
                             imgInsuranceInfo.getContext().getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
-                            courierItemData.getInsuranceUsedInfo(),
-                            com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance));
+                            courierItemData.getInsuranceUsedInfo()
+                        )
+                    );
                 }
             }
-
         }
     }
 
@@ -2005,6 +2015,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             return Unit.INSTANCE;
         });
         generalBottomSheet.show(context, mActionListener.getCurrentFragmentManager());
+    }
+
+    private void showInsuranceBottomSheet(Context context, String title, String message) {
+        InsuranceBottomSheet insuranceBottomSheet = new InsuranceBottomSheet();
+        insuranceBottomSheet.setDesc(message);
+        insuranceBottomSheet.show(title, context, mActionListener.getCurrentFragmentManager());
     }
 
     private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, long price) {

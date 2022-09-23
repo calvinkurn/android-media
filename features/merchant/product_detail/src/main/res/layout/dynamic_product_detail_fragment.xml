@@ -78,15 +78,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:visibility="visible" />
-
-        <include
-            android:id="@+id/base_btn_follow"
-            layout="@layout/layout_button_npl_follow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:visibility="visible" />
     </LinearLayout>
+
+    <include
+        android:id="@+id/base_btn_follow"
+        layout="@layout/layout_button_npl_follow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible" />
 
     <com.tokopedia.product.detail.view.widget.ProductDetailNavigation
         android:id="@+id/pdp_navigation"
