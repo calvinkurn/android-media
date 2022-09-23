@@ -19,7 +19,7 @@ class VariantMultilocViewHolder(
         product: ReservedProduct.Product,
         item: ReservedProduct.Product.ChildProduct
     ) {
-        val discount = item.discountSetup
+        val discount = item.warehouses.firstOrNull()?.discountSetup
         binding.containerLayoutProductParent.apply {
             textParentErrorMessage.gone()
             imageParentError.gone()
@@ -41,10 +41,12 @@ class VariantMultilocViewHolder(
                 item.isToggleOn = switcherToggleParent.isChecked
                 binding.containerProductChild.isVisible = item.isToggleOn
                 listener?.onToggleSwitch(adapterPosition, switcherToggleParent.isChecked)
-                listener?.onDataInputChanged(
-                    adapterPosition,
-                    product, discount
-                )
+                discount?.let { it ->
+                    listener?.onDataInputChanged(
+                        adapterPosition,
+                        product, it
+                    )
+                }
             }
         }
 

@@ -27,7 +27,7 @@ class VariantViewHolder(
         product: ReservedProduct.Product,
         selectedChildProduct: ReservedProduct.Product.ChildProduct
     ) {
-        val discount = selectedChildProduct.discountSetup
+        val discount = selectedChildProduct.warehouses.firstOrNull()?.discountSetup
         val criteria = selectedChildProduct.productCriteria
         binding.containerLayoutProductParent.apply {
             textParentTitle.text = selectedChildProduct.name
@@ -42,18 +42,20 @@ class VariantViewHolder(
                 selectedChildProduct.isToggleOn = switcherToggleParent.isChecked
                 binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
                 listener?.onToggleSwitch(adapterPosition, switcherToggleParent.isChecked)
-                listener?.onDataInputChanged(
-                    adapterPosition,
-                    product, discount
-                )
+                discount?.let { it ->
+                    listener?.onDataInputChanged(
+                        adapterPosition,
+                        product, it
+                    )
+                }
             }
             binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
             binding.containerLayoutProductInformation.apply {
                 periodSection.gone()
                 tickerPriceError.gone()
-                textFieldPriceDiscountNominal.editText.setText(discount.price.toStringOrEmpty())
-                textFieldPriceDiscountPercentage.editText.setText(discount.discount.toStringOrEmpty())
-                quantityEditor.editText.setText(discount.stock.orZero().toString())
+                textFieldPriceDiscountNominal.editText.setText(discount?.price.toStringOrEmpty())
+                textFieldPriceDiscountPercentage.editText.setText(discount?.discount.toStringOrEmpty())
+                quantityEditor.editText.setText(discount?.stock.orZero().toString())
                 textQuantityEditorTitle.text =
                     root.context.getString(R.string.manageproductnonvar_stock_title)
                 textFieldPriceDiscountNominal.editText.setModeToNumberDelimitedInput()
@@ -79,7 +81,7 @@ class VariantViewHolder(
                 )
 
                 textFieldPriceDiscountNominal.textInputLayout.editText?.afterTextChanged {
-                    discount.price = it.digitsOnly()
+                    discount?.price = it.digitsOnly()
                     val discountPercent =
                         listener?.calculatePercent(it.digitsOnly(), adapterPosition).orEmpty()
                     textFieldPriceDiscountPercentage.setTextIfNotFocus(discountPercent)
@@ -92,7 +94,7 @@ class VariantViewHolder(
                 }
 
                 textFieldPriceDiscountPercentage.editText.afterTextChanged {
-                    discount.discount = it.digitsOnly().toInt()
+                    discount?.discount = it.digitsOnly().toInt()
                     val discountPrice =
                         listener?.calculatePrice(it.digitsOnly(), adapterPosition).orEmpty()
                     textFieldPriceDiscountNominal.setTextIfNotFocus(discountPrice)
@@ -105,8 +107,8 @@ class VariantViewHolder(
                 }
 
                 quantityEditor.editText.afterTextChanged {
-                    discount.stock = it.digitsOnly()
-                    listener?.onStockChange(adapterPosition, discount.stock)
+                    discount?.stock = it.digitsOnly()
+                    discount?.stock?.let { it -> listener?.onStockChange(adapterPosition, it) }
                     triggerListener(product, discount)
                 }
             }

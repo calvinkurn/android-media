@@ -59,18 +59,6 @@ object BulkApplyMapper {
                 picture = cp.picture,
                 price = cp.price,
                 productCriteria = cp.productCriteria,
-                discountSetup = when (result.discountType) {
-                    DiscountType.RUPIAH -> DiscountSetup(
-                        discount = ((result.discountAmount.toDouble() / cp.price.price) * BULK_APPLY_PERCENT_NORMALIZATION).roundToInt(),
-                        price = result.discountAmount,
-                        stock = result.stock.toLong()
-                    )
-                    DiscountType.PERCENTAGE -> DiscountSetup(
-                        discount = result.discountAmount.toInt(),
-                        price = ((result.discountAmount * BULK_APPLY_CURRENCY_NORMALIZATION) * cp.price.price).toLong(),
-                        stock = result.stock.toLong()
-                    )
-                },
                 productId = cp.productId,
                 sku = cp.sku,
                 stock = cp.stock,

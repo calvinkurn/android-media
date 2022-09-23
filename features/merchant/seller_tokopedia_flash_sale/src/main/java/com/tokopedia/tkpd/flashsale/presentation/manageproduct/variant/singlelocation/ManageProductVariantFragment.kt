@@ -21,7 +21,6 @@ import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
-import timber.log.Timber
 
 class ManageProductVariantFragment :
     BaseCampaignManageProductDetailFragment<ManageProductVariantAdapter>(),
@@ -113,7 +112,6 @@ class ManageProductVariantFragment :
     }
 
     override fun onSubmitButtonClicked() {
-        Timber.tag("Masuk").d(viewModel.getProductData().toString())
         val bundle = Bundle()
         val intent = Intent()
         bundle.putParcelable(BUNDLE_KEY_PRODUCT, viewModel.getProductData())
@@ -128,11 +126,7 @@ class ManageProductVariantFragment :
         val bSheet = ProductBulkApplyBottomSheet.newInstance(param)
         bSheet.setOnApplyClickListener {
             val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
-            val inputAdapter = ManageProductVariantAdapter(this).apply {
-                setDataList(appliedProduct)
-            }
-            rvManageProductDetail?.adapter = inputAdapter
-            viewModel.setupInitiateProductData(appliedProduct)
+            setProductListData(appliedProduct)
         }
         bSheet.show(childFragmentManager, "")
     }
@@ -164,6 +158,14 @@ class ManageProductVariantFragment :
         }
     }
 
+    private fun setProductListData(product: ReservedProduct.Product) {
+        val adapter = ManageProductVariantAdapter(this).apply {
+            setDataList(product)
+        }
+        rvManageProductDetail?.adapter = adapter
+        viewModel.setupInitiateProductData(product)
+    }
+
     override fun onDataInputChanged(
         index: Int,
         product: ReservedProduct.Product,
@@ -176,7 +178,7 @@ class ManageProductVariantFragment :
         }
 
         return viewModel.validateInput(
-            criteria = selectedItem?.productCriteria ?: product.productCriteria,
+            criteria = product.productCriteria,
             discountSetup = discountSetup
         )
     }
@@ -203,5 +205,16 @@ class ManageProductVariantFragment :
     override fun calculatePercent(priceInput: Long, adapterPosition: Int): String {
         val originalPrice = viewModel.getProductData().childProducts[adapterPosition].price.price
         return viewModel.calculatePercent(priceInput, originalPrice)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            val appliedProduct =
+                data?.extras?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
+            if (appliedProduct != null) {
+                setProductListData(appliedProduct)
+            }
+        }
     }
 }

@@ -1269,11 +1269,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     minDiscount = 1,
                     minFinalPrice = 100
                 ),
-                discountSetup =ReservedProduct.Product.Warehouse.DiscountSetup(
-                    discount = 0,
-                    price = 0,
-                    stock = 0,
-                ),
                 productId = child.toLong(),
                 sku = "SKU-$child",
                 stock = 80,
