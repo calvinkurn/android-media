@@ -196,7 +196,7 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
 
     companion object {
         private const val DEFAULT_SLIDER_STEP = 10
-        private const val DEFAULT_START_VALUE = 5
+        private const val DEFAULT_START_VALUE = 0
         private const val DEFAULT_STEP_VALUE = 1
     }
 
