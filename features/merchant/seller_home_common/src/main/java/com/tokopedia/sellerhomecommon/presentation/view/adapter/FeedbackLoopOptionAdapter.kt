@@ -19,10 +19,6 @@ class FeedbackLoopOptionAdapter(
     private val onCheckedListener: (FeedbackLoopOptionUiModel) -> Unit
 ) : RecyclerView.Adapter<FeedbackLoopOptionAdapter.ViewHolder>() {
 
-    companion object {
-        private const val MAX_CHAR = 250
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ShcItemFeedbackLoopOptionBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
@@ -63,7 +59,6 @@ class FeedbackLoopOptionAdapter(
             binding.run {
                 if (item.isSelected) {
                     edtShcFeedbackOption.visible()
-                    edtShcFeedbackOption.setCounter(MAX_CHAR)
                     edtShcFeedbackOption.textFieldInput.afterTextChanged { text ->
                         item.value = text
                         onCheckedListener(item)

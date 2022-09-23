@@ -119,7 +119,7 @@ class PostListViewHolder(
     private fun setupLastUpdated(element: PostListWidgetUiModel) {
         with(binding.shcPostListSuccessView.luvShcPost) {
             element.data?.lastUpdated?.let { lastUpdated ->
-                isVisible = lastUpdated.isEnabled
+                isVisible = lastUpdated.isEnabled && !element.isCheckingMode
                 setLastUpdated(lastUpdated.lastUpdatedInMillis)
                 setRefreshButtonVisibility(lastUpdated.needToUpdated)
                 setRefreshButtonClickListener {
@@ -211,10 +211,7 @@ class PostListViewHolder(
 
     private fun setupCheckingMode(element: PostListWidgetUiModel) {
         binding.shcPostListSuccessView.run {
-            if (!(element.isDismissible && element.dismissibleState == DismissibleState.ALWAYS)) {
-                moreShcPostWidget.gone()
-                return
-            }
+            setMoreOptionVisibility(element)
 
             moreShcPostWidget.setOnMoreClicked {
                 listener.showPostWidgetMoreOption(element)
@@ -223,7 +220,9 @@ class PostListViewHolder(
                 setOnCancelClicked(element)
             }
             moreShcPostWidget.showCheckingMode(element.isCheckingMode)
+
             groupShcPostRemoveItem.isVisible = element.isCheckingMode
+
             if (element.isCheckingMode) {
                 tvPostListSeeDetails.gone()
                 luvShcPost.gone()
@@ -238,6 +237,21 @@ class PostListViewHolder(
                 listener.setOnPostWidgetRemoveItemClicked(element)
             }
         }
+    }
+
+    private fun setMoreOptionVisibility(element: PostListWidgetUiModel): Boolean {
+        val shouldMoreOption = !element.shouldShowDismissalTimer
+            && element.isDismissible && (element.dismissibleState == DismissibleState.ALWAYS)
+
+        binding.shcPostListSuccessView.run {
+            if (shouldMoreOption) {
+                moreShcPostWidget.visible()
+            } else {
+                moreShcPostWidget.gone()
+            }
+        }
+
+        return shouldMoreOption
     }
 
     private fun setOnCancelClicked(element: PostListWidgetUiModel) {
@@ -276,11 +290,14 @@ class PostListViewHolder(
 
             override fun onTimerFinished() {
                 setOnTimerFinished(element)
+                setMoreOptionVisibility(element)
             }
 
             override fun onCancelDismissalClicked() {
                 listener.setOnWidgetCancelDismissal(element)
                 removeTimerItem(element)
+                element.shouldShowDismissalTimer = false
+                setMoreOptionVisibility(element)
             }
         })
         pagerAdapter?.setCheckingMode(element.isCheckingMode)

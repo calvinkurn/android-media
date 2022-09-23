@@ -159,7 +159,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import timber.log.Timber
+import org.json.JSONException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -1598,10 +1598,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         newWidget: BaseWidgetUiModel<*>
     ): Boolean {
         return oldWidget.widgetType == newWidget.widgetType && oldWidget.title == newWidget.title &&
-                oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
-                oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
-                oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
-                oldWidget.emptyState == newWidget.emptyState
+            oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
+            oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
+            oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
+            oldWidget.emptyState == newWidget.emptyState
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -1850,7 +1850,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             when (it) {
                 is Success -> setSubmitDismissalSuccess(it.data)
                 is Fail -> {
-                    Timber.e(it.throwable)
+                    when (it.throwable) {
+                        is JSONException, is UnknownHostException -> {
+                            it.throwable.showErrorToaster()
+                        }
+                    }
                 }
             }
         }
@@ -2327,7 +2331,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean {
         return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
-                this !is DescriptionWidgetUiModel
+            this !is DescriptionWidgetUiModel
     }
 
     private fun handleRebateCoachMark() {
@@ -2336,9 +2340,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getSellerHomeLayoutManager()?.let { layoutManager ->
             val rebateWidget = adapter.data.indexOfFirst {
                 val isRebateMvp = it.dataKey == CoachMarkPrefHelper.REBATE_MVP_DATA_KEY
-                        && !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
+                    && !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
                 val isRebateUltimate = !coachMarkPrefHelper.getRebateCoachMarkUltimateStatus() &&
-                        it.dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY
+                    it.dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY
                 return@indexOfFirst isRebateMvp || isRebateUltimate
             }
             val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
@@ -2434,12 +2438,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun switchPostWidgetCheckingMode(element: PostListWidgetUiModel) {
         val widgets = adapter.data.map {
             val isTheSameWidget = it.dataKey == element.dataKey && it is PostListWidgetUiModel
-            return@map if (isTheSameWidget) {
-                val widget = it.copyWidget() as PostListWidgetUiModel
-                widget.isCheckingMode = !widget.isCheckingMode
-                widget
+            if (isTheSameWidget) {
+                val widget = it.copyWidget() as? PostListWidgetUiModel
+                widget?.let {
+                    widget.isCheckingMode = !widget.isCheckingMode
+                    return@map widget
+                }
+                return@map it
             } else {
-                it
+                return@map it
             }
         }
 
