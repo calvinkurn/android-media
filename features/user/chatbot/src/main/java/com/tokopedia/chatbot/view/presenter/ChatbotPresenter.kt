@@ -65,7 +65,6 @@ import com.tokopedia.chatbot.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
-import com.tokopedia.chatbot.domain.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
@@ -78,6 +77,7 @@ import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
+import com.tokopedia.chatbot.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.domain.subscriber.ChipSubmitChatCsatSubscriber
 import com.tokopedia.chatbot.domain.subscriber.ChipSubmitHelpfullQuestionsSubscriber
 import com.tokopedia.chatbot.domain.subscriber.LeaveQueueSubscriber
@@ -106,7 +106,6 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
-import com.tokopedia.chatbot.websocket.ChatbotSocketStateListener
 import com.tokopedia.chatbot.websocket.ChatbotWebSocket
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
 import com.tokopedia.common.network.data.model.RestResponse
@@ -180,7 +179,6 @@ class ChatbotPresenter @Inject constructor(
         const val CHAT_DIVIDER_DEBUGGING = "15"
         const val LIVE_CHAT_DIVIDER = "16"
         const val QUERY_SORCE_TYPE = "Apps"
-        const val SESSION_CHANGE = "31"
     }
 
     override fun submitCsatRating(inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
@@ -217,11 +215,18 @@ class ChatbotPresenter @Inject constructor(
 
     private fun handleWebSocketResponse(socketResponse: ChatbotWebSocketAction, messageId: String) {
         when (socketResponse) {
+            is ChatbotWebSocketAction.SocketOpened -> {
+                Log.d("Eren", "handleWebSocketResponse: Open called ")
+                sendReadEventWebSocket2(messageId)
+                view.showErrorWebSocket(false)
+                view.sendInvoiceForArticle()
+            }
             is ChatbotWebSocketAction.NewMessage -> {
                 handleNewMessage(socketResponse.message, messageId)
                 Log.d("Eren", "handleWebSocketResponse: ${socketResponse.message}")
             }
-            is ChatbotWebSocketAction.Closed -> {
+            is ChatbotWebSocketAction.Failure -> {
+                view.showErrorWebSocket(true)
                 Log.d("Eren", "handleWebSocketResponse: ${socketResponse.exception}")
             }
         }
@@ -238,7 +243,7 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    //NOT USED
+    // NOT USED
     private fun sendReadEvent2(messageId: String) {
         chatbotWebSocket.send(
             ChatbotSendableWebSocketParam.getReadMessage(messageId),
@@ -248,18 +253,9 @@ class ChatbotPresenter @Inject constructor(
 
     private var socketJob: Job? = null
 
-    private fun setUpSocketOpenedListener(messageId: String) {
-        chatbotWebSocket.setOnOpenListener(object : ChatbotSocketStateListener {
-            override fun onOpen() {
-                Log.d("Eren", "onOpen: TATAKAE")
-                sendReadEventWebSocket2(messageId)
-            }
-        })
-    }
-
     fun connectWebSocket2(messageId: String) {
         socketJob?.cancel()
-        setUpSocketOpenedListener(messageId)
+
         val webSocketUrl = ChatbotUrl.getPathWebsocket(userSession.deviceId, userSession.userId)
 
         socketJob = launchCatchError(
@@ -349,7 +345,7 @@ class ChatbotPresenter @Inject constructor(
                             chatResponse.attachment?.attributes,
                             ReplyBubbleAttributes::class.java
                         )
-                        handleReplyBubble(agentMode)
+                        handleSessionChange(agentMode)
                     }
                 } catch (e: JsonSyntaxException) { }
             }
@@ -385,13 +381,11 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
-    private fun handleReplyBubble(agentMode: ReplyBubbleAttributes) {
-        if (agentMode != null) {
-            if (agentMode.sessionChange.mode == MODE_AGENT) {
-                view.replyBubbleStateHandler(true)
-            } else if (agentMode.sessionChange.mode == MODE_BOT) {
-                view.replyBubbleStateHandler(false)
-            }
+    private fun handleSessionChange(agentMode: ReplyBubbleAttributes) {
+        if (agentMode.sessionChange.mode == MODE_AGENT) {
+            view.replyBubbleStateHandler(true)
+        } else if (agentMode.sessionChange.mode == MODE_BOT) {
+            view.replyBubbleStateHandler(false)
         }
     }
 
@@ -469,7 +463,6 @@ class ChatbotPresenter @Inject constructor(
 //        )
 //    }
 
-
     override fun sendRating(
         messageId: String,
         rating: Int,
@@ -540,9 +533,9 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    fun mappingEvent2(webSocketResponse: ChatWebSocketResponse, messageId: String) {
+    private fun mappingEvent2(webSocketResponse: ChatWebSocketResponse, messageId: String) {
         val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
-        if (pojo.msgId.toString() != messageId) return
+        if (pojo.msgId != messageId) return
 
         when (webSocketResponse.code) {
             EVENT_TOPCHAT_TYPING -> view.onReceiveStartTypingEvent()
@@ -553,6 +546,67 @@ class ChatbotPresenter @Inject constructor(
                 sendReadEventWebSocket2(messageId)
             }
         }
+
+        handleAttachmentTypes(webSocketResponse, messageId)
+    }
+
+    private fun handleAttachmentTypes(webSocketResponse: ChatWebSocketResponse, messageId: String) {
+        val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
+        if (pojo.msgId != messageId) return
+        chatResponse = pojo
+
+        val attachmentType = chatResponse.attachment?.type
+        if (attachmentType != null) {
+            when (attachmentType) {
+                OPEN_CSAT -> handleOpenCsatAttachment(webSocketResponse)
+                UPDATE_TOOLBAR -> handleUpdateToolbarAttachment()
+                CHAT_DIVIDER_DEBUGGING -> handleChatDividerAttachment()
+                LIVE_CHAT_DIVIDER -> handleLiveChatDividerAttachment()
+                SESSION_CHANGE -> handleSessionChangeAttachment()
+            }
+        }
+    }
+
+    private fun handleOpenCsatAttachment(webSocketResponse: ChatWebSocketResponse) {
+        val csatResponse: WebSocketCsatResponse = Gson().fromJson(
+            webSocketResponse.jsonObject,
+            WebSocketCsatResponse::class.java
+        )
+        view.openCsat(csatResponse)
+    }
+
+    private fun handleUpdateToolbarAttachment() {
+        val tool =
+            Gson().fromJson(chatResponse.attachment?.attributes, ToolbarAttributes::class.java)
+        view.updateToolbar(tool.profileName, tool.profileImage, tool.badgeImage)
+    }
+
+    private fun handleLiveChatDividerAttachment() {
+        val liveChatDividerAttribute = Gson().fromJson(
+            chatResponse.attachment?.attributes,
+            LiveChatDividerAttributes::class.java
+        )
+        mappingQueueDivider(liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
+    }
+
+    private fun handleChatDividerAttachment() {
+        val liveChatDividerAttribute = Gson().fromJson(
+            chatResponse.attachment?.attributes,
+            LiveChatDividerAttributes::class.java
+        )
+        val model = ChatSepratorViewModel(
+            sepratorMessage = liveChatDividerAttribute?.divider?.label,
+            dividerTiemstamp = chatResponse.message.timeStampUnixNano
+        )
+        view.onReceiveChatSepratorEvent(model, getLiveChatQuickReply())
+    }
+
+    private fun handleSessionChangeAttachment() {
+        val agentMode: ReplyBubbleAttributes = Gson().fromJson(
+            chatResponse.attachment?.attributes,
+            ReplyBubbleAttributes::class.java
+        )
+        handleSessionChange(agentMode)
     }
 
     override fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {

@@ -56,14 +56,12 @@ class ChatbotWebSocketImpl(
 
     private var mWebSocket: WebSocket? = null
 
-    var onChatListener : ChatbotSocketStateListener? = null
-
     private var webSocketListener = object : WebSocketListener() {
 
         override fun onOpen(webSocket: WebSocket, response: Response) {
             Log.d("Eren", " In IMPL onOpen: ")
             mWebSocket = webSocket
-            onChatListener?.onOpen()
+            webSocketFlow.tryEmit(ChatbotWebSocketAction.SocketOpened)
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
@@ -84,7 +82,7 @@ class ChatbotWebSocketImpl(
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             Log.d("Eren", " In IMPL onFailure: $t")
             mWebSocket = null
-            webSocketFlow.tryEmit(ChatbotWebSocketAction.Closed(ChatbotWebSocketException(t)))
+            webSocketFlow.tryEmit(ChatbotWebSocketAction.Failure(ChatbotWebSocketException(t)))
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
@@ -119,9 +117,5 @@ class ChatbotWebSocketImpl(
         } catch (e: Throwable) {
             Timber.log(1, e)
         }
-    }
-
-    override fun setOnOpenListener(listener : ChatbotSocketStateListener) {
-        onChatListener = listener
     }
 }

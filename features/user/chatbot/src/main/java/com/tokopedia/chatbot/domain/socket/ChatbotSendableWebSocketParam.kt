@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.domain
+package com.tokopedia.chatbot.domain.socket
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
