@@ -102,7 +102,6 @@ class ThankPageViewModelUnitTest {
 
     @Test
     fun successThanksPageResultConditionFail() {
-
         val thankPageData = mockk<ThanksPageData>(relaxed = true)
         coEvery {
             thankPageUseCase.getThankPageData(any(), any(), "", "")
