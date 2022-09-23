@@ -79,45 +79,44 @@ class FeedViewModelRobot(
     override fun close() {
         vm.viewModelScope.coroutineContext.cancelChildren()
     }
-
-    fun create(
-        dispatcher: CoroutineTestDispatchers,
-        userSession: UserSessionInterface = mockk(relaxed = true),
-        doFavoriteShopUseCase: ToggleFavouriteShopUseCase = mockk(relaxed = true),
-        followKolPostGqlUseCase: FollowKolPostGqlUseCase = mockk(relaxed = true),
-        likeKolPostUseCase: SubmitLikeContentUseCase = mockk(relaxed = true),
-        atcUseCase: AddToCartUseCase = mockk(relaxed = true),
-        trackAffiliateClickUseCase: TrackAffiliateClickUseCase = mockk(relaxed = true),
-        deletePostUseCase: SubmitActionContentUseCase = mockk(relaxed = true),
-        sendTopAdsUseCase: SendTopAdsUseCase = mockk(relaxed = true),
-        playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
-        getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase = mockk(relaxed = true),
-        getWhitelistNewUseCase: GetWhitelistNewUseCase = mockk(relaxed = true),
-        sendReportUseCase: SubmitReportContentUseCase = mockk(relaxed = true),
-        addWishListUseCase: AddWishListUseCase = mockk(relaxed = true),
-        addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true),
-        trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase = mockk(relaxed = true),
-        feedXTrackViewerUseCase: FeedXTrackViewerUseCase = mockk(relaxed = true),
-        fn: FeedViewModelRobot.() -> Unit = {}
-    ) : FeedViewModelRobot{
-        return FeedViewModelRobot(
-            dispatcher = dispatcher,
-            userSession = userSession,
-            doFavoriteShopUseCase = doFavoriteShopUseCase,
-            followKolPostGqlUseCase = followKolPostGqlUseCase,
-            likeKolPostUseCase = likeKolPostUseCase,
-            atcUseCase = atcUseCase,
-            trackAffiliateClickUseCase = trackAffiliateClickUseCase,
-            deletePostUseCase = deletePostUseCase,
-            sendTopAdsUseCase = sendTopAdsUseCase,
-            playWidgetTools = playWidgetTools,
-            getDynamicFeedNewUseCase = getDynamicFeedNewUseCase,
-            getWhitelistNewUseCase = getWhitelistNewUseCase,
-            sendReportUseCase = sendReportUseCase,
-            addToWishlistV2UseCase = addToWishlistV2UseCase,
-            addWishListUseCase = addWishListUseCase,
-            trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
-            feedXTrackViewerUseCase = feedXTrackViewerUseCase
-        ).apply(fn)
-    }
+}
+fun create(
+    dispatcher: CoroutineTestDispatchers,
+    userSession: UserSessionInterface = mockk(relaxed = true),
+    doFavoriteShopUseCase: ToggleFavouriteShopUseCase = mockk(relaxed = true),
+    followKolPostGqlUseCase: FollowKolPostGqlUseCase = mockk(relaxed = true),
+    likeKolPostUseCase: SubmitLikeContentUseCase = mockk(relaxed = true),
+    atcUseCase: AddToCartUseCase = mockk(relaxed = true),
+    trackAffiliateClickUseCase: TrackAffiliateClickUseCase = mockk(relaxed = true),
+    deletePostUseCase: SubmitActionContentUseCase = mockk(relaxed = true),
+    sendTopAdsUseCase: SendTopAdsUseCase = mockk(relaxed = true),
+    playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
+    getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase = mockk(relaxed = true),
+    getWhitelistNewUseCase: GetWhitelistNewUseCase = mockk(relaxed = true),
+    sendReportUseCase: SubmitReportContentUseCase = mockk(relaxed = true),
+    addWishListUseCase: AddWishListUseCase = mockk(relaxed = true),
+    addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true),
+    trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase = mockk(relaxed = true),
+    feedXTrackViewerUseCase: FeedXTrackViewerUseCase = mockk(relaxed = true),
+    fn: FeedViewModelRobot.() -> Unit = {}
+) : FeedViewModelRobot{
+    return FeedViewModelRobot(
+        dispatcher = dispatcher,
+        userSession = userSession,
+        doFavoriteShopUseCase = doFavoriteShopUseCase,
+        followKolPostGqlUseCase = followKolPostGqlUseCase,
+        likeKolPostUseCase = likeKolPostUseCase,
+        atcUseCase = atcUseCase,
+        trackAffiliateClickUseCase = trackAffiliateClickUseCase,
+        deletePostUseCase = deletePostUseCase,
+        sendTopAdsUseCase = sendTopAdsUseCase,
+        playWidgetTools = playWidgetTools,
+        getDynamicFeedNewUseCase = getDynamicFeedNewUseCase,
+        getWhitelistNewUseCase = getWhitelistNewUseCase,
+        sendReportUseCase = sendReportUseCase,
+        addToWishlistV2UseCase = addToWishlistV2UseCase,
+        addWishListUseCase = addWishListUseCase,
+        trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
+        feedXTrackViewerUseCase = feedXTrackViewerUseCase
+    ).apply(fn)
 }
