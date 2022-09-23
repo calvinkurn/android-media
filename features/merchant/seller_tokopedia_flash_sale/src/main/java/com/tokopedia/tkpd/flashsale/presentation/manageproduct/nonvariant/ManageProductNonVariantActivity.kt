@@ -14,14 +14,14 @@ class ManageProductNonVariantActivity : BaseSimpleActivity() {
 
     companion object {
         const val BUNDLE_KEY_PRODUCT = "KEY_PRODUCT"
+        const val REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT = 1
         @JvmStatic
-        fun start(context: Context?, product: ReservedProduct.Product) {
-            context ?: return
-            val intent = Intent(context, ManageProductNonVariantActivity::class.java)
-            val bundle = Bundle()
-            bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
-            intent.putExtras(bundle)
-            context.startActivity(intent)
+        fun createIntent(context: Context?, product: ReservedProduct.Product): Intent {
+            return Intent(context, ManageProductNonVariantActivity::class.java).apply {
+                val bundle = Bundle()
+                bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
+                putExtras(bundle)
+            }
         }
     }
 

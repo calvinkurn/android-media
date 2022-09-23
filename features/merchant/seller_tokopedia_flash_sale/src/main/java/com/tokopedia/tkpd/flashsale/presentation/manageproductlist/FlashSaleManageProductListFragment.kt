@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproductlist
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -31,6 +33,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity
 import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
 import com.tokopedia.tkpd.flashsale.presentation.dialogconfirmation.ConfirmationDialog
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantActivity
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.delegate.FlashSaleManageProductListItemDelegate
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.delegate.FlashSaleManageProductListItemGlobalErrorDelegate
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.delegate.FlashSaleManageProductListItemShimmeringDelegate
@@ -211,9 +214,16 @@ class FlashSaleManageProductListFragment :
                     is FlashSaleManageProductListUiEffect.ShowErrorSubmitDiscountedProduct -> {
                         onErrorSubmitDiscountedProduct(it.throwable)
                     }
+                    is FlashSaleManageProductListUiEffect.ClearProductList -> {
+                        clearProductList()
+                    }
                 }
             }
         }
+    }
+
+    private fun clearProductList() {
+        flashSaleAdapter.removeItem(flashSaleAdapter.getItems())
     }
 
     private fun onErrorSubmitDiscountedProduct(throwable: Throwable) {
@@ -505,7 +515,48 @@ class FlashSaleManageProductListFragment :
     }
 
     override fun onManageProductButtonClicked(productData: ReservedProduct.Product) {
+        redirectToManageProductDetailPage(productData)
+    }
 
+    private fun redirectToManageProductDetailPage(productData: ReservedProduct.Product) {
+        if (productData.isParentProduct) {
+            //redirect to manage product detail variant page
+        } else {
+            redirectToManageProductNonVariantPage(productData)
+        }
+    }
+
+    private fun redirectToManageProductNonVariantPage(productData: ReservedProduct.Product) {
+        ManageProductNonVariantActivity.createIntent(context, productData).apply {
+            startActivityForResult(
+                this,
+                ManageProductNonVariantActivity.REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT
+            )
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            ManageProductNonVariantActivity.REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT -> {
+                handleUpdatedProductResult(resultCode, data)
+            }
+            else -> {}
+        }
+    }
+
+    private fun handleUpdatedProductResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            data?.extras?.getParcelable<ReservedProduct.Product>(
+                ManageProductNonVariantActivity.BUNDLE_KEY_PRODUCT
+            )?.let {
+                updateProductData(it)
+            }
+        }
+    }
+
+    private fun updateProductData(productData: ReservedProduct.Product) {
+        viewModel.processEvent(FlashSaleManageProductListUiEvent.UpdateProductData(productData))
     }
 
     override fun onDeleteProductButtonClicked(productData: ReservedProduct.Product) {
