@@ -45,6 +45,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.Waiti
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListActivity
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -219,10 +220,22 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             val reservationId = result.second
             binding?.btnEdit?.isLoading = false
             if (result.first.isSuccess) {
-                //TODO: Navigate to atur product page
+                redirectToFlashSaleManageProductListPage(reservationId, campaignId.toString())
             } else {
                 showErrorToaster(result.first.errorMessage)
             }
+        }
+    }
+
+    private fun redirectToFlashSaleManageProductListPage(reservationId: String, campaignId: String) {
+        activity?.let {
+            it.finish()
+            FlashSaleManageProductListActivity.start(
+                it,
+                reservationId,
+                campaignId,
+                tabName
+            )
         }
     }
 
@@ -608,7 +621,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToChooseProductPage() {
-        ChooseProductActivity.start(context ?: return, flashSaleId)
+        ChooseProductActivity.start(context ?: return, flashSaleId, tabName)
     }
 
     private fun setWaitingForSelectionMidSection(flashSale: FlashSale) {
