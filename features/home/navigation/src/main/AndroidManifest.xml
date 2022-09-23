@@ -1,14 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.navigation">
 
-    <application>
+    <application
+        tools:replace="android:resizeableActivity"
+        android:resizeableActivity="true">
         <activity
             android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"
             android:label="Tokopedia"
             android:launchMode="singleTask"
             android:theme="@style/TokopediaTransparentStatus"
             android:windowSoftInputMode="adjustPan"
-            android:resizeableActivity="true"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="APPS_HOME"

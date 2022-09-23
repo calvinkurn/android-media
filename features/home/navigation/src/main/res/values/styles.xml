@@ -15,7 +15,7 @@
     </style>
 
     <style name="TokopediaTransparentStatus" parent="Theme.Tokopedia3">
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">@color/Unify_Background</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
         <item name="android:windowContentTransitions">true</item>
     </style>
