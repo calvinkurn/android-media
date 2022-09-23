@@ -263,4 +263,14 @@
     <string name="opt_failed_enabled_consent">Gagal mengaktifkan penggunaan data</string>
     <string name="opt_failed_disabled_consent">Gagal menonaktifkan penggunaan data</string>
 
+    <!--  CONSENT WITHDRAWAL  -->
+    <string name="consent_withdrawal_primary_data_usage">Penggunaan data utama</string>
+    <string name="consent_withdrawal_secondary_data_usage">Penggunaan data utama</string>
+    <string name="consent_withdrawal_dialog_title">Matikan penggunaan datamu?</string>
+    <string name="consent_withdrawal_dialog_body">Kalau dimatikan, kamu nggak bisa pakai fitur atau produk yang butuh data ini.</string>
+    <string name="consent_withdrawal_dialog_primary_cta">Ya, Matikan</string>
+    <string name="consent_withdrawal_dialog_secondary_cta">Batal</string>
+    <string name="consent_withdrawal_section_title">User Consent</string>
+    <string name="consent_withdrawal_section_description"><![CDATA[Atur penggunaan datamu di fitur & produk Tokopedia.]]></string>
+
 </resources>
