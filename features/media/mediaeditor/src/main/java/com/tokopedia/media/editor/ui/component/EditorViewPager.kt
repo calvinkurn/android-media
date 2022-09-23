@@ -12,7 +12,7 @@ import com.tokopedia.media.loader.loadImage
 
 class EditorViewPager(context: Context, attrSet: AttributeSet): ViewPager(context, attrSet){
     private var editorAdapter: EditorViewPagerAdapter? = null
-    private var previousVideoIndex = -1
+    private var previousVideoIndex = INITIAL_VIEW_PAGER_INDEX
     private var callback: (position: Int, isVideo: Boolean) -> Unit = {_, _ ->}
 
     fun setAdapter(listData: List<EditorUiModel>){
@@ -29,7 +29,7 @@ class EditorViewPager(context: Context, attrSet: AttributeSet): ViewPager(contex
             ) {}
 
             override fun onPageSelected(position: Int) {
-                if(previousVideoIndex != -1) stopVideoPlayer(previousVideoIndex)
+                stopVideoPlayer(previousVideoIndex)
 
                 val isVideo = editorAdapter?.isVideo(position) ?: false
                 if(isVideo){
