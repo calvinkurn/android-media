@@ -13,6 +13,10 @@ import javax.inject.Inject
 class GetFlashSaleProductListToReserveMapper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    companion object {
+        private const val MINIMUM_COUNT_ELIGIBLE_WAREHOUSE = 1
+    }
+
     private var lastSelectedProductCount: Int = 0
 
     fun map(response: GetFlashSaleProductListToReserveResponse): ProductToReserve {
@@ -62,7 +66,7 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor(
 
     private fun mapStock(it: GetFlashSaleProductListToReserveResponse.ProductList): String {
         val stockTotalTitle = context.getString(R.string.chooseproduct_total_stock_format)
-        return "$stockTotalTitle ${it.stock} " + if (it.countEligibleWarehouses.isMoreThanZero()) {
+        return "$stockTotalTitle ${it.stock} " + if (it.countEligibleWarehouses > MINIMUM_COUNT_ELIGIBLE_WAREHOUSE) {
             context.getString(R.string.choose_product_location_format, it.countEligibleWarehouses)
         } else ""
     }

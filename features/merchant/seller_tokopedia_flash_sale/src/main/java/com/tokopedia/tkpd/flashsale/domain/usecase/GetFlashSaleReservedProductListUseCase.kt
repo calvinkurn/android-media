@@ -30,7 +30,7 @@ class GetFlashSaleReservedProductListUseCase @Inject constructor(
     }
 
     private val query = object : GqlQueryInterface {
-        private val OPERATION_NAME = "getFlashSaleReservedProductList"
+        private val OPERATION_NAME = "o"
         private val QUERY = """
         query $OPERATION_NAME(${'$'}params: GetFlashSaleReservedProductListRequest!) {
              $OPERATION_NAME(params: ${'$'}params) {
@@ -86,6 +86,7 @@ class GetFlashSaleReservedProductListUseCase @Inject constructor(
                     url
                     picture
                     stock
+                    product_criteria
                     price {
                       price
                       lower_price

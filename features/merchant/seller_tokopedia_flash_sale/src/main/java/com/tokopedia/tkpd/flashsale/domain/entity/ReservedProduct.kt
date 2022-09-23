@@ -3,13 +3,16 @@ package com.tokopedia.tkpd.flashsale.domain.entity
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+
 data class ReservedProduct(
-    val products : List<Product>,
+    val products: List<Product>,
     val totalProduct: Int
 ) {
     @Parcelize
     data class Product(
-        val childProducts: List<ChildProduct>,
+        var childProducts: List<ChildProduct>,
         val isMultiWarehouse: Boolean,
         val isParentProduct: Boolean,
         val name: String,
@@ -21,7 +24,98 @@ data class ReservedProduct(
         val stock: Int,
         val url: String,
         val warehouses: List<Warehouse>
-    ):Parcelable {
+    ) : Parcelable {
+
+        fun getTotalLocation(): Int {
+            return if (isParentProduct) {
+                childProducts.sumOf {
+                    filteredWarehouse(it.warehouses).size
+                }
+            } else {
+                filteredWarehouse(warehouses).size
+            }
+        }
+
+        fun getCampaignStock(): Long {
+            return if (isParentProduct) {
+                childProducts.sumOf {
+                    getWarehouseDiscountedStock(it.warehouses)
+                }
+            } else {
+                getWarehouseDiscountedStock(warehouses)
+            }
+        }
+
+        private fun getWarehouseDiscountedStock(warehouses: List<Warehouse>): Long {
+            return filteredWarehouse(warehouses).sumOf { it.discountSetup.stock }
+        }
+
+        private fun filteredWarehouse(warehouses: List<Warehouse>): List<Warehouse> {
+            return warehouses.filter { !it.isDisabled }
+        }
+
+        fun isDiscounted(): Boolean {
+            return if (isParentProduct) {
+                childProducts.any {
+                    isWarehouseDiscounted(it.warehouses)
+                }
+            } else {
+                isWarehouseDiscounted(warehouses)
+            }
+        }
+
+        private fun isWarehouseDiscounted(warehouses: List<Warehouse>): Boolean {
+            return filteredWarehouse(warehouses).any { !it.discountSetup.discount.isZero() }
+        }
+
+        fun getMinDiscountedPrice(): Long {
+            return getListOfDiscountedPrice().minOrNull().orZero()
+        }
+
+        fun getMaxDiscountedPrice(): Long {
+            return getListOfDiscountedPrice().maxOrNull().orZero()
+        }
+
+        private fun getListOfDiscountedPrice(): List<Long> {
+            return if (isParentProduct) {
+                mutableListOf<Long>().apply {
+                    childProducts.minOf {
+                        addAll(getDiscountedPriceData(it.warehouses))
+                    }
+                }
+            } else {
+                getDiscountedPriceData(warehouses)
+            }
+        }
+
+        private fun getDiscountedPriceData(warehouses: List<Warehouse>): List<Long> {
+            return filteredWarehouse(warehouses).map { it.discountSetup.price }
+        }
+
+        fun getMinDiscountPercentage(): Int {
+            return getListOfDiscountPercentage().minOrNull().orZero()
+        }
+
+        fun getMaxDiscountPercentage(): Int {
+            return getListOfDiscountPercentage().maxOrNull().orZero()
+        }
+
+        private fun getListOfDiscountPercentage(): List<Int> {
+            return if (isParentProduct) {
+                mutableListOf<Int>().apply {
+                    childProducts.minOf {
+                        addAll(getListOfDiscountPercentage(it.warehouses))
+                    }
+                }
+            } else {
+                getListOfDiscountPercentage(warehouses)
+            }
+        }
+
+        private fun getListOfDiscountPercentage(warehouses: List<Warehouse>): List<Int> {
+            return filteredWarehouse(warehouses).map { it.discountSetup.discount }
+        }
+
         @Parcelize
         data class ChildProduct(
             val disabledReason: String,
@@ -31,6 +125,7 @@ data class ReservedProduct(
             val name: String,
             val picture: String,
             val price: Price,
+            val productCriteria: ProductCriteria,
             var discountedPrice: Long = 0,
             var discount: Long = 0,
             val productId: Long,
@@ -38,16 +133,11 @@ data class ReservedProduct(
             val stock: Int,
             val url: String,
             val warehouses: List<Warehouse>
-        ): Parcelable {
-            @Parcelize
-            data class Price(
-                val lowerPrice: String,
-                var price: String,
-                val upperPrice: String
-            ):Parcelable
-        }
+        ) : Parcelable
+
         @Parcelize
-        data class Price(val lowerPrice: Long, val price: Long, val upperPrice: Long): Parcelable
+        data class Price(val lowerPrice: Long, val price: Long, val upperPrice: Long) : Parcelable
+
         @Parcelize
         data class ProductCriteria(
             val criteriaId: Long,
@@ -69,13 +159,13 @@ data class ReservedProduct(
             var isToggleOn: Boolean,
             val isDisabled: Boolean,
             val disabledReason: String
-        ):Parcelable {
+        ) : Parcelable {
             @Parcelize
             data class DiscountSetup(
                 var discount: Int,
-                val price: Long,
-                val stock: Long
-            ):Parcelable
+                var price: Long,
+                var stock: Long
+            ) : Parcelable
         }
     }
 }

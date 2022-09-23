@@ -5,6 +5,7 @@ import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleViewModelModule
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.ManageProductVariantFragment
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.fragment.ChooseProductFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
@@ -15,6 +16,10 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragmen
 import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerFragment
 import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleListActivity
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian.ManageProductMultiLocationVariantFragment
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantFragment
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantMultilocFragment
+import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListFragment
+
 import dagger.Component
 
 @TokopediaFlashSaleScope
@@ -37,4 +42,8 @@ interface TokopediaFlashSaleComponent {
     fun inject(fragment: ChooseProductFragment)
 
     fun inject(fragment: ManageProductMultiLocationVariantFragment)
+
+    fun inject(fragment: ManageProductNonVariantFragment)
+    fun inject(fragment: ManageProductNonVariantMultilocFragment)
+    fun inject(fragment: FlashSaleManageProductListFragment)
 }

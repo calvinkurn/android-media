@@ -27,14 +27,14 @@ class CampaignDetailUIMapper @Inject constructor(@ApplicationContext private val
         }
 
         if (campaignDetailBottomSheetModel.showProductCriteria) {
-            val criteriaTitle = context.getString(R.string.campaigndetail_criteria_title)
+            val criteriaTitle = context.getString(R.string.campaigndetail_product_criteria_title)
             val productCriterias = campaignDetailBottomSheetModel.productCriterias
             val productCriteriaFragment = CampaignProductCriteriaFragment.newInstance(productCriterias)
             result.add(Pair(criteriaTitle, productCriteriaFragment))
         }
 
         if (campaignDetailBottomSheetModel.showCriteria) {
-            val productCriteriaTitle = context.getString(R.string.campaigndetail_product_criteria_title)
+            val productCriteriaTitle = context.getString(R.string.campaigndetail_criteria_title)
             val criteriaFragment = CampaignCriteriaFragment()
             result.add(Pair(productCriteriaTitle, criteriaFragment))
         }

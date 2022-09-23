@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.getPercentFormatted
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import javax.inject.Inject
@@ -21,11 +22,11 @@ class ErrorMessageHelper @Inject constructor(@ApplicationContext private val con
 
     fun getPriceMessage(
         criteria: ReservedProduct.Product.ProductCriteria,
-        discountAmount: Long,
+        discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup,
     ): String {
-        return if (discountAmount < criteria.minFinalPrice) {
+        return if (discountSetup.price < criteria.minFinalPrice) {
             getString(R.string.manageproductnonvar_min_message_format, criteria.minFinalPrice.getCurrencyFormatted())
-        } else if (discountAmount > criteria.maxFinalPrice) {
+        } else if (discountSetup.price > criteria.maxFinalPrice) {
             getString(R.string.manageproductnonvar_max_message_format, criteria.maxFinalPrice.getCurrencyFormatted())
         } else {
             getString(R.string.manageproductnonvar_range_message_format, criteria.minFinalPrice.getCurrencyFormatted(), criteria.maxFinalPrice.getCurrencyFormatted())
@@ -55,6 +56,15 @@ class ErrorMessageHelper @Inject constructor(@ApplicationContext private val con
             getString(R.string.manageproductnonvar_max_message_format, criteria.maxCustomStock)
         } else {
             getString(R.string.manageproductnonvar_range_message_format, criteria.minCustomStock, criteria.maxCustomStock)
+        }
+    }
+
+    fun getBulkApplyCaption(warehouses: List<ReservedProduct.Product.Warehouse>): String {
+        val selectedWarehousesCount = warehouses.filter { it.isToggleOn }.size
+        return if (selectedWarehousesCount.isMoreThanZero()) {
+            getString(R.string.manageproductnonvar_bulk_apply_text, selectedWarehousesCount)
+        } else {
+            getString(R.string.manageproductnonvar_bulk_apply_empty_text)
         }
     }
 }
