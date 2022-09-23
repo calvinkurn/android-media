@@ -6,8 +6,7 @@
     <application
         android:label="Feed Plus Test"
         tools:ignore="HardcodedDebugMode"
-        tools:replace="android:debuggable,android:label"
-        android:debuggable="false">
+        tools:replace="android:label">
         <activity
             android:name=".InstrumentationFeedPlusTestActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
