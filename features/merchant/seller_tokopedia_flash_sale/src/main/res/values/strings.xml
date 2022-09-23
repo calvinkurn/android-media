@@ -109,6 +109,12 @@
     <string name="stfs_bottom_sheet_selection_process_label">Proses Seleksi</string>
     <string name="stfs_bottom_sheet_active_promotion_label">Promosi Aktif</string>
     <string name="stfs_bottom_sheet_done_label">Selesai</string>
+    <string name="stfs_delete_dialog_title">Yakin hapus %d produk?</string>
+    <string name="stfs_delete_dialog_description">Produk yang dihapus tidak akan diajukan. Kamu masih bisa tambah produk jika kuota di periode pendaftaran masih tersedia, ya.</string>
+    <string name="stfs_delete_dialog_primary_cta_text">Ya, Hapus</string>
+    <string name="stfs_delete_dialog_secondary_cta_text">Batalkan</string>
+    <string name="stfs_success_delete_product_message">%d produk berhasil dihapus.</string>
+    <string name="stfs_global_error_message">Terjadi kesalahan.</string>
 
     <!--    Upcoming CDP-->
     <string name="stfs_deskripsi_label">Deskripsi</string>
@@ -138,9 +144,9 @@
     <string name="stfs_remaining_quota_placeholder"><![CDATA[<b>%d</b>]]>/%2d Produk</string>
     <string name="stfs_proposed_before_label">Ajukan sebelum</string>
     <string name="product_eligible_for_selection_card_title_placeholder">%d produkmu sedang diseleksi</string>
-    <string name="product_eligible_for_selection_end_date_placeholder">Proses seleksi akan selesai pada %s</string>
+    <string name="product_eligible_for_selection_end_date_placeholder">Proses seleksi akan selesai pada %s pukul %2s</string>
     <string name="product_eligible_card_title_placeholder">Yay, %d produkmu lolos seleksi!</string>
-    <string name="product_eligible_start_date_placeholder">Campaign akan dimulai pada %s</string>
+    <string name="product_eligible_start_date_placeholder">Campaign akan dimulai pada %s pukul %2s</string>
     <string name="stfs_proposed_label">Diajukan</string>
     <string name="stfs_accepted_label">Diterima</string>
     <string name="stfs_rejected_label">Ditolak</string>
