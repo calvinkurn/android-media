@@ -113,7 +113,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        const val TAG = "WarningInfoBottomSheet"
+        private const val TAG = "WarningInfoBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,
