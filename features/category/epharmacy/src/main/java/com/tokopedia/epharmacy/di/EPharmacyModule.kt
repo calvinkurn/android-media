@@ -55,8 +55,8 @@ class EPharmacyModule {
     }
 
     @Provides
-    fun provideEPharmacyUploadPrescriptionUseCase(restRepository: RestRepository): UploadPrescriptionUseCase {
-        return UploadPrescriptionUseCase(restRepository)
+    fun provideEPharmacyUploadPrescriptionUseCase(restRepository: RestRepository, @ApplicationContext context: Context): UploadPrescriptionUseCase {
+        return UploadPrescriptionUseCase(restRepository,context)
     }
 
     @Provides

@@ -1,9 +1,10 @@
 package com.tokopedia.epharmacy.usecase
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
@@ -13,14 +14,17 @@ import com.tokopedia.epharmacy.network.request.UploadPrescriptionRequest
 import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
 import com.tokopedia.epharmacy.utils.EPharmacyImageQuality
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.url.TokopediaUrl
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
 import javax.inject.Inject
 
 class UploadPrescriptionUseCase @Inject constructor(
-        private val repository: RestRepository
+        private val repository: RestRepository,
+        private val context: Context
 ): RestRequestUseCase(repository) {
+
 
     suspend fun executeOnBackground(id : Long, localFilePath: String): Map<Type, RestResponse> {
         val base64ImageString = getBase64OfPrescriptionImage(localFilePath)
@@ -38,9 +42,17 @@ class UploadPrescriptionUseCase @Inject constructor(
         )))
     }
 
-    private fun getBase64OfPrescriptionImage(localFilePath: String): String {
+    private fun getBase64OfPrescriptionImage(localFilePath: String, compress : Boolean = false): String {
         return try {
-            val prescriptionImageBitmap: Bitmap = BitmapFactory.decodeFile(localFilePath)
+            var prescriptionImageBitmap: Bitmap? = null
+            prescriptionImageBitmap = if(compress){
+                val compressedUri = ImageCompressor.compress(context,imagePath = localFilePath)
+                logBreadCrumb("$EPharmacyModuleName,ImageCompressor,Path=${compressedUri?.path}")
+                BitmapFactory.decodeFile(compressedUri?.path)
+            }else {
+                logBreadCrumb("$EPharmacyModuleName,Normal,Path=${localFilePath}")
+                BitmapFactory.decodeFile(localFilePath)
+            }
             val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
             prescriptionImageBitmap.compress(
                 Bitmap.CompressFormat.JPEG,
@@ -53,7 +65,18 @@ class UploadPrescriptionUseCase @Inject constructor(
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
             "${IMAGE_DATA_PREFIX}${encodedString}"
         }catch (e : Exception){
-            EPharmacyUtils.logException(e)
+            logBreadCrumb("$EPharmacyModuleName,Exception,isCompress=$compress}")
+            when(e){
+                is NullPointerException -> {
+                    if(!compress){
+                        getBase64OfPrescriptionImage(localFilePath, true)
+                    }
+                    EPharmacyUtils.logException(NullPointerException("${e.message} filePath : $localFilePath"))
+                }
+                else -> {
+                    EPharmacyUtils.logException(e)
+                }
+            }
             ""
         }
     }
@@ -69,11 +92,19 @@ class UploadPrescriptionUseCase @Inject constructor(
             ENDPOINT_URL_LIVE
     }
 
+    private fun logBreadCrumb(message : String){
+        try {
+            EmbraceMonitoring.logBreadcrumb(message)
+        }catch (e:Exception){ }
+    }
+
     companion object {
         private const val ENDPOINT_URL_LIVE = "https://api.tokopedia.com/epharmacy/prescription/upload"
         private const val ENDPOINT_URL_STAGING = "https://api-staging.tokopedia.com/epharmacy/prescription/upload"
         private const val KEY_FORMAT_VALUE="FILE"
         private const val KEY_SOURCE_VALUE="buyer"
         private const val IMAGE_DATA_PREFIX = "data:image/jpeg;base64,"
+
+        private const val EPharmacyModuleName = "epharmacy"
     }
 }
