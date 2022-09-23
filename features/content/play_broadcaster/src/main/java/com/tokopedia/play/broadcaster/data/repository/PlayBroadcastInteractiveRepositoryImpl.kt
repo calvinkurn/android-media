@@ -46,7 +46,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     override suspend fun getInteractiveConfig(authorId: String, authorType: String): InteractiveConfigUiModel =
         withContext(dispatchers.io) {
             val response = getInteractiveConfigUseCase.apply {
-                //gonna change this with authorId after be team confirms
+                //TODO change this with authorId after BE team confirm
                 setRequestParams(GetInteractiveConfigUseCase.createParams(userSession.shopId))
             }.executeOnBackground()
 
@@ -76,6 +76,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
         title: String,
         durationInMs: Long
     ): InteractiveSessionUiModel = withContext(dispatchers.io) {
+        //TODO change this with authorId after BE team confirm
         val response = createInteractiveSessionUseCase.execute(
             userSession.shopId,
             channelId,
