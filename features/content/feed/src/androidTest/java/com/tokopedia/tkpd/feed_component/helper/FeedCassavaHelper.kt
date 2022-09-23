@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.feed_component.util
+package com.tokopedia.tkpd.feed_component.helper
 
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.analyticsdebugger.cassava.core.Status

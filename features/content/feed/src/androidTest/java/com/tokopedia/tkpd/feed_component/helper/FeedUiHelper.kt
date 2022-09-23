@@ -1,16 +1,17 @@
-package com.tokopedia.tkpd.feed_component.util
+package com.tokopedia.tkpd.feed_component.helper
 
 import android.view.View
 import androidx.annotation.IdRes
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 
 /**
@@ -31,6 +32,14 @@ fun selectTag(tag: String): ViewInteraction {
 
 fun ViewInteraction.clickView() {
     perform(click())
+}
+
+fun ViewInteraction.isVisible() {
+    check(matches(isDisplayed()))
+}
+
+fun ViewInteraction.isHidden() {
+    check(matches(not(isDisplayed())))
 }
 
 fun delay(delayInMillis: Long = 500): ViewInteraction {
