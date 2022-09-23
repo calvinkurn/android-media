@@ -19,6 +19,7 @@ import com.tokopedia.tokofood.databinding.BottomsheetTokofoodSearchQuickPriceRan
 import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
 import com.tokopedia.tokofood.feature.search.di.component.TokoFoodSearchComponent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeChipUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel.TokofoodQuickPriceRangeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -33,7 +34,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     lateinit var viewModel: TokofoodQuickPriceRangeViewModel
 
     private val priceRangeItemUiModels by lazy {
-        arguments?.getParcelableArrayList<OptionViewModel>(KEY_PRICE_RANGE_ITEMS)
+        arguments?.getParcelableArrayList<PriceRangeFilterCheckboxItemUiModel>(KEY_PRICE_RANGE_ITEMS)
             .orEmpty()
     }
 
@@ -163,8 +164,13 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
         }
     }
 
-    private fun setupAdapter(uiModels: List<OptionViewModel>) {
-        val quickPriceRangeAdapter = PriceRangeFilterCheckboxItemAdapter(uiModels, this)
+    private fun setupAdapter(uiModels: List<PriceRangeFilterCheckboxItemUiModel>) {
+        val optionViewModelList = uiModels.map {
+            OptionViewModel(option = it.option).apply {
+                isSelected = it.isSelected
+            }
+        }
+        val quickPriceRangeAdapter = PriceRangeFilterCheckboxItemAdapter(optionViewModelList, this)
         binding?.rvTokofoodSearchQuickPriceRange?.swapAdapter(quickPriceRangeAdapter, false)
     }
 

@@ -8,6 +8,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodQuickPriceRangeHelper
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeFilterCheckboxItemUiModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -24,7 +25,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
 
     private val _initialOptions = MutableLiveData<List<Option>>(null)
     private val _currentAppliedOptions = MutableLiveData<List<Option>>(null)
-    private val _currentUiModels = MutableLiveData<List<OptionViewModel>>(null)
+    private val _currentUiModels = MutableLiveData<List<PriceRangeFilterCheckboxItemUiModel>>(null)
 
     private val _appliedOptions = MutableSharedFlow<List<Option>>(Int.ONE)
 
@@ -57,8 +58,8 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
             replay = Int.ONE
         )
 
-    private val _currentUiModelsFlow = MutableSharedFlow<List<OptionViewModel>>(Int.ONE)
-    val currentUiModelsFlow: SharedFlow<List<OptionViewModel>>
+    private val _currentUiModelsFlow = MutableSharedFlow<List<PriceRangeFilterCheckboxItemUiModel>>(Int.ONE)
+    val currentUiModelsFlow: SharedFlow<List<PriceRangeFilterCheckboxItemUiModel>>
         get() = _currentUiModelsFlow
 
     fun resetUiModels() {
@@ -83,7 +84,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
         setCurrentAppliedOptions(newAppliedOptions)
     }
 
-    fun setPriceRangeUiModels(uiModels: List<OptionViewModel>,
+    fun setPriceRangeUiModels(uiModels: List<PriceRangeFilterCheckboxItemUiModel>,
                               isInitialSet: Boolean = false) {
         val updatedOptions =
             uiModels.map {

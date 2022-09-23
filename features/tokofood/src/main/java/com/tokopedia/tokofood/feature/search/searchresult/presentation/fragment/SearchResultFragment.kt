@@ -18,7 +18,6 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
-import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
@@ -554,7 +553,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun onOpenQuickFilterPriceRangeBottomSheet(data: Any?) {
         hideKeyboard()
-        (data as? List<*>)?.filterIsInstance(OptionViewModel::class.java)?.let { uiModels ->
+        (data as? PriceRangeChipUiModel)?.let { uiModels ->
             TokofoodQuickPriceRangeBottomsheet.createInstance(uiModels, this)
                 .show(parentFragmentManager)
         }
