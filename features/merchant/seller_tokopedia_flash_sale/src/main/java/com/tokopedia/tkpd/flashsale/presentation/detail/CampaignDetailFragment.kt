@@ -1337,14 +1337,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun showBottomSheet(flashSale: FlashSale, type: DetailBottomSheetType) {
         val activity = activity ?: return
-//        CampaignDetailBottomSheet.newInstance(
-//            viewModel.getBottomSheetData(
-//                type,
-//                flashSale
-//            )
-//        ).show(activity.supportFragmentManager, "")
-
-        ManageProductVariantActivity.start(activity, createDummyProduct())
+        CampaignDetailBottomSheet.newInstance(
+            viewModel.getBottomSheetData(
+                type,
+                flashSale
+            )
+        ).show(activity.supportFragmentManager, "")
     }
 
     private fun onProductClicked(itemPosition: Int) {
