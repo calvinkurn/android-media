@@ -557,7 +557,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun requestFeedTab() {
         showLoading()
         viewModel.getDynamicTabs()
-        viewModel.getContentForm()
     }
 
     private fun showLoading() {
