@@ -289,7 +289,8 @@ class PostListViewHolder(
             }
 
             override fun onTimerFinished() {
-                setOnTimerFinished(element)
+                updatePostPager(element)
+                element.shouldShowDismissalTimer = false
                 setMoreOptionVisibility(element)
             }
 
@@ -303,7 +304,7 @@ class PostListViewHolder(
         pagerAdapter?.setCheckingMode(element.isCheckingMode)
     }
 
-    private fun setOnTimerFinished(element: PostListWidgetUiModel) {
+    private fun updatePostPager(element: PostListWidgetUiModel) {
         val postList = getPostsWithoutTimerItem(element).filter { !it.isChecked }
         val pagers = getPostPagers(postList, element.maxDisplay)
         setPagers(pagers)
