@@ -30,4 +30,8 @@ sealed class FlashSaleManageProductListUiEvent {
         val campaignId: String
     ) : FlashSaleManageProductListUiEvent()
 
+    data class UpdateProductData(
+        val productData: ReservedProduct.Product
+    ) : FlashSaleManageProductListUiEvent()
+
 }

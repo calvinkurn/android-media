@@ -29,43 +29,35 @@ data class ReservedProduct(
         fun getTotalLocation(): Int {
             return if (isParentProduct) {
                 childProducts.sumOf {
-                    filteredWarehouse(it.warehouses).size
+                    it.warehouses.filteredWarehouse().size
                 }
             } else {
-                filteredWarehouse(warehouses).size
+                warehouses.filteredWarehouse().size
             }
         }
 
         fun getCampaignStock(): Long {
             return if (isParentProduct) {
                 childProducts.sumOf {
-                    getWarehouseDiscountedStock(it.warehouses)
+                    it.warehouses.filteredWarehouse().getWarehouseDiscountedStock()
                 }
             } else {
-                getWarehouseDiscountedStock(warehouses)
+                warehouses.filteredWarehouse().getWarehouseDiscountedStock()
             }
         }
 
-        private fun getWarehouseDiscountedStock(warehouses: List<Warehouse>): Long {
-            return filteredWarehouse(warehouses).sumOf { it.discountSetup.stock }
-        }
-
-        private fun filteredWarehouse(warehouses: List<Warehouse>): List<Warehouse> {
-            return warehouses.filter { !it.isDisabled }
+        private fun List<Warehouse>.getWarehouseDiscountedStock(): Long {
+            return sumOf { it.discountSetup.stock }
         }
 
         fun isDiscounted(): Boolean {
             return if (isParentProduct) {
                 childProducts.any {
-                    isWarehouseDiscounted(it.warehouses)
+                    it.warehouses.filteredWarehouse().isNotEmpty()
                 }
             } else {
-                isWarehouseDiscounted(warehouses)
+                warehouses.filteredWarehouse().isNotEmpty()
             }
-        }
-
-        private fun isWarehouseDiscounted(warehouses: List<Warehouse>): Boolean {
-            return filteredWarehouse(warehouses).any { !it.discountSetup.discount.isZero() }
         }
 
         fun getMinDiscountedPrice(): Long {
@@ -80,16 +72,16 @@ data class ReservedProduct(
             return if (isParentProduct) {
                 mutableListOf<Long>().apply {
                     childProducts.minOf {
-                        addAll(getDiscountedPriceData(it.warehouses))
+                        addAll(it.warehouses.filteredWarehouse().getDiscountedPriceData())
                     }
                 }
             } else {
-                getDiscountedPriceData(warehouses)
+                warehouses.filteredWarehouse().getDiscountedPriceData()
             }
         }
 
-        private fun getDiscountedPriceData(warehouses: List<Warehouse>): List<Long> {
-            return filteredWarehouse(warehouses).map { it.discountSetup.price }
+        private fun List<Warehouse>.getDiscountedPriceData(): List<Long> {
+            return map { it.discountSetup.price }
         }
 
         fun getMinDiscountPercentage(): Int {
@@ -104,16 +96,20 @@ data class ReservedProduct(
             return if (isParentProduct) {
                 mutableListOf<Int>().apply {
                     childProducts.minOf {
-                        addAll(getListOfDiscountPercentage(it.warehouses))
+                        addAll(it.warehouses.filteredWarehouse().getListOfDiscountPercentage())
                     }
                 }
             } else {
-                getListOfDiscountPercentage(warehouses)
+                warehouses.filteredWarehouse().getListOfDiscountPercentage()
             }
         }
 
-        private fun getListOfDiscountPercentage(warehouses: List<Warehouse>): List<Int> {
-            return filteredWarehouse(warehouses).map { it.discountSetup.discount }
+        private fun List<Warehouse>.getListOfDiscountPercentage(): List<Int> {
+            return map { it.discountSetup.discount }
+        }
+
+        fun List<Warehouse>.filteredWarehouse(): List<Warehouse> {
+            return filter { !it.isDisabled && !it.discountSetup.stock.isZero()}
         }
 
         @Parcelize

@@ -81,7 +81,33 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
             is FlashSaleManageProductListUiEvent.SubmitDiscountedProduct -> {
                 submitDiscountedProduct(event.reservationId, event.campaignId)
             }
+            is FlashSaleManageProductListUiEvent.UpdateProductData -> {
+                updateProductData(event.productData)
+            }
         }
+    }
+
+    private fun updateProductData(productData: ReservedProduct.Product) {
+        launchCatchError(dispatchers.io, {
+            val updatedProductListData = currentState.listDelegateItem
+                .filterIsInstance<FlashSaleManageProductListItem>()
+                .indexOfFirst {
+                    it.product?.productId == productData.productId
+                }.let { idx ->
+                    currentState.listDelegateItem.toMutableList().apply {
+                        set(
+                            idx, FlashSaleManageProductListItem(
+                                productData
+                            )
+                        )
+                    }
+                }
+            updateUiState {
+                it.copy(
+                    listDelegateItem = updatedProductListData
+                )
+            }
+        }) { }
     }
 
     private fun submitDiscountedProduct(reservationId: String, campaignId: String) {
@@ -157,6 +183,7 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
         campaignId: String
     ) {
         launchCatchError(dispatchers.io, {
+            _uiEffect.emit(FlashSaleManageProductListUiEffect.ClearProductList)
             updateUiState {
                 it.copy(
                     isLoading = true
@@ -398,12 +425,12 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
     }
 
     private fun ReservedProduct.Product.toFlashSaleProductSubmissionProductData(): List<DoFlashSaleProductSubmissionRequest.ProductData> {
-        return if (isDiscounted()) {
+        return if (isParentProduct) {
             childProducts.map {
                 DoFlashSaleProductSubmissionRequest.ProductData(
                     productCriteria.criteriaId,
                     it.productId,
-                    it.warehouses.map { warehouse ->
+                    it.warehouses.filteredWarehouse().map { warehouse ->
                         DoFlashSaleProductSubmissionRequest.ProductData.Warehouse(
                             warehouse.warehouseId,
                             warehouse.discountSetup.price,
@@ -416,7 +443,7 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
             listOf(DoFlashSaleProductSubmissionRequest.ProductData(
                 productCriteria.criteriaId,
                 productId,
-                warehouses.map {
+                warehouses.filteredWarehouse().map {
                     DoFlashSaleProductSubmissionRequest.ProductData.Warehouse(
                         it.warehouseId,
                         it.discountSetup.price,

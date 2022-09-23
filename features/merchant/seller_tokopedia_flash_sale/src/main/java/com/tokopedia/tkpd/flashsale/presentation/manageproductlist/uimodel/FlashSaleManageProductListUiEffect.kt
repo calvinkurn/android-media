@@ -39,4 +39,6 @@ sealed class FlashSaleManageProductListUiEffect {
 
     object ShowSubmitButton : FlashSaleManageProductListUiEffect()
 
+    object ClearProductList : FlashSaleManageProductListUiEffect()
+
 }
