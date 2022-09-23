@@ -20,15 +20,20 @@ class SellerTncBottomSheet : BottomSheetUnify() {
         setupView()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        view = null
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        view = null
         mListener = null
     }
 
     fun setListener(listener: Listener) {
         mListener = listener
     }
+
     private fun setupView() {
         view = PlayTermsAndConditionView(requireContext())
             .apply {
