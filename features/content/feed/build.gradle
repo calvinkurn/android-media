@@ -1,21 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'de.mannodermaus.android-junit5'
 
 android {
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-    }
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -140,6 +127,8 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.json
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
