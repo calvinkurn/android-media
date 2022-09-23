@@ -9,7 +9,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import kotlinx.coroutines.withContext
+import rx.Subscriber
 import javax.inject.Inject
 
 /**
@@ -17,12 +21,29 @@ import javax.inject.Inject
  */
 class FeedPlusRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val useCase: GraphqlUseCase<FeedTabs.Response>,
+    private val getDynamicTabsUseCase: GraphqlUseCase<FeedTabs.Response>,
     private val getWhitelistUseCase: GetWhitelistNewUseCase,
     private val getContentFormForFeedUseCase: GetContentFormForFeedUseCase
 ) : FeedPlusRepository {
 
     override suspend fun getWhitelist(): WhitelistQuery = withContext(dispatchers.io) {
         getWhitelistUseCase.execute(WHITELIST_ENTRY_POINT)
+    }
+
+    override suspend fun getDynamicTabs(): FeedTabs = withContext(dispatchers.io) {
+        getDynamicTabsUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+        getDynamicTabsUseCase.executeOnBackground().feedTabs
+    }
+
+    override suspend fun clearDynamicTabCache() {
+        getDynamicTabsUseCase.clearCache()
+    }
+
+    override fun getFeedContentForm(subscriber: Subscriber<GraphqlResponse>) {
+        getContentFormForFeedUseCase.clearRequest()
+        getContentFormForFeedUseCase.execute(
+            GetContentFormForFeedUseCase.createRequestParams(mutableListOf(),"",""),
+            subscriber
+        )
     }
 }

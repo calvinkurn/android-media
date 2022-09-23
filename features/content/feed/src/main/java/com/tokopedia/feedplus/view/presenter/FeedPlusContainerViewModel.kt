@@ -23,9 +23,7 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class FeedPlusContainerViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
-    private val useCase: GraphqlUseCase<FeedTabs.Response>,
-    private val getContentFormForFeedUseCase: GetContentFormForFeedUseCase,
+    dispatchers: CoroutineDispatchers,
     private val repo: FeedPlusRepository
 ) : BaseViewModel(dispatchers.main){
 
@@ -39,29 +37,23 @@ class FeedPlusContainerViewModel @Inject constructor(
             else -> false
         }
 
-    init {
-        useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
-    }
-
     fun getDynamicTabs() {
         launchCatchError(block = {
-            val feedTabs: FeedTabs = useCase.executeOnBackground().feedTabs
+            val feedTabs: FeedTabs = repo.getDynamicTabs()
             if (feedTabs.feedData.isNotEmpty()) {
                 tabResp.value = Success(feedTabs)
             } else {
                 tabResp.value = Fail(RuntimeException())
-                useCase.clearCache()
+                repo.clearDynamicTabCache()
             }
         }) {
             tabResp.value = Fail(it)
-            useCase.clearCache()
+            repo.clearDynamicTabCache()
         }
     }
 
     fun getContentForm(){
-        getContentFormForFeedUseCase.clearRequest()
-        getContentFormForFeedUseCase.execute(GetContentFormForFeedUseCase.createRequestParams(
-            mutableListOf(),"",""),
+        repo.getFeedContentForm(
             object: Subscriber<GraphqlResponse>() {
                 override fun onNext(t: GraphqlResponse) {
                     val query = t.getData<FeedContentResponse>(FeedContentResponse::class.java)
@@ -73,8 +65,8 @@ class FeedPlusContainerViewModel @Inject constructor(
 
                 override fun onError(e: Throwable) {
                 }
-            })
-
+            }
+        )
     }
 
     fun getWhitelist() {
