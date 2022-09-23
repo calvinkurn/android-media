@@ -18,6 +18,13 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
@@ -28,21 +35,16 @@ import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCa
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmFilterCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DUPLICATE
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
-import com.tokopedia.tokomember_seller_dashboard.util.DELETE
-import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
-import com.tokopedia.tokomember_seller_dashboard.util.EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.STOP
-import com.tokopedia.tokomember_seller_dashboard.util.TM_EMPTY_COUPON
-import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.android.synthetic.main.tm_dash_coupon_fragment.viewFlipperCoupon
 import kotlinx.android.synthetic.main.tm_dash_coupon_list.*
 import kotlinx.android.synthetic.main.tm_layout_no_access.*
@@ -50,10 +52,11 @@ import javax.inject.Inject
 
 
 class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, SortFilterBottomSheet.Callback,
-    TmCouponListRefreshCallback, TmFilterCallback {
+    TmCouponListRefreshCallback, TmFilterCallback,ShareBottomsheetListener {
 
     private var tmCouponDetailCallback:TmCouponDetailCallback?=null
-
+    private var shareBottomSheet:UniversalShareBottomSheet?=null
+    private var voucherShareData:VouchersItem?=null
     private var showButton: Boolean = true
     private var filterStatus: SortFilterItem? = null
     private var filterType: SortFilterItem? = null
@@ -396,6 +399,17 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             DUPLICATE ->{
                 TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, voucherId.toInt(), this, edit = false, duplicate = true)
             }
+            SHARE -> {
+                val voucherList = tmCouponViewModel.couponListLiveData.value?.data?.merchantPromotionGetMVList?.data?.vouchers
+                voucherList?.let{
+                    voucherList
+                        .find { it?.voucherId==voucherId }
+                        ?.let { it1 ->
+                            voucherShareData = it1
+                            showShareBottomSheet(it1)
+                        }
+                }
+            }
         }
     }
 
@@ -449,5 +463,73 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             filterType?.type = ChipsUnify.TYPE_SELECTED
             tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
         }
+    }
+
+    //** Sharing Feature **//
+    private fun showShareBottomSheet(data:VouchersItem){
+        var shareBmThumbnailTitle = ""
+        val couponImages:ArrayList<String> = ArrayList()
+        couponImages.apply {
+            data.apply {
+                if(voucherImageSquare.isNotEmpty()) add(voucherImageSquare)
+                if(voucherImage.isNotEmpty()) add(voucherImage)
+                if(voucherImagePortrait.isNotEmpty()) add(voucherImagePortrait)
+            }
+        }
+        shareBmThumbnailTitle = data.voucherName ?: ""
+        shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@TokomemberDashCouponFragment)
+            setMetaData(
+                tnTitle = shareBmThumbnailTitle,
+                tnImage = if(couponImages.isNotEmpty()) couponImages[0] else TmDashCouponDetailFragment.AVATAR_IMAGE,
+                imageList = couponImages
+            )
+            setOgImageUrl(if(couponImages.isNotEmpty()) couponImages[0] else TmDashCouponDetailFragment.AVATAR_IMAGE)
+        }
+        shareBottomSheet?.show(childFragmentManager,this,null)
+        val bottomSheetTitle = requireContext().resources.getString(R.string.tm_share_bottomsheet_title)
+        shareBottomSheet?.setBottomSheetTitle(bottomSheetTitle)
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        val couponData = voucherShareData
+        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+            id = couponData?.galadrielVoucherId.toString()
+            name = couponData?.voucherName.orEmpty()
+            type = LinkerData.MERCHANT_VOUCHER
+            uri  = couponData?.weblink.orEmpty()
+            deepLink = couponData?.applink.orEmpty()
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            if (shareModel.ogImgUrl?.isNotEmpty() == true) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+            isThrowOnError = true
+        })
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+            0,linkerShareData,object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    val shareString = requireContext().resources.getString(R.string.tm_share_coupon_string,couponData?.voucherName,linkerShareData?.url)
+                    SharingUtil.executeShareIntent(
+                        shareModel,
+                        linkerShareData,
+                        requireActivity(),
+                        view,
+                        shareString
+                    )
+                    shareBottomSheet?.dismiss()
+                }
+
+                override fun onError(linkerError: LinkerError?) {
+                    shareBottomSheet?.dismiss()
+                }
+            }
+        ))
+    }
+
+    override fun onCloseOptionClicked() {
+        shareBottomSheet?.dismiss()
     }
 }
