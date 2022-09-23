@@ -1961,14 +1961,12 @@ open class DynamicProductDetailFragment :
                 productInfo?.basic?.productID?.let { productId ->
                     context?.let { context ->
                         removeWishlistV2(productId, componentTrackDataModel)
-                        trackingEventSuccessRemoveFromWishlist(componentTrackDataModel)
                     }
                 }
             } else {
                 productInfo?.basic?.productID?.let {
                     context?.let { context ->
                         addWishlistV2(componentTrackDataModel)
-                        trackingEventSuccessAddToWishlist(componentTrackDataModel)
                     }
                 }
             }
