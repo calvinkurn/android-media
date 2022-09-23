@@ -276,7 +276,14 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
                 showLoginDialog()
             }
 
-            val allErrorMessage = "$error, $errorEmail, $errorFullName, $errorPassword"
+            val listErrorMessage = ArrayList<String>()
+            if (error.isNotEmpty()) listErrorMessage.add(error)
+            if (errorEmail.isNotEmpty()) listErrorMessage.add(errorEmail)
+            if (errorPassword.isNotEmpty()) listErrorMessage.add(errorPassword)
+            if (errorFullName.isNotEmpty()) listErrorMessage.add(errorFullName)
+
+            val allErrorMessage = listErrorMessage.joinToString(separator = SEPARATOR_MESSAGE_ERROR)
+
             redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, paramIsRequiredInputPhone, allErrorMessage)
 
             if (error.isNotEmpty()) {
@@ -400,6 +407,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        private const val SEPARATOR_MESSAGE_ERROR = ", "
         private const val OTP_MODE_EMAIL = "email"
         private const val STRING_FORMAT_EMAIL = "%s@%s"
         private const val DELIMITER_EMAIL = "@"
