@@ -57,7 +57,7 @@ class FakeFeedPlusRepository : FeedPlusRepository {
     }
 
     override fun getFeedContentForm(subscriber: Subscriber<GraphqlResponse>) {
-        subscriber.onNext()
+
     }
 
     fun setWhitelistResponse(response: WhitelistQuery) {
