@@ -1116,7 +1116,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             onGoToForbiddenPage()
         } else {
             activity?.let {
-                NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage.removeErrorCode()) {
+                NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
                     context?.run {
                         viewModel.discoverLogin()
                     }
@@ -1412,7 +1412,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 if (errorMessage.removeErrorCode() == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
-                    onErrorLogin(it, errorMessage.removeErrorCode())
+                    onErrorLogin(it, errorMessage)
                 }
             }
         }
@@ -1995,7 +1995,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 withErrorCode(withErrorCode)
                 className = mClassName
             }.build())
-        return message.removeErrorCode()
+        return message
     }
 
     private fun autoFillWithDataFromLatestLoggedIn() {
