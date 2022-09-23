@@ -8,9 +8,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
-import com.tokopedia.tkpd.flashsale.util.constant.NumericalNormalizationConstant
 import javax.inject.Inject
-import kotlin.math.round
 
 class ManageProductVariantViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
@@ -54,13 +52,20 @@ class ManageProductVariantViewModel @Inject constructor(
 
     fun setDiscountValue(itemPosition: Int, priceValue: Long, discountValue: Int) {
         val selectedItem = productData.childProducts[itemPosition]
-        selectedItem.warehouses.firstOrNull()?.discountSetup?.price = priceValue
-        selectedItem.warehouses.firstOrNull()?.discountSetup?.discount = discountValue
+        selectedItem.warehouses.map { warehouse ->
+            warehouse.discountSetup.price = priceValue
+            warehouse.discountSetup.discount = discountValue
+        }
+//        selectedItem.warehouses.firstOrNull()?.discountSetup?.price = priceValue
+//        selectedItem.warehouses.firstOrNull()?.discountSetup?.discount = discountValue
     }
 
     fun setStockValue(itemPosition: Int, stockValue: Long) {
         val selectedItem = productData.childProducts[itemPosition]
-        selectedItem.warehouses.firstOrNull()?.discountSetup?.stock = stockValue
+        selectedItem.warehouses.map { warehouse ->
+            warehouse.discountSetup.stock = stockValue
+        }
+//        selectedItem.warehouses.firstOrNull()?.discountSetup?.stock = stockValue
     }
 
     fun validateInputPage(
@@ -69,11 +74,14 @@ class ManageProductVariantViewModel @Inject constructor(
         if (productData.childProducts.any { it.isToggleOn }) {
             _isInputPageValid.value = productData.childProducts
                 .filter { it.isToggleOn }
-                .all {
-                    validateInput(
-                        criteria,
-                        it.warehouses.first().discountSetup
-                    ).isAllFieldValid()
+                .all { childProduct ->
+                    childProduct.warehouses
+                        .all { warehouse ->
+                            validateInput(
+                                criteria,
+                                warehouse.discountSetup
+                            ).isAllFieldValid()
+                        }
                 }
         } else {
             _isInputPageValid.value = false
