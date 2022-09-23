@@ -13,7 +13,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.unifyprinciples.Typography
 
-
+//TODO WILLYBRODUS : CHANGE ALL logic method into ViewModel
 class ManageProductMultiLocationVariantDelegateAdapter(
     private val onToggleSwitched: (Int, Boolean) -> Unit,
     private val onDiscountAmountChanged: (Int, Long, Long) -> Unit,

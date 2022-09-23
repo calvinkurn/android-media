@@ -7,6 +7,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import javax.inject.Inject
 
+//TODO WILLYBRODUS : Add all logic method in Adapter and Fragment into here
 class ManageProductMultiLocationVariantViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val errorMessageHelper: ErrorMessageHelper

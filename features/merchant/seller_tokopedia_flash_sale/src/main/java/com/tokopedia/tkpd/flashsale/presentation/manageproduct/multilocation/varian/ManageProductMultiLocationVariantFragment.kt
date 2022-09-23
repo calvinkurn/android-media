@@ -22,6 +22,7 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.var
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian.adapter.ManageProductMultiLocationVariantItem
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian.adapter.ManageProductMultiLocationVariantItem.BundleConstant.toProductCriteriaInWarehouse
 
+//TODO WILLYBRODUS : CHANGE ALL logic method into ViewModel
 class ManageProductMultiLocationVariantFragment :
     BaseCampaignManageProductDetailFragment<CompositeAdapter>() {
 
