@@ -23,7 +23,7 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
     private val binding: DiscoProductBundlingLayoutBinding = DiscoProductBundlingLayoutBinding.bind(itemView)
     private var mProductBundleRecycleAdapter: ProductBundleWidgetAdapter
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-    private lateinit var mProductBundlingViewModel: ProductBundlingViewModel
+    private var mProductBundlingViewModel: ProductBundlingViewModel? = null
 
     init {
         with(binding) {
@@ -36,7 +36,9 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductBundlingViewModel = discoveryBaseViewModel as ProductBundlingViewModel
-        getSubComponent().inject(mProductBundlingViewModel)
+        mProductBundlingViewModel?.let { viewModel ->
+            getSubComponent().inject(viewModel)
+        }
         binding.productRv.show()
         binding.viewErrorState.hide()
     }
@@ -44,17 +46,17 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            mProductBundlingViewModel.getBundledProductDataList().observe(it, { bundledProductList ->
+            mProductBundlingViewModel?.getBundledProductDataList()?.observe(it, { bundledProductList ->
                 mProductBundleRecycleAdapter.updateDataSet(bundledProductList)
             })
-            mProductBundlingViewModel.getEmptyBundleData().observe(it, { isBundledDataEmpty ->
+            mProductBundlingViewModel?.getEmptyBundleData()?.observe(it, { isBundledDataEmpty ->
                 if (isBundledDataEmpty) {
                     binding.productRv.hide()
                 } else {
                     binding.productRv.show()
                 }
             })
-            mProductBundlingViewModel.showErrorState().observe(it, { shouldShowErrorState ->
+            mProductBundlingViewModel?.showErrorState()?.observe(it, { shouldShowErrorState ->
                 if (shouldShowErrorState) handleErrorState()
             })
         }
@@ -79,17 +81,17 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         with(binding) {
             productRv.show()
             viewErrorState.hide()
-            mProductBundlingViewModel.resetComponent()
-            mProductBundlingViewModel.fetchProductBundlingData()
+            mProductBundlingViewModel?.resetComponent()
+            mProductBundlingViewModel?.fetchProductBundlingData()
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            mProductBundlingViewModel.getBundledProductDataList().removeObservers(it)
-            mProductBundlingViewModel.getEmptyBundleData().removeObservers(it)
-            mProductBundlingViewModel.showErrorState().removeObservers(it)
+            mProductBundlingViewModel?.getBundledProductDataList()?.removeObservers(it)
+            mProductBundlingViewModel?.getEmptyBundleData()?.removeObservers(it)
+            mProductBundlingViewModel?.showErrorState()?.removeObservers(it)
         }
     }
 

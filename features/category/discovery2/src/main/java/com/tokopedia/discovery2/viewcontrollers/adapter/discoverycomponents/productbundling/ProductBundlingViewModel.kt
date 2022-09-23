@@ -25,11 +25,13 @@ class ProductBundlingViewModel(val application: Application, val components: Com
     private val _emptyBundleData: MutableLiveData<Boolean> = MutableLiveData()
     private val _showErrorState = SingleLiveEvent<Boolean>()
 
+    @JvmField
     @Inject
-    lateinit var productBundlingUseCase: ProductBundlingUseCase
+    var productBundlingUseCase: ProductBundlingUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var coroutineDispatchers: CoroutineDispatchers
+    var coroutineDispatchers: CoroutineDispatchers? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -45,10 +47,11 @@ class ProductBundlingViewModel(val application: Application, val components: Com
 
     fun fetchProductBundlingData() {
         launchCatchError(block = {
-            productBundlingUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
+            productBundlingUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint)
             if (!components.data.isNullOrEmpty()) {
                 bundledProductData.value = components.data?.let {
-                    withContext(coroutineDispatchers.default) {
+                    val dispatcher = coroutineDispatchers?.default ?: Dispatchers.Default
+                    withContext(dispatcher) {
                         DiscoveryDataMapper().mapListToBundleProductList(it)
                     }
                 }
