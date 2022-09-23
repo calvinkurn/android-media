@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.KeyboardHandler
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
@@ -33,7 +34,6 @@ import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.mo
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.data.ValidateUserData
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.view.viewmodel.RedefineRegisterEmailViewModel
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -250,7 +250,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    val message = ErrorHandler.getErrorMessagePair(context, it.throwable, ErrorHandler.Builder()).first.orEmpty()
+                    val message = it.throwable.getMessage(requireActivity())
                     redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, paramIsRequiredInputPhone, message)
                     showToasterError(message)
                 }
