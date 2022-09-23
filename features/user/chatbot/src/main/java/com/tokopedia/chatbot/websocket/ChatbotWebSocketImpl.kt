@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.websocket
 
-import android.util.Log
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.teleporter.Teleporter.gson
@@ -59,13 +58,11 @@ class ChatbotWebSocketImpl(
     private var webSocketListener = object : WebSocketListener() {
 
         override fun onOpen(webSocket: WebSocket, response: Response) {
-            Log.d("Eren", " In IMPL onOpen: ")
             mWebSocket = webSocket
             webSocketFlow.tryEmit(ChatbotWebSocketAction.SocketOpened)
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
-            Log.d("Eren", " In IMPL onMessage(text): ")
             val newMessage = ChatbotWebSocketAction.NewMessage(
                 gson.fromJson(
                     text,
@@ -76,22 +73,19 @@ class ChatbotWebSocketImpl(
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-            Log.d("Eren", " In IMPL onMessage(bytes): ")
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-            Log.d("Eren", " In IMPL onFailure: $t")
             mWebSocket = null
             webSocketFlow.tryEmit(ChatbotWebSocketAction.Failure(ChatbotWebSocketException(t)))
+            //Can Log Here
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-            Log.d("Eren", " In IMPL onClosing: $reason $code")
             webSocket.close(1000, "Closing Socket")
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-            Log.d("Eren", " In IMPL onClosed: $reason $code")
             webSocketFlow.tryEmit(ChatbotWebSocketAction.Closed(code))
             mWebSocket = null
         }
@@ -99,7 +93,7 @@ class ChatbotWebSocketImpl(
 
     //TODO change this
     override fun getDataFromSocketAsFlow(): Flow<ChatbotWebSocketAction> {
-        return webSocketFlow.filterNotNull().flowOn(dispatchers.main)
+        return webSocketFlow.filterNotNull().flowOn(dispatchers.io)
     }
 
     //TODO add null check

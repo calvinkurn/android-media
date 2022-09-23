@@ -619,11 +619,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun loadChatHistory() {
         loadInitialData()
-        presenter.connectWebSocket2(messageId)
+        presenter.connectWebSocket(messageId)
     }
 
     override fun startNewSession() {
-        presenter.connectWebSocket2(messageId)
+        presenter.connectWebSocket(messageId)
     }
 
     override fun blockTyping() {
