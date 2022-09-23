@@ -98,7 +98,7 @@ class OfficialHomeContainerFragment
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private var selectedCategory: Category? = null
     private var activityOfficialStore = ""
-    private var thresholdScrollVertical : Int = START_THRESHOLD_COLLAPSE_CATEGORIES
+    private var thresholdScrollVertical: Int = START_THRESHOLD_COLLAPSE_CATEGORIES
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking

@@ -37,7 +37,7 @@ class OfficialCategoriesTab(context: Context,
 
     companion object {
         private const val START_EXPAND_DP = 32
-        private const val DURATION_TIME_EXPAND_COLLAPSE : Long = 300
+        private const val DURATION_TIME_EXPAND_COLLAPSE: Long = 300
     }
 
     fun setMeasuredHeight() {
@@ -90,7 +90,12 @@ class OfficialCategoriesTab(context: Context,
 
     private fun expandAllTab() {
         if(animationExpand == null)
-            animationExpand = getValueAnimator(START_EXPAND_DP.dp.toFloat(), tabMaxHeight.toFloat(), DURATION_TIME_EXPAND_COLLAPSE, AccelerateDecelerateInterpolator()) {
+            animationExpand = getValueAnimator(
+                START_EXPAND_DP.dp.toFloat(),
+                tabMaxHeight.toFloat(),
+                DURATION_TIME_EXPAND_COLLAPSE,
+                AccelerateDecelerateInterpolator()
+            ) {
                 if (this.layoutParams != null) {
                     val params: ViewGroup.LayoutParams = layoutParams
                     params.height = it.toInt()
@@ -123,7 +128,12 @@ class OfficialCategoriesTab(context: Context,
 
     private fun collapseAllTab() {
         if(animationCollapse == null) animationCollapse =
-            getValueAnimator(tabMaxHeight.toFloat(), START_EXPAND_DP.dp.toFloat(), DURATION_TIME_EXPAND_COLLAPSE, AccelerateDecelerateInterpolator()) {
+            getValueAnimator(
+                tabMaxHeight.toFloat(),
+                START_EXPAND_DP.dp.toFloat(),
+                DURATION_TIME_EXPAND_COLLAPSE,
+                AccelerateDecelerateInterpolator()
+            ) {
                 if (this.layoutParams != null) {
                     val params: ViewGroup.LayoutParams = layoutParams
                     params.height = it.toInt()
