@@ -60,13 +60,13 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun showThumbnail() {
         if (binding.pdpMainThumbnailRv.visibility == View.GONE) {
-            binding.pdpMainThumbnailRv.animateExpand()
+            binding.pdpMainThumbnailRv.animateExpand(duration = THUMBNAIL_ANIMATION_DURATION)
         }
     }
 
     private fun hideThumbnail() {
         if (binding.pdpMainThumbnailRv.visibility == View.VISIBLE) {
-            binding.pdpMainThumbnailRv.animateCollapse()
+            binding.pdpMainThumbnailRv.animateCollapse(duration = THUMBNAIL_ANIMATION_DURATION)
         }
     }
 
@@ -75,7 +75,6 @@ class VideoPictureView @JvmOverloads constructor(
         listener: DynamicProductDetailListener?,
         componentTrackDataModel: ComponentTrackDataModel?,
         initialScrollPosition: Int,
-        shouldAnimateLabel: Boolean,
         containerType: MediaContainerType
     ) {
         this.mListener = listener
@@ -93,7 +92,7 @@ class VideoPictureView @JvmOverloads constructor(
 
         updateInitialThumbnail(media)
         updateImages(media)
-        updateMediaLabel(pagerSelectedLastPosition, shouldAnimateLabel)
+        updateMediaLabel(pagerSelectedLastPosition)
         scrollToPosition(initialScrollPosition)
         renderVideoOnceAtPosition(initialScrollPosition)
     }
@@ -141,6 +140,8 @@ class VideoPictureView @JvmOverloads constructor(
         binding.pdpMainThumbnailRv.addOneTimeGlobalLayoutListener {
             smoothScroller.scrollThumbnail(pagerPosition)
         }
+
+        thumbnailVisibilityState(mediaSelected = mediaSelected)
     }
 
     fun scrollToPosition(position: Int, smoothScroll: Boolean = false) {
@@ -252,7 +253,6 @@ class VideoPictureView @JvmOverloads constructor(
 
             updateMediaLabel(position)
             updateThumbnail(position)
-            thumbnailVisibilityState(mediaSelected = selected)
             pagerSelectedLastPosition = position
         }
     }
@@ -288,10 +288,7 @@ class VideoPictureView @JvmOverloads constructor(
             }
     }
 
-    private fun updateMediaLabel(
-        position: Int,
-        shouldAnimateLabel: Boolean = false
-    ) {
+    private fun updateMediaLabel(position: Int) {
         val mediaData = videoPictureAdapter?.currentList?.getOrNull(position)
         val variantName = mediaData?.mediaDescription ?: ""
         val totalMediaCount = videoPictureAdapter?.currentList?.size ?: 0
@@ -319,11 +316,12 @@ class VideoPictureView @JvmOverloads constructor(
             || binding.txtAnimLabel.getCurrentText() == stringLabel
         if (ignoreUpdateLabel) return
 
-        binding.txtAnimLabel.showView(stringLabel, shouldAnimateLabel)
+        binding.txtAnimLabel.showView(stringLabel)
     }
 
     companion object {
         private const val VIDEO_PICTURE_PAGE_LIMIT = 3
         private const val HIDE_LABEL_IMAGE_COUNT_MIN = 1
+        private const val THUMBNAIL_ANIMATION_DURATION = 300L
     }
 }
