@@ -64,11 +64,11 @@ class SellerTncBottomSheet : BottomSheetUnify() {
     }
 
     fun showNow(fragmentManager: FragmentManager) {
-        if(!isAdded) showNow(fragmentManager, TAG)
+        if(!isAdded) show(fragmentManager, TAG)
     }
 
     companion object {
-        private const val TAG = "SellerTncBottomSheet"
+        const val TAG = "SellerTncBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,

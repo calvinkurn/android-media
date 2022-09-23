@@ -102,7 +102,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
     }
 
     fun showNow(fragmentManager: FragmentManager) {
-        if(!isAdded) showNow(fragmentManager, TAG)
+        if(!isAdded) show(fragmentManager, TAG)
     }
 
     private fun routeToWebViewGetToKnowMore() {
@@ -113,7 +113,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private const val TAG = "WarningInfoBottomSheet"
+        const val TAG = "WarningInfoBottomSheet"
 
         fun getFragment(
             fragmentManager: FragmentManager,
