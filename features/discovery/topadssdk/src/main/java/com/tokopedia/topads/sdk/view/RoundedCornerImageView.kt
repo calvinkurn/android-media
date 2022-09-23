@@ -5,37 +5,29 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 
-class RoundedCornerImageView : ImageView {
+class RoundedCornerImageView : AppCompatImageView {
     private val radius = 5.0f
-    private var path: Path? = null
-    private var rect: RectF? = null
+    private var path: Path = Path()
+    private var rect: RectF = RectF()
 
-    constructor(context: Context?) : super(context) {
-        init()
-    }
-
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
-
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
         context,
         attrs,
         defStyle
-    ) {
-        init()
-    }
+    )
 
-    private fun init() {
-        path = Path()
-    }
 
     override fun onDraw(canvas: Canvas) {
-        rect = RectF(0F, 0F, this.width.toFloat(), this.height.toFloat())
-        rect?.let { path?.addRoundRect(it, radius, radius, Path.Direction.CW) }
-        path?.let { canvas.clipPath(it) }
+        rect.left = 0F
+        rect.top = 0F
+        rect.bottom = this.height.toFloat()
+        rect.right = this.width.toFloat()
+        path.addRoundRect(rect, radius, radius, Path.Direction.CW)
+        canvas.clipPath(path)
         super.onDraw(canvas)
     }
 
