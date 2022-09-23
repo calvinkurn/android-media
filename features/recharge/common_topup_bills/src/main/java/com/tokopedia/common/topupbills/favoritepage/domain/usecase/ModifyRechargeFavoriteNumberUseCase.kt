@@ -35,17 +35,22 @@ class ModifyRechargeFavoriteNumberUseCase @Inject constructor(
         categoryId: Int,
         productId: Int,
         clientNumber: String,
+        hashedClientNumber: String,
         totalTransaction: Int,
         label: String,
         isDelete: Boolean
     ) {
-        val paramSource = if (categoryId == CATEGORY_ID_PASCABAYAR)
-            FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
+        val paramSource = when (categoryId) {
+            CATEGORY_ID_PASCABAYAR -> FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID
+            CATEGORY_ID_CREDIT_CARD -> FAVORITE_NUMBER_PARAM_SOURCE_CREDIT_CARD
+            else -> FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
+        }
 
         val requestData = mapOf(
             FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
                 FAVORITE_NUMBER_PARAM_CATEGORY_ID to categoryId,
                 FAVORITE_NUMBER_PARAM_CLIENT_NUMBER to clientNumber,
+                FAVORITE_NUMBER_PARAM_HASHED_CLIENT_NUMBER to hashedClientNumber,
                 FAVORITE_NUMBER_PARAM_LAST_PRODUCT to productId,
                 FAVORITE_NUMBER_PARAM_LABEL to label,
                 FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
@@ -66,6 +71,7 @@ class ModifyRechargeFavoriteNumberUseCase @Inject constructor(
         const val FAVORITE_NUMBER_PARAM_UPDATE_REQUEST = "updateRequest"
         const val FAVORITE_NUMBER_PARAM_CATEGORY_ID = "categoryID"
         const val FAVORITE_NUMBER_PARAM_CLIENT_NUMBER = "clientNumber"
+        const val FAVORITE_NUMBER_PARAM_HASHED_CLIENT_NUMBER = "hashedClientNumber"
         const val FAVORITE_NUMBER_PARAM_LAST_PRODUCT = "lastProduct"
         const val FAVORITE_NUMBER_PARAM_LABEL = "label"
         const val FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION = "totalTransaction"
@@ -74,8 +80,10 @@ class ModifyRechargeFavoriteNumberUseCase @Inject constructor(
         const val FAVORITE_NUMBER_PARAM_WISHLIST = "wishlist"
 
         const val CATEGORY_ID_PASCABAYAR = 9
+        const val CATEGORY_ID_CREDIT_CARD = 26
 
         const val FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID = "pdp_favorite_list_telco_postpaid"
         const val FAVORITE_NUMBER_PARAM_SOURCE_PREPAID = "pdp_favorite_list_telco_prepaid"
+        const val FAVORITE_NUMBER_PARAM_SOURCE_CREDIT_CARD = "digital-personalization26"
     }
 }

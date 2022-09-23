@@ -12,7 +12,9 @@
     <string name="common_topup_title_recent_transaction_widget">Transaksi Terakhir</string>
 
     <string name="common_topup_fav_number_clue">Mau isi nomor yang mana, nih?</string>
+    <string name="common_topup_fav_number_clue_cc">Mau isi nomor kartu yang mana, nih?</string>
     <string name="common_topup_fav_number_title">Nomor Favorit</string>
+    <string name="common_topup_fav_number_title_cc">Nomor Tersimpan</string>
     <string name="common_topup_fav_number_input_hint">Masukkan nomor HP</string>
     <string name="common_topup_fav_number_empty_state_title">Wah, nomor baru ya?</string>
     <string name="common_topup_fav_number_not_found_state_title">Belum ada Nomor Favorit, Transaksi dulu, yuk!</string>
@@ -70,6 +72,7 @@
     <string name="common_topup_saved_number_tab_contact">Kontak HP</string>
     <string name="common_topup_saved_number_tab_favorite">Nomor Favorit</string>
     <string name="common_topup_saved_number_searchbar_placeholder">Cari nama atau nomor HP</string>
+    <string name="common_topup_saved_number_searchbar_placeholder_cc">Cari nama atau nomor kartu</string>
     <string name="common_topup_contact_permission_title">Boleh akses kontak kamu?</string>
     <string name="common_topup_contact_permission_desc">Kamu bakal makin gampang transaksi buat teman dan keluarga.</string>
     <string name="common_topup_contact_permission_settings_button">Ke Pengaturan HP</string>

@@ -65,6 +65,7 @@ class TopupBillsFavNumberViewModel @Inject constructor(
         categoryId: Int,
         productId: Int,
         clientNumber: String,
+        hashedClientNumber: String,
         totalTransaction: Int,
         label: String,
         isDelete: Boolean,
@@ -75,7 +76,13 @@ class TopupBillsFavNumberViewModel @Inject constructor(
         launchCatchError(block = {
             val data = modifyRechargeFavoriteNumberUseCase.apply {
                 setRequestParams(
-                    categoryId, productId, clientNumber, totalTransaction, label, isDelete
+                    categoryId,
+                    productId,
+                    clientNumber,
+                    hashedClientNumber,
+                    totalTransaction,
+                    label,
+                    isDelete
                 )
             }.executeOnBackground()
 
