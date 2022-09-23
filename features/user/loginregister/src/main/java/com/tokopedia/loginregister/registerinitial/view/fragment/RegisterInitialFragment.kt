@@ -60,6 +60,7 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RedefineInitialRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.PhoneUtils
 import com.tokopedia.loginregister.common.utils.PhoneUtils.Companion.removeSymbolPhone
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
@@ -94,7 +95,6 @@ import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialView
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -675,7 +675,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         dismissProgressBar()
         val forbiddenMessage = context?.getString(
                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-        val errorMessage = ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder()).first.orEmpty()
+        val errorMessage = throwable.getMessage(requireActivity())
         if (errorMessage.removeErrorCode() == forbiddenMessage) {
             onGoToForbiddenPage()
         } else {
@@ -697,7 +697,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         if (throwable is AkamaiErrorException) {
             showPopupErrorAkamai()
         } else {
-            val errorMessage = ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder()).first.orEmpty()
+            val errorMessage = throwable.getMessage(requireActivity())
             if (isUsingRedefineRegisterEmailMandatoryOptionalVariant() || isUsingRedefineRegisterEmailControlVariant()) {
                 redefineRegisterInitialAnalytics.sendClickOnButtonGoogleEvent(RedefineInitialRegisterAnalytics.ACTION_FAILED, redefineRegisterEmailVariant, errorMessage)
             }
@@ -716,7 +716,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedGetUserInfo(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder()).first.orEmpty()
+        val errorMessage = throwable.getMessage(requireActivity())
         onErrorRegister(errorMessage)
     }
 
@@ -725,7 +725,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedGetUserInfoAfterAddPin(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder()).first.orEmpty()
+        val errorMessage = throwable.getMessage(requireActivity())
         onErrorRegister(errorMessage)
     }
 
@@ -825,7 +825,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
     private fun onFailedRegisterCheck(throwable: Throwable) {
         dismissProgressBar()
-        val messageError = ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder()).first.orEmpty()
+        val messageError = throwable.getMessage(requireActivity())
 
         if (isUsingRedefineRegisterEmailMandatoryOptionalVariant() || isUsingRedefineRegisterEmailControlVariant()) {
             redefineRegisterInitialAnalytics.sendClickOnButtonDaftarPhoneNumberEvent(RedefineInitialRegisterAnalytics.ACTION_FAILED, redefineRegisterEmailVariant, messageError)
@@ -845,18 +845,18 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
     private fun onFailedActivateUser(throwable: Throwable) {
         dismissProgressBar()
-        throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder()).first.orEmpty()) }
+        throwable.message?.let { onErrorRegister(throwable.getMessage(requireActivity())) }
     }
 
     //Flow should not be possible
     private fun onGoToActivationPageAfterRelogin() {
-        val errorMessage = ErrorHandler.getErrorMessagePair(context, Throwable(), ErrorHandler.Builder()).first.orEmpty()
+        val errorMessage = Throwable().getMessage(requireActivity())
         onErrorRegister(errorMessage)
     }
 
     //Flow should not be possible
     private fun onGoToSecurityQuestionAfterRelogin() {
-        val errorMessage = ErrorHandler.getErrorMessagePair(context, Throwable(), ErrorHandler.Builder()).first.orEmpty()
+        val errorMessage = Throwable().getMessage(requireActivity())
         onErrorRegister(errorMessage)
     }
 
@@ -866,7 +866,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
     private fun onFailedReloginAfterSQ(validateToken: String, throwable: Throwable) {
         dismissProgressBar()
-        val errorMessage = ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder()).first.orEmpty()
+        val errorMessage = throwable.getMessage(requireActivity())
         NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
             registerInitialViewModel.reloginAfterSQ(validateToken)
         }.showRetrySnackbar()
@@ -874,7 +874,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
     //Wrong flow implementation
     private fun onGoToActivationPage(errorMessage: MessageErrorException) {
-        NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessagePair(context, errorMessage, ErrorHandler.Builder()).first.orEmpty())
+        NetworkErrorHelper.showSnackbar(activity, errorMessage.getMessage(requireActivity()))
     }
 
     override fun goToLoginPage() {
@@ -1086,7 +1086,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 val email = account?.email ?: ""
                 registerInitialViewModel.registerGoogle(accessToken, email)
             } catch (e: NullPointerException) {
-                val message = ErrorHandler.getErrorMessagePair(context, e, ErrorHandler.Builder()).first.orEmpty()
+                val message = e.getMessage(requireActivity())
                 if (isUsingRedefineRegisterEmailMandatoryOptionalVariant() || isUsingRedefineRegisterEmailControlVariant()) {
                     redefineRegisterInitialAnalytics.sendClickOnButtonGoogleEvent(RedefineInitialRegisterAnalytics.ACTION_FAILED, redefineRegisterEmailVariant, message)
                 }
