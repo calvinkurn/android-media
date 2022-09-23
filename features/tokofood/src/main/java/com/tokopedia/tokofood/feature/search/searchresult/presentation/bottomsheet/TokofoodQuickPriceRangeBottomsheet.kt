@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.databinding.BottomsheetTokofoodSearchQuickPriceRangeBinding
 import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
 import com.tokopedia.tokofood.feature.search.di.component.TokoFoodSearchComponent
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeChipUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel.TokofoodQuickPriceRangeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -34,6 +35,10 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     private val priceRangeItemUiModels by lazy {
         arguments?.getParcelableArrayList<OptionViewModel>(KEY_PRICE_RANGE_ITEMS)
             .orEmpty()
+    }
+
+    private val title by lazy {
+        arguments?.getString(KEY_TITLE).orEmpty()
     }
 
     private var listener: Listener? = null
@@ -99,7 +104,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     }
 
     private fun setupBottomSheetTitle() {
-        setTitle(getString(com.tokopedia.tokofood.R.string.search_srp_quick_price_range_title))
+        setTitle(title)
     }
 
     private fun setupView() {
@@ -195,15 +200,17 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
         private const val RESET_MESSAGE = "Reset"
 
         private const val KEY_PRICE_RANGE_ITEMS = "key_price_range_items"
+        private const val KEY_TITLE = "key_title"
 
         @JvmStatic
         fun createInstance(
-            items: List<OptionViewModel>,
+            item: PriceRangeChipUiModel,
             listener: Listener
         ): TokofoodQuickPriceRangeBottomsheet {
             return TokofoodQuickPriceRangeBottomsheet().apply {
                 arguments = Bundle().apply {
-                    putParcelableArrayList(KEY_PRICE_RANGE_ITEMS, ArrayList(items))
+                    putParcelableArrayList(KEY_PRICE_RANGE_ITEMS, ArrayList(item.uiModels))
+                    putString(KEY_TITLE, item.subtitle)
                 }
                 this.listener = listener
             }

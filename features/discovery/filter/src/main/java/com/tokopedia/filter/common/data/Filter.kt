@@ -12,7 +12,7 @@ class Filter(@SerializedName("title")
              @Expose
              var title: String = "",
 
-             @SerializedName("subTitle")
+             @SerializedName("subTitle", alternate = ["subtitle"])
              @Expose
              var subTitle: String = "",
 

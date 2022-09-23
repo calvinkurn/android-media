@@ -198,10 +198,13 @@ internal class SortFilterBottomSheetViewModel {
         return PriceRangeFilterCheckboxDataView(
             filter = priceFilter,
             optionViewModelList = priceFilter.options.map {
+                val option = it.apply {
+                    updateInputState()
+                }
                 OptionViewModel(
-                    option = it
+                    option = option
                 ).apply {
-                    isSelected = it.inputState.toBoolean()
+                    isSelected = option.inputState.toBoolean()
                 }
             }.toMutableList(),
         )

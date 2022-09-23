@@ -1,10 +1,23 @@
 {
-  "data": {
+  "tokofoodFilterAndSort": {
     "filter": [
       {
-        "title": "Rentang harga",
+        "title": "Bintang 4,5+",
         "subtitle": "",
-        "templateName": "template_pricing_food",
+        "options": [
+          {
+            "name": "Bintang 4,5+",
+            "description": "",
+            "key": "rating",
+            "value": "4.5",
+            "inputType": "checkbox",
+            "isNew": false
+          }
+        ]
+      },
+      {
+        "title": "Rentang harga",
+        "subtitle": "Rentang harga restoran",
         "options": [
           {
             "name": "$",
@@ -41,29 +54,7 @@
         ]
       },
       {
-        "title": "Rating",
-        "subtitle": "",
-        "options": [
-          {
-            "name": "Bintang 4.0+",
-            "description": "",
-            "key": "rating",
-            "value": "4",
-            "inputType": "radio",
-            "isNew": false
-          },
-          {
-            "name": "Bintang 4,5+",
-            "description": "",
-            "key": "rating",
-            "value": "4.5",
-            "inputType": "radio",
-            "isNew": false
-          }
-        ]
-      },
-      {
-        "title": "Diskonan",
+        "title": "Promo",
         "subtitle": "",
         "options": [
           {
@@ -77,7 +68,7 @@
         ]
       },
       {
-        "title": "Lainnya",
+        "title": "Buka Sekarang",
         "subtitle": "",
         "options": [
           {

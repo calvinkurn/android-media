@@ -17,7 +17,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
@@ -25,7 +24,9 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -49,6 +50,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.v
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.bottomsheet.TokofoodQuickPriceRangeBottomsheet
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.bottomsheet.TokofoodQuickSortBottomSheet
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.customview.TokofoodSearchFilterTab
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeChipUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiEvent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
@@ -96,12 +98,13 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private val loadMoreListener by lazy(LazyThreadSafetyMode.NONE) {
         createLoadMoreListener()
     }
+    private val addressWidgetImpressHolder = ImpressHolder()
 
     private var binding by autoClearedNullable<FragmentSearchResultBinding>()
     private var searchResultViewUpdateListener: SearchResultViewUpdateListener? = null
 
     private var tokofoodSearchFilterTab: TokofoodSearchFilterTab? = null
-    private var searchParameter: SearchParameter? = null
+    private var searchParameter: HashMap<String, String>? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var localCacheModel: LocalCacheModel? = null
 
@@ -187,6 +190,16 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun onClickRetryError() {
         viewModel.getInitialMerchantSearchResult(searchParameter)
+    }
+
+    override fun onImpressMerchant(merchant: Merchant, position: Int) {
+        analytics.sendMerchantCardImpressionTracking(
+            destinationId = getDestinationId(),
+            keyword = keyword,
+            merchant = merchant,
+            sortValue = viewModel.getCurrentSortValue(),
+            index = position
+        )
     }
 
     override fun onClickMerchant(merchant: Merchant, position: Int) {
@@ -304,7 +317,12 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun setupAddressWidget() {
-        binding?.addressTokofoodSearchResult?.bindChooseAddress(this)
+        binding?.addressTokofoodSearchResult?.run {
+            bindChooseAddress(this@SearchResultFragment)
+            addOnImpressionListener(addressWidgetImpressHolder) {
+                analytics.sendAddressWidgetImpressionTracking(getDestinationId())
+            }
+        }
     }
 
     private fun collectFlows() {
@@ -317,7 +335,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun collectSearchParameters() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.searchParameters.collect {
+            viewModel.searchParameterMap.collect {
                 searchParameter = it
                 if (it != null) {
                     viewModel.loadQuickSortFilter(it)
@@ -573,7 +591,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         hideKeyboard()
         sortFilterBottomSheet?.show(
             parentFragmentManager,
-            searchParameter?.getSearchParameterHashMap(),
+            searchParameter,
             dynamicFilterModel,
             this
         )
