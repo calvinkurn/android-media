@@ -249,4 +249,14 @@
     <string name="stfs_product_item_total_stock_non_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]></string>
     <string name="stfs_product_item_manage_button_text">Atur Diskon</string>
     <string name="stfs_product_item_edit_button_text">Ubah</string>
+
+
+    <string name="stfs_stfs_manage_location_title">Atur Lokasi</string>
+    <string name="stfs_active_location_bulk_apply_place_holder">Atur Sekaligus %d lokasi</string>
+    <string name="stfs_inactive_location_bulk_apply_place_holder">Aktifkan lokasi untuk Atur Sekaligus</string>
+    <string name="stfs_note_stock_on_location">Stok di Lokasi Ini: %d</string>
+    <string name="stfs_note_stock_mandatory_on_location">Stok Wajib %d - %2d</string>
+    <string name="stfs_title_qty_editor_title">Stok Campaign</string>
+    <string name="stfs_text_button_save">Simpan</string>
+
 </resources>

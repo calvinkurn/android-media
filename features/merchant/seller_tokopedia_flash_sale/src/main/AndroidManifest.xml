@@ -22,7 +22,9 @@
                     android:pathPattern="@string/path_seller_tokopedia_flash_sale"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
+
         </activity>
+
         <activity
             android:name="com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity"
             android:theme="@style/Theme.WhiteUnify"
@@ -49,6 +51,12 @@
 
         <activity
             android:name="com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
+            android:name="com.tokopedia.tkpd.flashsale.presentation.manageproduct.multilocation.varian.ManageProductMultiLocationVariantActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait"
             android:exported="false" />

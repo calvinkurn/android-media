@@ -126,6 +126,8 @@ data class ReservedProduct(
             val picture: String,
             val price: Price,
             val productCriteria: ProductCriteria,
+            var discountedPrice: Long = 0,
+            var discount: Long = 0,
             val productId: Long,
             val sku: String,
             val stock: Int,
@@ -145,14 +147,13 @@ data class ReservedProduct(
             val minCustomStock: Int,
             val minDiscount: Long,
             val minFinalPrice: Long,
-        ) : Parcelable
-
+        ):Parcelable
         @Parcelize
         data class Warehouse(
             val warehouseId: Long,
             val name: String,
-            val stock: Long,
-            val price: Long,
+            var stock: Long,
+            var price: Long,
             val discountSetup: DiscountSetup,
             val isDilayaniTokopedia: Boolean,
             var isToggleOn: Boolean,

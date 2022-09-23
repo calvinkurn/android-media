@@ -17,6 +17,7 @@ class FlashSaleListActivity : BaseSimpleActivity() {
             val intent = Intent(context, FlashSaleListActivity::class.java)
             context.startActivity(intent)
         }
+
     }
 
     override fun getLayoutRes() = R.layout.stfs_activity_flash_sale_list_container
