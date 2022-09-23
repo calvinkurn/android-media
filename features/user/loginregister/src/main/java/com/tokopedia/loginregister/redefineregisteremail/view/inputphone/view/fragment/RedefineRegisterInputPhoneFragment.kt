@@ -506,6 +506,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 email = parameter.email,
                 phone = phone,
                 otpType = otpType,
+                otpMode = OTP_MODE_SMS,
                 source = parameter.source,
                 token = parameter.token
             )
@@ -568,6 +569,8 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     companion object {
+
+        private const val OTP_MODE_SMS = "sms"
 
         private const val REGISTRATION_TYPE = "email"
 
