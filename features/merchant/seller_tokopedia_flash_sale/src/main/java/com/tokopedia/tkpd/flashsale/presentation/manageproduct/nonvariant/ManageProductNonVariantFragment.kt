@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -58,7 +60,7 @@ class ManageProductNonVariantFragment :
 
     override fun createAdapterInstance() = ManageProductNonVariantAdapter().apply {
         product?.let {
-            setDataList(listOf(it))
+            setDataList(it)
             setListener(this@ManageProductNonVariantFragment)
         }
     }
@@ -70,10 +72,20 @@ class ManageProductNonVariantFragment :
     override fun getHeaderUnifyTitle() = getString(R.string.manageproductnonvar_title)
 
     override fun onSubmitButtonClicked() {
+        val bundle = Bundle()
+        val intent = Intent()
+        bundle.putParcelable(BUNDLE_KEY_PRODUCT, viewModel.product.value)
+        intent.putExtras(bundle)
+        activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
 
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
+        product?.let {
+            val warehouses = (adapter as ManageProductNonVariantAdapter).getWarehouses()
+            val newProduct = it.copy(warehouses = warehouses)
+            viewModel.setProduct(newProduct)
+        }
         return viewModel.validateInput(criteria, discountSetup)
     }
 
@@ -112,7 +124,7 @@ class ManageProductNonVariantFragment :
                 productStockTextFormatted = getString(R.string.manageproductnonvar_stock_total_format, it.stock)
             )
             buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
-            viewModel.checkMultiloc(it)
+            viewModel.setProduct(it)
         }
     }
 

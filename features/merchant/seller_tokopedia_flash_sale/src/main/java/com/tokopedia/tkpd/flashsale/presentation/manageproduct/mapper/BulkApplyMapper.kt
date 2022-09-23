@@ -9,9 +9,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ChildProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
-import com.tokopedia.tkpd.flashsale.util.constant.NumericalNormalizationConstant.BULK_APPLY_PERCENT_NORMALIZATION
-import com.tokopedia.tkpd.flashsale.util.constant.NumericalNormalizationConstant.BULK_APPLY_CURRENCY_NORMALIZATION
-import kotlin.math.roundToInt
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 
 object BulkApplyMapper {
 
@@ -19,29 +17,33 @@ object BulkApplyMapper {
         warehouses: List<Warehouse>,
         result: ProductBulkApplyResult
     ): List<Warehouse> {
-        return warehouses.filter { it.isToggleOn }.map {
-            Warehouse(
-                warehouseId = it.warehouseId,
-                name = it.name,
-                stock = it.stock,
-                price = it.price,
-                discountSetup = when (result.discountType) {
-                    DiscountType.RUPIAH -> DiscountSetup(
-                        discount = ((result.discountAmount.toDouble() / it.price) * BULK_APPLY_PERCENT_NORMALIZATION).roundToInt(),
-                        price = result.discountAmount,
-                        stock = result.stock.toLong()
-                    )
-                    DiscountType.PERCENTAGE -> DiscountSetup(
-                        discount = result.discountAmount.toInt(),
-                        price = ((result.discountAmount * BULK_APPLY_CURRENCY_NORMALIZATION) * it.price).toLong(),
-                        stock = result.stock.toLong()
-                    )
-                },
-                isDilayaniTokopedia = it.isDilayaniTokopedia,
-                isToggleOn = it.isToggleOn,
-                isDisabled = it.isDisabled,
-                disabledReason = it.disabledReason
-            )
+        return warehouses.map {
+            if (it.isToggleOn) {
+                Warehouse(
+                    warehouseId = it.warehouseId,
+                    name = it.name,
+                    stock = it.stock,
+                    price = it.price,
+                    discountSetup = when (result.discountType) {
+                        DiscountType.RUPIAH -> DiscountSetup(
+                            discount = DiscountUtil.calculatePercent(result.discountAmount, it.price),
+                            price = result.discountAmount,
+                            stock = result.stock.toLong()
+                        )
+                        DiscountType.PERCENTAGE -> DiscountSetup(
+                            discount = result.discountAmount.toInt(),
+                            price = DiscountUtil.calculatePrice(result.discountAmount, it.price),
+                            stock = result.stock.toLong()
+                        )
+                    },
+                    isDilayaniTokopedia = it.isDilayaniTokopedia,
+                    isToggleOn = it.isToggleOn,
+                    isDisabled = it.isDisabled,
+                    disabledReason = it.disabledReason
+                )
+            } else {
+                it
+            }
         }
     }
 

@@ -7,18 +7,17 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.tkpd.flashsale.data.mapper.DoFlashSaleProductDeleteMapper
+import com.tokopedia.tkpd.flashsale.data.mapper.DoFlashSaleSellerRegistrationMapper
 import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
-import com.tokopedia.tkpd.flashsale.data.request.DoFlashSaleProductDeleteRequest
-import com.tokopedia.tkpd.flashsale.data.response.DoFlashSaleProductDeleteResponse
-import com.tokopedia.tkpd.flashsale.domain.entity.ProductDeleteResult
+import com.tokopedia.tkpd.flashsale.data.request.DoFlashSaleSellerRegistrationRequest
+import com.tokopedia.tkpd.flashsale.data.response.DoFlashSaleProductRegistrationResponse
+import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleRegistrationResult
 import javax.inject.Inject
 
-
-class DoFlashSaleProductDeleteUseCase @Inject constructor(
+class DoFlashSaleSellerRegistrationUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val mapper: DoFlashSaleProductDeleteMapper
-) : GraphqlUseCase<ProductDeleteResult>(repository) {
+    private val mapper: DoFlashSaleSellerRegistrationMapper
+) : GraphqlUseCase<FlashSaleRegistrationResult>(repository) {
 
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -29,20 +28,15 @@ class DoFlashSaleProductDeleteUseCase @Inject constructor(
     }
 
     private val mutation = object : GqlQueryInterface {
-        private val OPERATION_NAME = "doFlashSaleProductDelete"
+        private val OPERATION_NAME = "doFlashSaleSellerRegistration"
         private val MUTATION = """
-        mutation $OPERATION_NAME(${'$'}params: DoFlashSaleProductDeleteRequest!) {
+        mutation $OPERATION_NAME(${'$'}params: DoFlashSaleSellerRegistrationRequest!) {
              $OPERATION_NAME(params: ${'$'}params) {
                 response_header {
                     status
                     success
                     error_message
                     error_code
-                }
-                product_status {
-                    product_id
-                    is_success
-                    message
                 }
              }
        }
@@ -53,31 +47,25 @@ class DoFlashSaleProductDeleteUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(param: Param): ProductDeleteResult {
-        val request = buildRequest(param)
+    suspend fun execute(campaignId: Long): FlashSaleRegistrationResult {
+        val request = buildRequest(campaignId)
         val response = repository.response(listOf(request))
-        val data = response.getSuccessData<DoFlashSaleProductDeleteResponse>()
+        val data = response.getSuccessData<DoFlashSaleProductRegistrationResponse>()
         return mapper.map(data)
     }
 
-    private fun buildRequest(param: Param): GraphqlRequest {
+    private fun buildRequest(campaignId: Long): GraphqlRequest {
         val requestHeader = CampaignParticipationRequestHeader(usecase = "manage_product")
-        val payload = DoFlashSaleProductDeleteRequest(
+        val payload = DoFlashSaleSellerRegistrationRequest(
             requestHeader,
-            param.campaignId,
-            param.productIds
+            campaignId
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
 
         return GraphqlRequest(
             mutation,
-            DoFlashSaleProductDeleteResponse::class.java,
+            DoFlashSaleProductRegistrationResponse::class.java,
             params
         )
     }
-
-    data class Param(
-        val campaignId: Long,
-        val productIds: List<Long>
-    )
 }
