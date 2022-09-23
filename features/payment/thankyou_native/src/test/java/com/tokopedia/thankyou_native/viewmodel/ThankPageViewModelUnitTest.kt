@@ -128,7 +128,6 @@ class ThankPageViewModelUnitTest {
 
     }
 
-
     @Test
     fun failThanksPageResult() {
 
