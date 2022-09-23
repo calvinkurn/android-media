@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowRecipeProductBinding
 import com.tokopedia.tokopedianow.recipedetail.analytics.ProductAnalytics
@@ -15,6 +16,7 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeProduc
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeProductAdapterTypeFactory
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
@@ -67,6 +69,31 @@ class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         activity?.finish()
+    }
+
+    fun showToaster(
+        message: String,
+        duration: Int = Toaster.LENGTH_SHORT,
+        type: Int = Toaster.TYPE_NORMAL,
+        actionText: String = "",
+        onClickAction: View.OnClickListener = View.OnClickListener { }
+    ) {
+        Toaster.toasterCustomBottomHeight = context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_40
+        ).toIntSafely()
+        view?.rootView?.let {
+            if (message.isNotBlank()) {
+                val toaster = Toaster.build(
+                    view = it,
+                    text = message,
+                    duration = duration,
+                    type = type,
+                    actionText = actionText,
+                    clickListener = onClickAction
+                )
+                toaster.show()
+            }
+        }
     }
 
     fun show(fm: FragmentManager) {

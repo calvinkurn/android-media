@@ -186,19 +186,7 @@ class TokoNowRecipeSimilarProductFragment : Fragment(), RecipeProductListener {
         actionText: String = "",
         onClickAction: View.OnClickListener = View.OnClickListener { }
     ) {
-        bottomSheet?.view?.let { view ->
-            if (message.isNotBlank()) {
-                val toaster = Toaster.build(
-                    view = view,
-                    text = message,
-                    duration = duration,
-                    type = type,
-                    actionText = actionText,
-                    clickListener = onClickAction
-                )
-                toaster.show()
-            }
-        }
+        bottomSheet?.showToaster(message, duration, type, actionText, onClickAction)
     }
 
     private fun goToLoginPage() {
