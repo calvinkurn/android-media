@@ -100,7 +100,6 @@ class ThankPageViewModelUnitTest {
 
     }
 
-
     @Test
     fun successThanksPageResultConditionFail() {
 
