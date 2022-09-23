@@ -1,9 +1,12 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
+import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -14,6 +17,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Produc
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapterListener
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantMultilocAdapter
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantActivity.Companion.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import javax.inject.Inject
@@ -38,6 +42,7 @@ class ManageProductNonVariantMultilocFragment :
     private val product by lazy {
         arguments?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
     }
+    var inputAdapter = ManageProductNonVariantMultilocAdapter()
 
     override fun getScreenName(): String = ManageProductNonVariantMultilocFragment::class.java.canonicalName.orEmpty()
 
@@ -52,10 +57,15 @@ class ManageProductNonVariantMultilocFragment :
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         setupPage()
+        setupProductInput()
         setupObservers()
     }
 
-    override fun createAdapterInstance() = ManageProductNonVariantMultilocAdapter().apply {
+    private fun setupProductInput() {
+        viewModel.setProduct(product ?: return)
+    }
+
+    override fun createAdapterInstance() = inputAdapter.apply {
         product?.let {
             setDataList(it)
             setListener(this@ManageProductNonVariantMultilocFragment)
@@ -69,13 +79,19 @@ class ManageProductNonVariantMultilocFragment :
     override fun getHeaderUnifyTitle() = getString(R.string.manageproductnonvar_title)
 
     override fun onSubmitButtonClicked() {
+        val bundle = Bundle()
+        val intent = Intent()
+        bundle.putParcelable(BUNDLE_KEY_PRODUCT, viewModel.product.value)
+        intent.putExtras(bundle)
+        activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
 
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
-        product?.productCriteria?.let {
-            val warehouses = (adapter as ManageProductNonVariantMultilocAdapter).getDataList()
-            viewModel.validateInputPage(warehouses, it)
+        product?.let {
+            val warehouses = inputAdapter.getDataList()
+            val newProduct = it.copy(warehouses = warehouses)
+            viewModel.setProduct(newProduct)
         }
         return viewModel.validateInput(criteria, discountSetup)
     }
@@ -92,9 +108,31 @@ class ManageProductNonVariantMultilocFragment :
         return viewModel.calculatePercent(priceInput, originalPrice)
     }
 
+    override fun onWidgetBulkApplyClicked() {
+        val product = viewModel.product.value
+        val param = BulkApplyMapper.mapProductToBulkParam(context ?: return, product ?: return)
+        val bSheet = ProductBulkApplyBottomSheet.newInstance(param)
+        bSheet.setOnApplyClickListener{
+            val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
+            inputAdapter = ManageProductNonVariantMultilocAdapter().apply {
+                setDataList(appliedProduct)
+                setListener(this@ManageProductNonVariantMultilocFragment)
+            }
+            rvManageProductDetail?.adapter = inputAdapter
+            viewModel.setProduct(appliedProduct)
+        }
+        bSheet.show(childFragmentManager, "")
+    }
+
     private fun setupObservers() {
         viewModel.isInputPageValid.observe(viewLifecycleOwner) {
             buttonSubmit?.isEnabled = it
+        }
+        viewModel.enableBulkApply.observe(viewLifecycleOwner) {
+            if (it) enableWidgetBulkApply() else disableWidgetBulkApply()
+        }
+        viewModel.bulkApplyCaption.observe(viewLifecycleOwner) {
+            setWidgetBulkApplyText(it)
         }
     }
 
@@ -104,7 +142,8 @@ class ManageProductNonVariantMultilocFragment :
                 productImageUrl = it.picture,
                 productName = it.name,
                 productOriginalPriceFormatted = it.price.price.getCurrencyFormatted(),
-                productStockTextFormatted = getString(R.string.manageproductnonvar_stock_total_format, it.stock)
+                productStockTextFormatted = getString(R.string.manageproductnonvar_stock_total_format, it.stock),
+                isShowWidgetBulkApply = true
             )
             buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
         }

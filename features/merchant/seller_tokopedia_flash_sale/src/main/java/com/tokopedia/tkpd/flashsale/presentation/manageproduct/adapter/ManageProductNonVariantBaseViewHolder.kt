@@ -14,7 +14,8 @@ open class ManageProductNonVariantBaseViewHolder(
     private val listener: ManageProductNonVariantAdapterListener?
 ): RecyclerView.ViewHolder(view) {
 
-    private fun Number?.toStringOrEmpty() = if (this == null || this == Int.ZERO) "" else toString()
+    private fun Number?.toStringOrEmpty() =
+        if (this == null || this.toLong() == Int.ZERO.toLong()) "" else toString()
 
     private fun TextFieldUnify2.setTextIfNotFocus(text: String) {
         if (!editText.isFocused) {

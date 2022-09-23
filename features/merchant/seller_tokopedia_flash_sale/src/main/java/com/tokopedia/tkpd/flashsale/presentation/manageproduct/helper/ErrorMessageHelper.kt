@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.getPercentFormatted
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import javax.inject.Inject
@@ -42,6 +43,15 @@ class ErrorMessageHelper @Inject constructor(@ApplicationContext private val con
             getString(R.string.manageproductnonvar_max_message_format, criteria.maxDiscount.getPercentFormatted())
         } else {
             getString(R.string.manageproductnonvar_range_message_format, criteria.minDiscount.getPercentFormatted(), criteria.maxDiscount.getPercentFormatted())
+        }
+    }
+
+    fun getBulkApplyCaption(warehouses: List<ReservedProduct.Product.Warehouse>): String {
+        val selectedWarehousesCount = warehouses.filter { it.isToggleOn }.size
+        return if (selectedWarehousesCount.isMoreThanZero()) {
+            getString(R.string.manageproductnonvar_bulk_apply_text, selectedWarehousesCount)
+        } else {
+            getString(R.string.manageproductnonvar_bulk_apply_empty_text)
         }
     }
 }
