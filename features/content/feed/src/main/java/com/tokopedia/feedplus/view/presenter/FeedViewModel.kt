@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
-import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
+import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
@@ -26,6 +26,7 @@ import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
+import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitReportContentUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
@@ -68,7 +69,7 @@ class FeedViewModel @Inject constructor(
     private val likeKolPostUseCase: SubmitLikeContentUseCase,
     private val atcUseCase: AddToCartUseCase,
     private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-    private val deletePostUseCase: DeletePostUseCase,
+    private val deletePostUseCase: SubmitActionContentUseCase,
     private val sendTopAdsUseCase: SendTopAdsUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
@@ -254,7 +255,7 @@ class FeedViewModel @Inject constructor(
     }
 
     fun doUnlikeKol(id: Int, rowNumber: Int) {
-        doUnlikeKol(id, rowNumber)
+        unlikeKol(id, rowNumber)
     }
 
     fun doFollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
@@ -280,14 +281,7 @@ class FeedViewModel @Inject constructor(
     }
 
     fun doDeletePost(id: Int, rowNumber: Int) {
-        launchCatchError(block = {
-            val results = withContext(baseDispatcher.io) {
-                deletePost(id, rowNumber)
-            }
-            deletePostResp.value = Success(results)
-        }) {
-            deletePostResp.value = Fail(it)
-        }
+        deletePost(id, rowNumber)
     }
 
     fun doAtc(postTagItem: FeedXProduct, shopId: String, type: String, isFollowed: Boolean, activityId: String) {
@@ -571,17 +565,13 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun deletePost(id: Int, rowNumber: Int): DeletePostViewModel {
-        try {
-            val data = DeletePostViewModel()
-            data.id = id
-            data.rowNumber = rowNumber
-            val params = DeletePostUseCase.createRequestParams(id.toString())
-            val isSuccess = deletePostUseCase.createObservable(params).toBlocking().first()
-            data.isSuccess = isSuccess
-            return data
-        } catch (e: Throwable) {
-            throw e
+    private fun deletePost(id: Int, rowNumber: Int) {
+        viewModelScope.launchCatchError(baseDispatcher.io, block = {
+            deletePostUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(contentId = id.toString()))
+            val isSuccess = deletePostUseCase.executeOnBackground().content.success == SubmitPostData.SUCCESS
+            deletePostResp.value = Success(DeletePostViewModel(id = id, rowNumber = rowNumber, isSuccess = isSuccess))
+        }) {
+            deletePostResp.value = Fail(it)
         }
     }
 
