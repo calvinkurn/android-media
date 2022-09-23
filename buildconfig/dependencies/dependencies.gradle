@@ -2,7 +2,7 @@ ext {
 
     compileSdkVersion = 31
     minSdkVersion = 21
-    targetSdkVersion = 30
+    targetSdkVersion = 31
     buildToolsVersion = "30.0.2"
 
     jacocoVersion = "0.8.7"
