@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.util.constant.NumericalNormalizationConstant
@@ -80,11 +81,10 @@ class ManageProductVariantViewModel @Inject constructor(
     }
 
     fun calculatePrice(percentInput: Long, originalPrice: Long): String {
-        return (percentInput * originalPrice / NumericalNormalizationConstant.BULK_APPLY_PERCENT_NORMALIZATION).toString()
+        return DiscountUtil.calculatePrice(percentInput, originalPrice).toString()
     }
 
     fun calculatePercent(priceInput: Long, originalPrice: Long): String {
-        return round((priceInput.toDouble() / originalPrice.toDouble()) * NumericalNormalizationConstant.BULK_APPLY_PERCENT_NORMALIZATION).toInt()
-            .toString()
+        return DiscountUtil.calculatePercent(priceInput, originalPrice).toString()
     }
 }

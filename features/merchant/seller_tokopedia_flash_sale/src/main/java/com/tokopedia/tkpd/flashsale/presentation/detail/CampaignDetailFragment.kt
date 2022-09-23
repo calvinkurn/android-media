@@ -1415,7 +1415,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                         warehouseId = 123,
                         name = "JKT",
                         stock = 1,
-                        price = 100,
+                        price = 2000,
                         discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
                             discount = 0,
                             price = 0,
@@ -1430,7 +1430,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                         warehouseId = 122,
                         name = "JKTSEL",
                         stock = 10,
-                        price = 200,
+                        price = 2000,
                         discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
                             discount = 0,
                             price = 0,
