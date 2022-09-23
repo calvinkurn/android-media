@@ -37,7 +37,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     }
 
     private boolean isDebug() {
-        return GlobalConfig.isAllowDebuggingTools() && sharedPrefs != null;
+        return (GlobalConfig.isAllowDebuggingTools() && sharedPrefs != null) || GlobalConfig.ENABLE_MACROBENCHMARK_UTIL;
     }
 
     @Override

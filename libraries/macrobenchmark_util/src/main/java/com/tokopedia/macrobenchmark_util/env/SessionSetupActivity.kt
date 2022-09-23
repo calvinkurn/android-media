@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
 import com.tokopedia.macrobenchmark_util.env.session.MacrobenchmarkAuthHelper
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -12,6 +11,7 @@ class SessionSetupActivity : AppCompatActivity(){
     companion object {
         private const val URI_HOME_LOGIN = "login"
         private const val URI_HOME_NON_LOGIN = "non-login"
+        private const val CACHE_NAME = "RemoteConfigDebugCache"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +37,8 @@ class SessionSetupActivity : AppCompatActivity(){
         } else {
             MacrobenchmarkAuthHelper.clearUserSession(this)
         }
-        FirebaseRemoteConfigImpl(this).setString("android_user_two_factor_check", "false");
+        val sharedPrefs =
+            this.getSharedPreferences(CACHE_NAME, MODE_PRIVATE)
+        sharedPrefs.edit().putString("android_user_two_factor_check", "false").apply()
     }
 }
