@@ -12,6 +12,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
@@ -108,6 +109,8 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TO
 import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
 import com.tokopedia.chatbot.websocket.ChatbotWebSocket
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -129,6 +132,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -166,7 +170,9 @@ class ChatbotPresenter @Inject constructor(
     private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
     private val chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase,
     private val getExistingChatMapper: ChatbotGetExistingChatMapper,
-    private val chatbotWebSocket: ChatbotWebSocket
+    private val chatbotWebSocket: ChatbotWebSocket,
+    private val chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler,
+    private val dispatcher: CoroutineDispatchers
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper),
     ChatbotContract.Presenter,
     CoroutineScope {
@@ -204,6 +210,8 @@ class ChatbotPresenter @Inject constructor(
     private var isErrorOnLeaveQueue = false
     private lateinit var chatResponse: ChatSocketPojo
     private val job = SupervisorJob()
+    private var autoRetryJob: Job? = null
+    private var socketJob: Job? = null
 
     init {
         mSubscription = CompositeSubscription()
@@ -217,19 +225,55 @@ class ChatbotPresenter @Inject constructor(
         when (socketResponse) {
             is ChatbotWebSocketAction.SocketOpened -> {
                 Log.d("Eren", "handleWebSocketResponse: Open called ")
-                sendReadEventWebSocket2(messageId)
-                view.showErrorWebSocket(false)
-                view.sendInvoiceForArticle()
+                handleSocketOpen(messageId)
             }
             is ChatbotWebSocketAction.NewMessage -> {
                 handleNewMessage(socketResponse.message, messageId)
                 Log.d("Eren", "handleWebSocketResponse: ${socketResponse.message}")
             }
             is ChatbotWebSocketAction.Failure -> {
-                view.showErrorWebSocket(true)
+                handleSocketFailure(messageId)
                 Log.d("Eren", "handleWebSocketResponse: ${socketResponse.exception}")
             }
+            is ChatbotWebSocketAction.Closed -> {
+                handleSocketClosed(socketResponse.code, messageId)
+                Log.d("Eren", "handleWebSocketResponse: ${socketResponse.code}")
+            }
         }
+    }
+
+    private fun handleSocketClosed(code: Int, messageId: String) {
+        if (code != ChatbotWebSocketImpl.CODE_NORMAL_CLOSURE) {
+            retryConnectToWebSocket(messageId)
+        }
+    }
+
+    private fun handleSocketFailure(messageId: String) {
+        view.showErrorWebSocket(true)
+        retryConnectToWebSocket(messageId)
+    }
+
+    private fun retryConnectToWebSocket(messageId: String) {
+        chatbotWebSocket.close()
+        autoRetryJob = launchCatchError(
+            dispatcher.io,
+            block = {
+                chatbotWebSocketStateHandler.scheduleForRetry { withContext(dispatcher.main) {
+                    connectWebSocket2(messageId)
+                }
+                }
+            },
+            onError = {
+                Log.d("Eren", "retryConnectToWebSocket: ")
+            }
+        )
+    }
+
+    private fun handleSocketOpen(messageId: String) {
+        sendReadEventWebSocket2(messageId)
+        view.showErrorWebSocket(false)
+        view.sendInvoiceForArticle()
+        chatbotWebSocketStateHandler.retrySucceed()
     }
 
     private fun handleNewMessage(message: ChatWebSocketResponse, messageId: String) {
@@ -250,8 +294,6 @@ class ChatbotPresenter @Inject constructor(
             listInterceptor
         )
     }
-
-    private var socketJob: Job? = null
 
     fun connectWebSocket2(messageId: String) {
         socketJob?.cancel()
@@ -993,6 +1035,7 @@ class ChatbotPresenter @Inject constructor(
 
     private fun destroyWebSocket2() {
         socketJob?.cancel()
+        autoRetryJob?.cancel()
         chatbotWebSocket.close()
     }
 

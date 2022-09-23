@@ -92,6 +92,7 @@ class ChatbotWebSocketImpl(
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
             Log.d("Eren", " In IMPL onClosed: $reason $code")
+            webSocketFlow.tryEmit(ChatbotWebSocketAction.Closed(code))
             mWebSocket = null
         }
     }
@@ -117,5 +118,9 @@ class ChatbotWebSocketImpl(
         } catch (e: Throwable) {
             Timber.log(1, e)
         }
+    }
+
+    companion object {
+        const val CODE_NORMAL_CLOSURE = 1000
     }
 }

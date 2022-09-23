@@ -10,8 +10,10 @@ import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManagerImpl
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
+import com.tokopedia.chatbot.websocket.ChatbotDefaultWebSocketStateHandler
 import com.tokopedia.chatbot.websocket.ChatbotWebSocket
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.imageuploader.di.ImageUploaderModule
@@ -127,12 +129,18 @@ class ChatbotModule {
         tkpdAuthInterceptor: TkpdAuthInterceptor,
         fingerprintInterceptor: FingerprintInterceptor,
         userSession: UserSessionInterface,
-        dispatcher: CoroutineDispatchers,
+        dispatcher: CoroutineDispatchers
     ): ChatbotWebSocket {
         return ChatbotWebSocketImpl(
             arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor),
             userSession.accessToken,
-            dispatcher,
+            dispatcher
         )
+    }
+
+    @ChatbotScope
+    @Provides
+    fun provideChatbotWebSocketStateHandler(): ChatbotWebSocketStateHandler {
+        return ChatbotDefaultWebSocketStateHandler()
     }
 }
