@@ -22,7 +22,6 @@ import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionRespo
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -35,6 +34,7 @@ class WishlistCollectionViewModel @Inject constructor(
     private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
     private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase
 ) : BaseViewModel(dispatcher.main) {
+    private var recommSrc = ""
 
     private val _collections =
         MutableLiveData<Result<GetWishlistCollectionResponse.GetWishlistCollections>>()
@@ -62,14 +62,13 @@ class WishlistCollectionViewModel @Inject constructor(
         launchCatchError(block = {
             val result = getWishlistCollectionUseCase(Unit)
             if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
+                recommSrc = if (result.getWishlistCollections.data.isEmptyState) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
                 _collections.value = Success(result.getWishlistCollections)
                 _collectionData.value =
                     Success(
                         WishlistCollectionUtils.mapCollection(
                             result.getWishlistCollections.data, getRecommendationWishlistV2(
-                                1, listOf(),
-                                WishlistV2Consts.EMPTY_WISHLIST_PAGE_NAME
-                            )
+                                1, listOf(), recommSrc)
                         )
                     )
             } else {
@@ -118,9 +117,7 @@ class WishlistCollectionViewModel @Inject constructor(
         launch {
             try {
                 val recommItems = getRecommendationWishlistV2(
-                    page, listOf(),
-                    WishlistV2Consts.EMPTY_WISHLIST_PAGE_NAME
-                )
+                    page, listOf(), recommSrc)
                 recommItems.recommendationProductCardModelData.forEach { item ->
                     listData.add(
                         WishlistCollectionTypeLayoutData(
@@ -147,5 +144,10 @@ class WishlistCollectionViewModel @Inject constructor(
         }, onError = {
             _deleteWishlistProgressResult.value = Fail(it)
         })
+    }
+
+    companion object {
+        private const val WISHLIST_PAGE_NAME = "wishlist"
+        private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
     }
 }

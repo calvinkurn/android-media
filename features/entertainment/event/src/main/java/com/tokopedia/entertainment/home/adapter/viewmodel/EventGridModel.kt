@@ -2,10 +2,9 @@ package com.tokopedia.entertainment.home.adapter.viewmodel
 
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactory
-import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 /**
  * Author errysuprayogi on 27,January,2020
@@ -25,7 +24,7 @@ class EventGridModel(var layout: EventHomeDataResponse.Data.EventHome.Layout =
         layout.items.forEachIndexed { index, it ->
             if(index < 4) {
                 items.add(EventItemModel(
-                        it.id.toIntOrZero(),
+                        it.id.toIntSafely(),
                         it.rating,
                         it.imageApp,
                         it.title,
@@ -35,7 +34,7 @@ class EventGridModel(var layout: EventHomeDataResponse.Data.EventHome.Layout =
                         it.isLiked,
                         it.appUrl,
                         it.seoUrl,
-                        (it.isFree == isFree && it.salesPrice.toIntOrZero().isZero())
+                        (it.isFree == isFree && it.salesPrice.toIntSafely().isZero())
                 ))
             }
         }

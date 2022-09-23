@@ -29,6 +29,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed_shop.R
 import com.tokopedia.feed_shop.analytics.ShopAnalytics
@@ -82,6 +84,8 @@ import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
+import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
@@ -129,7 +133,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         ShopPageFabConfig(
             items = arrayListOf(FloatingButtonItem(iconUnifyID = IconUnify.ADD, title = "")),
             onMainCircleButtonClicked = {
-                goToCreatePost(getSellerApplink())
+                goToCreatePost()
                 shopAnalytics.eventClickCreatePost()
             }
         )
@@ -164,6 +168,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         private const val LOGIN_FOLLOW_CODE = 1384
         private const val OPEN_CONTENT_REPORT = 1130
         private const val KOL_COMMENT_CODE = 13
+        private const val PARAM_SOURCE = "source"
+        private const val SHOP_PAGE = "shop_page"
 
         private const val PARAM_CREATE_POST_URL: String = "PARAM_CREATE_POST_URL"
         private const val PARAM_SHOP_ID: String = "PARAM_SHOP_ID"
@@ -182,6 +188,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         //endregion
 
         private const val PDP_APP_LINK_HOST = "product"
+
+        // Edit Post
+        private const val KEY_AUTHOR_TYPE = "author_type"
+        private const val VALUE_AUTHOR_TYPE = "content-preview-page"
 
         fun createInstance(shopId: String, createPostUrl: String): FeedShopFragment {
             val fragment = FeedShopFragment()
@@ -633,15 +643,25 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                         }
 
                         override fun onEditClick() {
-                            goToEditPostShop(postId)
+                            goToEditPost(caption, postId.toString(), id)
                         }
                     })
             menus.show()
         }
     }
 
-    private fun goToEditPostShop(postId: Int) {
-        context?.let { RouteManager.route(it, ApplinkConstInternalContent.SHOP_POST_EDIT, postId.toString()) }
+    private fun goToEditPost(caption: String, postId: String, authorId: String) {
+        val createPostViewModel = CreatePostViewModel()
+        createPostViewModel.caption = caption
+        createPostViewModel.postId = postId
+        createPostViewModel.editAuthorId = authorId
+
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2)
+            .putExtra(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE)
+            .putExtra(KEY_AUTHOR_TYPE, VALUE_AUTHOR_TYPE)
+            .putExtra(CreatePostViewModel.TAG, createPostViewModel)
+
+        startActivity(intent)
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
@@ -797,7 +817,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
-        onGoToLink(redirectLink)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventShopPageClickPost(
@@ -807,7 +826,19 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 trackingPostModel.mediaUrl,
                     positionInFeed)
         }
+        val finaApplink = getUpdatedApplinkForContentDetailPage(redirectLink)
+        onGoToLink(finaApplink)
     }
+
+    /**
+     * Here we are appending the source of opening content detail page to the original applink
+     * source = shop_page here
+     */
+    private fun getUpdatedApplinkForContentDetailPage(originalRedirectlink: String) =
+        Uri.parse(originalRedirectlink)
+            .buildUpon()
+            .appendQueryParameter(PARAM_SOURCE, SHOP_PAGE)
+            .build().toString()
 
     override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
                                   redirectLink: String, isSingleItem: Boolean) {
@@ -903,7 +934,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             isFollowed: Boolean,
             startTime: Long
     ) {
-        onGoToLink(redirectUrl)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventShopPageClickPost(
@@ -914,6 +944,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     positionInFeed
             )
         }
+        val finaApplink = getUpdatedApplinkForContentDetailPage(redirectUrl)
+        onGoToLink(finaApplink)
     }
 
     override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
@@ -979,35 +1011,22 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         shopFeedTabSharedViewModel.showShopPageFab()
     }
 
-    private fun getSellerApplink(): String {
-        var applink = ApplinkConst.CONTENT_CREATE_POST
-        if (whitelistDomain.authors.size != 0) {
-            for (author in whitelistDomain.authors) {
-                if (author.type.equals(Author.TYPE_SHOP)) {
-                    applink = author.link
-                }
-            }
-        }
-        return applink
-    }
-
     fun updateShopInfo(shopInfo: ShopInfo) {
         shopId = shopInfo.shopCore.shopID
         loadInitialData()
     }
 
     private fun goToCreatePost() {
-        goToCreatePost(getSellerApplink())
-    }
+        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+            .putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+            .putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
+            .putExtra(BundleData.TITLE, BundleData.VALUE_POST_SEBAGAI)
+            .putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+            .putExtra(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE)
 
-    private fun goToCreatePost(link: String) {
-        startActivityForResult(
-                RouteManager.getIntent(
-                        requireContext(),
-                        link
-                ),
-                CREATE_POST
-        )
+        startActivityForResult(intent, CREATE_POST)
+
+        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
     }
 
     private fun onGoToLink(url: String) {

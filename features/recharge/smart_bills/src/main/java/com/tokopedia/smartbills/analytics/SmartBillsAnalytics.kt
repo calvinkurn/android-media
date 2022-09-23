@@ -161,7 +161,7 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.VIEW_ITEM_LIST, trackingData)
     }
 
-    fun clickPay(selectedBills: List<RechargeBills>, totalBillsCount: Int, totalPrice: Int) {
+    fun clickPay(selectedBills: List<RechargeBills>, totalBillsCount: Int, totalPrice: Long) {
         val areAllBills = selectedBills.size == totalBillsCount
         val dataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, EVENT_VALUE_CHECKOUT_PROGRESS)
@@ -521,7 +521,7 @@ class SmartBillsAnalytics {
                 EnhanceEccomerce.ITEM_VARIANT,
                 if (item.newBillLabel.isNewLabel) NEW_BILL_LABEL else EXISTING_BILL_LABEL
             )
-            putFloat(EnhanceEccomerce.PRICE, item.amount)
+            putLong(EnhanceEccomerce.PRICE, item.amount)
         }
 
     companion object {

@@ -20,4 +20,5 @@ sealed class PmsEvents {
 
     data class WaitingCardClickEvent(val paymentType: String) : PmsEvents()
     data class HowToPayRedirectionEvent(val tag: Int) : PmsEvents()
+    data class CompletePayment(val gatewayName: String) : PmsEvents()
 }

@@ -16,6 +16,7 @@ import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearc
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
+import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
 
 interface InitialStateTypeFactory {
 
@@ -48,4 +49,6 @@ interface InitialStateTypeFactory {
     fun type(initialStateChipWidgetDataView: InitialStateChipWidgetDataView): Int
 
     fun type(initialStateChipWidgetTitleDataView: InitialStateChipWidgetTitleDataView): Int
+
+    fun type(searchBarEducationDataView: SearchBarEducationDataView): Int
 }

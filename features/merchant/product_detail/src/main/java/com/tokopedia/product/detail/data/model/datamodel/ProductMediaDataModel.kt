@@ -67,15 +67,18 @@ data class ProductMediaDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductMediaDataModel) {
-            if (variantOptionIdScrollAnchor != newData.variantOptionIdScrollAnchor) {
+            if (listOfMedia.hashCode() != newData.listOfMedia.hashCode()) {
                 bundle.putInt(
-                        ProductDetailConstant.DIFFUTIL_PAYLOAD,
-                        ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT
+                    ProductDetailConstant.DIFFUTIL_PAYLOAD,
+                    ProductDetailConstant.PAYLOAD_MEDIA_UPDATE
                 )
-
-                return bundle
+            } else if (variantOptionIdScrollAnchor != newData.variantOptionIdScrollAnchor) {
+                bundle.putInt(
+                    ProductDetailConstant.DIFFUTIL_PAYLOAD,
+                    ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT
+                )
             }
-            null
+            return bundle.takeIf { !it.isEmpty }
         } else {
             null
         }

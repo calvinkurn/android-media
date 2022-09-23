@@ -719,6 +719,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                             ) {
                                 val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
                                 view?.let { v ->
+                                    callback(true, Throwable())
                                     AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
                                 }
                             }
@@ -729,6 +730,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                             ) {
                                 context?.let { context ->
                                     view?.let { v ->
+                                        callback(false, Throwable())
                                         AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
                                     }
                                 }
@@ -763,6 +765,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                             ) {
                                 context?.let { context ->
                                     view?.let { v ->
+                                        callback(true, Throwable())
                                         AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                                     }
                                 }
@@ -774,9 +777,13 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                                 }
                             }
 
-                            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
+                            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
 
-                            override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
+                            }
+
+                            override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {
+                                callback(false, Throwable())
+                            }
 
                         })
                     } else {

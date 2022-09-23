@@ -307,9 +307,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     //Dynamic Social Media ordering from Remote Config
     private var socialMediaOrderHashMap: HashMap<String, Int>? = null
 
-    private lateinit var tracker: UniversalSharebottomSheetTracker
+    private val tracker: UniversalSharebottomSheetTracker by lazy {
+        UniversalSharebottomSheetTracker(userSession)
+    }
 
-    private lateinit var userSession: UserSession
+    private val userSession: UserSession by lazy {
+        UserSession(LinkerManager.getInstance().context)
+    }
+
+    private var onViewReadyAction: (() -> Unit)? = null
+
 
     @Inject
     lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
@@ -326,9 +333,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initTracker()
         initRecyclerView()
         initImageOptionsRecyclerView()
+        onViewReadyAction?.invoke()
     }
 
     private fun inject() {
@@ -358,8 +365,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
-    //call this method before show method if the request data is awaited
-    fun affiliateRequestDataAwaited(){
+    fun show(fragmentManager: FragmentManager?, fragment: Fragment, screenshotDetector: ScreenshotDetector? = null, safeViewAction: () -> Unit = {}) {
+        onViewReadyAction = safeViewAction
+        show(fragmentManager, fragment, screenshotDetector)
+    }
+
+    // call this method before show method if the request data is awaited
+    fun affiliateRequestDataAwaited() {
        showLoader = true
         handler = Handler(Looper.getMainLooper())
         handler?.postDelayed({
@@ -367,7 +379,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
     }
 
-    //call this method if the request data is received
+    /**
+     * call this method if the request data is received
+     * ideally, call this method after show Bottomsheet. there is a case hitting gql is finished, but view is not ready
+     */
     fun affiliateRequestDataReceived(validRequest: Boolean) {
         val userSession = UserSession(LinkerManager.getInstance().context)
         if(userSession.isLoggedIn && validRequest && isAffiliateEnabled()){
@@ -449,6 +464,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private fun showAffiliateTicker(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String = "") {
         clearLoader()
         removeHandlerTimeout()
+
         if (isShowAffiliateComission(generateAffiliateLinkEligibility)) {
             showAffiliateCommission(generateAffiliateLinkEligibility)
         } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
@@ -487,8 +503,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String) {
+        affiliateRegisterContainer?.visible()
         generateAffiliateLinkEligibility.banner?.let { banner ->
             if (banner.title.isBlank() && banner.message.isBlank()) return
+
             affiliateRegisterContainer?.visible()
             tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
             affiliateRegisterContainer?.setOnClickListener { _ ->
@@ -512,6 +530,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 affiliateRegisterMsg?.text = Html.fromHtml(banner.message)
             }
         }
+        affiliateQueryData = null
     }
 
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
@@ -571,11 +590,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 dismiss()
             }
         }
-    }
-
-    private fun initTracker() {
-        userSession = UserSession(context)
-        tracker = UniversalSharebottomSheetTracker(userSession)
     }
 
     private fun initRecyclerView() {
@@ -1062,6 +1076,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     override fun dismiss() {
         try {
+            onViewReadyAction = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if(gqlCallJob?.isActive == true) {
@@ -1078,6 +1093,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         try {
+            onViewReadyAction = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if(gqlCallJob?.isActive == true) {
