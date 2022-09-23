@@ -180,7 +180,6 @@ class ThankPageViewModelUnitTest {
         )
     }
 
-
     @Test
     fun failMembershipRegisterLiveData() {
         coEvery {
