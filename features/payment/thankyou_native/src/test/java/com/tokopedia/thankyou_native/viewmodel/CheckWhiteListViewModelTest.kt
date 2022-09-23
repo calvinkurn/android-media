@@ -28,7 +28,8 @@ class CheckWhiteListViewModelTest {
     @Before
     fun setUp() {
         viewModel = CheckWhiteListViewModel(
-            checkWhiteListUsecase, dispatcher
+            checkWhiteListUsecase,
+            dispatcher
         )
     }
 
