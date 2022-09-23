@@ -68,7 +68,6 @@ class MarketPlaceRecommendationViewModelTest {
 
     @Test
     fun getFailProductRecommendationData() {
-
         coEvery {
             runBlocking {
                 typGetRecommendationUseCase.get().getProductRecommendationData(mockTypResponse)
