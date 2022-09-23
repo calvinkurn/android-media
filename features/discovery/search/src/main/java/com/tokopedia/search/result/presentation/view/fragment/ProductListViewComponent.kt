@@ -9,6 +9,7 @@ import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule
 import com.tokopedia.search.di.module.TrackingQueueModule
 import com.tokopedia.search.di.module.UserSessionModule
+import com.tokopedia.search.di.module.StaggeredGridLayoutManagerModule
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getinspirationcarouselchips.GetInspirationCarouselChipsProductUseCaseModule
@@ -48,6 +49,7 @@ import dagger.Component
     ProductListPresenterModule::class,
     FilterControllerModule::class,
     ProductListPresenterModule::class,
+    StaggeredGridLayoutManagerModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

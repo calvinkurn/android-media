@@ -7,5 +7,6 @@ enum class ManageAddressSource(val source: String) {
     DISTRICT_NOT_MATCH("districtNotMatch"),
     LOCALIZED_ADDRESS_WIDGET("localizedAddressWidget"),
     NOTIFICATION("notification"),
-    TOKOFOOD("tokofood")
+    TOKOFOOD("tokofood"),
+    TOKONOW("tokonow")
 }

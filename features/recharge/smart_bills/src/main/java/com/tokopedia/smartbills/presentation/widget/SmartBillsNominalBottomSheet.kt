@@ -150,7 +150,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
     }
 
     private fun observeNominal(){
-        observe(viewModel.catalogProduct){
+        viewLifecycleOwner.observe(viewModel.catalogProduct){
             when(it){
                 is Success -> {
                     if(it.data.multitabData.productInputs.isNullOrEmpty()){

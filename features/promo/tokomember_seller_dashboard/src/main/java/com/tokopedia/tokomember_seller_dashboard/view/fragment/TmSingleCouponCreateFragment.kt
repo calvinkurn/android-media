@@ -141,6 +141,8 @@ private const val HOUR_4 = 4
 private const val RESULT_SUCCESS = 200
 
 class TmSingleCouponCreateFragment : BaseDaggerFragment() {
+    private val CALENDAR_TYPE_START = 0
+    private val CALENDAR_TYPE_END = 1
     private var programStatus: Int = ACTIVE
     private var token: String? = ""
     private var tmCouponDetail: TmCouponDetailData? = null
@@ -227,14 +229,13 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             else{
                 noInternetUi{tokomemberDashCreateViewModel.getInitialCouponData(CREATE, "")}
             }
-        }
-        prefManager?.shopId?.let { it ->
-            prefManager?.cardId?.let { it1 ->
-                if (TmInternetCheck.isConnectedToInternet(context)) {
-                    tmProgramListViewModel?.getProgramList(it, it1)
-                }
-                else{
-                    noInternetUi{tmProgramListViewModel?.getProgramList(it, it1)}
+            prefManager?.shopId?.let { it ->
+                prefManager?.cardId?.let { it1 ->
+                    if (TmInternetCheck.isConnectedToInternet(context)) {
+                        tmProgramListViewModel?.getProgramList(it, it1)
+                    } else {
+                        noInternetUi { tmProgramListViewModel?.getProgramList(it, it1) }
+                    }
                 }
             }
         }
@@ -878,6 +879,20 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 }
             })
         }
+
+        data?.voucherStartTime?.let {
+            textFieldProgramStartDate.editText.setText(TmDateUtil.setDateFromDetails(it))
+            textFieldProgramStartTime.editText.setText(TmDateUtil.setTimeFromDetails(it))
+            tmCouponStartDateUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+            tmCouponStartTimeUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+        }
+        data?.voucherFinishTime?.let {
+            textFieldProgramEndDate.editText.setText(TmDateUtil.setDateFromDetails(it))
+            textFieldProgramEndTime.editText.setText(TmDateUtil.setTimeFromDetails(it))
+            tmCouponEndDateUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+            tmCouponEndTimeUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+        }
+
     }
 
     private fun openLoadingDialog(){
@@ -1234,16 +1249,16 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         textFieldProgramEndTime.setFirstIcon(R.drawable.tm_dash_clock)
 
         textFieldProgramStartDate.iconContainer.setOnClickListener {
-            clickDatePicker(textFieldProgramStartDate, 0)
+            clickDatePicker(textFieldProgramStartDate, CALENDAR_TYPE_START)
         }
         textFieldProgramStartTime.iconContainer.setOnClickListener {
-            clickTimePicker(textFieldProgramStartTime, 0)
+            clickTimePicker(textFieldProgramStartTime, CALENDAR_TYPE_START)
         }
         textFieldProgramEndDate.iconContainer.setOnClickListener {
-            clickDatePicker(textFieldProgramEndDate, 1)
+            clickDatePicker(textFieldProgramEndDate, CALENDAR_TYPE_END)
         }
         textFieldProgramEndTime.iconContainer.setOnClickListener {
-            clickTimePicker(textFieldProgramEndTime, 1)
+            clickTimePicker(textFieldProgramEndTime, CALENDAR_TYPE_END)
         }
     }
 
@@ -1430,19 +1445,19 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
                 textFieldProgramStartDate.editText.setOnFocusChangeListener { view, b ->
                     if(b)
-                    clickDatePicker(textFieldProgramStartDate, 0)
+                    clickDatePicker(textFieldProgramStartDate, CALENDAR_TYPE_START)
                 }
                 textFieldProgramStartTime.editText.setOnFocusChangeListener { view, b ->
                     if(b)
-                    clickTimePicker(textFieldProgramStartTime, 0)
+                    clickTimePicker(textFieldProgramStartTime, CALENDAR_TYPE_START)
                 }
                 textFieldProgramEndDate.editText.setOnFocusChangeListener { view, b ->
                     if(b)
-                    clickDatePicker(textFieldProgramEndDate, 1)
+                    clickDatePicker(textFieldProgramEndDate, CALENDAR_TYPE_END)
                 }
                 textFieldProgramEndTime.editText.setOnFocusChangeListener { view, b ->
                     if(b)
-                    clickTimePicker(textFieldProgramEndTime, 1)
+                    clickTimePicker(textFieldProgramEndTime, CALENDAR_TYPE_END)
                 }
             }
         }
@@ -1504,17 +1519,22 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             // for both cases
             // user can select end date 1 year from start date
 
-            if(programStatus != ACTIVE) {
-                defaultCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+            if (fromEdit) {
+                defaultCalendar.time = tmCouponStartDateUnix?.time
+            } else {
+                if (programStatus != ACTIVE) {
+                    defaultCalendar.time =
+                        sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+                }
             }
             val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
-            if(tmCouponStartDateUnix != null && type == 0 && firstDateStart){
+            if (tmCouponStartDateUnix != null && type == CALENDAR_TYPE_START && firstDateStart) {
                 defaultCalendar.time = tmCouponStartDateUnix?.time
             }
-            if(tmCouponEndDateUnix != null && type == 1 && firstDateEnd){
+            if (tmCouponEndDateUnix != null && type == CALENDAR_TYPE_END && firstDateEnd) {
                 defaultCalendar.time = tmCouponEndDateUnix?.time
             }
-            if(tmCouponStartDateUnix != null && type == 1 && !firstDateEnd && firstDateStart){
+            if (tmCouponStartDateUnix != null && type == CALENDAR_TYPE_END && !firstDateEnd && firstDateStart) {
                 defaultCalendar.time = tmCouponStartDateUnix?.time
             }
             calendarMax.time = defaultCalendar.time
@@ -1523,20 +1543,31 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 calendarMax.time = tmCouponStartDateUnix?.time
                 minCalendar.time = tmCouponStartDateUnix?.time
             }
-            if(type == 0){
-                calendarMax.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
-                minCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
-            }
 
+            if (fromEdit) {
+                if (type == CALENDAR_TYPE_START) {
+                    calendarMax.time = tmCouponStartDateUnix?.time
+                    minCalendar.time = tmCouponStartDateUnix?.time
+                }
+                if (type == CALENDAR_TYPE_END) {
+                    calendarMax.time = tmCouponEndDateUnix?.time
+                    minCalendar.time = tmCouponEndDateUnix?.time
+                }
+            } else {
+                if (type == CALENDAR_TYPE_START) {
+                    calendarMax.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+                    minCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+                }
+            }
             calendarMax.add(Calendar.YEAR, 1)
 
             val datepickerObject = DateTimePickerUnify(it, minCalendar, defaultCalendar, calendarMax).apply {
                 when (type) {
-                    0 -> {
+                    CALENDAR_TYPE_START -> {
                         setTitle(DATE_TITLE)
                         setInfo(DATE_DESC)
                     }
-                    1 -> {
+                    CALENDAR_TYPE_END -> {
                         setTitle(DATE_TITLE_END)
                         setInfo(DATE_DESC_END)
                     }
@@ -1554,7 +1585,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         val dayInId = getDayOfWeekID(day)
                         textField.textInputLayout.editText?.setText(( "$dayInId,$date $month $year"))
                         when (type) {
-                            0 -> {
+                            CALENDAR_TYPE_START -> {
                                 firstDateStart = true
                                 tmCouponStartDateUnix = selectedCalendar
                                 selectedCalendar?.get(Calendar.DAY_OF_MONTH)?.let { it1 ->
@@ -1573,7 +1604,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                                     )
                                 }
                             }
-                            1 -> {
+                            CALENDAR_TYPE_END -> {
                                 firstDateEnd = true
                                 tmCouponEndDateUnix = selectedCalendar
                                 selectedCalendar?.get(Calendar.DAY_OF_MONTH)?.let { it1 ->
@@ -1629,7 +1660,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     set(Calendar.MINUTE, 59)
                 }
 
-            if(tmCouponStartTimeUnix != null && type == 0 && firstTimeStart){
+            if (tmCouponStartTimeUnix != null && type == CALENDAR_TYPE_START && firstTimeStart) {
                 tmCouponStartTimeUnix?.get(Calendar.HOUR_OF_DAY)?.let {
                     defaultTime.set(Calendar.HOUR_OF_DAY,
                         it
@@ -1641,7 +1672,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     )
                 }
             }
-            if(tmCouponEndTimeUnix != null && type == 1 && firstTimeEnd){
+            if (tmCouponEndTimeUnix != null && type == CALENDAR_TYPE_END && firstTimeEnd) {
                 tmCouponEndTimeUnix?.get(Calendar.HOUR_OF_DAY)?.let {
                     defaultTime.set(Calendar.HOUR_OF_DAY,
                         it
@@ -1663,11 +1694,11 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             ).apply {
                 minuteInterval = MINUTE_30
                 when(type){
-                    0 -> {
+                    CALENDAR_TYPE_START -> {
                         setTitle(TIME_TITLE)
                         setInfo(TIME_DESC)
                     }
-                    1 ->{
+                    CALENDAR_TYPE_END -> {
                         setTitle(TIME_TITLE_END)
                         setInfo(TIME_DESC_END)
                     }
@@ -1678,7 +1709,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     selectedMinute = timePicker.minutePicker.activeValue
                     textField.textInputLayout.editText?.setText(( "$selectedHour:$selectedMinute WIB"))
                     when (type) {
-                        0 -> {
+                        CALENDAR_TYPE_START -> {
                             startTime = getDate()
                             val day = tmCouponStartDateUnix?.get(Calendar.DAY_OF_MONTH)
                             val month = tmCouponStartDateUnix?.get(Calendar.MONTH)
@@ -1698,7 +1729,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             tmCouponStartTimeUnix?.time?.let { it1 -> TmDateUtil.convertDateTime(it1) }
                             firstTimeStart = true
                         }
-                        1 -> {
+                        CALENDAR_TYPE_END -> {
                             startTime = getDate()
                             val day = tmCouponEndDateUnix?.get(Calendar.DAY_OF_MONTH)
                             val month = tmCouponEndDateUnix?.get(Calendar.MONTH)

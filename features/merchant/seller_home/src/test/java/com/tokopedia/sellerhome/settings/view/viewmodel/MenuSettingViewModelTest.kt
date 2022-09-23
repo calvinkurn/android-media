@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
+import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -30,6 +31,9 @@ class MenuSettingViewModelTest {
     lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
 
     @RelaxedMockK
+    lateinit var shopMultiloc: Provider<ShopMultilocWhitelistUseCase>
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @get:Rule
@@ -41,7 +45,12 @@ class MenuSettingViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
 
-        viewModel = MenuSettingViewModel(authorizeAccessUseCaseProvider, userSession, CoroutineTestDispatchersProvider)
+        viewModel = MenuSettingViewModel(
+            authorizeAccessUseCaseProvider,
+            shopMultiloc,
+            userSession,
+            CoroutineTestDispatchersProvider
+        )
     }
 
     @Test
@@ -55,29 +64,38 @@ class MenuSettingViewModelTest {
     }
 
     @Test
-    fun `check shop setting access if not shop owner should update value to success if response success`() = runBlocking {
-        val expectedEligibility = false
-        everyProviderGetUseCase()
-        every { userSession.isShopOwner } returns false
-        everyCheckAccessRoleShouldSuccess(expectedEligibility)
+    fun `check shop setting access if not shop owner should update value to success if response success`() =
+        runBlocking {
+            val expectedEligibility = false
+            everyProviderGetUseCase()
+            every { userSession.isShopOwner } returns false
+            everyCheckAccessRoleShouldSuccess(expectedEligibility)
 
-        viewModel.checkShopSettingAccess()
+            viewModel.checkShopSettingAccess()
 
-        Assert.assertEquals(viewModel.shopSettingAccessLiveData.value, Success(
-                MenuSettingAccess(expectedEligibility, expectedEligibility, expectedEligibility, expectedEligibility)
-        ))
-    }
+            Assert.assertEquals(
+                viewModel.shopSettingAccessLiveData.value, Success(
+                    MenuSettingAccess(
+                        expectedEligibility,
+                        expectedEligibility,
+                        expectedEligibility,
+                        expectedEligibility
+                    )
+                )
+            )
+        }
 
     @Test
-    fun `check shop setting access if not shop owner should update value to fail if response failed`() = runBlocking {
-        every { userSession.isShopOwner } returns false
-        everyProviderGetUseCase()
-        everyCheckAccessRoleShouldFail()
+    fun `check shop setting access if not shop owner should update value to fail if response failed`() =
+        runBlocking {
+            every { userSession.isShopOwner } returns false
+            everyProviderGetUseCase()
+            everyCheckAccessRoleShouldFail()
 
-        viewModel.checkShopSettingAccess()
+            viewModel.checkShopSettingAccess()
 
-        assert(viewModel.shopSettingAccessLiveData.value is Fail)
-    }
+            assert(viewModel.shopSettingAccessLiveData.value is Fail)
+        }
 
     private fun everyProviderGetUseCase() {
         every { authorizeAccessUseCaseProvider.get() } returns authorizeAccessUseCase

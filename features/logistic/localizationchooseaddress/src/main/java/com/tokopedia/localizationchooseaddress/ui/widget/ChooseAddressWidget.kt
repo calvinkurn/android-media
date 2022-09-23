@@ -295,6 +295,10 @@ class ChooseAddressWidget : ConstraintLayout,
         return chooseAddressWidgetListener?.isSupportWarehouseLoc() ?: false
     }
 
+    override fun isFromTokonowPage(): Boolean {
+        return chooseAddressWidgetListener?.isFromTokonowPage() ?: false
+    }
+
     private fun onLocalizingAddressError() {
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         fragment?.view?.let {
@@ -407,5 +411,12 @@ class ChooseAddressWidget : ConstraintLayout,
          * To trigger UI refresh after getting new tokonow warehouse data
          */
         fun onTokonowDataRefreshed() {}
+
+        /**
+         * To check from tokonow page or not
+         */
+        fun isFromTokonowPage(): Boolean {
+            return false
+        }
     }
 }

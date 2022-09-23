@@ -1907,12 +1907,17 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             userSession.userId,
             position
         )
+
         activity?.let {
-            val intent = RouteManager.getIntent(
-                it,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                wishlistItem.id
-            )
+            val intent = if (wishlistItem.url.isNotEmpty()) {
+                RouteManager.getIntent(it, wishlistItem.url)
+            } else {
+                RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    wishlistItem.id
+                )
+            }
             startActivityForResult(intent, REQUEST_CODE_GO_TO_PDP)
         }
     }
@@ -1942,14 +1947,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
-        TopAdsUrlHitter(context).hitClickUrl(
-            this::class.java.simpleName,
-            topAdsImageViewModel.adClickUrl,
-            "",
-            "",
-            topAdsImageViewModel.imageUrl
-        )
-        WishlistV2Analytics.clickTopAdsBanner(topAdsImageViewModel, userSession.userId, position)
         RouteManager.route(context, topAdsImageViewModel.applink)
     }
 
@@ -2785,6 +2782,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             productIds = listSelectedProductIds
         )
         bottomSheetCollection.saveToCollection(addWishlistParam)
+        WishlistCollectionAnalytics.sendClickCollectionFolderEvent(id, listSelectedProductIds.toString(), SRC_WISHLIST)
     }
 
     override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {
