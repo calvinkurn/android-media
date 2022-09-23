@@ -553,8 +553,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun onOpenQuickFilterPriceRangeBottomSheet(data: Any?) {
         hideKeyboard()
-        (data as? PriceRangeChipUiModel)?.let { uiModels ->
-            TokofoodQuickPriceRangeBottomsheet.createInstance(uiModels, this)
+        (data as? PriceRangeChipUiModel)?.let { uiModel ->
+            TokofoodQuickPriceRangeBottomsheet.createInstance(uiModel, this)
                 .show(parentFragmentManager)
         }
     }

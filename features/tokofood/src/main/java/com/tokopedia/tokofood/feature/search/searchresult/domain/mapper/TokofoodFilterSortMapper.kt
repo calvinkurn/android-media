@@ -1,6 +1,5 @@
 package com.tokopedia.tokofood.feature.search.searchresult.domain.mapper
 
-import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
