@@ -3,10 +3,6 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-kapt'
 
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-    mavenCentral()
-}
 buildscript {
     repositories {
         google()
@@ -25,7 +21,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
@@ -52,7 +47,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.auth
-    implementation rootProject.ext.debugToolsDependencies.chuck
 
     // unit test
     testImplementation rootProject.ext.testDependencies.junit
