@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterInputPhoneBinding
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
@@ -35,7 +36,6 @@ import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToLoginW
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerification
 import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationParam
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.local.RegisterPreferences
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.model.RedefineParamUiModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateParam
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RedefineRegisterInputPhoneViewModel
@@ -43,7 +43,6 @@ import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.vi
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.data.register.RegisterV2Param
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
@@ -231,7 +230,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    val messageError = ErrorHandler.getErrorMessagePair(context, it.throwable, ErrorHandler.Builder()).first.orEmpty()
+                    val messageError = it.throwable.getMessage(requireActivity())
                     redefineRegisterEmailAnalytics.sendClickOnButtonDaftarEmailEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, messageError)
 
                     if (parameter.isRequiredInputPhone) {
@@ -257,7 +256,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    val messageError = ErrorHandler.getErrorMessagePair(context, it.throwable, ErrorHandler.Builder()).first.orEmpty()
+                    val messageError = it.throwable.getMessage(requireActivity())
                     redefineRegisterEmailAnalytics.sendClickYaBenarPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, messageError)
                     onUserPhoneUpdateFailed(it.throwable)
                 }
@@ -303,10 +302,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                 is RegistrationPhoneState.Failed -> {
                     showRegisteredPhoneCheckLoading(false)
 
-                    val message = it.throwable?.let { it1 ->
-                        ErrorHandler.getErrorMessagePair(context,
-                            it1, ErrorHandler.Builder()).first.orEmpty()
-                    }
+                    val message = it.throwable?.getMessage(requireActivity())
                     redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, message.orEmpty())
 
                     when (it.throwable) {
@@ -334,7 +330,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    val message = ErrorHandler.getErrorMessagePair(context, it.throwable, ErrorHandler.Builder()).first.orEmpty()
+                    val message = it.throwable.getMessage(requireActivity())
                     redefineRegisterEmailAnalytics.sendClickOnButtonLanjutAddPnPageOptionalEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, message)
                     onUserProfileValidateFailed(it.throwable)
                 }
@@ -612,7 +608,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun showToasterError(throwable: Throwable) {
-        val message = ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder()).first.orEmpty()
+        val message = throwable.getMessage(requireActivity())
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
