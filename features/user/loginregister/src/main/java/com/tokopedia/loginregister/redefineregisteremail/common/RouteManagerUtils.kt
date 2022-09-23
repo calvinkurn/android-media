@@ -18,7 +18,6 @@ fun Context.intentGoToVerification(
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, param.source)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, param.otpType)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, param.otpMode)
-    intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, param.token)
     return intent
