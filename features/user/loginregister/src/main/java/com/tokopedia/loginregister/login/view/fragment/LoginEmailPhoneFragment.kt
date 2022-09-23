@@ -76,6 +76,7 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.error.LoginErrorCode
+import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.common.view.LoginTextView
@@ -1108,7 +1109,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         dismissLoadingDiscover()
         val forbiddenMessage = context?.getString(
                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable, getErrorHandlerBuilder())
+        val errorMessage = throwable.getMessage(requireActivity())
         if (errorMessage.removeErrorCode() == forbiddenMessage) {
             onGoToForbiddenPage()
         } else {
@@ -1395,10 +1396,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 onErrorLogin(it, "${it.errorDescription} - ${LoginErrorCode.ERROR_EMAIL_TOKEN_EXCEPTION}")
             } else {
                 val forbiddenMessage = context?.getString(com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-                val errorMessage = ErrorHandler.getErrorMessage(context, it,
-                    ErrorHandler.Builder().apply {
-                        sendToScalyr = false
-                    }.build())
+                val errorMessage = it.getMessage(requireActivity())
                 if (errorMessage.removeErrorCode() == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
@@ -1440,7 +1438,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun showGetAdminTypeError(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        val errorMessage = throwable.getMessage(requireActivity())
         showToaster(errorMessage)
         dismissLoadingLogin()
     }
@@ -1483,7 +1481,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (it is AkamaiErrorException) {
                 showPopupErrorAkamai()
             } else {
-                val errorMessage = ErrorHandler.getErrorMessage(context, it)
+                val errorMessage = it.getMessage(requireActivity())
                 NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
                     viewModel.reloginAfterSQ(tempValidateToken)
                 }.showRetrySnackbar()
