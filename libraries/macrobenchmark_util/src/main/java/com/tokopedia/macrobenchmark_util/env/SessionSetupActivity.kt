@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
 import com.tokopedia.macrobenchmark_util.env.session.MacrobenchmarkAuthHelper
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -36,5 +37,6 @@ class SessionSetupActivity : AppCompatActivity(){
         } else {
             MacrobenchmarkAuthHelper.clearUserSession(this)
         }
+        FirebaseRemoteConfigImpl(this).setString("android_user_two_factor_check", "false");
     }
 }
