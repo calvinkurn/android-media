@@ -262,7 +262,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
 
     public static final String ENABLE_CART_CHECKOUT_BUNDLING = "android_enable_cart_checkout_bundling";
-    public static final String ENABLE_NEW_CONTENT_CREATION_FLOW = "app_android_feed_cc_feature_flag";
     public static final String SHOW_SHOPADS_FEED_NEW_DESIGN = "app_android_feed_shopads_new_design_flag";
     public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
 
@@ -296,5 +295,4 @@ public class RemoteConfigKey {
 
     public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
 
-    public static final String ENABLE_OLD_IKLAN_PROMOSI_PAGE = "android_enable_old_iklan_promosi_page";
 }
