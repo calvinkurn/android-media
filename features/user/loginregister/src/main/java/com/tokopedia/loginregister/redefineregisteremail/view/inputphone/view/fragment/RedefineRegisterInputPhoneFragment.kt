@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterInputPhoneBinding
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
@@ -34,7 +35,6 @@ import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToLoginW
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerification
 import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationParam
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.local.RegisterPreferences
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.model.RedefineParamUiModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateParam
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RedefineRegisterInputPhoneViewModel
@@ -42,7 +42,6 @@ import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.vi
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.data.register.RegisterV2Param
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
@@ -559,7 +558,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun showToasterError(throwable: Throwable) {
-        val message = ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder()).first.orEmpty()
+        val message = throwable.getMessage(requireActivity())
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
