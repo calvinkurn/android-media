@@ -43,7 +43,7 @@
         android:id="@+id/tv_engagement_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginTop="@dimen/play_dp_14"
         android:layout_marginEnd="@dimen/unify_space_4"
         android:layout_marginStart="@dimen/unify_space_4"
         android:ellipsize="end"

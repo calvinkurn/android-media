@@ -73,6 +73,7 @@
         android:id="@+id/tv_min_transaction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
         android:layout_marginTop="@dimen/unify_space_4"
         android:ellipsize="end"
         android:maxLines="1"

@@ -32,7 +32,7 @@ class MerchantVoucherNewViewHolder(
         ForegroundColorSpan(
             MethodChecker.getColor(
                 itemView.context,
-                unifyR.color.Unify_NN950
+                unifyR.color.Unify_NN600
             )
         )
     }
