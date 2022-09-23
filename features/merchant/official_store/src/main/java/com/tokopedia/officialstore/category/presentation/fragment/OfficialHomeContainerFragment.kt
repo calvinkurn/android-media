@@ -74,6 +74,7 @@ class OfficialHomeContainerFragment
         const val PARAM_ACTIVITY_OFFICIAL_STORE = "param_activity_official_store"
         const val PARAM_HOME = "home"
         private const val FORMAT_APPLINK_SEARCHBAR = "%s&hint=%s"
+        private const val START_THRESHOLD_COLLAPSE_CATEGORIES = 30
     }
 
     private var binding: FragmentOfficialHomeBinding? by viewBinding()
@@ -97,7 +98,7 @@ class OfficialHomeContainerFragment
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private var selectedCategory: Category? = null
     private var activityOfficialStore = ""
-    private var threshHoldScrollVertical : Int = 30
+    private var thresholdScrollVertical : Int = START_THRESHOLD_COLLAPSE_CATEGORIES
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking
@@ -177,12 +178,13 @@ class OfficialHomeContainerFragment
     override fun onContentScrolled(dy: Int, totalScrollVertical: Int) {
         if(dy == 0) return
 
-        if (totalScrollVertical >= threshHoldScrollVertical || chooseAddressView?.isExpand == false) {
+        if (totalScrollVertical >= thresholdScrollVertical || chooseAddressView?.isExpand == false) {
             tabLayout?.adjustTabCollapseOnScrolled(dy)
             chooseAddressView?.adjustViewCollapseOnScrolled(
                 dy = dy,
                 whenWidgetGone = { binding?.osDivider?.gone() },
-                whenWidgetShow = { binding?.osDivider?.show() })
+                whenWidgetShow = { binding?.osDivider?.show() }
+            )
         }
     }
 
@@ -314,7 +316,7 @@ class OfficialHomeContainerFragment
         val categorySelected = getSelectedCategoryId(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
         tabLayout?.setMeasuredHeight()
-        threshHoldScrollVertical += tabLayout?.getMeasureHeight() ?: 0
+        thresholdScrollVertical += tabLayout?.getMeasureHeight() ?: 0
         selectedCategory = tabAdapter.categoryList.getOrNull(tabLayout?.getTabAt(categorySelected)?.position.toZeroIfNull())
 
         if(!officialStoreCategories.isCache){
@@ -393,7 +395,7 @@ class OfficialHomeContainerFragment
                             override fun onGlobalLayout() {
                                 it.viewTreeObserver.removeOnGlobalLayoutListener(this)
                                 it.setMeasuredHeight()
-                                threshHoldScrollVertical += it.getMeasureHeight()
+                                thresholdScrollVertical += it.getMeasureHeight()
                             }
                         })
                     },

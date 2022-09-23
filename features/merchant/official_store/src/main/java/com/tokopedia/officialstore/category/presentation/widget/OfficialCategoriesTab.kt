@@ -35,11 +35,16 @@ class OfficialCategoriesTab(context: Context,
 
     private var isExpand = true
 
+    companion object {
+        private const val START_EXPAND_DP = 32
+        private const val DURATION_TIME_EXPAND_COLLAPSE : Long = 300
+    }
+
     fun setMeasuredHeight() {
         tabMaxHeight = this.measuredHeight
     }
 
-    fun getMeasureHeight() : Int {
+    fun getMeasureHeight(): Int {
         return tabMaxHeight
     }
 
@@ -85,7 +90,7 @@ class OfficialCategoriesTab(context: Context,
 
     private fun expandAllTab() {
         if(animationExpand == null)
-            animationExpand = getValueAnimator(32.dp.toFloat(), tabMaxHeight.toFloat(), 300, AccelerateDecelerateInterpolator()) {
+            animationExpand = getValueAnimator(START_EXPAND_DP.dp.toFloat(), tabMaxHeight.toFloat(), DURATION_TIME_EXPAND_COLLAPSE, AccelerateDecelerateInterpolator()) {
                 if (this.layoutParams != null) {
                     val params: ViewGroup.LayoutParams = layoutParams
                     params.height = it.toInt()
@@ -118,14 +123,14 @@ class OfficialCategoriesTab(context: Context,
 
     private fun collapseAllTab() {
         if(animationCollapse == null) animationCollapse =
-            getValueAnimator(tabMaxHeight.toFloat(), 32.dp.toFloat(), 300, AccelerateDecelerateInterpolator()) {
+            getValueAnimator(tabMaxHeight.toFloat(), START_EXPAND_DP.dp.toFloat(), DURATION_TIME_EXPAND_COLLAPSE, AccelerateDecelerateInterpolator()) {
                 if (this.layoutParams != null) {
                     val params: ViewGroup.LayoutParams = layoutParams
                     params.height = it.toInt()
                     requestLayout()
                 }
             }
-        if(this.measuredHeight >= tabMaxHeight) {
+        if (this.measuredHeight >= tabMaxHeight) {
             animationCollapse?.start()
             isExpand = false
             for (i in 0 until tabCount) {
@@ -190,7 +195,8 @@ class OfficialCategoriesTab(context: Context,
 
             override fun onTabSelected(tab: Tab) {
                 tab.customView?.apply {
-                    this.findViewById<ImageUnify>(R.id.image_view_category_icon)?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
+                    this.findViewById<ImageUnify>(R.id.image_view_category_icon)
+                        ?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
                     this.findViewById<Typography>(R.id.text_view_category_title)?.apply {
                         setTextColor(
                             MethodChecker.getColor(

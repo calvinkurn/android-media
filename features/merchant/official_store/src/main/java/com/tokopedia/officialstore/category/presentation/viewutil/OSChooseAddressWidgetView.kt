@@ -39,7 +39,6 @@ class OSChooseAddressWidgetView : FrameLayout {
     private val itemContext: Context
     private var animationExpand: ValueAnimator?= null
     private var animationCollapse: ValueAnimator?= null
-    var isExpand = true
     private var totalScrollUp: Int = 0
     private var itemView: View
     private var viewMaxHeight: Int = 0
@@ -47,6 +46,7 @@ class OSChooseAddressWidgetView : FrameLayout {
     private lateinit var osContainerListener: OSContainerListener
     private var widget_choose_address: ChooseAddressWidget? = null
     private var motionlayout_choose_address: MotionLayout? = null
+    var isExpand = true
 
     companion object {
         private const val THRESHOLD_COLLAPSING_CHOOSE_ADDRESS = 20
@@ -60,7 +60,7 @@ class OSChooseAddressWidgetView : FrameLayout {
         viewMaxHeight = this.measuredHeight
     }
 
-    fun getMeasureHeight() : Int = viewMaxHeight
+    fun getMeasureHeight(): Int = viewMaxHeight
 
     fun initChooseAddressWidget(needToShowChooseAddress: Boolean,
                                 listener: OSContainerListener,
