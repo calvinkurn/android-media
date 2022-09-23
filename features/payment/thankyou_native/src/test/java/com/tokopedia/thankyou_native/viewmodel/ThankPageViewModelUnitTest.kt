@@ -109,7 +109,6 @@ class ThankPageViewModelUnitTest {
             firstArg<(ThanksPageData) -> Unit>().invoke(thankPageData)
         }
 
-
         coEvery {
             thanksPageMapperUseCase.populateThanksPageDataFields(
                 thankPageData,
