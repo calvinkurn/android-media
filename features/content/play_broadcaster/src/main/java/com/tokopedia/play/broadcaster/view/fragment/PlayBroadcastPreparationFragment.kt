@@ -914,9 +914,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun showTermsAndConditionBottomSheet() {
-        childFragmentManager.executePendingTransactions()
-        val existingFragment = childFragmentManager.findFragmentByTag(SellerTncBottomSheet.TAG)
-        if (existingFragment is SellerTncBottomSheet && existingFragment.isVisible) return
         try {
             SellerTncBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
