@@ -74,7 +74,7 @@ class MarketPlaceRecommendationViewModelTest {
             runBlocking {
                 typGetRecommendationUseCase.get().getProductRecommendationData(mockTypResponse)
             }
-        } coAnswers  {
+        } coAnswers {
             null
         }
 
