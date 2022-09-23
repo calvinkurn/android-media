@@ -288,6 +288,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentButtonPaymentModel = null;
         lastApplyUiModel = null;
         shippingCompletionTickerModel = null;
+        shipmentUpsellModel = null;
+        shipmentNewUpsellModel = null;
         notifyDataSetChanged();
     }
 
