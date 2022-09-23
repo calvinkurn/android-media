@@ -1,10 +1,9 @@
 {
-  "data": {
+  "tokofoodFilterAndSort": {
     "filter": [
       {
         "title": "Rentang harga",
         "subtitle": "",
-        "templateName": "template_pricing_food",
         "options": [
           {
             "name": "$",
@@ -71,7 +70,7 @@
             "description": "",
             "key": "promo_available",
             "value": "true",
-            "inputType": "checkbox",
+            "inputType": "chips_checkbox",
             "isNew": false
           }
         ]
@@ -85,7 +84,7 @@
             "description": "",
             "key": "open_now",
             "value": "true",
-            "inputType": "checkbox",
+            "inputType": "chips_checkbox",
             "isNew": false
           }
         ]

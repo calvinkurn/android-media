@@ -7,7 +7,7 @@ import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodQuickPriceRangeHelper
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,12 +18,13 @@ import kotlinx.coroutines.flow.shareIn
 import javax.inject.Inject
 
 class TokofoodQuickPriceRangeViewModel @Inject constructor(
-    val dispatchers: CoroutineDispatchers
+    private val helper: TokofoodQuickPriceRangeHelper,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _initialOptions = MutableLiveData<List<Option>>(listOf())
-    private val _currentAppliedOptions = MutableLiveData<List<Option>>(listOf())
-    private val _currentUiModels = MutableLiveData<List<PriceRangeFilterCheckboxItemUiModel>>(listOf())
+    private val _initialOptions = MutableLiveData<List<Option>>(null)
+    private val _currentAppliedOptions = MutableLiveData<List<Option>>(null)
+    private val _currentUiModels = MutableLiveData<List<PriceRangeFilterCheckboxItemUiModel>>(null)
 
     private val _appliedOptions = MutableSharedFlow<List<Option>>(Int.ONE)
 
@@ -35,8 +36,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
     val shouldShowApplyButton: SharedFlow<Boolean> =
         _appliedOptions.flatMapConcat { options ->
             flow {
-                _currentAppliedOptions.value = options
-                emit(!isOptionsSameAsInitial(options))
+                emit(!helper.getIsOptionsSameAsInitial(options, _initialOptions.value))
             }
         }.shareIn(
             scope = this,
@@ -48,7 +48,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
     val shouldShowResetButton: SharedFlow<Boolean> =
         _appliedOptions.flatMapConcat { options ->
             flow {
-                val appliedCount = options.count { it.inputState.toBoolean() }
+                val appliedCount = helper.getAppliedCount(options)
                 emit(appliedCount > Int.ZERO)
             }
         }.shareIn(
@@ -80,7 +80,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
                 }
             }
         }
-        _appliedOptions.tryEmit(newAppliedOptions)
+        setCurrentAppliedOptions(newAppliedOptions)
     }
 
     fun setPriceRangeUiModels(uiModels: List<PriceRangeFilterCheckboxItemUiModel>,
@@ -93,7 +93,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
             }
         _currentUiModels.value = uiModels
         _currentUiModelsFlow.tryEmit(uiModels)
-        _appliedOptions.tryEmit(updatedOptions)
+        setCurrentAppliedOptions(updatedOptions)
         if (isInitialSet) {
             _initialOptions.value = updatedOptions
         }
@@ -103,30 +103,13 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
         _applyButtonClicked.tryEmit(getCurrentAppliedOptions())
     }
 
+    private fun setCurrentAppliedOptions(appliedOptions: List<Option>) {
+        _currentAppliedOptions.value = appliedOptions
+        _appliedOptions.tryEmit(appliedOptions)
+    }
+
     private fun getCurrentAppliedOptions(): List<Option> =
         _currentAppliedOptions.value.orEmpty()
-
-    private fun isOptionsSameAsInitial(options: List<Option>): Boolean {
-        return isOptionsSizeSameAsInitial(options) && isSelectedOptionsSameAsInitial(options)
-    }
-
-    private fun isOptionsSizeSameAsInitial(options: List<Option>): Boolean {
-        val appliedCount = options.count { it.inputState.toBoolean() }
-        return appliedCount == getInitialAppliedCount()
-    }
-
-    private fun getInitialAppliedCount(): Int {
-        return _initialOptions.value?.count { it.inputState.toBoolean() }.orZero()
-    }
-
-    private fun isSelectedOptionsSameAsInitial(options: List<Option>): Boolean {
-        options.forEach { option ->
-            if (_initialOptions.value?.any { it.value == option.value && it.inputState != option.inputState } == true) {
-                return false
-            }
-        }
-        return true
-    }
 
     companion object {
         private const val SHARING_DELAY_MILLIS = 5000L
