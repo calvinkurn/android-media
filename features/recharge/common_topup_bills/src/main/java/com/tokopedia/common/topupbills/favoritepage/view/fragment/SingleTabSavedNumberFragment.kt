@@ -93,7 +93,7 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             (activity as? BaseToolbarActivity)?.updateTitle(getString(pageConfig.headerTextRes))
             commonTopupBillsSingleFavoriteNumberClue.text = getString(pageConfig.clueTextRes)
             commonTopupBillsSingleSavedNumSearchbar.searchBarTextField
-                .setText(getString(pageConfig.searchBarHintRes))
+                .hint = getString(pageConfig.searchBarHintRes)
         }
     }
 
