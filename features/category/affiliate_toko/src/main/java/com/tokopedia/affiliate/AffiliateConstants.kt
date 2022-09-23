@@ -11,7 +11,7 @@ const val LINK_HISTORY_BUTTON_CLICKED = 403
 const val AFFILIATE_HELP_URL = "https://affiliate.tokopedia.com/help?navigation=hide"
 const val AFFILIATE_TANDC_URL = "https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate"
 const val AFFILIATE_LIHAT_KATEGORI = "tokopedia://affiliate/help"
-const val AFFILIATE_TRANSACTION_HISTORY = "tokopedia://affiliate/transaction-history"
+const val AFFILIATE_APP_LINK = "tokopedia://affiliate"
 const val PAGE_ZERO = 0
 const val PAGE_SEGMENT_HELP = "help"
 const val PAGE_SEGMENT_TRANSACTION_HISTORY = "transaction-history"
