@@ -1,10 +1,16 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.viewholder
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodExt
+import com.tokopedia.tokofood.common.util.TokofoodExt.setupEditText
 import com.tokopedia.tokofood.databinding.TokofoodItemOrderInfoLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.AddOnInfoAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
@@ -19,6 +25,7 @@ class OrderDetailViewHolder(
         fun onDeleteButtonClicked(adapterPosition: Int, cartId: String)
         fun onIncreaseQtyButtonClicked(quantity: Int, customOrderDetail: CustomOrderDetail)
         fun onDecreaseQtyButtonClicked(quantity: Int, customOrderDetail: CustomOrderDetail)
+        fun onUpdateQty(quantity: Int, customOrderDetail: CustomOrderDetail)
     }
 
     private var context: Context? = null
@@ -27,6 +34,8 @@ class OrderDetailViewHolder(
 
     init {
         context = binding.root.context
+        binding.qeuProductQtyEditor.setupEditText()
+        binding.qeuProductQtyEditor.maxValue = TokofoodExt.MAXIMUM_QUANTITY
         binding.tpgEditButton.setOnClickListener {
             val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
             clickListener.onEditButtonClicked(cartId = customOrderDetail.cartId)
@@ -46,6 +55,15 @@ class OrderDetailViewHolder(
             val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
             clickListener.onDecreaseQtyButtonClicked(quantity = quantity, customOrderDetail = customOrderDetail)
         }
+        binding.qeuProductQtyEditor.editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val quantity = binding.qeuProductQtyEditor.getValue().orZero()
+                val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
+                clickListener.onUpdateQty(quantity, customOrderDetail)
+            }
+            override fun afterTextChanged(p0: Editable?) {}
+        })
     }
 
     fun bindData(customOrderDetail: CustomOrderDetail, dataSetPosition: Int) {
@@ -57,9 +75,6 @@ class OrderDetailViewHolder(
         binding.notesLabel.isVisible = customOrderDetail.orderNote.isNotBlank()
         binding.tpgOrderNote.text = customOrderDetail.orderNote
         binding.qeuProductQtyEditor.setValue(customOrderDetail.qty)
-
-
-
         addOnInfoAdapter?.setCustomListItems(customOrderDetail.customListItems)
     }
 

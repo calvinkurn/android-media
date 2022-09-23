@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.analytic
 
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
@@ -19,6 +20,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -1011,8 +1013,134 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendUnificationImpressionEvent(dataKey: String) {
+        val eventMap = createEventMap(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.IMPRESSION_WIDGET_UNIFICATION,
+            label = dataKey
+        )
+        eventMap[TrackingConstant.TRACKER_ID] = "33397"
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendUnificationTabImpressionEvent(dataKey: String, tab: UnificationTabUiModel?) {
+        if (tab == null) return
+        val emptyLabel = if (tab.isUnauthorized) {
+            TrackingConstant.NO_ACCESS
+        } else {
+            getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
+        }
+        val eventMap = createEventMap(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.IMPRESSION_WIDGET_UNIFICATION_SEE_TAB,
+            label = arrayOf(
+                dataKey, tab.title, emptyLabel
+            ).joinDashSeparator()
+        )
+        eventMap[TrackingConstant.TRACKER_ID] = "33398"
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendUnificationTabClickEvent(dataKey: String, tab: UnificationTabUiModel) {
+        val emptyLabel = if (tab.isUnauthorized) {
+            TrackingConstant.NO_ACCESS
+        } else {
+            getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
+        }
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.CLICK_WIDGET_UNIFICATION_TAB,
+            label = arrayOf(
+                dataKey, tab.title, emptyLabel
+            ).joinDashSeparator()
+        )
+        eventMap[TrackingConstant.TRACKER_ID] = "33399"
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendUnificationTableItemClickEvent(dataKey: String, tab: UnificationTabUiModel) {
+        val emptyLabel = TrackingConstant.NOT_EMPTY
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.CLICK_WIDGET_UNIFICATION_TAB_ITEM,
+            label = arrayOf(
+                dataKey, tab.title, emptyLabel
+            ).joinDashSeparator()
+        )
+        eventMap[TrackingConstant.TRACKER_ID] = "33400"
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {
+        val emptyLabel = if (tab.isUnauthorized) {
+            TrackingConstant.NO_ACCESS
+        } else {
+            getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
+        }
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.CLICK_WIDGET_UNIFICATION_SEE_MORE,
+            label = arrayOf(
+                dataKey, tab.title, emptyLabel
+            ).joinDashSeparator()
+        )
+        eventMap[TrackingConstant.TRACKER_ID] = "33401"
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendUnificationEmptyStateCtaClickEvent(dataKey: String, tab: UnificationTabUiModel?) {
+        if (tab == null) return
+        val eventMap = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinDashSeparator(),
+            action = TrackingConstant.CLICK_WIDGET_UNIFICATION_EMPTY_STATE,
+            label = arrayOf(
+                dataKey, tab.title, TrackingConstant.EMPTY
+            ).joinDashSeparator()
+        )
+        eventMap[TrackingConstant.TRACKER_ID] = "33402"
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
+    private fun getEmptyLabel(isEmpty: Boolean): String {
+        return if (isEmpty) {
+            TrackingConstant.EMPTY
+        } else {
+            TrackingConstant.NOT_EMPTY
+        }
     }
 
     private fun getNumberOfRecommendationByType(

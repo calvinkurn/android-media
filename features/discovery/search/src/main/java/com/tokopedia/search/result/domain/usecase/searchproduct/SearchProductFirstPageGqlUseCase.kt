@@ -225,6 +225,7 @@ class SearchProductFirstPageGqlUseCase(
                 quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
                     filter {
                         title
+                        chip_name
                         options {
                             name
                             key
@@ -332,6 +333,8 @@ class SearchProductFirstPageGqlUseCase(
                                 }
                                 original_price
                                 discount_percentage
+                                label
+                                discount
                               	badges {
                                     title
                                     image_url
@@ -352,10 +355,22 @@ class SearchProductFirstPageGqlUseCase(
                                     productViewUrl
                                 }
                                 customvideo_url
+                                bundle_id
                             }
                             card_button {
                                 title
                                 applink
+                            }
+                            bundle {
+                                shop {
+                                    name
+                                    url
+                                }
+                                count_sold
+                                price
+                                original_price
+                                discount
+                                discount_percentage
                             }
                         }
                     }

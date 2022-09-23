@@ -197,4 +197,39 @@ object TmDateUtil {
             "0"
         }
     }
+
+    fun setDateFromDetails(time: String): String {
+        // 2022-09-11T19:00:00Z00 >> Input
+        // Min, 11 Sep 2022 >> Output
+        var time = time.replace("T", " ")
+        time = time.replaceAfter("Z", "")
+        val day = getDayFromTimeWindow(time.substringBefore(" "))
+        return "$day, ${setDatePreview(time)}"
+    }
+
+    fun setTimeFromDetails(time: String): String {
+        // 2022-09-11T19:00:00Z00 >> Input
+        // 19:00 WIB >> Output
+        var time = time.replace("T", " ")
+        time = time.replaceAfter("Z", "")
+        return setTime(time)
+    }
+
+    fun getCalendarFromDetailsTime(time: String): Calendar{
+        // 2022-09-11T19:00:00Z00 >> Input
+        // Calendar >> Output
+
+        var time = time.replace("T", " ")
+        time = time.replaceAfter("Z", "")
+
+        val parseTime = SimpleDateFormat(SIMPLE_DATE_FORMAT , locale)
+        parseTime.timeZone = TimeZone.getTimeZone(UTC)
+        val date = parseTime.parse(time)
+        val calendar = Calendar.getInstance(locale)
+        date?.let {
+            calendar.time = it
+        }
+        return calendar
+    }
+
 }

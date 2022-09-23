@@ -48,9 +48,6 @@ class PostListViewHolder(
     private val errorStateBinding by lazy {
         binding.shcPostListErrorView
     }
-    private val commonErrorStateBinding by lazy {
-        errorStateBinding.shcPostListCommonErrorView
-    }
     private val loadingStateBinding by lazy {
         binding.shcPostListLoadingView
     }
@@ -70,21 +67,21 @@ class PostListViewHolder(
         when {
             data == null || postListWidgetUiModel.showLoadingState -> showLoadingState()
             data.error.isNotEmpty() -> {
-                onError(postListWidgetUiModel.title)
+                onError(postListWidgetUiModel)
                 listener.setOnErrorWidget(adapterPosition, postListWidgetUiModel, data.error)
             }
             else -> onSuccessLoadData(postListWidgetUiModel)
         }
     }
 
-    private fun onError(cardTitle: String) {
+    private fun onError(element: PostListWidgetUiModel) {
         hideListLayout()
         hideShimmeringLayout()
         with(errorStateBinding) {
-            tvPostListTitleOnError.text = cardTitle
-            commonErrorStateBinding.imgWidgetOnError.loadImage(
-                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-            )
+            tvPostListTitleOnError.text = element.title
+            shcPostListCommonErrorView.setOnReloadClicked {
+                listener.onReloadWidget(element)
+            }
             showErrorLayout()
         }
     }
@@ -219,7 +216,7 @@ class PostListViewHolder(
                 filterShcPostList.text = selectedFilter?.name.orEmpty()
                 filterShcPostList.setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN)
                 filterShcPostList.setOnClickListener {
-                    listener.showPostFilter(element, adapterPosition)
+                    listener.showPostFilter(element)
                     listener.sendPostListFilterClick(element)
                 }
             } else {
@@ -382,6 +379,6 @@ class PostListViewHolder(
 
         fun sendPostListEmptyStateCtaClickEvent(element: PostListWidgetUiModel) {}
 
-        fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {}
+        fun showPostFilter(element: PostListWidgetUiModel) {}
     }
 }

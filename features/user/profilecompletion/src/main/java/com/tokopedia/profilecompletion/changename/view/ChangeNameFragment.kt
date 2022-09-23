@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -68,9 +69,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
 	super.onCreate(savedInstanceState)
 	ColorUtils.setBackgroundColor(context, activity)
-	oldName = arguments?.getString(ApplinkConstInternalGlobal.PARAM_FULL_NAME).toString()
+	oldName = arguments?.getString(ApplinkConstInternalUserPlatform.PARAM_FULL_NAME).toString()
 	chancesChangeName =
-	    arguments?.getString(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME).toString()
+	    arguments?.getString(ApplinkConstInternalUserPlatform.PARAM_CHANCE_CHANGE_NAME).toString()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -110,21 +111,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
 		    when {
 			s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
 			    when {
-				s.isEmpty() -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_cant_empty)))
-				s.length < MINIMUM_LENGTH -> onErrorChangeName(
-				    Throwable(
-					resources.getString(
-					    R.string.error_name_min_3
-					)
-				    )
-				)
-				s.length > MAXIMUM_LENGTH -> onErrorChangeName(
-				    Throwable(
-					resources.getString(
-					    R.string.error_name_max_35
-					)
-				    )
-				)
+					s.isEmpty() -> onErrorChangeName(Throwable(activity?.resources?.getString(R.string.error_name_cant_empty)))
+					s.length < MINIMUM_LENGTH -> onErrorChangeName(Throwable(activity?.resources?.getString(R.string.error_name_min_3)))
+					s.length > MAXIMUM_LENGTH -> onErrorChangeName(Throwable(activity?.resources?.getString(R.string.error_name_max_35)))
 			    }
 			    changeNameButtonSave?.isEnabled = false
 			}
@@ -152,10 +141,10 @@ class ChangeNameFragment : BaseDaggerFragment() {
 	    infoTracker.trackOnClickBtnSimpanChangeNameClick()
 	    val fullName = changeNameTextName?.editText?.text
 	    if (fullName != null) {
-		showLoading()
-		viewModel.changePublicName(changeNameTextName?.editText?.text.toString())
+			showLoading()
+			viewModel.changePublicName(changeNameTextName?.editText?.text.toString())
 	    } else {
-		onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
+			onErrorChangeName(Throwable(activity?.resources?.getString(R.string.error_name_too_short)))
 	    }
 	}
     }
@@ -181,9 +170,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
     }
 
     private fun updateChangesCounter(counter: String) {
-	activity?.getString(R.string.change_name_note, counter)?.let { changeNameHint ->
-	    changeNameTextNote?.text = changeNameHint
-	}
+		activity?.getString(R.string.change_name_note)?.let { changeNameHint ->
+			changeNameTextNote?.text = changeNameHint
+		}
     }
 
     private fun onSuccessChangeName(result: ChangeNameResult) {

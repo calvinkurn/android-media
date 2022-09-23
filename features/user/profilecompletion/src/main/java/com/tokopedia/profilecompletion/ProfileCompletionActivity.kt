@@ -12,7 +12,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 /**
  * @author by nisie on 22/04/19.
- * For navigate: use {@link ApplinkConstInternalGlobal.PROFILE_COMPLETION}
+ * For navigate: use {@link ApplinkConstInternalUserPlatform.PROFILE_COMPLETION}
  */
 class ProfileCompletionActivity : BaseSimpleActivity(),
     HasComponent<ProfileCompletionSettingComponent> {

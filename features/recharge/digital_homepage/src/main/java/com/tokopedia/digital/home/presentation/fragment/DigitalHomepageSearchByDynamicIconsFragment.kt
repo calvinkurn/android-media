@@ -3,7 +3,7 @@ package com.tokopedia.digital.home.presentation.fragment
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 /**
  * @author by jessica on 21/01/21
@@ -22,7 +22,7 @@ class DigitalHomepageSearchByDynamicIconsFragment : DigitalHomePageSearchFragmen
             enablePersonalized = it.getBoolean(EXTRA_ENABLE_PERSONALIZE, true)
             sectionId = ((it.getStringArrayList(EXTRA_SECTION_ID)
                     ?: arrayListOf()).map { sectionId ->
-                sectionId.toIntOrZero()
+                sectionId.toIntSafely()
             })
             searchBarScreenName = it.getString(EXTRA_SEARCH_BAR_SCREEN_NAME, SCREEN_NAME_TOPUP_BILLS)
             initSearchBarView(it.getString(EXTRA_SEARCH_BAR_PLACE_HOLDER, ""))

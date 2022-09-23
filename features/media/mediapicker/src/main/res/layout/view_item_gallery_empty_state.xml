@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:visibility="gone"
     android:elevation="2dp"
     tools:visibility="visible">
@@ -17,11 +17,14 @@
 
         <ImageView
             android:id="@+id/img_empty_state"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/picker_cd_empty_state_illustration"
             tools:src="@tools:sample/avatars"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -29,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Masing kosong, nih"
+            android:text="@string/picker_title_empty_state"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_empty_state"
@@ -45,7 +48,7 @@
             android:layout_marginEnd="16dp"
             android:gravity="center"
             android:textColor="@color/Unify_NN600"
-            android:text="Yuk, isi dengan media menarik dimulai dari ambil foto dengan kamera."
+            android:text="@string/picker_message_empty_state"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/typography"
@@ -77,9 +80,9 @@
                 android:layout_height="24dp"/>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:textColor="@color/Unify_GN500"
-                android:text="Ambil Media dengan Kamera"
+                android:text="@string/picker_button_take_from_camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 

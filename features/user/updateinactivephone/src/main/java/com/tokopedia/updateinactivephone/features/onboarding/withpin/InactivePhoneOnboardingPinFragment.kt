@@ -15,6 +15,7 @@ import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.SOURCE_INA
 import com.tokopedia.updateinactivephone.features.onboarding.BaseInactivePhoneOnboardingFragment
 import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneRegularActivity
 import com.tokopedia.updateinactivephone.features.submitnewphone.InactivePhoneSubmitDataActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 
 class InactivePhoneOnboardingPinFragment : BaseInactivePhoneOnboardingFragment() {
 
@@ -97,7 +98,7 @@ class InactivePhoneOnboardingPinFragment : BaseInactivePhoneOnboardingFragment()
     }
 
     private fun goToVerification(otpType: Int, otpMode: String = "", isShowOtherMethod: Boolean = false): Intent {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, inactivePhoneUserDataModel?.userIdEnc.orEmpty())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, inactivePhoneUserDataModel?.validateToken.orEmpty())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_INACTIVE_PHONE)

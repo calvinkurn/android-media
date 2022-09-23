@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/autocompleteSearchBarEducationContainer"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_marginBottom="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:paddingHorizontal="16dp"
+    android:background="@drawable/autocomplete_searchbar_education_border"
+    >
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/autocompleteSearchBarEducationIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/autocompleteSearchBarEducationTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintLeft_toRightOf="@id/autocompleteSearchBarEducationIcon"
+        app:layout_constraintRight_toLeftOf="@id/autocompleteSearchBarEducationAction"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/autocompleteSearchBarEducationAction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_GN500"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

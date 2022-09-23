@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -25,12 +26,10 @@ import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.data.ProductrevLikeReview
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.common.util.getErrorMessage
-import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryImageThumbnailUiModel
 import com.tokopedia.review.feature.gallery.presentation.fragment.ReviewGalleryFragment
 import com.tokopedia.review.feature.gallery.presentation.uimodel.ReviewGalleryRoutingUiModel
@@ -56,6 +55,7 @@ import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFrag
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -71,7 +71,6 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
         private const val POSITION_INDEX_COUNTER = 1
         const val GALLERY_SOURCE_CREDIBILITY_SOURCE = "gallery"
-        const val READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE = "reading image preview"
         fun newInstance(
             cacheManagerId: String,
             isFromGallery: Boolean
@@ -243,15 +242,23 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
-        ReviewImagePreviewTracking.trackClickReviewerName(
-            isFromGallery, feedbackId, userId, statistics,
-            if (isFromGallery) viewModel.getProductId() else productId, viewModel.getUserId()
-        )
-    }
-
-    override fun onUserNameClicked(userId: String) {
-        goToReviewCredibility(userId)
+    override fun onUserNameClicked(
+        feedbackId: String,
+        userId: String,
+        statistics: String,
+        label: String
+    ) {
+        if (goToReviewCredibility(userId)) {
+            ReviewImagePreviewTracking.trackClickReviewerName(
+                isFromGallery,
+                feedbackId,
+                userId,
+                statistics,
+                if (isFromGallery) viewModel.getProductId() else productId,
+                viewModel.getUserId(),
+                label
+            )
+        }
     }
 
     private fun getDataFromArguments() {
@@ -773,8 +780,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         return reviewGalleryImageThumbnailUiModel
     }
 
-    private fun goToReviewCredibility(userId: String) {
-        RouteManager.route(
+    private fun goToReviewCredibility(userId: String): Boolean {
+        return RouteManager.route(
             context,
             Uri.parse(
                 UriUtil.buildUri(
@@ -784,7 +791,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 )
             ).buildUpon()
                 .appendQueryParameter(
-                    ReviewCredibilityActivity.PARAM_PRODUCT_ID,
+                    ReviewApplinkConst.PARAM_PRODUCT_ID,
                     if (isFromGallery) viewModel.getProductId() else productId
                 ).build()
                 .toString()
@@ -820,6 +827,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun getCredibilitySource(): String {
-        return if (isFromGallery) GALLERY_SOURCE_CREDIBILITY_SOURCE else READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
+        return if (isFromGallery) ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_GALLERY
+        else ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING_IMAGE_PREVIEW
     }
 }

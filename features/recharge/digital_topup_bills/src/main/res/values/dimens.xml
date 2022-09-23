@@ -2,5 +2,6 @@
 <resources>
     <dimen name="telco_space_1">1dp</dimen>
     <dimen name="telco_banner_space">18dp</dimen>
+    <dimen name="signal_operator_result_label_width">100dp</dimen>
 
 </resources>

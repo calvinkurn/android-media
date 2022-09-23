@@ -15,6 +15,8 @@ import com.tokopedia.topchat.chatlist.view.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.view.uimodel.EmptyChatModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatAdminNoAccessUiModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
+import com.tokopedia.topchat.chatlist.view.adapter.viewholder.OperationalInsightViewHolder
 
 /**
  * @author : Steven 2019-08-06
@@ -44,6 +46,10 @@ class ChatListTypeFactoryImpl(
         return TopchatErrorViewHolder.LAYOUT
     }
 
+    override fun type(operationalInsightUiModel: ShopChatTicker): Int {
+        return OperationalInsightViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             TopchatErrorViewHolder.LAYOUT -> TopchatErrorViewHolder(parent)
@@ -51,6 +57,7 @@ class ChatListTypeFactoryImpl(
             ChatItemListViewHolder.LAYOUT -> ChatItemListViewHolder(parent, listener)
             ChatAdminNoAccessViewHolder.LAYOUT -> ChatAdminNoAccessViewHolder(parent, listener::returnToSellerHome)
             EmptyChatViewHolder.LAYOUT -> EmptyChatViewHolder(parent, chatListAnalytics)
+            OperationalInsightViewHolder.LAYOUT -> OperationalInsightViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

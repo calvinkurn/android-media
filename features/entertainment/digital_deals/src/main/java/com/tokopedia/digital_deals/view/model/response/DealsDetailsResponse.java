@@ -16,22 +16,18 @@ import java.util.List;
 
 public class DealsDetailsResponse implements Parcelable {
 
-    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
-    private int id;
-    @SuppressLint("Invalid Data Type")
+    private long id;
     @SerializedName("brand_id")
     @Expose
-    private int brandId;
-    @SuppressLint("Invalid Data Type")
+    private long brandId;
     @SerializedName("category_id")
     @Expose
-    private int categoryId;
-    @SuppressLint("Invalid Data Type")
+    private long categoryId;
     @SerializedName("provider_id")
     @Expose
-    private int providerId;
+    private long providerId;
     @SerializedName("provider_product_id")
     @Expose
     private String providerProductId;
@@ -55,11 +51,11 @@ public class DealsDetailsResponse implements Parcelable {
     private String longRichDesc;
     @SerializedName("mrp")
     @Expose
-    private int mrp;
+    private long mrp;
     @SuppressLint("Invalid Data Type")
     @SerializedName("sales_price")
     @Expose
-    private int salesPrice;
+    private long salesPrice;
     @SerializedName("quantity")
     @Expose
     private int quantity;
@@ -191,10 +187,10 @@ public class DealsDetailsResponse implements Parcelable {
     };
 
     protected DealsDetailsResponse(Parcel in) {
-        this.id = in.readInt();
-        this.brandId = in.readInt();
-        this.categoryId = in.readInt();
-        this.providerId = in.readInt();
+        this.id = in.readLong();
+        this.brandId = in.readLong();
+        this.categoryId = in.readLong();
+        this.providerId = in.readLong();
         this.providerProductId = in.readString();
         this.providerProductName = in.readString();
         this.displayName = in.readString();
@@ -202,8 +198,8 @@ public class DealsDetailsResponse implements Parcelable {
         this.imageWeb = in.readString();
         this.thumbnailWeb = in.readString();
         this.longRichDesc = in.readString();
-        this.mrp = in.readInt();
-        this.salesPrice = in.readInt();
+        this.mrp = in.readLong();
+        this.salesPrice = in.readLong();
         this.quantity = in.readInt();
         this.soldQuantity = in.readInt();
         this.sellRate = in.readInt();
@@ -268,27 +264,27 @@ public class DealsDetailsResponse implements Parcelable {
         this.desktopUrl = desktopUrl;
     }
 
-    public Integer getBrandId() {
+    public long getBrandId() {
         return brandId;
     }
 
-    public void setBrandId(Integer brandId) {
+    public void setBrandId(long brandId) {
         this.brandId = brandId;
     }
 
-    public Integer getCategoryId() {
+    public long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
     }
 
-    public Integer getProviderId() {
+    public long getProviderId() {
         return providerId;
     }
 
-    public void setProviderId(Integer providerId) {
+    public void setProviderId(long providerId) {
         this.providerId = providerId;
     }
 
@@ -364,19 +360,19 @@ public class DealsDetailsResponse implements Parcelable {
         this.longRichDesc = longRichDesc;
     }
 
-    public int getMrp() {
+    public long getMrp() {
         return mrp;
     }
 
-    public void setMrp(int mrp) {
+    public void setMrp(long mrp) {
         this.mrp = mrp;
     }
 
-    public int getSalesPrice() {
+    public long getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(int salesPrice) {
+    public void setSalesPrice(long salesPrice) {
         this.salesPrice = salesPrice;
     }
 
@@ -574,11 +570,11 @@ public class DealsDetailsResponse implements Parcelable {
     }
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -641,10 +637,10 @@ public class DealsDetailsResponse implements Parcelable {
 
     public void writeToParcel(Parcel dest, int flags) {
 
-        dest.writeInt(id);
-        dest.writeInt(brandId);
-        dest.writeInt(categoryId);
-        dest.writeInt(providerId);
+        dest.writeLong(id);
+        dest.writeLong(brandId);
+        dest.writeLong(categoryId);
+        dest.writeLong(providerId);
         dest.writeString(providerProductId);
         dest.writeString(providerProductName);
         dest.writeString(displayName);
@@ -652,8 +648,8 @@ public class DealsDetailsResponse implements Parcelable {
         dest.writeString(imageWeb);
         dest.writeString(thumbnailWeb);
         dest.writeString(longRichDesc);
-        dest.writeInt(mrp);
-        dest.writeInt(salesPrice);
+        dest.writeLong(mrp);
+        dest.writeLong(salesPrice);
         dest.writeInt(quantity);
         dest.writeInt(soldQuantity);
         dest.writeInt(sellRate);

@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import javax.inject.Inject
@@ -35,9 +36,11 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_SHOP_ID = "shopId"
+        private const val PARAM_DISTRICT_ID = "districtID"
+        private const val PARAM_CITY_ID = "cityID"
         const val QUERY = """
-            query getShopPageGetHeaderLayout(${'$'}shopId: String!){
-                ShopPageGetHeaderLayout(shopID:${'$'}shopId){
+            query getShopPageGetHeaderLayout(${'$'}shopId: String!, ${'$'}districtID: Int, ${'$'}cityID: Int){
+                ShopPageGetHeaderLayout(shopID:${'$'}shopId, districtID:${'$'}districtID, cityID:${'$'}cityID){
                   widgets {
                   widgetID
                   name
@@ -97,7 +100,13 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
         """
         @JvmStatic
         fun createParams(
-                shopId: String
-        ) = mapOf(PARAM_SHOP_ID to shopId)
+                shopId: String,
+                districtId: String,
+                cityId: String
+        ) = mapOf(
+            PARAM_SHOP_ID to shopId,
+            PARAM_DISTRICT_ID to districtId.toIntOrZero(),
+            PARAM_CITY_ID to cityId.toIntOrZero()
+        )
     }
 }

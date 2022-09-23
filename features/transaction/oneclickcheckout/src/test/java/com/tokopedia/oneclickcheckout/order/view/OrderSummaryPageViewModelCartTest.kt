@@ -1271,7 +1271,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option1.installmentTerm),
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = true)),
                 selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option1.installmentTerm, isActive = true)),
@@ -1308,7 +1308,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = true)),
                 selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true)),
@@ -1348,7 +1348,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true, isRecommended = true), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true, isRecommended = true), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = true)),
                 selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true, isRecommended = true)),
@@ -1388,7 +1388,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0, installmentData = OrderCostInstallmentData(installmentTerm = option2.installmentTerm),
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = true, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = true, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = false)),
                 selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option2.installmentTerm, isActive = true, isRecommended = false)),
@@ -1428,7 +1428,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 0, availableTerms = listOf(OrderPaymentGoCicilTerms(installmentTerm = 2, isActive = false, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 3, isActive = false, isRecommended = false), OrderPaymentGoCicilTerms(installmentTerm = 4, isActive = false, isRecommended = false)),
                 selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = option3.installmentTerm, isActive = false, isRecommended = false)),
@@ -1454,7 +1454,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0,
-                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0),
+                totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true),
                 OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentGoCicilData(selectedTenure = 2, availableTerms = emptyList(),
                 selectedTerm = OrderPaymentGoCicilTerms(isActive = true)),

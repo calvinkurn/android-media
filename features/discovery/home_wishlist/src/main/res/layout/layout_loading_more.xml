@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:indeterminate="true"
         android:padding="8dp"
         android:layout_gravity="center"/>

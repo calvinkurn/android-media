@@ -62,6 +62,9 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("air_time")
         val airTime: String = "",
+
+        @SerializedName("description")
+        val description: String = "",
     )
 
     data class Partner(

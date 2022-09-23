@@ -39,7 +39,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_2" />
+            app:typographyType="display_2" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpg_merchant_info_header"
@@ -49,7 +49,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tpg_merchant_info_content"
-            app:typographyType="body_3" />
+            app:typographyType="display_3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

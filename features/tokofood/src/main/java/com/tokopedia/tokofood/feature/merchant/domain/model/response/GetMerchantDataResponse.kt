@@ -69,7 +69,7 @@ data class TokoFoodMerchantProfile(
         @SerializedName("opsHourFmt")
         val opsHourFmt: TokoFoodFmtWarningContent = TokoFoodFmtWarningContent(),
         @SerializedName("opsHourDetail")
-        val opsHourDetail: List<TokoFoodMerchantOpsHour>
+        val opsHourDetail: List<TokoFoodMerchantOpsHour> = listOf()
 )
 
 data class TokoFoodFmtWarningContent(
@@ -160,5 +160,5 @@ data class TokoFoodCategoryCatalog(
         @SerializedName("categoryName")
         val categoryName: String = "",
         @SerializedName("catalogs")
-        val catalogs: List<TokoFoodCatalogDetail>
+        val catalogs: List<TokoFoodCatalogDetail> = listOf()
 )

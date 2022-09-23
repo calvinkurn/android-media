@@ -224,7 +224,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     open fun goToVerificationActivity() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle().apply {
             putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
             putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)

@@ -7,19 +7,23 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.separator.VerticalSeparable
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 
 @Suppress("LongParameterList")
-class SuggestionDataView(
-        val suggestionText: String = "",
-        val suggestedQuery: String = "",
-        val suggestion: String = "",
-        val componentId: String = "",
-        val trackingOption: Int = 0,
-        val keyword: String = "",
-        val dimension90: String = "",
-        val trackingValue: String = "",
+data class SuggestionDataView(
+    val suggestionText: String = "",
+    val suggestedQuery: String = "",
+    val suggestion: String = "",
+    val componentId: String = "",
+    val trackingOption: Int = 0,
+    val keyword: String = "",
+    val dimension90: String = "",
+    val trackingValue: String = "",
+    override val verticalSeparator: VerticalSeparator = VerticalSeparator.None,
 ) : ImpressHolder(),
     Parcelable,
+    VerticalSeparable,
     Visitable<ProductListTypeFactory?>,
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
@@ -43,6 +47,11 @@ class SuggestionDataView(
         dest.writeString(suggestedQuery)
         dest.writeString(suggestion)
     }
+
+    override fun addTopSeparator(): VerticalSeparable =
+        this.copy(verticalSeparator = VerticalSeparator.Top)
+
+    override fun addBottomSeparator(): VerticalSeparable = this
 
     constructor(parcel: Parcel) : this(
         suggestionText = parcel.readString() ?: "",

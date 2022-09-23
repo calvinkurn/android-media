@@ -6,6 +6,7 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
@@ -78,7 +79,7 @@ class HotelBookingViewModelTest {
         } returns contacts
 
         //when
-        hotelBookingViewModel.getContactList("")
+        hotelBookingViewModel.getContactList(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert((hotelBookingViewModel.contactListResult.value as List<TravelContactListModel.Contact>).isNotEmpty())
@@ -95,7 +96,7 @@ class HotelBookingViewModelTest {
         } returns Success(TravelUpsertContactModel.Response(TravelUpsertContactModel.Response.SuccessResponse(true)))
 
         //when
-        hotelBookingViewModel.updateContactList("", TravelUpsertContactModel.Contact())
+        hotelBookingViewModel.updateContactList(DummyHotelGqlQueryInterfaceImpl(), TravelUpsertContactModel.Contact())
 
     }
 
@@ -112,7 +113,7 @@ class HotelBookingViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelBookingViewModel.getCartData("", "")
+        hotelBookingViewModel.getCartData(DummyHotelGqlQueryInterfaceImpl(), "")
 
         //then
         assert(hotelBookingViewModel.hotelCartResult.value is Success)
@@ -132,7 +133,7 @@ class HotelBookingViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelBookingViewModel.getCartData("", "")
+        hotelBookingViewModel.getCartData(DummyHotelGqlQueryInterfaceImpl(), "")
 
         //then
         assert(hotelBookingViewModel.hotelCartResult.value is Fail)
@@ -151,7 +152,7 @@ class HotelBookingViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelBookingViewModel.checkoutCart("", HotelCheckoutParam())
+        hotelBookingViewModel.checkoutCart(DummyHotelGqlQueryInterfaceImpl(), HotelCheckoutParam())
 
         //then
         assert(hotelBookingViewModel.hotelCheckoutResult.value is Success)
@@ -175,7 +176,7 @@ class HotelBookingViewModelTest {
         } returns "2022"
 
         //when
-        hotelBookingViewModel.checkoutCart("", HotelCheckoutParam())
+        hotelBookingViewModel.checkoutCart(DummyHotelGqlQueryInterfaceImpl(), HotelCheckoutParam())
 
         //then
         assert(hotelBookingViewModel.hotelCheckoutResult.value is Success)
@@ -199,7 +200,7 @@ class HotelBookingViewModelTest {
         } returns ""
 
         //when
-        hotelBookingViewModel.checkoutCart("", HotelCheckoutParam())
+        hotelBookingViewModel.checkoutCart(DummyHotelGqlQueryInterfaceImpl(), HotelCheckoutParam())
 
         //then
         assert(hotelBookingViewModel.hotelCheckoutResult.value is Success)
@@ -218,7 +219,7 @@ class HotelBookingViewModelTest {
         } returns graphqlErrorResponse
 
         //when
-        hotelBookingViewModel.checkoutCart("", HotelCheckoutParam())
+        hotelBookingViewModel.checkoutCart(DummyHotelGqlQueryInterfaceImpl(), HotelCheckoutParam())
 
         //then
         assert(hotelBookingViewModel.hotelCheckoutResult.value is Fail)
@@ -241,7 +242,7 @@ class HotelBookingViewModelTest {
 
         //when
         hotelBookingViewModel.applyPromoData(expected)
-        hotelBookingViewModel.onCancelAppliedVoucher("")
+        hotelBookingViewModel.onCancelAppliedVoucher(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         hotelBookingViewModel.promoData.verifyValueEquals(expected)
@@ -263,7 +264,7 @@ class HotelBookingViewModelTest {
 
         //when
         hotelBookingViewModel.applyPromoData(expected)
-        hotelBookingViewModel.onCancelAppliedVoucher("")
+        hotelBookingViewModel.onCancelAppliedVoucher(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         hotelBookingViewModel.promoData.verifyValueEquals(expected)
@@ -283,7 +284,7 @@ class HotelBookingViewModelTest {
 
         //when
         hotelBookingViewModel.applyPromoData(expected)
-        hotelBookingViewModel.onCancelAppliedVoucher("")
+        hotelBookingViewModel.onCancelAppliedVoucher(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         hotelBookingViewModel.promoData.verifyValueEquals(expected)
@@ -301,7 +302,7 @@ class HotelBookingViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelBookingViewModel.getTokopointsSumCoupon("")
+        hotelBookingViewModel.getTokopointsSumCoupon(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert((hotelBookingViewModel.tokopointSumCouponResult.value as String).equals("33 Kupon"))
@@ -319,7 +320,7 @@ class HotelBookingViewModelTest {
         } returns graphqlFailResponse
 
         //when
-        hotelBookingViewModel.getTokopointsSumCoupon("")
+        hotelBookingViewModel.getTokopointsSumCoupon(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert((hotelBookingViewModel.tokopointSumCouponResult.value as String).isEmpty())
@@ -368,7 +369,7 @@ class HotelBookingViewModelTest {
         promoData.apply {
             promoCode = "TOPED"
             description = "Potensi Cashback senilai Rp. 10.000"
-            amount = 1000
+            amount = 1000L
         }
 
         //when

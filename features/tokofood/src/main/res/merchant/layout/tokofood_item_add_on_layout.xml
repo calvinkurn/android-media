@@ -16,7 +16,7 @@
         android:maxLines="1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_1"
+        app:typographyType="display_1"
         app:typographyWeight="bold"
         tools:text="Sugar Level"/>
 
@@ -36,7 +36,7 @@
             android:textColor="@color/Unify_GN500"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -47,7 +47,7 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toEndOf="@id/tpg_mandatory_label"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -58,7 +58,7 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toEndOf="@id/tpg_dot_divider"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3" />
+            app:typographyType="display_3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -72,7 +72,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/addOnsTypeLabel"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_add_on_list"

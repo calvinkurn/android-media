@@ -14,11 +14,12 @@ object SettingTrackingConstant {
     const val VIEW_NAVIGATION_IRIS = "viewNavigationIris"
     const val VIEW_SHOP_SETTING_IRIS = "viewShopSettingIris"
     const val VIEW_SHOP_PAGE_IRIS = "viewShopPageIris"
+    const val VIEW_PG_IRIS = "viewPGIris"
     const val OTHERS_TAB = "others tab"
     const val VIEW_STATISTIC_IRIS = "viewStatistikIris"
     const val CLICK_STATISTIC = "clickStatistik"
-    const val CLICK_PRINTING = "clickPrinting"
     const val CLICK_SHOP_PAGE = "clickShopPage"
+    const val CLICK_PG = "clickPG"
 
     const val GOLD_MERCHANT = "gold_merchant"
     const val OFFICIAL_STORE = "official_store"
@@ -63,6 +64,8 @@ object SettingTrackingConstant {
     const val CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
     const val CLICK_SHARING_CHANNEL = "click - sharing channel"
     const val VIEW_ON_SHARING_CHANNEL = "view on sharing channel"
+    const val CLICK_TOKOPEDIA_PLUS = "click tokopedia plus"
+    const val IMPRESSION_TOKOPEDIA_PLUS = "impression tokopedia plus"
 
     const val SHOP_REGULAR_MERCHANT = "RM"
     const val SHOP_POWER_MERCHANT = "PM"
@@ -73,12 +76,14 @@ object SettingTrackingConstant {
     const val SHOP_TYPE = "shopType"
     const val KEY_BUSINESS_UNIT = "businessUnit"
     const val KEY_CURRENT_SITE = "currentSite"
+    const val KEY_TRACKER_ID = "trackerId"
 
+    const val PHYSICAL_GOODS_ = "Physical Goods"
     const val PHYSICAL_GOODS = "physicalgoods"
     const val TOKOPEDIASELLER = "tokopediaseller"
     const val SHARING_EXPERIENCE = "sharingexperience"
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
 
-    const val ACTION_CLICK_PRINTING = "click printing"
-    const val LABEL_CLICK_PRINTING = "local services - printing"
+    const val TOKO_PLUS_CLICK_TRACKER_ID = "32360"
+    const val TOKO_PLUS_IMPRESSION_TRACKER_ID = "32359"
 }

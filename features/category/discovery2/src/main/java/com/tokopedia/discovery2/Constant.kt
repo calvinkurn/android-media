@@ -33,6 +33,11 @@ object Constant {
         const val LIST = "list"
     }
 
+    object ATCButtonCTATypes {
+        const val MINI_CART = "minicart_cta"
+        const val GENERAL_CART = "general_atc"
+    }
+
     object ProductCardModel{
         const val SALE_PRODUCT_STOCK = 100
         const val PRODUCT_STOCK = 0

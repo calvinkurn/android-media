@@ -1,7 +1,5 @@
 package com.tokopedia.analyticsdebugger.cassava;
 
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
-
 import java.util.Map;
 
 /**
@@ -9,7 +7,7 @@ import java.util.Map;
  */
 public interface AnalyticsLogger {
 
-    void save(Map<String, Object> data, String name, @AnalyticsSource String source);
+    void save(Map<String, Object> data, String name, String source);
 
     void enableNotification(boolean status);
 

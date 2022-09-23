@@ -1,8 +1,9 @@
 package com.tokopedia.topchat.stub.chatlist.di
 
+import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
 import com.tokopedia.topchat.chatlist.di.*
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListNetworkModuleStub
-import com.tokopedia.topchat.stub.chatlist.di.module.ChatListQueryModuleStub
+import com.tokopedia.topchat.stub.chatlist.di.module.ChatListUseCaseModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListSettingModuleStub
 import com.tokopedia.topchat.stub.common.di.FakeBaseAppComponent
 import dagger.Component
@@ -12,7 +13,7 @@ import dagger.Component
         modules = [CommonTopchatModule::class,
             ChatListNetworkModuleStub::class,
             ChatListSettingModuleStub::class,
-            ChatListQueryModuleStub::class,
+            ChatListUseCaseModuleStub::class,
             ChatNotificationsUseCaseModule::class,
             ChatListViewsModelModule::class,
             ChatNotificationsViewsModelModule::class,
@@ -21,5 +22,5 @@ import dagger.Component
         dependencies = [FakeBaseAppComponent::class]
 )
 interface ChatListComponentStub : ChatListComponent {
-
+    fun inject(chatListTest: ChatListTest)
 }

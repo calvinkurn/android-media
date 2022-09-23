@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
-import com.tokopedia.shop.common.databinding.ItemShopHomeProductBundleSingleWidgetBinding
+import com.tokopedia.shop.common.databinding.ItemProductBundleSingleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleSingleAdapter
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.adapter.SingleBundleVariantSelectedListener
@@ -36,10 +36,10 @@ class ShopHomeProductBundleSingleViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_product_bundle_single_widget
+        val LAYOUT = R.layout.item_product_bundle_single_widget
     }
 
-    private var viewBinding: ItemShopHomeProductBundleSingleWidgetBinding? by viewBinding()
+    private var viewBinding: ItemProductBundleSingleWidgetBinding? by viewBinding()
     private var typographyBundleName: Typography? = null
     private var typographyBundlePreOrder: Typography? = null
     private var typographyBundleProductName: Typography? = null
@@ -57,8 +57,8 @@ class ShopHomeProductBundleSingleViewHolder(
 
     init {
         viewBinding?.apply {
-            typographyBundleName = tvBundleName
-            typographyBundlePreOrder = tvBundlePreorder
+            typographyBundleName = bundleWidgetHeaderContainer.tvBundleNameLarge
+            typographyBundlePreOrder = bundleWidgetHeaderContainer.tvBundlePreorder
             typographyBundleProductName = tvBundleProductSingleName
             typographyBundleProductDisplayPrice = tvBundleDisplayPrice
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice
@@ -103,25 +103,31 @@ class ShopHomeProductBundleSingleViewHolder(
         imageBundleProduct?.loadImage(singleBundleProduct.productImageUrl)
         imageBundleProduct?.setOnClickListener {
             singleProductBundleListener.onSingleBundleProductClicked(
+                bundle.shopId,
+                bundle.warehouseId,
                 singleBundleProduct,
                 selectedSingleBundle,
                 parentSingleBundle.bundleName,
                 parentSingleBundle.bundleProducts.indexOf(singleBundleProduct),
                 widgetTitle,
                 widgetName,
-                adapterPosition
+                adapterPosition,
+                parentSingleBundle.bundleType
             )
         }
         typographyBundleProductName?.text = singleBundleProduct.productName
         typographyBundleProductName?.setOnClickListener {
             singleProductBundleListener.onSingleBundleProductClicked(
+                bundle.shopId,
+                bundle.warehouseId,
                 singleBundleProduct,
                 selectedSingleBundle,
                 parentSingleBundle.bundleName,
                 parentSingleBundle.bundleProducts.indexOf(singleBundleProduct),
                 widgetTitle,
                 widgetName,
-                adapterPosition
+                adapterPosition,
+                parentSingleBundle.bundleType
             )
         }
 
@@ -131,22 +137,30 @@ class ShopHomeProductBundleSingleViewHolder(
         // bind listeners
         itemView.addOnImpressionListener(bundle) {
             singleProductBundleListener.impressionProductBundleSingle(
+                    bundle.shopId,
+                    bundle.warehouseId,
                     selectedSingleBundle,
                     singleBundleProduct,
                     bundle.bundleName,
                     adapterPosition,
                     widgetTitle,
-                    widgetName
+                    widgetName,
+                    bundle.bundleType
             )
         }
 
         buttonAtc?.setOnClickListener {
             singleProductBundleListener.addSingleBundleToCart(
+                    bundle.shopId,
+                    bundle.warehouseId,
                     selectedSingleBundle,
                     bundleListSize,
                     singleBundleProduct,
                     parentSingleBundle.bundleName,
-                    widgetLayout
+                    parentSingleBundle.bundleType,
+                    adapterPosition,
+                    widgetLayout,
+                    bundle.bundleGroupId
             )
         }
     }
@@ -191,32 +205,43 @@ class ShopHomeProductBundleSingleViewHolder(
 
 interface SingleProductBundleListener {
     fun onSingleBundleProductClicked(
+            shopId: String,
+            warehouseId: String,
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
             bundlePosition: Int,
             widgetTitle: String,
             widgetName: String,
-            productItemPosition: Int
+            productItemPosition: Int,
+            bundleType: String
     )
     fun addSingleBundleToCart(
+            shopId: String,
+            warehouseId: String,
             selectedBundle: ShopHomeProductBundleDetailUiModel,
             bundleListSize: Int,
             bundleProducts: ShopHomeBundleProductUiModel,
             bundleName: String,
-            widgetLayout: ShopHomeWidgetLayout
+            bundleType: String,
+            bundlePosition: Int,
+            widgetLayout: ShopHomeWidgetLayout,
+            bundleGroupId: String
     )
     fun onTrackSingleVariantChange(
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleName: String,
+            bundleName: String
     )
     fun impressionProductBundleSingle(
+            shopId: String,
+            warehouseId: String,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             selectedProduct: ShopHomeBundleProductUiModel,
             bundleName: String,
             bundlePosition: Int,
             widgetTitle: String,
-            widgetName: String
+            widgetName: String,
+            bundleType: String,
     )
 }

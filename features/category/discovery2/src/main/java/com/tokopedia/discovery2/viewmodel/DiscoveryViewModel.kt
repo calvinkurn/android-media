@@ -32,6 +32,7 @@ import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryDataUseCas
 import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryInjectCouponDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
@@ -39,9 +40,11 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.WishListManager
 import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
@@ -362,7 +365,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY),
                 RECOM_PRODUCT_ID to intentUri.getQueryParameter(RECOM_PRODUCT_ID),
                 DYNAMIC_SUBTITLE to intentUri.getQueryParameter(DYNAMIC_SUBTITLE),
-                TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID)
+                TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID),
+                CAMPAIGN_ID to intentUri.getQueryParameter(CAMPAIGN_ID),
+                VARIANT_ID to intentUri.getQueryParameter(VARIANT_ID),
+                SHOP_ID to intentUri.getQueryParameter(SHOP_ID)
                 )
     }
 
@@ -387,7 +393,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, ""),
                 RECOM_PRODUCT_ID to bundle?.getString(RECOM_PRODUCT_ID,""),
                 DYNAMIC_SUBTITLE to bundle?.getString(DYNAMIC_SUBTITLE,""),
-                TARGET_TITLE_ID to bundle?.getString(TARGET_TITLE_ID,"")
+                TARGET_TITLE_ID to bundle?.getString(TARGET_TITLE_ID,""),
+                CAMPAIGN_ID to bundle?.getString(CAMPAIGN_ID,""),
+                VARIANT_ID to bundle?.getString(VARIANT_ID,""),
+                SHOP_ID to bundle?.getString(SHOP_ID,"")
         )
     }
 
@@ -472,5 +481,14 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun resetScroll(){
         _scrollState.value = null
+    }
+
+    fun checkForSamePageOpened(queryParameterMapFromBundle: MutableMap<String, String?>) {
+        if (!queryParameterMapFromBundle[RECOM_PRODUCT_ID].isNullOrEmpty())
+            discoveryDataUseCase.getDiscoResponseIfPresent(pageIdentifier)?.queryParamMap?.let {
+                if (queryParameterMapFromBundle[RECOM_PRODUCT_ID] != it[RECOM_PRODUCT_ID]) {
+                    discoveryDataUseCase.clearPage(pageIdentifier)
+                }
+            }
     }
 }

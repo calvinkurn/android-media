@@ -231,14 +231,14 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwPreviewExpanded()
 
         // When
-        onView(withId(R.id.tp_srw_container_partial)).perform(click())
+        clickOnSrwPartial()
 
         // Then
         assertSrwPreviewContentIsVisible()
         assertSrwPreviewCollapsed()
 
         // When
-        onView(withId(R.id.tp_srw_container_partial)).perform(click())
+        clickOnSrwPartial()
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -320,7 +320,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickComposeArea()
-        onView(withId(R.id.tp_srw_container_partial)).perform(click())
+        clickOnSrwPartial()
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -342,8 +342,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickComposeArea()
-        onView(withId(R.id.tp_srw_container_partial)).perform(click())
-        onView(withId(R.id.tp_srw_container_partial)).perform(click())
+        clickOnSrwPartial()
+        clickOnSrwPartial()
 
         // Then
         assertSrwPreviewContentIsVisible()

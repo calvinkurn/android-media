@@ -5,7 +5,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.broadcaster.mediator.LivePusherConfig
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteracti
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
+import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
@@ -26,12 +27,12 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import kotlin.random.Random
@@ -116,9 +117,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel {
         return LiveStreamInfoUiModel(
-                "1234",
                 ingestUrl = LOCAL_RTMP_URL,
-                streamUrl = "rtmp://test"
         )
     }
 
@@ -162,14 +161,13 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
         return ConfigurationUiModel(
             streamAllowed = true,
-            channelType = ChannelType.Draft,
+            channelStatus = ChannelStatus.Draft,
             channelId = "10008", // 10008 prod, 10012 stag (status: draft)
-            remainingTime = (30 * 60 * 1000),
             durationConfig = DurationConfigUiModel(
-                duration = (30 * 60 * 1000),
+                remainingDuration = (30 * 60 * 1000),
+                maxDuration = (30 * 60 * 1000),
                 maxDurationDesc = "Siaran 30 menit",
                 pauseDuration = (1 * 60 * 1000),
-                errorMessage = "Maks. siaran 30 menit"
             ),
             productTagConfig = ProductTagConfigUiModel(
                 maxProduct = 15,
@@ -200,7 +198,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
                 coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 ingestUrl = LOCAL_RTMP_URL,
-                status = PlayChannelStatusType.Draft
+                status = ChannelStatus.Draft
         )
     }
 
@@ -291,19 +289,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             "1",
             "Giveaway Tesla",
             60 * 1000L
-        )
-    }
-
-    override fun mapLiveInfo(
-        activeIngestUrl: String,
-        config: LivePusherConfig
-    ): PlayLiveLogState {
-        return PlayLiveLogState.Init(
-            "rtmp://tkpd.com",
-            config.videoWidth,
-            config.videoHeight,
-            config.fps,
-            config.videoBitrate
         )
     }
 
@@ -488,6 +473,24 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         else
             this.question
     }
+    override fun mapBroadcasterMetric(
+        metric: BroadcasterMetric,
+        authorId: String,
+        channelId: String
+    ) = PlayBroadcasterMetric(
+        authorId = authorId,
+        channelId = channelId,
+        videoBitrate = 0,
+        audioBitrate = 0,
+        resolution = "",
+        traffic = 0,
+        bandwidth = 0,
+        fps = 0.0,
+        packetLossIncreased = false,
+        videoBufferTimestamp = 0,
+        audioBufferTimestamp = 0,
+    )
+
     companion object {
         const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
         private const val FORMAT_FIRST_NAME = "{{first_name}}"

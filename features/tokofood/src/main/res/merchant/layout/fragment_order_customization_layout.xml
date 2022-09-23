@@ -47,11 +47,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginBottom="12dp"
-        android:text="Jumlah Pesanan:"
+        android:text="@string/text_order_customization_total_order"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toTopOf="@id/du_total_price"
         app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -80,10 +80,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_2"
-        android:text="Total Harga"
+        android:text="@string/text_order_customization_total_price"
         app:layout_constraintBottom_toTopOf="@id/subtotalProductPriceLabel"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subtotalProductPriceLabel"
@@ -93,7 +93,7 @@
         android:layout_marginBottom="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -102,7 +102,7 @@
         android:layout_height="40dp"
         android:layout_marginVertical="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:text="Pesan"
+        android:text="@string/action_order"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

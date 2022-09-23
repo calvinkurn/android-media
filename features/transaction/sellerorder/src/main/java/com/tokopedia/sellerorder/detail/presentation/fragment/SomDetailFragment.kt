@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -978,10 +977,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onDialPhone(strPhoneNo: String) {
-        val intent = Intent(Intent.ACTION_DIAL)
-        val phone = "tel:$strPhoneNo"
-        intent.data = Uri.parse(phone)
-        startActivity(intent)
+        try {
+            val intent = Intent(Intent.ACTION_DIAL)
+            val phone = "tel:$strPhoneNo"
+            intent.data = Uri.parse(phone)
+            startActivity(intent)
+        } catch (t: Throwable) {
+            t.showErrorToaster()
+        }
     }
 
     override fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.Data.GetSomDetail.LogisticInfo.All>) {

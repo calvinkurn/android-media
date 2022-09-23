@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
-import com.tokopedia.broadcaster.mediator.LivePusherConfig
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteracti
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
+import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
@@ -18,7 +19,6 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
@@ -95,11 +95,6 @@ interface PlayBroadcastMapper {
         durationInMs: Long
     ): InteractiveSessionUiModel
 
-    fun mapLiveInfo(
-        activeIngestUrl: String,
-        config: LivePusherConfig
-    ): PlayLiveLogState
-
     fun mapPinnedMessage(
         response: GetPinnedMessageResponse.Data
     ): List<PinnedMessageUiModel>
@@ -130,4 +125,10 @@ interface PlayBroadcastMapper {
         response: GetSellerLeaderboardSlotResponse,
         allowChat: Boolean,
     ): List<PlayLeaderboardUiModel>
+
+    fun mapBroadcasterMetric(
+        metric: BroadcasterMetric,
+        authorId: String,
+        channelId: String,
+    ): PlayBroadcasterMetric
 }

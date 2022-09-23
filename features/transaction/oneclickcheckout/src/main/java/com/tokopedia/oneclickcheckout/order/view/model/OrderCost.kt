@@ -15,6 +15,9 @@ data class OrderCost(
         val cashbacks: List<OrderCostCashbackData> = emptyList(),
         val installmentData: OrderCostInstallmentData? = null,
 
+        val orderPaymentFees: List<OrderPaymentFee> = emptyList(),
+        val isInstallment: Boolean = false,
+
         // Easy access for calculation
         val totalPriceWithoutPaymentFees: Double = 0.0,
         val totalPriceWithoutDiscountsAndPaymentFees: Double = 0.0,

@@ -213,6 +213,19 @@ data class SerializedNotificationData(
 
     @Expose
     @SerializedName(REPLY_TYPE)
-    var replyType: String? = null
+    var replyType: String? = null,
+
+    @SerializedName(MAIN_APP_PRIORITY)
+    @Expose
+    val mainAppPriority: String?,
+
+    @SerializedName(SELLER_APP_PRIORITY)
+    @Expose
+    val sellerAppPriority: String?,
+
+    @SerializedName(ADVANCE_TARGET)
+    @Expose
+    val isAdvanceTargeting : String?
+
 
 ) : Parcelable

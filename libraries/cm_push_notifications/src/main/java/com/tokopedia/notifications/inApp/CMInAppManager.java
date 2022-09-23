@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.logger.ServerLogger;
@@ -273,19 +272,18 @@ public class CMInAppManager implements CmInAppListener,
         sendPushEvent(inAppData, IrisAnalyticsEvents.INAPP_RECEIVED, null);
     }
 
-    public void handleCMInAppPushPayload(RemoteMessage cmInAppRemoteMessage) {
-
+    public void handleCMInAppPushPayload(CMInApp cmInApp) {
         if (isSaveInAppNewFlowEnabled()) {
-            handlePushPayloadVNew(cmInAppRemoteMessage);
+            handlePushPayloadVNew(cmInApp);
         } else {
-            handlePushPayloadVOld(cmInAppRemoteMessage);
+            handlePushPayloadVOld(cmInApp);
         }
     }
 
-    private void handlePushPayloadVOld(RemoteMessage cmInAppRemoteMessage) {
+    private void handlePushPayloadVOld(CMInApp cmInApp) {
         if (application != null) {
             new CMInAppController(application.getApplicationContext(), this)
-                    .processAndSaveCMInAppRemotePayload(cmInAppRemoteMessage);
+                    .processAndSaveCMInApp(cmInApp);
         } else {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "validation");
@@ -295,45 +293,10 @@ public class CMInAppManager implements CmInAppListener,
         }
     }
 
-    private void handlePushPayloadVNew(RemoteMessage cmInAppRemoteMessage) {
+    private void handlePushPayloadVNew(CMInApp cmInApp) {
         if (application != null) {
             new CMInAppProcessor(application.getApplicationContext(), this::onNewInAppStored)
-                    .processAndSaveCMInAppRemotePayload(cmInAppRemoteMessage);
-        } else {
-            Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "validation");
-            messageMap.put("reason", "application_null");
-            messageMap.put("data", "");
-            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-        }
-    }
-
-    public void handleCMInAppAmplificationData(String cmInAppAmplificationDataString) {
-
-        if (isSaveInAppNewFlowEnabled()) {
-            handleCMInAppAmplificationDataVNew(cmInAppAmplificationDataString);
-        } else {
-            handleCMInAppAmplificationDataVOld(cmInAppAmplificationDataString);
-        }
-    }
-
-    private void handleCMInAppAmplificationDataVOld(String cmInAppAmplificationDataString) {
-        if (application != null) {
-            new CMInAppController(application.getApplicationContext(), this::onNewInAppStored)
-                    .processAndSaveCMInAppAmplificationData(cmInAppAmplificationDataString);
-        } else {
-            Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "validation");
-            messageMap.put("reason", "application_null");
-            messageMap.put("data", "");
-            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-        }
-    }
-
-    private void handleCMInAppAmplificationDataVNew(String cmInAppAmplificationDataString) {
-        if (application != null) {
-            new CMInAppProcessor(application.getApplicationContext(), this::onNewInAppStored)
-                    .processAndSaveCMInAppAmplificationData(cmInAppAmplificationDataString);
+                    .processAndSaveCMInApp(cmInApp);
         } else {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "validation");

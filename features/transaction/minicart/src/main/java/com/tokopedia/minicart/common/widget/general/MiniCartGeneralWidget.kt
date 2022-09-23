@@ -326,9 +326,9 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
      * Function to trigger update mini cart data
      * This will trigger view model to fetch latest data from backend and update the UI
      */
-    fun updateData() {
+    fun updateData(delay: Long = 0) {
         setTotalAmountLoading(true)
-        viewModel?.getLatestWidgetState()
+        viewModel?.getLatestWidgetState(delay = delay)
     }
 
     /**

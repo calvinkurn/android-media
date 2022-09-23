@@ -55,6 +55,10 @@ data class ShopProduct(
         @Expose
         val minimumOrder: Int = 0,
 
+        @SerializedName("max_order")
+        @Expose
+        val maximumOrder: Int = 0,
+
         @SerializedName("freeOngkir")
         @Expose
         val freeOngkir: FreeOngkir = FreeOngkir(),
@@ -69,7 +73,11 @@ data class ShopProduct(
 
         @SerializedName("parent_id")
         @Expose
-        val parentId: String = ""
+        val parentId: String = "",
+
+        @SerializedName("app_link")
+        @Expose
+        val appLink: String = ""
 ){
         data class Response(
                 @SerializedName("GetShopProduct")

@@ -9,11 +9,11 @@ import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_IMAGE_ONLY
 import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_PRICE_ONLY
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheetListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.view.AtcVariantListener
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -36,6 +36,7 @@ class AtcVariantHeaderViewHolder(private val view: View,
     private val productStock = view.findViewById<Typography>(R.id.txt_header_stock)
     private val labelDiscount = view.findViewById<Label>(R.id.lbl_header_discounted_percentage)
     private val labelCashback = view.findViewById<Label>(R.id.lbl_header_cashback_percentage)
+    private val iconEnlarge = view.findViewById<IconUnify>(R.id.ic_enlarge_img_header)
 
     private val labelVar1 = view.findViewById<Label>(R.id.lbl_variant_name_1)
     private val labelVar2 = view.findViewById<Label>(R.id.lbl_variant_name_2)
@@ -106,6 +107,9 @@ class AtcVariantHeaderViewHolder(private val view: View,
     }
 
     private fun loadImage(imgUrl: String) {
+
+        iconEnlarge.setBackgroundResource(com.tokopedia.product.detail.common.R.drawable.bg_circle_grey)
+
         productImage?.run {
             setImageUrl(imgUrl)
             setOnClickListener {
@@ -128,8 +132,8 @@ class AtcVariantHeaderViewHolder(private val view: View,
             productSlashPrice.paintFlags = productSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
-        labelDiscount.shouldShowWithAction(headerData.productDiscountedPercentage != 0) {
-            labelDiscount.text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, headerData.productDiscountedPercentage.toString())
+        labelDiscount.shouldShowWithAction(headerData.productDiscountedPercentage != Float.ZERO) {
+            labelDiscount.text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, headerData.productDiscountedPercentage)
         }
     }
 }

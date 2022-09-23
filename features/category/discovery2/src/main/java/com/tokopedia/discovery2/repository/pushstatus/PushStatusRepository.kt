@@ -5,7 +5,7 @@ import com.tokopedia.discovery2.data.push.PushSubscriptionResponse
 import com.tokopedia.discovery2.data.push.PushUnSubscriptionResponse
 
 interface PushStatusRepository {
-    suspend fun checkPushStatus(compaignId: Int): PushStatusResponse
-    suspend fun subscribeToPush(compaignId: Int): PushSubscriptionResponse
-    suspend fun unsSubscribeToPush(compaignId: Int): PushUnSubscriptionResponse
+    suspend fun checkPushStatus(compaignId: Long): PushStatusResponse
+    suspend fun subscribeToPush(compaignId: Long): PushSubscriptionResponse
+    suspend fun unsSubscribeToPush(compaignId: Long): PushUnSubscriptionResponse
 }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
+import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
@@ -18,6 +19,8 @@ import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.chatactionbubblelist.ChatActionBubbleAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * Created by Hendri on 18/07/18.
@@ -54,11 +57,21 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
     }
 
     override fun bind(viewModel: ChatActionSelectionBubbleViewModel) {
-        super.bind(viewModel)
-        bindActionBubbleBackground()
-        ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
-        model = viewModel
-        adapter.setDataList(viewModel.chatActionList)
+
+        if (viewModel.status == RENDER_INVOICE_LIST_AND_BUTTON_ACTION) {
+            super.bind(viewModel)
+            bindActionBubbleBackground()
+            ChatbotMessageViewHolderBinder.bindChatMessage(
+                viewModel.message,
+                customChatLayout,
+                movementMethod
+            )
+            model = viewModel
+            adapter.setDataList(viewModel.chatActionList)
+            chatActionListSelection.show()
+        } else {
+            chatActionListSelection.hide()
+        }
     }
 
     private fun bindActionBubbleBackground() {

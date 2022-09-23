@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.TaskStackBuilder;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
+import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -33,7 +35,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -56,7 +57,7 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.loyalty.di.component.TokopointComponent;
+import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.network.NetworkRouter;
@@ -81,8 +82,7 @@ import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -95,14 +95,11 @@ import java.util.List;
 import java.util.Map;
 
 import io.hansel.hanselsdk.Hansel;
-import okhttp3.Interceptor;
 import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
-import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
-import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -124,11 +121,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     protected CacheManager cacheManager;
 
     private OmsComponent omsComponent;
-    private TokopointComponent tokopointComponent;
     private TetraDebugger tetraDebugger;
     private Iris mIris;
 
     private FirebaseMessagingManager fcmManager;
+
+    private static final int REDIRECTION_HOME = 1;
+    private static final int REDIRECTION_WEBVIEW = 2;
+    private static final int REDIRECTION_DEFAULT = 0;
 
     @Override
     public void onCreate() {
@@ -145,7 +145,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
-        return new TkpdAuthenticatorGql(this, this, new UserSession(context), new RefreshTokenGql());
+        return new TkpdAuthenticatorGql(this, this, userSession, new RefreshTokenGql());
     }
 
     private void warmUpGQLClient() {
@@ -194,20 +194,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     // To Refresh the seamless login token every week
     private void initSeamlessLoginWorker() {
-        UserSessionInterface userSession = new UserSession(context);
-        if(userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()) {
             TemporaryTokenWorker.Companion.scheduleWorker(this);
         }
     }
 
     private void initDataStoreMigration() {
-        UserSessionInterface userSession = new UserSession(context);
-        if(userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()) {
             DataStoreMigrationWorker.Companion.scheduleWorker(this);
         }
     }
 
-    private void initCMDependencies(){
+    private void initCMDependencies() {
         WeaveInterface gratiWeave = () -> {
             GratifCmInitializer.INSTANCE.start(ConsumerRouterApplication.this);
             return true;
@@ -298,7 +296,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void forceLogout() {
         TrackApp.getInstance().getMoEngage().logoutEvent();
-        UserSessionInterface userSession = new UserSession(context);
         userSession.logoutSession();
     }
 
@@ -308,6 +305,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(context, ConsumerSplashScreen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
+        forceLogout();
+        if (redirectionType == REDIRECTION_HOME) {
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else if (redirectionType == REDIRECTION_WEBVIEW) {
+            Intent homeIntent = RouteManager.getIntent(this, ApplinkConst.HOME);
+            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent webViewIntent = RouteManager.getIntent(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
+            TaskStackBuilder task = TaskStackBuilder.create(this);
+            task.addNextIntent(homeIntent);
+            task.addNextIntent(webViewIntent);
+            task.startActivities();
+        } else {
+            Intent intent = new Intent(context, ConsumerSplashScreen.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -388,7 +407,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         messageMap.put("type", type);
         messageMap.put("path", path);
         messageMap.put("error", error);
-        if(!accessToken.isEmpty()) {
+        if (!accessToken.isEmpty()) {
             messageMap.put("oldToken", accessToken);
         }
         ServerLogger.log(Priority.P2, "USER_AUTHENTICATOR", messageMap);
@@ -456,15 +475,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void doRelogin(String newAccessToken) {
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
-            if(isOldGcmUpdate()) {
+            if (isOldGcmUpdate()) {
                 sessionRefresh.gcmUpdate();
             } else {
-                if(fcmManager == null) {
+                if (fcmManager == null) {
                     provideFcmManager();
                 }
                 newGcmUpdate(sessionRefresh);
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
     }
 
     private void newGcmUpdate(SessionRefresh sessionRefresh) {
@@ -487,7 +507,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             public Boolean execute() {
                 try {
                     sessionRefresh.gcmUpdate();
-                } catch (Throwable ignored) {}
+                } catch (Throwable ignored) {
+                }
                 return true;
             }
         };
@@ -561,18 +582,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
-        if(TextUtils.isEmpty(errorMessage)){
+        if (TextUtils.isEmpty(errorMessage)) {
             SessionAnalytics.trackRefreshTokenSuccess();
-        }else {
+        } else {
             SessionAnalytics.trackRefreshTokenFailed(errorMessage);
         }
-    }
-
-    private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
-    private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
-
-    private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
-        return Class.forName(activityFullPath);
     }
 
     private void provideFcmManager() {
@@ -582,7 +596,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.fcmcommon.R.raw.query_update_fcm_token)
                 ),
                 PreferenceManager.getDefaultSharedPreferences(context),
-                new UserSession(context)
+                userSession
         );
     }
 }

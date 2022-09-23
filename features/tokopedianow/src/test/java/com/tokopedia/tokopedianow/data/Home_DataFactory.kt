@@ -49,7 +49,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcU
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
+ import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 fun createHomeLayoutList(): List<HomeLayoutResponse> {
@@ -132,6 +132,10 @@ fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
             )
         )
     )
+}
+
+fun createDynamicChannelLayoutList(listResponses: List<HomeLayoutResponse>): List<HomeLayoutResponse> {
+    return listResponses
 }
 
 fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
@@ -472,9 +476,11 @@ fun createHomeProductCardUiModel(
     quantity: Int = 0,
     parentId: String = "",
     product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT
+    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT,
+    position: Int = 0,
+    headerName: String = ""
 ): TokoNowProductCardUiModel {
-    return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
+    return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type, position, headerName)
 }
 
 fun createLocalCacheModel(

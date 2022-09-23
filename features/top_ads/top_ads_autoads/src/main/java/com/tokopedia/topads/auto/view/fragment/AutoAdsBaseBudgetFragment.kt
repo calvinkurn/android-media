@@ -29,12 +29,15 @@ import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
+import com.tokopedia.topads.common.utils.TopadsCommonUtil.showErrorAutoAds
 import com.tokopedia.topads.common.view.sheet.TopAdsOutofCreditSheet
 import com.tokopedia.topads.common.view.sheet.TopAdsSuccessSheet
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
@@ -92,6 +95,28 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun moveToDashboard() {
+        val intent = RouteManager.getIntent(
+            context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+        ).apply {
+            putExtra(TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED, TopAdsCommonConstant.PARAM_AUTOADS_BUDGET)
+            putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, TopAdsCommonConstant.PARAM_PRODUK_IKLAN)
+        }
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
+    private fun successAutoAdsData() {
+        if (!isEditFlow) {
+            if (topAdsDeposit <= 0) {
+                insufficientCredit()
+            } else
+                eligible()
+        } else {
+            moveToDashboard()
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         showLoading()
@@ -101,18 +126,11 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
             budgetViewModel.getBudgetInfo(requestType, source, this::onSuccessBudgetInfo)
         })
         budgetViewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
-            if (!isEditFlow) {
-                if (topAdsDeposit <= 0) {
-                    insufficientCredit()
-                } else
-                    eligible()
-            } else {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
-                    putExtra(TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED, TopAdsCommonConstant.PARAM_AUTOADS_BUDGET)
-                    putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, TopAdsCommonConstant.PARAM_PRODUK_IKLAN)
+            when (it) {
+                is Success -> successAutoAdsData()
+                is Fail -> it.throwable.message?.let { errorMessage ->
+                    view?.showErrorAutoAds(errorMessage)
                 }
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
             }
         })
 
@@ -222,11 +240,8 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         isEditFlow = editAutoads == 1
         val budget = priceEditText.textFieldInput.text.toString().removeCommaRawString().toInt()
         budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
-                TOGGLE_ON,
-                CHANNEL,
-                budget,
-                userSession.shopId.toInt(),
-                SOURCE
+            TOGGLE_ON, CHANNEL,
+            budget, userSession.shopId, SOURCE
         )))
     }
 

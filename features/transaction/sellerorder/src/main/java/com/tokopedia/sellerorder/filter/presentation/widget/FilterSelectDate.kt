@@ -2,7 +2,7 @@ package com.tokopedia.sellerorder.filter.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.sellerorder.R
@@ -26,9 +26,8 @@ class FilterSelectDate: RelativeLayout {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.item_widget_filter_date, this).run {
-            _binding = ItemWidgetFilterDateBinding.bind(this)
-        }
+        _binding = ItemWidgetFilterDateBinding.inflate(LayoutInflater.from(context), this, true)
+        binding.tvSelectDateText.setBackgroundResource(R.drawable.bg_som_filter_date_border)
     }
 
     fun setDateLabel(date: String) {

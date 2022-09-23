@@ -10,22 +10,20 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.FragmentPermissionBinding
-import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.adapter.PermissionAdapter
 import com.tokopedia.media.picker.ui.adapter.decoration.ItemDividerDecoration
 import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-open class PermissionFragment : BaseDaggerFragment() {
-
-    @Inject lateinit var factory: ViewModelProvider.Factory
+open class PermissionFragment @Inject constructor(
+    private var viewModelFactory: ViewModelProvider.Factory
+) : BaseDaggerFragment() {
 
     private val binding: FragmentPermissionBinding? by viewBinding()
     private var listener: Listener? = null
@@ -33,7 +31,7 @@ open class PermissionFragment : BaseDaggerFragment() {
     private val viewModel by lazy {
         ViewModelProvider(
             this,
-            factory
+            viewModelFactory
         )[PermissionViewModel::class.java]
     }
 
@@ -193,12 +191,7 @@ open class PermissionFragment : BaseDaggerFragment() {
         listener = null
     }
 
-    override fun initInjector() {
-        DaggerPickerComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
-    }
+    override fun initInjector() {}
 
     override fun getScreenName() = "Permission"
 

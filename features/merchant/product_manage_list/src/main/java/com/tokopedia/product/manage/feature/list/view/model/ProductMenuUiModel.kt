@@ -68,13 +68,6 @@ sealed class ProductMenuUiModel(
             product
     )
 
-    data class SetCashBack(override val product: ProductUiModel): ProductMenuUiModel(
-        R.string.product_manage_menu_set_cashback,
-        IconUnify.DISCOUNT,
-        null,
-        product
-    )
-
     data class SetFeaturedProduct(override val product: ProductUiModel): ProductMenuUiModel(
         R.string.product_manage_set_featured_menu,
         IconUnify.STAR_CIRCLE,

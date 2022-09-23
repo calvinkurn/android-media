@@ -101,6 +101,10 @@ class HomeLeftCarouselAtcCallback (
         )
     }
 
+    override fun onRemoveLeftCarouselAtc(channelId: String) {
+        viewModel.removeLeftCarouselAtc(channelId)
+    }
+
     override fun onProductCardSpaceClicked(
         appLink: String,
         channelId: String,

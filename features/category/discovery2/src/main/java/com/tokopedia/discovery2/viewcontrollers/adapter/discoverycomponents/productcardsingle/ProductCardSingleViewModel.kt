@@ -78,8 +78,14 @@ class ProductCardSingleViewModel(
                 }
             }
             prodComponentsItem?.data?.firstOrNull()?.let {
-                it.hasThreeDotsWishlist = true
-                it.hasATCWishlist = true
+                it.hasThreeDotsWishlist = (it.show3Dots == true)
+                if (it.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART && it.isActiveProductCard == true) {
+                    it.hasATCWishlist = true
+                    it.hasSimilarProductWishlist = false
+                }else if(it.isActiveProductCard != true && it.targetComponentId?.isNotEmpty() == true){
+                    it.hasATCWishlist = false
+                    it.hasSimilarProductWishlist = true
+                }
             }
             productData.value = prodComponentsItem
 

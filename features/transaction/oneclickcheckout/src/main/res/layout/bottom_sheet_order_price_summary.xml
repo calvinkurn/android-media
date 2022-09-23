@@ -23,14 +23,26 @@
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_total_product_price_label"
+            android:id="@+id/tv_total_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:text="@string/occ_lbl_total_order"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_order_summary"
+            app:typographyType="display_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_total_product_price_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="@string/occ_lbl_total_item_price"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_order_summary"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_order"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
@@ -39,12 +51,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="4dp"
             android:gravity="end"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_total_product_price_label"
-            app:layout_constraintTop_toBottomOf="@id/tv_order_summary"
+            app:layout_constraintTop_toBottomOf="@id/tv_total_order"
             app:typographyType="body_3"
             app:typographyWeight="bold" />
 
@@ -224,35 +236,42 @@
             android:gravity="end"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_total_payment_fee_price_label"
+            app:layout_constraintStart_toEndOf="@id/tv_total_installment_fee_price_label"
             app:layout_constraintTop_toBottomOf="@id/tv_total_insurance_price_value"
             app:typographyType="body_3"
             app:typographyWeight="bold" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_total_payment_fee_price_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/lbl_additional_fee"
-            android:textColor="@color/Unify_N700_96"
+        <View
+            android:id="@+id/divider_transaction_fee"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/Unify_N75"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_installment_fee_price_value"
-            app:typographyType="body_3" />
+            app:layout_constraintTop_toBottomOf="@id/tv_total_installment_fee_price_value" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_total_payment_fee_price_value"
-            android:layout_width="0dp"
+            android:id="@+id/tv_transaction_fee"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:gravity="end"
-            android:textColor="@color/Unify_N700_96"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_total_payment_fee_price_label"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_installment_fee_price_value"
-            app:typographyType="body_3"
+            android:layout_marginTop="16dp"
+            android:text="@string/occ_lbl_transaction_fee"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_transaction_fee"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
+
+        <LinearLayout
+            android:id="@+id/ll_payment_fee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_transaction_fee" />
 
         <View
             android:id="@+id/divider_total_payment"
@@ -262,7 +281,7 @@
             android:background="@color/Unify_N75"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_total_payment_fee_price_value" />
+            app:layout_constraintTop_toBottomOf="@id/ll_payment_fee" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_payment_price_label"
@@ -274,7 +293,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider_total_payment"
             app:typographyType="body_3"
-            app:typographyWeight="reguler" />
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_payment_price_value"

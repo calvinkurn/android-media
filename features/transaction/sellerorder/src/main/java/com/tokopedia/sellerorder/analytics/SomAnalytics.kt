@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.analytics
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -10,6 +11,7 @@ object SomAnalytics {
 
     private const val CATEGORY_SOM = "som"
     private const val CLICK_SOM = "clickSOM"
+    private const val CLICK_PG = "clickPG"
     private const val CLICK_PRODUCT_NAME = "click product name"
     private const val CLICK_QUICK_FILTER = "click quick filter"
     private const val CLICK_ORDER_CARD_ON_ORDER_LIST = "click order card on order list"
@@ -42,6 +44,7 @@ object SomAnalytics {
     private const val CUSTOM_DIMENSION_BUSINESS_UNIT = "businessUnit"
     private const val CUSTOM_DIMENSION_CURRENT_SITE = "currentSite"
     private const val CUSTOM_DIMENSION_SHOP_TYPE = "shopType"
+    private const val CUSTOM_DIMENSION_TRACKER_ID = "trackerId"
     private const val AWAITING_PAYMENT = "awaiting payment"
     private const val WAITING_FOR_PAYMENT = "waiting for payment"
     private const val BUSINESS_UNIT_PHYSICAL_GOODS = "physicalgoods"
@@ -51,6 +54,16 @@ object SomAnalytics {
     private const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     private const val EVENT_NAME_VIEW_SHIPPING_IRIS = "viewShippingIris"
     private const val EVENT_ACTION_REQUEST_ORDER_EXTENSION = "request order extension status"
+    private const val EVENT_ACTION_CLICK_ONBOARD_BACK = "click onboard info - balik"
+    private const val EVENT_ACTION_CLICK_ONBOARD_CONTINUE = "click onboard info - lanjut"
+    private const val EVENT_ACTION_CLICK_ONBOARD_OK = "click onboard info - oke"
+
+    private const val TRACKER_ID_CLICK_ONBOARD_CONTINUE_SA = "33451"
+    private const val TRACKER_ID_CLICK_ONBOARD_BACK_SA = "33452"
+    private const val TRACKER_ID_CLICK_ONBOARD_OK_SA = "33453"
+    private const val TRACKER_ID_CLICK_ONBOARD_CONTINUE_MA = "33446"
+    private const val TRACKER_ID_CLICK_ONBOARD_BACK_MA = "33447"
+    private const val TRACKER_ID_CLICK_ONBOARD_OK_MA = "33448"
 
     @JvmStatic
     fun sendScreenName(screenName: String) {
@@ -282,6 +295,57 @@ object SomAnalytics {
             CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS_CAPITALIZE,
             CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             CUSTOM_DIMENSION_SHOP_ID to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickOnboardInfoContinue(userId: String) {
+        val data = mapOf(
+            TrackAppUtils.EVENT to CLICK_PG,
+            TrackAppUtils.EVENT_ACTION to EVENT_ACTION_CLICK_ONBOARD_CONTINUE,
+            TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+            TrackAppUtils.EVENT_LABEL to userId,
+            CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS_CAPITALIZE,
+            CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            CUSTOM_DIMENSION_TRACKER_ID to if (GlobalConfig.isSellerApp()) {
+                TRACKER_ID_CLICK_ONBOARD_CONTINUE_SA
+            } else {
+                TRACKER_ID_CLICK_ONBOARD_CONTINUE_MA
+            }
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickOnboardInfoBack(userId: String) {
+        val data = mapOf(
+            TrackAppUtils.EVENT to CLICK_PG,
+            TrackAppUtils.EVENT_ACTION to EVENT_ACTION_CLICK_ONBOARD_BACK,
+            TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+            TrackAppUtils.EVENT_LABEL to userId,
+            CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS_CAPITALIZE,
+            CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            CUSTOM_DIMENSION_TRACKER_ID to if (GlobalConfig.isSellerApp()) {
+                TRACKER_ID_CLICK_ONBOARD_BACK_SA
+            } else {
+                TRACKER_ID_CLICK_ONBOARD_BACK_MA
+            }
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickOnboardInfoOk(userId: String) {
+        val data = mapOf(
+            TrackAppUtils.EVENT to CLICK_PG,
+            TrackAppUtils.EVENT_ACTION to EVENT_ACTION_CLICK_ONBOARD_OK,
+            TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+            TrackAppUtils.EVENT_LABEL to userId,
+            CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS_CAPITALIZE,
+            CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            CUSTOM_DIMENSION_TRACKER_ID to if (GlobalConfig.isSellerApp()) {
+                TRACKER_ID_CLICK_ONBOARD_OK_SA
+            } else {
+                TRACKER_ID_CLICK_ONBOARD_OK_MA
+            }
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }

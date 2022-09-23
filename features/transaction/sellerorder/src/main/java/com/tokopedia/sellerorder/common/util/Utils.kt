@@ -76,6 +76,18 @@ object Utils {
         return drawable
     }
 
+    fun getColoredDeadlineBackground(context: Context, colorHex: String, defaultColor: Int): Drawable? {
+        val color = try {
+            Color.parseColor(colorHex)
+        } catch (t: Throwable) {
+            defaultColor
+        }
+        val drawable = MethodChecker.getDrawable(context, R.drawable.bg_order_deadline)
+        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
+        drawable.colorFilter = filter
+        return drawable
+    }
+
     fun getLocale(): Locale {
         return Locale("id")
     }
@@ -107,9 +119,27 @@ object Utils {
         return date.timeInMillis
     }
 
-    fun getNPastMonthTimeText(monthBefore: Int): String {
+    fun getNFutureDaysTimeStamp(daysForward: Int): Date {
+        val date = Calendar.getInstance(getLocale())
+        date.add(Calendar.DATE, daysForward)
+        return date.time
+    }
+
+    fun getNFutureMonthsTimeStamp(monthsForward: Int): Date {
+        val date = Calendar.getInstance(getLocale())
+        date.add(Calendar.MONTH, monthsForward)
+        return date.time
+    }
+
+    fun getNFutureYearsTimeStamp(yearsForward: Int): Date {
+        val date = Calendar.getInstance(getLocale())
+        date.add(Calendar.YEAR, yearsForward)
+        return date.time
+    }
+
+    fun getNPastMonthTimeText(monthBefore: Int, format: String = PATTERN_DATE_PARAM): String {
         val pastTwoYear = getNPastMonthTimeStamp(monthBefore)
-        return format(pastTwoYear, PATTERN_DATE_PARAM)
+        return format(pastTwoYear, format)
     }
 
     fun List<SomFilterUiModel>.copyListParcelable(): List<SomFilterUiModel> {

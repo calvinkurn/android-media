@@ -1,7 +1,11 @@
 package com.tokopedia.interceptors.authenticator
 
 import android.app.Application
+import android.content.Intent
 import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.interceptors.forcelogout.ForceLogoutData
+import com.tokopedia.interceptors.forcelogout.ForceLogoutUseCase
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.network.NetworkRouter
@@ -60,6 +64,15 @@ class TkpdAuthenticatorGql(
         return newAccessToken ?: ""
     }
 
+    private fun broadcastForceLogoutInfo(forceLogoutData: ForceLogoutData) {
+        val intent = Intent()
+        intent.action = "com.tokopedia.tkpd.FORCE_LOGOUT_v2"
+        intent.putExtra("title", forceLogoutData.title)
+        intent.putExtra("description", forceLogoutData.description)
+        intent.putExtra("url", forceLogoutData.url)
+        LocalBroadcastManager.getInstance(application.applicationContext).sendBroadcast(intent)
+    }
+
     override fun authenticate(route: Route?, response: Response): Request? {
         if(isNeedRefresh()) {
             val path: String = getRefreshQueryPath(response.request, response)
@@ -72,7 +85,16 @@ class TkpdAuthenticatorGql(
                         networkRouter
                     )
                     if (tokenResponse != null) {
-                        return if (tokenResponse.accessToken?.isEmpty() == true) {
+                        if(tokenResponse.errors?.isNotEmpty() == true) {
+                            val forceLogoutInfo = checkForceLogoutInfo()
+                            if(forceLogoutInfo?.isForceLogout == true) {
+                                userSession.logoutSession()
+                                broadcastForceLogoutInfo(forceLogoutInfo)
+                            } else {
+                                networkRouter.showForceLogoutTokenDialog("/")
+                            }
+                            return null
+                        } else if (tokenResponse.accessToken?.isEmpty() == true) {
                             logRefreshTokenEvent(
                                 ERROR_GQL_ACCESS_TOKEN_EMPTY,
                                 TYPE_REFRESH_WITH_GQL,
@@ -86,7 +108,7 @@ class TkpdAuthenticatorGql(
                                 refreshToken = tokenResponse.refreshToken ?: "",
                                 tokenType = tokenResponse.tokenType ?: ""
                             )
-                            updateRequestWithNewToken(originalRequest)
+                            return updateRequestWithNewToken(originalRequest)
                         }
                     } else {
                         logRefreshTokenEvent(
@@ -133,6 +155,15 @@ class TkpdAuthenticatorGql(
             }
         }catch (e: Exception) {
             logRefreshTokenEvent(formatThrowable(e), TYPE_RETRY_REFRESH_TOKEN_REST, "", "")
+            null
+        }
+    }
+
+    private fun checkForceLogoutInfo(): ForceLogoutData? {
+        return try {
+            val forceLogoutInfo = ForceLogoutUseCase(application.applicationContext, userSession, networkRouter).execute()
+            return forceLogoutInfo?.data
+        } catch (e: Exception) {
             null
         }
     }

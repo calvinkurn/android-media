@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomlist.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -26,16 +27,16 @@ class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraph
         roomListParam.checkIn = hotelRoomListPageModel.checkIn
         roomListParam.checkOut = hotelRoomListPageModel.checkOut
         roomListParam.guest.adult = hotelRoomListPageModel.adult
-        var childAge = IntArray(hotelRoomListPageModel.child)
+        val childAge = IntArray(hotelRoomListPageModel.child)
         for (i in 0 until hotelRoomListPageModel.child) {
-            childAge[i] = 4
+            childAge[i] = CHILD_AGE
         }
         roomListParam.guest.childAge = childAge.toList()
         roomListParam.room = hotelRoomListPageModel.room
         return roomListParam
     }
 
-    suspend fun execute(rawQuery: String, hotelRoomListPageModel: HotelRoomListPageModel,
+    suspend fun execute(rawQuery: GqlQueryInterface, hotelRoomListPageModel: HotelRoomListPageModel,
                         fromCloud: Boolean = true): Result<MutableList<HotelRoom>> {
         val requestParams = createRequestParam(hotelRoomListPageModel)
         val params = mapOf(PARAM_ROOM_LIST_PROPERTY to requestParams)
@@ -69,6 +70,8 @@ class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraph
 
     companion object {
         const val PARAM_ROOM_LIST_PROPERTY = "data"
+
+        private const val CHILD_AGE = 4
     }
 
 }

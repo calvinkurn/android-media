@@ -44,6 +44,11 @@ class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding, priv
         }
 
         cplShipperItemAdapter.addData(data.shipperProduct)
+        cplShipperItemAdapter.setupListener(object : CPLShipperItemAdapter.CPLShipperItemAdapterListener {
+            override fun uncheckCplItem() {
+                binding.cbShipmentItem.isChecked = false
+            }
+        })
     }
 
     private fun setItemChecked(data: ShipperCPLModel) {

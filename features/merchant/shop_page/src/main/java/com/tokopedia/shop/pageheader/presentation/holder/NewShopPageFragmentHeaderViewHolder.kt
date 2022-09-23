@@ -18,6 +18,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.ShopTickerType
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -175,12 +176,17 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
     private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
         val statusTitle = shopInfo.statusInfo.statusTitle
         val shopStatus = shopInfo.statusInfo.shopStatus
+        val shopTickerType = shopInfo.statusInfo.tickerType
         val statusMessage = shopInfo.statusInfo.statusMessage
         val shopId = shopInfo.shopCore.shopID
         val isOfficialStore = shopInfo.goldOS.isOfficialStore()
         val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
         tickerShopStatus?.show()
-        tickerShopStatus?.tickerType = Ticker.TYPE_WARNING
+        tickerShopStatus?.tickerType = when(shopTickerType) {
+            ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
+            ShopTickerType.WARNING -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_WARNING
+        }
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
         tickerShopStatus?.setHtmlDescription(
                 if(shopStatus == ShopStatusDef.MODERATED && isMyShop) {
@@ -225,10 +231,18 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
             override fun onDismiss() {}
 
         })
-        if (isMyShop) {
-            tickerShopStatus?.closeButtonVisibility = View.GONE
-        } else {
+
+        // special handling for shop status incubated
+        if (shopInfo.statusInfo.shopStatus == ShopStatusDef.INCUBATED) {
+            // always show ticker close button if shop is incubated
             tickerShopStatus?.closeButtonVisibility = View.VISIBLE
+        } else {
+            // default general condition for shop ticker
+            if (isMyShop) {
+                tickerShopStatus?.closeButtonVisibility = View.GONE
+            } else {
+                tickerShopStatus?.closeButtonVisibility = View.VISIBLE
+            }
         }
     }
 

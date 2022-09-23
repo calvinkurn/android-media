@@ -266,11 +266,10 @@ class ManageHighlightedProductViewModel @Inject constructor(
         products: List<HighlightableProduct>
     ): List<HighlightableProduct> {
         val selectedProductsIds = selectedProducts.map { selectedProduct -> selectedProduct.id }
-        val selectedParentProductIds = selectedProducts.map { selectedProduct -> selectedProduct.parentId }
 
         return products
             .map { product  -> disableSelectedProduct(currentlySelectedProduct, product) }
-            .map { product -> enableAllProductExceptSelectedVariants(selectedProductsIds, selectedParentProductIds, product) }
+            .map { product -> enableAllProductExceptSelectedProducts(selectedProductsIds, product) }
             .sortedByDescending { it.isSelected }
             .mapIndexed { index, product -> product.copy(position = index + OFFSET_BY_ONE) }
     }
@@ -286,12 +285,11 @@ class ManageHighlightedProductViewModel @Inject constructor(
         }
     }
 
-    private fun enableAllProductExceptSelectedVariants(
+    private fun enableAllProductExceptSelectedProducts(
         selectedProductsIds: List<Long>,
-        selectedParentProductIds: List<Long>,
         product: HighlightableProduct
     ): HighlightableProduct {
-        return if (product.id !in selectedProductsIds && product.parentId !in selectedParentProductIds) {
+        return if (product.id !in selectedProductsIds) {
             product.copy(
                 disabled = false,
                 disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED

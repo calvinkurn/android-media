@@ -4,6 +4,9 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
@@ -170,6 +173,8 @@ public interface ShipmentContract {
         void showPopUp(PopUpData popUpData);
 
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
+
+        void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions);
     }
 
     interface AnalyticsActionListener {
@@ -348,9 +353,11 @@ public interface ShipmentContract {
 
         boolean isIneligiblePromoDialogEnabled();
 
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId, ArrayList<String> prescriptionIds);
 
         void releaseBooking();
+
+        void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded,String checkoutId);
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 
@@ -364,6 +371,10 @@ public interface ShipmentContract {
 
         ValidateUsePromoRequest getLastValidateUseRequest();
 
+        void setUploadPrescriptionData(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
+        UploadPrescriptionUiModel getUploadPrescriptionUiModel();
+
         String generateRatesMvcParam(String cartString);
 
         void setCheckoutData(CheckoutData checkoutData);
@@ -371,6 +382,8 @@ public interface ShipmentContract {
         void updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
 
         void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
+
+        ShipmentUpsellModel getShipmentUpsellModel();
     }
 
 }

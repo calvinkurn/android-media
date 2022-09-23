@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="16dp"
+    tools:viewBindingIgnore="true">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_review_item_reviewer_profile_picture"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintEnd_toStartOf="@id/tv_review_item_reviewer_name"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_type="circle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_item_reviewer_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/tv_review_item_reviewer_statistic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_review_item_reviewer_profile_picture"
+        app:layout_constraintTop_toTopOf="@id/iv_review_item_reviewer_profile_picture"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Smitty Werben Man Jensen #1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/divider_review_item_reviewer_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="•"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/tv_review_item_reviewer_name"
+        app:layout_constraintStart_toEndOf="@id/tv_review_item_reviewer_name"
+        app:layout_constraintTop_toTopOf="@id/tv_review_item_reviewer_name"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:ignore="HardcodedText" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_item_reviewer_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_TN600"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@id/tv_review_item_reviewer_name"
+        app:layout_constraintEnd_toStartOf="@id/ic_review_item_three_dots"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/divider_review_item_reviewer_name_label"
+        app:layout_constraintTop_toTopOf="@id/tv_review_item_reviewer_name"
+        app:typographyType="display_3"
+        tools:text="Juara Ulasan Ibu &amp; Bayi dan Rumah" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_item_reviewer_statistic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@id/iv_review_item_reviewer_profile_picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ic_review_item_three_dots"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/iv_review_item_reviewer_profile_picture"
+        app:layout_constraintTop_toBottomOf="@id/tv_review_item_reviewer_name"
+        app:typographyType="display_3"
+        tools:text="56 ulasan lengkap • 6 terbantu" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_review_item_three_dots"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:icon_name="MENU_KEBAB_VERTICAL"
+        app:layout_constraintBottom_toBottomOf="@id/iv_review_item_reviewer_profile_picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_review_item_reviewer_profile_picture" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_review_item_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="@id/iv_review_item_reviewer_profile_picture"
+        app:layout_constraintTop_toBottomOf="@id/iv_review_item_reviewer_profile_picture"
+        tools:srcCompat="@drawable/review_ic_rating_star_five" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_item_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@id/iv_review_item_rating"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/iv_review_item_rating"
+        app:layout_constraintTop_toTopOf="@id/iv_review_item_rating"
+        app:typographyType="paragraph_3"
+        tools:text="Kemarin" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_item_variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@id/iv_review_item_rating"
+        app:layout_constraintTop_toBottomOf="@id/iv_review_item_rating"
+        app:typographyType="paragraph_3"
+        tools:text="Varian: Black, 128GB" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

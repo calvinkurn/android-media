@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/notificationImage"
-        android:layout_width="@dimen/dp_52"
-        android:layout_height="@dimen/dp_52"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:layout_alignTop="@+id/notificationTitle"
         android:layout_alignBottom="@+id/notificationText"
         android:layout_alignParentEnd="true"
@@ -37,7 +37,7 @@
         android:layout_toStartOf="@+id/notificationImage"
         android:layout_toLeftOf="@+id/notificationImage"
         android:ellipsize="end"
-        android:lineSpacingExtra="@dimen/dp_3"
+        android:lineSpacingExtra="3dp"
         android:maxLines="1"
         android:text="Sudah [nn] hari, nih. Suka dengan [product] ini? Yuk, beri ulasan dan bagikan pengalamanmu ke pembeli lain!" />
 

@@ -4,37 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="8dp"
     tools:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/product_bundling_separator_top"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/product_bundling_icon_main"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_bundling_separator_top"
-        app:srcCompat="@drawable/ic_bundle" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_bundling_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        app:layout_constraintBottom_toBottomOf="@id/product_bundling_icon_main"
-        app:layout_constraintLeft_toRightOf="@id/product_bundling_icon_main"
-        app:layout_constraintTop_toTopOf="@id/product_bundling_icon_main"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/product_bundling_info"
+        app:layout_constraintTop_toBottomOf="@id/product_bundling_separator_top"
         app:typographyType="display_1"
         app:typographyWeight="bold"
-        tools:text="Paket Hemat" />
+        tools:text="Beli Bundling dapat diskon" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_bundling_info"
@@ -46,7 +37,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/product_bundling_title"
         app:typographyType="display_3"
-        tools:text="PO 6 hari" />
+        tools:text="PreOrder 6 hari" />
 
     <ViewStub
         android:id="@+id/product_bundling_stub_multi"
@@ -55,7 +46,7 @@
         android:layout_marginTop="16dp"
         android:inflatedId="@id/product_bundling_stub_multi"
         android:layout="@layout/view_product_bundling_multi"
-        app:layout_constraintTop_toBottomOf="@id/product_bundling_icon_main"
+        app:layout_constraintTop_toBottomOf="@id/product_bundling_title"
         tools:visibility="visible" />
 
     <ViewStub
@@ -73,7 +64,7 @@
     <View
         android:id="@+id/product_bundling_line"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="16dp"
         android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/product_bundling_stub_single"
@@ -83,67 +74,73 @@
         android:id="@+id/product_bundling_total_slash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="4dp"
         android:textColor="@color/Unify_NN400"
-        app:layout_constraintLeft_toLeftOf="@id/product_bundling_icon_main"
-        app:layout_constraintTop_toBottomOf="@id/product_bundling_line"
+        app:layout_constraintBottom_toBottomOf="@id/product_bundling_total_price"
+        app:layout_constraintLeft_toRightOf="@id/product_bundling_total_price"
+        app:layout_constraintTop_toTopOf="@id/product_bundling_total_price"
         app:typographyType="display_3"
-        tools:text="Rp8.649.000" />
+        tools:text="Rp15.500.000" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_bundling_total_saving_text"
+    <LinearLayout
+        android:id="@+id/product_bundling_view_saving"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="@string/pdp_bundling_saving"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@id/product_bundling_total_slash"
-        app:layout_constraintLeft_toRightOf="@id/product_bundling_total_slash"
-        app:typographyType="display_3" />
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/pdp_bundling_discount_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_bundling_total_price"
+        tools:ignore="RtlSymmetry">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_bundling_total_saving"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_3"
-        android:textColor="@color/Unify_R400"
-        app:layout_constraintBottom_toBottomOf="@id/product_bundling_total_saving_text"
-        app:layout_constraintLeft_toRightOf="@id/product_bundling_total_saving_text"
-        app:typographyType="display_3"
-        tools:text="Rp155.000" />
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="16dp"
+            app:icon_name="PROMO" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="@string/pdp_bundling_saving"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/product_bundling_total_saving"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            app:typographyType="display_3"
+            tools:text="Rp155.000" />
+
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_bundling_total_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@id/product_bundling_total_slash"
-        app:layout_constraintTop_toBottomOf="@id/product_bundling_total_slash"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="@id/product_bundling_title"
+        app:layout_constraintTop_toBottomOf="@id/product_bundling_line"
         app:typographyType="display_2"
         app:typographyWeight="bold"
-        tools:text="Rp8.494.000" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_bundling_total_quantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Unify_NN600"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/product_bundling_total_price"
-        app:layout_constraintTop_toBottomOf="@id/product_bundling_total_price"
-        app:typographyType="display_3"
-        tools:text="(Total 3 barang)"
-        tools:visibility="visible" />
+        tools:text="Rp13.400.000" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/product_bundling_button_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="88dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/pdp_bundling_button_see"
-        app:layout_constraintBottom_toBottomOf="@id/product_bundling_total_quantity"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="@id/product_bundling_info"
-        app:layout_constraintTop_toTopOf="@id/product_bundling_total_slash"
         app:unifyButtonSize="small"
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost" />

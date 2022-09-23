@@ -226,7 +226,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
             tv_available_locations?.text = context?.resources?.getString(com.tokopedia.digital_deals.R.string.deals_all_indonesia) ?: ""
         }
 
-        if (dealsDetail.mrp != 0 && dealsDetail.mrp != dealsDetail.salesPrice) {
+        if (dealsDetail.mrp != 0L && dealsDetail.mrp != dealsDetail.salesPrice) {
             tv_mrp_per_quantity?.apply {
                 show()
                 text = Utils.convertToCurrencyString(dealsDetail.mrp.toLong())
