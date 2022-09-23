@@ -610,7 +610,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToChooseProductPage() {
-        ChooseProductActivity.start(context ?: return, flashSaleId)
+        ChooseProductActivity.start(context ?: return, flashSaleId, tabName)
     }
 
     private fun setWaitingForSelectionMidSection(flashSale: FlashSale) {
