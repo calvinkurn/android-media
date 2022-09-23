@@ -18,11 +18,11 @@
 
     <ImageView
         android:id="@+id/img_sr_blue_dot"
-        android:layout_width="@dimen/dp_topchat_6"
-        android:layout_height="@dimen/dp_topchat_6"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/dp_topchat_4"
-        android:layout_marginLeft="@dimen/dp_topchat_4"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
         android:visibility="gone"
         app:srcCompat="@drawable/circle_blue_notification"
         tools:visibility="visible" />

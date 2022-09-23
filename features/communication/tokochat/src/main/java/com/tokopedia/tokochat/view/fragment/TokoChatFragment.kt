@@ -10,12 +10,16 @@ import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
 import com.tokopedia.tokochat_common.R
+import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
+import com.tokopedia.tokochat_common.view.uimodel.StringUiModel
 import javax.inject.Inject
 
 class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
+
+    override var adapter: BaseTokoChatAdapter = BaseTokoChatAdapter()
 
     override fun getScreenName(): String = TAG
 
@@ -28,7 +32,14 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
     }
 
     override fun initViews() {
-        chatroomRv = binding?.chatroomLayout?.findViewById(R.id.tokochat_chatroom_rv)
+        super.initViews()
+        val list = arrayListOf<StringUiModel>()
+        for (i in 0 until 10) {
+            val string = StringUiModel("HELOOOOO $i")
+            list.add(string)
+            adapter.addItem(string)
+            adapter.notifyItemChanged(i)
+        }
     }
 
     override fun initObservers() {

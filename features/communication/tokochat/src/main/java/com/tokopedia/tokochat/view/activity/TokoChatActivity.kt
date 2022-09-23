@@ -38,7 +38,7 @@ class TokoChatActivity : BaseTokoChatActivity<TokoChatComponent>() {
     }
 
     override fun getNewFragment(): Fragment {
-        val isExp = true
+        val isExp = false
         return if (isExp) {
             TokoChatFragmentExp.getFragment(
                 supportFragmentManager,

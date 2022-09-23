@@ -17,6 +17,7 @@ import com.tokopedia.tokochat.databinding.FragmentTokoChatExpBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.activity.TokoChatListActivity
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
 import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -27,6 +28,8 @@ class TokoChatFragmentExp: BaseTokoChatFragment<FragmentTokoChatExpBinding>() {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
+
+    override var adapter: BaseTokoChatAdapter = BaseTokoChatAdapter()
 
     private var channelUrl: String = ""
 
@@ -54,6 +57,7 @@ class TokoChatFragmentExp: BaseTokoChatFragment<FragmentTokoChatExpBinding>() {
     }
 
     override fun initViews() {
+        super.initViews()
         binding?.goBtn?.setOnClickListener {
             viewModel.getChatHistory(channelUrl).removeObservers(viewLifecycleOwner)
             viewModel.deRegisterActiveChannel(channelUrl)

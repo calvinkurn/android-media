@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.tokochat.databinding.FragmentTokoChatListExpBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
 import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
 import javax.inject.Inject
 
@@ -15,6 +16,8 @@ class TokoChatListFragmentExp: BaseTokoChatFragment<FragmentTokoChatListExpBindi
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
+
+    override var adapter: BaseTokoChatAdapter = BaseTokoChatAdapter()
 
     override fun getScreenName(): String = TAG
 
@@ -27,10 +30,6 @@ class TokoChatListFragmentExp: BaseTokoChatFragment<FragmentTokoChatListExpBindi
     }
 
     override fun additionalSetup() {
-
-    }
-
-    override fun initViews() {
 
     }
 

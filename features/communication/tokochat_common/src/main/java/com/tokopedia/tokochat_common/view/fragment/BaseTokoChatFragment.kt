@@ -4,19 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.tokochat_common.databinding.BaseFragmentTokoChatBinding
+import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Use [com.tokopedia.tokochat_common.view.customview.layout.BaseTokoChatFragmentLayout]
  * inside your layout
  */
-abstract class BaseTokoChatFragment<viewBinding: ViewBinding>: BaseDaggerFragment() {
+abstract class BaseTokoChatFragment<viewBinding : ViewBinding> : BaseDaggerFragment() {
 
     protected var binding: viewBinding? by autoClearedNullable()
-    protected var chatroomRv: RecyclerView? = null
+    protected var baseBinding: BaseFragmentTokoChatBinding? by autoClearedNullable()
+    abstract var adapter: BaseTokoChatAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,6 +27,9 @@ abstract class BaseTokoChatFragment<viewBinding: ViewBinding>: BaseDaggerFragmen
         savedInstanceState: Bundle?
     ): View? {
         binding = getViewBindingInflate(container)
+        binding?.let {
+            baseBinding = BaseFragmentTokoChatBinding.bind(it.root)
+        }
         return binding?.root
     }
 
@@ -36,6 +42,17 @@ abstract class BaseTokoChatFragment<viewBinding: ViewBinding>: BaseDaggerFragmen
 
     abstract fun getViewBindingInflate(container: ViewGroup?): viewBinding
     abstract fun additionalSetup()
-    abstract fun initViews()
     abstract fun initObservers()
+
+    protected open fun initViews() {
+        setupChatRoomRecyclerView()
+    }
+
+    private fun setupChatRoomRecyclerView() {
+        baseBinding?.tokochatChatroomRv?.layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.VERTICAL, false
+        )
+        baseBinding?.tokochatChatroomRv?.adapter = adapter
+    }
 }

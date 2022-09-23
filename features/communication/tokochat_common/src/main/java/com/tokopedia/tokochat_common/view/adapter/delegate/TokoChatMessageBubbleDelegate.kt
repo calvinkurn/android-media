@@ -12,7 +12,7 @@ class TokoChatMessageBubbleDelegate(
     MessageBubbleViewHolder.LAYOUT
 ) {
     override fun onBindViewHolder(item: MessageBubbleUiModel, holder: MessageBubbleViewHolder) {
-        holder.bind(item)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): MessageBubbleViewHolder {
