@@ -34,6 +34,7 @@ import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter
+import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedDetailAnalytics.Companion.feedDetailAnalytics
@@ -273,8 +274,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 }
             }
         }
-
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -317,6 +316,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
         setUpShopDataHeader()
     }
+
     private fun setUpObservers() {
         presenter.run {
             getFeedDetailLiveData().observe(viewLifecycleOwner, Observer {
@@ -377,35 +377,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         adapter.showEmpty()
     }
 
-
-
-
     override fun onStart() {
         super.onStart()
         analytics.trackScreen(screenName)
-    }
-
-    private fun onShareClicked(url: String,
-                               title: String,
-                               imageUrl: String,
-                               description: String): View.OnClickListener? {
-        return View.OnClickListener {
-            activity?.let {
-                shareData = LinkerData.Builder.getLinkerBuilder().setId(detailId)
-                        .setName(title)
-                        .setDescription(description)
-                        .setImgUri(imageUrl)
-                        .setUri(url)
-                        .setType(LinkerData.FEED_TYPE)
-                        .build()
-                val linkerShareData = DataMapper().getLinkerShareData(shareData)
-                LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(
-                        0,
-                        linkerShareData,
-                        this
-                ))
-            }
-        }
     }
 
     override fun onGoToShopDetail(activityId: String?, shopId: Int) {
@@ -417,10 +391,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             activityId?.let { feedAnalytics.eventClickFeedDetailAvatar(it, shopId.toString()) }
         }
     }
-
-
-
-
 
     override fun onBackPressed() {
         activity?.onBackPressed()
@@ -483,7 +453,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         }
     }
 
-    override fun onAddToWishlistButtonClicked(item: FeedDetailProductModel) {
+    override fun onAddToWishlistButtonClicked(item: FeedDetailProductModel, productPosition: Int) {
         val campaignTrackerValue =
             if (item.isFollowed && item.saleStatus.isNotEmpty()) {
                 if (item.isUpcoming)
@@ -499,6 +469,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             item.isFollowed,
             item.shopId,
             item.playChannelId,
+            productPosition,
             campaignTrackerValue
         )
     }
@@ -636,6 +607,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             isFollowed: Boolean,
             shopId: String,
             playChannelId: String,
+            productItemPostion: Int = 0,
             campaignStatusValue: String = ""
     ) {
         val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
@@ -663,7 +635,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     postId,
                     productId,
                     shopId,
-                    0,
+                    productItemPostion,
                     type,
                     isFollowed,
                     ::onWishListFail,
@@ -713,14 +685,20 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             shopId: String,
             type: String,
             isFollowed: Boolean,
+            rowNumber: Int,
             result: AddToWishlistV2Response.Data.WishlistAddV2
     ) {
-        context?.let { context ->
-            view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
-            }
-        }
-        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+        Toaster.build(
+            requireView(),
+            getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+            View.OnClickListener {
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            }).show()
+        adapter.notifyItemChanged(rowNumber, FeedDetailViewHolder.PAYLOAD_CLICK_WISHLIST)
     }
 
      private fun onGoToLogin() {

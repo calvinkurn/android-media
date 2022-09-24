@@ -38,7 +38,8 @@ data class FeedDetailProductModel (
         var adClickUrl:String = "",
         var playChannelId: String = "",
         val saleType: String = "",
-        val saleStatus: String = ""
+        val saleStatus: String = "",
+        var isWishlisted: Boolean = false
 ) : Visitable<FeedPlusDetailTypeFactory> {
         override fun type(typeFactory: FeedPlusDetailTypeFactory): Int {
                 return typeFactory.type(this)

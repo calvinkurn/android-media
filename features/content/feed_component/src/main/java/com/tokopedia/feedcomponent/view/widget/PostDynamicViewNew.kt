@@ -68,7 +68,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.*
-import timber.log.Timber
 import java.net.URLEncoder
 import kotlin.math.round
 
@@ -85,21 +84,15 @@ private const val LAST_FEED_POSITION = 5
 private const val TOPADS_TAGGING_CENTER_POS_X = 0.5f
 private const val TOPADS_TAGGING_CENTER_POS_Y = 0.44f
 private const val LAST_FEED_POSITION_SMALL = 2
-private val scope = CoroutineScope(Dispatchers.Main)
 private var productVideoJob: Job? = null
 private const val TIME_THREE_SEC = 3000L
-private const val TIME_FOUR_SEC = 4000L
-private const val TIME_TWO_SEC = 2000L
 private const val MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL = 5
 private const val ROUND_OFF_TO_ONE_DECIMAL_VALUE = 10
 private const val TIME_FIVE_SEC = 5000L
 
 
 private const val TIME_SECOND = 1000L
-private const val FOLLOW_SIZE = 7
 private const val MINUTE_IN_HOUR = 60
-private const val SPACE = 3
-private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
 private const val MAX_CHAR = 120
 private const val CAPTION_END = 120
@@ -114,8 +107,6 @@ private const val TYPE_DISCOUNT = "discount"
 private val handlerFeed = Handler(Looper.getMainLooper())
 private var secondCountDownTimer: CountDownTimer? = null
 private var isPaused = false
-private const val FOLLOW_MARGIN = 6
-private const val MARGIN_ZERO = 0
 private const val ASGC_NEW_PRODUCTS = "asgc_new_products"
 private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
 private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
@@ -130,7 +121,6 @@ private const val FOCUS_CTA_DELAY = 2000L
  *Lihat Produk Value is static so we have fixed it width to Keep our animation intact
  *Do not manipulate this value unless Lihat Produk text change
  **/
-private const val LIHAT_PRODUK_EXPANDED_WIDTH_MIN_INDP = 124
 private const val LIHAT_PRODUK_CONTRACTED_WIDTH_INDP = 32
 const val PORTRAIT = 1
 const val LANDSCAPE = 2
@@ -1698,6 +1688,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         adapter.removeAllFocus(pageControl.indicatorCurrentPosition)
         changeCTABtnColorToWhite(mData)
     }
+
     private fun hideTaggingOnDetach(feedXCard: FeedXCard) {
         val cardProducts: List<FeedXProduct> = feedXCard.tags
         val media = if (feedXCard.media.size > feedXCard.lastCarouselIndex) feedXCard.media[feedXCard.lastCarouselIndex] else null

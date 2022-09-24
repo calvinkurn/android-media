@@ -32,8 +32,6 @@ import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.kol.common.util.ContentDetailResult
@@ -77,7 +75,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
@@ -100,8 +97,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
-
-
     private var rowNumberWhenShareClicked = 0
     private var dissmisByGreyArea = true
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -1539,7 +1534,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         onGoToLink(redirectUrl)
     }
 
-    override fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew) {
+    override fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew, rowNumber: Int) {
         val finalID =
             if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
 
@@ -1931,6 +1926,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     )
                     RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
                 }).show()
+            //row number is set to 0 as asgc product bottomsheet always has 1 product
+            productTagBS.changeWishlistIconOnWishlistSuccess(0)
         }
     }
 

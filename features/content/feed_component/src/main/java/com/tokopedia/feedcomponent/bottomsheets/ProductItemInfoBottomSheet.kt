@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.item_posttag.*
 class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
     private lateinit var listProducts: List<FeedXProduct>
+    private lateinit var adapter: ProductInfoBottomSheetAdapter
     private var listener: Listener? = null
     private var postId: Int = 0
     private var positionInFeed: Int = 0
@@ -78,7 +79,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     }
     private fun setAdapter() {
         listener?.let {
-            val adapter = ProductInfoBottomSheetAdapter(
+             adapter = ProductInfoBottomSheetAdapter(
                 it
                )
             rvPosttag.adapter = adapter
@@ -170,6 +171,17 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         show(fragmentManager, "")
     }
 
+    fun  changeWishlistIconOnWishlistSuccess(rowNumber: Int){
+        if (::adapter.isInitialized) {
+            val item = adapter.getItem(rowNumber)
+            item.isWishlisted = true
+            val payload = Bundle().apply {
+                putBoolean(ProductPostTagViewModelNew.WISHLIST_ITEM_CLICKED, true)
+            }
+            adapter.notifyItemChanged(rowNumber, payload)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         listener = null
@@ -198,6 +210,6 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             mediaType: String
         )
         fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew)
-        fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew)
+        fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew, rowNumber: Int)
     }
 }

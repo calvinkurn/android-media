@@ -44,6 +44,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
     private var menuBtn: IconUnify
     private var btnAddToCart: UnifyButton
     private var btnAddToWishlist: FrameLayout
+    private var btnAddToWishlistIcon: IconUnify
     private var progressBar: ProgressBarUnify
     private var stockProgressBarLayout: View
     private var stockText: Typography
@@ -61,6 +62,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             menuBtn = findViewById(R.id.menu)
             btnAddToCart = findViewById(R.id.button_add_to_cart_product_detail)
             btnAddToWishlist = findViewById(R.id.button_add_to_wishlist_product_detail)
+            btnAddToWishlistIcon = findViewById(R.id.image_add_to_wishlist_product_detail)
             progressBar = findViewById(R.id.ongoing_progress_bar_product_detail)
             stockText = findViewById(R.id.stock_text_product_detail)
             stockProgressBarLayout = findViewById(R.id.product_stock_bar_layout)
@@ -110,6 +112,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             btnAddToCart.showWithCondition(feedDetailProductModel.isUpcoming || feedDetailProductModel.isOngoing)
             val isUpcomingAndRilisanSpecial = feedDetailProductModel.isUpcoming && feedDetailProductModel.isRilisanSpl
             btnAddToCart.isEnabled = feedDetailProductModel.product.cartable
+            setWishlistIconStateColor(false)
             if (isUpcomingAndRilisanSpecial){
                 btnAddToCart.apply {
                     isEnabled = false
@@ -121,7 +124,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
                 viewListener.onAddToCartButtonClicked(feedDetailProductModel)
             }
             btnAddToWishlist.setOnClickListener {
-                viewListener.onAddToWishlistButtonClicked(feedDetailProductModel)
+                viewListener.onAddToWishlistButtonClicked(feedDetailProductModel, adapterPosition)
             }
 
             setOnClickListener {
@@ -136,10 +139,23 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             setGradientColorForProgressBar(feedDetailProductModel, itemView)
     }
 
-    private fun setGradientColorForProgressBar(item: FeedDetailProductModel, itemView: View){
+    override fun bind(element: FeedDetailProductModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() as Int == PAYLOAD_CLICK_WISHLIST) {
+            element?.isWishlisted = true
+            setWishlistIconStateColor(true)
+        }
+    }
+
+    private fun setGradientColorForProgressBar(item: FeedDetailProductModel, itemView: View) {
         val progressBarColor: IntArray = intArrayOf(
-            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
-            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color
+            ),
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color
+            )
         )
         itemView.run {
             progressBar.progressBarColor = progressBarColor
@@ -150,11 +166,35 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
         }
     }
 
+    private fun setWishlistIconStateColor(isWishlisted: Boolean) {
+        itemView.run {
+            if (isWishlisted) {
+                val colorRed =
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    )
+                btnAddToWishlistIcon.setImage(IconUnify.HEART_FILLED, colorRed, colorRed)
+                btnAddToWishlist.isEnabled = false
+                btnAddToWishlistIcon.isEnabled = false
+            } else {
+                val colorGrey =
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                    )
+                btnAddToWishlistIcon.setImage(IconUnify.HEART, colorGrey, colorGrey)
+                btnAddToWishlist.isEnabled = true
+                btnAddToWishlistIcon.isEnabled = true
+            }
+        }
+    }
 
     companion object {
         @JvmField
         @LayoutRes
         val LAYOUT = R.layout.list_feed_detail
+        const val PAYLOAD_CLICK_WISHLIST = 90
     }
 
 }
