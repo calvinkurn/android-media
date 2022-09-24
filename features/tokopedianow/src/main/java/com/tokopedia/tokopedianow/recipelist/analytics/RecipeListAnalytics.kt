@@ -28,9 +28,12 @@ import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTIO
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_UNBOOKMARK
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_BOOKMARK_TOASTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_UNBOOKMARK_TOASTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_BACK_FAILED_LOAD_PAGE
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_BACK_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_FILTER_NO_SEARCH_RESULT
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_IMPRESS_FAILED_LOAD_PAGE
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_RESET_FILTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_RETRY_FAILED_LOAD_PAGE
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_SEARCH_BAR_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_IMPRESS_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_IMPRESS_RECIPE_CARD
@@ -53,11 +56,11 @@ class RecipeListAnalytics @Inject constructor(
 
     object CATEGORY {
         const val EVENT_CATEGORY_RECIPE_SEARCH = "tokonow - recipe search"
-        const val EVENT_CATEGORY_RECIPE_HOME = "tokonow - homepage recipe"
+        const val EVENT_CATEGORY_RECIPE_HOME = "tokonow - recipe"
     }
 
     object ACTION {
-        const val EVENT_ACTION_CLICK_BACK = "click back"
+        const val EVENT_ACTION_CLICK_BACK = "click back button"
         const val EVENT_ACTION_CLICK_FILTER = "click filter"
         const val EVENT_ACTION_CLICK_SEARCH_BAR = "click search bar"
         const val EVENT_ACTION_CLICK_BOOKMARK_LIST = "click bookmark list"
@@ -73,6 +76,9 @@ class RecipeListAnalytics @Inject constructor(
         const val EVENT_CLICK_SEARCH_BAR_NO_SEARCH_RESULT = "click search bar no search result"
         const val EVENT_CLICK_RESET_FILTER = "click reset filter"
         const val EVENT_CLICK_FILTER_NO_SEARCH_RESULT = "click filter no search result"
+        const val EVENT_CLICK_IMPRESS_FAILED_LOAD_PAGE = "impression failed load page"
+        const val EVENT_CLICK_BACK_FAILED_LOAD_PAGE = "click back failed load page"
+        const val EVENT_CLICK_RETRY_FAILED_LOAD_PAGE = "click retry failed load page"
     }
 
     private fun getCategory(pageName: String): String {
@@ -169,6 +175,36 @@ class RecipeListAnalytics @Inject constructor(
             pageName = pageName
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
+    }
+
+    fun impressFailedLoadPage(pageName: String) {
+        TokoNowCommonAnalytics.hitCommonTracker(
+            TokoNowCommonAnalytics.getDataLayer(
+                event = EVENT_VIEW_PG_IRIS,
+                action = EVENT_CLICK_IMPRESS_FAILED_LOAD_PAGE,
+                category = getCategory(pageName)
+            )
+        )
+    }
+
+    fun clickBackFailedLoadPage(pageName: String) {
+        TokoNowCommonAnalytics.hitCommonTracker(
+            TokoNowCommonAnalytics.getDataLayer(
+                event = EVENT_CLICK_PG,
+                action = EVENT_CLICK_BACK_FAILED_LOAD_PAGE,
+                category = getCategory(pageName)
+            )
+        )
+    }
+
+    fun clickRetryFailedLoadPage(pageName: String) {
+        TokoNowCommonAnalytics.hitCommonTracker(
+            TokoNowCommonAnalytics.getDataLayer(
+                event = EVENT_CLICK_PG,
+                action = EVENT_CLICK_RETRY_FAILED_LOAD_PAGE,
+                category = getCategory(pageName)
+            )
+        )
     }
 
     fun clickBookmarkRecipe(recipeId: String, recipeTitle: String, pageName: String) {

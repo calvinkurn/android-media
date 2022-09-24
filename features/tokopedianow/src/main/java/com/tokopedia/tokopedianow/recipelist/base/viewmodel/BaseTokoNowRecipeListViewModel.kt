@@ -40,6 +40,8 @@ abstract class BaseTokoNowRecipeListViewModel(
     private val _showHeaderBackground = MutableLiveData<Boolean>()
     private val _searchKeyword = MutableLiveData<String>()
 
+    private var isSuccessLoadPage = true
+
     protected var getRecipeListParam = RecipeListParam()
     protected var visitableItems = mutableListOf<Visitable<*>>()
 
@@ -64,10 +66,19 @@ abstract class BaseTokoNowRecipeListViewModel(
 
             _visitableList.postValue(visitableItems)
             hideProgressBar()
+            isSuccessLoadPage = true
         }) {
             hideHeaderBackground()
             hideProgressBar()
             showError()
+        }
+    }
+
+    fun whenLoadPage(onSuccessLoaded: () -> Unit, onFailedLoaded: () -> Unit) {
+        if (isSuccessLoadPage) {
+            onSuccessLoaded()
+        } else {
+            onFailedLoaded()
         }
     }
 
@@ -98,6 +109,7 @@ abstract class BaseTokoNowRecipeListViewModel(
         visitableItems.clear()
         visitableItems.add(TokoNowServerErrorUiModel)
         _visitableList.postValue(visitableItems)
+        isSuccessLoadPage = false
     }
 
     private fun resetVisitableItems() {

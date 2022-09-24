@@ -3,10 +3,10 @@ package com.tokopedia.tokopedianow.common.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecomCarouselBinding
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowServerErrorBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -23,12 +23,20 @@ class TokoNowServerErrorViewHolder(
     private var binding: ItemTokopedianowServerErrorBinding? by viewBinding()
 
     override fun bind(item: TokoNowServerErrorUiModel) {
-        binding?.emptyStateFailedToFetchData?.setActionClickListener {
-            listener?.onClickRetryButton()
+        binding?.apply {
+            root.addOnImpressionListener(item, object : ViewHintListener {
+                override fun onViewHint() {
+                    listener?.onImpressErrorPage()
+                }
+            })
+            emptyStateFailedToFetchData.setActionClickListener {
+                listener?.onClickRetryButton()
+            }
         }
     }
 
     interface ServerErrorListener {
         fun onClickRetryButton()
+        fun onImpressErrorPage()
     }
 }
