@@ -184,6 +184,8 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         viewModel.refreshPage()
     }
 
+    override fun onImpressErrorPage() { /* nothing to do */ }
+
     override fun onClickOtherTags() {
         analytics.trackClickOtherTags()
     }

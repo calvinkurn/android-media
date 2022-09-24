@@ -105,6 +105,11 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
 
     override fun onClickRetryButton() {
         viewModel.refreshPage()
+        analytics.clickRetryFailedLoadPage(pageName)
+    }
+
+    override fun onImpressErrorPage() {
+        analytics.impressFailedLoadPage(pageName)
     }
 
     override fun viewModel() = viewModel
@@ -133,7 +138,14 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
         navToolbar?.init(fragment)
 
         navToolbar?.setBackButtonOnClickListener {
-            analytics.clickBackButton(pageName)
+            viewModel.whenLoadPage(
+                onSuccessLoaded = {
+                    analytics.clickBackButton(pageName)
+                },
+                onFailedLoaded = {
+                    analytics.clickBackFailedLoadPage(pageName)
+                }
+            )
             activity?.finish()
         }
 

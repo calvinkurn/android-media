@@ -319,6 +319,8 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onClickRetryButton() = onRefreshLayout()
 
+    override fun onImpressErrorPage() { /* nothing to do */ }
+
     override fun onAttach(context: Context) {
         initInjector()
         super.onAttach(context)
