@@ -7,7 +7,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductGeneralInfoDataModel(
         val name: String = "",
         val type: String = "",
-        val applink: String = "",
+        var applink: String = "",
         var title: String = "",
         var isApplink: Boolean = false,
         val parentIcon: String = "",

@@ -17,6 +17,7 @@ import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.domain.mapper.EligibleAddressFeatureMapper
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
+import com.tokopedia.manageaddress.domain.model.DeleteAddressParam
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.model.shareaddress.ValidateShareAddressAsReceiverParam
@@ -66,8 +67,10 @@ class ManageAddressViewModel @Inject constructor(
     val isNeedValidateShareAddress: Boolean
         get() = receiverUserId?.isNotBlank() == true || senderUserId?.isNotBlank() == true
     var source = ""
+    private val isTokonow: Boolean
+        get() = source == ManageAddressSource.TOKONOW.source
     val isFromLCA: Boolean
-        get() = source == ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source
+        get() = source == ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source || isTokonow
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>
@@ -153,7 +156,7 @@ class ManageAddressViewModel @Inject constructor(
 
     fun deletePeopleAddress(id: String) {
         viewModelScope.launchCatchError(block = {
-            val resultDelete = deletePeopleAddressUseCase(id.toLong())
+            val resultDelete = deletePeopleAddressUseCase(DeleteAddressParam(id.toLong(), isTokonow))
             if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
                 resultDelete.response.data.success == STATUS_SUCCESS
             ) {
@@ -178,7 +181,7 @@ class ManageAddressViewModel @Inject constructor(
 
         viewModelScope.launchCatchError(block = {
 
-            val defaultAddressParam = DefaultAddressParam(id.toLong(), setAsStateChosenAddress)
+            val defaultAddressParam = DefaultAddressParam(id.toLong(), setAsStateChosenAddress, isTokonow)
             val resultDefaultAddress = setDefaultPeopleAddressUseCase(defaultAddressParam)
             if (
                 resultDefaultAddress.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
@@ -262,7 +265,7 @@ class ManageAddressViewModel @Inject constructor(
             showValidateShareAddressLoadingState(true)
             val params = ValidateShareAddressAsReceiverParam(
                 senderUserId = senderUserId,
-                source = source
+                source = getSourceValue()
             )
             val result = validateShareAddressAsReceiverUseCase(params)
             _validateShareAddressState.value = if (result.keroValidateShareAddressAsReceiver?.isValid == true) {
@@ -282,7 +285,7 @@ class ManageAddressViewModel @Inject constructor(
             showValidateShareAddressLoadingState(true)
             val params = ValidateShareAddressAsSenderParam(
                 receiverUserId = receiverUserId,
-                source = source
+                source = getSourceValue()
             )
             val result = validateShareAddressAsSenderUseCase(params)
             _validateShareAddressState.value = if (result.keroValidateShareAddressAsSender?.isValid == true) {
@@ -299,6 +302,14 @@ class ManageAddressViewModel @Inject constructor(
 
     private fun showValidateShareAddressLoadingState(isShowLoading: Boolean) {
         _validateShareAddressState.value = ValidateShareAddressState.Loading(isShowLoading)
+    }
+
+    fun getSourceValue(): String {
+        return if (isTokonow) {
+            ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source
+        } else {
+            source
+        }
     }
 
     override fun onCleared() {

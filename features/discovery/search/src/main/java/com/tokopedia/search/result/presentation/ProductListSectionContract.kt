@@ -128,7 +128,6 @@ interface ProductListSectionContract {
         val pageComponentId: String
         val userId: String
         val isUserLoggedIn: Boolean
-        val dynamicFilterModel: DynamicFilterModel?
         fun onPriceFilterTickerDismissed()
         val isTickerHasDismissed: Boolean
         fun onViewCreated()
@@ -159,11 +158,6 @@ interface ProductListSectionContract {
             clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
             searchParameter: Map<String, Any>
         )
-        fun updateLastFilter(
-            searchParameter: Map<String, Any>,
-            savedOptionList: List<SavedOption>,
-        )
-        fun closeLastFilter(searchParameter: Map<String, Any>)
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }

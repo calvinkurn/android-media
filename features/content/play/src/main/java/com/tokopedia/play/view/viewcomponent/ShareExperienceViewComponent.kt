@@ -67,7 +67,10 @@ class ShareExperienceViewComponent(
     }
 
     fun setIsShareable(isShow: Boolean) {
-        if (isShow) ivShareLink.show() else ivShareLink.hide()
+        if (isShow) {
+            ivShareLink.show()
+            listener.onShareIconImpressed(this)
+        } else ivShareLink.hide()
     }
 
     private fun isTemporaryImageAvailable(): Boolean {
@@ -185,5 +188,6 @@ class ShareExperienceViewComponent(
         fun onScreenshotTaken(view: ShareExperienceViewComponent)
         fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String)
         fun onHandleShareFallback(view: ShareExperienceViewComponent)
+        fun onShareIconImpressed(view: ShareExperienceViewComponent)
     }
 }

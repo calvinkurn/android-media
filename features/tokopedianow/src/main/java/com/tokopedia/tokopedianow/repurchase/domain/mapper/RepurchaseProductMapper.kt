@@ -2,20 +2,22 @@ package com.tokopedia.tokopedianow.repurchase.domain.mapper
 
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.*
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 
 object RepurchaseProductMapper {
 
-    fun List<RepurchaseProduct>.mapToProductListUiModel() = map {
+    fun List<RepurchaseProduct>.mapToProductListUiModel() = mapIndexed { index, repurchaseProduct ->
         RepurchaseProductUiModel(
-            it.id,
-            it.parentProductId,
-            it.shop.id,
-            it.categoryId,
-            it.category,
-            it.isStockEmpty(),
-            createProductCardModel(it)
+            repurchaseProduct.id,
+            repurchaseProduct.parentProductId,
+            repurchaseProduct.shop.id,
+            repurchaseProduct.categoryId,
+            repurchaseProduct.category,
+            repurchaseProduct.isStockEmpty(),
+            createProductCardModel(repurchaseProduct),
+            index + ADDITIONAL_POSITION
         )
     }
 

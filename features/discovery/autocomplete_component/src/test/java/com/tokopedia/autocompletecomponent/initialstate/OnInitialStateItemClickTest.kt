@@ -10,6 +10,7 @@ import com.tokopedia.autocompletecomponent.initialstate.productline.InitialState
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchSeeMoreDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
+import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
 import com.tokopedia.autocompletecomponent.jsonToObject
 import com.tokopedia.autocompletecomponent.shouldBe
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -19,6 +20,7 @@ import io.mockk.verifyOrder
 import org.junit.Test
 
 private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
+private const val initialStateWithSearchBarEducation = "autocomplete/initialstate/with-searchbar-education.json"
 
 internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
@@ -346,4 +348,27 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
             finish()
         }
     }
+
+    @Test
+    fun `Test click searchbar education widget`() {
+        `Given view already get initial state`(initialStateWithSearchBarEducation)
+
+        val item = findDataView<SearchBarEducationDataView>().item
+
+        `When click searchbar education`(item)
+        `Then verify searchbar education track`(item)
+    }
+
+    private fun `When click searchbar education`(item: BaseItemInitialStateSearch) {
+        initialStatePresenter.onSearchBarEducationClick(item)
+    }
+
+    private fun `Then verify searchbar education track`(item: BaseItemInitialStateSearch) {
+        verify {
+            initialStateView.trackEventClickSearchBarEducation(item)
+            initialStateView.route(item.applink, initialStatePresenter.getSearchParameter())
+            initialStateView.finish()
+        }
+    }
+
 }

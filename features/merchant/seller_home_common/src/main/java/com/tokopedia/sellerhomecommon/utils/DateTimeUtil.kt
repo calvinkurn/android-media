@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit
 
 object DateTimeUtil {
 
+    private const val COUNTRY_ID = "ID"
+    private const val LANGUAGE_ID = "in"
     const val FORMAT_DD_MMM_YYYY = "dd MMM yyyy"
     const val FORMAT_HH_MM = "HH:mm"
     const val FORMAT_DD_MM_YYYY = "dd-MM-yyyy"
@@ -81,6 +83,6 @@ object DateTimeUtil {
     }
 
     private fun getLocale(): Locale {
-        return Locale.getDefault()
+        return Locale(LANGUAGE_ID, COUNTRY_ID)
     }
 }

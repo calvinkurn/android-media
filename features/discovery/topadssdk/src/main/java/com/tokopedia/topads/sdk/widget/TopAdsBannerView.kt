@@ -30,6 +30,8 @@ import com.tokopedia.shopwidget.shopcard.ShopCardListener
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardView
 import com.tokopedia.topads.sdk.R
+import com.tokopedia.topads.sdk.TopAdsConstants.DILYANI_TOKOPEDIA
+import com.tokopedia.topads.sdk.TopAdsConstants.FULFILLMENT
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_9
 import com.tokopedia.topads.sdk.base.Config
@@ -164,6 +166,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     shopAdsProductView.hide()
                     shopAdsWithThreeProducts.hide()
                     adsBannerShopCardView?.gone()
+                    list.isNestedScrollingEnabled = false
 
                     if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
                         container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
@@ -490,19 +493,83 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     private fun getProductCardViewModel(product: Product): ProductCardModel {
-        return ProductCardModel(productImageUrl = product.imageProduct.imageUrl,
-                productName = product.name, discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
-                slashedPrice = product.campaign.originalPrice, formattedPrice = product.priceFormat,
-                reviewCount = product.countReviewFormat.toIntOrZero(), ratingCount = product.productRating,
-                ratingString = product.productRatingFormat, countSoldRating = product.headlineProductRatingAverage,
-                freeOngkir = ProductCardModel.FreeOngkir(product.freeOngkir.isActive, product.freeOngkir.imageUrl),
-                labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                    product.labelGroupList.map {
-                        add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
-                    }
-                },
-                hasAddToCartButton = this.hasAddToCartButton,
-                addToCartButtonType = UnifyButton.Type.MAIN)
+        val isAvailAble = checkIfDTAvailable(product.labelGroupList)
+        val productCardModel = ProductCardModel(
+            productImageUrl = product.imageProduct.imageUrl,
+            productName = product.name,
+            discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
+            formattedPrice = product.priceFormat,
+            reviewCount = product.countReviewFormat.toIntOrZero(),
+            ratingString = product.productRatingFormat,
+            freeOngkir = ProductCardModel.FreeOngkir(
+                product.freeOngkir.isActive,
+                product.freeOngkir.imageUrl
+            ),
+            hasAddToCartButton = this.hasAddToCartButton,
+            addToCartButtonType = UnifyButton.Type.MAIN
+        )
+        return getProductModelOnCondition(product, isAvailAble, productCardModel)
+
+    }
+
+    private fun getProductModelOnCondition(
+        product: Product,
+        isAvailAble: Boolean,
+        productCardModel: ProductCardModel
+    ): ProductCardModel {
+        if (isAvailAble) {
+            return if (!product.campaign.originalPrice.isNullOrEmpty()) {
+                productCardModel.copy(
+                    slashedPrice = product.campaign.originalPrice,
+                    labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
+                        product.labelGroupList.map {
+                            if (it.position != "integrity"){
+                                add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
+                            }
+                        }
+                    })
+            } else {
+                productCardModel.copy(
+                    labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
+                        product.labelGroupList.map {
+                            if (it.position != "integrity"){
+                                add(
+                                    ProductCardModel.LabelGroup(
+                                        it.position,
+                                        it.title,
+                                        it.type,
+                                        it.imageUrl
+                                    )
+                                )
+                            }
+                        }
+                    })
+            }
+
+        }
+
+        return productCardModel.copy(
+            slashedPrice = product.campaign.originalPrice,
+            countSoldRating = product.headlineProductRatingAverage,
+            labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
+                product.labelGroupList.map {
+                    add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
+                }
+            })
+    }
+
+
+    private fun checkIfDTAvailable(labelGroupList: List<LabelGroup>): Boolean {
+        var isAvailable = false
+        run breaking@ {
+            labelGroupList.forEach {
+                if (it.position == FULFILLMENT && it.title == DILYANI_TOKOPEDIA){
+                    isAvailable = true
+                    return@breaking
+                }
+            }
+        }
+        return isAvailable
     }
 
     private fun bindFavorite(isFollowed: Boolean) {

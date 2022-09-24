@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.sellerhomecommon.databinding.ShcTableViewBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.TablePageAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
@@ -25,8 +28,9 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
         null
     private var htmlClickListener: ((url: String, isEmpty: Boolean) -> Unit)? = null
     private val mTablePageAdapter by lazy { TablePageAdapter() }
+    private var isPageIndicatorEnabled: Boolean = true
     private var alreadyAttachToSnapHelper = false
-    private var highestHeight = 0
+    private var highestHeight = Int.ZERO
 
     private val binding by lazy {
         ShcTableViewBinding.inflate(LayoutInflater.from(context), this, true)
@@ -34,8 +38,11 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
 
     fun showTable(items: List<TablePageUiModel>) {
         binding.run {
-            tableViewPageControl.visibility = if (items.size > 1) View.VISIBLE else View.GONE
-            tableViewPageControl.setIndicator(items.size)
+            val shouldShowPageControl = items.size > Int.ONE && isPageIndicatorEnabled
+            tableViewPageControl.isVisible = shouldShowPageControl
+            if (isPageIndicatorEnabled) {
+                tableViewPageControl.setIndicator(items.size)
+            }
 
             val mLayoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
                 override fun canScrollVertically(): Boolean = false
@@ -48,11 +55,13 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
                         val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
-                        if (position != RecyclerView.NO_POSITION && items.size > 1) {
+                        if (position != RecyclerView.NO_POSITION && items.size > Int.ONE) {
                             mLayoutManager.findViewByPosition(position)?.let { view ->
                                 refreshTableHeight(view)
                             }
-                            binding.tableViewPageControl.setCurrentIndicator(position)
+                            if (isPageIndicatorEnabled) {
+                                binding.tableViewPageControl.setCurrentIndicator(position)
+                            }
                             val item = items.getOrNull(position)
                             val isEmpty = item?.rows?.isEmpty().orTrue()
                             onSwipeListener?.invoke(position, items.size, isEmpty)
@@ -88,13 +97,26 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
         this.htmlClickListener = onClick
     }
 
+    fun setPageIndicatorEnabled(isEnabled: Boolean) {
+        this.isPageIndicatorEnabled = isEnabled
+        binding.tableViewPageControl.isVisible = isEnabled
+    }
+
+    fun resetHeight() {
+        binding.run {
+            highestHeight = Int.ZERO
+            rvTableViewPage.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            rvTableViewPage.requestLayout()
+        }
+    }
+
     /**
      * Dynamically set recyclerview height according to view's measured height
      */
     private fun refreshTableHeight(view: View) {
         binding.run {
             val wMeasureSpec = MeasureSpec.makeMeasureSpec(view.width, MeasureSpec.EXACTLY)
-            val hMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+            val hMeasureSpec = MeasureSpec.makeMeasureSpec(Int.ZERO, MeasureSpec.UNSPECIFIED)
             view.measure(wMeasureSpec, hMeasureSpec)
 
             if (rvTableViewPage.layoutParams?.height != view.measuredHeight) {

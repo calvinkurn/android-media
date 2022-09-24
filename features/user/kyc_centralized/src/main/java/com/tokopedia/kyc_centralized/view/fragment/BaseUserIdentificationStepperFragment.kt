@@ -57,12 +57,14 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         if (context is StepperListener) {
             stepperListener = context as StepperListener
         }
+
         if (arguments != null && savedInstanceState == null) {
             stepperModel = arguments?.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
             kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
         } else if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(EXTRA_KYC_STEPPER_MODEL)
         }
+
         if (activity != null) {
             projectId = activity?.intent?.getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, -1)?: -1
             allowedSelfie = activity?.intent?.getBooleanExtra(UserIdentificationInfoFragment.ALLOW_SELFIE_FLOW_EXTRA, false)?: false
@@ -77,8 +79,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         super.onSaveInstanceState(outState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_user_identification_form, container, false)
         initView(view)
         encryptImage()
@@ -107,12 +108,11 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                 handleKtpImage(data)
             }
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_TOO_BIG) {
-            sendAnalyticErrorImageTooLarge(requestCode)
-            NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_image_file_too_big))
+            NetworkErrorHelper.showRedSnackbar(activity, context?.resources?.getString(R.string.error_text_image_file_too_big).orEmpty())
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_NOT_EXIST) {
-            NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_image_cant_be_accessed))
+            NetworkErrorHelper.showRedSnackbar(activity, context?.resources?.getString(R.string.error_text_image_cant_be_accessed).orEmpty())
         } else if (resultCode == KYCConstant.IS_FILE_LIVENESS_IMAGE_NOT_EXIST) {
-            NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_liveness_image_cant_be_accessed))
+            NetworkErrorHelper.showRedSnackbar(activity, context?.resources?.getString(R.string.error_text_liveness_image_cant_be_accessed).orEmpty())
         } else if (resultCode == KYCConstant.NOT_SUPPORT_LIVENESS && requestCode == KYCConstant.REQUEST_CODE_CAMERA_FACE) {
             UserIdentificationFormActivity.isSupportedLiveness = false
             val intent = createIntent(requireContext(), UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE, projectId)
@@ -138,14 +138,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         val ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
         stepperModel?.ktpFile = ktpFile.toEmptyStringIfNull()
         stepperListener?.goToNextPage(stepperModel)
-    }
-
-    private fun sendAnalyticErrorImageTooLarge(requestCode: Int) {
-        when (requestCode) {
-            KYCConstant.REQUEST_CODE_CAMERA_KTP -> analytics?.eventViewErrorImageTooLargeKtpPage()
-            KYCConstant.REQUEST_CODE_CAMERA_FACE -> analytics?.eventViewErrorImageTooLargeSelfiePage()
-            else -> {}
-        }
     }
 
     protected val isKycSelfie: Boolean

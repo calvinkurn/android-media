@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
@@ -16,6 +17,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_COMPRESSION
 import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_CROPPING
 import com.tokopedia.kyc_centralized.R
@@ -27,12 +29,12 @@ import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import java.io.File
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 /**
  * @author  : @rival [Rivaldy Firmansyah]
@@ -64,7 +66,15 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        arguments?.let {
+            isUseCropping = it.getBoolean(EXTRA_USE_CROPPING).orFalse()
+            isUseCompression = it.getBoolean(EXTRA_USE_COMPRESSION).orFalse()
+            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orZero()
+        }
+
         analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -74,12 +84,6 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        arguments?.let {
-            isUseCropping = it.getBoolean(EXTRA_USE_CROPPING).orFalse()
-            isUseCompression = it.getBoolean(EXTRA_USE_COMPRESSION).orFalse()
-            projectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orZero()
-        }
 
         setupView()
         showCameraView()
@@ -103,7 +107,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
             imageButtonShutter.setOnClickListener {
                 analytics?.eventClickShutterCameraKtp()
                 hideCameraButtonAndShowLoading()
-                cameraView.takePicture()
+                cameraView.takePictureSnapshot()
             }
 
             imageButtonFlip.setOnClickListener {
@@ -243,14 +247,14 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
             bitmapProcessing?.doCropping(bitmap, frame, object : BitmapProcessingListener {
                 override fun onBitmapReady(bitmap: Bitmap) {
                     val file = saveToFile(bitmap)
-                    onSuccessSaveFile(file)
+                    onSuccessSaveFile(file, bitmap)
                 }
 
                 override fun onFailed(originalBitmap: Bitmap, throwable: Throwable) {
                     throwable.printStackTrace()
 
                     val file = saveToFile(bitmap)
-                    onSuccessSaveFile(file)
+                    onSuccessSaveFile(file, bitmap)
                 }
             })
         } catch (e: Exception) {
@@ -263,14 +267,14 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
             bitmapProcessing?.doCompression(bitmap, object : BitmapProcessingListener {
                 override fun onBitmapReady(bitmap: Bitmap) {
                     val file = saveToFile(bitmap)
-                    onSuccessSaveFile(file)
+                    onSuccessSaveFile(file, bitmap)
                 }
 
                 override fun onFailed(originalBitmap: Bitmap, throwable: Throwable) {
                     throwable.printStackTrace()
 
                     val file = saveToFile(bitmap)
-                    onSuccessSaveFile(file)
+                    onSuccessSaveFile(file, bitmap)
                 }
             })
         } catch (e: Exception) {
@@ -283,14 +287,14 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
             bitmapProcessing?.doCropAndCompress(bitmap, frame, object : BitmapProcessingListener {
                 override fun onBitmapReady(bitmap: Bitmap) {
                     val file = saveToFile(bitmap)
-                    onSuccessSaveFile(file)
+                    onSuccessSaveFile(file, bitmap)
                 }
 
                 override fun onFailed(originalBitmap: Bitmap, throwable: Throwable) {
                     throwable.printStackTrace()
 
                     val file = saveToFile(bitmap)
-                    onSuccessSaveFile(file)
+                    onSuccessSaveFile(file, bitmap)
                 }
             })
         } catch (e: Exception) {
@@ -304,7 +308,11 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
         else throw IOException("Failed save file")
     }
 
-    private fun onSuccessSaveFile(file: File) {
+    private fun onSuccessSaveFile(file: File, bitmap: Bitmap) {
+
+        val aspectRatio = "${bitmap.width}$DELIMITER_COLON${bitmap.height}"
+        (viewBinding?.imagePreview?.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = aspectRatio
+
         viewBinding?.imagePreview?.apply {
             clearImage()
             loadImage(file.absolutePath) {
@@ -337,7 +345,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun getFileSizeInMb(file: File): Int {
-        return (file.length() / DEFAULT_ONE_MEGABYTE).toString().toInt()
+        return (file.length() / DEFAULT_ONE_MEGABYTE).toString().toIntOrZero()
     }
 
     private fun listenerOnPictureTaken(result: (PictureResult) -> Unit): CameraListener {
@@ -351,6 +359,8 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
     companion object {
         private const val DEFAULT_ONE_MEGABYTE: Long = 1024
         private const val MAX_FILE_SIZE = 15360
+
+        private const val DELIMITER_COLON = ":"
 
         // Bundle values :
         // viewMode: Int,

@@ -41,12 +41,17 @@ interface DynamicProductDetailListener {
     fun onVideoVolumeCLicked(isMute: Boolean)
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
-    fun onThumbnailImpress(position: Int,
-                           media: MediaDataModel,
-                           componentTrackDataModel: ComponentTrackDataModel?)
-    fun trackThumbnailClicked(position: Int,
-                              media: MediaDataModel,
-                              componentTrackDataModel: ComponentTrackDataModel?)
+    fun onThumbnailImpress(
+        position: Int,
+        media: MediaDataModel,
+        componentTrackDataModel: ComponentTrackDataModel?
+    )
+
+    fun trackThumbnailClicked(
+        position: Int,
+        media: MediaDataModel,
+        componentTrackDataModel: ComponentTrackDataModel?
+    )
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
     fun showThumbnailImage(): Boolean
@@ -60,7 +65,13 @@ interface DynamicProductDetailListener {
     fun getProductFragmentManager(): FragmentManager
     fun showAlertCampaignEnded()
     fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel)
-    fun onSwipePicture(type: String, url: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onSwipePicture(
+        type: String,
+        url: String,
+        position: Int,
+        componentTrackDataModel: ComponentTrackDataModel?
+    )
+
     fun shouldShowWishlist(): Boolean
 
     /**
@@ -90,16 +101,37 @@ interface DynamicProductDetailListener {
     fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?)
     fun onDiscussionRefreshClicked()
     fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel?)
-    fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
-    fun goToTalkReply(questionId: String, componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
+    fun goToTalkReading(
+        componentTrackDataModel: ComponentTrackDataModel,
+        numberOfThreadsShown: String
+    )
+
+    fun goToTalkReply(
+        questionId: String,
+        componentTrackDataModel: ComponentTrackDataModel,
+        numberOfThreadsShown: String
+    )
 
     /**
      * ProductReviewViewHolder
      */
     fun onSeeAllLastItemMediaReview(componentTrackDataModel: ComponentTrackDataModel?)
-    fun onMediaReviewClick(reviewID: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?, detailedMediaResult: ProductrevGetReviewMedia)
+    fun onMediaReviewClick(
+        reviewID: String,
+        position: Int,
+        componentTrackDataModel: ComponentTrackDataModel?,
+        detailedMediaResult: ProductrevGetReviewMedia
+    )
+
     fun onReviewClick()
     fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
+    fun onSeeReviewCredibility(
+        reviewID: String,
+        reviewerUserID: String,
+        userStatistics: String,
+        userLabel: String,
+        componentTrackData: ComponentTrackDataModel
+    )
 
     /**
      * ProductMerchantVoucherViewHolder
@@ -110,8 +142,8 @@ interface DynamicProductDetailListener {
      * FintechWidgetViewHolder
      */
     fun fintechRedirection(
-            fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
-            redirectionUrl: String
+        fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
+        redirectionUrl: String
     )
 
     /**
@@ -120,36 +152,105 @@ interface DynamicProductDetailListener {
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
     fun onShopMultilocClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel)
-    fun onShopTickerClicked(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
-    fun onShopTickerImpressed(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
-    fun onShopCredibilityImpressed(countLocation: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopTickerClicked(
+        tickerDataResponse: ShopInfo.TickerDataResponse,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun onShopTickerImpressed(
+        tickerDataResponse: ShopInfo.TickerDataResponse,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun onShopCredibilityImpressed(
+        countLocation: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
 
     /**
      * ProductRecommendationAnnotationChipViewHolder
      */
-    fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int)
+    fun onChipFilterClicked(
+        recommendationDataModel: ProductRecommendationDataModel,
+        annotationChip: AnnotationChip,
+        position: Int,
+        filterPosition: Int
+    )
 
     /**
      * ProductRecommendationViewHolder
      */
-    fun onSeeAllRecomClicked(recommendationWidget: RecommendationWidget, pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun eventRecommendationClick(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun eventRecommendationImpression(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun onSeeAllRecomClicked(
+        recommendationWidget: RecommendationWidget,
+        pageName: String,
+        applink: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun eventRecommendationClick(
+        recomItem: RecommendationItem,
+        chipValue: String,
+        position: Int,
+        pageName: String,
+        title: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun eventRecommendationImpression(
+        recomItem: RecommendationItem,
+        chipValue: String,
+        position: Int,
+        pageName: String,
+        title: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
     fun onThreeDotsClick(recomItem: RecommendationItem, adapterPosition: Int, carouselPosition: Int)
     fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool?
     fun getRecommendationCarouselSavedState(): SparseIntArray
-    fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
-    fun sendTopAdsImpression(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
+    fun sendTopAdsClick(
+        topAdsUrl: String,
+        productId: String,
+        productName: String,
+        productImageUrl: String
+    )
+
+    fun sendTopAdsImpression(
+        topAdsUrl: String,
+        productId: String,
+        productName: String,
+        productImageUrl: String
+    )
+
     fun onChannelRecommendationEmpty(channelPosition: Int, data: RecommendationWidget?)
     fun onRecommendationBannerImpressed(data: RecommendationWidget, templateNameType: String)
-    fun onRecommendationBannerClicked(appLink: String, data: RecommendationWidget, templateNameType: String)
-    fun onRecomAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int)
-    fun onRecomAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int, itemPosition: Int)
+    fun onRecommendationBannerClicked(
+        appLink: String,
+        data: RecommendationWidget,
+        templateNameType: String
+    )
+
+    fun onRecomAddToCartNonVariantQuantityChangedClick(
+        recomItem: RecommendationItem,
+        quantity: Int,
+        adapterPosition: Int,
+        itemPosition: Int
+    )
+
+    fun onRecomAddVariantClick(
+        recomItem: RecommendationItem,
+        adapterPosition: Int,
+        itemPosition: Int
+    )
 
     /**
      * ProductGeneralInfoViewHolder
      */
-    fun onInfoClicked(appLink: String, name: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun onInfoClicked(
+        appLink: String,
+        name: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
 
     /**
      * ProductRecom
@@ -170,32 +271,55 @@ interface DynamicProductDetailListener {
      * ImpressionComponent
      */
     fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel)
+
     /**
      * ProductNotifyMeViewHolder
      */
-    fun onNotifyMeClicked(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel)
+    fun onNotifyMeClicked(
+        data: ProductNotifyMeDataModel,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
 
     /**
      * ProductTickerViewHolder
      */
-    fun onTickerShopClicked(tickerTitle: String, tickerType: Int,
-                            componentTrackDataModel: ComponentTrackDataModel?,
-                            tickerDescription: String, applink: String, actionType: String,
-                            tickerActionBs: TickerActionBs?)
+    fun onTickerShopClicked(
+        tickerTitle: String, tickerType: Int,
+        componentTrackDataModel: ComponentTrackDataModel?,
+        tickerDescription: String, applink: String, actionType: String,
+        tickerActionBs: TickerActionBs?
+    )
 
-    fun onTickerGoToRecomClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
+    fun onTickerGoToRecomClicked(
+        tickerTitle: String,
+        tickerType: Int,
+        componentTrackDataModel: ComponentTrackDataModel?,
+        tickerDescription: String
+    )
 
     /**
      * ProductTopAdsImageViewHolder
      */
-    fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String)
-    fun onTopAdsImageViewImpression(model: TopAdsImageDataModel, bannerId: String, bannerName: String)
+    fun onTopAdsImageViewClicked(
+        model: TopAdsImageDataModel,
+        applink: String?,
+        bannerId: String,
+        bannerName: String
+    )
+
+    fun onTopAdsImageViewImpression(
+        model: TopAdsImageDataModel,
+        bannerId: String,
+        bannerName: String
+    )
 
     /**
      * ProductDetailInfoViewHolder
      */
-    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>,
-                                    componentTrackDataModel: ComponentTrackDataModel)
+    fun onSeeMoreDescriptionClicked(
+        dataContent: List<ProductDetailInfoContent>,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
 
     /**
      * ProductReportViewHolder
@@ -210,30 +334,75 @@ interface DynamicProductDetailListener {
     /**
      * ProductShippingViewHolder
      */
-    fun openShipmentClickedBottomSheet(title: String, chipsLabel: List<String>, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
-    fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun openShipmentClickedBottomSheet(
+        title: String,
+        chipsLabel: List<String>,
+        isCod: Boolean,
+        componentTrackDataModel: ComponentTrackDataModel?
+    )
+
+    fun clickShippingComponentError(
+        errorCode: Int,
+        title: String,
+        componentTrackDataModel: ComponentTrackDataModel?
+    )
 
     /**
      * ProductCategoryCarouselViewHolder
      */
-    fun onCategoryCarouselImageClicked(url: String, categoryTitle: String, categoryId: String, componentTrackDataModel: ComponentTrackDataModel?)
-    fun onCategoryCarouselSeeAllClicked(url: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onCategoryCarouselImageClicked(
+        url: String,
+        categoryTitle: String,
+        categoryId: String,
+        componentTrackDataModel: ComponentTrackDataModel?
+    )
+
+    fun onCategoryCarouselSeeAllClicked(
+        url: String,
+        componentTrackDataModel: ComponentTrackDataModel?
+    )
 
     /**
      * ProductBundlingViewHolder
      */
-    fun onImpressionProductBundling(bundleId: String, bundleType: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun onClickCheckBundling(bundleId: String, bundleType: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun onClickProductInBundling(bundleId: String, bundleProductId: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun onImpressionProductBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun onClickCheckBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun onClickProductInBundling(
+        bundleId: String,
+        bundleProductId: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
 
     /**
      * ContentWidgetViewHolder
      */
-    fun onImpressChannelCard(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetChannelUiModel)
-    fun onClickChannelCard(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetChannelUiModel)
+    fun onImpressChannelCard(
+        componentTrackDataModel: ComponentTrackDataModel,
+        item: PlayWidgetChannelUiModel
+    )
+
+    fun onClickChannelCard(
+        componentTrackDataModel: ComponentTrackDataModel,
+        item: PlayWidgetChannelUiModel
+    )
+
     fun onClickBannerCard(componentTrackDataModel: ComponentTrackDataModel)
     fun onClickViewAll(componentTrackDataModel: ComponentTrackDataModel)
-    fun onClickToggleReminderChannel(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetChannelUiModel, isRemindMe: Boolean)
+    fun onClickToggleReminderChannel(
+        componentTrackDataModel: ComponentTrackDataModel,
+        item: PlayWidgetChannelUiModel,
+        isRemindMe: Boolean
+    )
 
     /**
      * ProductDetailNavigation / Navigation Bar / Tab
@@ -241,4 +410,8 @@ interface DynamicProductDetailListener {
     fun onImpressBackToTop(label: String)
     fun onImpressProductDetailNavigation(labels: List<String>)
     fun onClickProductDetailnavigation(position: Int, label: String)
+
+    fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel)
+    fun startVerticalRecommendation(pageName: String)
+    fun getRecommendationVerticalTrackData(): ComponentTrackDataModel?
 }

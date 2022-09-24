@@ -127,5 +127,8 @@ data class Product(
         @SerializedName("selected_unavailable_action_link")
         val selectedUnavailableActionLink: String = "",
         @SerializedName("warehouse_id")
-        val warehouseId: String = ""
+        val warehouseId: String = "",
+        @SerializedName("ethical_drug")
+        val ethicalDrug: EthicalDrug = EthicalDrug()
+
 )

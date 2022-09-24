@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -36,16 +37,25 @@ class GetShopPageP1DataUseCase @Inject constructor(
         private const val PARAM_SHOP_ID = "shopId"
         private const val PARAM_SHOP_DOMAIN = "shopDomain"
         private const val PARAM_EXT_PARAM = "extParam"
+        private const val KEY_DISTRICT_ID = "districtId"
+        private const val KEY_CITY_ID = "cityId"
+        private const val KEY_LATITUDE = "latitude"
+        private const val KEY_LONGITUDE = "longitude"
 
         @JvmStatic
         fun createParams(
-                shopId: String,
-                shopDomain: String,
-                extParam: String
-        ): RequestParams = RequestParams.create().apply {
+            shopId: String,
+            shopDomain: String,
+            extParam: String,
+            widgetUserAddressLocalData: LocalCacheModel
+            ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopId)
             putObject(PARAM_SHOP_DOMAIN, shopDomain)
             putObject(PARAM_EXT_PARAM, extParam)
+            putObject(KEY_DISTRICT_ID, widgetUserAddressLocalData.district_id)
+            putObject(KEY_CITY_ID, widgetUserAddressLocalData.city_id)
+            putObject(KEY_LATITUDE, widgetUserAddressLocalData.lat)
+            putObject(KEY_LONGITUDE, widgetUserAddressLocalData.long)
         }
     }
 
@@ -56,11 +66,24 @@ class GetShopPageP1DataUseCase @Inject constructor(
         val shopId: String = params.getString(PARAM_SHOP_ID, "")
         val shopDomain: String = params.getString(PARAM_SHOP_DOMAIN, "")
         val extParam: String = params.getString(PARAM_EXT_PARAM, "")
+        val districtId: String = params.getString(KEY_DISTRICT_ID, "")
+        val cityId: String = params.getString(KEY_CITY_ID, "")
+        val latitude: String = params.getString(KEY_LATITUDE, "")
+        val longitude: String = params.getString(KEY_LONGITUDE, "")
         val listRequest = mutableListOf<GraphqlRequest>().apply {
             add(getIsShopOfficialRequest(shopId))
             add(getIsShopPowerMerchantRequest(shopId))
             add(getShopInfoTopContentDataRequest(shopId, shopDomain))
-            add(getShopInfoHomeTypeDataRequest(shopId, extParam))
+            add(
+                getShopInfoHomeTypeDataRequest(
+                    shopId,
+                    extParam,
+                    districtId,
+                    cityId,
+                    latitude,
+                    longitude
+                )
+            )
             add(getShopInfoCoreAndAssetsDataRequest(shopId, shopDomain))
             add(getFeedWhitelistRequest(shopId))
         }
@@ -117,11 +140,25 @@ class GetShopPageP1DataUseCase @Inject constructor(
         )
     }
 
-    private fun getShopInfoHomeTypeDataRequest(shopId: String, extParam: String): GraphqlRequest {
-        val params = GqlShopPageGetHomeType.createParams(shopId, extParam)
+    private fun getShopInfoHomeTypeDataRequest(
+        shopId: String,
+        extParam: String,
+        districtId: String,
+        cityId: String,
+        latitude: String,
+        longitude: String
+    ): GraphqlRequest {
+        val params = GqlShopPageGetHomeType.createParams(
+            shopId,
+            extParam,
+            districtId,
+            cityId,
+            latitude,
+            longitude
+        )
         return createGraphqlRequest<ShopPageGetHomeType.Response>(
-                GqlShopPageGetHomeType.QUERY,
-                params.parameters
+            GqlShopPageGetHomeType.QUERY,
+            params.parameters
         )
     }
 

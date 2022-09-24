@@ -9,6 +9,8 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -42,11 +44,6 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookie
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieData
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieError
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieRequest
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieResponse
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
@@ -64,6 +61,8 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
@@ -73,7 +72,6 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
-import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.RequestParams
@@ -92,6 +90,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -648,6 +647,31 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
+
+        viewModel.addToCart(addToCartOcsRequestParams)
+
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOcsUseCase.createObservable(any()).toBlocking()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+    }
+
+    @Test
+    fun `on error normal atc cause result null`() = runBlockingTest {
+        val addToCartOcsRequestParams = AddToCartRequestParams()
+
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns null
 
         viewModel.addToCart(addToCartOcsRequestParams)
 
@@ -1468,217 +1492,131 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     //region affiliate cookie
     @Test
-    fun `assert all request params affiliate cookie`() {
-        val mockResponse = AffiliateCookie(
-                AffiliateCookieResponse(
-                        data = AffiliateCookieData(
-                                status = 1
-                        )
-                )
-        )
+    fun `integration test affiliate cookie sdk`() {
 
-        coEvery {
-            createAffiliateCookieUseCase.executeOnBackground(any())
-        } returns mockResponse
-
-        coEvery {
-            TrackApp.getInstance().gtm.irisSessionId
-        } returns  "iris"
+        val productId = "321"
+        val shopId = "123"
+        val categoryId = "123"
+        val isVariant = true
+        val stock = 10
 
         val mockProductInfoP1 = DynamicProductInfoP1(
-                basic = BasicInfo(
-                        shopID = "123",
-                        productID = "321",
-                        category = Category(
-                                detail = listOf(Category.Detail(
-                                        id = "123"
-                                ),
-                                        Category.Detail(
-                                                id = "312"
-                                        ))
-                        )
-                ),
-                data = ComponentData(
-                        variant = VariantBasic(
-                                isVariant = true
+            basic = BasicInfo(
+                shopID = shopId,
+                productID = productId,
+                category = Category(
+                    detail = listOf(
+                        Category.Detail(
+                            id = categoryId
                         ),
-                        stock = Stock(
-                                value = 10
+                        Category.Detail(
+                            id = "312"
                         )
+                    )
                 )
+            ),
+            data = ComponentData(
+                variant = VariantBasic(
+                    isVariant = isVariant
+                ),
+                stock = Stock(
+                    value = stock
+                )
+            )
         )
+
+        val affiliateUUID = "123"
+        val affiliateChannel = "affiliate channel"
+        val uuid = "1111"
+
+        val slot = slot<AffiliatePageDetail>()
 
         viewModel.hitAffiliateCookie(
-                productInfo = mockProductInfoP1,
-                deviceId = "123",
-                affiliateUuid = "123",
-                uuid = "1111",
-                affiliateChannel = "affiliate channel"
-        )
-
-        val slotParams = slot<Map<String, Any>>()
-        coVerify {
-            createAffiliateCookieUseCase.executeOnBackground(capture(slotParams))
-        }
-
-        val slotParamsCaptured = slotParams.captured["input"] as AffiliateCookieRequest
-        Assert.assertEquals(slotParamsCaptured.affiliateDetail.affiliateUniqueId, "123")
-        Assert.assertEquals(slotParamsCaptured.header.deviceId, "123")
-        Assert.assertEquals(slotParamsCaptured.header.irisSessionId, "iris")
-        Assert.assertEquals(slotParamsCaptured.header.uuid, "1111")
-        Assert.assertEquals(slotParamsCaptured.affiliateLinkDetail.channel, "affiliate channel")
-        Assert.assertEquals(slotParamsCaptured.affiliateLinkDetail.linkType, "pdp")
-        Assert.assertEquals(slotParamsCaptured.affiliateLinkDetail.linkIdentifier, "0")
-        Assert.assertEquals(slotParamsCaptured.affiliateProductDetail.categoryId, "312")
-        Assert.assertEquals(slotParamsCaptured.affiliateProductDetail.productId, "321")
-        Assert.assertEquals(slotParamsCaptured.affiliateProductDetail.stockQty.toInt(), 10)
-        Assert.assertEquals(slotParamsCaptured.affiliateProductDetail.isVariant, true)
-        Assert.assertEquals(slotParamsCaptured.affiliateShopDetail.shopId, "123")
-    }
-
-    @Test
-    fun `success hit affiliate cookie`() {
-        val mockResponse = AffiliateCookie(
-                AffiliateCookieResponse(
-                        data = AffiliateCookieData(
-                                status = 1
-                        )
-                )
-        )
-        coEvery {
-            createAffiliateCookieUseCase.executeOnBackground(any())
-        } returns mockResponse
-
-        coEvery {
-            TrackApp.getInstance().gtm.irisSessionId
-        } returns  "iris"
-
-        viewModel.hitAffiliateCookie(
-                productInfo = DynamicProductInfoP1(),
-                deviceId = "123",
-                affiliateUuid = "123",
-                uuid = "1111",
-                affiliateChannel = "affiliate channel"
+            productInfo = mockProductInfoP1,
+            affiliateUuid = affiliateUUID,
+            uuid = uuid,
+            affiliateChannel = affiliateChannel
         )
 
         coVerify {
-            createAffiliateCookieUseCase.executeOnBackground(any())
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                capture(slot),
+                uuid
+            )
         }
 
-        Assert.assertEquals((viewModel.affiliateCookie.value as Success).data, true)
+        with(slot.captured){
+            Assert.assertEquals(productId, this.pageId)
+            Assert.assertTrue(source is AffiliateSdkPageSource.PDP)
+        }
     }
 
     @Test
-    fun `success hit affiliate cookie with error code`() {
-        val mockResponse = AffiliateCookie(
-                AffiliateCookieResponse(
-                        data = AffiliateCookieData(
-                                status = 0,
-                                error = AffiliateCookieError(errorMessage = "gagal bro")
-                        )
-                )
-        )
-        coEvery {
-            createAffiliateCookieUseCase.executeOnBackground(any())
-        } returns mockResponse
+    fun `when init affiliate cookie throw, no op`() {
 
-        coEvery {
-            TrackApp.getInstance().gtm.irisSessionId
-        } returns  "iris"
-
-        viewModel.hitAffiliateCookie(
-                productInfo = DynamicProductInfoP1(),
-                deviceId = "123",
-                affiliateUuid = "123",
-                uuid = "1111",
-                affiliateChannel = "affiliate channel"
-        )
-
-        coVerify {
-            createAffiliateCookieUseCase.executeOnBackground(any())
-        }
-
-        Assert.assertEquals((viewModel.affiliateCookie.value as Fail).throwable.message, "gagal bro")
-    }
-
-    @Test
-    fun `fail hit affiliate cookie affiliateuuid empty`() {
-        val mockResponse = AffiliateCookie(
-                AffiliateCookieResponse(
-                        data = AffiliateCookieData(
-                                status = 0,
-                                error = AffiliateCookieError(errorMessage = "gagal bro")
-                        )
-                )
-        )
-        coEvery {
-            createAffiliateCookieUseCase.executeOnBackground(any())
-        } returns mockResponse
-
-        coEvery {
-            TrackApp.getInstance().gtm.irisSessionId
-        } returns  "iris"
+        val productId = "321"
+        val shopId = "123"
+        val categoryId = "123"
+        val isVariant = true
+        val stock = 10
 
         val mockProductInfoP1 = DynamicProductInfoP1(
-                basic = BasicInfo(
-                        shopID = "123",
-                        productID = "321",
-                        category = Category(
-                                detail = listOf(Category.Detail(
-                                        id = "123"
-                                ),
-                                        Category.Detail(
-                                                id = "312"
-                                        ))
-                        )
-                ),
-                data = ComponentData(
-                        variant = VariantBasic(
-                                isVariant = true
+            basic = BasicInfo(
+                shopID = shopId,
+                productID = productId,
+                category = Category(
+                    detail = listOf(
+                        Category.Detail(
+                            id = categoryId
                         ),
-                        stock = Stock(
-                                value = 10
+                        Category.Detail(
+                            id = "312"
                         )
+                    )
                 )
+            ),
+            data = ComponentData(
+                variant = VariantBasic(
+                    isVariant = isVariant
+                ),
+                stock = Stock(
+                    value = stock
+                )
+            )
         )
 
-        viewModel.hitAffiliateCookie(
-                productInfo = mockProductInfoP1,
-                deviceId = "123",
-                affiliateUuid = "",
-                uuid = "1111",
-                affiliateChannel = "affiliate channel"
-        )
+        val affiliateUUID = "123"
+        val affiliateChannel = "affiliate channel"
+        val uuid = "1111"
 
-        coVerify(inverse = true) {
-            createAffiliateCookieUseCase.executeOnBackground(any())
-        }
-    }
-
-    @Test
-    fun `fail hit affiliate cookie return throwable`() {
-        coEvery {
-            createAffiliateCookieUseCase.executeOnBackground(any())
+        coEvery{
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                any(),
+                uuid
+            )
         } throws Throwable("gagal bro")
 
-        coEvery {
-            TrackApp.getInstance().gtm.irisSessionId
-        } returns  "iris"
-
         viewModel.hitAffiliateCookie(
-                productInfo = DynamicProductInfoP1(),
-                deviceId = "123",
-                affiliateUuid = "123",
-                uuid = "1111",
-                affiliateChannel = "affiliate channel"
+            productInfo = mockProductInfoP1,
+            affiliateUuid = affiliateUUID,
+            uuid = uuid,
+            affiliateChannel = affiliateChannel
         )
 
         coVerify {
-            createAffiliateCookieUseCase.executeOnBackground(any())
+            affiliateCookieHelper.initCookie(
+                affiliateUUID,
+                affiliateChannel,
+                any(),
+                uuid
+            )
         }
+        // no op, expect to be handled by Affiliate SDK
 
-        Assert.assertEquals((viewModel.affiliateCookie.value as Fail).throwable.message,
-                "gagal bro")
     }
     //endregion
 
@@ -2396,6 +2334,147 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify { deleteWishlistV2UseCase.executeOnBackground() }
     }
 
+    @Test
+    fun `verify toolbar state should be solid when rollence is empty`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns false
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
+        } returns ""
+
+        val vm = createViewModel()
+        Assert.assertFalse(vm.toolbarTransparentState.getOrAwaitValue())
+    }
+
+    @Test
+    fun `verify toolbar state should be transparent when rollence is transparent`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns false
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
+        } returns RollenceKey.PdpToolbar.transparent
+
+        val vm = createViewModel()
+        Assert.assertTrue(vm.toolbarTransparentState.getOrAwaitValue())
+    }
+
+    @Test
+    fun `verify if seller app then toolbar state should be solid always`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns true
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
+        } returns RollenceKey.PdpToolbar.transparent
+
+        val vm = createViewModel()
+        val isTimeoutException = try {
+            vm.toolbarTransparentState.getOrAwaitValue()
+        } catch (_: TimeoutException) {
+            true
+        }
+
+        Assert.assertTrue(isTimeoutException)
+    }
+
+    @Test
+    fun `verify vertical recommendation when return empty list, will be fail`() {
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns emptyList()
+
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = productId
+        )
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Fail)
+    }
+
+    @Test
+    fun `verify vertical recommendation throw error, will be fail`() {
+        val pageNumber = 1
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } throws Throwable()
+
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Fail)
+    }
+
+    @Test
+    fun `verify success get vertical recommendation data`() {
+        val mockResponse = RecommendationWidget(
+            tid = "1",
+            recommendationItemList = listOf(RecommendationItem())
+        )
+
+        val pageNumber = 1
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
+
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
+        coVerify {
+            getRecommendationUseCase.getData(capture(slotRequestParams))
+        }
+
+        val captured = slotRequestParams.captured
+        Assert.assertEquals(pageName, captured.pageName)
+        Assert.assertEquals(pageNumber, captured.pageNumber)
+        Assert.assertEquals(listOf(productId), captured.productIds)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Success)
+    }
+
+    @Test
+    fun `verify success get vertical recommendation data with null productId and pageNumber`() {
+        val mockResponse = RecommendationWidget(
+            tid = "1",
+            recommendationItemList = listOf(RecommendationItem())
+        )
+
+        val pageName = "pdp_8_vertical"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
+
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = null,
+            page = null
+        )
+
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
+        coVerify {
+            getRecommendationUseCase.getData(capture(slotRequestParams))
+        }
+
+        val captured = slotRequestParams.captured
+        Assert.assertEquals(pageName, captured.pageName)
+        Assert.assertEquals(1, captured.pageNumber)
+        Assert.assertEquals(listOf(""), captured.productIds)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Success)
+    }
 
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//

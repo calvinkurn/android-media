@@ -94,11 +94,6 @@ class CreateReviewItemAnimator: DefaultItemAnimator() {
 
     override fun animateAdd(holder: RecyclerView.ViewHolder): Boolean {
         if (holder is BaseCreateReviewViewHolder<*, *>) {
-            holder.binding.root.apply {
-                val layoutParamsCopy = layoutParams
-                layoutParamsCopy.height = Int.ZERO
-                layoutParams = layoutParamsCopy
-            }
             holder.binding.root.alpha = Float.ZERO
             pendingAnim.add(AnimInfo(holder, ANIM_TYPE_ADDING))
             dispatchAddStarting(holder)

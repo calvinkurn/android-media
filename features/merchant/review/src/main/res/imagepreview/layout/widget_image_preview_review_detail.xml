@@ -27,7 +27,7 @@
         android:background="@color/Unify_Static_Black_68"
         app:layout_constraintTop_toBottomOf="@id/review_gallery_photo_count">
 
-        <com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
+        <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
             android:id="@+id/review_gallery_basic_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

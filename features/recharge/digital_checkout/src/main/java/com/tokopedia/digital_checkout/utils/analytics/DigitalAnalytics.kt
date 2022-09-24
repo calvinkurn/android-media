@@ -223,10 +223,11 @@ class DigitalAnalytics {
         val products: MutableList<Any> = ArrayList()
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName, categoryId))
 
-        val label = String.format("%s - %s - %s",
+        val label = String.format("%s - %s - %s - %s",
                 cartDigitalInfoData.attributes.categoryName.toLowerCase(),
                 cartDigitalInfoData.attributes.operatorName.toLowerCase(),
-                cartDigitalInfoData.channelId
+                cartDigitalInfoData.channelId,
+                cartDigitalInfoData.attributes.autoApplyVoucher.code
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -253,17 +254,11 @@ class DigitalAnalytics {
         val products: MutableList<Any> = ArrayList()
         products.add(constructProductEnhanceEcommerce(cartDataInfo, productName, categoryId))
 
-        val labelPromo = if (TextUtils.isEmpty(voucherCode)) {
-            DigitalCheckoutTrackingConst.Value.NO_PROMO
-        } else {
-            DigitalCheckoutTrackingConst.Value.PROMO
-        }
-
         var label = String.format("%s - %s - %s - %s",
             cartDataInfo.attributes.categoryName.toLowerCase(),
             cartDataInfo.attributes.operatorName.toLowerCase(),
-            labelPromo,
             cartDataInfo.channelId,
+            voucherCode,
         )
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(

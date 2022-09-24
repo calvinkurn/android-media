@@ -11,5 +11,7 @@ data class DefaultAddressParam(
     @SerializedName("inputAddressId")
     val inputAddressId: Long,
     @SerializedName("setAsStateChosenAddress")
-    val setAsStateChosenAddress: Boolean
+    val setAsStateChosenAddress: Boolean,
+    @SerializedName("isTokonowRequest")
+    val isTokonowRequest: Boolean
 ) : GqlParam

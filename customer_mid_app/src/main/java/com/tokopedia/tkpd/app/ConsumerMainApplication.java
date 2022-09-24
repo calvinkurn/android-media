@@ -28,6 +28,12 @@ import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.newrelic.agent.android.NewRelic;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
@@ -54,6 +60,7 @@ import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLife
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.util.GqlActivityCallback;
+import com.tokopedia.inappupdate.InAppUpdateLifecycleCallback;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
@@ -97,6 +104,7 @@ import kotlin.Pair;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
 import timber.log.Timber;
 
 /**
@@ -246,6 +254,64 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return remoteConfig.getBoolean(REMOTE_CONFIG_TELEMETRY_ENABLED, true);
             }
         }));
+        registerActivityLifecycleCallbacks(new InAppUpdateLifecycleCallback(new Function2<Activity, Function1<? super Boolean, Unit>, Unit>() {
+            @Override
+            public Unit invoke(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
+                onCheckAppUpdateRemoteConfig(activity, onSuccessCheckAppListener);
+                return null;
+            }
+        }));
+    }
+
+    private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
+        ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(activity);
+        InAppCallback inAppCallback = null;
+        if (activity instanceof InAppCallback) {
+            inAppCallback = (InAppCallback) activity;
+        }
+        InAppCallback finalInAppCallback = inAppCallback;
+        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+            @Override
+            public void onNeedUpdate(DetailUpdate detail) {
+                AppUpdateDialogBuilder appUpdateDialogBuilder = new AppUpdateDialogBuilder(
+                        activity,
+                        detail, new AppUpdateDialogBuilder.Listener() {
+                    @Override
+                    public void onPositiveButtonClicked(DetailUpdate detail) {
+                        if (finalInAppCallback != null) {
+                            finalInAppCallback.onPositiveButtonInAppClicked(detail);
+                        }
+                    }
+
+                    @Override
+                    public void onNegativeButtonClicked(DetailUpdate detail) {
+                        if (finalInAppCallback != null) {
+                            finalInAppCallback.onNegativeButtonInAppClicked(detail);
+                        }
+                    }
+                });
+                if (!activity.isFinishing() && !activity.isDestroyed()) {
+                    appUpdateDialogBuilder.getAlertDialog().show();
+                    if (finalInAppCallback != null) {
+                        finalInAppCallback.onNeedUpdateInApp(detail);
+                    }
+                    onSuccessCheckAppListener.invoke(true);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+
+            @Override
+            public void onNotNeedUpdate() {
+                if (finalInAppCallback != null) {
+                    finalInAppCallback.onNotNeedUpdateInApp();
+                }
+                onSuccessCheckAppListener.invoke(false);
+            }
+        });
     }
 
     private void createAndCallPreSeq() {
@@ -304,21 +370,18 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         String version = versions.getFirst();
         String suffixVersion = versions.getSecond();
 
-        if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
-            GlobalConfig.VERSION_NAME = version;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
-        } else {
+        if (TextUtils.isEmpty(suffixVersion)) {
             GlobalConfig.VERSION_NAME = versionName();
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = versionName();
+        } else {
+            GlobalConfig.VERSION_NAME = version;
+            GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
         }
-        com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = versionName();// save raw version name
+        GlobalConfig.RAW_VERSION_NAME = versionName();
     }
 
     /**
      * cannot reference BuildConfig of an app.
      *
-     * @return
      */
     @NonNull
     public abstract String versionName();

@@ -153,11 +153,11 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
                 ERROR_MESSAGE
             )
         } else {
-            if (node != null) {
+            node?.let {
                 context.report(
                     JAVA_ISSUE,
                     node,
-                    context.getLocation(node),
+                    context.getLocation(it),
                     ERROR_MESSAGE
                 )
             }

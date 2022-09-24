@@ -158,7 +158,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         viewModel.savedQuery = arguments?.getString(ManageAddressConstant.EXTRA_QUERY) ?: ""
         viewModel.receiverUserId = arguments?.getString(ManageAddressConstant.QUERY_PARAM_RUID)
         viewModel.senderUserId = arguments?.getString(ManageAddressConstant.QUERY_PARAM_SUID)
-        viewModel.source = arguments?.getString(ApplinkConstInternalLogistic.PARAM_SOURCE) ?: ""
+        viewModel.source = arguments?.getString(PARAM_SOURCE) ?: ""
     }
 
     private fun initAddAddressBtnListener() {
@@ -476,7 +476,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
         if (eligibleForEditRevamp) {
             val intent = RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}")
-            intent.putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, viewModel.source)
+            intent.putExtra(PARAM_SOURCE, viewModel.source)
             startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
         } else {
             val token = viewModel.token
@@ -829,7 +829,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         bottomSheetShareAddress = ShareAddressBottomSheet.newInstance(
             isRequestAddress = false,
             shareAddressListener = shareAddressListener,
-            source = viewModel.source,
+            source = viewModel.getSourceValue(),
             senderAddressId = senderAddressId
         )
         bottomSheetShareAddress?.show(
@@ -847,7 +847,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
             senderAddressId = senderAddressId,
             receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail,
             receiverUserId = receiverUserId,
-            source = viewModel.source,
+            source = viewModel.getSourceValue(),
             listener = this
         )
         bottomSheetConfirmationShareAddress?.show(

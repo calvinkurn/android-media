@@ -383,7 +383,7 @@ public class DealsAnalytics {
         }
     }
 
-    public void sendEcommercePayment(Integer categoryID, int id, int quantity, int salesPrice,
+    public void sendEcommercePayment(long categoryID, long id, int quantity, long salesPrice,
                                      String displayName, String brandName, boolean promoApplied, String userId) {
         try {
             HashMap<String, Object> productMap = new HashMap<>();
@@ -419,8 +419,8 @@ public class DealsAnalytics {
         }
     }
 
-    public void sendEcommerceQuantity(int id, int quantity, int salesPrice, String displayName,
-                                      String brandName, int categoryID, String userId) {
+    public void sendEcommerceQuantity(long id, int quantity, long salesPrice, String displayName,
+                                      String brandName, long categoryID, String userId) {
         try {
             HashMap<String, Object> productMap = new HashMap<>();
             productMap.put(ID, String.valueOf(id));
@@ -449,7 +449,7 @@ public class DealsAnalytics {
         }
     }
 
-    public void sendEcommerceDealDetail(int id, int salesPrice, String displayName, String brandName) {
+    public void sendEcommerceDealDetail(long id, long salesPrice, String displayName, String brandName) {
         try {
             HashMap<String, Object> productMap = new HashMap<>();
             productMap.put(ID, id);

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kyc_centralized.KycConstant
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.CoroutineScope
@@ -188,14 +189,14 @@ class BitmapCroppingAndCompression constructor(
      * @return quality reduction
      */
     private fun getQualityRedcution(bitmap: Bitmap): Float {
-        val size = calculateSize(bitmap) / 1024
+        val size = calculateSize(bitmap) / MB_DIVIDER
         return when {
-            size > 2 && size < 3 -> { 70F }
-            size > 3 && size < 6 -> { 50F }
-            size > 6 && size < 10 -> { 40F }
-            size > 10 && size < 15 -> { 30F }
-            size > 15 -> { 20F }
-            else -> { 100F }
+            size > KycConstant.MB_2 && size < KycConstant.MB_3 -> { KycConstant.QUALITY_70 }
+            size > KycConstant.MB_3 && size < KycConstant.MB_6 -> { KycConstant.QUALITY_50 }
+            size > KycConstant.MB_6 && size < KycConstant.MB_10 -> { KycConstant.QUALITY_40 }
+            size > KycConstant.MB_10 && size < KycConstant.MB_15 -> { KycConstant.QUALITY_30 }
+            size > KycConstant.MB_15 -> { KycConstant.QUALITY_20 }
+            else -> { KycConstant.QUALITY_100 }
         }
     }
 
@@ -222,7 +223,7 @@ class BitmapCroppingAndCompression constructor(
         return try {
             val stream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-            val result = stream.size().toFloat() / 1024F
+            val result = stream.size().toFloat() / MB_DIVIDER_FLOAT
             stream.flush()
             stream.close()
             result
@@ -265,6 +266,9 @@ class BitmapCroppingAndCompression constructor(
 
     companion object {
         private const val TAG_LOG_CROP_AND_COMPRESSION_KYC = "KYC_CROP_AND_COMPRESSION"
-        const val DEFAULT_PADDING = 32
+        const val DEFAULT_PADDING = 8
+
+        private const val MB_DIVIDER = 1024
+        private const val MB_DIVIDER_FLOAT = 1024F
     }
 }

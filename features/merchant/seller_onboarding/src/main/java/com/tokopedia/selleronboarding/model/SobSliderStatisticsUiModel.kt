@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.selleronboarding.adapter.SobAdapterFactory
 
 data class SobSliderStatisticsUiModel(
-        @DrawableRes override val headerResBg: Int?
+        @DrawableRes override val headerResBg: Int
 ) : BaseSliderUiModel {
 
     override fun type(typeFactory: SobAdapterFactory): Int {

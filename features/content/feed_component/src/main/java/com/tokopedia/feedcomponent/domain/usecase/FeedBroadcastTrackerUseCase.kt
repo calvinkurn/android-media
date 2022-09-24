@@ -10,6 +10,9 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
 import javax.inject.Named
 
+/**
+ * duplicate: com.tokopedia.play.domain.TrackVisitChannelBroadcasterUseCase
+ */
 @GqlQuery(FeedBroadcastTrackerUseCase.QUERY_NAME, FeedBroadcastTrackerUseCase.QUERY)
 class FeedBroadcastTrackerUseCase @Inject constructor(
         @param:Named(SUSPEND_GRAPHQL_REPOSITORY) private val graphqlRepository: GraphqlRepository
@@ -17,10 +20,11 @@ class FeedBroadcastTrackerUseCase @Inject constructor(
 
 
     init {
-        setGraphqlQuery(FeedBroadcastTrackerUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(FeedBroadcastTrackerUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(VisitChannelTracking.Response::class.java)
     }
+
     override suspend fun executeOnBackground(): VisitChannelTracking.Response {
         var count = 0
 

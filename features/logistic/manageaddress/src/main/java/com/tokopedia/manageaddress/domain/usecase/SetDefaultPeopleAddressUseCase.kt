@@ -23,8 +23,8 @@ class SetDefaultPeopleAddressUseCase @Inject constructor(
     companion object {
 
         val QUERY = """
-            mutation defaultAddress(${"$"}inputAddressId : Int!, ${"$"}setAsStateChosenAddress: Boolean) {
-              kero_set_default_address(addr_id: ${"$"}inputAddressId, set_as_state_chosen_address: ${"$"}setAsStateChosenAddress) {
+            mutation defaultAddress(${"$"}inputAddressId : Int!, ${"$"}setAsStateChosenAddress: Boolean, ${"$"}isTokonowRequest: Boolean!) {
+              kero_set_default_address(addr_id: ${"$"}inputAddressId, set_as_state_chosen_address: ${"$"}setAsStateChosenAddress, is_tokonow_request: ${"$"}isTokonowRequest) {
                 data{
                   is_success
                 }

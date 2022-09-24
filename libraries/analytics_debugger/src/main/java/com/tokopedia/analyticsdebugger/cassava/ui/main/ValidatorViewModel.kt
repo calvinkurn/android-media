@@ -31,7 +31,7 @@ class ValidatorViewModel @Inject constructor(
             val v = it.query.map { it.toDefaultValidator() }
             emit(v)
             runCatching {
-                engine.computeCo(v, it.mode.value).also {
+                engine.compute(v, it.mode.value).also {
                     val endTime = System.currentTimeMillis()
                     Timber.i("Computed in: ${endTime - startTime} Got ${it.size} results")
                     emit(it)

@@ -26,6 +26,8 @@ data class ShowErrorEvent(val error: Throwable, val errMessage: UiString? = null
 
 data class CopyToClipboardEvent(val content: String) : PlayViewerNewUiEvent()
 
+data class LoginEvent(val afterSuccess: () -> Unit) : PlayViewerNewUiEvent()
+
 /**
  * Real Time Notification
  */
@@ -73,13 +75,15 @@ data class BuySuccessEvent(
     val product: PlayProductUiModel.Product,
     val isVariant: Boolean,
     val cartId: String,
-    val sectionInfo: ProductSectionUiModel.Section,
+    val sectionInfo: ProductSectionUiModel.Section?,
+    val isProductFeatured: Boolean,
 ) : PlayViewerNewUiEvent()
 data class AtcSuccessEvent(
     val product: PlayProductUiModel.Product,
     val isVariant: Boolean,
     val cartId: String,
-    val sectionInfo: ProductSectionUiModel.Section,
+    val sectionInfo: ProductSectionUiModel.Section?,
+    val isProductFeatured: Boolean,
 ) : PlayViewerNewUiEvent()
 
 //---------------------
@@ -99,10 +103,17 @@ data class AllowedWhenInactiveEvent(
     }
 }
 
+
 /**
  * Interactive
  * */
-object QuizAnsweredEvent : PlayViewerNewUiEvent()
+data class QuizAnsweredEvent(val isTrue: Boolean) : PlayViewerNewUiEvent()
 
 object OpenKebabEvent : PlayViewerNewUiEvent()
 object OpenUserReportEvent : PlayViewerNewUiEvent()
+
+/**
+ * CampaignReminder
+ */
+data class ChangeCampaignReminderSuccess(val isReminded: Boolean, val message: String) : PlayViewerNewUiEvent()
+data class ChangeCampaignReminderFailed(val error: Throwable) : PlayViewerNewUiEvent()

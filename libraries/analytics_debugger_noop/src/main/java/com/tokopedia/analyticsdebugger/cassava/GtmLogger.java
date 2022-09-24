@@ -2,9 +2,6 @@ package com.tokopedia.analyticsdebugger.cassava;
 
 import android.content.Context;
 
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsLogger;
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
-
 import java.util.Map;
 
 /**
@@ -18,7 +15,7 @@ public class GtmLogger {
         if (instance == null) {
             instance = new AnalyticsLogger() {
                 @Override
-                public void save(Map<String, Object> data, String name,  @AnalyticsSource String source) {
+                public void save(Map<String, Object> data, String name, String source) {
 
                 }
 

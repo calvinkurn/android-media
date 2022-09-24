@@ -15,8 +15,6 @@ import com.tokopedia.play.util.*
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.util.chat.ChatStreams
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
@@ -955,6 +953,44 @@ class PlayViewModelWebSocketTest {
                 )
             }
             eventAndState.second.last().assertInstanceOf<QuizAnsweredEvent>()
+        }
+    }
+
+    @Test
+    fun `given giveaway is upcoming when it ends, will change to ongoing`() {
+        val durationTap = 5000L.millisFromNow()
+
+        coEvery { repo.getCurrentInteractive(any()) } returns uiModelBuilder.buildGiveaway(
+            id = "1",
+            status = InteractiveUiModel.Giveaway.Status.Upcoming(endTime = durationTap, startTime = 100L.millisFromNow())
+        )
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = fakePlayWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
+
+            val state = robot.recordState {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
+            }
+
+            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Giveaway>()
+            it.viewModel.interactiveData.assertInstanceOf<InteractiveUiModel.Giveaway>()
+            state.interactive.interactive.assertType<InteractiveUiModel.Giveaway> { ga ->
+                ga.status.assertEqualTo(InteractiveUiModel.Giveaway.Status.Ongoing(endTime = durationTap))
+            }
+            it.viewModel.interactiveData.assertType<InteractiveUiModel.Giveaway> { ga ->
+                ga.status.assertEqualTo(InteractiveUiModel.Giveaway.Status.Ongoing(endTime = durationTap))
+            }
         }
     }
 }

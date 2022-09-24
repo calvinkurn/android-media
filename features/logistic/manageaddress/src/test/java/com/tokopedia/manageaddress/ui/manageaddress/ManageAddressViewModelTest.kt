@@ -136,7 +136,6 @@ class ManageAddressViewModelTest {
         assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
 
-
     @Test
     fun `Set Default Address Success`() {
         val mockDefaultPeopleAddressGqlResponse = spyk(
