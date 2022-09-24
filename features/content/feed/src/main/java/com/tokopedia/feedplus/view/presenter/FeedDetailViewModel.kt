@@ -10,10 +10,8 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsRespo
 import com.tokopedia.feedplus.data.pojo.Feed
 import com.tokopedia.feedplus.data.pojo.FeedQuery
 import com.tokopedia.feedplus.data.pojo.ProductFeedType
-import com.tokopedia.feedplus.data.pojo.ShopDetail
 import com.tokopedia.feedplus.view.repository.FeedDetailRepository
 import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
@@ -115,24 +113,6 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
                 productFeed.countReview,
                 shopId = shopId,
                 activityId = activityId
-        )
-    }
-
-    private fun createFeedDetailHeaderModel(create_time: String,
-                                            shop: ShopDetail,
-                                            status_activity: String,
-                                            activityId: String): FeedDetailHeaderModel {
-        return FeedDetailHeaderModel(shop.id,
-                shop.name,
-                shop.avatar,
-                shop.isGold,
-                shop.badgeUrl,
-                create_time,
-                shop.isOfficial,
-                shop.shareLinkURL,
-                shop.shareLinkDescription,
-                status_activity,
-                activityId
         )
     }
 
