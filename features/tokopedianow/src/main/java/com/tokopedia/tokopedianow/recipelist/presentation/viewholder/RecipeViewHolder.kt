@@ -14,6 +14,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeBinding
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.TagAdapter
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeViewHolder(
@@ -79,13 +80,23 @@ class RecipeViewHolder(
 
     private fun renderBookmark(recipe: RecipeUiModel) {
         binding?.imageBookmark?.apply {
-            val iconResId = if (recipe.isBookmarked) {
-                com.tokopedia.iconunify.R.drawable.iconunify_bookmark_filled
-            } else {
-                com.tokopedia.iconunify.R.drawable.iconunify_bookmark
+            var isBookmarked= recipe.isBookmarked
+            changeIconBookmark(this, isBookmarked)
+            setOnClickListener {
+                isBookmarked = !isBookmarked
+                changeIconBookmark(this, isBookmarked)
+                listener.onClickBookmark(recipe, layoutPosition, isBookmarked)
             }
-            setImageDrawable(ContextCompat.getDrawable(context, iconResId))
         }
+    }
+
+    private fun changeIconBookmark(imageBookmark: ImageUnify, isBookmarked: Boolean) {
+        val iconResId = if (isBookmarked) {
+            com.tokopedia.iconunify.R.drawable.iconunify_bookmark_filled
+        } else {
+            com.tokopedia.iconunify.R.drawable.iconunify_bookmark
+        }
+        imageBookmark.setImageDrawable(ContextCompat.getDrawable(context, iconResId))
     }
 
     private fun TextView.setDrawableLeft(@DrawableRes drawableRes: Int) {
@@ -118,5 +129,6 @@ class RecipeViewHolder(
     interface RecipeItemListener {
         fun onClickItem(recipe: RecipeUiModel, position: Int)
         fun onImpressItem(recipe: RecipeUiModel, position: Int)
+        fun onClickBookmark(recipe: RecipeUiModel, position: Int, isBookmarked: Boolean)
     }
 }
