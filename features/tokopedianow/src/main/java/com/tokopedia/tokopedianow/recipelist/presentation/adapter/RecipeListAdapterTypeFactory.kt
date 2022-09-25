@@ -20,11 +20,13 @@ import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeHeade
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeViewHolder
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeEmptyStateViewHolder
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeViewHolder.RecipeItemListener
+import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeEmptyStateViewHolder.RecipeEmptyStateListener
 
 class RecipeListAdapterTypeFactory(
     private val recipeItemListener: RecipeItemListener,
     private val recipeFilterListener: RecipeChipFilterListener,
-    private val serverErrorListener: ServerErrorListener
+    private val serverErrorListener: ServerErrorListener,
+    private val recipeEmptyStateListener: RecipeEmptyStateListener
 ) : BaseAdapterTypeFactory(), RecipeListTypeFactory, TokoNowServerErrorTypeFactory {
 
     override fun type(uiModel: RecipeHeaderUiModel): Int = RecipeHeaderViewHolder.LAYOUT
@@ -46,7 +48,7 @@ class RecipeListAdapterTypeFactory(
             RecipeViewHolder.LAYOUT -> RecipeViewHolder(parent, recipeItemListener)
             RecipeFilterViewHolder.LAYOUT -> RecipeFilterViewHolder(parent, recipeFilterListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(parent, serverErrorListener)
-            RecipeEmptyStateViewHolder.LAYOUT -> RecipeEmptyStateViewHolder(parent)
+            RecipeEmptyStateViewHolder.LAYOUT -> RecipeEmptyStateViewHolder(parent, recipeEmptyStateListener)
             else -> super.createViewHolder(parent, type)
         }
     }

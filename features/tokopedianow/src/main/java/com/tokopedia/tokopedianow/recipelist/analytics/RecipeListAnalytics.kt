@@ -315,32 +315,32 @@ class RecipeListAnalytics @Inject constructor(
         )
     }
 
-    fun clickSearchBarNoSearchResult() {
+    fun clickSearchBarNoSearchResult(pageName: String) {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_SEARCH_BAR_NO_SEARCH_RESULT,
-                category = EVENT_CATEGORY_RECIPE_SEARCH
+                category = getCategory(pageName)
             )
         )
     }
 
-    fun clickResetFilter() {
+    fun clickResetFilter(pageName: String) {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_RESET_FILTER,
-                category = EVENT_CATEGORY_RECIPE_SEARCH
+                category = getCategory(pageName)
             )
         )
     }
 
-    fun clickFilterNoSearchResult() {
+    fun clickFilterNoSearchResult(pageName: String) {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_FILTER_NO_SEARCH_RESULT,
-                category = EVENT_CATEGORY_RECIPE_SEARCH
+                category = getCategory(pageName)
             )
         )
     }
