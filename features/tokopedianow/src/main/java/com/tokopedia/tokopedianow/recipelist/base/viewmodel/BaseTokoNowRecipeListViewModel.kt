@@ -8,6 +8,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
+import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
+import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
+import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToIngredientIds
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToSortBy
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam
@@ -19,6 +23,8 @@ import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 
 abstract class BaseTokoNowRecipeListViewModel(
     private val getRecipeListUseCase: GetRecipeListUseCase,
+    private val addRecipeBookmarkUseCase: AddRecipeBookmarkUseCase,
+    private val removeRecipeBookmarkUseCase: RemoveRecipeBookmarkUseCase,
     private val addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
@@ -31,6 +37,8 @@ abstract class BaseTokoNowRecipeListViewModel(
         get() = _showHeaderBackground
     val searchKeyword: LiveData<String>
         get() = _searchKeyword
+    val showToaster: LiveData<ToasterUiModel>
+        get() = _showToaster
 
     val warehouseId: String
         get() = addressData.getWarehouseId().toString()
@@ -39,6 +47,7 @@ abstract class BaseTokoNowRecipeListViewModel(
     private val _showProgressBar = MutableLiveData<Boolean>()
     private val _showHeaderBackground = MutableLiveData<Boolean>()
     private val _searchKeyword = MutableLiveData<String>()
+    private val _showToaster = MutableLiveData<ToasterUiModel>()
 
     private var isSuccessLoadPage = true
 
@@ -71,6 +80,96 @@ abstract class BaseTokoNowRecipeListViewModel(
             hideHeaderBackground()
             hideProgressBar()
             showError()
+        }
+    }
+
+    fun addRecipeBookmark(recipeId: String, position: Int, title: String) {
+        val isRemoving = false
+        var isSuccess = false
+        launchCatchError(block = {
+            val response = addRecipeBookmarkUseCase.execute(
+                recipeId = recipeId
+            )
+
+            isSuccess = response.header.success
+            if (response.header.success) {
+                _showToaster.postValue(
+                    ToasterUiModel(
+                        isRemoving = isRemoving,
+                        position = position,
+                        model = ToasterModel(
+                            title = title,
+                            recipeId = recipeId,
+                            isSuccess = isSuccess
+                        )
+                    )
+                )
+            } else {
+                _showToaster.postValue(
+                    ToasterUiModel(
+                        isRemoving = isRemoving,
+                        position = position,
+                        model = ToasterModel(
+                            message = response.header.message,
+                            recipeId = recipeId,
+                            isSuccess = isSuccess
+                        )
+                    )
+                )
+            }
+        }) {
+            _showToaster.postValue(
+                ToasterUiModel(
+                    isRemoving = isRemoving,
+                    position = position,
+                    model = ToasterModel(
+                        recipeId = recipeId,
+                        isSuccess = isSuccess
+                    )
+                )
+            )
+        }
+    }
+
+    fun removeRecipeBookmark(recipeId: String, position: Int, title: String) {
+        val isRemoving = true
+        var isSuccess = false
+        launchCatchError(block = {
+            val response = removeRecipeBookmarkUseCase.execute(
+                recipeId = recipeId
+            )
+
+            isSuccess = response.header.success
+            if (response.header.success) {
+                _showToaster.postValue(ToasterUiModel(
+                    isRemoving = isRemoving,
+                    position = position,
+                    model = ToasterModel(
+                        title = title,
+                        recipeId = recipeId,
+                        isSuccess = isSuccess
+                    )
+                ))
+            } else {
+                _showToaster.postValue(ToasterUiModel(
+                    isRemoving = isRemoving,
+                    position = position,
+                    model = ToasterModel(
+                        message = response.header.message,
+                        recipeId = recipeId,
+                        isSuccess = isSuccess
+                    )
+                ))
+            }
+        }) {
+            _showToaster.value = ToasterUiModel(
+                isRemoving = isRemoving,
+                position = position,
+                model = ToasterModel(
+                    recipeId = recipeId,
+                    isSuccess = isSuccess
+                )
+            )
         }
     }
 

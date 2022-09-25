@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -26,6 +27,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowNavToolbar
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeListBinding
+import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.recipelist.base.viewmodel.BaseTokoNowRecipeListViewModel
 import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeListAdapter
 import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeListAdapterTypeFactory
@@ -36,6 +38,7 @@ import com.tokopedia.tokopedianow.recipelist.presentation.view.RecipeListView
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.EXTRA_SELECTED_FILTER
 import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -52,7 +55,13 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
     private val adapter by lazy {
         RecipeListAdapter(
             RecipeListAdapterTypeFactory(
-                recipeItemListener = RecipeListListener(this, analytics, viewModel.warehouseId, pageName),
+                recipeItemListener = RecipeListListener(
+                    view = this,
+                    analytics = analytics,
+                    warehouseId = viewModel.warehouseId,
+                    pageName = pageName,
+                    viewModel = viewModel
+                ),
                 recipeFilterListener = RecipeFilterListener(this, analytics, pageName),
                 serverErrorListener = this
             )
@@ -212,6 +221,96 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
 
         observe(viewModel.searchKeyword) {
             setSearchbarText(it)
+        }
+
+        observe(viewModel.showToaster) {
+            showToaster(it)
+        }
+    }
+
+    private fun showToaster(toasterUiModel: ToasterUiModel) {
+        val isFailed = toasterUiModel.model?.title.isNullOrEmpty()
+        if (isFailed) {
+            showFailToaster(data = toasterUiModel)
+        } else {
+            showSuccessToaster(data = toasterUiModel)
+        }
+    }
+
+    private fun showSuccessToaster(data: ToasterUiModel?) {
+        data?.model?.apply {
+            if (data.isRemoving) {
+                setupToaster(
+                    message = getString(R.string.tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe, title),
+                    isSuccess = isSuccess,
+                    cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel),
+                    clickListener = {
+                        viewModel.addRecipeBookmark(recipeId, data.position.orZero(), title)
+                        analytics.clickCancelUnBookmarkToaster(pageName)
+                    }
+                )
+                analytics.impressUnBookmarkToaster(pageName)
+            } else {
+                setupToaster(
+                    message = getString(R.string.tokopedianow_recipe_bookmark_toaster_description_success_adding_recipe, title),
+                    isSuccess = isSuccess,
+                    cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_see),
+                    clickListener = {
+                        RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK)
+                        analytics.clickSeeBookmarkToaster(pageName)
+                    }
+                )
+                analytics.impressBookmarkToasterAdded(pageName)
+            }
+        }
+    }
+
+    private fun showFailToaster(data: ToasterUiModel?) {
+        data?.model?.apply {
+            if (data.isRemoving) {
+                setupToaster(
+                    message = message.ifEmpty { getString(R.string.tokopedianow_recipe_failed_remove_bookmark) },
+                    isSuccess = isSuccess,
+                    cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
+                    clickListener = {
+                        viewModel.removeRecipeBookmark(
+                            recipeId = recipeId,
+                            position = data.position.orZero(),
+                            title = data.model.title
+                        )
+                    }
+                )
+            } else {
+                setupToaster(
+                    message = message.ifEmpty { getString(R.string.tokopedianow_recipe_failed_add_bookmark) },
+                    isSuccess = isSuccess,
+                    cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
+                    clickListener = {
+                        viewModel.addRecipeBookmark(
+                            recipeId = recipeId,
+                            position = data.position.orZero(),
+                            title = data.model.title
+                        )
+                        analytics.clickRetryFailedBookmarkToaster(pageName)
+                    }
+                )
+                analytics.impressFailedBookmarkToaster(pageName)
+            }
+        }
+    }
+
+    private fun setupToaster(message: String, isSuccess: Boolean, cta: String, clickListener: () -> Unit) {
+        binding?.apply {
+            val toaster = Toaster.build(
+                view = root,
+                text = message,
+                type = if (isSuccess) Toaster.TYPE_NORMAL else Toaster.TYPE_ERROR,
+                actionText = cta,
+                clickListener = {
+                    clickListener.invoke()
+                }
+            )
+            toaster.show()
         }
     }
 

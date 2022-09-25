@@ -19,24 +19,27 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
 import com.tokopedia.tokopedianow.recipehome.presentation.fragment.TokoNowRecipeHomeFragment
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK_FAILED_LOAD_PAGE
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BOOKMARK_LIST
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BOOKMARK_RECIPE
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_CANCEL_UNBOOKMARK
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_TOASTER_CANCEL_UNBOOKMARK
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_FILTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_FILTER_NO_SEARCH_RESULT
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_IMPRESS_FAILED_LOAD_PAGE
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_RECIPE_CARD
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_RESET_FILTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_RETRY_FAILED_BOOKMARK_TOASTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_RETRY_FAILED_LOAD_PAGE
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_SEARCH_BAR
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_SEARCH_BAR_NO_SEARCH_RESULT
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_TOASTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_UNBOOKMARK
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_BOOKMARK_TOASTER
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_UNBOOKMARK_TOASTER
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_BACK_FAILED_LOAD_PAGE
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_BACK_NO_SEARCH_RESULT
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_FILTER_NO_SEARCH_RESULT
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_IMPRESS_FAILED_LOAD_PAGE
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_RESET_FILTER
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_RETRY_FAILED_LOAD_PAGE
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_CLICK_SEARCH_BAR_NO_SEARCH_RESULT
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_IMPRESS_NO_SEARCH_RESULT
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_IMPRESS_RECIPE_CARD
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_FAILED_BOOKMARK_TOASTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_NO_SEARCH_RESULT
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_RECIPE_CARD
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_TOASTER_UNBOOKMARK
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_HOME
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_SEARCH
 import com.tokopedia.track.TrackAppUtils
@@ -61,24 +64,27 @@ class RecipeListAnalytics @Inject constructor(
 
     object ACTION {
         const val EVENT_ACTION_CLICK_BACK = "click back button"
+        const val EVENT_ACTION_CLICK_TOASTER = "click toaster"
         const val EVENT_ACTION_CLICK_FILTER = "click filter"
         const val EVENT_ACTION_CLICK_SEARCH_BAR = "click search bar"
         const val EVENT_ACTION_CLICK_BOOKMARK_LIST = "click bookmark list"
         const val EVENT_ACTION_CLICK_BOOKMARK_RECIPE = "click bookmark recipe"
         const val EVENT_ACTION_IMPRESS_BOOKMARK_TOASTER = "impression toaster bookmark added"
         const val EVENT_ACTION_CLICK_UNBOOKMARK = "click unbookmark recipe"
-        const val EVENT_ACTION_IMPRESS_UNBOOKMARK_TOASTER = "impression unbookmark toaster"
-        const val EVENT_ACTION_CLICK_CANCEL_UNBOOKMARK = "click cancel unbookmark"
+        const val EVENT_ACTION_IMPRESS_TOASTER_UNBOOKMARK = "impression toaster unbookmark"
+        const val EVENT_ACTION_CLICK_TOASTER_CANCEL_UNBOOKMARK = "click toaster cancel unbookmark"
         const val EVENT_ACTION_CLICK_RECIPE_CARD = "click recipe card"
-        const val EVENT_IMPRESS_RECIPE_CARD = "impression recipe card"
-        const val EVENT_IMPRESS_NO_SEARCH_RESULT = "impression no search result"
-        const val EVENT_CLICK_BACK_NO_SEARCH_RESULT = "click back no search result"
-        const val EVENT_CLICK_SEARCH_BAR_NO_SEARCH_RESULT = "click search bar no search result"
-        const val EVENT_CLICK_RESET_FILTER = "click reset filter"
-        const val EVENT_CLICK_FILTER_NO_SEARCH_RESULT = "click filter no search result"
-        const val EVENT_CLICK_IMPRESS_FAILED_LOAD_PAGE = "impression failed load page"
-        const val EVENT_CLICK_BACK_FAILED_LOAD_PAGE = "click back failed load page"
-        const val EVENT_CLICK_RETRY_FAILED_LOAD_PAGE = "click retry failed load page"
+        const val EVENT_ACTION_IMPRESS_RECIPE_CARD = "impression recipe card"
+        const val EVENT_ACTION_IMPRESS_NO_SEARCH_RESULT = "impression no search result"
+        const val EVENT_ACTION_CLICK_BACK_NO_SEARCH_RESULT = "click back no search result"
+        const val EVENT_ACTION_CLICK_SEARCH_BAR_NO_SEARCH_RESULT = "click search bar no search result"
+        const val EVENT_ACTION_CLICK_RESET_FILTER = "click reset filter"
+        const val EVENT_ACTION_CLICK_FILTER_NO_SEARCH_RESULT = "click filter no search result"
+        const val EVENT_ACTION_CLICK_IMPRESS_FAILED_LOAD_PAGE = "impression failed load page"
+        const val EVENT_ACTION_CLICK_BACK_FAILED_LOAD_PAGE = "click back failed load page"
+        const val EVENT_ACTION_CLICK_RETRY_FAILED_LOAD_PAGE = "click retry failed load page"
+        const val EVENT_ACTION_IMPRESS_FAILED_BOOKMARK_TOASTER = "impression failed bookmark"
+        const val EVENT_ACTION_CLICK_RETRY_FAILED_BOOKMARK_TOASTER = "click retry bookmark"
     }
 
     private fun getCategory(pageName: String): String {
@@ -169,7 +175,7 @@ class RecipeListAnalytics @Inject constructor(
 
         val dataLayer = getDataLayer(
             event = EVENT_VIEW_ITEM,
-            action = EVENT_IMPRESS_RECIPE_CARD,
+            action = EVENT_ACTION_IMPRESS_RECIPE_CARD,
             label = "$recipeId - $recipeTitle",
             promotions = arrayListOf(promotion),
             pageName = pageName
@@ -181,7 +187,7 @@ class RecipeListAnalytics @Inject constructor(
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_VIEW_PG_IRIS,
-                action = EVENT_CLICK_IMPRESS_FAILED_LOAD_PAGE,
+                action = EVENT_ACTION_CLICK_IMPRESS_FAILED_LOAD_PAGE,
                 category = getCategory(pageName)
             )
         )
@@ -191,7 +197,7 @@ class RecipeListAnalytics @Inject constructor(
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
-                action = EVENT_CLICK_BACK_FAILED_LOAD_PAGE,
+                action = EVENT_ACTION_CLICK_BACK_FAILED_LOAD_PAGE,
                 category = getCategory(pageName)
             )
         )
@@ -201,7 +207,7 @@ class RecipeListAnalytics @Inject constructor(
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
-                action = EVENT_CLICK_RETRY_FAILED_LOAD_PAGE,
+                action = EVENT_ACTION_CLICK_RETRY_FAILED_LOAD_PAGE,
                 category = getCategory(pageName)
             )
         )
@@ -212,8 +218,8 @@ class RecipeListAnalytics @Inject constructor(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_BOOKMARK_RECIPE,
+                label = "$recipeId - $recipeTitle",
                 category = getCategory(pageName),
-                label = "$recipeId - $recipeTitle"
             )
         )
     }
@@ -228,11 +234,21 @@ class RecipeListAnalytics @Inject constructor(
         )
     }
 
+    fun clickSeeBookmarkToaster(pageName: String) {
+        TokoNowCommonAnalytics.hitCommonTracker(
+            TokoNowCommonAnalytics.getDataLayer(
+                event = EVENT_CLICK_PG,
+                action = EVENT_ACTION_CLICK_TOASTER,
+                category = getCategory(pageName)
+            )
+        )
+    }
+
     fun clickUnBookmarkRecipe(recipeId: String, recipeTitle: String, pageName: String) {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
-                event = EVENT_VIEW_PG_IRIS,
-                action = EVENT_ACTION_IMPRESS_BOOKMARK_TOASTER,
+                event = EVENT_CLICK_PG,
+                action = EVENT_ACTION_CLICK_UNBOOKMARK,
                 category = getCategory(pageName),
                 label = "$recipeId - $recipeTitle"
             )
@@ -243,17 +259,27 @@ class RecipeListAnalytics @Inject constructor(
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_VIEW_PG_IRIS,
-                action = EVENT_ACTION_IMPRESS_UNBOOKMARK_TOASTER,
+                action = EVENT_ACTION_IMPRESS_TOASTER_UNBOOKMARK,
                 category = getCategory(pageName)
             )
         )
     }
 
-    fun clickUnBookmarkToaster(pageName: String) {
+    fun impressFailedBookmarkToaster(pageName: String) {
+        TokoNowCommonAnalytics.hitCommonTracker(
+            TokoNowCommonAnalytics.getDataLayer(
+                event = EVENT_VIEW_PG_IRIS,
+                action = EVENT_ACTION_IMPRESS_FAILED_BOOKMARK_TOASTER,
+                category = getCategory(pageName)
+            )
+        )
+    }
+
+    fun clickRetryFailedBookmarkToaster(pageName: String) {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
-                action = EVENT_ACTION_CLICK_UNBOOKMARK,
+                action = EVENT_ACTION_CLICK_RETRY_FAILED_BOOKMARK_TOASTER,
                 category = getCategory(pageName)
             )
         )
@@ -263,7 +289,7 @@ class RecipeListAnalytics @Inject constructor(
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
-                action = EVENT_ACTION_CLICK_CANCEL_UNBOOKMARK,
+                action = EVENT_ACTION_CLICK_TOASTER_CANCEL_UNBOOKMARK,
                 category = getCategory(pageName)
             )
         )
@@ -272,8 +298,8 @@ class RecipeListAnalytics @Inject constructor(
     fun impressNoSearchResult(pageName: String) {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
-                event = EVENT_CLICK_PG,
-                action = EVENT_IMPRESS_NO_SEARCH_RESULT,
+                event = EVENT_VIEW_PG_IRIS,
+                action = EVENT_ACTION_IMPRESS_NO_SEARCH_RESULT,
                 category = getCategory(pageName)
             )
         )
@@ -283,7 +309,7 @@ class RecipeListAnalytics @Inject constructor(
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
-                action = EVENT_CLICK_BACK_NO_SEARCH_RESULT,
+                action = EVENT_ACTION_CLICK_BACK_NO_SEARCH_RESULT,
                 category = getCategory(pageName)
             )
         )
@@ -293,7 +319,7 @@ class RecipeListAnalytics @Inject constructor(
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
-                action = EVENT_CLICK_SEARCH_BAR_NO_SEARCH_RESULT,
+                action = EVENT_ACTION_CLICK_SEARCH_BAR_NO_SEARCH_RESULT,
                 category = EVENT_CATEGORY_RECIPE_SEARCH
             )
         )
@@ -303,7 +329,7 @@ class RecipeListAnalytics @Inject constructor(
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
-                action = EVENT_CLICK_RESET_FILTER,
+                action = EVENT_ACTION_CLICK_RESET_FILTER,
                 category = EVENT_CATEGORY_RECIPE_SEARCH
             )
         )
@@ -313,7 +339,7 @@ class RecipeListAnalytics @Inject constructor(
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
-                action = EVENT_CLICK_FILTER_NO_SEARCH_RESULT,
+                action = EVENT_ACTION_CLICK_FILTER_NO_SEARCH_RESULT,
                 category = EVENT_CATEGORY_RECIPE_SEARCH
             )
         )

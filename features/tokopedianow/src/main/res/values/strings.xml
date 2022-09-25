@@ -201,7 +201,9 @@
     <string name="tokopedianow_recipe_bookmark_item_subtitle_without_duration">%d Porsi</string>
     <string name="tokopedianow_recipe_bookmark_toaster_cta_try_again">Coba Lagi</string>
     <string name="tokopedianow_recipe_bookmark_toaster_cta_cancel">Batalkan</string>
+    <string name="tokopedianow_recipe_bookmark_toaster_cta_see">Lihat</string>
     <string name="tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe">\"%s\" sudah dihapus dari Buku Resep.</string>
+    <string name="tokopedianow_recipe_bookmark_toaster_description_success_adding_recipe">\"%s\" berhasil ditambahkan ke Buku Resep.</string>
 
     <!-- Recipe Search -->
     <string name="tokopedianow_recipe_search_ingredient_title_bottomsheet">Cari berdasarkan bahan</string>

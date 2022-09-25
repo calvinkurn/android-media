@@ -5,6 +5,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.PARAM_RECIPE_ID
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics
+import com.tokopedia.tokopedianow.recipelist.base.viewmodel.BaseTokoNowRecipeListViewModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.view.RecipeListView
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeViewHolder
@@ -13,7 +14,8 @@ class RecipeListListener(
     private val view: RecipeListView,
     private val analytics: RecipeListAnalytics,
     private val warehouseId: String,
-    private val pageName: String
+    private val pageName: String,
+    private val viewModel: BaseTokoNowRecipeListViewModel
 ) : RecipeViewHolder.RecipeItemListener {
 
     override fun onClickItem(recipe: RecipeUiModel, position: Int) {
@@ -35,6 +37,34 @@ class RecipeListListener(
             position = position,
             pageName = pageName
         )
+    }
+
+    override fun onClickBookmark(recipe: RecipeUiModel, position: Int, isBookmarked: Boolean) {
+        if (isBookmarked) {
+            viewModel.addRecipeBookmark(
+                recipeId = recipe.id,
+                position = position,
+                title = recipe.title
+            )
+
+            analytics.clickBookmarkRecipe(
+                recipeId = recipe.id,
+                recipeTitle = recipe.title,
+                pageName = pageName
+            )
+        } else {
+            viewModel.removeRecipeBookmark(
+                recipeId = recipe.id,
+                position = position,
+                title = recipe.title
+            )
+
+            analytics.clickUnBookmarkRecipe(
+                recipeId = recipe.id,
+                recipeTitle = recipe.title,
+                pageName = pageName
+            )
+        }
     }
 
     private fun goToRecipeDetail(recipe: RecipeUiModel) {
