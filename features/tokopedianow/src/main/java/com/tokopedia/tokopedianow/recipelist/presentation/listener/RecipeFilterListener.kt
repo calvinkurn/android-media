@@ -5,6 +5,7 @@ import com.tokopedia.tokopedianow.recipehome.presentation.activity.TokoNowRecipe
 import com.tokopedia.tokopedianow.recipehome.presentation.fragment.TokoNowRecipeFilterFragment.Companion.EXTRA_SELECTED_FILTER_IDS
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics
 import com.tokopedia.tokopedianow.recipelist.base.fragment.BaseTokoNowRecipeListFragment.Companion.REQUEST_CODE_FILTER
+import com.tokopedia.tokopedianow.recipelist.base.viewmodel.BaseTokoNowRecipeListViewModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel.ChipType.MORE_FILTER
 import com.tokopedia.tokopedianow.recipelist.presentation.view.RecipeListView
@@ -14,7 +15,8 @@ import java.util.*
 class RecipeFilterListener(
     private val view: RecipeListView,
     private val analytics: RecipeListAnalytics,
-    private val pageName: String
+    private val pageName: String,
+    private val viewModel: BaseTokoNowRecipeListViewModel
 ) : RecipeChipFilterListener {
 
     override fun onClickItem(filter: RecipeChipFilterUiModel) {
@@ -23,7 +25,16 @@ class RecipeFilterListener(
             val intent = Intent(view.context(), TokoNowRecipeFilterActivity::class.java)
             intent.putStringArrayListExtra(EXTRA_SELECTED_FILTER_IDS, ArrayList(selectedFilterIds))
             view.fragment().startActivityForResult(intent, REQUEST_CODE_FILTER)
-            analytics.clickFilter(pageName)
+
+            viewModel.whenLoadPage(
+                onSuccessLoaded = {
+                    analytics.clickFilter(pageName)
+                },
+                onEmptyLoaded = {
+                    analytics.clickFilterNoSearchResult(pageName)
+                },
+                onFailedLoaded = { /* nothing to do */ }
+            )
         }
     }
 }

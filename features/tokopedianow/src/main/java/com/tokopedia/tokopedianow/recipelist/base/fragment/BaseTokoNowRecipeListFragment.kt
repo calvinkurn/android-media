@@ -36,6 +36,7 @@ import com.tokopedia.tokopedianow.recipelist.presentation.listener.RecipeFilterL
 import com.tokopedia.tokopedianow.recipelist.presentation.listener.RecipeListListener
 import com.tokopedia.tokopedianow.recipelist.presentation.view.RecipeListView
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics
+import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeEmptyStateViewHolder.RecipeEmptyStateListener
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.EXTRA_SELECTED_FILTER
 import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 import com.tokopedia.unifycomponents.Toaster
@@ -43,7 +44,11 @@ import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, ServerErrorListener {
+abstract class BaseTokoNowRecipeListFragment : Fragment(),
+    RecipeListView,
+    ServerErrorListener,
+    RecipeEmptyStateListener
+{
 
     @Inject
     lateinit var analytics: RecipeListAnalytics
@@ -62,8 +67,14 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
                     pageName = pageName,
                     viewModel = viewModel
                 ),
-                recipeFilterListener = RecipeFilterListener(this, analytics, pageName),
-                serverErrorListener = this
+                recipeFilterListener = RecipeFilterListener(
+                    view = this,
+                    analytics = analytics,
+                    pageName = pageName,
+                    viewModel = viewModel
+                ),
+                serverErrorListener = this,
+                recipeEmptyStateListener = this
             )
         )
     }
@@ -121,6 +132,14 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
         analytics.impressFailedLoadPage(pageName)
     }
 
+    override fun onClickResetFilter() {
+        analytics.clickResetFilter(pageName)
+    }
+
+    override fun onImpressEmptyStatePage() {
+        analytics.impressNoSearchResult(pageName)
+    }
+
     override fun viewModel() = viewModel
 
     override fun context() = context
@@ -139,7 +158,15 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
             pageName = pageName,
             hintData = searchHintData
         ) {
-            analytics.clickSearchBar(pageName)
+            viewModel.whenLoadPage(
+                onSuccessLoaded = {
+                    analytics.clickSearchBar(pageName)
+                },
+                onEmptyLoaded = {
+                    analytics.clickSearchBarNoSearchResult(pageName)
+                },
+                onFailedLoaded = { /* nothing to do */ }
+            )
             RouteManager.route(context, ApplinkConst.TokopediaNow.RECIPE_AUTO_COMPLETE)
         }
         navToolbar?.headerBackground = headerBg
@@ -153,6 +180,9 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(), RecipeListView, Serve
                 },
                 onFailedLoaded = {
                     analytics.clickBackFailedLoadPage(pageName)
+                },
+                onEmptyLoaded = {
+                    analytics.clickBackNoSearchResult(pageName)
                 }
             )
             activity?.finish()
