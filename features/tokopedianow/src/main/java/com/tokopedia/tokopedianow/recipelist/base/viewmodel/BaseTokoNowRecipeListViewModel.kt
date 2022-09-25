@@ -16,6 +16,7 @@ import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.map
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToSortBy
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam
 import com.tokopedia.tokopedianow.recipelist.domain.usecase.GetRecipeListUseCase
+import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addEmptyStateItem
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addFilterItems
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addHeaderItem
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addRecipeItems
@@ -71,7 +72,16 @@ abstract class BaseTokoNowRecipeListViewModel(
             }
 
             visitableItems.addFilterItems()
-            visitableItems.addRecipeItems(response)
+            if (response.data.recipes.isNotEmpty()) {
+                visitableItems.addRecipeItems(
+                    response = response
+                )
+            } else {
+                visitableItems.addEmptyStateItem(
+                    isFilterSelected = selectedFilters.isNotEmpty(),
+                    title = getRecipeListParam.title.orEmpty()
+                )
+            }
 
             _visitableList.postValue(visitableItems)
             hideProgressBar()
