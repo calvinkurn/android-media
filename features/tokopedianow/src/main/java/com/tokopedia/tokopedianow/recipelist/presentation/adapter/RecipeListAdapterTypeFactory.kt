@@ -12,11 +12,13 @@ import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeCountUiM
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeHeaderUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
+import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeEmptyStateUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeChipFilterViewHolder.RecipeChipFilterListener
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeCountViewHolder
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeFilterViewHolder
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeHeaderViewHolder
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeViewHolder
+import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeEmptyStateViewHolder
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeViewHolder.RecipeItemListener
 
 class RecipeListAdapterTypeFactory(
@@ -33,6 +35,8 @@ class RecipeListAdapterTypeFactory(
 
     override fun type(uiModel: RecipeFilterUiModel): Int = RecipeFilterViewHolder.LAYOUT
 
+    override fun type(uiModel: RecipeEmptyStateUiModel): Int = RecipeEmptyStateViewHolder.LAYOUT
+
     override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -42,6 +46,7 @@ class RecipeListAdapterTypeFactory(
             RecipeViewHolder.LAYOUT -> RecipeViewHolder(parent, recipeItemListener)
             RecipeFilterViewHolder.LAYOUT -> RecipeFilterViewHolder(parent, recipeFilterListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(parent, serverErrorListener)
+            RecipeEmptyStateViewHolder.LAYOUT -> RecipeEmptyStateViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
