@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.gojek.conversations.ConversationsRepository
 import com.gojek.conversations.analytics.ConversationsAnalyticsTracker
+import com.gojek.conversations.courier.BabbleCourierClient
 import com.gojek.conversations.logging.ConversationsLogger
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import retrofit2.Retrofit
@@ -11,7 +12,8 @@ import javax.inject.Inject
 
 class TokoChatRepository @Inject constructor(
     private val retrofit: Retrofit,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val babbleCourier: BabbleCourierClient
 ): ConversationsLogger.ILog, ConversationsAnalyticsTracker {
 
     private var conversationRepository: ConversationsRepository? = null
@@ -19,7 +21,8 @@ class TokoChatRepository @Inject constructor(
     fun getConversationRepository(): ConversationsRepository {
         if (conversationRepository == null) {
             ConversationsRepository.init(
-                context, retrofit, this, this
+                context, retrofit, this, this,
+                courierClient = babbleCourier
             )
             conversationRepository = ConversationsRepository.instance
         }

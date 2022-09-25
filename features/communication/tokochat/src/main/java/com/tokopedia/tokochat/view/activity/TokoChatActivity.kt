@@ -24,7 +24,7 @@ class TokoChatActivity : BaseTokoChatActivity<TokoChatComponent>() {
         SplitCompat.installActivity(this)
     }
 
-    private fun initializeChatServiceComponent(): TokoChatComponent {
+    private fun initializeTokoChatComponent(): TokoChatComponent {
         return DaggerTokoChatComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .tokoChatContextModule(TokoChatContextModule(this))
@@ -34,11 +34,11 @@ class TokoChatActivity : BaseTokoChatActivity<TokoChatComponent>() {
     }
 
     override fun getComponent(): TokoChatComponent {
-        return tokoChatComponent?: initializeChatServiceComponent()
+        return tokoChatComponent?: initializeTokoChatComponent()
     }
 
     override fun getNewFragment(): Fragment {
-        val isExp = false
+        val isExp = true
         return if (isExp) {
             TokoChatFragmentExp.getFragment(
                 supportFragmentManager,
