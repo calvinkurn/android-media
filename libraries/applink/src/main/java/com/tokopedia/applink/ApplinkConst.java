@@ -734,4 +734,16 @@ public interface ApplinkConst {
     interface GeneralInfo {
         String GENERAL_INFO_FORCE_CLOSE_PAGE = "tokopedia://general-info-close";
     }
+
+    interface TokoChat {
+        String PARAM_SOURCE = "source";
+        String ORDER_ID_GOJEK = "order_id_gojek";
+        String ORDER_ID_TKPD = "order_id_tokopedia";
+        String SERVICE_TYPE = "service_type";
+
+        String ORDER_CHAT_TYPE = "order_chat_type";
+        String ORDER_CHAT_TYPE_DRIVER = "driver";
+        String ORDER_CHAT_TYPE_SHOP = "shopper";
+        String ORDER_CHAT_TYPE_MERCHANT = "merchant";
+    }
 }

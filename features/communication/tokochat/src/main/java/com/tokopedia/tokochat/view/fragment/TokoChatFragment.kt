@@ -8,10 +8,10 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat_common.util.ValueUtil
 import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
-import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
-import com.tokopedia.tokochat_common.view.uimodel.StringUiModel
+import com.tokopedia.tokochat_common.view.uimodel.MessageBubbleUiModel
 import javax.inject.Inject
 
 class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
@@ -33,13 +33,86 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
 
     override fun initViews() {
         super.initViews()
-        val list = arrayListOf<StringUiModel>()
-        for (i in 0 until 10) {
-            val string = StringUiModel("HELOOOOO $i")
-            list.add(string)
-            adapter.addItem(string)
-            adapter.notifyItemChanged(i)
-        }
+        setupReceiverDummyMessages()
+        setupSenderDummyMessages()
+    }
+
+    private fun setupSenderDummyMessages() {
+        val message = MessageBubbleUiModel.Builder()
+            .withStartTime("")
+            .withIsSender(true)
+            .withIsRead(true)
+            .withIsDummy(false)
+            .withMsgId("123")
+            .withBubbleStatus(ValueUtil.STATUS_NORMAL)
+            .withFromUid("123")
+            .withFromRole("User")
+            .withReplyTime("123123123")
+            .withMsg("Halooo")
+            .withFraudStatus(0)
+            .withLabel("Label")
+            .build()
+        adapter.addItem(message)
+        adapter.notifyItemInserted(adapter.itemCount)
+
+        val deletedMessage = MessageBubbleUiModel.Builder()
+            .withStartTime("")
+            .withIsSender(true)
+            .withIsRead(true)
+            .withIsDummy(false)
+            .withMarkAsDeleted()
+            .build()
+        adapter.addItem(deletedMessage)
+        adapter.notifyItemInserted(adapter.itemCount)
+
+        val bannedMessage = MessageBubbleUiModel.Builder()
+            .withStartTime("")
+            .withIsSender(true)
+            .withIsRead(true)
+            .withIsDummy(false)
+            .withFraudStatus(1)
+            .build()
+        adapter.addItem(bannedMessage)
+        adapter.notifyItemInserted(adapter.itemCount)
+    }
+
+    private fun setupReceiverDummyMessages() {
+        val message = MessageBubbleUiModel.Builder()
+            .withStartTime("")
+            .withIsSender(false)
+            .withIsRead(false)
+            .withIsDummy(false)
+            .withMsgId("123")
+            .withBubbleStatus(ValueUtil.STATUS_NORMAL)
+            .withFromUid("123")
+            .withFromRole("User")
+            .withReplyTime("123123123")
+            .withMsg("Halooo")
+            .withFraudStatus(0)
+            .withLabel("Label")
+            .build()
+        adapter.addItem(message)
+        adapter.notifyItemInserted(adapter.itemCount)
+
+        val deletedMessage = MessageBubbleUiModel.Builder()
+            .withStartTime("")
+            .withIsSender(false)
+            .withIsRead(true)
+            .withIsDummy(false)
+            .withMarkAsDeleted()
+            .build()
+        adapter.addItem(deletedMessage)
+        adapter.notifyItemInserted(adapter.itemCount)
+
+        val bannedMessage = MessageBubbleUiModel.Builder()
+            .withStartTime("")
+            .withIsSender(false)
+            .withIsRead(true)
+            .withIsDummy(false)
+            .withFraudStatus(1)
+            .build()
+        adapter.addItem(bannedMessage)
+        adapter.notifyItemInserted(adapter.itemCount)
     }
 
     override fun initObservers() {

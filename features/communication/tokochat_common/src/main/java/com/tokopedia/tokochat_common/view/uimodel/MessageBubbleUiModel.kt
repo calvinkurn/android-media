@@ -1,9 +1,40 @@
 package com.tokopedia.tokochat_common.view.uimodel
 
-data class MessageBubbleUiModel (
-    var sentAt: Long = 0,
-    var isRead: Boolean = false,
-    var isDummy: Boolean = false,
-    var isSender: Boolean = false,
-    var type: String = ""
-)
+import com.tokopedia.tokochat_common.view.uimodel.base.SendableUiModel
+
+/**
+ * Primary constructor, use [Builder] class to create this instance.
+ */
+open class MessageBubbleUiModel protected constructor(
+    builder: Builder
+) : SendableUiModel(builder) {
+
+    var attachment: Any? = builder.attachment
+        private set
+
+    fun isBanned(): Boolean {
+        return fraudStatus == 1
+    }
+
+    fun hasLabel(): Boolean {
+        return label.isNotEmpty()
+    }
+
+    fun hasAttachment(): Boolean {
+        return attachment != null
+    }
+
+    open class Builder : SendableUiModel.Builder<Builder, MessageBubbleUiModel>() {
+
+        internal var attachment: Any? = null
+
+        fun withAttachment(attachment: Any): Builder {
+            this.attachment = attachment
+            return self()
+        }
+
+        override fun build(): MessageBubbleUiModel {
+            return MessageBubbleUiModel(this)
+        }
+    }
+}
