@@ -4,10 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
+import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
+import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignPackageListResponse
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
@@ -413,6 +416,56 @@ class CampaignListViewModelTest {
         }
     //endregion
 
+    //region getVpsPackages
+    @Test
+    fun `When get vps packages success, observer should successfully received the data`() =
+        runBlocking {
+            //Given
+            val packageStartTime = Date().time
+            val packageEndTime = Date().advanceDayBy(days = 1).time
+            val vpsPackage = VpsPackage(
+                remainingQuota = 45,
+                currentQuota = 5,
+                isDisabled = false,
+                originalQuota = 50,
+                packageEndTime = packageEndTime,
+                packageId = "1",
+                packageName = "Elite VPS Package",
+                packageStartTime = packageStartTime
+            )
+
+            val response = listOf(vpsPackage)
+            val expected = Success(listOf(vpsPackage))
+
+            coEvery { getSellerCampaignPackageListUseCase.execute() } returns response
+
+            //When
+            viewModel.getVpsPackages()
+
+            //Then
+            val actual = viewModel.vpsPackages.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+
+    @Test
+    fun `When get vps packages error, observer should receive error result`() =
+        runBlocking {
+            //Given
+            val error = MessageErrorException("Server error")
+            val expected = Fail(error)
+
+            coEvery { getSellerCampaignPackageListUseCase.execute() } throws error
+
+            //When
+            viewModel.getVpsPackages()
+
+            //Then
+            val actual = viewModel.vpsPackages.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+    //endregion
+
     @Test
     fun `When get campaign drafts, should return correct values`() {
         val drafts = listOf<CampaignUiModel>()
@@ -475,6 +528,50 @@ class CampaignListViewModelTest {
         coVerify { tracker.sendClickEditPopupEvent(campaign) }
     }
 
+    @Test
+    fun `When get vps packages success and function findActiveVpsPackagesCount invoked, should return correct vps packages count`() {
+        //Given
+        val packageStartTime = Date().time
+        val packageEndTime = Date().advanceDayBy(days = 1).time
+        val vpsPackage = VpsPackage(
+            remainingQuota = 45,
+            currentQuota = 5,
+            isDisabled = false,
+            originalQuota = 50,
+            packageEndTime = packageEndTime,
+            packageId = "1",
+            packageName = "Elite VPS Package",
+            packageStartTime = packageStartTime
+        )
+
+        val vpsPackages = listOf(vpsPackage)
+        val expected = 1
+
+        coEvery { getSellerCampaignPackageListUseCase.execute() } returns vpsPackages
+
+        //When
+        viewModel.getVpsPackages()
+
+        //Then
+        val actual = viewModel.findActiveVpsPackagesCount()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get vps packages return empty list and function findActiveVpsPackagesCount invoked, vps package count should be 0`() {
+        //Given
+        val error = MessageErrorException("Server error")
+        val expected = 0
+
+        coEvery { getSellerCampaignPackageListUseCase.execute() } throws error
+
+        //When
+        viewModel.getVpsPackages()
+
+        //Then
+        val actual = viewModel.findActiveVpsPackagesCount()
+        assertEquals(expected, actual)
+    }
 
     private fun buildCampaignUiModel(campaignId: Long): CampaignUiModel {
         return CampaignUiModel(
