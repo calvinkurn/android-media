@@ -41,6 +41,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
         var LAYOUT = R.layout.affiliate_performa_vertical_product_card_item_layout
 
         const val PRODUCT_ACTIVE = 1
+        const val PRODUCT_INACTIVE = 0
         const val SPAN_COUNT = 3
         private const val PRODUCT_ITEM = 0
 
@@ -56,7 +57,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
             adapterMetrics.clearAllElements()
             val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
             element.product.metrics?.sortedBy { metrics -> metrics?.order }?.forEach {metric ->
-                tempList.add(AffiliateProductCardMetricsModel(metric))
+                tempList.add(AffiliateProductCardMetricsModel(metric, element.product.status ?: PRODUCT_INACTIVE))
             }
             if(tempList.size > SPAN_COUNT)rvLayoutManager.spanCount = tempList.size
             adapterMetrics.addMoreData(tempList)
@@ -81,6 +82,12 @@ class AffiliatePerformaSharedProductCardsItemVH(
                     )
                 )
                 itemView.findViewById<Typography>(R.id.product_status)?.text = getString(R.string.affiliate_active)
+                itemView.findViewById<Typography>(R.id.product_name)?.setTextColor(
+                    MethodChecker.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    )
+                )
             } else {
                 itemView.findViewById<ImageUnify>(R.id.status_bullet)?.setImageDrawable(
                     MethodChecker.getDrawable(
@@ -88,20 +95,23 @@ class AffiliatePerformaSharedProductCardsItemVH(
                         R.drawable.affiliate_circle_inactive
                     )
                 )
-                itemView.findViewById<Typography>(R.id.product_status)?.setTextColor(
-                    MethodChecker.getColor(
-                        itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN500
-                    )
+                val disabledColor = MethodChecker.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN500
                 )
+                itemView.findViewById<Typography>(R.id.product_status)?.setTextColor(disabledColor)
                 itemView.findViewById<Typography>(R.id.product_status)?.text = getString(R.string.affiliate_inactive)
+
+                itemView.findViewById<Typography>(R.id.product_name)?.setTextColor(disabledColor)
+
+
             }
             itemView.setOnClickListener {
                 if (product.itemType == PRODUCT_ITEM) sendSelectContentEvent(product) else sendShopClickEvent(product)
                 productClickInterface?.onProductClick(
                     product.itemID!!, product.itemTitle ?: "", product.image?.androidURL
                         ?: "", product.defaultLinkURL ?: "",
-                    product.itemID!!, product.status ?: 0,
+                    product.itemID!!, product.status ?: PRODUCT_INACTIVE,
                     if (product.itemType == PRODUCT_ITEM) PAGE_TYPE_PDP else PAGE_TYPE_SHOP
                 )
             }
@@ -116,7 +126,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             UserSession(itemView.context).userId,
             product.itemID,
-            adapterPosition-1,
+            bindingAdapterPosition-1,
             "${product.itemID} - ${product.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${product.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${product.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $label",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
         )
@@ -129,7 +139,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             UserSession(itemView.context).userId,
             shop.itemID,
-            adapterPosition-1,
+            bindingAdapterPosition-1,
             shop.itemTitle,
             "${shop.itemID} - ${shop.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $label",
             AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT)
