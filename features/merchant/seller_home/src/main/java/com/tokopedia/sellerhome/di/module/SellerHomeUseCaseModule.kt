@@ -219,6 +219,7 @@ class SellerHomeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): GetTickerUseCase = GetTickerUseCase(gqlRepository, mapper, dispatchers)
 
+
     @SellerHomeScope
     @Provides
     fun provideShopMultilocWhitelistUseCase(
@@ -226,9 +227,10 @@ class SellerHomeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): ShopMultilocWhitelistUseCase = ShopMultilocWhitelistUseCase(gqlRepository, dispatchers)
 
+
     @SellerHomeScope
     @Provides
     fun provideGetTokomemberUseCase(
-        gqlRepository: GraphqlRepository,
+        gqlRepository: GraphqlRepository
     ): GetTotalTokoMemberUseCase = GetTotalTokoMemberUseCase(gqlRepository)
 }

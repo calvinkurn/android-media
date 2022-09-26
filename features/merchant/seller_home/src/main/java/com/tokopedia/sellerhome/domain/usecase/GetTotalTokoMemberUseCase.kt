@@ -8,6 +8,9 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.domain.entity.ShopTotalFollowers
+import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
 import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
 import com.tokopedia.sellerhome.domain.model.GetShopClosedInfoResponse
 import com.tokopedia.sellerhome.domain.model.GetShopInfoResponse
@@ -15,33 +18,31 @@ import com.tokopedia.sellerhome.domain.model.ShopInfoResultResponse
 import com.tokopedia.sellerhome.domain.model.TotalTokomemberResponse
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.UseCase
 
 
 @GqlQuery("GetTotalTokomemberGqlQuery", GetTotalTokoMemberUseCase.QUERY)
-class GetTotalTokoMemberUseCase(
-    private val gqlRepository: GraphqlRepository
-) : GraphqlUseCase<TotalTokomemberResponse>() {
+class GetTotalTokoMemberUseCase(private val gqlRepository: GraphqlRepository) :
+    UseCase<TotalTokomemberResponse>() {
 
-    init {
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        setCacheStrategy(cacheStrategy)
+    var params = HashMap<String, Any>()
 
-        setGraphqlQuery(GetTotalTokomemberGqlQuery())
-        setTypeClass(TotalTokomemberResponse::class.java)
-    }
+    override suspend fun executeOnBackground(): TotalTokomemberResponse {
+        val gqlRequest = GraphqlRequest(
+            GetTotalTokomemberGqlQuery(),
+            TotalTokomemberResponse::class.java,
+            params
+        )
+        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+            .build()
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
-    suspend fun execute(shopId: Long): TotalTokomemberResponse {
-        val requestParams = RequestParams.create().apply {
-            putLong(SHOP_ID, shopId)
-        }
-        setRequestParams(requestParams.parameters)
-
-        val response = executeOnBackground()
-        val resultStatus = response.membershipGetSumUserCardMember?.resultStatus
+        val data: TotalTokomemberResponse = gqlResponse.getData(TotalTokomemberResponse::class.java)
+        val resultStatus = data.membershipGetSumUserCardMember?.resultStatus
 
         return when {
-            resultStatus?.code.orEmpty() == STATUS_SUCCESS -> response
-            resultStatus?.code.orEmpty() != STATUS_SUCCESS && !resultStatus?.message.isNullOrEmpty() -> throw MessageErrorException(
+            data.membershipGetSumUserCardMember?.sumUserCardMember != null -> data
+            !resultStatus?.message.isNullOrEmpty() -> throw MessageErrorException(
                 resultStatus?.message?.joinToString(",")
             )
             else -> throw MessageErrorException(ERROR_MESSAGE)
@@ -67,6 +68,8 @@ class GetTotalTokoMemberUseCase(
         """
         private const val SHOP_ID = "shopID"
         private const val ERROR_MESSAGE = "Failed to get total member"
-        private const val STATUS_SUCCESS = "200"
+        fun createRequestParams(shopId: Long) = HashMap<String, Any>().apply {
+            put(SHOP_ID, shopId)
+        }
     }
 }

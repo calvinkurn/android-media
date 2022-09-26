@@ -5,10 +5,13 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.settings.analytics.SettingTokoMemberTracker
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopFollowersWidgetUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.TokoMemberWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -34,13 +37,15 @@ class ShopTokoMemberViewHolder(itemView: View?,
 
     override fun bind(element: TokoMemberWidgetUiModel) {
         when(val state = element.state) {
-            is SettingResponseState.SettingSuccess -> setSuccessTotalTokomemberLayout(state.data)
+            is SettingResponseState.SettingSuccess ->{
+                setSuccessTotalTokomemberLayout(state.data,element.impressHolder)
+            }
             is SettingResponseState.SettingError -> setErrorTotalTokomemberLayout()
             else -> setLoadingTotalTokomemberLayout()
         }
     }
 
-    private fun setSuccessTotalTokomemberLayout(totalTokomember: String) {
+    private fun setSuccessTotalTokomemberLayout(totalTokomember: String, impressHolder: ImpressHolder) {
 
         successLayout?.show()
         descTextView?.text = totalTokomember
@@ -49,6 +54,9 @@ class ShopTokoMemberViewHolder(itemView: View?,
         errorLayout?.gone()
         itemView.setOnClickListener {
             onTokoMemberClicked()
+        }
+        itemView.addOnImpressionListener(impressHolder){
+            SettingTokoMemberTracker.trackTokoMemberImpression()
         }
     }
 
