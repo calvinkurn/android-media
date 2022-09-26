@@ -63,7 +63,7 @@ object ChooseProductUiMapper {
     }
 
     private fun List<CriteriaSelection>.validateMax(): Boolean {
-        return !any { it.selectionCount > it.selectionCountMax }
+        return !any { it.selectionCount >= it.selectionCountMax }
     }
 
     fun getSelectedProductList(
