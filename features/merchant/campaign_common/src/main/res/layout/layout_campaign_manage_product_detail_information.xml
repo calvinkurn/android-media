@@ -2,6 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -94,6 +96,7 @@
         app:layout_constraintTop_toTopOf="@id/text_field_price_discount_nominal"
         app:unify_text_field_input_type="number"
         app:unify_text_field_label="@string/campaign_common_discount_placeholder"
+        app:unify_text_field_append_text="%"
         app:unify_text_field_placeholder="@string/campaign_common_discount_placeholder"
         tools:unify_text_field_message="10%-50%" />
 
@@ -131,7 +134,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_2"
         app:typographyType="paragraph_3"
-        tools:text="Stok Campaign" />
+        android:text="Stok Campaign" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_quantity_editor_sub_title"

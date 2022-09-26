@@ -13,11 +13,12 @@ class ChooseProductActivity : BaseSimpleActivity() {
 
     companion object {
         @JvmStatic
-        fun start(context: Context?, flashSaleId: Long) {
+        fun start(context: Context?, flashSaleId: Long, tabName: String) {
             context ?: return
             val intent = Intent(context, ChooseProductActivity::class.java)
             val bundle = Bundle()
             bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
+            bundle.putString(BundleConstant.BUNDLE_KEY_TAB_NAME, tabName)
             intent.putExtras(bundle)
             context.startActivity(intent)
         }
@@ -26,9 +27,12 @@ class ChooseProductActivity : BaseSimpleActivity() {
     private val flashSaleId by lazy {
         intent?.extras?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
     }
+    private val tabName by lazy {
+        intent?.extras?.getString(BundleConstant.BUNDLE_KEY_TAB_NAME).orEmpty()
+    }
 
     override fun getLayoutRes() = R.layout.stfs_activity_flash_sale_list_container
-    override fun getNewFragment() = ChooseProductFragment.newInstance(flashSaleId)
+    override fun getNewFragment() = ChooseProductFragment.newInstance(flashSaleId, tabName)
     override fun getParentViewResourceID() = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {
