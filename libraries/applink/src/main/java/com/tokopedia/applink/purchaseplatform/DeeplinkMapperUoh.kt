@@ -1,4 +1,4 @@
-package com.tokopedia.applink.order
+package com.tokopedia.applink.purchaseplatform
 
 import android.content.Context
 import android.net.Uri
@@ -19,8 +19,9 @@ import java.util.*
 
 /**
  * Created by fwidjaja on 27/08/20.
+ * UOH = Unify Order History
  */
-object DeeplinkMapperUohOrder {
+object DeeplinkMapperUoh {
     private const val PATH_ORDER = "order"
     const val PATH_ORDER_ID = "order_id"
     const val PATH_PAYMENT_ID = "payment_id"
@@ -141,6 +142,9 @@ object DeeplinkMapperUohOrder {
 
         } else if (deeplink.equals(TOKOFOOD_ORDER, true)) {
             returnedDeeplink = ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD
+
+        } else if (deeplink.equals(TOKOPEDIA_PLUS_ORDER, true)) {
+            returnedDeeplink = ApplinkConstInternalOrder.UNIFY_ORDER_PLUS
         }
 
         return returnedDeeplink

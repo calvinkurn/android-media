@@ -38,6 +38,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MARKETPLAC
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MARKETPLACE_DALAM_PROSES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MODALTOKO
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PESAWAT
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PLUS
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TOKOFOOD
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAIN
@@ -169,6 +170,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_GIFTCARD
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_HOTEL
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_PLUS
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TOKOFOOD
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
 import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
@@ -278,12 +280,14 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         private var CATEGORIES_TRAVELENT = ""
         private var CATEGORIES_KEUANGAN = ""
         private var CATEGORIES_TOKOFOOD = ""
+        private var CATEGORIES_PLUS = ""
 
         private val LABEL_MP = "Belanja"
         private val LABEL_DIGITAL = "Top-up & Tagihan"
         private val LABEL_TRAVELENT = "Travel & Entertainment"
         private val LABEL_KEUANGAN = "Keuangan"
         private val LABEL_TOKOFOOD = "GoFood"
+        private val LABEL_PLUS = "Plus"
 
         @JvmStatic
         fun newInstance(bundle: Bundle): UohListFragment {
@@ -584,6 +588,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         status = ""
                         statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TOKOFOOD
+                    }
+                    PARAM_PLUS -> {
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_PLUS
                     }
                     PARAM_UOH_ONGOING -> {
                         status = DALAM_PROSES
@@ -1111,7 +1120,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             || filterStatus.equals(PARAM_HOTEL, true)
             || filterStatus.equals(PARAM_TRAIN, true)
             || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)
-            || filterStatus.equals(PARAM_TOKOFOOD, true)) {
+            || filterStatus.equals(PARAM_TOKOFOOD, true)
+            || filterStatus.equals(PARAM_PLUS, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -1150,6 +1160,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 category.label.equals(LABEL_TOKOFOOD, true) -> {
                     CATEGORIES_TOKOFOOD = category.value
                 }
+                category.label.equals(LABEL_PLUS, true) -> {
+                    CATEGORIES_PLUS = category.value
+                }
             }
         }
 
@@ -1168,7 +1181,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             filterStatus.equals(PARAM_TRAIN, true) ||
             filterStatus.equals(PARAM_HOTEL, true) ||
             filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true) ||
-            filterStatus.equals(PARAM_TOKOFOOD, true)) {
+            filterStatus.equals(PARAM_TOKOFOOD, true) ||
+            filterStatus.equals(PARAM_PLUS, true)) {
             ChipsUnify.TYPE_SELECTED
         } else {
             ChipsUnify.TYPE_NORMAL
@@ -1205,6 +1219,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         } else if ((filterStatus.equals(PARAM_TOKOFOOD, true)) && !isReset) {
             chipCategoryProduct?.title = LABEL_TOKOFOOD
+
+        } else if ((filterStatus.equals(PARAM_PLUS, true)) && !isReset) {
+            chipCategoryProduct?.title = LABEL_PLUS
         }
         chipCategoryProduct?.let { chips.add(it) }
     }
@@ -1508,6 +1525,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         } else if (filterStatus.equals(PARAM_TOKOFOOD, true) && !isReset) {
             selectedKey = CATEGORIES_TOKOFOOD
+
+        } else if (filterStatus.equals(PARAM_PLUS, true) && !isReset) {
+            selectedKey = CATEGORIES_PLUS
 
         } else {
             selectedKey = currFilterCategoryKey
