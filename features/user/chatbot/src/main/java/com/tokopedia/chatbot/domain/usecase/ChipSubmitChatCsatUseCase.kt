@@ -1,6 +1,6 @@
 package com.tokopedia.chatbot.domain.usecase
 
-import com.tokopedia.chatbot.domain.gqlqueries.InboxTicketListQuery
+import com.tokopedia.chatbot.domain.gqlqueries.ChipSubmitChatCsatQuery
 import com.tokopedia.chatbot.domain.gqlqueries.queries.CHIP_SUBMIT_CHAT_CSAT
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
@@ -25,7 +25,7 @@ class ChipSubmitChatCsatUseCase @Inject constructor(
         try {
             this.setTypeClass(ChipSubmitChatCsatResponse::class.java)
             this.setRequestParams(generateParam(chipSubmitChatCsatInput))
-            this.setGraphqlQuery(InboxTicketListQuery())
+            this.setGraphqlQuery(ChipSubmitChatCsatQuery())
 
             this.execute(
                 { result ->
