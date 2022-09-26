@@ -23,6 +23,7 @@ class ShopSecondaryInfoAdapter(
 
     companion object {
         private const val START_INDEX = 0
+        private const val TOTAL_TOKOMEMBER_ZERO = "0"
     }
 
     fun showInitialInfo() {
@@ -58,6 +59,26 @@ class ShopSecondaryInfoAdapter(
             if (index >= START_INDEX) {
                 visitables[index] = ReputationBadgeWidgetUiModel(state)
                 notifyItemChanged(index)
+            }
+        }
+    }
+
+    fun setTokoMemberData(state: SettingResponseState<String>) {
+        visitables?.indexOfFirst { it is TokoMemberWidgetUiModel }?.let { index ->
+            if (index >= START_INDEX) {
+                if (state is SettingResponseState.SettingSuccess){
+                    if(state.data == TOTAL_TOKOMEMBER_ZERO){
+                        visitables.removeAt(index)
+                        notifyItemRemoved(index)
+                    }else{
+                        visitables[index] = TokoMemberWidgetUiModel(state)
+                        notifyItemChanged(index)
+                    }
+
+                }else{
+                    visitables[index] = TokoMemberWidgetUiModel(state)
+                    notifyItemChanged(index)
+                }
             }
         }
     }
@@ -246,6 +267,7 @@ class ShopSecondaryInfoAdapter(
             ShopStatusWidgetUiModel(SettingResponseState.SettingLoading),
             RMTransactionWidgetUiModel(SettingResponseState.SettingLoading),
             ReputationBadgeWidgetUiModel(SettingResponseState.SettingLoading),
+            TokoMemberWidgetUiModel(SettingResponseState.SettingLoading),
             ShopFollowersWidgetUiModel(SettingResponseState.SettingLoading),
             FreeShippingWidgetUiModel(SettingResponseState.SettingLoading),
             TokoPlusWidgetUiModel(SettingResponseState.SettingLoading)

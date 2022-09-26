@@ -25,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
@@ -110,6 +111,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         const val TOPADS_BALANCE = "topads balance"
         const val TOPADS_AUTO_TOPUP = "topads auto topup"
         const val FREE_SHIPPING = "free shipping"
+        const val TOTAL_TOKO_MEMBER = "total tokomember"
+
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -281,6 +284,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         goToShopFavouriteList()
     }
 
+    override fun onTokoMemberCountClicked() {
+        goToTotalTokoMemberList()
+    }
+
     override fun onSaldoClicked() {
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
             RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
@@ -346,6 +353,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onShopTotalFollowersRefresh() {
         viewModel.getShopTotalFollowers()
+    }
+
+    override fun onTotalTokoMemberRefresh() {
+        viewModel.getTotalTokoMember()
     }
 
     override fun onUserInfoRefresh() {
@@ -482,6 +493,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun observeLiveData() {
         observeShopBadge()
+        observeTotalTokoMember()
         observeShopTotalFollowers()
         observeShopStatus()
         observeShopOperationalHour()
@@ -506,6 +518,18 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                     onShopBadgeRefresh()
                 }
                 logHeaderError(it.throwable, SHOP_BADGE)
+            }
+        }
+    }
+
+    private fun observeTotalTokoMember() {
+        viewModel.totalTokoMemberLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setTotalTokoMemberData(it)
+            if (it is SettingResponseState.SettingError) {
+                showErrorToaster(it.throwable) {
+                    onTotalTokoMemberRefresh()
+                }
+                logHeaderError(it.throwable, TOTAL_TOKO_MEMBER)
             }
         }
     }
@@ -680,6 +704,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         startActivity(shopFavouriteListIntent)
     }
 
+    private fun goToTotalTokoMemberList() {
+        val totalMemberIntent =
+            RouteManager.getIntent(context, ApplinkConstInternalSellerapp.INTERNAL_MEMBER_LIST)
+        startActivity(totalMemberIntent)
+    }
+
     private fun goToNewMembershipScheme() {
         context?.let {
             RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
@@ -725,6 +755,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                     context?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry).orEmpty()
                 )
                 {
+                    viewHolder?.setInitialLayouts()
                     viewModel.reloadErrorData()
                     viewModel.onShownMultipleError()
                     hasShownMultipleErrorToaster = false
