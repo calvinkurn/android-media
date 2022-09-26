@@ -175,7 +175,8 @@
                 app:icon_name="COPY"
                 app:layout_constraintBottom_toBottomOf="@+id/tvAccountNumber"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvAccountNumber" />
+                app:layout_constraintTop_toTopOf="@+id/tvAccountNumber"
+                app:icon_color_light_enable="@color/Unify_G500"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTotalAmountLabel"
