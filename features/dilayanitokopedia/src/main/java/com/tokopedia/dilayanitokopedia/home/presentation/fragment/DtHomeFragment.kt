@@ -2,21 +2,26 @@ package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.dilayanitokopedia.R
+import com.tokopedia.dilayanitokopedia.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.common.util.CustomLinearLayoutManager
+import com.tokopedia.dilayanitokopedia.common.view.DtView
 import com.tokopedia.dilayanitokopedia.databinding.FragmentDtHomeBinding
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
+import com.tokopedia.dilayanitokopedia.home.di.component.DaggerHomeComponent
 import com.tokopedia.dilayanitokopedia.home.domain.model.Data
 import com.tokopedia.dilayanitokopedia.home.domain.model.SearchPlaceholder
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapter
@@ -25,9 +30,11 @@ import com.tokopedia.dilayanitokopedia.home.presentation.adapter.differ.HomeList
 import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeViewModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.dilayanitokopedia.home.di.component.DaggerHomeComponent
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -36,7 +43,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
@@ -44,7 +50,7 @@ import javax.inject.Inject
 /**
  * Created by irpan on 07/09/22.
  */
-class DtHomeFragment : Fragment() {
+class DtHomeFragment : Fragment(), DtView {
 
     companion object {
         const val SOURCE = "dilayanitokopedia"
@@ -69,7 +75,7 @@ class DtHomeFragment : Fragment() {
     private val adapter by lazy {
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
-//                tokoNowView = this,
+                dtView = this
 //                homeTickerListener = this,
 //                tokoNowChooseAddressWidgetListener = this,
 //                tokoNowCategoryGridListener = this,
@@ -117,11 +123,12 @@ class DtHomeFragment : Fragment() {
         updateCurrentPageLocalCacheModelData()
 
         observeLiveData()
+        switchServiceOrLoadLayout()
 
-        /**
-         * Temporary
-         * Remove later
-         */
+//        /**
+//         * Temporary
+//         * Remove later
+//         */
         showLayout()
     }
 
@@ -191,9 +198,7 @@ class DtHomeFragment : Fragment() {
 //        }
     }
 
-    private fun onSearchBarClick() {
 
-    }
 
     private fun isFirstInstall(): Boolean {
 //        context?.let {
@@ -218,7 +223,7 @@ class DtHomeFragment : Fragment() {
     }
 
 
-    private fun getParamTokonowSRP() = "${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
+    private fun getParamDtSRP() = "${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalDilayaniTokopedia.SEARCH}"
 
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
@@ -255,7 +260,7 @@ class DtHomeFragment : Fragment() {
         when (data.state) {
             DtLayoutState.SHOW -> onShowHomeLayout(data)
 //            DtLayoutState.HIDE -> onHideHomeLayout(data)
-//            DtLayoutState.LOADING -> onLoadingHomeLayout(data)
+            DtLayoutState.LOADING -> onLoadingHomeLayout(data)
             else -> showHomeLayout(data)
         }
     }
@@ -283,6 +288,18 @@ class DtHomeFragment : Fragment() {
 //                addScrollListener()
 //                resetSwipeLayout()
 //            }
+        }
+
+        observe(viewModelDtHome.chooseAddress) {
+            when(it) {
+                is Success -> {
+                    setupChooseAddress(it.data)
+                }
+                is Fail -> {
+                    showEmptyStateNoAddress()
+//                    logChooseAddressError(it.throwable)
+                }
+            }
         }
     }
 
@@ -317,5 +334,162 @@ class DtHomeFragment : Fragment() {
         }
     }
 
+    private fun onSearchBarClick() {
+        RouteManager.route(context,
+            getAutoCompleteApplinkPattern(),
+            SOURCE,
+            context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty(),
+            isFirstInstall().toString())
+    }
 
+
+    private fun getAutoCompleteApplinkPattern() =
+        ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE + "&" + getParamDtSRP()
+
+
+
+    private fun switchServiceOrLoadLayout() {
+        localCacheModel?.apply {
+//            viewModelDtHome.switchServiceOrLoadLayout(
+//                externalServiceType = externalServiceType,
+//                localCacheModel = this
+//            )
+        }
+    }
+
+    private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
+        showHomeLayout(data)
+//        loadHeaderBackground()
+        checkAddressDataAndServiceArea()
+//        showHideChooseAddress()
+//        hideSwitcherCoachMark()
+    }
+
+    private fun checkAddressDataAndServiceArea() {
+        checkIfChooseAddressWidgetDataUpdated()
+        val shopId = localCacheModel?.shop_id.toLongOrZero()
+        val warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
+        checkStateNotInServiceArea(shopId,warehouseId)
+    }
+
+    private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
+//        context?.let {
+//            when {
+//                shopId == 0L -> {
+//                    viewModelDtHome.getChooseAddress(SOURCE)
+//                }
+//                warehouseId == 0L -> {
+////                    showEmptyStateNoAddress()
+//                }
+//                else -> {
+                    showLayout()
+////                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
+//                }
+//            }
+//        }
+    }
+
+    private fun checkIfChooseAddressWidgetDataUpdated() {
+        if (isChooseAddressWidgetDataUpdated()) {
+            updateCurrentPageLocalCacheModelData()
+        }
+    }
+
+    private fun isChooseAddressWidgetDataUpdated(): Boolean {
+        localCacheModel?.let {
+            context?.apply {
+                return ChooseAddressUtils.isLocalizingAddressHasUpdated(
+                    this,
+                    it
+                )
+            }
+        }
+        return false
+    }
+
+
+    /**
+     * DtView
+     */
+    override fun getFragmentPage()  = this
+
+
+    override fun getFragmentManagerPage()= childFragmentManager
+
+    override fun refreshLayoutPage() {
+        onRefreshLayout()
+    }
+
+    override fun getScrollState(adapterPosition: Int): Parcelable? {
+        TODO("Not yet implemented")
+    }
+
+    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun saveParallaxState(mapParallaxState: Map<String, Float>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getParallaxState(): Map<String, Float> {
+        TODO("Not yet implemented")
+    }
+
+    /*
+    end DtView
+     */
+
+    private fun onRefreshLayout() {
+//        refreshMiniCart()
+//        resetMovingPosition()
+//        removeAllScrollListener()
+//        hideStickyLogin()
+//        rvLayoutManager?.setScrollEnabled(true)
+//        carouselScrollState.clear()
+//        carouselParallaxState.clear()
+//        isRefreshed = true
+        loadLayout()
+    }
+
+    private fun loadLayout() {
+        viewModelDtHome.getLoadingState()
+    }
+
+    private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
+        data.let { chooseAddressData ->
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                context = requireContext(),
+                addressId = chooseAddressData.data.addressId.toString(),
+                cityId = chooseAddressData.data.cityId.toString(),
+                districtId = chooseAddressData.data.districtId.toString(),
+                lat = chooseAddressData.data.latitude,
+                long = chooseAddressData.data.longitude,
+                label = String.format(
+                    "%s %s",
+                    chooseAddressData.data.addressName,
+                    chooseAddressData.data.receiverName
+                ),
+                postalCode = chooseAddressData.data.postalCode,
+                warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
+                shopId = chooseAddressData.tokonow.shopId.toString(),
+                warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
+                serviceType = chooseAddressData.tokonow.serviceType,
+                lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
+            )
+        }
+        checkIfChooseAddressWidgetDataUpdated()
+        checkStateNotInServiceArea(
+            warehouseId = data.tokonow.warehouseId
+        )
+    }
+
+    private fun showEmptyStateNoAddress() {
+//        if (localCacheModel?.city_id?.isBlank() == true && localCacheModel?.district_id?.isBlank() == true) {
+//            showEmptyState(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE)
+//        } else {
+//            viewModelTokoNow.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
+            showEmptyState(EMPTY_STATE_OUT_OF_COVERAGE)
+//        }
+    }
 }

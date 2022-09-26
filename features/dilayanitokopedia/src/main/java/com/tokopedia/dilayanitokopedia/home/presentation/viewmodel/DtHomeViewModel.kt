@@ -14,6 +14,7 @@ import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -42,10 +43,15 @@ class DtHomeViewModel @Inject constructor(
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
 
+
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
         get() = _homeLayoutList
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
 
+
+    private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
+    val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
+        get() = _chooseAddress
 
     fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
         launchCatchError(block = {
@@ -100,4 +106,36 @@ class DtHomeViewModel @Inject constructor(
     }
 
 
+    /***
+     *
+     * @param localCacheModel local data from choose address
+     * @param serviceType which is the intended type of service
+     */
+    fun switchService(localCacheModel: LocalCacheModel, serviceType: String) {
+//        launchCatchError(block = {
+//            val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
+//            _setUserPreference.postValue(Success(userPreference))
+//        }) {
+//            _setUserPreference.postValue(Fail(it))
+//        }
+    }
+
+    fun getLoadingState() {
+//        channelToken = ""
+        homeLayoutItemList.clear()
+//        homeLayoutItemList.addLoadingIntoList()
+        val data = HomeLayoutListUiModel(
+            items = getHomeVisitableList(),
+            state = DtLayoutState.LOADING
+        )
+        _homeLayoutList.postValue(Success(data))
+    }
+
+    fun getChooseAddress(source: String){
+        getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
+            _chooseAddress.postValue(Success(it))
+        },{
+            _chooseAddress.postValue(Fail(it))
+        }, source)
+    }
 }
