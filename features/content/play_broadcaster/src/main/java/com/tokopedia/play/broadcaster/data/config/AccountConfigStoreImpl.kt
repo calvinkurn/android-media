@@ -30,6 +30,7 @@ class AccountConfigStoreImpl @Inject constructor(): AccountConfigStore {
     }
 
     override fun getAuthorTypeName(): String {
+        if (mAuthor == ContentAccountUiModel.Empty) return ""
         return if (mAuthor.type == TYPE_SHOP) TYPE_NAME_SELLER else TYPE_NAME_USER
     }
 
