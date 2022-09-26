@@ -18,13 +18,13 @@ data class VoucherOrdersItem(
         val uniqueId: String = "",
 
         @field:SerializedName("cashback_wallet_amount")
-        val cashbackWalletAmount: Int = 0,
+        val cashbackWalletAmount: Long = 0L,
 
         @field:SerializedName("success")
         val success: Boolean = false,
 
         @field:SerializedName("discount_amount")
-        val discountAmount: Int = 0,
+        val discountAmount: Long = 0L,
 
         @field:SerializedName("invoice_description")
         val invoiceDescription: String = "",
@@ -42,9 +42,9 @@ data class VoucherOrdersItem(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readValue(Int::class.java.classLoader) as Int,
+            parcel.readValue(Long::class.java.classLoader) as Long,
             parcel.readValue(Boolean::class.java.classLoader) as Boolean,
-            parcel.readValue(Int::class.java.classLoader) as Int,
+            parcel.readValue(Long::class.java.classLoader) as Long,
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",

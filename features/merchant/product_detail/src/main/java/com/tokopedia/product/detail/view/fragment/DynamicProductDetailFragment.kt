@@ -320,7 +320,9 @@ open class DynamicProductDetailFragment :
             layoutId: String? = null,
             extParam: String? = null,
             query: String? = null,
-            affiliateChannel: String? = null
+            affiliateChannel: String? = null,
+            campaignId: String? = null,
+            variantId: String? = null
         ) = DynamicProductDetailFragment().also {
             it.arguments = Bundle().apply {
                 productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
@@ -378,6 +380,18 @@ open class DynamicProductDetailFragment :
                     putString(
                         ProductDetailConstant.ARG_EXT_PARAM,
                         extParam
+                    )
+                }
+                if (campaignId != null) {
+                    putString(
+                        ProductDetailConstant.ARG_CAMPAIGN_ID,
+                        campaignId
+                    )
+                }
+                if (variantId != null) {
+                    putString(
+                        ProductDetailConstant.ARG_VARIANT_ID,
+                        variantId
                     )
                 }
                 putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
@@ -442,6 +456,8 @@ open class DynamicProductDetailFragment :
     private var affiliateChannel: String = ""
     private var alreadyShowMultilocBottomSheet: Boolean = false
     private var verticalRecommendationTrackDataModel: ComponentTrackDataModel? = null
+    private var campaignId: String = ""
+    private var variantId: String = ""
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -627,6 +643,8 @@ open class DynamicProductDetailFragment :
             extParam = it.getString(ProductDetailConstant.ARG_EXT_PARAM, "")
             urlQuery = it.getString(ProductDetailConstant.ARG_QUERY_PARAMS, "")
             affiliateChannel = it.getString(ProductDetailConstant.ARG_CHANNEL, "")
+            campaignId = it.getString(ProductDetailConstant.ARG_CAMPAIGN_ID, "")
+            variantId = it.getString(ProductDetailConstant.ARG_VARIANT_ID, "")
         }
         activity?.let {
             sharedViewModel = ViewModelProvider(it).get(ProductDetailSharedViewModel::class.java)
@@ -3719,7 +3737,9 @@ open class DynamicProductDetailFragment :
             ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
             buyerDistrictId = viewModel.getUserLocationCache().district_id,
             sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
-            lcaWarehouseId = getLcaWarehouseId()
+            lcaWarehouseId = getLcaWarehouseId(),
+            campaignId = campaignId,
+            variantId = variantId
         )
     }
 

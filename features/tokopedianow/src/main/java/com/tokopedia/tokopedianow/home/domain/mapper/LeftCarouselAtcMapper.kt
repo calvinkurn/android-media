@@ -131,7 +131,9 @@ object LeftCarouselAtcMapper {
                 ratingCount = channelGrid.rating,
                 countSoldRating = channelGrid.ratingFloat,
                 reviewCount = channelGrid.countReview,
-                variant = ProductCardModel.Variant(quantity)
+                variant = if (!channelGrid.isOutOfStock) ProductCardModel.Variant(
+                    quantity = quantity
+                ) else null
             )
         } else {
             ProductCardModel(
@@ -164,11 +166,11 @@ object LeftCarouselAtcMapper {
                 ratingCount = channelGrid.rating,
                 countSoldRating = channelGrid.ratingFloat,
                 reviewCount = channelGrid.countReview,
-                nonVariant = ProductCardModel.NonVariant(
+                nonVariant = if (!channelGrid.isOutOfStock) ProductCardModel.NonVariant(
                     quantity = quantity,
                     minQuantity = channelGrid.minOrder,
                     maxQuantity = channelGrid.stock
-                )
+                ) else null
             )
         }
     }

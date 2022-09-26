@@ -425,7 +425,8 @@ class CampaignRuleViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 if (campaignData.status.isDraft()) {
-                    val eligibilityResult = validateCampaignCreationEligibilityUseCase.execute()
+                    val selectedVpsPackageId = campaignData.campaignId
+                    val eligibilityResult = validateCampaignCreationEligibilityUseCase.execute(selectedVpsPackageId)
                     if (!eligibilityResult.isEligible) {
                         _createCampaignActionState.postValue(
                             CampaignRuleActionResult.ValidationFail(CampaignRuleValidationResult.NotEligible)
@@ -503,6 +504,7 @@ class CampaignRuleViewModel @Inject constructor(
             paymentType = selectedPaymentType,
             isCampaignRuleSubmit = isCampaignRuleSubmit,
             showTeaser = campaignData.useUpcomingWidget,
+            packageId = campaignData.packageInfo.packageId
         )
     }
 

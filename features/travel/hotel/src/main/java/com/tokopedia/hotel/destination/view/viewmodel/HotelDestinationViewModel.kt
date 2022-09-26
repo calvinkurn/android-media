@@ -20,6 +20,7 @@ import com.tokopedia.hotel.destination.usecase.GetHotelRecentSearchUseCase
 import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -54,7 +55,7 @@ class HotelDestinationViewModel @Inject constructor(
             if (popularPropertyData.isNotEmpty()) popularSearch.postValue(Success(popularPropertyData))
 
             if (userSessionInterface.isLoggedIn) {
-                val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt())
+                val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toLongOrZero())
                 getHotelRecentSearchUseCase.params = params
                 val recentSearchData = getHotelRecentSearchUseCase.executeOnBackground()
                 if (recentSearchData.isNotEmpty()) recentSearch.postValue(Success(recentSearchData))
@@ -81,7 +82,7 @@ class HotelDestinationViewModel @Inject constructor(
     }
 
     fun deleteRecentSearch(query: GqlQueryInterface, uuid: String) {
-        val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt(), PARAM_DELETE_RECENT_UUID to uuid)
+        val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toLong(), PARAM_DELETE_RECENT_UUID to uuid)
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(query, RecentSearch.DeleteResponse::class.java, params)
