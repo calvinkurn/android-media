@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.databinding.BottomsheetServiceFeeLayoutBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class ServiceFeeBottomSheet : BottomSheetUnify() {
 
@@ -29,16 +30,22 @@ class ServiceFeeBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         setupBottomSheet()
+        setupServiceFeeContentText()
         val viewBinding = BottomsheetServiceFeeLayoutBinding.inflate(inflater, container, false)
         binding = viewBinding
         setChild(viewBinding.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+
     private fun setupBottomSheet() {
         context?.run { setTitle(this.getString(R.string.label_service_fee)) }
         isFullpage = false
         clearContentPadding = true
+    }
+
+    private fun setupServiceFeeContentText() {
+        Typography.setUnifyTypographyOSO(true)
     }
 
     fun show(fragmentManager: FragmentManager) {

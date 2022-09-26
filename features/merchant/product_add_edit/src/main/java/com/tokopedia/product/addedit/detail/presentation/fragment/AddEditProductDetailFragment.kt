@@ -1183,8 +1183,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     if (commissionRate != DOUBLE_ZERO) {
                         val strCommissionRate = commissionRate.toString()
                         setupCommissionInfoTips(commissionInfoTipsView, viewModel.isFreeOfServiceFee, strCommissionRate)
+                        commissionInfoTipsView?.show()
                     }
-                    commissionInfoTipsView?.show()
                 }
             }
         })

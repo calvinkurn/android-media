@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DOUBLE_ZERO
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.REGULAR_MERCHANT
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GET_COMMISSION_ENGINE_REGULAR_MERCHANT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.SERVICE_FEE_LIMIT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.constant.ProductStatus
@@ -878,7 +878,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun isFreeOfServiceFee(totalTxSuccess: Int, shopType: Int): Boolean {
-        return totalTxSuccess <= SERVICE_FEE_LIMIT && shopType == REGULAR_MERCHANT
+        // RM for shop service is 0 while in commission engine 999
+        return shopType == GET_COMMISSION_ENGINE_REGULAR_MERCHANT && totalTxSuccess <= SERVICE_FEE_LIMIT
     }
 
     fun getCommissionRate(commissionRules: List<CommissionRule>, shopType: Int): Double {

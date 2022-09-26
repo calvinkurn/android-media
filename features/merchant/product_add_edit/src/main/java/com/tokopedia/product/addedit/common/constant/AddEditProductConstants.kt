@@ -46,8 +46,7 @@ object AddEditProductConstants {
     const val DOUBLE_ZERO = 0.0
 
     const val SERVICE_FEE_LIMIT = 100
-    const val REGULAR_MERCHANT = 0
-    const val POWER_MERCHANT = 1
-    const val OFFICIAL_STORE = 2
-    const val POWER_MERCHANT_PRO = 3
+
+    // only applied to CE (Commission Engine) service
+    const val GET_COMMISSION_ENGINE_REGULAR_MERCHANT = 999
 }
