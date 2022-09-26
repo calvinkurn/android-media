@@ -350,6 +350,8 @@ class MiniCartWidget @JvmOverloads constructor(
                 analytics.eventClickChevronToShowMiniCartBottomSheet()
                 showMiniCartListBottomSheet(fragment)
             }
+            it.labelTitleView.setOnClickListener(miniCartChevronClickListener)
+            it.amountView.setOnClickListener(miniCartChevronClickListener)
             it.amountChevronView.setOnClickListener(miniCartChevronClickListener)
             it.amountCtaView.setOnClickListener {
                 sendEventClickBuy()
@@ -357,6 +359,8 @@ class MiniCartWidget @JvmOverloads constructor(
                 viewModel?.goToCheckout(GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
         }
+        textCannotProcess?.setOnClickListener(miniCartChevronClickListener)
+        textCannotProcessQuantity?.setOnClickListener(miniCartChevronClickListener)
         imageChevronUnavailable?.setOnClickListener(miniCartChevronClickListener)
         initializeChatButton(fragment)
         validateTotalAmountView()
@@ -558,6 +562,8 @@ class MiniCartWidget @JvmOverloads constructor(
     private fun validateTotalAmountView() {
         totalAmount?.context?.let { context ->
             totalAmount?.enableAmountChevron(true)
+            totalAmount?.labelTitleView?.setOnClickListener(miniCartChevronClickListener)
+            totalAmount?.amountView?.setOnClickListener(miniCartChevronClickListener)
             totalAmount?.amountChevronView?.setOnClickListener(miniCartChevronClickListener)
         }
     }
