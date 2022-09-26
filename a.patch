@@ -628,7 +628,7 @@ index fad66fcdd64b..d780f912292d 100644
  apply from: "$rootProject.projectDir/buildconfig/module.gradle"
  apply plugin: 'io.hansel.preprocessor.feature'
 +apply plugin: 'robust'
-
+ 
  buildscript {
      repositories {
 @@ -28,6 +29,12 @@ android {
@@ -728,7 +728,7 @@ index 04921360a912..c66b21684733 100644
  apply from: "$rootProject.projectDir/buildconfig/module.gradle"
  apply plugin: 'io.hansel.preprocessor.feature'
 +apply plugin: 'robust'
-
+ 
  buildscript {
      repositories {
 diff --git a/dynamic-features/entertainment/df_entertainment/build.gradle b/dynamic-features/entertainment/df_entertainment/build.gradle
@@ -790,7 +790,7 @@ index 700870c0e094..4a11e3f6e572 100644
  apply from: "$rootProject.projectDir/buildconfig/module.gradle"
  apply plugin: 'io.hansel.preprocessor.feature'
 +apply plugin: 'robust'
-
+ 
  buildscript {
      repositories {
 @@ -28,6 +29,12 @@ android {
@@ -966,7 +966,7 @@ index 71107832d292..818787906c18 100644
  apply from: "$rootProject.projectDir/buildconfig/module.gradle"
  apply plugin: 'io.hansel.preprocessor.feature'
 +apply plugin: 'robust'
-
+ 
  buildscript {
      repositories {
 diff --git a/dynamic-features/tokopedianow/df_tokopedianow/build.gradle b/dynamic-features/tokopedianow/df_tokopedianow/build.gradle
@@ -1028,7 +1028,7 @@ index ec21958bea16..2943a6ae5564 100644
  apply from: "$rootProject.projectDir/buildconfig/module.gradle"
  apply plugin: 'io.hansel.preprocessor.feature'
 +apply plugin: 'robust'
-
+ 
  buildscript {
      repositories {
 @@ -28,6 +29,12 @@ android {
