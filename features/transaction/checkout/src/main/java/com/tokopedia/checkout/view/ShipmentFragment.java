@@ -1402,11 +1402,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         // when messageInfo is empty and has unapplied BO show hard coded toast
                         showToastNormal(getString(com.tokopedia.purchase_platform.common.R.string.pp_auto_unapply_bo_toaster_message));
                     }
-                    if (shipmentAdapter.hasSetAllCourier()) {
-                        resetPromoBenefit();
-                        setPromoBenefit(validateUsePromoRevampUiModel.getPromoUiModel().getBenefitSummaryInfoUiModel().getSummaries());
-                        shipmentAdapter.updateShipmentCostModel();
-                    }
+                    doSetPromoBenefit(validateUsePromoRevampUiModel.getPromoUiModel().getBenefitSummaryInfoUiModel().getSummaries(), true);
                 }
 
                 ClearPromoUiModel clearPromoUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CLEAR_PROMO_RESULT);
@@ -3201,16 +3197,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         updatePromoTrackingData(promoUiModel.getTrackingDetailUiModels());
         sendEEStep3();
         updateLogisticPromoData(promoUiModel);
-        if (shipmentAdapter.hasSetAllCourier()) {
-            resetPromoBenefit();
-            setPromoBenefit(promoUiModel.getBenefitSummaryInfoUiModel().getSummaries());
-            shipmentAdapter.updateShipmentCostModel();
-
+        boolean hasSetAllCourier = doSetPromoBenefit(promoUiModel.getBenefitSummaryInfoUiModel().getSummaries(), true);
+        if (hasSetAllCourier) {
             // Check if need to hit validate final, if so then hit validate final by checking is all courier have been selected
             if (isNeedToHitValidateFinal) {
                 shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false);
             }
         }
+    }
+
+    private boolean doSetPromoBenefit(List<SummariesItemUiModel> summariesUiModels, boolean forceSetPromoBenefit) {
+        boolean hasSetAllCourier = shipmentAdapter.hasSetAllCourier();
+        if (hasSetAllCourier || forceSetPromoBenefit) {
+            resetPromoBenefit();
+            setPromoBenefit(summariesUiModels);
+            shipmentAdapter.updateShipmentCostModel();
+        }
+        return hasSetAllCourier;
     }
 
     private void doUpdateButtonPromoCheckout(PromoUiModel promoUiModel) {
