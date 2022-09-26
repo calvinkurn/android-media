@@ -208,7 +208,9 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                     attributes.status,
                     attributes.statusId,
                     attributes.title,
-                    attributes.amount)
+                    attributes.amount,
+                    attributes.color
+            )
             list.add(attachInvoice)
         }
 

@@ -638,7 +638,7 @@ class ChatbotPresenter @Inject constructor(
             typeString = "",
             type = 0,
             code = hashMap[CODE] ?: "",
-            createdTime = SendableUiModel.generateStartTime(),
+            createdTime = hashMap[CREATE_TIME] ?: "",
             description = hashMap[DESCRIPTION] ?: "",
             url = hashMap[IMAGE_URL] ?: "",
             id = hashMap.get(ID)!!.toLongOrZero(),
@@ -646,7 +646,8 @@ class ChatbotPresenter @Inject constructor(
             status = hashMap[STATUS] ?: "",
             statusId = hashMap[STATUS_ID]!!.toIntOrZero(),
             title = hashMap[TITLE] ?: "",
-            amount = hashMap[TOTAL_AMOUNT] ?: ""
+            amount = hashMap[TOTAL_AMOUNT] ?: "",
+            color = hashMap[STATUS_COLOR] ?: ""
         )
     }
 

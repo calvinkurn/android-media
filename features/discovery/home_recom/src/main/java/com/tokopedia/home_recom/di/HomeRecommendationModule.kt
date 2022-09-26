@@ -2,10 +2,9 @@ package com.tokopedia.home_recom.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.domain.query.PrimaryProductQuery
 import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
@@ -77,9 +76,8 @@ class HomeRecommendationModule {
     @Provides
     @HomeRecommendationScope
     fun provideGetPrimaryProductUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetPrimaryProductUseCase {
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_primary_product)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PrimaryProductEntity>(graphqlRepository)
-        useCase.setGraphqlQuery(query)
+        useCase.setGraphqlQuery(PrimaryProductQuery())
         return GetPrimaryProductUseCase(context, useCase)
     }
 

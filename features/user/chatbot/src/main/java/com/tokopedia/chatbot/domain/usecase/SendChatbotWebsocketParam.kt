@@ -66,6 +66,7 @@ object SendChatbotWebsocketParam {
         attributeSelected.addProperty("title", invoiceLinkPojo.attributes.title)
         attributeSelected.addProperty("total_amount", invoiceLinkPojo.attributes.totalAmount)
         attributeSelected.addProperty("used_by", usedBy)
+        attributeSelected.addProperty("color", invoiceLinkPojo.attributes.color)
 
         payload.addProperty("type", "Undefined")
         data.addProperty("start_time", startTime)

@@ -1,6 +1,8 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+
 import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.shape.CornerFamily
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -17,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
@@ -62,7 +66,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.tm_dash_home_fragment, container, false)
     }
@@ -104,7 +108,6 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-
         tokomemberDashHomeViewmodel.tokomemberHomeResultLiveData.observe(viewLifecycleOwner, {
             when(it.status){
                 TokoLiveDataResult.STATUS.LOADING ->{
@@ -116,7 +119,12 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
                         .load(it.data?.membershipGetSellerAnalyticsTopSection?.shopProfile?.homeCardTemplate?.backgroundImgUrl)
                         .into(object : CustomTarget<Drawable>(){
                             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                                flShop.background = resource
+                                val bitmap = cropImage(resource)
+                                flShopbg.setImageBitmap(bitmap)
+                                flShopbg.shapeAppearanceModel=flShopbg.shapeAppearanceModel.toBuilder().setTopRightCorner(
+                                    CornerFamily.ROUNDED,30f)
+                                    .setTopLeftCorner(CornerFamily.ROUNDED,30f)
+                                    .build()
                             }
                             override fun onLoadCleared(placeholder: Drawable?) {
 
@@ -169,6 +177,13 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
             addItems(R.layout.tm_dash_home_ticker_item, list as ArrayList<Any>, itemParam)
         }
     }
+
+    private fun cropImage(resource:Drawable) : Bitmap{
+        val bm = resource.toBitmap()
+        return Bitmap.createBitmap(bm,0,0,bm.width-15,bm.height-15)
+    }
+
+
 
     override fun getScreenName() = ""
 
