@@ -119,6 +119,9 @@ class ProductTagViewModel @AssistedInject constructor(
     val isShowActionBarDivider: Boolean
         get() = productTagConfig.isShowActionBarDivider
 
+    val appLinkAfterAutocomplete: String
+        get() = productTagConfig.appLinkAfterAutocomplete
+
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _productTagSourceStack = MutableStateFlow(setOf(if(isSeller) ProductTagSource.MyShop else ProductTagSource.LastTagProduct))

@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.producttag.view.fragment.base
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,7 @@ import com.tokopedia.content.common.producttag.view.fragment.MyShopProductFragme
 import com.tokopedia.content.common.producttag.view.fragment.ShopProductFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
@@ -212,7 +214,7 @@ class ProductTagParentFragment @Inject constructor(
                         ).showNow(childFragmentManager)
                     }
                     is ProductTagUiEvent.OpenAutoCompletePage -> {
-                        RouteManager.route(requireContext(), getAutocompleteApplink(it.query))
+                        RouteManager.route(requireContext(), getAutocompleteApplink(it.query, viewModel.appLinkAfterAutocomplete))
                     }
                     is ProductTagUiEvent.ShowError -> {
                         Toaster.build(
@@ -412,6 +414,7 @@ class ProductTagParentFragment @Inject constructor(
                     maxSelectedProduct = fragmentArgument.maxSelectedProduct,
                     backButton = fragmentArgument.backButton,
                     isShowActionBarDivider = fragmentArgument.isShowActionBarDivider,
+                    appLinkAfterAutocomplete = fragmentArgument.appLinkAfterAutocomplete,
                 )
             )
         )
@@ -461,7 +464,16 @@ class ProductTagParentFragment @Inject constructor(
         }
     }
 
-    fun onNewIntent(source: ProductTagSource, query: String, shopId: String, componentId: String) {
+    fun onNewIntent(intent: Intent?) {
+        val path = intent?.data?.path.toString()
+        val source = if(path.contains(PRODUCT)) ProductTagSource.GlobalSearch
+        else if(path.contains(SHOP)) ProductTagSource.Shop
+        else ProductTagSource.Unknown
+
+        val query = intent?.extras?.getString(SearchParamUiModel.KEY_QUERY) ?: ""
+        val shopId = intent?.data?.lastPathSegment ?: ""
+        val componentId = intent?.extras?.getString(SearchParamUiModel.KEY_COMPONENT_ID) ?: ""
+
         viewModel.submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId, componentId))
     }
 
@@ -484,6 +496,9 @@ class ProductTagParentFragment @Inject constructor(
     companion object {
         const val TAG = "ProductTagParentFragment"
         private const val EXTRA_QUERY = "EXTRA_QUERY"
+
+        private const val PRODUCT = "product"
+        private const val SHOP = "shop"
 
         fun findFragment(fragmentManager: FragmentManager): ProductTagParentFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
