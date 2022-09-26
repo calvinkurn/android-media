@@ -111,7 +111,7 @@ class GetCourierRecommendationSubscriber(
                                             shippingCourierUiModel,
                                             shippingRecommendationData
                                         )
-                                        if (shippingCourierUiModel.productData.isUiRatesHidden && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                        if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
                                             view.renderCourierStateFailed(
                                                 itemPosition,
                                                 isTradeInDropOff,
