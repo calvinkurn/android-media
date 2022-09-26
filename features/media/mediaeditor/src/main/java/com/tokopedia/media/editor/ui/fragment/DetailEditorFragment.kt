@@ -578,11 +578,14 @@ class DetailEditorFragment @Inject constructor(
             val finalRotationDegree =
                 (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + (cropRotateData.rotateDegree)
 
+            // get original cropped size exclude rotate ratio
+            val cropImageSize = data.cropRotateValue.getOriginalCropSize()
+
             val offsetX = (cropRotateData.offsetX * scalingSize).toInt()
-            val imageWidth = (cropRotateData.imageWidth * scalingSize).toInt()
+            val imageWidth = (cropImageSize.first * scalingSize).toInt()
 
             val offsetY = (cropRotateData.offsetY * scalingSize).toInt()
-            val imageHeight = (cropRotateData.imageHeight * scalingSize).toInt()
+            val imageHeight = (cropImageSize.second * scalingSize).toInt()
 
             // get processed, since data param is set to be null then other data value is not necessary
             val bitmapResult = viewBinding?.imgUcropPreview?.getProcessedBitmap(

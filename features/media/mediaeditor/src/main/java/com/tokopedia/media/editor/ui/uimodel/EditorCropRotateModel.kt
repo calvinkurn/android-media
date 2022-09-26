@@ -29,6 +29,17 @@ data class EditorCropRotateModel(
         return if (imageWidth == 0 && imageHeight == 0) null else cropRatio.first.toFloat() / cropRatio.second
     }
 
+    fun getOriginalCropSize(): Pair<Int, Int>{
+        val currentSize = Pair(imageWidth, imageHeight)
+        val inverseSize = Pair(imageHeight, imageWidth)
+
+        return if (orientationChangeNumber % 2 == 1){
+            inverseSize
+        } else {
+            currentSize
+        }
+    }
+
     companion object {
         fun getEmptyEditorCropRotateModel(): EditorCropRotateModel {
             return EditorCropRotateModel(

@@ -188,10 +188,16 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                     val scaleX = scale.first
                     val scaleY = scale.second
 
+                    // adjust crop image according to rotate ratio
+                    val isRatioChange = rotateNumber % 2 != 0
+                    val finalOffsetX = if (isRatioChange) offsetY else offsetX
+                    val finalOffsetY = if (isRatioChange) offsetX else offsetY
+
                     onCropFinish(
                         getProcessedBitmap(
                             bitmap,
-                            offsetX, offsetY,
+                            finalOffsetX,
+                            finalOffsetY,
                             imageWidth, imageHeight,
                             finalRotationDegree = finalRotationDegree,
                             sliderValue = sliderValue,
@@ -246,15 +252,27 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             (originalHeight / 2).toFloat()
         )
 
-        val rotatedBitmap = Bitmap.createBitmap(
-            originalBitmap,
-            0,
-            0,
-            originalWidth,
-            originalHeight,
-            matrix,
-            true
-        )
+        val rotatedBitmap = try {
+            Bitmap.createBitmap(
+                originalBitmap,
+                offsetX,
+                offsetY,
+                imageWidth,
+                imageHeight,
+                matrix,
+                true
+            )
+        } catch (e: Exception){
+            Bitmap.createBitmap(
+                originalBitmap,
+                0,
+                0,
+                originalWidth,
+                originalHeight,
+                matrix,
+                true
+            )
+        }
 
         // set crop area on data that will be pass to landing pass for state
         data?.cropRotateValue = EditorCropRotateModel(
@@ -272,15 +290,10 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             isRotate = isRotate,
             isCrop = isCrop,
             croppedSourceWidth = originalWidth,
-            cropRatio = data?.cropRotateValue?.cropRatio ?: Pair(1, 1)
+            cropRatio = data?.cropRotateValue?.cropRatio ?: Pair(0, 0)
         )
 
-        val normalizeX =
-            if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
-        val normalizeY =
-            if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
-
-        return Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
+        return rotatedBitmap
     }
 
     @SuppressLint("ClickableViewAccessibility")
