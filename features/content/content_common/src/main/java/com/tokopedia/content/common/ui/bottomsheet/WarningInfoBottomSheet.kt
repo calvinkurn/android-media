@@ -61,7 +61,10 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
         isCancelable = false
         overlayClickDismiss = false
 
-        setCloseClickListener { mListener?.clickCloseIcon() }
+        setCloseClickListener {
+            dismiss()
+            mListener?.clickCloseIcon()
+        }
     }
 
     private fun setupView() = with(binding) {
@@ -98,8 +101,8 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
         return this
     }
 
-    fun showNow(fragmentManager: FragmentManager) {
-        if(!isAdded) showNow(fragmentManager, TAG)
+    fun show(fragmentManager: FragmentManager) {
+        if(!isAdded) show(fragmentManager, TAG)
     }
 
     private fun routeToWebViewGetToKnowMore() {

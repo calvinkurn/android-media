@@ -72,7 +72,7 @@ class ContentAccountTypeBottomSheet : BottomSheetUnify() {
         mListener = listener
     }
 
-    fun showNow(fragmentManager: FragmentManager) {
+    fun show(fragmentManager: FragmentManager) {
         if(!isAdded) show(fragmentManager, TAG)
     }
 

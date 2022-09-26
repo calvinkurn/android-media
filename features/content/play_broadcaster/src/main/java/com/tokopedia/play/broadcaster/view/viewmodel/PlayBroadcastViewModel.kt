@@ -1485,7 +1485,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     )
                 )
                 getConfiguration(_selectedAccount.value)
-            }
+            } else throw Throwable()
         }, onError = {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.handleGetAccountList() }
         })
@@ -1541,6 +1541,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return when {
             !configUiModel.streamAllowed -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
+                warningInfoType = WarningType.BANNED
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
@@ -1548,11 +1549,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         selectedAccount = selectedAccount,
                     )
                 }
-                warningInfoType = WarningType.BANNED
                 false
             }
             configUiModel.channelStatus == ChannelStatus.Live -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
+                warningInfoType = WarningType.LIVE
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
                     AccountStateInfo(
@@ -1560,7 +1561,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         selectedAccount = selectedAccount,
                     )
                 }
-                warningInfoType = WarningType.LIVE
                 false
             }
             selectedAccount.isUser && !selectedAccount.hasUsername -> {
@@ -1593,6 +1593,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun updateSelectedAccount(selectedAccount: ContentAccountUiModel) {
         _selectedAccount.update { selectedAccount }
         sharedPref.setLastSelectedAccount(selectedAccount.type)
+        hydraConfigStore.setAuthor(selectedAccount)
     }
 
     /**

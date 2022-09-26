@@ -243,7 +243,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
-                        if (parentViewModel.channelTitle.isNotEmpty()) getSwitchAccountConfirmationDialog(contentAccount).show()
+                        analytic.onClickAccount()
+                        if (parentViewModel.channelTitle.isNotEmpty()) {
+                            analytic.onClickAccountAndHaveDraft()
+                            getSwitchAccountConfirmationDialog(contentAccount).show()
+                        }
                         else parentViewModel.submitAction(SwitchAccount)
                         viewModel.setFromSwitchAccount(true)
                     }
@@ -306,6 +310,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 }
 
                 setOnAccountClickListener {
+                    analytic.onClickAccountDropdown()
                     hideCoachMarkSwitchAccount()
                     showAccountBottomSheet()
                 }
@@ -681,7 +686,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         try {
             ContentAccountTypeBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
-                .showNow(childFragmentManager)
+                .show(childFragmentManager)
         }
         catch (e: Exception) {}
     }
@@ -865,7 +870,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 )
                 setPrimaryCTAText(getString(R.string.play_bro_switch_account_primary_cta_dialog))
                 setPrimaryCTAClickListener {
-                    if (switchAccountConfirmationDialog.isShowing) dismiss()
+                    if (switchAccountConfirmationDialog.isShowing) {
+                        analytic.onClickCancelSwitchAccount()
+                        dismiss()
+                    }
                 }
                 setSecondaryCTAText(
                     if (contentAccount.isShop) getString(R.string.play_bro_switch_account_secondary_cta_shop_dialog)
@@ -873,7 +881,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 )
                 setSecondaryCTAClickListener {
                     parentViewModel.submitAction(SwitchAccount)
-                    if (switchAccountConfirmationDialog.isShowing) dismiss()
+                    if (switchAccountConfirmationDialog.isShowing) {
+                        analytic.onClickConfirmSwitchAccount()
+                        dismiss()
+                    }
                 }
             }
         }
@@ -898,18 +909,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         try {
             WarningInfoBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
-                .showNow(childFragmentManager)
+                .show(childFragmentManager)
         } catch (e: Exception) { }
     }
 
     private fun showTermsAndConditionBottomSheet() {
-        childFragmentManager.executePendingTransactions()
-        val existingFragment = childFragmentManager.findFragmentByTag(SellerTncBottomSheet.TAG)
-        if (existingFragment is SellerTncBottomSheet && existingFragment.isVisible) return
         try {
             SellerTncBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
-                .showNow(childFragmentManager)
+                .show(childFragmentManager)
         } catch (e: Exception) { }
     }
 
