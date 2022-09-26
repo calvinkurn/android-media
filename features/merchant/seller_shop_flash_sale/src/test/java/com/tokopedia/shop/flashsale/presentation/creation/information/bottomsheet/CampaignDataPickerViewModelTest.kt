@@ -130,10 +130,16 @@ class CampaignDataPickerViewModelTest {
             )
             val expected = Success(remainingQuota)
 
-            coEvery { getSellerCampaignAttributeUseCase.execute(month = anyInt(), year = anyInt()) } returns campaignAttribute
+            coEvery {
+                getSellerCampaignAttributeUseCase.execute(
+                    month = anyInt(),
+                    year = anyInt(),
+                    vpsPackageId = 1
+                )
+            } returns campaignAttribute
 
             //When
-            viewModel.getCampaignQuota(month = anyInt(), year = anyInt())
+            viewModel.getCampaignQuota(month = anyInt(), year = anyInt(), vpsPackageId = 1)
 
             //Then
             val actual = viewModel.campaignQuota.getOrAwaitValue()
@@ -147,10 +153,16 @@ class CampaignDataPickerViewModelTest {
             val error = MessageErrorException("Server error")
             val expected = Fail(error)
 
-            coEvery { getSellerCampaignAttributeUseCase.execute(month = anyInt(), year = anyInt()) } throws error
+            coEvery {
+                getSellerCampaignAttributeUseCase.execute(
+                    month = anyInt(),
+                    year = anyInt(),
+                    vpsPackageId = 1
+                )
+            } throws error
 
             //When
-            viewModel.getCampaignQuota(month = anyInt(), year = anyInt())
+            viewModel.getCampaignQuota(month = anyInt(), year = anyInt(), vpsPackageId = 1)
 
             //Then
             val actual = viewModel.campaignQuota.getOrAwaitValue()
@@ -184,7 +196,8 @@ class CampaignDataPickerViewModelTest {
             isCampaignRuleSubmit = false, 0,
             CampaignUiModel.ThematicInfo(0, 0, "", 0, ""),
             Date(),
-            Date()
+            Date(),
+            CampaignUiModel.PackageInfo(packageId = 1, packageName = "VPS Package Elite")
         )
     }
 }

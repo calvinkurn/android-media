@@ -14,6 +14,7 @@ import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetada
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignPackageListUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GenerateCampaignBannerUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignPrerequisiteDataUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
@@ -56,6 +57,9 @@ class CampaignListViewModelTest {
     lateinit var getShopPageHomeTypeUseCase: GqlShopPageGetHomeType
 
     @RelaxedMockK
+    lateinit var getSellerCampaignPackageListUseCase: GetSellerCampaignPackageListUseCase
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
@@ -73,6 +77,7 @@ class CampaignListViewModelTest {
             validateCampaignCreationEligibility,
             generateCampaignBannerUseCase,
             getShopPageHomeTypeUseCase,
+            getSellerCampaignPackageListUseCase,
             userSession,
             tracker
         )
@@ -206,7 +211,7 @@ class CampaignListViewModelTest {
     fun `When get campaign prerequisite data success, observer should successfully received the data`() =
         runBlocking {
             //Given
-            val campaignPrerequisiteData = CampaignPrerequisiteData(drafts = listOf(), remainingQuota = 0)
+            val campaignPrerequisiteData = CampaignPrerequisiteData(drafts = listOf())
             val expected = Success(campaignPrerequisiteData)
 
             coEvery { getCampaignPrerequisiteDataUseCase.execute() } returns campaignPrerequisiteData
@@ -336,13 +341,14 @@ class CampaignListViewModelTest {
     fun `When validating campaign creation eligibility success, observer should successfully received the data`() =
         runBlocking {
             //Given
+            val vpsPackageId : Long = 1
             val campaignCreationEligibility = mockk<CampaignCreationEligibility>()
             val expected = Success(campaignCreationEligibility)
 
-            coEvery { validateCampaignCreationEligibility.execute() } returns campaignCreationEligibility
+            coEvery { validateCampaignCreationEligibility.execute(vpsPackageId = vpsPackageId) } returns campaignCreationEligibility
 
             //When
-            viewModel.validateCampaignCreationEligibility()
+            viewModel.validateCampaignCreationEligibility(vpsPackageId)
 
             //Then
             val actual = viewModel.creationEligibility.getOrAwaitValue()
@@ -354,13 +360,14 @@ class CampaignListViewModelTest {
     fun `When validating campaign creation eligibility error, observer should receive error result`() =
         runBlocking {
             //Given
+            val vpsPackageId: Long = 1
             val error = MessageErrorException("Server error")
             val expected = Fail(error)
 
-            coEvery { validateCampaignCreationEligibility.execute() } throws error
+            coEvery { validateCampaignCreationEligibility.execute(vpsPackageId) } throws error
 
             //When
-            viewModel.validateCampaignCreationEligibility()
+            viewModel.validateCampaignCreationEligibility(vpsPackageId)
 
             //Then
             val actual = viewModel.creationEligibility.getOrAwaitValue()
@@ -495,7 +502,8 @@ class CampaignListViewModelTest {
             isCampaignRuleSubmit = false, 0,
             CampaignUiModel.ThematicInfo(0, 0, "", 0, ""),
             Date(),
-            Date()
+            Date(),
+            CampaignUiModel.PackageInfo(packageId = 1, packageName = "VPS Package Eltie")
         )
     }
 }

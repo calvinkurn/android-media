@@ -13,12 +13,17 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignWithVpsPackages
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignPackageListUseCase
+import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
+import com.tokopedia.shop.flashsale.presentation.creation.information.viewmodel.CampaignInformationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,6 +38,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyLong
 import java.util.Date
 
 class CampaignInformationViewModelTest {
@@ -42,6 +48,8 @@ class CampaignInformationViewModelTest {
     lateinit var getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase
     @RelaxedMockK
     lateinit var getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase
+    @RelaxedMockK
+    lateinit var getSellerCampaignPackageListUseCase: GetSellerCampaignPackageListUseCase
     @RelaxedMockK
     lateinit var dateManager: DateManager
     @RelaxedMockK
@@ -56,6 +64,7 @@ class CampaignInformationViewModelTest {
             doSellerCampaignCreationUseCase,
             getSellerCampaignDetailUseCase,
             getSellerCampaignAttributeUseCase,
+            getSellerCampaignPackageListUseCase,
             dateManager,
             tracker
         )
@@ -139,7 +148,8 @@ class CampaignInformationViewModelTest {
                 firstColor = "#00FF00",
                 secondColor = "#00FF00",
                 PaymentType.INSTANT,
-                remainingQuota = remainingQuota
+                remainingQuota = remainingQuota,
+                vpsPackageId = 101
             )
             val now = Date()
             val expected = CampaignInformationViewModel.ValidationResult.NoRemainingQuota
@@ -167,7 +177,8 @@ class CampaignInformationViewModelTest {
                 firstColor = "#00FF00",
                 secondColor = "#00FF00",
                 PaymentType.INSTANT,
-                remainingQuota = remainingQuota
+                remainingQuota = remainingQuota,
+                vpsPackageId = 101
             )
             val now = Date()
             val expected = CampaignInformationViewModel.ValidationResult.Valid
@@ -197,7 +208,8 @@ class CampaignInformationViewModelTest {
                 firstColor = "#00FF00",
                 secondColor = "#00FF00",
                 PaymentType.INSTANT,
-                remainingQuota = remainingQuota
+                remainingQuota = remainingQuota,
+                vpsPackageId = 101
             )
 
             val expected = CampaignInformationViewModel.ValidationResult.LapsedStartDate
@@ -228,7 +240,8 @@ class CampaignInformationViewModelTest {
                 firstColor = "#00FF00",
                 secondColor = "#00FF00",
                 PaymentType.INSTANT,
-                remainingQuota = remainingQuota
+                remainingQuota = remainingQuota,
+                vpsPackageId = 101
             )
 
             val expected = CampaignInformationViewModel.ValidationResult.LapsedTeaserStartDate
@@ -259,7 +272,8 @@ class CampaignInformationViewModelTest {
                 firstColor = "#00FF00",
                 secondColor = "#00FF00",
                 PaymentType.INSTANT,
-                remainingQuota = remainingQuota
+                remainingQuota = remainingQuota,
+                vpsPackageId = 101
             )
 
             val expected = CampaignInformationViewModel.ValidationResult.Valid
@@ -290,7 +304,8 @@ class CampaignInformationViewModelTest {
                 firstColor = "#FF",
                 secondColor = "#00FF00",
                 PaymentType.INSTANT,
-                remainingQuota = remainingQuota
+                remainingQuota = remainingQuota,
+                vpsPackageId = 101
             )
 
             val expected = CampaignInformationViewModel.ValidationResult.InvalidHexColor
@@ -321,7 +336,8 @@ class CampaignInformationViewModelTest {
                 firstColor = "#00FF00",
                 secondColor = "#FF",
                 PaymentType.INSTANT,
-                remainingQuota = remainingQuota
+                remainingQuota = remainingQuota,
+                vpsPackageId = 101
             )
 
             val expected = CampaignInformationViewModel.ValidationResult.InvalidHexColor
@@ -341,10 +357,14 @@ class CampaignInformationViewModelTest {
         runBlocking {
             //Given
             val campaignId: Long = 1001
+
             val campaign = buildCampaignUiModel(campaignId)
-            val expected = Success(campaign)
+            val vpsPackages = listOf<VpsPackage>()
+
+            val expected = Success(CampaignWithVpsPackages(campaign, listOf()))
 
             coEvery { getSellerCampaignDetailUseCase.execute(campaignId) } returns campaign
+            coEvery { getSellerCampaignPackageListUseCase.execute() } returns vpsPackages
 
             //When
             viewModel.getCampaignDetail(campaignId)
@@ -374,48 +394,6 @@ class CampaignInformationViewModelTest {
 
     //endregion
 
-    //region getRemainingQuota
-    @Test
-    fun `When get remaining quota success, observer should successfully receive the data`() =
-        runBlocking {
-            //Given
-            val remainingQuota = 5
-            val campaignAttribute = CampaignAttribute(
-                success = true,
-                errorMessage = "",
-                listOf(),
-                remainingCampaignQuota = remainingQuota
-            )
-            val expected = Success(remainingQuota)
-
-            coEvery { getSellerCampaignAttributeUseCase.execute(month = anyInt(), year = anyInt()) } returns campaignAttribute
-
-            //When
-            viewModel.getCampaignQuota(month = anyInt(), year = anyInt())
-
-            //Then
-            val actual = viewModel.campaignQuota.getOrAwaitValue()
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `When get remaining quota error, observer should receive error result`() =
-        runBlocking {
-            //Given
-            val error = MessageErrorException("Server error")
-            val expected = Fail(error)
-
-            coEvery { getSellerCampaignAttributeUseCase.execute(month = anyInt(), year = anyInt()) } throws error
-
-            //When
-            viewModel.getCampaignQuota(month = anyInt(), year = anyInt())
-
-            //Then
-            val actual = viewModel.campaignQuota.getOrAwaitValue()
-            assertEquals(expected, actual)
-        }
-    //endregion
-
     //region saveDraft
 
     @Test
@@ -433,7 +411,8 @@ class CampaignInformationViewModelTest {
             showTeaser = selection.showTeaser,
             firstColor = selection.firstColor,
             secondColor = selection.secondColor,
-            paymentType = selection.paymentType
+            paymentType = selection.paymentType,
+            packageId = 101
         )
 
         //When
@@ -458,7 +437,8 @@ class CampaignInformationViewModelTest {
             showTeaser = selection.showTeaser,
             firstColor = selection.firstColor,
             secondColor = selection.secondColor,
-            paymentType = selection.paymentType
+            paymentType = selection.paymentType,
+            packageId = 1
         )
 
         //When
@@ -491,7 +471,8 @@ class CampaignInformationViewModelTest {
                 showTeaser = selection.showTeaser,
                 firstColor = selection.firstColor,
                 secondColor = selection.secondColor,
-                paymentType = selection.paymentType
+                paymentType = selection.paymentType,
+                packageId = 1
             )
             val expected = Success(campaignCreationResult)
 
@@ -523,7 +504,8 @@ class CampaignInformationViewModelTest {
                 showTeaser = selection.showTeaser,
                 firstColor = selection.firstColor,
                 secondColor = selection.secondColor,
-                paymentType = selection.paymentType
+                paymentType = selection.paymentType,
+                packageId = 1
             )
 
             coEvery { doSellerCampaignCreationUseCase.execute(createCampaignParam) } throws error
@@ -555,9 +537,14 @@ class CampaignInformationViewModelTest {
             secondColor = selection.secondColor,
             paymentType = selection.paymentType,
             campaignRelation = relatedCampaignId,
-            isCampaignRuleSubmit = campaignRuleSubmit
+            isCampaignRuleSubmit = campaignRuleSubmit,
+            packageId = selection.vpsPackageId
         )
 
+        val vpsPackages = listOf<VpsPackage>()
+
+        coEvery { getSellerCampaignDetailUseCase.execute(campaignId) } returns campaign
+        coEvery { getSellerCampaignPackageListUseCase.execute() } returns vpsPackages
         coEvery { getSellerCampaignDetailUseCase.execute(campaignId) } returns campaign
 
         //When
@@ -584,7 +571,13 @@ class CampaignInformationViewModelTest {
             )
             val expected = Success(remainingQuota)
 
-            coEvery { getSellerCampaignAttributeUseCase.execute(month = anyInt(), year = anyInt()) } returns campaignAttribute
+            coEvery {
+                getSellerCampaignAttributeUseCase.execute(
+                    month = anyInt(),
+                    year = anyInt(),
+                    vpsPackageId = anyLong()
+                )
+            } returns campaignAttribute
 
             //When
             viewModel.getCurrentMonthRemainingQuota()
@@ -601,7 +594,13 @@ class CampaignInformationViewModelTest {
             val error = MessageErrorException("Server error")
             val expected = Fail(error)
 
-            coEvery { getSellerCampaignAttributeUseCase.execute(month = anyInt(), year = anyInt()) }  throws error
+            coEvery {
+                getSellerCampaignAttributeUseCase.execute(
+                    month = anyInt(),
+                    year = anyInt(),
+                    vpsPackageId = anyLong()
+                )
+            } throws error
 
             //When
             viewModel.getCurrentMonthRemainingQuota()
@@ -628,7 +627,8 @@ class CampaignInformationViewModelTest {
             showTeaser = selection.showTeaser,
             firstColor = selection.firstColor,
             secondColor = selection.secondColor,
-            paymentType = selection.paymentType
+            paymentType = selection.paymentType,
+            packageId = 1
         )
 
         //When
@@ -653,7 +653,8 @@ class CampaignInformationViewModelTest {
             showTeaser = selection.showTeaser,
             firstColor = selection.firstColor,
             secondColor = selection.secondColor,
-            paymentType = selection.paymentType
+            paymentType = selection.paymentType,
+            packageId = 1
         )
 
         //When
@@ -681,7 +682,8 @@ class CampaignInformationViewModelTest {
             showTeaser = selection.showTeaser,
             firstColor = selection.firstColor,
             secondColor = selection.secondColor,
-            paymentType = selection.paymentType
+            paymentType = selection.paymentType,
+            packageId = 1
         )
 
         //When
@@ -707,7 +709,8 @@ class CampaignInformationViewModelTest {
             showTeaser = selection.showTeaser,
             firstColor = selection.firstColor,
             secondColor = selection.secondColor,
-            paymentType = selection.paymentType
+            paymentType = selection.paymentType,
+            packageId = 1
         )
 
         //When
@@ -718,79 +721,7 @@ class CampaignInformationViewModelTest {
         assertEquals(selection.showTeaser, createCampaignParam.showTeaser)
     }
 
-    @Test
-    fun `When create campaign failed, campaignId value won't be updated`() = runBlocking {
-        //Given
-        val campaignIdNotCreated: Long = -1
-        val campaignCreationResult = CampaignCreationResult(
-            campaignId = campaignIdNotCreated,
-            isSuccess = false,
-            totalProductFailed = 0,
-            errorDescription = "",
-            errorTitle = "",
-            errorMessage = ""
-        )
-        val selection = buildSelectionObject()
-        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
-            CampaignAction.Create,
-            selection.campaignName,
-            selection.startDate,
-            selection.endDate,
-            selection.teaserDate,
-            showTeaser = selection.showTeaser,
-            firstColor = selection.firstColor,
-            secondColor = selection.secondColor,
-            paymentType = selection.paymentType
-        )
 
-        coEvery {  doSellerCampaignCreationUseCase.execute(createCampaignParam) } returns campaignCreationResult
-
-        //When
-        viewModel.setCampaignId(campaignIdNotCreated)
-        viewModel.submit(selection)
-
-        //Then
-        assertEquals(campaignIdNotCreated, viewModel.getCampaignId())
-    }
-
-    @Test
-    fun `When create campaign success, observer should successfully receive the data`() = runBlocking {
-        //Given
-        val campaignIdNotCreated: Long = -1
-        val onSubmitSuccessCampaignId: Long = 1001
-        val campaignCreationResult = CampaignCreationResult(
-            campaignId = onSubmitSuccessCampaignId,
-            isSuccess = true,
-            totalProductFailed = 0,
-            errorDescription = "",
-            errorTitle = "",
-            errorMessage = ""
-        )
-        val selection = buildSelectionObject()
-        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
-            CampaignAction.Create,
-            selection.campaignName,
-            selection.startDate,
-            selection.endDate,
-            selection.teaserDate,
-            showTeaser = selection.showTeaser,
-            firstColor = selection.firstColor,
-            secondColor = selection.secondColor,
-            paymentType = selection.paymentType
-        )
-        val expected = Success(campaignCreationResult)
-
-        coEvery {  doSellerCampaignCreationUseCase.execute(createCampaignParam) } returns campaignCreationResult
-
-        //When
-        viewModel.setCampaignId(campaignIdNotCreated)
-        viewModel.submit(selection)
-
-        //Then
-        val actual = viewModel.campaignCreation.getOrAwaitValue()
-        assertEquals(expected, actual)
-        assertEquals(campaignCreationResult.campaignId, viewModel.getCampaignId())
-    }
 
     @Test
     fun `When create campaign error, observer should receive error`() = runBlocking {
@@ -809,7 +740,8 @@ class CampaignInformationViewModelTest {
             showTeaser = selection.showTeaser,
             firstColor = selection.firstColor,
             secondColor = selection.secondColor,
-            paymentType = selection.paymentType
+            paymentType = selection.paymentType,
+            packageId = 1
         )
 
         coEvery {  doSellerCampaignCreationUseCase.execute(createCampaignParam) } throws error
@@ -840,7 +772,8 @@ class CampaignInformationViewModelTest {
             showTeaser = selection.showTeaser,
             firstColor = selection.firstColor,
             secondColor = selection.secondColor,
-            paymentType = selection.paymentType
+            paymentType = selection.paymentType,
+            packageId = 1
         )
 
         //When
@@ -866,7 +799,8 @@ class CampaignInformationViewModelTest {
             showTeaser = selection.showTeaser,
             firstColor = selection.firstColor,
             secondColor = selection.secondColor,
-            paymentType = selection.paymentType
+            paymentType = selection.paymentType,
+            packageId = 1
         )
 
         //When
@@ -899,7 +833,8 @@ class CampaignInformationViewModelTest {
             showTeaser = selection.showTeaser,
             firstColor = selection.firstColor,
             secondColor = selection.secondColor,
-            paymentType = selection.paymentType
+            paymentType = selection.paymentType,
+            packageId = 1
         )
         val expected = Success(campaignCreationResult)
 
@@ -932,7 +867,8 @@ class CampaignInformationViewModelTest {
             showTeaser = selection.showTeaser,
             firstColor = selection.firstColor,
             secondColor = selection.secondColor,
-            paymentType = selection.paymentType
+            paymentType = selection.paymentType,
+            packageId = 1
         )
 
         coEvery {  doSellerCampaignCreationUseCase.execute(createCampaignParam) } throws error
@@ -950,7 +886,7 @@ class CampaignInformationViewModelTest {
     fun `When update campaign after previously get campaign detail, should get correct values`() {
         //Given
         val campaignId : Long= 1001
-        val campaignRuleSubmit = true
+        val campaignRuleSubmit = false
         val relatedCampaign = listOf(RelatedCampaign(1, "Shoes Flash Sale"))
         val relatedCampaignId = listOf<Long>(1)
         val campaign = buildCampaignUiModel(campaignId).copy(relatedCampaigns = relatedCampaign, isCampaignRuleSubmit = campaignRuleSubmit)
@@ -966,9 +902,12 @@ class CampaignInformationViewModelTest {
             secondColor = selection.secondColor,
             paymentType = selection.paymentType,
             campaignRelation = relatedCampaignId,
-            isCampaignRuleSubmit = campaignRuleSubmit
+            isCampaignRuleSubmit = campaignRuleSubmit,
+            packageId = selection.vpsPackageId
         )
+        val vpsPackages = listOf<VpsPackage>()
 
+        coEvery { getSellerCampaignPackageListUseCase.execute() } returns vpsPackages
         coEvery { getSellerCampaignDetailUseCase.execute(campaignId) } returns campaign
 
         //When
@@ -1238,7 +1177,8 @@ class CampaignInformationViewModelTest {
             firstColor = "#FFFFFF",
             secondColor = "#00FF00",
             PaymentType.INSTANT,
-            remainingQuota = 5
+            remainingQuota = 5,
+            vpsPackageId = 1
         )
     }
     private fun buildCampaignUiModel(campaignId: Long): CampaignUiModel {
@@ -1267,7 +1207,8 @@ class CampaignInformationViewModelTest {
             isCampaignRuleSubmit = false, 0,
             CampaignUiModel.ThematicInfo(0, 0, "", 0, ""),
             Date(),
-            Date()
+            Date(),
+            CampaignUiModel.PackageInfo(packageId = 1, packageName = "VPS Package Elite")
         )
     }
 }
