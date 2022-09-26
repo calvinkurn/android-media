@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/banned_chat_container_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="end"
+    android:orientation="vertical">
+
+    <com.tokopedia.tokochat_common.view.customview.TokoChatBubbleContainerLayout
+        android:id="@+id/banned_chat_bubble_container_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/banned_chat_message_container_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="right"
+            tools:ignore="RtlHardcoded">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/banned_chat_block_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="8dp"
+                app:icon_name="BLOCK" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/banned_chat_message_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="8dp"
+                android:includeFontPadding="false"
+                android:text="@string/title_tokochat_sender_chat_banned"
+                android:textColor="@color/Unify_N700_32"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/banned_chat_block_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_1"
+                tools:ignore="RtlHardcoded" />
+
+            <LinearLayout
+                android:id="@+id/banned_chat_status_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="13dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/banned_chat_message_tv">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/banned_chat_checkmark_iv"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginRight="2dp"
+                    android:contentDescription="@string/tokochat_desc_checkmark"
+                    tools:srcCompat="@drawable/ic_tokochat_check_read_rounded_green" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/banned_chat_time_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/Unify_N700_44"
+                    app:typographyType="body_3"
+                    tools:text="11:00" />
+            </LinearLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/banned_chat_info_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:paddingBottom="10dp"
+                android:text="@string/title_tokochat_check_tnc"
+                android:textColor="@color/Unify_G500"
+                app:layout_constraintStart_toStartOf="@+id/banned_chat_message_tv"
+                app:layout_constraintTop_toBottomOf="@+id/banned_chat_message_tv"
+                app:typographyType="body_3"
+                tools:ignore="RtlHardcoded,RtlSymmetry"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.tokochat_common.view.customview.TokoChatBubbleContainerLayout>
+
+</LinearLayout>

@@ -8,17 +8,15 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.tokochat_common.R
 import kotlin.math.max
 import kotlin.math.min
 
-class MessageBubbleLayout : ViewGroup {
+class TokoChatMessageBubbleLayout : ViewGroup {
 
-    private var fxChat: FlexBoxChatLayout? = null
-    private var showCheckMark = FlexBoxChatLayout.DEFAULT_SHOW_CHECK_MARK
+    private var fxChat: MessageChatLayout? = null
+    private var showCheckMark = MessageChatLayout.DEFAULT_SHOW_CHECK_MARK
     private var msgOrientation = DEFAULT_MSG_ORIENTATION
-    private val radiusMargin = 20f.toPx().toInt()
 
     private var bodyMsgContainer: LinearLayout? = null
 
@@ -76,7 +74,7 @@ class MessageBubbleLayout : ViewGroup {
             try {
                 showCheckMark = getBoolean(
                     R.styleable.MessageBubbleConstraintLayout_showCheckMark,
-                    FlexBoxChatLayout.DEFAULT_SHOW_CHECK_MARK
+                    MessageChatLayout.DEFAULT_SHOW_CHECK_MARK
                 )
                 msgOrientation = getInteger(
                     R.styleable.MessageBubbleConstraintLayout_messageOrientation,
@@ -93,8 +91,8 @@ class MessageBubbleLayout : ViewGroup {
     }
 
     private fun initViewBinding() {
-        fxChat = findViewById(R.id.fxChat)
-        bodyMsgContainer = findViewById(R.id.ll_body_msg_container)
+        fxChat = findViewById(R.id.message_chat_layout)
+        bodyMsgContainer = findViewById(R.id.body_message_container_layout)
     }
 
     private fun initFlexboxChatLayout() {
@@ -178,7 +176,7 @@ class MessageBubbleLayout : ViewGroup {
     }
 
     /**
-     * Per-child layout information associated with [MessageBubbleLayout].
+     * Per-child layout information associated with [TokoChatMessageBubbleLayout].
      */
     class LayoutParams : MarginLayoutParams {
         constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs)
