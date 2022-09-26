@@ -106,14 +106,6 @@ internal class ProductCardOptionsViewModel(
         else addWishlistV2()
     }
 
-    private fun onSuccessRemoveWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(
-            isUserLoggedIn = true,
-            isSuccess = true,
-            isAddWishlist = false)
-        wishlistEventLiveData.postValue(Event(true))
-    }
-
     private fun onSuccessRemoveWishlistV2(result: DeleteWishlistV2Response.Data.WishlistRemoveV2) {
         productCardOptionsModel?.wishlistResult = WishlistResult(
             isUserLoggedIn = true,
@@ -138,14 +130,6 @@ internal class ProductCardOptionsViewModel(
         productCardOptionsModel?.wishlistResult = WishlistResult(
             isUserLoggedIn = true,
             isSuccess = false,
-            isAddWishlist = true)
-        wishlistEventLiveData.postValue(Event(true))
-    }
-
-    private fun onSuccessAddWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(
-            isUserLoggedIn = true,
-            isSuccess = true,
             isAddWishlist = true)
         wishlistEventLiveData.postValue(Event(true))
     }
