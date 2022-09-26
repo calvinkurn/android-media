@@ -174,7 +174,21 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
                     thanksPageData.amountStr
                 )
         }
+        setClickToCopyAmount(paymentType, thanksPageData)
     }
+
+    private fun setClickToCopyAmount(paymentType: PaymentType, thanksPageData: ThanksPageData){
+        icCopyAmount.setOnClickListener {
+            val amountStr = if (paymentType == VirtualAccount
+                && (thanksPageData.combinedAmount > thanksPageData.amount)) {
+                thanksPageData.combinedAmount.toString()
+            } else {
+                thanksPageData.amount.toString()
+            }
+            copyTotalAmountToClipboard(amountStr)
+        }
+    }
+
 
     private fun setCombinedAmount(thanksPageData: ThanksPageData) {
         tvTotalAmountLabel.text = getString(R.string.thanks_total_combined_amount)
@@ -221,6 +235,20 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
                 thanksPageData.profileCode, thanksPageData.gatewayName,
                 thanksPageData.paymentID
             )
+    }
+
+    private fun copyTotalAmountToClipboard(amountStr: String?) {
+        amountStr?.let { str ->
+            context?.let { context ->
+                copyTOClipBoard(context, str)
+                view?.let {
+                    Toaster.build(
+                        it, getString(R.string.thank_you_amount_copy_success),
+                        Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL
+                    ).show()
+                }
+            }
+        }
     }
 
     private fun showToastCopySuccessFully(context: Context) {
