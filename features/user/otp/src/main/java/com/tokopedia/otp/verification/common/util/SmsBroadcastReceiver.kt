@@ -35,11 +35,11 @@ class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
 
         if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
             val extras = intent.extras
-            val status = extras?.get(SmsRetriever.EXTRA_STATUS) as Status?
+            val status = extras?.get(SmsRetriever.EXTRA_STATUS) as? Status
 
             when (status?.statusCode) {
                 CommonStatusCodes.SUCCESS -> {
-                    val message = (extras?.get(SmsRetriever.EXTRA_SMS_MESSAGE) as String?).orEmpty()
+                    val message = (extras.get(SmsRetriever.EXTRA_SMS_MESSAGE) as? String).orEmpty()
                     val subMessage = message.substringAfter("masuk:")
                     val otpDigit = Regex(REGEX_NUMERIC_PATTERN).find(subMessage)?.value?.length.orZero()
                     val otp = subMessage.substring(0, otpDigit)
