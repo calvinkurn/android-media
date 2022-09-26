@@ -72,6 +72,7 @@ includeIfEnabled("features:travel:common_travel")
 includeIfEnabled("features:entertainment:event")
 includeIfEnabled("features:entertainment:deals")
 includeIfEnabled("features:entertainment:digital_deals")
+includeIfEnabled("features:entertainment:common_entertainment")
 
 //includeIfEnabled("features:salam:umrah")
 
