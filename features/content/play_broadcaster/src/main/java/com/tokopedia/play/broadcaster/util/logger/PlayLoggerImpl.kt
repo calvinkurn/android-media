@@ -6,6 +6,7 @@ import com.tokopedia.play.broadcaster.data.type.PlaySocketType
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
+import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -71,14 +72,17 @@ class PlayLoggerImpl @Inject constructor(
     }
 
     override fun sendAll(channelId: String) {
-        collector.getAll().chunked(LIMIT_LOG).forEach {
-            sendLog(
-                mapOf(
-                    CHANNEL_ID_TAG to channelId,
-                    LOG_TRACE_TAG to it.toString()
+        try {
+            collector.getAll().chunked(LIMIT_LOG).forEach {
+                sendLog(
+                    mapOf(
+                        CHANNEL_ID_TAG to channelId,
+                        LOG_TRACE_TAG to it.toString()
+                    )
                 )
-            )
-            collector.getAll().removeAll(it)
+                collector.getAll().removeAll(it)
+            }
+        } catch (ignored: Exception) {
         }
     }
 

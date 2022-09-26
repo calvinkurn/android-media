@@ -516,10 +516,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     fun sendLogs() {
-        try {
-            logger.sendAll(channelId)
-        } catch (ignored: IllegalStateException) {
-        }
+        logger.sendAll(channelId)
     }
 
     private fun setActiveInteractiveTitle(title: String) {
