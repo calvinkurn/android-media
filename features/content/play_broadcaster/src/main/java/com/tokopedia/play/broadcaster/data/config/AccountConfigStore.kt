@@ -5,7 +5,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 /**
  * Created by fachrizalmrsln on 22/09/22
  */
-interface UGCConfigStore {
+interface AccountConfigStore {
     fun setAuthor(author: ContentAccountUiModel)
     fun getAuthor(): ContentAccountUiModel
     fun getAuthorId(): String

@@ -9,7 +9,7 @@ import javax.inject.Inject
 /**
  * Created by fachrizalmrsln on 22/09/22
  */
-class UGCConfigStoreImpl @Inject constructor(): UGCConfigStore {
+class AccountConfigStoreImpl @Inject constructor(): AccountConfigStore {
 
     private var mAuthor: ContentAccountUiModel = ContentAccountUiModel.Empty
 
