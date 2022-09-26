@@ -496,7 +496,7 @@ class DetailEditorFragment @Inject constructor(
 
             cropView.scaleX = cropRotateData.scaleX
             cropView.scaleY = cropRotateData.scaleY
-            viewModel.setRotate(it, rotateDegree, isRotate)
+            viewModel.setRotate(it, rotateDegree, isRotate, isPreviousState = true)
             viewModel.rotateNumber = cropRotateData.orientationChangeNumber
             viewModel.rotateSliderValue = cropRotateData.rotateDegree
             viewModel.rotateInitialScale = cropRotateData.scale

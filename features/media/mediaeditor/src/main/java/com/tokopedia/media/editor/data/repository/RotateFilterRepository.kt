@@ -11,7 +11,8 @@ interface RotateFilterRepository {
         editorDetailPreview: EditorDetailPreviewWidget?,
         degree: Float,
         isRotateRatio: Boolean,
-        imageRatio: Pair<Float, Float>?
+        imageRatio: Pair<Float, Float>?,
+        isPreviousState: Boolean,
     )
 
     fun mirror(editorDetailPreview: EditorDetailPreviewWidget?)
@@ -25,8 +26,8 @@ interface RotateFilterRepository {
 
 class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository {
     override var previousDegree = 0f
-    override var rotateNumber = 0
     override var sliderValue = 0f
+    override var rotateNumber = 0
 
     private var isRatioRotated = false
 
@@ -44,7 +45,8 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
         editorDetailPreview: EditorDetailPreviewWidget?,
         degree: Float,
         isRotateRatio: Boolean,
-        imageRatio: Pair<Float, Float>?
+        imageRatio: Pair<Float, Float>?,
+        isPreviousState: Boolean
     ) {
         if (editorDetailPreview == null) return
 
@@ -86,7 +88,7 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
             }
 
             initialScale = cropImageView.currentScale
-            isRatioRotated = !isRatioRotated
+            if (!isPreviousState) isRatioRotated = !isRatioRotated
             rotateNumber++
         } else {
             val rotateDegree = normalizeDegree - previousDegree

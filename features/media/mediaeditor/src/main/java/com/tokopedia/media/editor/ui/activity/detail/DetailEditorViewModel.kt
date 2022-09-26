@@ -144,10 +144,11 @@ class DetailEditorViewModel @Inject constructor(
         ucropRef: EditorDetailPreviewWidget?,
         rotateDegree: Float,
         isRotateRatio: Boolean,
-        ratio: Pair<Float, Float>? = null
+        ratio: Pair<Float, Float>? = null,
+        isPreviousState: Boolean = false
     ) {
         ucropRef?.let {
-            rotateFilterRepository.rotate(it, rotateDegree, isRotateRatio, ratio)
+            rotateFilterRepository.rotate(it, rotateDegree, isRotateRatio, ratio, isPreviousState)
         }
     }
 
