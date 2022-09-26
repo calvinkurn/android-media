@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
@@ -39,6 +41,9 @@ class ManageAddressViewModel @Inject constructor(
     var page: Int = 1
     var canLoadMore: Boolean = true
     var isClearData: Boolean = true
+    var source: String = ""
+    private val isTokonow: Boolean
+        get() = source == ManageAddressSource.TOKONOW.source
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>
@@ -114,8 +119,8 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun deletePeopleAddress(id: String, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
-        deletePeopleAddressUseCase.execute(id.toInt(), {
+    fun deletePeopleAddress(id: String) {
+        deletePeopleAddressUseCase.execute(id.toIntOrZero(), isTokonow, {
             _resultRemovedAddress.value = ManageAddressState.Success("Success")
             isClearData = true
             getStateChosenAddress("address")
@@ -125,10 +130,14 @@ class ManageAddressViewModel @Inject constructor(
     }
 
     fun setDefaultPeopleAddress(id: String, setAsStateChosenAddress: Boolean, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
-        setDefaultPeopleAddressUseCase.execute(id.toInt(), setAsStateChosenAddress = setAsStateChosenAddress, onSuccess = {
-            _setDefault.value = ManageAddressState.Success("Success")
-            isClearData = true
-            searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
+        setDefaultPeopleAddressUseCase.execute(
+            inputAddressId = id.toIntOrZero(),
+            setAsStateChosenAddress = setAsStateChosenAddress,
+            isTokonow = isTokonow,
+            onSuccess = {
+                _setDefault.value = ManageAddressState.Success("Success")
+                isClearData = true
+                searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
         }, onError = {
             _setDefault.value  = ManageAddressState.Fail(it, "")
         })

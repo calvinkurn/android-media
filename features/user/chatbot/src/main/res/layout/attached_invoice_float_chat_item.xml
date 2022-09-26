@@ -18,7 +18,7 @@
         android:layout_marginBottom="8dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_thumbnail"
+            android:id="@+id/invoice_image"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginLeft="8dp"
@@ -32,9 +32,10 @@
             tools:srcCompat="@tools:sample/avatars[0]" />
 
         <com.tokopedia.unifycomponents.Label
-            android:id="@+id/tv_status"
-            android:layout_width="@dimen/dp_chatbot_80"
+            android:id="@+id/invoice_status"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="40dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:maxLines="1"
@@ -42,13 +43,13 @@
             android:paddingEnd="8dp"
             android:textSize="10sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintStart_toEndOf="@+id/invoice_image"
             app:layout_constraintTop_toTopOf="parent"
             tools:labelType="general_light_red"
             tools:text="Pesanan Dibatalkan Pesanan Dibatalkan" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_invoice_name"
+            android:id="@+id/invoice_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -57,17 +58,17 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:paddingEnd="16dp"
-            android:text="Kaca Pembesar hewa unik"
+            tools:text="Kaca Pembesar hewa unik"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintStart_toEndOf="@+id/invoice_image"
             app:typographyType="heading_5"
             tools:ignore="RtlSymmetry" />
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_cross"
+            android:id="@+id/invoice_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

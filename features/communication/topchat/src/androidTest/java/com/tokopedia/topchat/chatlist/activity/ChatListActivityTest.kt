@@ -12,6 +12,7 @@ import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeature
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.common.UserSessionStub
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
 import org.junit.Test
@@ -63,15 +64,15 @@ class ChatListActivityTest: ChatListTest() {
         startChatListActivity()
 
         // Then
-        onView(withId(R.id.thumbnail_empty_chat_list))
-                .check(matches(isDisplayed()))
-        onView(withId(R.id.title_empty_chat_list))
+        onView(allOf(withId(R.id.thumbnail_empty_chat_list), isCompletelyDisplayed()))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        onView(allOf(withId(R.id.title_empty_chat_list), isCompletelyDisplayed()))
                 .check(matches(withText("Belum ada chat, nih")))
-        onView(withId(R.id.subtitle))
+        onView(allOf(withId(R.id.subtitle), isCompletelyDisplayed()))
                 .check(matches(withText("Yuk, bikin tokomu ramai pengunjung dengan beriklan dan promosikan produk-produkmu.")))
-        onView(withId(R.id.btnCta))
-                .check(matches(isDisplayed()))
-        onView(withId(R.id.btnCta))
+        onView(allOf(withId(R.id.btnCta), isCompletelyDisplayed()))
+                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        onView(allOf(withId(R.id.btnCta), isCompletelyDisplayed()))
                 .check(matches(withText("Coba Iklan dan Promosi")))
     }
 

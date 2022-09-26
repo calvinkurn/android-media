@@ -10,7 +10,7 @@ class SharedPreferenceDataStore@Inject constructor(@ApplicationContext context: 
         private const val PREFERENCE_FILE_NAME = "shop_flash_sale_prefs"
         private const val PREFERENCE_KEY_MANAGE_PRODUCT_COACHMARK_DISMISSED = "manage_product_coachmark_dismissed"
         private const val PREFERENCE_KEY_EDIT_PRODUCT_COACHMARK_DISMISSED = "edit_product_coachmark_dismissed"
-        private const val PREFERENCE_KEY_CAMPAIGN_INFO_COACH_MARK_DISMISSED = "campaign_info_coach_mark_dismissed"
+        private const val PREFERENCE_KEY_CAMPAIGN_INFO_COACH_MARK_DISMISSED = "campaign_info_coachmark_dismiss"
         private const val PREFERENCE_KEY_CAMPAIGN_PRODUCT_HIGHLIGHT_COACH_MARK_DISMISSED = "manage_product_highlight_coach_mark_dismissed"
     }
 
