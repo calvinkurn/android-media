@@ -188,11 +188,7 @@ class InboxPresenter @Inject constructor(
             deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
             deleteWishlistV2UseCase.execute(
                 onSuccess = { result ->
-                    if (result is Success) {
-                        actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
-                    } else if (result is Fail) {
-                        actionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
-                    } },
+                    if (result is Success) actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())},
                 onError = { actionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
     }
 
