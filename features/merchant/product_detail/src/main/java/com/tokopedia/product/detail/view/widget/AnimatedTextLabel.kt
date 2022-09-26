@@ -2,16 +2,18 @@ package com.tokopedia.product.detail.view.widget
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.ViewPropertyAnimator
+import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.databinding.AnimatedTextLabelBinding
 import com.tokopedia.unifyprinciples.Typography
 
 class AnimatedTextLabel : FrameLayout {
@@ -19,34 +21,57 @@ class AnimatedTextLabel : FrameLayout {
     companion object {
         private const val MAX_LIMIT_CHAR = 20
         private const val CHAR_TAKEN_AFTER_ELLIPSIS = 18
-        private const val FADE_OUT_START_DELAY = 3000L
     }
 
-    constructor(context: Context) : super(context)
+    private var _binding: AnimatedTextLabelBinding? = null
 
-    constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet)
+    private val binding get() = _binding!!
+
+    private val txtAnimatedLabel by lazy(LazyThreadSafetyMode.NONE) {
+        binding.txtAnimatedLabel
+    }
+
+    private val containerAnimatedLabel by lazy(LazyThreadSafetyMode.NONE) {
+        binding.root
+    }
+
+    private var animationHelper: TextLabelAnimator? = null
+
+    private var previousText: String = ""
+
+    constructor(context: Context) : super(context) {
+        initView()
+    }
+
+    constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet) {
+        initView()
+    }
 
     constructor(context: Context, attrSet: AttributeSet, defStyleAttr: Int) : super(
         context,
         attrSet,
         defStyleAttr
-    )
+    ) {
+        initView()
+    }
 
-    private val view = LayoutInflater.from(context).inflate(R.layout.animated_text_label, this)
+    private fun initView() {
+        _binding = AnimatedTextLabelBinding.bind(
+            LayoutInflater.from(context).inflate(R.layout.animated_text_label, this)
+        )
 
-    private val txtAnimatedLabel by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById<Typography>(R.id.txt_animated_label)
+        animationHelper = TextLabelAnimator(containerAnimatedLabel, txtAnimatedLabel)
     }
-    private val containerAnimatedLabel by lazy(LazyThreadSafetyMode.NONE) {
-        view.findViewById<FrameLayout>(R.id.container_animated_label)
+
+    override fun onViewRemoved(child: View?) {
+        animationHelper?.clear()
+        animationHelper = null
+        _binding = null
+        super.onViewRemoved(child)
     }
-    private val animationHelper by lazy(LazyThreadSafetyMode.NONE) {
-        TextLabelAnimator(containerAnimatedLabel!!, txtAnimatedLabel!!)
-    }
-    private var previousText: String = ""
 
     fun getCurrentText(): String {
-        return (txtAnimatedLabel?.text ?: "").toString()
+        return (txtAnimatedLabel.text ?: "").toString()
     }
 
     fun setEmptyText() {
@@ -55,6 +80,7 @@ class AnimatedTextLabel : FrameLayout {
 
     fun showView(desc: String) {
         val processText = ellipsisText(desc)
+
         if (processText.isNotEmpty()) {
             // secondary page and next page
             if (previousText.isNotEmpty() && previousText != processText) {
@@ -70,21 +96,22 @@ class AnimatedTextLabel : FrameLayout {
     }
 
     private fun initialTextWithAnimation(processText: String) {
-        renderTextAndRestoreWidth(processText)
-        animationHelper.animateShow {
+        txtAnimatedLabel.text = processText
+
+        animationHelper?.animateShow {
             previousText = processText
 
-            animationHelper.animateAutoHide(FADE_OUT_START_DELAY) {
+            animationHelper?.animateAutoHide {
                 previousText = ""
             }
         }
     }
 
     private fun updateTextWithAnimation(processText: String) {
-        animationHelper.animateTextChanged(
+        animationHelper?.animateTextChanged(
             processText,
             onAnimationEnd = {
-                animationHelper.animateAutoHide(FADE_OUT_START_DELAY) {
+                animationHelper?.animateAutoHide {
                     previousText = ""
                 }
             }
@@ -99,10 +126,6 @@ class AnimatedTextLabel : FrameLayout {
             desc
         }
     }
-
-    private fun renderTextAndRestoreWidth(desc: String) {
-        txtAnimatedLabel.text = desc
-    }
 }
 
 class TextLabelAnimator(
@@ -110,82 +133,110 @@ class TextLabelAnimator(
     private val txtView: Typography
 ) {
     companion object {
+        private const val IDLE_DURATION = 3000L
+        private const val AFTER_SWIPE_DURATION = 100L
         private const val ALPHA_400_DURATION = 400L
+        private const val ALPHA_MIN = 0f
+        private const val ALPHA_MAX = 1f
     }
 
-    private var autoFadeOutAnimator: ViewPropertyAnimator? = null
+    private var containerAnimator: Animator? = null
+    private var textAnimator: Animator? = null
 
     fun animateTextChanged(
-        desc: String,
+        text: String,
         onAnimationEnd: () -> Unit
     ) {
-        cancelAutoHideAnimator()
-        textAnimateFadeIn(desc, onAnimationEnd)
-    }
+        cancelContainerAnimator()
 
-    private fun textAnimateFadeIn(
-        desc: String,
-        onAnimationEnd: (() -> Unit)
-    ) {
-        txtView.alpha = 0f
-        txtView.text = desc
-
-        txtView.animate()
+        //txtView.alpha = 0f
+        txtView.text = text
+        onAnimationEnd.invoke()
+        //onAnimationEnd.invoke()
+        /*txtView.animate()
             .setDuration(ALPHA_400_DURATION)
             .setStartDelay(0)
             .setInterpolator(DecelerateInterpolator())
             .alpha(1f)
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
-                    onAnimationEnd.invoke()
+                    //onAnimationEnd.invoke()
                 }
-            }).start()
+            }).start()*/
     }
 
-    fun animateAutoHide(startDelay: Long, onAnimationEnd: () -> Unit = {}) {
-        cancelAutoHideAnimator()
+    fun animateAutoHide(onAnimationEnd: (() -> Unit)? = null) {
+        cancelContainerAnimator()
 
-        autoFadeOutAnimator = container.animate()
-            .setDuration(ALPHA_400_DURATION)
-            .setStartDelay(startDelay)
-            .setInterpolator(AccelerateInterpolator())
-            .alpha(0f)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    container.hide()
-                    onAnimationEnd.invoke()
-                }
-            })
+        containerAnimator = container.createAlphaAnimation(
+            start = ALPHA_MAX,
+            end = ALPHA_MIN,
+            properties = {
+                startDelay = IDLE_DURATION
+                interpolator = AccelerateInterpolator()
+            },
+            onAnimationEnd = onAnimationEnd
+        )
 
-        autoFadeOutAnimator?.start()
+        containerAnimator?.start()
     }
 
     fun animateShow(onAnimationEnd: (() -> Unit)? = null) {
-        cancelAutoHideAnimator()
+        cancelContainerAnimator()
+        container.alpha = ALPHA_MIN
         show()
 
-        container.alpha = 0f
-        container.animate()
-            .setDuration(ALPHA_400_DURATION)
-            .setStartDelay(0)
-            .setInterpolator(DecelerateInterpolator())
-            .alpha(1f)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    onAnimationEnd?.invoke()
-                }
-            }).start()
+        containerAnimator = container.createAlphaAnimation(
+            start = ALPHA_MIN,
+            end = ALPHA_MAX,
+            properties = {
+                startDelay = AFTER_SWIPE_DURATION
+                interpolator = DecelerateInterpolator()
+            },
+            onAnimationEnd = onAnimationEnd
+        )
+
+        containerAnimator?.start()
     }
 
-    private fun cancelAutoHideAnimator() {
-        autoFadeOutAnimator?.setListener(null)
-        autoFadeOutAnimator?.cancel()
-        autoFadeOutAnimator = null
+    private fun View.createAlphaAnimation(
+        start: Float,
+        end: Float,
+        properties: ValueAnimator.() -> Unit,
+        onAnimationEnd: (() -> Unit)?
+    ) = ValueAnimator.ofFloat(start, end).apply {
+        duration = ALPHA_400_DURATION
+        properties.invoke(this)
+
+        addUpdateListener {
+            alpha = it.animatedValue as Float
+        }
+        addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                onAnimationEnd?.invoke()
+            }
+        })
+    }
+
+    private fun cancelContainerAnimator() {
+        containerAnimator?.removeAllListeners()
+        containerAnimator?.cancel()
+        containerAnimator = null
+    }
+
+    private fun cancelTextAnimator() {
+        textAnimator?.removeAllListeners()
+        textAnimator?.cancel()
+        textAnimator = null
     }
 
     private fun show() {
         txtView.show()
         container.show()
-        container.alpha = 1f
+    }
+
+    fun clear() {
+        cancelTextAnimator()
+        cancelContainerAnimator()
     }
 }
