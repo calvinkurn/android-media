@@ -81,6 +81,8 @@ class DetailEditorFragment @Inject constructor(
     private var isEdited = false
     private var initialImageMatrix: Matrix? = null
 
+    private var initialRotateNumber = 0
+
     fun isShowDialogConfirmation(): Boolean {
         return isEdited
     }
@@ -99,11 +101,14 @@ class DetailEditorFragment @Inject constructor(
         }
 
         if (data.isToolRotate() || data.isToolCrop()) {
+            val rotateNumber = viewModel.rotateNumber - initialRotateNumber
+
             // if current tools editor not rotate then skip crop data set by sent empty object on data
             viewBinding?.imgUcropPreview?.cropRotate(
                 finalRotationDegree = viewModel.rotateRotationFinalDegree,
                 sliderValue = viewModel.rotateSliderValue,
-                rotateNumber = viewModel.rotateNumber,
+                rotateNumber = if (rotateNumber == 0) viewModel.rotateNumber else rotateNumber,
+                initialRotateNumber = initialRotateNumber,
                 data
             ) {
                 data.resultUrl = viewModel.saveImageCache(
@@ -340,6 +345,7 @@ class DetailEditorFragment @Inject constructor(
         viewModel.intentUiModel.observe(viewLifecycleOwner) {
             // make this ui model as global variable
             data = it
+            initialRotateNumber = it.cropRotateValue.orientationChangeNumber
 
             renderUiComponent(it.editorToolType)
         }

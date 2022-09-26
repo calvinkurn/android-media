@@ -60,6 +60,11 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
             originalTargetWidth.set(editorDetailPreview.overlayView.cropViewRect)
         }
 
+        if (isPreviousState) {
+            cropImageView.postRotate(normalizeDegree)
+            return
+        }
+
         // rotate logic when rotation is triggered by rotate button instead on slider
         if (isRotateRatio) {
             val cropOverlay = editorDetailPreview.overlayView
@@ -76,7 +81,11 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
 
                 if (rotatedRatioZoom == 0f) {
                     val newTargetWidth = cropOverlay.cropViewRect
-                    rotatedRatioZoom = (newTargetWidth.height() / originalTargetWidth.width()) * initialScale
+                    rotatedRatioZoom = if (newTargetWidth == originalTargetWidth){
+                       initialScale
+                    } else {
+                        (newTargetWidth.height() / originalTargetWidth.width()) * initialScale
+                    }
                 }
                 newScale = rotatedRatioZoom
             }
@@ -88,7 +97,7 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
             }
 
             initialScale = cropImageView.currentScale
-            if (!isPreviousState) isRatioRotated = !isRatioRotated
+            isRatioRotated = !isRatioRotated
             rotateNumber++
         } else {
             val rotateDegree = normalizeDegree - previousDegree
