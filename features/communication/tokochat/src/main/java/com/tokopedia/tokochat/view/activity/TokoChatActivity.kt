@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.di.DaggerTokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatContextModule
@@ -55,16 +56,14 @@ class TokoChatActivity : BaseTokoChatActivity<TokoChatComponent>() {
         }
     }
 
-    override fun setupToolbar() {
-        setupToolbarLayout()
-    }
-
-    private fun setupToolbarLayout() {
+    override fun setupToolbarLayout() {
         val mInflater = LayoutInflater.from(this)
         val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
-        toolbar.removeAllViews()
-        toolbar.addView(mCustomView)
-        toolbar.contentInsetStartWithNavigation = 0
-        toolbar.contentInsetEndWithActions = 0
+        getToolbar().run {
+            setSupportActionBar(this)
+            customView(mCustomView)
+            contentInsetStartWithNavigation = Int.ZERO
+            contentInsetEndWithActions = Int.ZERO
+        }
     }
 }

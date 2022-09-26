@@ -2,9 +2,9 @@ package com.tokopedia.tokochat_common.view.activity
 
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.tokochat_common.R
 
 abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
@@ -14,11 +14,10 @@ abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
 
     protected abstract fun setupFragmentFactory()
 
-    override fun getNewFragment(): Fragment? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setupFragmentFactory()
         super.onCreate(savedInstanceState)
+        setupToolbarLayout()
     }
 
     override fun getParentViewResourceID(): Int {
@@ -29,11 +28,15 @@ abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
         return R.layout.base_activity_toko_chat
     }
 
-    protected fun getChatHeaderLayout(): Int = R.layout.header_toko_chat
+    override fun getToolbarResourceID(): Int {
+        return R.id.partial_tokochat_toolbar
+    }
 
-    protected open fun setupToolbar() {}
+    protected fun getChatHeaderLayout() = R.layout.header_toko_chat
 
-    fun getToolbar(): Toolbar {
-        return toolbar
+    protected open fun setupToolbarLayout() {}
+
+    fun getToolbar(): HeaderUnify {
+        return findViewById(R.id.partial_tokochat_toolbar)
     }
 }

@@ -27,16 +27,14 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/tokoChatHeaderMenu"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="4dp"
-        app:unifyImageButtonVariant="image"
-        android:layout_marginEnd="4dp"
         android:background="@color/Unify_N0"
         android:contentDescription="@string/tokochat_content_desc_header_menu"
-        android:visibility="gone"
+        android:visibility="visible"
         app:icon_name="MENU_KEBAB_VERTICAL"
         tools:visibility="visible" />
 
@@ -84,25 +82,17 @@
             tools:text="@tools:sample/lorem/random" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/subtitle"
+            android:id="@+id/userSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:includeFontPadding="false"
             android:textColor="@color/Unify_N700_32"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/userTitle"
             app:typographyType="display_3"
             tools:text="Terakhir online 3 menit yang lalu"
             tools:visibility="visible" />
-
-        <include
-            android:id="@+id/tokoChatLayoutTyping"
-            layout="@layout/tokochat_layout_typing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/userTitle" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
