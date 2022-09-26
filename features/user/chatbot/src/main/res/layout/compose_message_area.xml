@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="8dp"
-    android:background="@color/chatbot_chat_background">
+    android:background="@color/Unify_N50">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/reply_box"

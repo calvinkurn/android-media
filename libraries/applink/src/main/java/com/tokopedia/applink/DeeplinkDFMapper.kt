@@ -33,11 +33,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_HOTL
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.AFFILIATE_EDIT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.COMMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.CONTENT_REPORT
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_DRAFT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_CONTENT_POST_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.MEDIA_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.VIDEO_DETAIL
@@ -210,6 +207,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_BASE = "df_base"
     const val DF_BASE_SELLER_APP = "df_base_sellerapp"
     const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
+    const val DF_CATEGORY_EPHARMACY = "df_category_epharmacy"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_MERCHANT_NONLOGIN = "df_merchant_nonlogin"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
@@ -250,7 +248,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DF_CATEGORY_TRADE_IN, R.string.money_in))
             add(DFP({ it.startsWith(INTERNAL_EXPLORE_CATEGORY) }, DF_BASE, R.string.applink_title_explore_category))
             add(DFP({ it.startsWith(INTERNAL_CATALOG) }, DF_BASE, R.string.applink_title_catalog))
-            add(DFP({ it.startsWith(INTERNAL_E_PHARMACY) }, DF_BASE, R.string.applink_title_e_pharmacy))
+            add(DFP({ it.startsWith(INTERNAL_E_PHARMACY) }, DF_CATEGORY_EPHARMACY, R.string.applink_title_e_pharmacy))
             add(DFP({ it.startsWith(INTERNAL_FIND) }, DF_BASE, R.string.applink_title_find_native))
             add(DFP({ it.startsWith(INTERNAL_CATEGORY) }, DF_BASE, R.string.label_category))
 
@@ -264,12 +262,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(CONTENT_REPORT) }, DF_BASE, R.string.applink_kol_title_content_report))
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE, R.string.applink_kol_title_video_detail))
             add(DFP({ it.startsWithPattern(MEDIA_PREVIEW) }, DF_BASE, R.string.applink_kol_title_media_preview))
-            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_CREATE_POST) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_DRAFT_POST) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(AFFILIATE_EDIT) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_DRAFT_POST) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_FEED_CONTENT_CREATION, R.string.applink_af_title_create_post))
             add(DFP({ it.startsWithPattern(PLAY_BROADCASTER)
                     || it.startsWith(ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER) }, DF_CONTENT_PLAY_BROADCASTER, R.string.applink_title_play_broadcaster))
             add(DFP({
@@ -707,9 +699,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(CONTENT_REPORT) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_content_report))
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_video_detail))
             add(DFP({ it.startsWithPattern(MEDIA_PREVIEW) }, DF_BASE_SELLER_APP, R.string.applink_kol_title_media_preview))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_DRAFT_POST) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
             add(DFP({ it.startsWithPattern(PLAY_BROADCASTER) }, DF_BASE_SELLER_APP, R.string.applink_title_play_broadcaster))
 
             // Logistic
