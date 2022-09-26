@@ -1565,11 +1565,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void sendAnalyticsOnClickInsuranceInfoTooltip() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionInsuranceInfoTooltip(userSessionInterface.getUserId());
-    }
-
-    @Override
     public void sendAnalyticsScreenName(String screenName) {
         checkoutAnalyticsCourierSelection.sendScreenName(getActivity(), screenName);
     }
@@ -3515,7 +3510,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onInsuranceInfoTooltipClickedTrackingAnalytics() {
-        sendAnalyticsOnClickInsuranceInfoTooltip();
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionInsuranceInfoTooltip(userSessionInterface.getUserId());
     }
 
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {
