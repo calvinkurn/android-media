@@ -26,6 +26,15 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import android.view.inputmethod.EditorInfo
+
+import android.widget.TextView
+
+import android.widget.EditText
+import android.widget.TextView.OnEditorActionListener
+import android.widget.Toast
+import com.tokopedia.content.common.util.hideKeyboard
+
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
@@ -88,16 +97,24 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
     }
 
     private fun setupListener() {
-        binding.textFieldUsername.editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        binding.textFieldUsername.editText.apply {
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun afterTextChanged(p0: Editable?) {
-                val username = p0?.toString() ?: ""
-                viewModel.submitAction(UGCOnboardingAction.InputUsername(username))
+                override fun afterTextChanged(p0: Editable?) {
+                    val username = p0?.toString() ?: ""
+                    viewModel.submitAction(UGCOnboardingAction.InputUsername(username))
+                }
+            })
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideKeyboard()
+                    true
+                } else false
             }
-        })
+        }
 
         binding.layoutTnc.cbxTnc.setOnCheckedChangeListener { _, _ ->
             viewModel.submitAction(UGCOnboardingAction.CheckTnc)
