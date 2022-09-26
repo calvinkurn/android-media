@@ -46,6 +46,7 @@ class InspirationCarouselProductDataViewMapper {
                 product.discountPercentage,
                 index + 1,
                 optionTitle,
+                product.shop.id,
                 product.shop.city,
                 product.shop.name,
                 convertInspirationCarouselProductBadgeToBadgesItemList(product.badgeList),
@@ -62,6 +63,7 @@ class InspirationCarouselProductDataViewMapper {
                 discount = product.discount,
                 label = product.label,
                 bundleId = product.bundleId,
+                parentId = product.parentId,
             )
         }
     }

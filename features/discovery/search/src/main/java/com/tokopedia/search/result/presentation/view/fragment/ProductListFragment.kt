@@ -55,6 +55,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -102,6 +104,7 @@ import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleLi
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
@@ -203,6 +206,12 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var filterController: FilterController
 
+    @Inject
+    lateinit var recycledViewPool: RecyclerView.RecycledViewPool
+
+    @Inject
+    lateinit var inspirationListAtcListenerDelegate: InspirationListAtcListenerDelegate
+
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -224,7 +233,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
     private var coachMark: CoachMark2? = null
 
-    override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
+    override val carouselRecycledViewPool by lazy { recycledViewPool }
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
 
@@ -459,6 +468,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 trackingQueue,
                 this,
             ),
+            inspirationListAtcListener = inspirationListAtcListenerDelegate,
             networkMonitor = networkMonitor,
             isUsingViewStub = remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB),
         )
@@ -1475,6 +1485,20 @@ class ProductListFragment: BaseDaggerFragment(),
             clickedInspirationCarouselOption = inspirationCarouselOption,
             searchParameter = getSearchParameter()?.getSearchParameterMap() ?: mapOf()
         )
+    }
+
+    override fun onInspirationCarouselAtcClicked(product: InspirationCarouselDataView.Option.Product) {
+        context?.let {
+            AtcVariantHelper.goToAtcVariant(
+                it,
+                productId = product.id,
+                pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
+                shopId = product.shopId.toString(),
+                startActivitResult = { intent, reqCode ->
+                    startActivityForResult(intent, reqCode)
+                }
+            )
+        }
     }
 
     override fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option) {

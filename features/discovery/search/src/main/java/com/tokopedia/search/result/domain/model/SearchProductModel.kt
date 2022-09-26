@@ -888,6 +888,10 @@ data class SearchProductModel(
             @SerializedName("bundle_id")
             @Expose
             val bundleId: String = "",
+
+            @SerializedName("parent_id")
+            @Expose
+            val parentId: Int = 0,
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -907,6 +911,9 @@ data class SearchProductModel(
     )
 
     data class InspirationCarouselProductShop(
+            @SerializedName("id")
+            @Expose
+            val id: Int = 0,
             @SerializedName("name")
             @Expose
             val name: String = "",

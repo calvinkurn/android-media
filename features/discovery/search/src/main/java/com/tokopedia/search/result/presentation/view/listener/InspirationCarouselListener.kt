@@ -35,4 +35,6 @@ interface InspirationCarouselListener {
         inspirationCarouselViewModel: InspirationCarouselDataView,
         inspirationCarouselOption: InspirationCarouselDataView.Option,
     )
+
+    fun onInspirationCarouselAtcClicked(product: InspirationCarouselDataView.Option.Product)
 }
