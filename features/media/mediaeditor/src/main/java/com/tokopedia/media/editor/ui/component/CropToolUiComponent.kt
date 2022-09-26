@@ -62,8 +62,11 @@ class CropToolUiComponent constructor(
         availableRatio.forEachIndexed { index, availRatio ->
             if(activeRatio == availRatio.ratio) {
                 (container() as LinearLayout).getChildAt(index).performClick()
+                return
             }
         }
+
+        (container() as LinearLayout).getChildAt(0).performClick()
     }
 
     private fun generateCropButton(imageRatio: ImageRatioType, isSelected: Boolean = false): View {
