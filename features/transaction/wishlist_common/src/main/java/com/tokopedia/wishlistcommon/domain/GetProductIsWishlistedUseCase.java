@@ -1,11 +1,11 @@
-package com.tokopedia.wishlist.common.domain.interactor;
+package com.tokopedia.wishlistcommon.domain;
 
 import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.wishlist.common.data.source.cloud.model.ProductIsWishlistedResponse;
+import com.tokopedia.wishlistcommon.data.response.ProductIsWishlistedResponse;
 
 import java.util.List;
 
