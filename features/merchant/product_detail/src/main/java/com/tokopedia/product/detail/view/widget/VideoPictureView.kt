@@ -90,11 +90,11 @@ class VideoPictureView @JvmOverloads constructor(
             setupThumbnailRv()
         }
 
-        updateInitialThumbnail(media)
-        updateImages(media)
-        updateMediaLabel(pagerSelectedLastPosition)
-        scrollToPosition(initialScrollPosition)
-        renderVideoOnceAtPosition(initialScrollPosition)
+        updateInitialThumbnail(media = media)
+        updateImages(listOfImage = media)
+        updateMediaLabel(position = pagerSelectedLastPosition)
+        scrollToPosition(position = initialScrollPosition)
+        renderVideoOnceAtPosition(position = initialScrollPosition)
     }
 
     private fun updateInitialThumbnail(media: List<MediaDataModel>) {
@@ -102,9 +102,12 @@ class VideoPictureView @JvmOverloads constructor(
             return
         }
 
+        val mediaSelected = videoPictureAdapter?.currentList?.getOrNull(pagerSelectedLastPosition)
         val thumbList = getThumbnailVariantOnly(media = media)
             .mapIndexed { index, data ->
-                val isSelected = index == 0
+                val isMediaSame = data.id == mediaSelected?.id
+                val thumbPosition = if (isMediaSame) index else -Int.ONE
+                val isSelected = thumbPosition == index
                 ThumbnailDataModel(data, isSelected)
             }
         thumbnailAdapter?.submitList(thumbList)
@@ -127,10 +130,11 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun updateThumbnail(pagerPosition: Int) {
         val mediaSelected = videoPictureAdapter?.currentList?.getOrNull(pagerPosition)
+        var thumbPosition: Int = -Int.ONE
         val thumbs = thumbnailAdapter?.currentList.orEmpty()
             .mapIndexed { index, data ->
                 val isMediaSame = data.media.id == mediaSelected?.id
-                val thumbPosition = if (isMediaSame) index else -Int.ONE
+                thumbPosition = if (isMediaSame) index else -Int.ONE
                 val isSelected = thumbPosition == index
 
                 data.copy(isSelected = isSelected)
@@ -138,7 +142,9 @@ class VideoPictureView @JvmOverloads constructor(
         thumbnailAdapter?.submitList(thumbs)
 
         binding.pdpMainThumbnailRv.addOneTimeGlobalLayoutListener {
-            smoothScroller.scrollThumbnail(pagerPosition)
+            if (thumbPosition >= Int.ONE) {
+                smoothScroller.scrollThumbnail(thumbPosition)
+            }
         }
 
         thumbnailVisibilityState(mediaSelected = mediaSelected)
