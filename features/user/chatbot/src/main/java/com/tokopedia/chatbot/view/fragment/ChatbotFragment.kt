@@ -140,11 +140,6 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerPageSource
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
-import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -193,13 +188,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     ChatActionListBubbleListener, ChatRatingListener,
     TypingListener, ChatOptionListListener, CsatOptionListListener,
     View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener,
-    VideoUploadListener, AttachmentMenu.AttachmentMenuListener, ReplyBubbleAreaMessage.Listener {
-        AttachedInvoiceSelectionListener, QuickReplyListener,
-        ChatActionListBubbleListener, ChatRatingListener,
-        TypingListener, ChatOptionListListener, CsatOptionListListener,
-        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener,
-        ChatbotSendButtonListener, ChatbotFloatingInvoice.InvoiceListener
-        , ReplyBubbleAreaMessage.Listener{
+    VideoUploadListener, AttachmentMenu.AttachmentMenuListener, ReplyBubbleAreaMessage.Listener,
+    ChatbotSendButtonListener, ChatbotFloatingInvoice.InvoiceListener {
+
 
     override fun clearChatText() {
         replyEditText.setText("")
