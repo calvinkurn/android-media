@@ -4,13 +4,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
+import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
+import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
-import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignPackageListResponse
 import com.tokopedia.shop.flashsale.domain.entity.CampaignMeta
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackageAvailability
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationEligibility
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
@@ -37,8 +39,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.mock
-import java.util.Date
+import java.util.*
 
 class CampaignListViewModelTest {
     @RelaxedMockK
@@ -570,6 +571,118 @@ class CampaignListViewModelTest {
 
         //Then
         val actual = viewModel.findActiveVpsPackagesCount()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When having vps package with expired date more than 3 days, should return correct data`() {
+        //Given
+        val packageStartTime = Date().time
+        val packageEndTime = Date().advanceDayBy(days = 4).time
+        val vpsPackage = VpsPackage(
+            packageId = "1",
+            remainingQuota = 45,
+            currentQuota = 5,
+            isDisabled = false,
+            originalQuota = 50,
+            packageEndTime = packageEndTime,
+            packageName = "Elite VPS Package",
+            packageStartTime = packageStartTime
+        )
+        val vpsPackages = listOf(vpsPackage)
+        val expected = VpsPackageAvailability(totalQuota = 50, remainingQuota = 45, isNearExpirePackageAvailable = false, packageNearExpire = 0)
+
+        //When
+        val actual = viewModel.getPackageAvailability(vpsPackages)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When having vps package with expired date less than 3 days, isNearExpirePackageAvailable should be true`() {
+        //Given
+        val now = Date()
+        val packageStartTime = now.decreaseHourBy(desiredHourToBeDecreased = 24).time
+        val packageEndTime = now.advanceDayBy(days = 2).time
+        val packageStartTimeEpoch = (packageStartTime / 1000)
+        val packageEndTimeEpoch = (packageEndTime / 1000)
+
+        val vpsPackage = VpsPackage(
+            packageId = "1",
+            remainingQuota = 45,
+            currentQuota = 5,
+            isDisabled = false,
+            originalQuota = 50,
+            packageEndTime = packageEndTimeEpoch,
+            packageName = "Elite VPS Package",
+            packageStartTime = packageStartTimeEpoch
+        )
+        val vpsPackages = listOf(vpsPackage)
+        val expected = VpsPackageAvailability(totalQuota = 50, remainingQuota = 45, isNearExpirePackageAvailable = true, packageNearExpire = 1)
+
+        //When
+        val actual = viewModel.getPackageAvailability(vpsPackages)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When having vps package with expiration within 3 days, isNearExpirePackageAvailable should be true`() {
+        //Given
+        val now = Date()
+        val packageStartTime = now.decreaseHourBy(desiredHourToBeDecreased = 24).time
+        val packageEndTime = now.advanceDayBy(days = 3).time
+        val packageStartTimeEpoch = (packageStartTime / 1000)
+        val packageEndTimeEpoch = (packageEndTime / 1000)
+
+        val vpsPackage = VpsPackage(
+            packageId = "1",
+            remainingQuota = 45,
+            currentQuota = 5,
+            isDisabled = false,
+            originalQuota = 50,
+            packageEndTime = packageEndTimeEpoch,
+            packageName = "Elite VPS Package",
+            packageStartTime = packageStartTimeEpoch
+        )
+        val vpsPackages = listOf(vpsPackage)
+        val expected = VpsPackageAvailability(totalQuota = 50, remainingQuota = 45, isNearExpirePackageAvailable = true, packageNearExpire = 1)
+
+        //When
+        val actual = viewModel.getPackageAvailability(vpsPackages)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When having shop tier benefit package expiration less than 3 days, isNearExpirePackageAvailable should be false`() {
+        //Given
+        val now = Date()
+        val packageStartTime = now.decreaseHourBy(desiredHourToBeDecreased = 24).time
+        val packageEndTime = now.advanceDayBy(days = 3).time
+        val packageStartTimeEpoch = (packageStartTime / 1000)
+        val packageEndTimeEpoch = (packageEndTime / 1000)
+
+        val vpsPackage = VpsPackage(
+            packageId = Constant.DEFAULT_SHOP_TIER_BENEFIT_PACKAGE_ID,
+            remainingQuota = 45,
+            currentQuota = 5,
+            isDisabled = false,
+            originalQuota = 50,
+            packageEndTime = packageEndTimeEpoch,
+            packageName = "Elite VPS Package",
+            packageStartTime = packageStartTimeEpoch
+        )
+        val vpsPackages = listOf(vpsPackage)
+        val expected = VpsPackageAvailability(totalQuota = 50, remainingQuota = 45, isNearExpirePackageAvailable = false, packageNearExpire = 0)
+
+        //When
+        val actual = viewModel.getPackageAvailability(vpsPackages)
+
+        //Then
         assertEquals(expected, actual)
     }
 
