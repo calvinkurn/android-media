@@ -94,13 +94,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         get() = _officialStoreError
     private val _officialStoreError : MutableLiveData<Throwable> = MutableLiveData()
 
-    val topAdsWishlistResult: LiveData<Result<WishlistModel>>
-        get() = _topAdsWishlistResult
-
-    private val _topAdsWishlistResult by lazy {
-        MutableLiveData<Result<WishlistModel>>()
-    }
-
     private val _recomUpdated = MutableLiveData<Event<Boolean>>()
     val recomUpdated : LiveData<Event<Boolean>> get() = _recomUpdated
 
@@ -390,22 +383,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
     // ============================================================================================
     // ===================================== WISHLIST SECTION =====================================
     // ============================================================================================
-    private suspend fun addTopAdsWishlist(model: RecommendationItem): Result<WishlistModel> {
-        return withContext(dispatchers.io) {
-            try {
-                val params = RequestParams.create().apply {
-                    putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-                }
-                val dataTopAdsWishlist = topAdsWishlishedUseCase.createObservable(params).toBlocking()
-                val topAdsWishList = dataTopAdsWishlist.first()
-
-                Success(topAdsWishList)
-            } catch (t: Throwable) {
-                Fail(t)
-            }
-        }
-    }
-
     fun addWishlistV2(
         model: RecommendationItem,
         wishlistV2ActionListener: WishlistV2ActionListener
