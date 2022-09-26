@@ -701,7 +701,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun showTicker() {
-        presenter.showTickerData(onError(), onSuccesGetTickerData())
+        presenter.showTickerData(messageId, onError(), onSuccesGetTickerData())
     }
 
     private fun onSuccesGetTickerData(): (TickerData) -> Unit {
@@ -971,7 +971,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             reasonCode = data.getStringExtra(SELECTED_ITEMS) ?: ""
 
         }
-        presenter.submitChatCsat(input, onsubmitingChatCsatSuccess, onError())
+        presenter.submitChatCsat(messageId, input, onsubmitingChatCsatSuccess, onError())
     }
 
     private val onsubmitingChatCsatSuccess: (String) -> Unit = { message ->
@@ -1002,7 +1002,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         input.timestamp = data?.getStringExtra("time_stamp")
         input.triggerRuleType = csatAttributes?.triggerRuleType
 
-        presenter.submitCsatRating(input, onError(),
+        presenter.submitCsatRating(messageId, input, onError(),
                 onSuccessSubmitCsatRating())
     }
 
@@ -1381,7 +1381,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onClickLeaveQueue() {
-        presenter.OnClickLeaveQueue()
+        presenter.OnClickLeaveQueue(messageId)
     }
 
     override fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
@@ -1398,7 +1398,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         model?.let { getViewState()?.hideOptionList(it) }
         sendOptionListSelectedMessage(selected.text ?: "")
 
-        selected.value.let { presenter.hitGqlforOptionList(it, model) }
+        selected.value.let { presenter.hitGqlforOptionList(messageId, it, model) }
     }
 
     private fun sendOptionListSelectedMessage(selectedMessage: String) {
@@ -1499,7 +1499,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onStickyActionButtonClicked(invoiceRefNum: String, replyText: String) {
         this.invoiceRefNum = invoiceRefNum
         this.replyText = replyText
-        presenter.checkLinkForRedirection(invoiceRefNum,
+        presenter.checkLinkForRedirection(messageId, invoiceRefNum,
                 onGetSuccessResponse = {
                     if (it.isNotEmpty()){
                         onGoToWebView(it, it)}
@@ -1521,7 +1521,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun sendReplyTextForResolutionComponent() {
         if (isStickyButtonClicked) {
             this.isStickyButtonClicked = false
-            presenter.checkLinkForRedirection(invoiceRefNum,
+            presenter.checkLinkForRedirection(messageId, invoiceRefNum,
                     onGetSuccessResponse = {},
                     setStickyButtonStatus = { isResoListNotEmpty ->
                         if (isResoListNotEmpty) {
@@ -1539,7 +1539,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onBackPressed(): Boolean {
         if (!isBackAllowed) {
-            presenter.OnClickLeaveQueue()
+            presenter.OnClickLeaveQueue(messageId)
             (activity as? ChatbotActivity)?.finish()
             return true
         }
