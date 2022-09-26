@@ -86,6 +86,8 @@
     <string name="saldo_deposit_app_name">Saldo</string>
     <string name="ovop2p_app_name">Saldo</string>
     <string name="title_kyc_info_simple">Dokumen Data Diri</string>
+    <string name="title_kyc_form_upload">Kirim Dokumen</string>
+    <string name="title_kyc_info">Verifikasi Data Diri</string>
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
     <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
