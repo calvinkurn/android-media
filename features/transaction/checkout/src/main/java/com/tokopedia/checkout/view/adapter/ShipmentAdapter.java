@@ -1124,7 +1124,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 shipmentCostModel.setProductDiscountLabel(detailUiModel.getDescription());
                             }
                         }
-                    } else {
+                    } else if (hasSetAllCourier()) {
                         shipmentCostModel.setHasDiscountDetails(false);
                         shipmentCostModel.setDiscountAmount(summariesUiModel.getAmount());
                         shipmentCostModel.setDiscountLabel(summariesUiModel.getDescription());
