@@ -223,6 +223,7 @@ class OtherMenuViewModel @Inject constructor(
         resetTopadsToggleCount()
 
         getShopBadgeData()
+        getTotalTokomemberData()
         getShopTotalFollowersData()
         getUserShopInfoData()
         getFreeShippingStatusData()
@@ -231,7 +232,6 @@ class OtherMenuViewModel @Inject constructor(
         getKreditTopAdsData()
         getIsTopAdsAutoTopup()
         getIsShowTagCentralizePromo()
-        getTotalTokomemberData()
     }
 
     fun onShownMultipleError(isShown: Boolean = false) {
@@ -454,7 +454,9 @@ class OtherMenuViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val totalTokoMember = withContext(dispatcher.io) {
-                    getShopTotalTokoMembersUseCase.execute(userSession.shopId.toLongOrZero()).let {
+                    getShopTotalTokoMembersUseCase.params =
+                        GetShopTotalFollowersUseCase.createRequestParams(userSession.shopId.toLongOrZero())
+                    getShopTotalTokoMembersUseCase.executeOnBackground().let {
                         it.membershipGetSumUserCardMember?.sumUserCardMember?.sumUserCardMember.orZero()
                     }
                 }

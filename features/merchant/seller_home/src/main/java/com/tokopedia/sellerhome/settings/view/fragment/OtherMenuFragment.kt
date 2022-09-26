@@ -61,6 +61,7 @@ import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingTokoMemberTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
@@ -285,6 +286,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onTokoMemberCountClicked() {
+        SettingTokoMemberTracker.trackTokoMemberClick()
         goToTotalTokoMemberList()
     }
 
