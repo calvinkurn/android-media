@@ -9,14 +9,14 @@ import javax.inject.Inject
 /**
  * Created by fachrizalmrsln on 22/09/22
  */
-class PlayBroadcastUGCAnalyticImpl @Inject constructor(
+class PlayBroadcastAccountAnalyticImpl @Inject constructor(
     userSession: UserSessionInterface,
     private val hydraConfig: HydraConfigStore,
-) : PlayBroadcastUGCAnalytic {
+) : PlayBroadcastAccountAnalytic {
 
     private val userId = userSession.userId
 
-    override fun ugcClickAccountDropdown() {
+    override fun onClickAccountDropdown() {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
             .setEventAction("click - available account")
@@ -30,7 +30,7 @@ class PlayBroadcastUGCAnalyticImpl @Inject constructor(
             .send()
     }
 
-    override fun ugcClickAccount() {
+    override fun onClickAccount() {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
             .setEventAction("click - pilih akun")
@@ -44,7 +44,7 @@ class PlayBroadcastUGCAnalyticImpl @Inject constructor(
             .send()
     }
 
-    override fun ugcClickAccountAndHaveDraft() {
+    override fun onClickAccountAndHaveDraft() {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
             .setEventAction("click - available account after draft")
@@ -58,7 +58,7 @@ class PlayBroadcastUGCAnalyticImpl @Inject constructor(
             .send()
     }
 
-    override fun ugcClickCancelSwitchAccount() {
+    override fun onClickCancelSwitchAccount() {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
             .setEventAction("click - batal switch account")
@@ -72,7 +72,7 @@ class PlayBroadcastUGCAnalyticImpl @Inject constructor(
             .send()
     }
 
-    override fun ugcClickConfirmSwitchAccount() {
+    override fun onClickConfirmSwitchAccount() {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
             .setEventAction("click - confirm switch account")

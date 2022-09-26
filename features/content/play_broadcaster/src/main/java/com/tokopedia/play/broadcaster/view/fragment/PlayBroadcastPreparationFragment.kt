@@ -243,9 +243,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
-                        analytic.ugcClickAccount()
+                        analytic.onClickAccount()
                         if (parentViewModel.channelTitle.isNotEmpty()) {
-                            analytic.ugcClickAccountAndHaveDraft()
+                            analytic.onClickAccountAndHaveDraft()
                             getSwitchAccountConfirmationDialog(contentAccount).show()
                         }
                         else parentViewModel.submitAction(SwitchAccount)
@@ -310,7 +310,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 }
 
                 setOnAccountClickListener {
-                    analytic.ugcClickAccountDropdown()
+                    analytic.onClickAccountDropdown()
                     hideCoachMarkSwitchAccount()
                     showAccountBottomSheet()
                 }
@@ -871,7 +871,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 setPrimaryCTAText(getString(R.string.play_bro_switch_account_primary_cta_dialog))
                 setPrimaryCTAClickListener {
                     if (switchAccountConfirmationDialog.isShowing) {
-                        analytic.ugcClickCancelSwitchAccount()
+                        analytic.onClickCancelSwitchAccount()
                         dismiss()
                     }
                 }
@@ -882,7 +882,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 setSecondaryCTAClickListener {
                     parentViewModel.submitAction(SwitchAccount)
                     if (switchAccountConfirmationDialog.isShowing) {
-                        analytic.ugcClickConfirmSwitchAccount()
+                        analytic.onClickConfirmSwitchAccount()
                         dismiss()
                     }
                 }

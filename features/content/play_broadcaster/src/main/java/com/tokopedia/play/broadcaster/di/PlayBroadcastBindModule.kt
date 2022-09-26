@@ -16,8 +16,8 @@ import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnal
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalyticImpl
-import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastUGCAnalytic
-import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastUGCAnalyticImpl
+import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
+import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
@@ -85,7 +85,7 @@ abstract class PlayBroadcastBindModule {
 
     @Binds
     @ActivityRetainedScope
-    abstract fun bindPinUGCAnalytic(ugcAnalytic: PlayBroadcastUGCAnalyticImpl): PlayBroadcastUGCAnalytic
+    abstract fun bindPinUGCAnalytic(ugcAnalytic: PlayBroadcastAccountAnalyticImpl): PlayBroadcastAccountAnalytic
 
     @ActivityRetainedScope
     @Binds
