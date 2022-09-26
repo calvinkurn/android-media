@@ -45,6 +45,17 @@ class GetFlashSaleReservedProductListMapper @Inject constructor() {
                     childProduct.price.price.toLongOrZero(),
                     childProduct.price.upperPrice.toLongOrZero()
                 ),
+                ReservedProduct.Product.ProductCriteria(
+                    productCriteria.criteriaId.toLongOrZero(),
+                    productCriteria.maxCustomStock,
+                    productCriteria.maxDiscount,
+                    productCriteria.maxFinalPrice.toLongOrZero(),
+                    productCriteria.minCustomStock,
+                    productCriteria.minDiscount,
+                    productCriteria.minFinalPrice.toLongOrZero()
+                ),
+                0,
+                0,
                 childProduct.productId,
                 childProduct.sku,
                 childProduct.stock,

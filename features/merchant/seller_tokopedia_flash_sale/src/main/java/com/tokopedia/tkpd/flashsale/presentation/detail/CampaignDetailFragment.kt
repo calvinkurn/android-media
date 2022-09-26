@@ -31,10 +31,12 @@ import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.ManageProductVariantActivity
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingDelegateAdapter
@@ -1360,5 +1362,100 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val selectedProduct = productAdapter.getItems()[itemPosition]
         val selectedProductId = selectedProduct.id()
         //TODO: Open detail product bottom sheet
+    }
+
+    private fun createDummyProduct(): ReservedProduct.Product {
+        return ReservedProduct.Product(
+            childProducts = createDummyChildsProduct(),
+            isMultiWarehouse = false,
+            isParentProduct = true,
+            name = "Dummy Product",
+            picture = "",
+            price = ReservedProduct.Product.Price(
+                price = 5000,
+                lowerPrice = 4000,
+                upperPrice = 6000
+            ),
+            productCriteria = ReservedProduct.Product.ProductCriteria(
+                criteriaId = 0,
+                maxCustomStock = 10,
+                maxDiscount = 99,
+                maxFinalPrice = 6000,
+                minCustomStock = 10,
+                minDiscount = 1,
+                minFinalPrice = 0
+            ),
+            productId = 0,
+            sku = "SK-0918",
+            stock = 100,
+            url = "",
+            warehouses = listOf()
+        )
+    }
+
+    private fun createDummyChildsProduct(): List<ReservedProduct.Product.ChildProduct> {
+        val childsProduct: MutableList<ReservedProduct.Product.ChildProduct> = mutableListOf()
+        for (child in 1 until 6) {
+            val childProduct = ReservedProduct.Product.ChildProduct(
+                disabledReason = "i don't know",
+                isDisabled = false,
+                isMultiwarehouse = child %2 != 0,
+                isToggleOn = false,
+                name = "product child $child",
+                picture = "",
+                price = ReservedProduct.Product.Price(
+                    child*1000L,
+                    child*2000L,
+                    child*3000L
+                ),
+                productCriteria = ReservedProduct.Product.ProductCriteria(
+                    criteriaId = 0,
+                    maxCustomStock = 10,
+                    maxDiscount = 99,
+                    maxFinalPrice = 10000,
+                    minCustomStock = 10,
+                    minDiscount = 1,
+                    minFinalPrice = 100
+                ),
+                productId = child.toLong(),
+                sku = "SKU-$child",
+                stock = 80,
+                url = "",
+                warehouses = listOf(
+                    ReservedProduct.Product.Warehouse(
+                        warehouseId = 123,
+                        name = "JKT",
+                        stock = 1,
+                        price = 2000,
+                        discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
+                            discount = 0,
+                            price = 0,
+                            stock = 0,
+                        ),
+                        isDilayaniTokopedia = false,
+                        isToggleOn = false,
+                        isDisabled = false,
+                        disabledReason = "",
+                    ),
+                    ReservedProduct.Product.Warehouse(
+                        warehouseId = 122,
+                        name = "JKTSEL",
+                        stock = 10,
+                        price = 2000,
+                        discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
+                            discount = 0,
+                            price = 0,
+                            stock = 0,
+                        ),
+                        isDilayaniTokopedia = false,
+                        isToggleOn = false,
+                        isDisabled = false,
+                        disabledReason = "",
+                    )
+                )
+            )
+            childsProduct.add(childProduct)
+        }
+        return childsProduct
     }
 }

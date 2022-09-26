@@ -46,6 +46,19 @@ class ErrorMessageHelper @Inject constructor(@ApplicationContext private val con
         }
     }
 
+    fun getStockMessage(
+        criteria: ReservedProduct.Product.ProductCriteria,
+        stock: Long,
+    ): String {
+        return if (stock < criteria.minCustomStock) {
+            getString(R.string.manageproductnonvar_min_message_format, criteria.minCustomStock)
+        } else if (stock > criteria.maxCustomStock) {
+            getString(R.string.manageproductnonvar_max_message_format, criteria.maxCustomStock)
+        } else {
+            getString(R.string.manageproductnonvar_range_message_format, criteria.minCustomStock, criteria.maxCustomStock)
+        }
+    }
+
     fun getBulkApplyCaption(warehouses: List<ReservedProduct.Product.Warehouse>): String {
         val selectedWarehousesCount = warehouses.filter { it.isToggleOn }.size
         return if (selectedWarehousesCount.isMoreThanZero()) {
