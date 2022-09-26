@@ -87,8 +87,8 @@ class OnBoardingListenerDelegate @Inject constructor(
     fun createScrollListener(): RecyclerView.OnScrollListener {
         return object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val visibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(IntArray(2))
-                val lastVisibleItems = staggeredGridLayoutManager.findLastVisibleItemPositions(IntArray(2))
+                val visibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(null)
+                val lastVisibleItems = staggeredGridLayoutManager.findLastVisibleItemPositions(null)
                 if (max(lastVisibleItems.asList()) >= firstProductPosition
                     && max(visibleItems.asList()) < firstProductPosition) {
                     showOnBoarding(firstProductPosition)
