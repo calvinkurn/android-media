@@ -240,8 +240,10 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         scaleX: Float,
         scaleY: Float
     ): Bitmap {
-        var originalWidth = originalBitmap.width
-        var originalHeight = originalBitmap.height
+        val originalWidth = originalBitmap.width
+        val originalHeight = originalBitmap.height
+
+        var isCropped = true
 
         val matrix = Matrix()
 
@@ -252,8 +254,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             (originalHeight / 2).toFloat()
         )
 
-        val rotatedBitmap = try {
-            Bitmap.createBitmap(
+        val rotatedBitmap = try {Bitmap.createBitmap(
                 originalBitmap,
                 offsetX,
                 offsetY,
@@ -263,6 +264,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                 true
             )
         } catch (e: Exception){
+            isCropped = false
             Bitmap.createBitmap(
                 originalBitmap,
                 0,
@@ -293,7 +295,11 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             cropRatio = data?.cropRotateValue?.cropRatio ?: Pair(0, 0)
         )
 
-        return rotatedBitmap
+        return if(isCropped){
+            rotatedBitmap
+        } else {
+            Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
