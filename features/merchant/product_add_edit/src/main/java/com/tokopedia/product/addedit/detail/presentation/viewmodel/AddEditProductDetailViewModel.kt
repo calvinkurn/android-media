@@ -42,6 +42,7 @@ import com.tokopedia.product.addedit.specification.domain.model.AnnotationCatego
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
+import com.tokopedia.shop.common.constant.ShopStatusLevelDef
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -93,7 +94,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isPriceSuggestionRangeEmpty = false
     var isFreeOfServiceFee = false
 
-    var shopType = 0
+    var shopTier = 0
 
     private var isMultiLocationShop = false
 
@@ -877,12 +878,13 @@ class AddEditProductDetailViewModel @Inject constructor(
         return minLimit == DOUBLE_ZERO && maxLimit == DOUBLE_ZERO
     }
 
-    fun isFreeOfServiceFee(totalTxSuccess: Int, shopType: Int): Boolean {
-        // RM for shop service is 0 while in commission engine 999
-        return shopType == GET_COMMISSION_ENGINE_REGULAR_MERCHANT && totalTxSuccess <= SERVICE_FEE_LIMIT
+    fun isFreeOfServiceFee(totalTxSuccess: Int, shopTier: Int): Boolean {
+        // shopTier => from shop service; do not use commission info shop type in this function
+        return shopTier == ShopStatusLevelDef.LEVEL_REGULAR && totalTxSuccess <= SERVICE_FEE_LIMIT
     }
 
-    fun getCommissionRate(commissionRules: List<CommissionRule>, shopType: Int): Double {
+    fun getCommissionRate(commissionRules: List<CommissionRule>, shopTier: Int): Double {
+        val shopType = if (shopTier == ShopStatusLevelDef.LEVEL_REGULAR) GET_COMMISSION_ENGINE_REGULAR_MERCHANT else shopTier
         return commissionRules.firstOrNull { it.shopType == shopType }?.commissionRate.orZero()
     }
 

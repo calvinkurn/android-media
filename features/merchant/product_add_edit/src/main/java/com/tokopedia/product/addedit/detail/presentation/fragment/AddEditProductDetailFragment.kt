@@ -2,13 +2,11 @@ package com.tokopedia.product.addedit.detail.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.*
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +26,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -1152,8 +1149,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             val shopInfo = shopInfoResponse.shopInfoById.result.firstOrNull()
             shopInfo?.run {
                 val totalTxSuccess = shopInfo.shopStats.totalTxSuccess.toIntOrZero()
-                viewModel.shopType = shopInfo.goldOSData.shopTier
-                viewModel.isFreeOfServiceFee = viewModel.isFreeOfServiceFee(totalTxSuccess, viewModel.shopType)
+                viewModel.shopTier = shopInfo.goldOSData.shopTier
+                viewModel.isFreeOfServiceFee = viewModel.isFreeOfServiceFee(totalTxSuccess, viewModel.shopTier)
                 if (viewModel.isFreeOfServiceFee) {
                     setupCommissionInfoTips(commissionInfoTipsView, viewModel.isFreeOfServiceFee)
                     commissionInfoTipsView?.show()
@@ -1178,7 +1175,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             categoryRate?.run {
                 if (commissionRules.isNotEmpty()) {
                     // select commission rate based on shop type
-                    val commissionRate = viewModel.getCommissionRate(commissionRules, viewModel.shopType)
+                    val commissionRate = viewModel.getCommissionRate(commissionRules, viewModel.shopTier)
                     // setup commission rate tips if rate is not zero
                     if (commissionRate != DOUBLE_ZERO) {
                         val strCommissionRate = commissionRate.toString()

@@ -8,7 +8,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DOUBLE_ZERO
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GET_COMMISSION_ENGINE_REGULAR_MERCHANT
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
@@ -39,6 +38,7 @@ import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.util.getPrivateProperty
 import com.tokopedia.product.addedit.util.setPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.shop.common.constant.ShopStatusLevelDef
 import com.tokopedia.shop.common.constant.ShopStatusLevelDef.Companion.LEVEL_GOLD
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
@@ -2058,19 +2058,19 @@ class AddEditProductDetailViewModelTest {
 
     @Test
     fun `when successful transactions is less than 100 and shop type is regular merchant expect no service fee`() {
-        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(99, GET_COMMISSION_ENGINE_REGULAR_MERCHANT)
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(99, ShopStatusLevelDef.LEVEL_REGULAR)
         assertTrue(isFreeOfServiceFee)
     }
 
     @Test
     fun `when successful transactions is 100 and shop type is regular merchant expect no service fee`() {
-        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(100, GET_COMMISSION_ENGINE_REGULAR_MERCHANT)
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(100, ShopStatusLevelDef.LEVEL_REGULAR)
         assertTrue(isFreeOfServiceFee)
     }
 
     @Test
     fun `when successful transactions is more than 100 and shop type is regular merchant expect service fee`() {
-        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(101, GET_COMMISSION_ENGINE_REGULAR_MERCHANT)
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(101, ShopStatusLevelDef.LEVEL_REGULAR)
         assertFalse(isFreeOfServiceFee)
     }
 
