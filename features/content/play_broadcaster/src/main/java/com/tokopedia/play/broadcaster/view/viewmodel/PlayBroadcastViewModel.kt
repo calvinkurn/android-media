@@ -533,7 +533,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
-            val gameConfig = repo.getInteractiveConfig()
+            val gameConfig = repo.getInteractiveConfig(authorId, authorType)
 
             _interactiveConfig.value = mergeInteractiveConfigWithPreference(gameConfig)
 

@@ -81,7 +81,7 @@ interface PlayBroadcastMapper {
 
     fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel
 
-    fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel
+    fun mapInteractiveConfig(authorType: String, response: GetInteractiveConfigResponse): InteractiveConfigUiModel
 
     fun mapInteractiveSession(
         response: PostInteractiveCreateSessionResponse,
