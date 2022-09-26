@@ -64,6 +64,9 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     init {
         binding = WidgetMiniCartBinding.inflate(LayoutInflater.from(context))
+        binding.miniCartContainer.setOnClickListener {
+            // prevent click event from passing through
+        }
         addView(binding.root)
 
         val application = (context as? Activity)?.application

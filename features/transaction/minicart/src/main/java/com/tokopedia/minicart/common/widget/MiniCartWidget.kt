@@ -84,6 +84,9 @@ class MiniCartWidget @JvmOverloads constructor(
 
     init {
         view = inflate(context, R.layout.widget_mini_cart, this)
+        view?.findViewById<View>(R.id.mini_cart_container)?.setOnClickListener {
+            // prevent click event from passing through
+        }
         totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         chatIcon = view?.findViewById(R.id.chat_icon)
         textCannotProcess = view?.findViewById(R.id.text_cannot_process)
