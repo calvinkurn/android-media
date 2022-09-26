@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OrderResolutionViewHolder(
@@ -97,9 +96,13 @@ class OrderResolutionViewHolder(
         status: String,
         fontColor: String
     ) {
-        val unifyColor = stringToUnifyColor(root.context, fontColor)
+        val color = Utils.parseUnifyColorHex(
+            context = tvStatus.context,
+            colorHex = fontColor,
+            defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_TN600
+        )
         tvStatus.text = status
-        tvStatus.setTextColor(unifyColor.unifyColor ?: unifyColor.defaultColor)
+        tvStatus.setTextColor(color)
     }
 
     private fun ItemBuyerOrderDetailResolutionBinding.bindResolutionDescription(description: CharSequence) {

@@ -42,17 +42,13 @@ object Utils {
     }
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
-        val unifyColor = try {
-            stringToUnifyColor(context, colorHex).run { unifyColor ?: defaultColor }
-        } catch (t: Throwable) {
-            com.tokopedia.unifyprinciples.R.color.Unify_N0
-        }
+        val color = parseUnifyColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         val drawable = MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
         val filter: ColorFilter = LightingColorFilter(
             ContextCompat.getColor(
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
-            ), unifyColor
+            ), color
         )
         drawable.colorFilter = filter
         return drawable
@@ -107,14 +103,18 @@ object Utils {
     }
 
     fun getColoredResoDeadlineBackground(context: Context, colorHex: String, defaultColor: Int): Drawable? {
-        val unifyColor = try {
-            stringToUnifyColor(context, colorHex).run { unifyColor ?: defaultColor }
+        val color = parseUnifyColorHex(context, colorHex, defaultColor)
+        val drawable = MethodChecker.getDrawable(context, R.drawable.bg_due_response)
+        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
+        drawable.colorFilter = filter
+        return drawable
+    }
+
+    fun parseUnifyColorHex(context: Context, colorHex: String, defaultColor: Int): Int {
+        return try {
+            stringToUnifyColor(context, colorHex).run { this.unifyColor ?: this.defaultColor }
         } catch (t: Throwable) {
             defaultColor
         }
-        val drawable = MethodChecker.getDrawable(context, R.drawable.bg_due_response)
-        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), unifyColor)
-        drawable.colorFilter = filter
-        return drawable
     }
 }

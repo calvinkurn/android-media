@@ -12,7 +12,6 @@ import com.tokopedia.sellerorder.databinding.DetailResolutionItemBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailResolution
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
-import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SomDetailResolutionViewHolder(
@@ -47,9 +46,13 @@ class SomDetailResolutionViewHolder(
     }
 
     private fun DetailResolutionItemBinding.bindResolutionStatus(status: String, fontColor: String) {
-        val unifyColor = stringToUnifyColor(root.context, fontColor)
+        val color = Utils.parseUnifyColorHex(
+            context = tvStatus.context,
+            colorHex = fontColor,
+            defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_TN600
+        )
         tvStatus.text = status
-        tvStatus.setTextColor(unifyColor.unifyColor ?: unifyColor.defaultColor)
+        tvStatus.setTextColor(color)
     }
 
     private fun DetailResolutionItemBinding.bindResolutionDescription(description: CharSequence) {

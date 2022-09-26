@@ -2,14 +2,11 @@ package com.tokopedia.sellerorder.detail.domain.usecase
 
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerorder.detail.data.model.GetResolutionTicketStatusResponse
 import com.tokopedia.sellerorder.detail.data.model.GetSomDetailResponse
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.usecase.coroutines.Result
-import java.util.HashMap
 import javax.inject.Inject
 
 class SomGetOrderDetailWithResolutionUseCase @Inject constructor(
@@ -32,10 +29,8 @@ class SomGetOrderDetailWithResolutionUseCase @Inject constructor(
                 somResolutionGetTicketStatusUseCase.setRequestParams(params)
                 val resolutionResponse = somResolutionGetTicketStatusUseCase.execute()
                 detailResponse.somResolution = resolutionResponse.resolutionGetTicketStatus?.data
-                Success(detailResponse)
-            } else {
-                Success(detailResponse)
             }
+            Success(detailResponse)
         } catch (e: Exception) {
             return Fail(e)
         }
