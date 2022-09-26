@@ -6,10 +6,9 @@ import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.core.Validator
 import com.tokopedia.analyticsdebugger.cassava.core.ValidatorEngine
 import com.tokopedia.analyticsdebugger.cassava.core.toDefaultValidator
-import com.tokopedia.analyticsdebugger.database.CassavaDatabase
+import com.tokopedia.analyticsdebugger.cassava.data.CassavaDatabase
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
-import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import kotlinx.coroutines.runBlocking
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -28,9 +27,9 @@ class CassavaTestRule(
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val dao = CassavaDatabase.getInstance(context).cassavaDao()
-    private val daoSource = GtmLogDBSource(context)
+    private val repository = GtmRepo(dao)
     private val analyticsParser = AnalyticsParser()
-    private val engine = ValidatorEngine(daoSource, analyticsParser)
+    private val engine = ValidatorEngine(repository, analyticsParser)
 
     override fun apply(base: Statement?, description: Description?): Statement {
         return object : Statement() {
@@ -49,7 +48,7 @@ class CassavaTestRule(
         val cassavaQuery = getQuery(context, queryId, isFromNetwork)
         val validators = cassavaQuery.query.map { it.toDefaultValidator() }
         return runBlocking {
-            val validationResult = engine.computeCo(validators, cassavaQuery.mode.value)
+            val validationResult = engine.compute(validators, cassavaQuery.mode.value)
             if (isFromNetwork && sendValidationResult)
                 sendTestResult(queryId, validationResult)
             validationResult
@@ -59,7 +58,7 @@ class CassavaTestRule(
     fun validate(query: List<Map<String, Any>>, mode: String = MODE_EXACT): List<Validator> {
         val validators = query.map { it.toDefaultValidator() }
         return runBlocking {
-            engine.computeCo(validators, mode)
+            engine.compute(validators, mode)
         }
     }
 

@@ -104,9 +104,13 @@ interface ChatbotContract {
 
         fun sendRating(messageId: String, rating: Int, element: ChatRatingUiModel)
 
-        fun submitCsatRating(inputItem: InputItem)
+        fun sendReasonRating(messageId: String, reason: String, timestamp: String,
+                             onError: (Throwable) -> Unit,
+                             onSuccess: (String) -> Unit)
+        fun submitCsatRating(messageId: String,
+                             inputItem: InputItem, )
 
-        fun showTickerData()
+        fun showTickerData(messageId: String)
 
         fun sendActionBubble(
             messageId: String,
@@ -126,9 +130,12 @@ interface ChatbotContract {
 
         fun destroyWebSocket()
 
-        fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsUiModel?)
+        fun hitGqlforOptionList(messageId : String, selectedValue: Int, model: HelpFullQuestionsUiModel?)
 
-        fun submitChatCsat(input: ChipSubmitChatCsatInput)
+        fun submitChatCsat(messageId : String,
+                           input: ChipSubmitChatCsatInput,
+                           onsubmitingChatCsatSuccess: (String) -> Unit,
+                           onError: (Throwable) -> Unit)
 
         fun cancelImageUpload()
 

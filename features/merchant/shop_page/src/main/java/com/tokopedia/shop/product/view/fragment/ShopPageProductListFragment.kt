@@ -59,7 +59,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FEATURED_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_ADD_PRODUCT
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
@@ -502,7 +501,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
         }
         goToPDP(
-                shopProductUiModel.id ?: "",
+                shopProductUiModel.productUrl,
                 attribution,
                 shopPageTracking?.getListNameOfProduct(PRODUCT, getSelectedEtalaseChip())
                         ?: ""
@@ -722,7 +721,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                         isGoldMerchant -> TrackShopTypeDef.GOLD_MERCHANT
                         else -> TrackShopTypeDef.REGULAR_MERCHANT
                     }
-                    shopPageTracking?.sendScreenShopPage(shopId, shopType, SCREEN_ADD_PRODUCT)
+                    shopPageTracking?.sendOpenScreenAddProduct(shopId, shopType)
                 }
             }
             else -> {
@@ -1021,23 +1020,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun goToPDP(productId: String, attribution: String?, listNameOfProduct: String) {
-        val pdpAppLink = getPdpAppLink(productId)
+    private fun goToPDP(pdpAppLink: String, attribution: String?, listNameOfProduct: String) {
+        val updatedPdpAppLink = createAffiliateLink(pdpAppLink)
         context?.let {
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            val intent = RouteManager.getIntent(context, pdpAppLink)
+            val intent = RouteManager.getIntent(context, updatedPdpAppLink)
             startActivity(intent)
         }
-    }
-
-    private fun getPdpAppLink(productId: String): String {
-        val basePdpAppLink = UriUtil.buildUri(
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
-        )
-        return createAffiliateLink(basePdpAppLink)
     }
 
     private fun createAffiliateLink(basePdpAppLink: String): String {

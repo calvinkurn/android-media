@@ -96,9 +96,6 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
-                        t?.let {
-                            view.onSuccessLike(rowNumber, columnNumber)
-                        }
                     }
 
                     override fun onCompleted() {
@@ -115,9 +112,6 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
         likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
-                        t?.let {
-                            view.onSuccessUnlike(rowNumber, columnNumber)
-                        }
                     }
 
                     override fun onCompleted() {

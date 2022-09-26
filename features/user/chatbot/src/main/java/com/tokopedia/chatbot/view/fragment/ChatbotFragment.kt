@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -41,7 +40,6 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
-import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
@@ -59,7 +57,7 @@ import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.FALSE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IMAGE_URL
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IS_ATTACHED
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS
-import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_COLOR
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FIVE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FOUR
@@ -120,12 +118,15 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
+import com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotContract
+import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
+import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
@@ -139,7 +140,6 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -183,6 +183,8 @@ class ChatbotFragment :
     View.OnClickListener,
     TransactionInvoiceBottomSheetListener,
     StickyActionButtonClickListener,
+    ChatbotSendButtonListener,
+    ChatbotFloatingInvoice.InvoiceListener
     ReplyBubbleAreaMessage.Listener {
 
     override fun clearChatText() {
@@ -357,11 +359,8 @@ class ChatbotFragment :
         ticker = view.findViewById(R.id.chatbot_ticker)
         dateIndicator = view.findViewById(R.id.dateIndicator)
         dateIndicatorContainer = view.findViewById(R.id.dateIndicatorContainer)
-
-        invoiceLabel = view.findViewById(R.id.tv_status)
-        invoiceName = view.findViewById(R.id.tv_invoice_name)
-        invoiceImage = view.findViewById(R.id.iv_thumbnail)
-        invoiceCancel = view.findViewById(R.id.iv_cross)
+        floatingInvoice = view.findViewById(R.id.floating_invoice)
+        setUpFloatingInvoiceListeners()
         sendButton = view.findViewById(R.id.send_but)
 
         recyclerView = getRecyclerView(view)
@@ -373,7 +372,12 @@ class ChatbotFragment :
         return view
     }
 
-    private fun initSmoothScroller() {
+    private fun setUpFloatingInvoiceListeners() {
+        floatingInvoice.sendButtonListener = this
+        floatingInvoice.invoiceListener = this
+    }
+
+    private fun initSmoothScroller(){
         smoothScroll = SmoothScroller(context)
     }
 
@@ -428,62 +432,48 @@ class ChatbotFragment :
                 enableTyping()
             } else {
                 isSendButtonActivated = false
+
+                disableSendButton()
                 isFloatingSendButton = true
-                sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+                val labelType = InvoiceStatusLabelHelper.getLabelType(hashMap[STATUS_COLOR])
 
-                invoiceLabel.text = hashMap.get(STATUS).toBlankOrString()
-                val labelType = getLabelType(hashMap.get(STATUS_ID).toIntOrZero())
-                invoiceLabel?.setLabelType(labelType)
+                floatingInvoice.setUpInvoiceData(
+                    invoiceTitle = hashMap.get(CODE).toBlankOrString(),
+                    invoiceIconURL = hashMap.get(IMAGE_URL).toBlankOrString(),
+                    labelType = labelType,
+                    labelText = hashMap.get(STATUS).toBlankOrString()
+                )
 
-                invoiceName.setText(hashMap.get(CODE).toBlankOrString())
-                if (hashMap.get(IMAGE_URL)?.isNotEmpty() == true) {
-                    ImageHandler.loadImage(
-                        context,
-                        invoiceImage,
-                        hashMap.get(IMAGE_URL)!!.toBlankOrString(),
-                        R.drawable.ic_retry_image_send
-                    )
-                }
-                invoiceCancel.setOnClickListener {
-                    float_chat_item.visibility = View.GONE
-                    isAttached = false
-                    isFloatingInvoiceCancelled = true
-                }
                 if (isFloatingSendButton) {
-                    textWatcher = object : TextWatcher {
-                        override fun afterTextChanged(s: Editable?) {
-                            if (replyEditText.text.toString().isEmpty()) {
-                                sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
-                                isSendButtonActivated = false
-                            }
-                        }
-
-                        override fun beforeTextChanged(
-                            s: CharSequence?,
-                            start: Int,
-                            count: Int,
-                            after: Int
-                        ) {
-                        }
-
-                        override fun onTextChanged(
-                            s: CharSequence?,
-                            start: Int,
-                            before: Int,
-                            count: Int
-                        ) {
-                            if (replyEditText.text.toString().isNotEmpty()) {
-                                sendButton.setImageResource(R.drawable.ic_chatbot_send)
-                                isSendButtonActivated = true
-                            }
-                        }
-                    }
+                    textWatcher = getTextWatcherForMessage()
                     replyEditText.addTextChangedListener(textWatcher)
+                }
+                floatingInvoice.show()
+            }
+            isArticleDataSent(true)
+        }
+
+    }
+
+    private fun getTextWatcherForMessage() : TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (replyEditText.text.toString().isNotEmpty()) {
+                    enableSendButton()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (replyEditText.text.toString().isEmpty()) {
+                    disableSendButton()
                 }
 
                 float_chat_item.show()
             }
-            isArticleDataSent(true)
         }
     }
 
@@ -492,9 +482,8 @@ class ChatbotFragment :
     }
 
     private fun onSendFloatingInvoiceClicked() {
-        float_chat_item.hide()
-        isSendButtonActivated = true
-        sendButton.setImageResource(R.drawable.ic_chatbot_send)
+
+        floatingInvoice.hide()
         replyEditText.removeTextChangedListener(textWatcher)
 
         if (!isFloatingInvoiceCancelled) {
@@ -533,15 +522,6 @@ class ChatbotFragment :
 
     private fun emptyReplyEditText() {
         replyEditText.setText("")
-    }
-
-    private fun getLabelType(statusId: Int?): Int {
-        if (statusId == null) return Label.GENERAL_DARK_GREY
-        return when (OrderStatusCode.MAP[statusId]) {
-            OrderStatusCode.COLOR_RED -> Label.GENERAL_LIGHT_RED
-            OrderStatusCode.COLOR_GREEN -> Label.GENERAL_LIGHT_GREEN
-            else -> Label.GENERAL_DARK_GREY
-        }
     }
 
     private fun setChatBackground() {
@@ -690,7 +670,7 @@ class ChatbotFragment :
         ticker.tickerType = getTickerType(tickerData.type ?: "")
         ticker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                RouteManager.route(view?.context, linkUrl.toString())
+                navigateToWebView(linkUrl.toString())
             }
 
             override fun onDismiss() {
@@ -715,9 +695,16 @@ class ChatbotFragment :
         ticker.addPagerView(adapter, mockData)
         adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
             override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                RouteManager.route(view?.context, linkUrl.toString())
+                navigateToWebView(linkUrl.toString())
             }
         })
+    }
+
+    private fun navigateToWebView(linkUrl : String) {
+        RouteManager.route(
+            context,
+            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, linkUrl)
+        )
     }
 
     private fun getTickerType(tickerType: String): Int {
@@ -1290,7 +1277,7 @@ class ChatbotFragment :
     }
 
     override fun onClickLeaveQueue() {
-        presenter.OnClickLeaveQueue(Calendar.getInstance().timeInMillis.toString())
+        presenter.OnClickLeaveQueue(messageId)
     }
 
     override fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
@@ -1307,7 +1294,7 @@ class ChatbotFragment :
         model?.let { getViewState()?.hideOptionList(it) }
         sendOptionListSelectedMessage(selected.text ?: "")
 
-        selected.value.let { presenter.hitGqlforOptionList(it, model) }
+        selected.value.let { presenter.hitGqlforOptionList(messageId, it, model) }
     }
 
     private fun sendOptionListSelectedMessage(selectedMessage: String) {
@@ -1720,5 +1707,22 @@ class ChatbotFragment :
         presenter.clearGetChatUseCase()
         chatbotAdapter.reset()
         showTopLoading()
+    }
+
+
+    override fun disableSendButton() {
+        isSendButtonActivated = false
+        sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+    }
+
+    override fun enableSendButton() {
+        isSendButtonActivated = true
+        sendButton.setImageResource(R.drawable.ic_chatbot_send)
+    }
+
+    override fun isInvoiceRemoved(isRemoved: Boolean) {
+        isFloatingInvoiceCancelled = isRemoved
+        if (this::textWatcher.isInitialized)
+            replyEditText.removeTextChangedListener(textWatcher)
     }
 }

@@ -35,17 +35,19 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.*
+import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.OSPerformanceConstant
+import com.tokopedia.officialstore.OfficialStoreInstance
+import com.tokopedia.officialstore.OSFeaturedShopTracking
 import com.tokopedia.officialstore.ApplinkConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_HOME
+import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
-import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
-import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
@@ -54,30 +56,37 @@ import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
-import com.tokopedia.officialstore.official.presentation.listener.*
+import com.tokopedia.officialstore.official.presentation.listener.RecommendationWidgetCallback
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMixTopComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSFeaturedBrandCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSFeaturedShopDCCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMerchantVoucherCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSSpecialReleaseComponentCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
-import com.tokopedia.wishlist_common.R as Rwishlist
-import java.util.*
 import javax.inject.Inject
+import com.tokopedia.wishlist_common.R as Rwishlist
 
 class OfficialHomeFragment :
         BaseDaggerFragment(),
@@ -89,13 +98,10 @@ class OfficialHomeFragment :
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
         const val BUNDLE_CATEGORY = "category_os"
-        var PRODUCT_RECOMMENDATION_TITLE_SECTION = ""
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 898
-        private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val SLUG_CONST = "{slug}"
-        private const val PERFORMANCE_OS_PAGE_NAME = "OS"
         private const val POS_1 = 1
         private const val POS_10 = 10
         private const val DELAY_200L = 200L
@@ -104,14 +110,11 @@ class OfficialHomeFragment :
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
-    private var currentBannerData: OfficialStoreBanners? = null
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-    @Inject
-    lateinit var officialHomeMapper: OfficialHomeMapper
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -124,12 +127,11 @@ class OfficialHomeFragment :
     private var adapter: OfficialHomeAdapter? = null
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
-    private var counterTitleShouldBeRendered = 0
     private var isLoadedOnce: Boolean = false
     private var isScrolling = false
-    private var remoteConfig: RemoteConfig? = null
     private var localChooseAddress: OSChooseAddressData? = null
     private var recommendationWishlistItem: RecommendationItem? = null
+    private var totalScrollRecyclerView = 0
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -145,11 +147,11 @@ class OfficialHomeFragment :
                     val categories = category?.categories.toString()
                     val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
                     val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
-                    counterTitleShouldBeRendered += 1
+                    viewModel.counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
                     viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
 
-                    officialHomeMapper.showLoadingMore(adapter)
+                    viewModel.addLoadingMore()
 
                 }
             }
@@ -171,7 +173,6 @@ class OfficialHomeFragment :
             category = it.getParcelable(BUNDLE_CATEGORY)
         }
         context?.let { tracking = OfficialStoreTracking(it) }
-        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -205,11 +206,13 @@ class OfficialHomeFragment :
                 recyclerView?.recycledViewPool,
                 OSMerchantVoucherCallback(this),
                 OSSpecialReleaseComponentCallback(this, userSession.userId),
-                onTopAdsHeadlineClicked)
+                onTopAdsHeadlineClicked,
+                this
+        )
         adapter = OfficialHomeAdapter(adapterTypeFactory)
-        recyclerView?.adapter = adapter
         recyclerView?.itemAnimator = null
-        officialHomeMapper.resetState(adapter)
+        recyclerView?.adapter = adapter
+        viewModel.resetState()
         return view
     }
 
@@ -219,14 +222,9 @@ class OfficialHomeFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeBannerData()
-        observeBenefit()
-        observeFeaturedShop()
-        observeDynamicChannel()
-        observeProductRecommendation()
-        observeFeaturedShopSuccessDC()
-        observeFeaturedShopRemoveDC()
-        observeRecomWidget()
+        observeOfficialStoreList()
+        observeError()
+        observeRecomUpdated()
         initLocalChooseAddressData()
         resetData()
         loadData()
@@ -235,26 +233,6 @@ class OfficialHomeFragment :
         if (savedInstanceState == null) officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(
             KEY_PERFORMANCE_PREPARING_OS_HOME)
 
-    }
-
-    private fun observeRecomWidget() {
-        viewModel.recomWidget.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    if (!isEligibleForDisableBestSellerWidget()) {
-                        officialHomeMapper.mappingRecomWidget(it.data) { newDataList ->
-                            adapter?.submitList(newDataList)
-                        }
-                    }
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
-                }
-
-            }
-        }
     }
 
     override fun onPause() {
@@ -281,12 +259,7 @@ class OfficialHomeFragment :
     }
 
     override fun onDestroy() {
-        viewModel.officialStoreBannersResult.removeObservers(this)
-        viewModel.officialStoreBenefitsResult.removeObservers(this)
-        viewModel.officialStoreDynamicChannelResult.removeObservers(this)
-        viewModel.productRecommendation.removeObservers(this)
-        viewModel.featuredShopRemove.removeObservers(this)
-        viewModel.featuredShopResult.removeObservers(this)
+        viewModel.officialStoreLiveData.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -317,6 +290,49 @@ class OfficialHomeFragment :
         )
     }
 
+    private fun observeOfficialStoreList(){
+        viewModel.officialStoreLiveData.observe(viewLifecycleOwner){ dataModel ->
+            removeLoading(dataModel.isCache)
+            swipeRefreshLayout?.isRefreshing = false
+            adapter?.submitList(dataModel.dataList)
+            if(dataModel.dataList.any { it is OfficialBannerDataModel }){
+                bannerPerformanceMonitoring.stopTrace()
+            }
+            if(dataModel.dataList.any { it is OfficialFeaturedShopDataModel }){
+                shopPerformanceMonitoring.stopTrace()
+            }
+            if(dataModel.dataList.any {
+                it !is OfficialBannerDataModel &&
+                it !is OfficialFeaturedShopDataModel &&
+                it !is OfficialBenefitDataModel &&
+                it !is OfficialLoadingDataModel &&
+                it !is OfficialLoadingMoreDataModel
+            }){
+                dynamicChannelPerformanceMonitoring.stopTrace()
+            }
+        }
+    }
+
+    private fun observeError() {
+        viewModel.officialStoreError.observe(viewLifecycleOwner){
+            swipeRefreshLayout?.isRefreshing = false
+            showErrorNetwork(it)
+            bannerPerformanceMonitoring.stopTrace()
+            dynamicChannelPerformanceMonitoring.stopTrace()
+            shopPerformanceMonitoring.stopTrace()
+        }
+    }
+
+    private fun observeRecomUpdated(){
+        viewModel.recomUpdated.observe(viewLifecycleOwner){
+            val data = it.getContentIfNotHandled()
+            data?.let {
+                endlessScrollListener.updateStateAfterGetData()
+                productRecommendationPerformanceMonitoring.stopTrace()
+            }
+        }
+    }
+
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
         lastClickLayoutType = layoutType
         if (position.size > 1) {
@@ -334,7 +350,7 @@ class OfficialHomeFragment :
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
         updateWishListRecomWidget(isWishlist)
         if (position > -1 && adapter != null) {
-            officialHomeMapper.updateWishlist(isWishlist, position, adapter)
+            viewModel.updateWishlist(isWishlist, position)
         }
     }
 
@@ -356,7 +372,7 @@ class OfficialHomeFragment :
                 item,
                 isLogin(),
                 category?.title.toString(),
-                PRODUCT_RECOMMENDATION_TITLE_SECTION,
+                viewModel.productRecommendationTitleSection,
                 item.position.toString()
         )
     }
@@ -476,7 +492,7 @@ class OfficialHomeFragment :
     }
 
     override fun onCountDownFinished() {
-        officialHomeMapper.removeFlashSale(adapter)
+        viewModel.removeFlashSale()
         loadData(true)
     }
 
@@ -843,13 +859,15 @@ class OfficialHomeFragment :
         dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
     }
 
-    private fun removeLoading(isCache: Boolean) {
-        val osPltCallback = getOfficialStorePageLoadTimeCallback()
-        if (osPltCallback != null) {
-            osPltCallback.stopNetworkRequestPerformanceMonitoring()
-            osPltCallback.startRenderPerformanceMonitoring()
+    private fun removeLoading(isCache: Boolean?) {
+        isCache?.let {
+            val osPltCallback = getOfficialStorePageLoadTimeCallback()
+            if (osPltCallback != null) {
+                osPltCallback.stopNetworkRequestPerformanceMonitoring()
+                osPltCallback.startRenderPerformanceMonitoring()
+            }
+            setPerformanceListenerForRecyclerView(isCache)
         }
-        setPerformanceListenerForRecyclerView(isCache)
     }
 
     private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
@@ -882,16 +900,16 @@ class OfficialHomeFragment :
             if (!isLoadedOnce || isRefresh) {
                 viewModel.loadFirstData(category, getLocation(),
                         onBannerCacheStartLoad = {
-                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
+                            officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
                         },
                         onBannerCacheStopLoad = {
-                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
+                            officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
                         },
                         onBannerCloudStartLoad = {
-                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
+                            officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
                         },
                         onBannerCloudStopLoad = {
-                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
+                            officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
                         })
                 isLoadedOnce = true
 
@@ -906,144 +924,8 @@ class OfficialHomeFragment :
 
     private fun reloadDataForDifferentAddressSaved() {
         localChooseAddress?.setLocalCacheModel(ChooseAddressUtils.getLocalizingAddressData(requireContext())?.copy())
-        officialHomeMapper.resetState(adapter)
+        viewModel.resetState()
         viewModel.loadFirstData(category, getLocation())
-    }
-
-    private fun observeBannerData() {
-        viewModel.officialStoreBannersResult.observe(viewLifecycleOwner) {
-            val resultValue = it.second
-
-            val shouldShowErrorMessage = it.first
-            when (resultValue) {
-                is Success -> {
-                    if (resultValue.data.banners.isNotEmpty() && (this.currentBannerData == null || this.currentBannerData != resultValue.data)) {
-                        this.currentBannerData = resultValue.data
-                        removeLoading(resultValue.data.isCache)
-                        swipeRefreshLayout?.isRefreshing = false
-                        officialHomeMapper.mappingBanners(
-                            resultValue.data,
-                            adapter,
-                            category?.title,
-                            isEligibleForDisableMappingBanner()
-                        )
-                    }
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    if (shouldShowErrorMessage) {
-                        showErrorNetwork(resultValue.throwable)
-                    }
-                }
-            }
-            bannerPerformanceMonitoring.stopTrace()
-        }
-    }
-
-    private fun observeBenefit() {
-        viewModel.officialStoreBenefitsResult.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    if(!isEligibleForDisableMappingBenefit()) {
-                        officialHomeMapper.mappingBenefit(it.data, adapter)
-                    }
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
-                }
-
-            }
-        }
-    }
-
-    private fun observeFeaturedShop() {
-        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    if(!isEligibleForDisableMappingOfficialFeaturedShop()) {
-                        officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
-                    }
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
-                }
-
-            }
-            shopPerformanceMonitoring.stopTrace()
-        }
-    }
-
-    private fun observeDynamicChannel() {
-        viewModel.officialStoreDynamicChannelResult.observe(viewLifecycleOwner, { result ->
-            when (result) {
-                is Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    officialHomeMapper.mappingDynamicChannel(
-                            result.data,
-                            adapter,
-                            remoteConfig
-                    )
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(result.throwable)
-                }
-            }
-            dynamicChannelPerformanceMonitoring.stopTrace()
-        })
-    }
-
-    private fun observeProductRecommendation() {
-        viewModel.productRecommendation.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.recommendationWidget.title
-                    endlessScrollListener.updateStateAfterGetData()
-                    swipeRefreshLayout?.isRefreshing = false
-                    if (counterTitleShouldBeRendered == 1) {
-                        officialHomeMapper.mappingProductRecommendationTitle(it.data.recommendationWidget.title, adapter)
-                    }
-                    officialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
-                }
-            }
-            productRecommendationPerformanceMonitoring.stopTrace()
-        })
-    }
-
-    private fun observeFeaturedShopSuccessDC() {
-        viewModel.featuredShopResult.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    //update UI
-                    if (!isEligibleForDisableShopWidget()) {
-                        officialHomeMapper.updateFeaturedShopDC(
-                            it.data
-                        ) { newDataList ->
-                            adapter?.submitList(newDataList)
-                        }
-                    }
-                }
-                else -> {}
-            }
-        }
-    }
-
-    private fun observeFeaturedShopRemoveDC() {
-        viewModel.featuredShopRemove.observe(viewLifecycleOwner) {
-            if (!isEligibleForDisableRemoveShopWidget()) {
-                officialHomeMapper.removeFeaturedShopDC(it) { newDataList ->
-                    adapter?.submitList(newDataList)
-                }
-            }
-        }
     }
 
     private fun showErrorNetwork(t: Throwable) {
@@ -1055,21 +937,13 @@ class OfficialHomeFragment :
         }
     }
 
-    private fun removeRecomWidget() {
-        if (!isEligibleForDisableRemoveBestSellerWidget()) {
-            officialHomeMapper.removeRecomWidget {
-                adapter?.submitList(it)
-            }
-        }
-    }
-
     private fun setListener() {
         setLoadMoreListener()
         swipeRefreshLayout?.setOnRefreshListener {
-            counterTitleShouldBeRendered = 0
-            officialHomeMapper.removeRecommendation(adapter)
-            removeRecomWidget()
-            officialHomeMapper.removeTopAdsHeadlineWidget(adapter)
+            viewModel.counterTitleShouldBeRendered = 0
+            viewModel.removeRecommendation()
+            viewModel.removeRecomWidget()
+            viewModel.removeTopAdsHeadlineWidget()
             loadData(true)
             viewModel.resetShopWidgetImpressionCount()
             viewModel.resetIsFeatureShopAllowed()
@@ -1083,9 +957,10 @@ class OfficialHomeFragment :
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
 
+                        totalScrollRecyclerView += dy
                         if (!isScrolling) {
                             isScrolling = true
-                            scrollListener.onContentScrolled(dy)
+                            scrollListener.onContentScrolled(dy, totalScrollRecyclerView)
                             Handler().postDelayed({
                                 isScrolling = false
                             }, DELAY_200L)
@@ -1230,7 +1105,7 @@ class OfficialHomeFragment :
         tracking?.eventClickProductRecommendation(
                 item,
                 position.toString(),
-                PRODUCT_RECOMMENDATION_TITLE_SECTION,
+                viewModel.productRecommendationTitleSection,
                 isLogin(),
                 category?.title.toString()
         )
@@ -1276,69 +1151,6 @@ class OfficialHomeFragment :
         }
         return false
 
-    }
-
-    private fun isEligibleForDisableShopWidget(): Boolean {
-        return try {
-            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_SHOP_WIDGET)
-                ?: false
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun isEligibleForDisableBestSellerWidget(): Boolean {
-        return try {
-            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_BEST_SELLER_WIDGET)
-                ?: false
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun isEligibleForDisableMappingBanner(): Boolean {
-        return try {
-            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_BANNERS)
-                ?: false
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun isEligibleForDisableRemoveBestSellerWidget(): Boolean {
-        return try {
-            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_REMOVE_BEST_SELLER_WIDGET)
-                ?: false
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun isEligibleForDisableRemoveShopWidget(): Boolean {
-        return try {
-            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_REMOVE_SHOP_WIDGET)
-                ?: false
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun isEligibleForDisableMappingBenefit(): Boolean {
-        return try {
-            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_BENEFIT)
-                ?: false
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun isEligibleForDisableMappingOfficialFeaturedShop(): Boolean {
-        return try {
-            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_OFFICIAL_FEATURED_SHOP)
-                ?: false
-        } catch (e: Exception) {
-            false
-        }
     }
 
     private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {

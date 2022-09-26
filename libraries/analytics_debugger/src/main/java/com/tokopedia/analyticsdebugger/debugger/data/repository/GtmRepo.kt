@@ -1,9 +1,7 @@
 package com.tokopedia.analyticsdebugger.debugger.data.repository
 
-import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao
-import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -27,12 +25,12 @@ class GtmRepo @Inject constructor(val dao: GtmLogDao) {
         return queryAndSave()
     }
 
-    suspend fun insert(analyticsData: AnalyticsLogData) = withContext(Dispatchers.IO) {
+    suspend fun insert(dataJson: String, name: String, source: String) = withContext(Dispatchers.IO) {
         val gtmLogDB = GtmLogDB(
-                data = analyticsData.data,
-                name = analyticsData.name,
+                data = dataJson,
+                name = name,
                 timestamp = Date().time,
-                source = analyticsData.source
+                source = source
         )
         dao.insertAll(gtmLogDB)
     }
@@ -44,9 +42,10 @@ class GtmRepo @Inject constructor(val dao: GtmLogDao) {
         return queryAndSave()
     }
 
-    suspend fun getLogs(@AnalyticsSource analyticsSource: String = AnalyticsSource.ALL): List<GtmLogDB> {
+    suspend fun getLogs(source: String = ""): List<GtmLogDB> {
         return withContext(Dispatchers.IO) {
-            dao.getAll(analyticsSource)
+            val key = "%$source%"
+            dao.getAll(key)
         }
     }
 

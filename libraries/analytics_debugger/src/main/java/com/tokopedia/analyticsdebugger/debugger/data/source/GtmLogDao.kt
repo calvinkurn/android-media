@@ -33,8 +33,8 @@ interface GtmLogDao {
     @Query("SELECT * FROM gtm_log")
     fun getAll(): List<GtmLogDB>
 
-    @Query("SELECT * FROM gtm_log WHERE source IS :analyticsSource")
-    fun getAll(@AnalyticsSource analyticsSource:String): List<GtmLogDB>
+    @Query("SELECT * FROM gtm_log WHERE source LIKE :analyticsSource")
+    fun getAll(analyticsSource:String): List<GtmLogDB>
 
     @Query("SELECT * FROM gtm_log ORDER BY timestamp DESC LIMIT :limit")
     suspend fun getLastTracker(limit: Int): List<GtmLogDB>

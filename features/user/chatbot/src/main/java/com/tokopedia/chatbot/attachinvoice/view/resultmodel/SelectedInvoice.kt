@@ -22,6 +22,7 @@ class SelectedInvoice() : Parcelable {
     var invoiceUrl: String? = null
     var status: String? = null
     var statusId: Int = 0
+    var color: String? = null
 
     constructor(
         invoiceId: Long?,
@@ -79,6 +80,7 @@ class SelectedInvoice() : Parcelable {
         this.invoiceUrl = viewModel.invoiceUrl
         this.status = viewModel.status
         this.statusId = viewModel.statusId
+        this.color = viewModel.color
     }
 
     override fun describeContents(): Int {

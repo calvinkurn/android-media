@@ -364,7 +364,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     override fun onResume() {
         super.onResume()
-        coachMarkManager?.showCoachMark()
+        if (!isHidden) coachMarkManager?.showCoachMark()
         updateShopActive()
     }
 

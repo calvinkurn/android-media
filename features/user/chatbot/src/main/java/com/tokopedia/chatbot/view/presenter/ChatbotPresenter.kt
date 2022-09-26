@@ -27,6 +27,7 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
@@ -49,6 +50,9 @@ import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
 import com.tokopedia.chatbot.ChatbotConstant.MODE_AGENT
 import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
+import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_RATING
+import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
+import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.ConnectionDividerUiModel
@@ -95,6 +99,7 @@ import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
+import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
@@ -342,7 +347,7 @@ class ChatbotPresenter @Inject constructor(
         return list
     }
 
-    private fun mappingQueueDivider(liveChatDividerAttribute: LiveChatDividerAttributes, dividerTime: String) {
+    private fun mappingQueueDivider(messageId: String, liveChatDividerAttribute: LiveChatDividerAttributes, dividerTime: String) {
         if (!isErrorOnLeaveQueue) {
             val agentQueue = liveChatDividerAttribute.agentQueue
             if (agentQueue?.type.equals(SHOW_TEXT)) {
@@ -647,6 +652,12 @@ class ChatbotPresenter @Inject constructor(
             chatBotSecureImageUploadUseCase.execute(object : Subscriber<Map<Type?, RestResponse?>?>() {
                 override fun onCompleted() {}
                 override fun onError(e: Throwable) {
+                    ChatbotNewRelicLogger.logNewRelic(
+                        false,
+                        messageId,
+                        KEY_SECURE_UPLOAD,
+                        e
+                    )
                     onErrorImageUpload(e, imageUploadViewModel)
                 }
 
@@ -674,7 +685,7 @@ class ChatbotPresenter @Inject constructor(
             typeString = "",
             type = 0,
             code = hashMap[CODE] ?: "",
-            createdTime = SendableUiModel.generateStartTime(),
+            createdTime = hashMap[CREATE_TIME] ?: "",
             description = hashMap[DESCRIPTION] ?: "",
             url = hashMap[IMAGE_URL] ?: "",
             id = hashMap.get(ID).toLongOrZero(),
@@ -682,7 +693,8 @@ class ChatbotPresenter @Inject constructor(
             status = hashMap[STATUS] ?: "",
             statusId = hashMap[STATUS_ID].toIntOrZero(),
             title = hashMap[TITLE] ?: "",
-            amount = hashMap[TOTAL_AMOUNT] ?: ""
+            amount = hashMap[TOTAL_AMOUNT] ?: "",
+            color = hashMap[STATUS_COLOR] ?: ""
         )
     }
 
@@ -950,6 +962,12 @@ class ChatbotPresenter @Inject constructor(
                 if (isSecureUpload) view.uploadUsingSecureUpload(data) else view.uploadUsingOldMechanism(data)
             },
             onError = {
+                ChatbotNewRelicLogger.logNewRelic(
+                    false,
+                    messageId,
+                    KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY,
+                    it
+                )
                 view.loadChatHistory()
                 view.enableTyping()
             }
@@ -985,9 +1003,17 @@ class ChatbotPresenter @Inject constructor(
                     } else {
                         onSuccessGetChat(mappedResponse, chatReplies)
                     }
+
                 },
                 onError = {
                     onError.invoke(it)
+
+                    ChatbotNewRelicLogger.logNewRelic(
+                        false,
+                        messageId,
+                        ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME,
+                        it
+                    )
                 }
             )
         }
@@ -1007,6 +1033,7 @@ class ChatbotPresenter @Inject constructor(
 
     fun getChatRatingList(
         inputList: ChipGetChatRatingListInput,
+        messageId: String,
         onSuccessGetRatingList: (ChipGetChatRatingListResponse.ChipGetChatRatingList?) -> Unit
     ) {
         val input = inputList
@@ -1019,6 +1046,12 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 onGetChatRatingListError(it)
+                ChatbotNewRelicLogger.logNewRelic(
+                    true,
+                    messageId,
+                    KEY_CHATBOT_GET_CHATLIST_RATING,
+                    it
+                )
             }
         )
     }
@@ -1090,6 +1123,14 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 onError.invoke(it)
+                ChatbotNewRelicLogger.logNewRelicForGetChatReplies(
+                    false,
+                    messageId,
+                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
+                    it,
+                    getExistingChatUseCase.minReplyTime,
+                    getExistingChatUseCase.maxReplyTime
+                )
             }
         )
     }
@@ -1117,6 +1158,14 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 onError.invoke(it)
+                ChatbotNewRelicLogger.logNewRelicForGetChatReplies(
+                    false,
+                    messageId,
+                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM,
+                    it,
+                    getExistingChatUseCase.minReplyTime,
+                    getExistingChatUseCase.maxReplyTime
+                )
             }
         )
     }

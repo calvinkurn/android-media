@@ -10,9 +10,12 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DOUBLE_ZERO
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionByKeyword
 import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
 import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
@@ -29,6 +32,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PriceSuggestion
+import com.tokopedia.product.addedit.detail.presentation.model.SimilarProduct
 import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -65,8 +70,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val validateProductNameUseCase: ValidateProductNameUseCase,
     private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
     private val annotationCategoryUseCase: AnnotationCategoryUseCase,
-    private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
-    private val priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase,
+    private val getAddProductPriceSuggestionUseCase: GetAddProductPriceSuggestionUseCase,
+    private val getEditProductPriceSuggestionUseCase: PriceSuggestionSuggestedPriceGetUseCase,
     private val getProductTitleValidationUseCase: GetProductTitleValidationUseCase,
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val userSession: UserSessionInterface
@@ -81,6 +86,8 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isAddingWholeSale = false
     var isAddingValidationWholeSale = false
+    var isSavingPriceAdjustment = false
+    var isPriceSuggestionRangeEmpty = false
 
     private var isMultiLocationShop = false
 
@@ -166,6 +173,13 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val mProductPriceRecommendationError = MutableLiveData<Throwable>()
     val productPriceRecommendationError: LiveData<Throwable>
         get() = mProductPriceRecommendationError
+
+    private val mAddProductPriceSuggestion = MutableLiveData<PriceSuggestionByKeyword>()
+    val addProductPriceSuggestion: LiveData<PriceSuggestionByKeyword>
+        get() = mAddProductPriceSuggestion
+    private val mAddProductPriceSuggestionError = MutableLiveData<Throwable>()
+    val addProductPriceSuggestionError: LiveData<Throwable>
+        get() = mAddProductPriceSuggestionError
 
     private val mMaxStockThreshold = MutableLiveData<String>()
     val maxStockThreshold: LiveData<String>
@@ -725,8 +739,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun getProductPriceRecommendation() {
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
-                priceSuggestionSuggestedPriceGetUseCase.setParamsProductId(productInputModel.productId)
-                priceSuggestionSuggestedPriceGetUseCase.executeOnBackground()
+                getEditProductPriceSuggestionUseCase.setParamsProductId(productInputModel.productId)
+                getEditProductPriceSuggestionUseCase.executeOnBackground()
             }
             mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
         }, onError = {
@@ -734,15 +748,15 @@ class AddEditProductDetailViewModel @Inject constructor(
         })
     }
 
-    fun getProductPriceRecommendationByKeyword(keyword: String) {
+    fun getAddProductPriceSuggestion(keyword: String, categoryL3: String) {
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
-                priceSuggestionSuggestedPriceGetByKeywordUseCase.setParamsKeyword(keyword)
-                priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
+                getAddProductPriceSuggestionUseCase.setPriceSuggestionParams(keyword, categoryL3)
+                getAddProductPriceSuggestionUseCase.executeOnBackground()
             }
-            mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
+            mAddProductPriceSuggestion.value = response.priceSuggestionByKeyword
         }, onError = {
-            mProductPriceRecommendationError.value = it
+            mAddProductPriceSuggestionError.value = it
         })
     }
 
@@ -752,6 +766,71 @@ class AddEditProductDetailViewModel @Inject constructor(
             result = result.replace(it, "")
         }
         return result.trim().replace("\\s+".toRegex(), " ")
+    }
+
+    fun mapAddPriceSuggestionToPriceSuggestionUiModel(priceSuggestion: PriceSuggestionByKeyword): PriceSuggestion {
+        return PriceSuggestion(
+                suggestedPrice = priceSuggestion.summary?.suggestedPrice,
+                suggestedPriceMin = priceSuggestion.summary?.suggestedPriceMin,
+                suggestedPriceMax = priceSuggestion.summary?.suggestedPriceMax,
+                similarProducts = priceSuggestion.suggestions?.map {
+                    SimilarProduct(
+                            productId = it.productId,
+                            displayPrice = it.displayPrice,
+                            imageURL = it.imageURL,
+                            title = it.title,
+                            totalSold = it.totalSold,
+                            rating = it.rating
+                    )
+                } ?: listOf()
+        )
+    }
+
+    fun mapEditPriceSuggestionToPriceSuggestionUiModel(priceSuggestion: PriceSuggestionSuggestedPriceGet): PriceSuggestion {
+        return PriceSuggestion(
+                suggestedPrice = priceSuggestion.suggestedPrice,
+                suggestedPriceMin = priceSuggestion.suggestedPriceMin,
+                suggestedPriceMax = priceSuggestion.suggestedPriceMax,
+                similarProducts = priceSuggestion.productRecommendation.map {
+                    SimilarProduct(
+                            productId = it.productID,
+                            displayPrice = it.price,
+                            imageURL = it.imageURL,
+                            title = it.title,
+                            totalSold = it.sold,
+                            rating = it.rating
+                    )
+                }
+        )
+    }
+
+    fun getProductPriceSuggestionRange(isEditing: Boolean): Pair<Double, Double> {
+        return if (isEditing) {
+            val minPrice = productPriceRecommendation.value?.suggestedPriceMin.orZero()
+            val maxPrice = productPriceRecommendation.value?.suggestedPriceMax.orZero()
+            minPrice to maxPrice
+        } else {
+            val summary = addProductPriceSuggestion.value?.summary
+            val minPrice = summary?.suggestedPriceMin.orZero()
+            val maxPrice = summary?.suggestedPriceMax.orZero()
+            minPrice to maxPrice
+        }
+    }
+
+    fun isProductPriceCompetitive(priceInput: Double, priceSuggestionRange: Pair<Double, Double>, isError: Boolean = false): Boolean {
+        if (isError) return false
+        val minPrice = priceSuggestionRange.first
+        val maxPrice = priceSuggestionRange.second
+        return priceInput <= minPrice ||  priceInput in minPrice..maxPrice
+    }
+
+    fun isPriceSuggestionLayoutVisible(isRangeEmpty: Boolean, productStatus: Int, isNew: Boolean, hasVariant: Boolean): Boolean {
+        val isActive = productStatus == ProductStatus.STATUS_ACTIVE
+        return !isRangeEmpty && isActive && isNew && !hasVariant
+    }
+
+    fun isPriceSuggestionRangeIsEmpty(minLimit: Double, maxLimit: Double): Boolean {
+        return minLimit == DOUBLE_ZERO && maxLimit == DOUBLE_ZERO
     }
 
     /**

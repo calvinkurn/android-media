@@ -1,6 +1,7 @@
 package com.tokopedia.common.topupbills.favoritepage.util
 
 import com.tokopedia.common.topupbills.data.TopupBillsContact
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsPersoFavNumberDataView
 import com.tokopedia.common.topupbills.favoritecommon.view.model.contact.TopupBillsContactDataView
@@ -54,6 +55,18 @@ object FavoriteNumberDataMapper {
                 categoryId = it.trackingData.categoryId,
                 operatorId = it.trackingData.operatorId,
                 productId = it.trackingData.productId
+            )
+        }
+    }
+
+    fun mapSeamlessFavNumberItemToSearchDataView(clientNumbers: List<TopupBillsSeamlessFavNumberItem>): List<TopupBillsSearchNumberDataModel> {
+        return clientNumbers.map {
+            TopupBillsSearchNumberDataModel(
+                clientName = it.clientName,
+                clientNumber = it.clientNumber,
+                categoryId = it.categoryId,
+                operatorId = it.operatorId,
+                productId = it.productId
             )
         }
     }

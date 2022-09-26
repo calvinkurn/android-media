@@ -17,6 +17,7 @@ class AttachInvoiceSingleUiModel {
     var statusId: Int = 0
     var title: String = ""
     var amount: String = ""
+    var color : String = ""
     var isSearchAllButton: Boolean = false
         private set
     constructor(
@@ -31,8 +32,12 @@ class AttachInvoiceSingleUiModel {
         status: String,
         statusId: Int,
         title: String,
-        amount: String
+        amount: String,
+        color: String
     ) {
+    constructor(typeString: String, type: Int, code: String, createdTime: String,
+                description: String, url: String, id: Long, imageUrl: String,
+                status: String, statusId: Int, title: String, amount: String, color: String) {
         this.typeString = typeString
         this.type = type
         this.code = code
@@ -45,6 +50,7 @@ class AttachInvoiceSingleUiModel {
         this.statusId = statusId
         this.title = title
         this.amount = amount
+        this.color = color
         isSearchAllButton = false
     }
 

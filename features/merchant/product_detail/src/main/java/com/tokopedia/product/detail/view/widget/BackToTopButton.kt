@@ -5,10 +5,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.detail.databinding.WidgetBackToTopBinding
+import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.calculateFirstVisibleItemPosition
 
 class BackToTopButton(
     context: Context,
@@ -35,6 +36,7 @@ class BackToTopButton(
     private var isVisible = false
     private var enableClick = true
     private var enableBlockingTouch = true
+    private var navTabPositionOffsetY = Int.ZERO
 
     init {
         addView(view)
@@ -49,8 +51,10 @@ class BackToTopButton(
     fun start(
         recyclerView: RecyclerView,
         enableBlockingTouch: Boolean,
-        listener: NavigationListener
+        listener: NavigationListener,
+        offsetY: Int = Int.ZERO
     ) {
+        navTabPositionOffsetY = offsetY
         recyclerView.removeOnScrollListener(onScrollListener)
 
         this.listener = listener
@@ -110,10 +114,7 @@ class BackToTopButton(
         }
 
         private fun resolveButtonVisibility(recyclerView: RecyclerView) {
-            val layoutManager = recyclerView.layoutManager
-            if (layoutManager !is LinearLayoutManager) return
-
-            if (layoutManager.findFirstVisibleItemPosition() == 0) {
+            if (calculateFirstVisibleItemPosition(recyclerView, navTabPositionOffsetY) == 0) {
                 toggle(false)
             } else toggle(true)
         }

@@ -77,9 +77,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
+import org.junit.After
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -832,13 +837,13 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any())
+            presenter.getChatRatingList(any(), any(), any())
         }
 
         presenter.getBottomChat("123456", { _, _ -> }, {}, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any())
+            presenter.getChatRatingList(chatRatingListInput, any(), any())
         }
     }
 
@@ -908,14 +913,14 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any())
+            presenter.getChatRatingList(any(), any(), any())
         }
 
         // When
         presenter.getTopChat("123456", { _, _ -> }, {}, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any())
+            presenter.getChatRatingList(chatRatingListInput, any(), any())
         }
     }
 
@@ -998,14 +1003,14 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any())
+            presenter.getChatRatingList(any(), any(), any())
         }
 
         // When
         presenter.getExistingChat("123456", { }, { _, _ -> }, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any())
+            presenter.getChatRatingList(chatRatingListInput, any(), any())
         }
     }
 
@@ -1043,7 +1048,7 @@ class ChatbotPresenterTest {
             response.getData<ChipGetChatRatingListResponse>(ChipGetChatRatingListResponse::class.java)
         } returns ratingListResponse
 
-        presenter.getChatRatingList(ChipGetChatRatingListInput()) { chipGetChatRatingList ->
+        presenter.getChatRatingList(ChipGetChatRatingListInput(), "123456") { chipGetChatRatingList ->
             expectedChatRatingList = chipGetChatRatingList!!
         }
 

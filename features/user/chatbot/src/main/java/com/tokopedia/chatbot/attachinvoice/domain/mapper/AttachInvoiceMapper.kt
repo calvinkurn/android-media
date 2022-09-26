@@ -44,6 +44,7 @@ internal constructor() {
             invoiceLinkAttributePojo.statusId = selectedInvoice.statusId
             invoiceLinkAttributePojo.title = selectedInvoice.title
             invoiceLinkAttributePojo.totalAmount = selectedInvoice.amount
+            invoiceLinkAttributePojo.color = selectedInvoice.color
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.typeString
@@ -64,6 +65,7 @@ internal constructor() {
             invoiceLinkAttributePojo.statusId = selectedInvoice.statusId
             invoiceLinkAttributePojo.title = selectedInvoice.topProductName.toString()
             invoiceLinkAttributePojo.totalAmount = selectedInvoice.amount.toString()
+            invoiceLinkAttributePojo.color = selectedInvoice.color.toString()
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.invoiceTypeStr
