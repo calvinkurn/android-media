@@ -2410,4 +2410,18 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
+
+    @Test
+    fun `check tokochat applink customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalCommunication.TOKO_CHAT
+        assertEqualsDeepLinkMapper(ApplinkConst.TOKO_CHAT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokochat applink customerapp with query params`() {
+        val queryParams = "?orderId=F-123&source=tokofood"
+        val deepLink = "${ApplinkConst.TOKO_CHAT}$queryParams"
+        val expectedDeepLink = "${ApplinkConstInternalCommunication.TOKO_CHAT}$queryParams"
+        assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+    }
 }
