@@ -430,10 +430,6 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun setFavNumbers(data: TopupBillsFavNumber) {
-        // do nothing
-    }
-
     override fun errorSetFavNumbers() {
         // do nothing
     }

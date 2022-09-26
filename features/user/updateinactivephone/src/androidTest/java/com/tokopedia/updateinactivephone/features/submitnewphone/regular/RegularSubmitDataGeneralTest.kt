@@ -1,6 +1,12 @@
 package com.tokopedia.updateinactivephone.features.submitnewphone.regular
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.updateinactivephone.common.viewaction.simulateOnBackPressed
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseSubmitDataTest
@@ -44,6 +50,10 @@ class RegularSubmitDataGeneralTest : BaseSubmitDataTest() {
     @Test
     fun submit_new_phone() {
         runTest {
+            val data = Intent().apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, "token123")
+            }
+            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, data))
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
         }
