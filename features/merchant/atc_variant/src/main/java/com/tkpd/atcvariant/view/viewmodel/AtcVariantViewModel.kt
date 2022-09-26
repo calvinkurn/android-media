@@ -95,10 +95,6 @@ class AtcVariantViewModel @Inject constructor(
     val deleteCartLiveData: LiveData<Result<String>>
         get() = _deleteCartLiveData
 
-    private val _addWishlistResult = MutableLiveData<Result<Boolean>>()
-    val addWishlistResult: LiveData<Result<Boolean>>
-        get() = _addWishlistResult
-
     private val _restrictionData = MutableLiveData<Result<RestrictionData>>()
     val restrictionData: LiveData<Result<RestrictionData>>
         get() = _restrictionData
