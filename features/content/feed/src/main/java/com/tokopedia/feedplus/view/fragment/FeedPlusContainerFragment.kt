@@ -146,7 +146,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     /** View */
     private lateinit var fabFeed: FloatingButtonUnify
     private lateinit var feedFloatingButton: FeedFloatingButton
-    private lateinit var ivFeedUser: ImageUnify
+    private val ivFeedUser: ImageUnify by lazy(LazyThreadSafetyMode.NONE) {
+        requireView().findViewById<ImageUnify>(R.id.iv_feed_user)
+    }
 
     private val keyIsLightThemeStatusBar = "is_light_theme_status_bar"
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
@@ -235,7 +237,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun setupView(view: View) {
         fabFeed = view.findViewById(R.id.fab_feed)
         feedFloatingButton = view.findViewById(R.id.feed_floating_button)
-        ivFeedUser = view.findViewById(R.id.iv_feed_user)
     }
 
     private fun initNavRevampAbTest() {
