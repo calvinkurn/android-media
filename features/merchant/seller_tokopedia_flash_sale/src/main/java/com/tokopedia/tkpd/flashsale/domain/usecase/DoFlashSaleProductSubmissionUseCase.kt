@@ -64,7 +64,7 @@ class DoFlashSaleProductSubmissionUseCase @Inject constructor(
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<DoFlashSaleProductSubmissionResponse>()
-        return mapper.map(data)
+        return mapper.map(data, param.productData.size.toLong())
     }
 
     private fun buildRequest(param: Param): GraphqlRequest {

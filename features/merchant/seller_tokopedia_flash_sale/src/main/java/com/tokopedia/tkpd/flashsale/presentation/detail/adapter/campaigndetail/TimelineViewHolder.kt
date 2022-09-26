@@ -15,6 +15,7 @@ class TimelineViewHolder(private val binding: StfsItemTimelineBinding) :
         setupTitleText(itemModel)
         setupPeriodText(itemModel, context)
         setupIconBackground(itemModel, context)
+        setupIcon(itemModel)
     }
 
     private fun setupTitleText(itemModel: TimelineStepModel) {
@@ -38,5 +39,9 @@ class TimelineViewHolder(private val binding: StfsItemTimelineBinding) :
         } else {
             context.getDrawable(R.drawable.stfs_bg_circle_timeline_inactive)
         }
+    }
+
+    private fun setupIcon(itemModel: TimelineStepModel) {
+        binding.iconProcess.setImage(newIconId = itemModel.icon)
     }
 }

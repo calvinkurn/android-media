@@ -123,7 +123,7 @@ abstract class BaseCampaignManageProductListFragment<RA : RecyclerView.Adapter<*
     /**
      * Can be used to show button submit
      */
-    protected fun showButtonSubmit() {
+    protected open fun showButtonSubmit() {
         containerButtonSubmit?.show()
     }
 
