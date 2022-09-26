@@ -470,9 +470,9 @@ class ProductTagParentFragment @Inject constructor(
         else if(path.contains(SHOP)) ProductTagSource.Shop
         else ProductTagSource.Unknown
 
-        val query = intent?.extras?.getString(SearchParamUiModel.KEY_QUERY) ?: ""
-        val shopId = intent?.data?.lastPathSegment ?: ""
-        val componentId = intent?.extras?.getString(SearchParamUiModel.KEY_COMPONENT_ID) ?: ""
+        val query = intent?.extras?.getString(SearchParamUiModel.KEY_QUERY).orEmpty()
+        val shopId = intent?.data?.lastPathSegment.orEmpty()
+        val componentId = intent?.extras?.getString(SearchParamUiModel.KEY_COMPONENT_ID).orEmpty()
 
         viewModel.submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId, componentId))
     }
