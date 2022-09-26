@@ -29,11 +29,13 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ProductSubmissionResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity
 import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
 import com.tokopedia.tkpd.flashsale.presentation.dialogconfirmation.ConfirmationDialog
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantActivity
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.ManageProductVariantActivity
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.delegate.FlashSaleManageProductListItemDelegate
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.delegate.FlashSaleManageProductListItemGlobalErrorDelegate
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.delegate.FlashSaleManageProductListItemShimmeringDelegate
@@ -44,6 +46,8 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.viewh
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.viewholder.FlashSaleManageProductListItemViewHolder
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEffect
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEvent
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_VARIANT
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
@@ -520,25 +524,38 @@ class FlashSaleManageProductListFragment :
 
     private fun redirectToManageProductDetailPage(productData: ReservedProduct.Product) {
         if (productData.isParentProduct) {
-            //redirect to manage product detail variant page
+            redirectToManageProductVariantPage(productData)
         } else {
             redirectToManageProductNonVariantPage(productData)
         }
     }
 
+    private fun redirectToManageProductVariantPage(productData: ReservedProduct.Product) {
+        context?.let {
+            ManageProductVariantActivity.createIntent(it, productData).apply {
+                startActivityForResult(
+                    this,
+                    REQUEST_CODE_MANAGE_PRODUCT_VARIANT
+                )
+            }
+        }
+    }
+
     private fun redirectToManageProductNonVariantPage(productData: ReservedProduct.Product) {
-        ManageProductNonVariantActivity.createIntent(context, productData).apply {
-            startActivityForResult(
-                this,
-                ManageProductNonVariantActivity.REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT
-            )
+        context?.let {
+            ManageProductNonVariantActivity.createIntent(it, productData).apply {
+                startActivityForResult(
+                    this,
+                    REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT
+                )
+            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            ManageProductNonVariantActivity.REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT -> {
+            REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT, REQUEST_CODE_MANAGE_PRODUCT_VARIANT -> {
                 handleUpdatedProductResult(resultCode, data)
             }
             else -> {}
@@ -548,7 +565,7 @@ class FlashSaleManageProductListFragment :
     private fun handleUpdatedProductResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             data?.extras?.getParcelable<ReservedProduct.Product>(
-                ManageProductNonVariantActivity.BUNDLE_KEY_PRODUCT
+                BUNDLE_KEY_PRODUCT
             )?.let {
                 updateProductData(it)
             }
