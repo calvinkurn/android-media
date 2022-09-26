@@ -132,5 +132,20 @@
       }
     }
   },
-  "errors": []
+  "errors": [
+    {
+      "status": 401,
+      "title": "this is an error",
+      "atc_error_page": {
+        "show_error_page": true,
+        "buttons": [
+          {
+            "label": "Hubungi Customer Service",
+            "url": "https://tokopedia.com",
+            "applink_url": "tokopedia://home"
+          }
+        ]
+      }
+    }
+  ]
 }
