@@ -22,9 +22,13 @@ class OptionalPurposeViewHolder(
             val isActive = item.consentStatus == TransactionType.OPT_IN.alias
             itemTitle.text = item.consentTitle
             itemDesc.text = item.consentSubtitle
-            itemSwitch.setOnClickListener {
-                itemSwitch.isChecked = !itemSwitch.isChecked
-                listener.onToggleClicked(layoutPosition, isActive, item)
+            itemSwitch.apply {
+                isChecked = isActive
+                
+                setOnClickListener {
+                    itemSwitch.isChecked = !itemSwitch.isChecked
+                    listener.onToggleClicked(layoutPosition, isActive, item)
+                }
             }
         }
     }

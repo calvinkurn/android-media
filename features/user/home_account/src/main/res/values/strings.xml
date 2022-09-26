@@ -265,7 +265,7 @@
 
     <!--  CONSENT WITHDRAWAL  -->
     <string name="consent_withdrawal_primary_data_usage">Penggunaan data utama</string>
-    <string name="consent_withdrawal_secondary_data_usage">Penggunaan data utama</string>
+    <string name="consent_withdrawal_secondary_data_usage">Penggunaan data tambahan</string>
     <string name="consent_withdrawal_dialog_title">Matikan penggunaan datamu?</string>
     <string name="consent_withdrawal_dialog_body">Kalau dimatikan, kamu nggak bisa pakai fitur atau produk yang butuh data ini.</string>
     <string name="consent_withdrawal_dialog_primary_cta">Ya, Matikan</string>
