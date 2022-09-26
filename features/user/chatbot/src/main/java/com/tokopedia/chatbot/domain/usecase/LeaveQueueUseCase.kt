@@ -1,11 +1,14 @@
 package com.tokopedia.chatbot.domain.usecase
 
 import com.tokopedia.chatbot.domain.gqlqueries.LeaveQueueQuery
+import com.tokopedia.chatbot.domain.gqlqueries.queries.GQL_LEAVE_QUEUE
 import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueResponse
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
+@GqlQuery("postLeaveQueue", GQL_LEAVE_QUEUE)
 class LeaveQueueUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<LeaveQueueResponse>(graphqlRepository) {
