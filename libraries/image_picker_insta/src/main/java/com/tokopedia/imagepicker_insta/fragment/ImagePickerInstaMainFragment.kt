@@ -310,7 +310,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             feedAccountAnalytic.clickAccountInfo()
             ContentAccountTypeBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
-                .showNow(childFragmentManager)
+                .show(childFragmentManager)
         }
         catch (e: Exception) {
 
