@@ -1081,14 +1081,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val totalLength = VideoUtil.retrieveVideoLength(context, path)
 
         if (!TextUtils.isEmpty(path)) {
-            return generateChatViewModelWithVideo(path, totalLength)
+            return generateChatUiModelWithVideo(path, totalLength)
         }
 
         return null
 
     }
 
-    private fun generateChatViewModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
+    private fun generateChatUiModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
         return VideoUploadUiModel.Builder().withMsgId(messageId)
             .withFromUid(opponentId)
             .withAttachmentId((System.currentTimeMillis() / ONE_SECOND_IN_MILLISECONDS).toString())

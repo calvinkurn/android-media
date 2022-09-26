@@ -10,6 +10,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -34,7 +35,7 @@ import java.util.concurrent.TimeUnit
 class ChatbotVideoUploadViewHolder(
     itemView: View?,
     private val listener: VideoUploadListener,
-) : BaseChatViewHolder<VideoUploadUiModel>(itemView) {
+) : BaseChatViewHolder<VideoUploadUiModel>(itemView), VideoDimensionsListener {
 
     override fun alwaysShowTime() = true
     override fun useWhiteReadStatus() = true
@@ -53,6 +54,8 @@ class ChatbotVideoUploadViewHolder(
     private val progressBarSendVideo: View? = itemView?.findViewById(getProgressBarSendVideoId())
     private val videoPlayerView: PlayerView? = itemView?.findViewById(getVideoPlayerId())
     private lateinit var chatbotExoPlayer: ChatbotExoPlayer
+    private var videoWidth = 0
+    private var videoHeight = 0
 
     override val dateId: Int
         get() = R.id.date
@@ -101,6 +104,7 @@ class ChatbotVideoUploadViewHolder(
     }
 
     private fun setUpExoPlayerListener() {
+        chatbotExoPlayer.videoDimensionsListener = this
         chatbotExoPlayer.getExoPlayer().addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 super.onPlayerStateChanged(playWhenReady, playbackState)
@@ -273,7 +277,30 @@ class ChatbotVideoUploadViewHolder(
         const val HOURS = 24
         const val MINUTES = 60
         const val SECONDS = 60
-        const val RADIUS_FOR_VIDEO = 40f
+        const val RADIUS_FOR_VIDEO = 30f
         const val SIDE_VALUE_VIDEO_PLACEHOLDER = 0
     }
+
+    override fun setWidth(width: Int) {
+        videoWidth = width
+    }
+
+    override fun setHeight(height: Int) {
+        videoHeight = height
+        setLayoutParams()
+    }
+    private fun setLayoutParams() {
+        if (videoWidth!=0 && videoHeight!=0) {
+            chatBalloon?.layoutParams = ConstraintLayout.LayoutParams(videoWidth,videoHeight)
+            val params =  chatBalloon?.layoutParams as ConstraintLayout.LayoutParams
+            params.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID
+            chatBalloon.layoutParams = params
+        }
+    }
+
+}
+
+interface VideoDimensionsListener {
+    fun setWidth(width : Int)
+    fun setHeight(height : Int)
 }

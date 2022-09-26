@@ -8,6 +8,7 @@ import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.LoadControl
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -17,6 +18,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.tokopedia.chatbot.view.adapter.viewholder.VideoDimensionsListener
 
 class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoControlView? = null) : ChatbotVideoControlView.Listener{
 
@@ -24,6 +26,7 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         .createDefaultLoadControl()
 
     var videoStateListener: ChatbotVideoStateListener? = null
+    var videoDimensionsListener: VideoDimensionsListener? = null
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
         .setTrackSelector(DefaultTrackSelector(context))
@@ -76,6 +79,26 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
             override fun onPlayerError(error: ExoPlaybackException) {
                 super.onPlayerError(error)
                 videoStateListener?.onVideoPlayerError(error)
+            }
+        })
+
+        exoPlayer.addAnalyticsListener(object : AnalyticsListener {
+            override fun onVideoSizeChanged(
+                eventTime: AnalyticsListener.EventTime,
+                width: Int,
+                height: Int,
+                unappliedRotationDegrees: Int,
+                pixelWidthHeightRatio: Float
+            ) {
+                super.onVideoSizeChanged(
+                    eventTime,
+                    width,
+                    height,
+                    unappliedRotationDegrees,
+                    pixelWidthHeightRatio
+                )
+                videoDimensionsListener?.setWidth(width)
+                videoDimensionsListener?.setHeight(height)
             }
         })
     }
