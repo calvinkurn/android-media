@@ -87,14 +87,14 @@ class GiftBoxDailyViewModelTest {
 
     @Test
     fun getRewardsSuccess() {
-        prepareRelaxedViewModel()
+        prepareViewModel()
         val params: HashMap<String, Any> = mockk()
         val giftBoxRewardEntity: GiftBoxRewardEntity = mockk()
         every { giftBoxDailyRewardUseCase.getRequestParams(viewModel.campaignSlug!!, viewModel.uniqueCode) } returns mockk()
         coEvery { giftBoxDailyRewardUseCase.getResponse(any()) } returns giftBoxRewardEntity
 
         val couponDetailResponse: CouponDetailResponse = mockk(relaxed = true)
-        coEvery { viewModel.composeApi(giftBoxRewardEntity) } returns couponDetailResponse
+        coEvery { couponDetailUseCase.getResponse(any()) } returns couponDetailResponse
 
         every { giftBoxRewardEntity.couponDetailResponse = any() } returns Unit
 

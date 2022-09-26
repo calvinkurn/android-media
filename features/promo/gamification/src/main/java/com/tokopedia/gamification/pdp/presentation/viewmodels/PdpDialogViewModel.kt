@@ -121,23 +121,6 @@ class PdpDialogViewModel @Inject constructor(private val recommendationProductUs
         }
     }
 
-    fun getSubscriberV2(actionListener: WishlistV2ActionListener, productId: String): Subscriber<WishlistModel> {
-        return object : Subscriber<WishlistModel>() {
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable) {
-                actionListener.onErrorAddWishList(e, productId)
-            }
-
-            override fun onNext(wishlistModel: WishlistModel) {
-                if (wishlistModel.data != null) {
-                    actionListener.onSuccessAddWishlist(AddToWishlistV2Response.Data.WishlistAddV2(success = true), productId)
-                }
-            }
-        }
-    }
-
     fun getWishListActionListenerForRemoveFromWishList(wishlistCallback: (((Boolean, Throwable?) -> Unit))):WishListActionListener{
         return object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
