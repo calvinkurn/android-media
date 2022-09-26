@@ -185,6 +185,12 @@ class OtherMenuViewHolder(
         }
     }
 
+    fun setTotalTokoMemberData(state: SettingResponseState<String>) {
+        secondaryInfoRecyclerView?.post {
+            secondaryInfoAdapter.setTokoMemberData(state)
+        }
+    }
+
     fun setShopFollowersData(state: SettingResponseState<String>) {
         secondaryInfoRecyclerView?.post {
             secondaryInfoAdapter.setShopFollowersData(state)
@@ -505,6 +511,7 @@ class OtherMenuViewHolder(
         fun onRmTransactionClicked()
         fun onShopBadgeClicked()
         fun onFollowersCountClicked()
+        fun onTokoMemberCountClicked()
         fun onSaldoClicked()
         fun onKreditTopadsClicked()
         fun onRefreshShopInfo()
@@ -512,6 +519,7 @@ class OtherMenuViewHolder(
         fun onShopOperationalClicked()
         fun onGoToPowerMerchantSubscribe(tab: String?, isUpdate: Boolean)
         fun onShopBadgeRefresh()
+        fun onTotalTokoMemberRefresh()
         fun onShopTotalFollowersRefresh()
         fun onUserInfoRefresh()
         fun onOperationalHourRefresh()
