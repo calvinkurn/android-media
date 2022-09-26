@@ -20,7 +20,7 @@
             app:tickerShapeType="full" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/ticker_message"
+            android:id="@+id/ticker_saldo_withdrawal_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
