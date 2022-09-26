@@ -49,7 +49,7 @@
         android:layout_toEndOf="@+id/flPhotoContainer"
         android:gravity="center_vertical">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivBadge"
             android:layout_width="26dp"
             android:layout_height="22dp"
@@ -59,6 +59,7 @@
             android:contentDescription="@string/tokochat_content_desc_badge"
             android:paddingEnd="4dp"
             android:visibility="gone"
+            app:unify_image_corner_radius="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlSymmetry"
@@ -83,27 +84,6 @@
             tools:text="@tools:sample/lorem/random" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@id/userLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="7dp"
-            android:background="@drawable/tokochat_label_user"
-            android:padding="4dp"
-            android:textColor="@color/Unify_G400"
-            android:visibility="gone"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toBottomOf="@+id/userTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/userTitle"
-            app:layout_constraintTop_toTopOf="@+id/userTitle"
-            app:typographyType="display_3"
-            app:typographyWeight="bold"
-            tools:text="Penjual"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -119,7 +99,7 @@
 
         <include
             android:id="@+id/tokoChatLayoutTyping"
-            layout="@layout/layout_typing"
+            layout="@layout/tokochat_layout_typing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/userTitle" />

@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
+import com.tokopedia.tokochat.view.activity.TokoChatActivity
+import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
 import com.tokopedia.tokochat_common.R
@@ -44,6 +46,17 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
 
     override fun initObservers() {
 
+    }
+
+    private fun setupToolbarData() {
+        val uiModel = TokoChatHeaderUiModel(
+            title = "Omar Maryadi",
+            subTitle = "D7088FGX",
+            imageUrl = "https://i-integration.gojekapi.com/darkroom/gomart-public-integration/v2/images/public/images/f9054d3d-7346-4b39-8385-61f6dfa81874_pertamax-icon.jpg"
+        )
+        (activity as? TokoChatActivity)?.getToolbar()?.run {
+
+        }
     }
 
     companion object {

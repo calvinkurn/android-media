@@ -1,6 +1,7 @@
 package com.tokopedia.tokochat_common.view.activity
 
 import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -26,5 +27,13 @@ abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
 
     override fun getLayoutRes(): Int {
         return R.layout.base_activity_toko_chat
+    }
+
+    protected fun getChatHeaderLayout(): Int = R.layout.header_toko_chat
+
+    protected open fun setupToolbar() {}
+
+    fun getToolbar(): Toolbar {
+        return toolbar
     }
 }

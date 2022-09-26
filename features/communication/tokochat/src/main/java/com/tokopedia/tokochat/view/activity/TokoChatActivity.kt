@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.view.activity
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -52,5 +53,18 @@ class TokoChatActivity : BaseTokoChatActivity<TokoChatComponent>() {
                 bundle ?: Bundle()
             )
         }
+    }
+
+    override fun setupToolbar() {
+        setupToolbarLayout()
+    }
+
+    private fun setupToolbarLayout() {
+        val mInflater = LayoutInflater.from(this)
+        val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
+        toolbar.removeAllViews()
+        toolbar.addView(mCustomView)
+        toolbar.contentInsetStartWithNavigation = 0
+        toolbar.contentInsetEndWithActions = 0
     }
 }
