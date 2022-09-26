@@ -232,7 +232,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         observeCart()
         observeDeleteCart()
         observeUpdateCart()
-        observeWishlist()
         observeRestrictionData()
         observeToggleFavorite()
         observeStockCopy()
@@ -419,25 +418,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 }
             }
         })
-    }
-
-    private fun observeWishlist() {
-        viewModel.addWishlistResult.observe(viewLifecycleOwner) {
-            if (it is Success) {
-                if (it.data) {
-                    //success add wishlist
-
-                    showToasterSuccess(
-                        message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-                        ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-                        ctaListener = { goToWishlist() }
-                    )
-                }
-            } else if (it is Fail) {
-                showToasterError(getErrorMessage(it.throwable))
-                logException(it.throwable)
-            }
-        }
     }
 
     private fun showToasterError(message: String, ctaBtn: String = "", ctaListener: () -> Unit = {}) {
