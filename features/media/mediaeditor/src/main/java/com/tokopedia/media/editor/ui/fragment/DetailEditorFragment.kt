@@ -539,7 +539,7 @@ class DetailEditorFragment @Inject constructor(
             readPreviousDetailState(editorDetailUi)
         }
 
-        if(data.isToolRotate() || data.isToolCrop()) {
+        if((data.isToolRotate() || data.isToolCrop()) && data.cropRotateValue.imageWidth != 0) {
             implementPreviousStateRotate(data.cropRotateValue)
             implementPreviousStateCrop(data.cropRotateValue)
         }
@@ -563,7 +563,11 @@ class DetailEditorFragment @Inject constructor(
         currentBitmap?.let {
             // need normalize between crop data and loaded image data, ucrop bound the loaded image size according to the view size
             // but glide will load the image full size
-            val scalingSize = it.width.toFloat() / cropRotateData.croppedSourceWidth
+            val scalingSize = if (cropRotateData.croppedSourceWidth != 0) {
+                it.width.toFloat() / cropRotateData.croppedSourceWidth
+            } else {
+                1f
+            }
 
             val finalRotationDegree =
                 (cropRotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + (cropRotateData.rotateDegree)

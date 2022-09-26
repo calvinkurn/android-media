@@ -81,7 +81,11 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         // need to manually crop & save
         if (cropImageView.currentAngle % 90f == 0f && rotateNumber != 0 && isRotate) {
             val cropRotateData = data.cropRotateValue
-            val scalingSize = bitmap.width.toFloat() / cropRotateData.croppedSourceWidth
+            val scalingSize = if (cropRotateData.croppedSourceWidth != 0) {
+                bitmap.width.toFloat() / cropRotateData.croppedSourceWidth
+            } else {
+                1f
+            }
 
             val offsetX = (cropRotateData.offsetX * scalingSize).toInt()
             val imageWidth = if(cropRotateData.imageWidth != 0) {
