@@ -22,7 +22,7 @@ object MenuManager {
         menu.findItem(MENU_ITEM_ID).apply {
             setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
             activity?.let {
-                val backgroundColor = MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+                val backgroundColor = MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
                 val tv = Typography(it)
                 tv.setType(Typography.BODY_2)
                 tv.setWeight(Typography.BOLD)
