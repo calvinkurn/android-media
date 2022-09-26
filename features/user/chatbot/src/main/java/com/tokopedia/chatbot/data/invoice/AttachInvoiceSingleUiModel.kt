@@ -35,9 +35,6 @@ class AttachInvoiceSingleUiModel {
         amount: String,
         color: String
     ) {
-    constructor(typeString: String, type: Int, code: String, createdTime: String,
-                description: String, url: String, id: Long, imageUrl: String,
-                status: String, statusId: Int, title: String, amount: String, color: String) {
         this.typeString = typeString
         this.type = type
         this.code = code

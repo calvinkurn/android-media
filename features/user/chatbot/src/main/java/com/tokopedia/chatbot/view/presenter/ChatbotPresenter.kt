@@ -175,7 +175,7 @@ class ChatbotPresenter @Inject constructor(
         const val SESSION_CHANGE = "31"
     }
 
-    override fun submitCsatRating(inputItem: InputItem) {
+    override fun submitCsatRating(messageId: String, inputItem: InputItem) {
         submitCsatRatingUseCase.cancelJobs()
 
         submitCsatRatingUseCase.submitCsatRating(
@@ -277,7 +277,7 @@ class ChatbotPresenter @Inject constructor(
                         view.onReceiveChatSepratorEvent(model, getLiveChatQuickReply())
                     }
                     if (attachmentType == LIVE_CHAT_DIVIDER) {
-                        mappingQueueDivider(liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
+                        mappingQueueDivider(messageId, liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
                     }
 
                     if (attachmentType == SESSION_CHANGE) {
@@ -812,7 +812,7 @@ class ChatbotPresenter @Inject constructor(
         view.showErrorToast(throwable)
     }
 
-    override fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsUiModel?) {
+    override fun hitGqlforOptionList(messageId: String, selectedValue: Int, model: HelpFullQuestionsUiModel?) {
         val input = generateInput(selectedValue, model)
         chipSubmitHelpfulQuestionsUseCase.cancelJobs()
         chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(
@@ -841,7 +841,7 @@ class ChatbotPresenter @Inject constructor(
         return input
     }
 
-    override fun submitChatCsat(input: ChipSubmitChatCsatInput) {
+    override fun submitChatCsat(messageId: String, input: ChipSubmitChatCsatInput) {
         chipSubmitChatCsatUseCase.cancelJobs()
         chipSubmitChatCsatUseCase.chipSubmitChatCsat(
             ::onSuccessSubmitChatCsat,
@@ -899,7 +899,7 @@ class ChatbotPresenter @Inject constructor(
         super.detachView()
     }
 
-    override fun showTickerData() {
+    override fun showTickerData(messageId: String) {
         getTickerDataUseCase.cancelJobs()
         getTickerDataUseCase.getTickerData(
             ::onSuccessGetTickerData,
@@ -998,6 +998,7 @@ class ChatbotPresenter @Inject constructor(
                     if (!inputList.list.isNullOrEmpty()) {
                         getChatRatingList(
                             inputList,
+                            messageId,
                             onChatRatingListSuccess(mappedResponse, onSuccessGetChat, chatReplies, onGetChatRatingListMessageError)
                         )
                     } else {
@@ -1115,6 +1116,7 @@ class ChatbotPresenter @Inject constructor(
                 if (!inputList.list.isNullOrEmpty()) {
                     getChatRatingList(
                         inputList,
+                        messageId,
                         onChatRatingListSuccess(mappedResponse, onSuccessGetChat, chatReplies, onGetChatRatingListMessageError)
                     )
                 } else {
@@ -1150,6 +1152,7 @@ class ChatbotPresenter @Inject constructor(
                 if (!inputList.list.isNullOrEmpty()) {
                     getChatRatingList(
                         inputList,
+                        messageId,
                         onChatRatingListSuccess(mappedResponse, onSuccessGetChat, chatReplies, onGetChatRatingListMessageError)
                     )
                 } else {

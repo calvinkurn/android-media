@@ -104,11 +104,8 @@ interface ChatbotContract {
 
         fun sendRating(messageId: String, rating: Int, element: ChatRatingUiModel)
 
-        fun sendReasonRating(messageId: String, reason: String, timestamp: String,
-                             onError: (Throwable) -> Unit,
-                             onSuccess: (String) -> Unit)
         fun submitCsatRating(messageId: String,
-                             inputItem: InputItem, )
+                             inputItem: InputItem)
 
         fun showTickerData(messageId: String)
 
@@ -133,9 +130,7 @@ interface ChatbotContract {
         fun hitGqlforOptionList(messageId : String, selectedValue: Int, model: HelpFullQuestionsUiModel?)
 
         fun submitChatCsat(messageId : String,
-                           input: ChipSubmitChatCsatInput,
-                           onsubmitingChatCsatSuccess: (String) -> Unit,
-                           onError: (Throwable) -> Unit)
+                           input: ChipSubmitChatCsatInput)
 
         fun cancelImageUpload()
 

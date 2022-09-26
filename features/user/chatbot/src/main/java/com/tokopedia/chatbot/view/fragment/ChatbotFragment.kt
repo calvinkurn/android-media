@@ -140,6 +140,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -184,7 +185,7 @@ class ChatbotFragment :
     TransactionInvoiceBottomSheetListener,
     StickyActionButtonClickListener,
     ChatbotSendButtonListener,
-    ChatbotFloatingInvoice.InvoiceListener
+    ChatbotFloatingInvoice.InvoiceListener,
     ReplyBubbleAreaMessage.Listener {
 
     override fun clearChatText() {
@@ -225,6 +226,7 @@ class ChatbotFragment :
     private var isArticleEntry = false
     private var hashMap: Map<String, String> = HashMap<String, String>()
     var isAttached: Boolean = false
+    private lateinit var floatingInvoice : ChatbotFloatingInvoice
     private lateinit var invoiceLabel: Label
     private lateinit var invoiceName: Typography
     private lateinit var invoiceImage: ImageView
@@ -472,7 +474,6 @@ class ChatbotFragment :
                     disableSendButton()
                 }
 
-                float_chat_item.show()
             }
         }
     }
@@ -650,7 +651,7 @@ class ChatbotFragment :
     }
 
     private fun showTicker() {
-        presenter.showTickerData()
+        presenter.showTickerData(messageId)
     }
 
     override fun onSuccessGetTickerData(tickerData: TickerData) {
@@ -947,7 +948,7 @@ class ChatbotFragment :
             rating = data.extras?.getInt(EMOJI_STATE) ?: 0
             reasonCode = data.getStringExtra(SELECTED_ITEMS) ?: ""
         }
-        presenter.submitChatCsat(input)
+        presenter.submitChatCsat(messageId, input)
     }
 
     override fun onSuccessSubmitChatCsat(msg: String) {
@@ -978,7 +979,7 @@ class ChatbotFragment :
         input.timestamp = data?.getStringExtra("time_stamp")
         input.triggerRuleType = csatAttributes?.triggerRuleType
 
-        presenter.submitCsatRating(input)
+        presenter.submitCsatRating(messageId, input)
     }
 
     private fun getFilters(data: Intent?, reasonList: List<String?>?): String? {
@@ -1033,7 +1034,7 @@ class ChatbotFragment :
     private fun onErrorImageUpload(): (Throwable, ImageUploadUiModel) -> Unit {
         return { throwable, image ->
             if (view != null) {
-                Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.make(requireView(), ErrorHandler.getErrorMessage(requireView().context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 getViewState()?.showRetryUploadImages(image, true)
             }
         }
