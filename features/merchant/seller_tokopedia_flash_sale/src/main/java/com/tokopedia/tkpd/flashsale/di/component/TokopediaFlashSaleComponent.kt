@@ -14,6 +14,11 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignTimelin
 import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
 import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerFragment
 import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleListActivity
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.ManageProductMultiLocationVariantFragment
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantFragment
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantMultilocFragment
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.ManageProductVariantFragment
+import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListFragment
 import dagger.Component
 
 @TokopediaFlashSaleScope
@@ -34,4 +39,11 @@ interface TokopediaFlashSaleComponent {
     fun inject(fragment: CampaignDetailFragment)
 
     fun inject(fragment: ChooseProductFragment)
+
+    fun inject(fragment: ManageProductMultiLocationVariantFragment)
+
+    fun inject(fragment: ManageProductNonVariantFragment)
+    fun inject(fragment: ManageProductNonVariantMultilocFragment)
+    fun inject(fragment: FlashSaleManageProductListFragment)
+    fun inject(fragment: ManageProductVariantFragment)
 }

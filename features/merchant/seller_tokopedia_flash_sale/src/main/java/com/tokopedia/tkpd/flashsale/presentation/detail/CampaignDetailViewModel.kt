@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest
@@ -200,35 +201,41 @@ class CampaignDetailViewModel @Inject constructor(
             REGISTER_PERIOD_TITLE,
             submissionDatePeriod,
             isEnded = Date() > flashSale.submissionEndDateUnix,
-            isActive = Date() >= flashSale.submissionStartDateUnix && Date() <= flashSale.submissionEndDateUnix || Date() > flashSale.submissionEndDateUnix
+            isActive = Date() >= flashSale.submissionStartDateUnix && Date() <= flashSale.submissionEndDateUnix || Date() > flashSale.submissionEndDateUnix,
+            icon = IconUnify.CLIPBOARD
         )
         val addProductTimelineData = TimelineStepModel(
             ADD_PRODUCT_TITLE,
             submissionDatePeriod,
             isEnded = Date() > flashSale.submissionEndDateUnix,
-            isActive = Date() >= flashSale.submissionStartDateUnix && Date() <= flashSale.submissionEndDateUnix || Date() > flashSale.submissionEndDateUnix
+            isActive = Date() >= flashSale.submissionStartDateUnix && Date() <= flashSale.submissionEndDateUnix || Date() > flashSale.submissionEndDateUnix,
+            icon = IconUnify.PRODUCT_ADD
         )
         val selectionProcessTimelineData = TimelineStepModel(
             SELECTION_PROCESS_TITLE,
             selectionProcessDatePeriod,
             isEnded = Date() > flashSale.reviewEndDateUnix,
-            isActive = Date() >= flashSale.reviewStartDateUnix && Date() <= flashSale.reviewEndDateUnix || Date() > flashSale.reviewEndDateUnix
+            isActive = Date() >= flashSale.reviewStartDateUnix && Date() <= flashSale.reviewEndDateUnix || Date() > flashSale.reviewEndDateUnix,
+            icon = IconUnify.PRODUCT_VERIFIED
         )
         val activePromotionTimelineData = TimelineStepModel(
             ACTIVE_PROMOTION_TITLE,
             activePromotionDatePeriod,
             isEnded = Date() > flashSale.endDateUnix,
-            isActive = Date() >= flashSale.startDateUnix && Date() <= flashSale.endDateUnix || Date() > flashSale.endDateUnix
+            isActive = Date() >= flashSale.startDateUnix && Date() <= flashSale.endDateUnix || Date() > flashSale.endDateUnix,
+            icon = IconUnify.FLASH_ON
         )
         val finishTimelineData = TimelineStepModel(
             isEnded = true,
-            isActive = Date() > flashSale.endDateUnix
+            isActive = Date() > flashSale.endDateUnix,
+            icon = IconUnify.CHECK_BIG
         )
         timelineData.add(registerPeriodTimelineData)
         timelineData.add(addProductTimelineData)
         timelineData.add(selectionProcessTimelineData)
         timelineData.add(activePromotionTimelineData)
         timelineData.add(finishTimelineData)
+        for (i in 0 until timelineData.indexOfLast { it.isActive }) timelineData[i].isEnded = true
         return timelineData
     }
 

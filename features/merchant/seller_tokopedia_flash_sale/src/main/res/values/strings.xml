@@ -182,6 +182,15 @@
     <string name="stfs_missed_card_title_label">Yah, campaign ini sudah lewat!</string>
     <string name="stfs_missed_card_desc_label">Kamu tidak mengajukan produk untuk campaign ini.</string>
 
+    <!--AVP-->
+    <string name="stfs_stfs_manage_variant_title">Atur Variant Produk</string>
+    <string name="stfs_active_variant_bulk_apply_place_holder">Atur Sekaligus %d varian</string>
+    <string name="stfs_inactive_variant_bulk_apply_place_holder">Aktifkan varian untuk Atur Sekaligus</string>
+    <string name="stfs_avp_variant_count_placeholder">%d Varian Produk</string>
+    <string name="stfs_avp_price_range_placeholder">%s - %2s</string>
+    <string name="stfs_avp_stock_placeholder">Stok: %d di %2d Lokasi</string>
+    <string name="stfs_avp_location_placeholder">Promo dipasang di %d lokasi</string>
+
     <!--Choose Product-->
     <string name="chooseproduct_fs_tokopedia_page_title">Tambah Produk Campaign</string>
     <string name="chooseproduct_category_criteria_title">Batas pengajuan kategori promo</string>
@@ -196,9 +205,58 @@
     <string name="chooseproduct_filter_criteria_text">Memenuhi Kriteria</string>
     <string name="chooseproduct_filter_category_text">Semua Kategori</string>
 
+    <!--Manage Product-->
+    <string name="manageproductnonvar_stock_title">Stok Campaign</string>
+    <string name="manageproductnonvar_stock_subtitle">Stok wajib %1d - %2d</string>
+    <string name="manageproductnonvar_save">Simpan</string>
+    <string name="manageproductnonvar_title">Atur Produk</string>
+    <string name="manageproductnonvar_stock_total_format">Total Stok: %d</string>
+    <string name="manageproductnonvar_min_message_format">Min. %s</string>
+    <string name="manageproductnonvar_max_message_format">Maks. %s</string>
+    <string name="manageproductnonvar_range_message_format">%s-%s</string>
+    <string name="manageproductnonvar_bulk_apply_empty_text">Aktifkan lokasi untuk Atur Sekaligus</string>
+    <string name="manageproductnonvar_bulk_apply_text">Atur Sekaligus %d Lokasi</string>
+
     <!-- Bulk Apply -->
     <string name="bulk_apply_title">Atur Sekaligus</string>
     <string name="bulk_apply_text_stock">Stok Campaign</string>
     <string name="bulk_apply_text_stock_description">Stok wajib %1d - %2d</string>
+
+
+    <!--    Manage product list-->
+    <string name="stfs_manage_product_list_title">Atur Produk</string>
+    <string name="stfs_manage_product_list_ticker_manage_product"><![CDATA[Pengaturan stok produk bisa kamu lakukan di halaman <a href="">Produk Toko</a>]]></string>
+    <string name="stfs_manage_product_list_coach_mark_title">Atur diskon dan stok campaign di sini</string>
+    <string name="stfs_manage_product_list_coach_mark_description">Sebelum mengajukan produk, atur diskon dan stok campaign-mu dulu, ya.</string>
+    <string name="stfs_manage_product_list_total_product">%1s Produk</string>
+    <string name="stfs_manage_product_list_success_delete_product_message">Produk berhasil dihapus</string>
+    <string name="stfs_manage_product_list_success_delete_product_cta">Oke</string>
+    <string name="stfs_manage_product_list_retry_cta">Coba Lagi</string>
+    <string name="stfs_manage_product_list_delete_product_dialog_title">Yakin hapus produk?</string>
+    <string name="stfs_manage_product_list_delete_product_dialog_description">Produk akan dihapus dari halaman ini dan kamu harus menambahkan kembali di halaman Flash Sale Tokopedia.</string>
+    <string name="stfs_manage_product_list_delete_product_dialog_ok_cta">Ya, Hapus</string>
+    <string name="stfs_manage_product_list_click_back_dialog_title">Kembali ke halaman Pilih Produk?</string>
+    <string name="stfs_manage_product_list_click_back_dialog_description">Pengaturan diskon yang sudah kamu atur tidak akan tersimpan, ya.</string>
+    <string name="stfs_manage_product_list_click_back_dialog_ok_cta">Ya, Kembali</string>
+    <string name="stfs_manage_product_list_submit_button_text">Ajukan</string>
+    <string name="stfs_product_item_total_variant">%1s Varian Produk</string>
+    <string name="stfs_product_item_total_discounted_variant">%1s Varian Diskon</string>
+    <string name="stfs_product_item_displayed_price_format">%1s - %2s</string>
+    <string name="stfs_product_item_original_price_format">%1s-%2s</string>
+    <string name="stfs_product_item_discount_label_percentage_format_non_range">%1s\%%</string>
+    <string name="stfs_product_item_discount_label_percentage_format_range">%1s-%2s\%%</string>
+    <string name="stfs_product_item_total_stock_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
+    <string name="stfs_product_item_total_stock_non_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]></string>
+    <string name="stfs_product_item_manage_button_text">Atur Diskon</string>
+    <string name="stfs_product_item_edit_button_text">Ubah</string>
+
+
+    <string name="stfs_stfs_manage_location_title">Atur Lokasi</string>
+    <string name="stfs_active_location_bulk_apply_place_holder">Atur Sekaligus %d lokasi</string>
+    <string name="stfs_inactive_location_bulk_apply_place_holder">Aktifkan lokasi untuk Atur Sekaligus</string>
+    <string name="stfs_note_stock_on_location">Stok di Lokasi Ini: %d</string>
+    <string name="stfs_note_stock_mandatory_on_location">Stok Wajib %d - %2d</string>
+    <string name="stfs_title_qty_editor_title">Stok Campaign</string>
+    <string name="stfs_text_button_save">Simpan</string>
 
 </resources>

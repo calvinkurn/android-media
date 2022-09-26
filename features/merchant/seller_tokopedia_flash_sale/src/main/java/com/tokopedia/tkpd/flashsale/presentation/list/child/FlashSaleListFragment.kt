@@ -516,7 +516,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     private val onAddProductClicked: (Int) -> Unit = { selectedItemPosition ->
         val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
         val selectedFlashSaleId = selectedFlashSale.id() as? Long
-        ChooseProductActivity.start(context, selectedFlashSaleId.orZero())
+        ChooseProductActivity.start(context, selectedFlashSaleId.orZero(), tabName)
     }
 
 }

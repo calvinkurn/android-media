@@ -24,4 +24,6 @@
 
     <!--Bottom Sheet -->
     <string name="bottom_sheet_apply">Terapkan</string>
+    <string name="stfs_avp_title_multiloc_cta">Atur Diskon Tiap Lokasi</string>
+    <string name="stfs_avp_description_multiloc_cta">Pilih lokasi dulu sebelum Atur Diskon, ya.</string>
 </resources>

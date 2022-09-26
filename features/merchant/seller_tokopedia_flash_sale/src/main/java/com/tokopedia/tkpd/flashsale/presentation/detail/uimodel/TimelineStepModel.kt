@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class TimelineStepModel(
     val title: String = "",
     val period: String = "",
-    val isEnded: Boolean = false,
-    val isActive: Boolean = false
+    var isEnded: Boolean = false,
+    val isActive: Boolean = false,
+    val icon: Int,
 ) : Parcelable
