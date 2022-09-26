@@ -44,7 +44,7 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor(
             errorMessage = it.disableDetail.disableTitle,
             hasVariant = it.variantMeta.countVariants.isMoreThanZero(),
             isError = it.disableDetail.isDisabled,
-            isEnabled = !it.disableDetail.isDisabled && !isSubmitted, // only enable not submitted data
+            isEnabled = !it.disableDetail.isDisabled,
             showCheckDetailCta = it.disableDetail.showCriteriaCheckingCta,
             isSelected = isSubmitted,
             criteriaId = it.productCriteria.criteriaId
