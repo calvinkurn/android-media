@@ -10,6 +10,8 @@ import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseC
 
 object ChooseProductUiMapper {
 
+    private const val MAX_PRODUCT_SELECTION = 40
+
     fun collectAllCategory(categories: List<CriteriaSelection>): MutableList<Category> {
         val result = mutableListOf<Category>()
         categories.forEach { category ->
@@ -28,12 +30,8 @@ object ChooseProductUiMapper {
 
     fun getSelectedProductCount(list: List<ChooseProductItem>) = getSelectedProduct(list).size
 
-    fun getMaxSelectedProduct(criterias: List<CriteriaSelection>): Int {
-        var max = 0
-        criterias.forEach {
-            max += it.selectionCountMax
-        }
-        return max
+    fun getMaxSelectedProduct(): Int {
+        return MAX_PRODUCT_SELECTION
     }
 
     fun mapToReserveParam(campaignId: Long, reservationId: String, selectedProducts: List<ChooseProductItem>?): DoFlashSaleProductReserveUseCase.Param {
@@ -58,7 +56,7 @@ object ChooseProductUiMapper {
     }
 
     fun validateSelection(productCount: Int, criteriaList: List<CriteriaSelection>): Boolean {
-        val maxProduct = getMaxSelectedProduct(criteriaList)
+        val maxProduct = getMaxSelectedProduct()
         val productValidation = productCount <= maxProduct && productCount.isMoreThanZero()
         val criteriaValidation = criteriaList.validateMax()
         return productValidation && criteriaValidation
@@ -76,5 +74,14 @@ object ChooseProductUiMapper {
             product.isSelected = product.isSelected
                     || selectedProductList?.any { it.productId == product.productId }.orFalse()
         }
+    }
+
+    fun isExceedMaxProduct(productCount: Int): Boolean {
+        val maxProduct = getMaxSelectedProduct()
+        return productCount >= maxProduct
+    }
+
+    fun isExceedMaxCriteria(criteriaList: List<CriteriaSelection>): Boolean {
+        return !criteriaList.validateMax()
     }
 }

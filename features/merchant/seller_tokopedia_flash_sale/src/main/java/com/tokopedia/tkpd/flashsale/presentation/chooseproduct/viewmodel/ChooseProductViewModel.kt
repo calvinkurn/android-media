@@ -57,7 +57,7 @@ class ChooseProductViewModel @Inject constructor(
         ChooseProductUiMapper.collectAllCategory(it)
     }
     val maxSelectedProduct = Transformations.map(criteriaList) {
-        ChooseProductUiMapper.getMaxSelectedProduct(it)
+        ChooseProductUiMapper.getMaxSelectedProduct()
     }
     val selectedProductCount = Transformations.map(selectedProductList) {
         ChooseProductUiMapper.getSelectedProductCount(it)
@@ -65,11 +65,22 @@ class ChooseProductViewModel @Inject constructor(
     val productList = Transformations.map(remoteProductList) {
         ChooseProductUiMapper.getSelectedProductList(selectedProductList.value, it)
     }
+    val isExceedMaxProduct = Transformations.map(selectedProductCount) {
+        ChooseProductUiMapper.isExceedMaxProduct(it)
+    }
+    val isExceedMaxCriteria = Transformations.map(criteriaList) {
+        ChooseProductUiMapper.isExceedMaxCriteria(it)
+    }
 
     val validationResult = combine(
         selectedProductCount.asFlow(), criteriaList.asFlow()
     ) { productCount, criteriaList ->
         ChooseProductUiMapper.validateSelection(productCount, criteriaList)
+    }
+    val selectionValidationResult = combine(
+        isExceedMaxProduct.asFlow(), isExceedMaxCriteria.asFlow()
+    ) { isExceedMaxProduct, isExceedMaxCriteria ->
+        Pair(isExceedMaxProduct, isExceedMaxCriteria)
     }
 
     // public variables
