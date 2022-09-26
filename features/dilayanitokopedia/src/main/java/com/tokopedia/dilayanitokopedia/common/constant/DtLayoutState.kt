@@ -2,6 +2,9 @@ package com.tokopedia.dilayanitokopedia.common.constant
 
 import androidx.annotation.IntDef
 
+/**
+ * Created by irpan on 12/09/22.
+ */
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(
     DtLayoutState.IDLE,

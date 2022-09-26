@@ -4,6 +4,9 @@ import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 
+/**
+ * Created by irpan on 12/09/22.
+ */
 interface DtView {
     fun getFragmentPage(): Fragment
     fun getFragmentManagerPage(): FragmentManager

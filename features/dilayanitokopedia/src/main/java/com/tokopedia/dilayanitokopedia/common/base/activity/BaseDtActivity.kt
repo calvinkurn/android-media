@@ -14,6 +14,9 @@ import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.dilayanitokopedia.databinding.DtBaseActivityBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
+/**
+ * Created by irpan on 07/09/22.
+ */
 abstract class BaseDtActivity : BaseActivity() {
 
     private var binding : DtBaseActivityBinding? = null

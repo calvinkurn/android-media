@@ -5,6 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 
+/**
+ * Created by irpan on 12/09/22.
+ */
 open class BaseDtListAdapter<T, F: AdapterTypeFactory>(
     baseListAdapterTypeFactory: F,
     private val differ: BaseDtDiffer

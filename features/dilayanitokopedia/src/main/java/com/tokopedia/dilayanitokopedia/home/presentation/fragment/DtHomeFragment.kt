@@ -41,7 +41,9 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
 
-
+/**
+ * Created by irpan on 07/09/22.
+ */
 class DtHomeFragment : Fragment() {
 
     companion object {

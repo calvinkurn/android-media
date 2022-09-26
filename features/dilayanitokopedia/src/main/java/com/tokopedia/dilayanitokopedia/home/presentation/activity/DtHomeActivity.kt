@@ -1,4 +1,4 @@
-package com.tokopedia.dilayanitokopedia
+package com.tokopedia.dilayanitokopedia.home.presentation.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

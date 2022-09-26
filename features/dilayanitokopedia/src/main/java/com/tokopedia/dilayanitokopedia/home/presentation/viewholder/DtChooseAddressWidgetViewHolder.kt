@@ -17,6 +17,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.utils.view.binding.viewBinding
 
 
+
 class DtChooseAddressWidgetViewHolder(
     itemView: View,
     private val dtView: DtView? = null,
