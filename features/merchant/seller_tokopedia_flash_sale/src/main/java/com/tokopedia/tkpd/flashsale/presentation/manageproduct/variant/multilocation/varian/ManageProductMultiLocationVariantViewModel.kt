@@ -32,12 +32,12 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
 
     fun setDiscountAmount(itemPosition: Int, value: Long) {
         val selectedItem = variant.warehouses[itemPosition]
-        selectedItem.price = value
+        selectedItem.discountSetup.price = value
     }
 
     fun setStockAmount(itemPosition: Int, value: Long) {
         val selectedItem = variant.warehouses[itemPosition]
-        selectedItem.stock = value
+        selectedItem.discountSetup.stock = value
     }
 
     fun setDiscountPercentage(itemPosition: Int, value: Long) {

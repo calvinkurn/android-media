@@ -23,7 +23,7 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyM
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.ManageProductMultiLocationVariantActivity
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
-import timber.log.Timber
+import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION
 
 class ManageProductVariantFragment :
     BaseCampaignManageProductDetailFragment<ManageProductVariantAdapter>(),
@@ -218,17 +218,21 @@ class ManageProductVariantFragment :
             viewModel.getProductData(),
             adapterPosition
         )
-        this@ManageProductVariantFragment.startActivityForResult(intent, Activity.RESULT_OK)
+        startActivityForResult(intent, REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Timber.tag("Masuk").d("Masuk")
-        if (requestCode == Activity.RESULT_OK) {
-            val appliedProduct =
-                data?.extras?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
-            if (appliedProduct != null) {
-                setProductListData(appliedProduct)
+        when(requestCode){
+            REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION ->{
+                if (resultCode == Activity.RESULT_OK) {
+                    val appliedProduct =
+                        data?.extras?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
+                    if (appliedProduct != null) {
+                        setProductListData(appliedProduct)
+                        viewModel.validateInputPage(appliedProduct.productCriteria)
+                    }
+                }
             }
         }
     }

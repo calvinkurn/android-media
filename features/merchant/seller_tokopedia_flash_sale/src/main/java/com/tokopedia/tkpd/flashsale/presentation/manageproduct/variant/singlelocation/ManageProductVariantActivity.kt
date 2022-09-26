@@ -12,13 +12,12 @@ class ManageProductVariantActivity : BaseSimpleActivity() {
 
     companion object {
         @JvmStatic
-        fun start(context: Context, product: ReservedProduct.Product) {
-            val intent = Intent(context, ManageProductVariantActivity::class.java)
-            val bundle = Bundle()
-            bundle.putParcelable(BundleConstant.BUNDLE_KEY_PRODUCT, product)
-            intent.putExtras(bundle)
-
-            context.startActivity(intent)
+        fun createIntent(context: Context, product: ReservedProduct.Product): Intent {
+            return Intent(context, ManageProductVariantActivity::class.java).apply {
+                val bundle = Bundle()
+                bundle.putParcelable(BundleConstant.BUNDLE_KEY_PRODUCT, product)
+                putExtras(bundle)
+            }
         }
     }
 
