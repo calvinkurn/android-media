@@ -1,4 +1,4 @@
-package com.tokopedia.user_identification_common
+package com.tokopedia.kyc_centralized.common
 
 /**
  * @author by nisie on 16/11/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.user_identification_common
+package com.tokopedia.kyc_centralized.common
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.url.TokopediaUrl
