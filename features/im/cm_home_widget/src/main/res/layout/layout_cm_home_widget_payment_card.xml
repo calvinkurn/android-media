@@ -10,8 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/unify_space_12"
-        android:paddingTop="@dimen/unify_space_12"
+        android:paddingStart="@dimen/cm_home_widget_dp_12"
+        android:paddingTop="@dimen/cm_home_widget_dp_12"
         android:paddingEnd="@dimen/unify_space_12"
         android:paddingBottom="@dimen/unify_space_12">
 
@@ -19,6 +19,8 @@
             android:id="@+id/iv_cm_home_widget_payment"
             android:layout_width="@dimen/cm_home_widget_dp_40"
             android:layout_height="@dimen/cm_home_widget_dp_40"
+            android:paddingTop="@dimen/cm_home_widget_dp_12"
+            android:paddingBottom="@dimen/cm_home_widget_dp_12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:unify_image_corner_radius="8" />
