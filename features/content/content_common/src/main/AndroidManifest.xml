@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.content.common">
     <application>
-        <activity android:name="com.tokopedia.content.common.producttag.view.activity.FeedAutoCompleteActivity"
+        <activity android:name="com.tokopedia.content.common.producttag.view.activity.ContentAutoCompleteActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden"
