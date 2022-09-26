@@ -21,7 +21,7 @@ class SendChatRatingUseCase
 
     fun sendChatRating(
         onSuccess: KFunction3<SendRatingPojo, Int, ChatRatingUiModel, Unit>,
-        onError: (Throwable) -> Unit,
+        onError: kotlin.reflect.KFunction2<Throwable, String, Unit>,
         messageId: String,
         rating: Int,
         element: ChatRatingUiModel
@@ -37,11 +37,11 @@ class SendChatRatingUseCase
                     onSuccess(result, rating, element)
                 },
                 { error ->
-                    onError(error)
+                    onError(error, messageId)
                 }
             )
         } catch (throwable: Throwable) {
-            onError(throwable)
+            onError(throwable, messageId)
         }
     }
 

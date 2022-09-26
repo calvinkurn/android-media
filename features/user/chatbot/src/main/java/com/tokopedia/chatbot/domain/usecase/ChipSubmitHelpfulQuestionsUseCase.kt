@@ -8,7 +8,6 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
-import kotlin.reflect.KProperty0
 
 @GqlQuery("SubmitHelpfullQuestion", CHIP_SUBMIT_HELPFULL_QUESTION_MUTATION_QUERY)
 class ChipSubmitHelpfulQuestionsUseCase @Inject constructor(
@@ -16,8 +15,9 @@ class ChipSubmitHelpfulQuestionsUseCase @Inject constructor(
 ) : GraphqlUseCase<SubmitOptionListResponse>(graphqlRepository) {
 
     fun chipSubmitHelpfulQuestions(
-        onError: (Throwable) -> Unit,
-        submitOptionInput: SubmitOptionInput
+        onError: kotlin.reflect.KFunction2<Throwable, String, Unit>,
+        submitOptionInput: SubmitOptionInput,
+        messageId: String
     ) {
         try {
             this.setTypeClass(SubmitOptionListResponse::class.java)
@@ -27,12 +27,12 @@ class ChipSubmitHelpfulQuestionsUseCase @Inject constructor(
             this.execute(
                 {
                 }, { error ->
-                    onError(error)
+                    onError(error, messageId)
                 }
             )
 
         } catch (throwable: Throwable) {
-            onError(throwable)
+            onError(throwable, messageId)
         }
     }
 

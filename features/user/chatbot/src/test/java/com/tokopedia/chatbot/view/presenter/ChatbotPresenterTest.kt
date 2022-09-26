@@ -77,14 +77,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
-import org.junit.After
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -606,7 +601,7 @@ class ChatbotPresenterTest {
         val response = mockk<TickerDataResponse>(relaxed = true)
 
         coEvery {
-            getTickerDataUseCase.getTickerData(captureLambda(), any())
+            getTickerDataUseCase.getTickerData(captureLambda(), any(), messageId)
         } coAnswers {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
@@ -627,7 +622,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            getTickerDataUseCase.getTickerData(captureLambda(), any())
+            getTickerDataUseCase.getTickerData(captureLambda(), any(), messageId)
         } coAnswers {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
@@ -646,7 +641,7 @@ class ChatbotPresenterTest {
         )
 
         coEvery {
-            getTickerDataUseCase.getTickerData(captureLambda(), any())
+            getTickerDataUseCase.getTickerData(captureLambda(), any(), messageId)
         } coAnswers {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
@@ -661,7 +656,7 @@ class ChatbotPresenterTest {
     @Test
     fun `showTickerData failure`() {
         coEvery {
-            getTickerDataUseCase.getTickerData(any(), captureLambda())
+            getTickerDataUseCase.getTickerData(any(), captureLambda(), messageId)
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }

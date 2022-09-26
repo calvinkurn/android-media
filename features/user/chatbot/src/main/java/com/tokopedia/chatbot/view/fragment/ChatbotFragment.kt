@@ -1385,6 +1385,7 @@ class ChatbotFragment :
         this.invoiceRefNum = invoiceRefNum
         this.replyText = replyText
         presenter.checkLinkForRedirection(
+            messageId,
             invoiceRefNum,
             onGetSuccessResponse = {
                 if (it.isNotEmpty()) {
@@ -1408,6 +1409,7 @@ class ChatbotFragment :
         if (isStickyButtonClicked) {
             this.isStickyButtonClicked = false
             presenter.checkLinkForRedirection(
+                messageId,
                 invoiceRefNum,
                 onGetSuccessResponse = {},
                 setStickyButtonStatus = { isResoListNotEmpty ->

@@ -175,24 +175,6 @@ class ChatbotPresenter @Inject constructor(
         const val SESSION_CHANGE = "31"
     }
 
-    override fun submitCsatRating(messageId: String, inputItem: InputItem) {
-        submitCsatRatingUseCase.cancelJobs()
-
-        submitCsatRatingUseCase.submitCsatRating(
-            ::onSuccessSubmitCsatRating,
-            ::onErrorSubmitCsatRating,
-            inputItem
-        )
-    }
-
-    fun onSuccessSubmitCsatRating(submitCsatGqlResponse: SubmitCsatGqlResponse) {
-        view.onSuccessSubmitCsatRating(submitCsatGqlResponse.submitRatingCSAT?.data?.message.toString())
-    }
-
-    private fun onErrorSubmitCsatRating(throwable: Throwable) {
-        view.onError(throwable)
-    }
-
     override fun clearText() {
         view.clearChatText()
     }
@@ -429,8 +411,14 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    private fun onFailureSendRating(throwable: Throwable) {
+    private fun onFailureSendRating(throwable: Throwable, messageId : String) {
         view.onError(throwable)
+        ChatbotNewRelicLogger.logNewRelic(
+            false,
+            messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_SEND_RATING,
+            throwable
+        )
     }
 
     private fun onSuccessSendRating(pojo: SendRatingPojo, rating: Int, element: ChatRatingUiModel) {
@@ -804,12 +792,43 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
+    override fun submitCsatRating(messageId: String, inputItem: InputItem) {
+        submitCsatRatingUseCase.cancelJobs()
+
+        submitCsatRatingUseCase.submitCsatRating(
+            ::onSuccessSubmitCsatRating,
+            ::onErrorSubmitCsatRating,
+            inputItem,
+            messageId
+        )
+    }
+
+    fun onSuccessSubmitCsatRating(submitCsatGqlResponse: SubmitCsatGqlResponse) {
+        view.onSuccessSubmitCsatRating(submitCsatGqlResponse.submitRatingCSAT?.data?.message.toString())
+    }
+
+    private fun onErrorSubmitCsatRating(throwable: Throwable, messageId: String) {
+        view.onError(throwable)
+        ChatbotNewRelicLogger.logNewRelic(
+            false,
+            messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_CSAT_RATING,
+            throwable
+        )
+    }
+
     private fun onSuccessLeaveQueue(leaveQueueResponse: LeaveQueueResponse) {
         leaveQueueResponse.postLeaveQueue?.leaveQueueHeader?.errorCode?.let { errorcode -> onSuccess(errorcode) }
     }
 
-    private fun onFailureLeaveQueue(throwable: Throwable) {
+    private fun onFailureLeaveQueue(throwable: Throwable, messageId: String) {
         view.showErrorToast(throwable)
+        ChatbotNewRelicLogger.logNewRelic(
+            false,
+            messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_LEAVE_QUEUE,
+            throwable
+        )
     }
 
     override fun hitGqlforOptionList(messageId: String, selectedValue: Int, model: HelpFullQuestionsUiModel?) {
@@ -817,12 +836,19 @@ class ChatbotPresenter @Inject constructor(
         chipSubmitHelpfulQuestionsUseCase.cancelJobs()
         chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(
             ::onErrorOptionList,
-            input
+            input,
+            messageId
         )
     }
 
-    private fun onErrorOptionList(throwable: Throwable) {
+    private fun onErrorOptionList(throwable: Throwable, messageId: String) {
         onSubmitError(throwable)
+        ChatbotNewRelicLogger.logNewRelic(
+            false,
+            messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
+            throwable
+        )
     }
 
     fun onSubmitError(throwable: Throwable) {
@@ -846,7 +872,8 @@ class ChatbotPresenter @Inject constructor(
         chipSubmitChatCsatUseCase.chipSubmitChatCsat(
             ::onSuccessSubmitChatCsat,
             ::onFailureSubmitChatCsat,
-            input
+            input,
+            messageId
         )
     }
 
@@ -854,11 +881,18 @@ class ChatbotPresenter @Inject constructor(
         view.onSuccessSubmitChatCsat(chipSubmitChatCsatResponse.chipSubmitChatCSAT?.csatSubmitData?.toasterMessage ?: "")
     }
 
-    private fun onFailureSubmitChatCsat(throwable: Throwable) {
+    private fun onFailureSubmitChatCsat(throwable: Throwable, messageId: String) {
         view.onError(throwable)
+        ChatbotNewRelicLogger.logNewRelic(
+            false,
+            messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_CHAT_CSAT,
+            throwable
+        )
     }
 
     override fun checkLinkForRedirection(
+        messageId: String,
         invoiceRefNum: String,
         onGetSuccessResponse: (String) -> Unit,
         setStickyButtonStatus: (Boolean) -> Unit,
@@ -881,6 +915,12 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 onError(it)
+                ChatbotNewRelicLogger.logNewRelic(
+                    false,
+                    messageId,
+                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_LINK_FOR_REDIRECTION,
+                    it
+                )
             }
         )
     }
@@ -903,12 +943,19 @@ class ChatbotPresenter @Inject constructor(
         getTickerDataUseCase.cancelJobs()
         getTickerDataUseCase.getTickerData(
             ::onSuccessGetTickerData,
-            ::onErrorGetTickerData
+            ::onErrorGetTickerData,
+            messageId
         )
     }
 
-    private fun onErrorGetTickerData(throwable: Throwable) {
+    private fun onErrorGetTickerData(throwable: Throwable, messageId: String) {
         view.onError(throwable)
+        ChatbotNewRelicLogger.logNewRelic(
+            false,
+            messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_TICKER,
+            throwable
+        )
     }
 
     private fun onSuccessGetTickerData(tickerData: TickerDataResponse) {
@@ -933,9 +980,15 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    private fun getTopBotNewSessionFailure(throwable: Throwable) {
+    private fun getTopBotNewSessionFailure(throwable: Throwable, messageId: String) {
         view.loadChatHistory()
         view.enableTyping()
+        ChatbotNewRelicLogger.logNewRelic(
+            false,
+            messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_NEW_SESSION,
+            throwable
+        )
     }
 
     private fun getTopBotNewSessionSuccess(topBotNewSessionResponse: TopBotNewSessionResponse) {

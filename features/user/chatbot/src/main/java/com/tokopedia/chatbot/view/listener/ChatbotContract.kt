@@ -137,6 +137,7 @@ interface ChatbotContract {
         fun getActionBubbleforNoTrasaction(): ChatActionBubbleUiModel
 
         fun checkLinkForRedirection(
+            messageId: String,
             invoiceRefNum: String,
             onGetSuccessResponse: (String) -> Unit,
             setStickyButtonStatus: (Boolean) -> Unit,

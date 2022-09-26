@@ -12,7 +12,7 @@ class LeaveQueueUseCase @Inject constructor(
 
     fun execute(
         onSuccess: (LeaveQueueResponse) -> Unit,
-        onError: (Throwable) -> Unit,
+        onError: kotlin.reflect.KFunction2<Throwable, String, Unit>,
         msgId: String,
         timestamp: String
     ) {
@@ -25,11 +25,11 @@ class LeaveQueueUseCase @Inject constructor(
                 { result ->
                     onSuccess(result)
                 }, { error ->
-                    onError(error)
+                    onError(error, msgId)
                 }
             )
         } catch (throwable: Throwable) {
-            onError(throwable)
+            onError(throwable, msgId)
         }
     }
 

@@ -17,8 +17,9 @@ class SubmitCsatRatingUseCase @Inject constructor(
 
     fun submitCsatRating(
         onSuccess: (SubmitCsatGqlResponse) -> Unit,
-        onError: (Throwable) -> Unit,
-        input: InputItem
+        onError: kotlin.reflect.KFunction2<Throwable, String, Unit>,
+        input: InputItem,
+        messageId: String
     ) {
         try {
             this.setTypeClass(SubmitCsatGqlResponse::class.java)
@@ -29,12 +30,12 @@ class SubmitCsatRatingUseCase @Inject constructor(
                 { result ->
                     onSuccess(result)
                 }, { error ->
-                    onError(error)
+                    onError(error, messageId)
                 }
             )
 
         } catch (throwable: Throwable) {
-            onError(throwable)
+            onError(throwable, messageId)
         }
     }
 
