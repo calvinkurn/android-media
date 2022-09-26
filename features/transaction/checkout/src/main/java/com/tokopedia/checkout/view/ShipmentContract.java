@@ -205,6 +205,8 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnClickCheckBoxInsuranceOption();
 
+        void sendAnalyticsOnClickInsuranceInfoTooltip();
+
         void sendAnalyticsScreenName(String screenName);
 
         void sendAnalyticsOnClickEditPinPointErrorValidation(String message);

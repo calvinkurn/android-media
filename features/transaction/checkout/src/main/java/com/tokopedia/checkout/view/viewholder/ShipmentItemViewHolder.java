@@ -1884,13 +1884,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     imgInsuranceInfo.setVisibility(View.GONE);
                 } else {
                     imgInsuranceInfo.setVisibility(View.VISIBLE);
-                    imgInsuranceInfo.setOnClickListener(view ->
+                    imgInsuranceInfo.setOnClickListener(view -> {
+                        mActionListener.onInsuranceInfoTooltipClickedTrackingAnalytics();
                         showInsuranceBottomSheet(
-                            imgInsuranceInfo.getContext(),
-                            imgInsuranceInfo.getContext().getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
-                            courierItemData.getInsuranceUsedInfo()
-                        )
-                    );
+                                imgInsuranceInfo.getContext(),
+                                imgInsuranceInfo.getContext().getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
+                                courierItemData.getInsuranceUsedInfo()
+                        );
+                    });
                 }
             }
         }
