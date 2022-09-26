@@ -318,8 +318,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var onViewReadyAction: (() -> Unit)? = null
 
 
-    @Inject
-    lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
+    @Inject lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -340,7 +339,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun inject() {
         activity?.let {
-            DaggerUniversalShareComponent.builder().baseAppComponent((it.application as BaseMainApplication).baseAppComponent).universalShareModule(UniversalShareModule()).build().inject(this)
+            DaggerUniversalShareComponent.builder().baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                .universalShareModule(UniversalShareModule()).build().inject(this)
         }
     }
 
@@ -514,7 +514,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 dismiss()
                 if (deeplink.isNotEmpty()) {
                     val affiliateDeeplink = if (Uri.parse(deeplink).scheme != ApplinkConst.APPLINK_CUSTOMER_SCHEME) {
-                        Uri.parse(String.format("%s://%s", ApplinkConst.APPLINK_CUSTOMER_SCHEME, deeplink)).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString()
+                        Uri.parse(String.format(Locale.getDefault(), "%s://%s", ApplinkConst.APPLINK_CUSTOMER_SCHEME, deeplink))
+                            .buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString()
                     } else {
                         Uri.parse(deeplink).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString()
                     }
