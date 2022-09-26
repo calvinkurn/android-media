@@ -357,7 +357,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
                         feedAccountAnalytic.clickAccountInfo()
                         ContentAccountTypeBottomSheet
                             .getFragment(supportFragmentManager, classLoader)
-                            .showNow(supportFragmentManager)
+                            .show(supportFragmentManager)
                     }
                 else setOnAccountClickListener(null)
             }

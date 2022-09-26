@@ -63,7 +63,7 @@ class SellerTncBottomSheet : BottomSheetUnify() {
         return this
     }
 
-    fun showNow(fragmentManager: FragmentManager) {
+    fun show(fragmentManager: FragmentManager) {
         if(!isAdded) show(fragmentManager, TAG)
     }
 
