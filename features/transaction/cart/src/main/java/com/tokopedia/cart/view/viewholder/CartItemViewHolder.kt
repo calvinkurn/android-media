@@ -467,6 +467,7 @@ class CartItemViewHolder constructor(
                 val productInfoWithIcon = createProductInfoTextWithIcon(it)
                 layoutProductInfo.addView(productInfoWithIcon)
             }
+            layoutProductInfo.show()
         }
         if (data.needPrescription) {
             if (!isProductInformationExist) {
