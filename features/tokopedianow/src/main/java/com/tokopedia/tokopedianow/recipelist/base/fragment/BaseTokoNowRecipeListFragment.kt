@@ -61,7 +61,13 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val analytics by lazy { RecipeListAnalytics(userSession, if (pageName == HOME_PAGE_NAME) RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_HOME else RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_SEARCH) }
+    private val analytics by lazy {
+        RecipeListAnalytics(
+            userSession = userSession,
+            category = if (pageName == HOME_PAGE_NAME) RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_HOME else RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_SEARCH,
+            warehouseId = viewModel.warehouseId
+        )
+    }
 
     private val adapter by lazy {
         RecipeListAdapter(
@@ -69,7 +75,6 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 recipeItemListener = RecipeListListener(
                     view = this,
                     analytics = analytics,
-                    warehouseId = viewModel.warehouseId,
                     viewModel = viewModel
                 ),
                 recipeFilterListener = RecipeFilterListener(

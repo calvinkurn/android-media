@@ -13,7 +13,6 @@ import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeViewH
 class RecipeListListener(
     private val view: RecipeListView,
     private val analytics: RecipeListAnalytics,
-    private val warehouseId: String,
     private val viewModel: BaseTokoNowRecipeListViewModel
 ) : RecipeViewHolder.RecipeItemListener {
 
@@ -22,7 +21,6 @@ class RecipeListListener(
         analytics.clickRecipeCard(
             recipeId = recipe.id,
             recipeTitle = recipe.title,
-            warehouseId = warehouseId,
             position = position
         )
     }
@@ -31,7 +29,6 @@ class RecipeListListener(
         analytics.impressRecipeCard(
             recipeId = recipe.id,
             recipeTitle = recipe.title,
-            warehouseId = warehouseId,
             position = position
         )
     }

@@ -42,11 +42,11 @@ import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTIO
 import com.tokopedia.tokopedianow.recipelist.util.LoadPageStatus
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
-class RecipeListAnalytics @Inject constructor(
+class RecipeListAnalytics (
     private val userSession: UserSessionInterface,
-    private val category: String
+    private val category: String,
+    private val warehouseId: String
 ) {
     /**
      * Recipe Search
@@ -179,7 +179,6 @@ class RecipeListAnalytics @Inject constructor(
     fun clickRecipeCard(
         recipeId: String,
         recipeTitle: String,
-        warehouseId: String,
         position: Int
     ) {
         val promotion = getPromotion(
@@ -201,8 +200,7 @@ class RecipeListAnalytics @Inject constructor(
     fun impressRecipeCard(
         recipeId: String,
         recipeTitle: String,
-        position: Int,
-        warehouseId: String
+        position: Int
     ) {
         val promotion = getPromotion(
             recipeId = recipeId,
