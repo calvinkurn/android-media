@@ -207,6 +207,7 @@ internal class SortFilterBottomSheetViewModel {
                     isSelected = option.inputState.toBoolean()
                 }
             }.toMutableList(),
+            isWillSortOptionList = false
         )
     }
 
@@ -252,15 +253,16 @@ internal class SortFilterBottomSheetViewModel {
 
     private fun createFilterViewModel(filter: Filter): FilterViewModel {
         val optionViewModelMutableList = mutableListOf<OptionViewModel>()
-        processOptionList(filter.options, optionViewModelMutableList)
+        processOptionList(filter.options, optionViewModelMutableList, true)
 
         val hasSeeAllButton = filter.options.any { !it.isPopular } || filter.isCategoryFilter
 
-        return FilterViewModel(filter, hasSeeAllButton, optionViewModelMutableList)
+        return FilterViewModel(filter, hasSeeAllButton, true, optionViewModelMutableList)
                 .apply { sortBySelectedAndName() }
     }
 
-    private fun processOptionList(optionList: List<Option>, optionViewModelList: MutableList<OptionViewModel>) {
+    private fun processOptionList(optionList: List<Option>, optionViewModelList: MutableList<OptionViewModel>,
+                                  isWillSortOptionList: Boolean) {
         val levelTwoCategoryList = mutableListOf<Option>()
         val levelThreeCategoryList = mutableListOf<Option>()
 
@@ -283,7 +285,11 @@ internal class SortFilterBottomSheetViewModel {
             selectedOrPopularOptionList.addIfSelectedOrPopular(option)
         }
 
-        val optionListForViewModel = createOptionListForViewModel(selectedOrPopularOptionList)
+        val optionListForViewModel = if (isWillSortOptionList) {
+             createOptionListForViewModel(selectedOrPopularOptionList)
+        } else {
+            selectedOrPopularOptionList
+        }
 
         optionListForViewModel.forEach {
             optionViewModelList.add(createOptionViewModel(it))
@@ -330,7 +336,7 @@ internal class SortFilterBottomSheetViewModel {
         levelThreeCategoryList.addAll(currentLevelThreeCategoryList.map { it.asOption() })
     }
 
-    private fun FilterViewModel.sortBySelectedAndName() {
+    private fun FilterRefreshable.sortBySelectedAndName() {
         val sortedOptionViewModelList = optionViewModelList.filter { it.isSelected }.toMutableList()
         sortedOptionViewModelList.sortBy { it.option.name }
 
@@ -339,55 +345,15 @@ internal class SortFilterBottomSheetViewModel {
         optionViewModelList = sortedOptionViewModelList
     }
 
-    fun onPriceRangeFilterCheckboxClick(optionViewModel: OptionViewModel, isSelected: Boolean) {
-        filterController.setFilter(optionViewModel.option, isSelected)
-        val sortFilterIndexSet : MutableSet<Int> = mutableSetOf()
-        updatePriceRangeFilterCheckbox(sortFilterIndexSet)
-        refreshMapParameter()
-        notifyViewOnApplyFilter(sortFilterIndexSet.toList())
+    fun onOptionClick(filterRefreshable: FilterRefreshable, optionViewModel: OptionViewModel) {
+        applyFilter(filterRefreshable, optionViewModel)
     }
 
-    private fun updatePriceRangeFilterCheckbox(
-        sortFilterIndexSet: MutableSet<Int>
-    ) {
-        sortFilterList.forEachIndexed { index, visitable ->
-            if(visitable is PriceRangeFilterCheckboxDataView) {
-                visitable.refreshOptionList()
-                sortFilterIndexSet.add(index)
-            }
-        }
-    }
-
-    private fun PriceRangeFilterCheckboxDataView.refreshOptionList() {
-        val newOptionViewModelList = mutableListOf<OptionViewModel>()
-        processOptionCheckboxList(this.filter.options, newOptionViewModelList)
-
-        this.optionViewModelList.clear()
-        this.optionViewModelList.addAll(newOptionViewModelList)
-    }
-
-    private fun processOptionCheckboxList(optionList: List<Option>, newOptionViewModelList: MutableList<OptionViewModel>) {
-        val selectedOrPopularOptionList = mutableListOf<Option>()
-
-        optionList.forEach { option ->
-            option.updateInputState()
-            selectedOrPopularOptionList.addIfSelectedOrPopular(option)
-        }
-
-        selectedOrPopularOptionList.forEach {
-            newOptionViewModelList.add(createOptionViewModel(it))
-        }
-    }
-
-    fun onOptionClick(filterViewModel: FilterViewModel, optionViewModel: OptionViewModel) {
-        applyFilter(filterViewModel, optionViewModel)
-    }
-
-    private fun applyFilter(filterViewModel: FilterViewModel, optionViewModel: OptionViewModel) {
+    private fun applyFilter(filterRefreshable: FilterRefreshable, optionViewModel: OptionViewModel) {
         val isCleanUpExistingFilterWithSameKey = optionViewModel.option.isCategoryOption || optionViewModel.option.isTypeRadio
 
         if (isCleanUpExistingFilterWithSameKey)
-            filterViewModel.optionViewModelList.unSelectNotClickedOption(optionViewModel)
+            filterRefreshable.optionViewModelList.unSelectNotClickedOption(optionViewModel)
 
         val isSelected = !optionViewModel.isSelected
         filterController.setFilter(optionViewModel.option, isSelected, isCleanUpExistingFilterWithSameKey)
@@ -402,7 +368,7 @@ internal class SortFilterBottomSheetViewModel {
         sortFilterIndexSet: MutableSet<Int>
     ) {
         sortFilterList.forEachIndexed { index, visitable ->
-            if(visitable is FilterViewModel && visitable.filter.options.isNotEmpty()) {
+            if(visitable is FilterRefreshable && visitable.filter.options.isNotEmpty()) {
                 val needUpdate = visitable.filter.getFlattenedOptions().any { option ->
                     option in filterOptionList
                 }
@@ -738,14 +704,16 @@ internal class SortFilterBottomSheetViewModel {
         notifyViewOnApplyFilter(sortFilterIndexSet.toList())
     }
 
-    private fun FilterViewModel.refreshOptionList() {
+    private fun FilterRefreshable.refreshOptionList() {
         val newOptionViewModelList = mutableListOf<OptionViewModel>()
-        processOptionList(filter.options, newOptionViewModelList)
+        processOptionList(filter.options, newOptionViewModelList, isWillSortOptionList)
 
         optionViewModelList.clear()
         optionViewModelList.addAll(newOptionViewModelList)
 
-        sortBySelectedAndName()
+        if (isWillSortOptionList) {
+            sortBySelectedAndName()
+        }
     }
 
     fun onApplyCategoryFilterFromDetailPage(categoryFilterViewModel: FilterViewModel, selectedCategoryFilterValue: String) {

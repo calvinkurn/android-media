@@ -127,10 +127,10 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private val priceRangeFilterCheckboxListener = object : PriceRangeFilterCheckboxListener {
 
         override fun onPriceRangeFilterCheckboxItemClicked(
-            optionViewModel: OptionViewModel,
-            isChecked: Boolean
+            filterRefreshable: FilterRefreshable,
+            optionViewModel: OptionViewModel
         ) {
-            sortFilterBottomSheetViewModel?.onPriceRangeFilterCheckboxClick(optionViewModel, isChecked)
+            sortFilterBottomSheetViewModel?.onOptionClick(filterRefreshable, optionViewModel)
         }
     }
 

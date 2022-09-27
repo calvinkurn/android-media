@@ -4,27 +4,29 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.databinding.FilterPriceRangeItemBinding
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import java.lang.StringBuilder
 
-class PriceRangeFilterCheckboxItemViewHolder(
+internal class PriceRangeFilterCheckboxItemViewHolder(
     private val binding: FilterPriceRangeItemBinding,
     private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: OptionViewModel, priceRangeSize: Int) {
+    fun bind(priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView, item: OptionViewModel, priceRangeSize: Int) {
         with(binding) {
             tvPriceRangeDollar.text =
                 MethodChecker.fromHtml(getPriceLevelString(item, priceRangeSize))
             tvPriceRangeDesc.text = item.option.description
-            bindCheckboxPriceRange(item)
+            bindCheckboxPriceRange(priceRangeFilterCheckboxDataView, item)
         }
     }
 
-    private fun bindCheckboxPriceRange(item: OptionViewModel) {
+    private fun bindCheckboxPriceRange(priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView,
+                                       item: OptionViewModel) {
         with(binding.cbPriceRange) {
             setOnCheckedChangeListener(null)
             isChecked = item.isSelected
@@ -33,8 +35,11 @@ class PriceRangeFilterCheckboxItemViewHolder(
                 isChecked = !isChecked
             }
 
-            setOnCheckedChangeListener { _, isChecked ->
-                priceRangeFilterCheckboxListener.onPriceRangeFilterCheckboxItemClicked(item, isChecked)
+            setOnCheckedChangeListener { _, _ ->
+                priceRangeFilterCheckboxListener.onPriceRangeFilterCheckboxItemClicked(
+                    priceRangeFilterCheckboxDataView,
+                    item
+                )
             }
         }
     }

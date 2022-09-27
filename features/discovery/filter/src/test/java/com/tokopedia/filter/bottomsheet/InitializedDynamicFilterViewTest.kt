@@ -5,12 +5,11 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheetViewModel.Companion.MAX_OPTION_SIZE
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterItemDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxUiModel
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -194,13 +193,13 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
     }
 
     private fun Visitable<*>.assertAsPriceRangeCheckboxDataView(expectedFilter: Filter) {
-        val filterRangeCheckboxUiModel = this as PriceRangeFilterCheckboxUiModel
+        val filterRangeCheckboxUiModel = this as PriceRangeFilterCheckboxDataView
         val actualKeywordFilter = filterRangeCheckboxUiModel.filter
         assert(actualKeywordFilter == expectedFilter) {
             "Keyword filter is $actualKeywordFilter.\nExpected $expectedFilter"
         }
 
-        val priceRangeItemList = filterRangeCheckboxUiModel.priceRangeList
+        val priceRangeItemList = filterRangeCheckboxUiModel.optionViewModelList
         val priceRangeOptions = expectedFilter.options
         val priceRangeOptionCount = priceRangeOptions.size
         assert(priceRangeItemList.size == priceRangeOptionCount) {
@@ -208,7 +207,7 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
                 "expected is $priceRangeOptionCount"
         }
 
-        priceRangeItemList.forEachIndexed { index, priceRangeItem ->
+        priceRangeItemList.forEach { priceRangeItem ->
             priceRangeItem.assertPriceRangeItem(priceRangeItem.option)
         }
     }
@@ -235,7 +234,7 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
         }
     }
 
-    private fun PriceRangeFilterCheckboxItemUiModel.assertPriceRangeItem(expectedOption: Option) {
+    private fun OptionViewModel.assertPriceRangeItem(expectedOption: Option) {
         assert(option.name == expectedOption.name) {
             "Option name is ${option.name}.\nExpected is ${expectedOption.name}"
         }

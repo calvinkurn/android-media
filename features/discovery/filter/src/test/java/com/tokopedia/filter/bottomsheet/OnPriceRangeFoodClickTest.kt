@@ -11,32 +11,32 @@ import org.junit.Test
 internal class OnPriceRangeFoodClickTest: SortFilterBottomSheetViewModelTestFixtures() {
 
     @Test
-    fun `onPricerangeFoodClicked with given PriceRangeFilterItemUiModel to apply filter`() {
+    fun `onPricerangeFoodClicked with given PriceRangeFilterCheckboxDataView to apply filter`() {
         val existingMapParameter = createMapParameter()
         val dynamicFilterModel = "dynamic-filter-model-price-range.json".jsonToObject<DynamicFilterModel>()
         `Given SortFilterBottomSheet view is already created`(existingMapParameter, dynamicFilterModel)
 
         val sortFilterList = this.sortFilterList!!
         val selectedFilter = dynamicFilterModel.data.filter[0] // Just choose any filter
-        val priceRangeUiModel = sortFilterList.findPriceRangeFilterUiModel(selectedFilter)
+        val priceRangeFilterCheckboxDataView = sortFilterList.findPriceRangeFilterCheckboxDataView(selectedFilter)
             ?: throw AssertionError("Cannot find selected filter ${selectedFilter.title} in Sort Filter List")
-        val clickedOptionViewModel = priceRangeUiModel.optionViewModelList.findLast {
+        val clickedOptionViewModel = priceRangeFilterCheckboxDataView.optionViewModelList.findLast {
             !it.isSelected
         }!! // Just choose any un-selected option
 
-        `When an Checkbox Option is Clicked And Applied`(clickedOptionViewModel, true)
+        `When an Checkbox Option is Clicked And Applied`(priceRangeFilterCheckboxDataView, clickedOptionViewModel)
 
-        val selectedOptionViewModel = getSelectedRangeFilterOption(priceRangeUiModel, clickedOptionViewModel)
+        val selectedOptionViewModel = getSelectedRangeFilterOption(priceRangeFilterCheckboxDataView, clickedOptionViewModel)
         `Then assert rangeFilterItem selected state`(selectedOptionViewModel, true)
-        `Then assert sort filter view is updated`(sortFilterList.indexOf(priceRangeUiModel))
+        `Then assert sort filter view is updated`(sortFilterList.indexOf(priceRangeFilterCheckboxDataView))
         `Then assert map parameter values contains the clicked option`(existingMapParameter, selectedOptionViewModel)
         `Then assert map parameter contains origin_filter=filter`()
         `Then assert ACTIVE filter map parameter contains the clicked Price Range option`(selectedOptionViewModel)
     }
 
-    private fun `When an Checkbox Option is Clicked And Applied`(optionViewModel: OptionViewModel,
-                                                                 isSelected: Boolean) {
-        sortFilterBottomSheetViewModel.onPriceRangeFilterCheckboxClick(optionViewModel, isSelected)
+    private fun `When an Checkbox Option is Clicked And Applied`(filterRefreshable: FilterRefreshable,
+                                                                 optionViewModel: OptionViewModel) {
+        sortFilterBottomSheetViewModel.onOptionClick(filterRefreshable, optionViewModel)
         sortFilterBottomSheetViewModel.applySortFilter()
     }
 

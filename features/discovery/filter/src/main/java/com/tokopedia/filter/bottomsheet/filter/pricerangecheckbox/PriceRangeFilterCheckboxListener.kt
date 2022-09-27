@@ -1,7 +1,8 @@
 package com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox
 
+import com.tokopedia.filter.bottomsheet.FilterRefreshable
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 
-interface PriceRangeFilterCheckboxListener {
-    fun onPriceRangeFilterCheckboxItemClicked(optionViewModel: OptionViewModel, isChecked: Boolean)
+internal interface PriceRangeFilterCheckboxListener {
+    fun onPriceRangeFilterCheckboxItemClicked(filterRefreshable: FilterRefreshable, optionViewModel: OptionViewModel)
 }

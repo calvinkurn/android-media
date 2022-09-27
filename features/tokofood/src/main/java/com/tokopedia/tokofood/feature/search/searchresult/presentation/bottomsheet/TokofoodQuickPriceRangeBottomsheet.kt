@@ -9,9 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
-import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxItemAdapter
-import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxListener
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -27,7 +24,7 @@ import kotlinx.coroutines.flow.collect
 import java.lang.Exception
 import javax.inject.Inject
 
-class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterCheckboxListener,
+class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(),
     HasComponent<TokoFoodSearchComponent> {
 
     @Inject
@@ -86,12 +83,12 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     }
 
 
-    override fun onPriceRangeFilterCheckboxItemClicked(
-        optionViewModel: OptionViewModel,
-        isChecked: Boolean
-    ) {
-        viewModel.setPriceRangeUiModel(optionViewModel, isChecked)
-    }
+//    override fun onPriceRangeFilterCheckboxItemClicked(
+//        optionViewModel: OptionViewModel,
+//        isChecked: Boolean
+//    ) {
+//        viewModel.setPriceRangeUiModel(optionViewModel, isChecked)
+//    }
 
     fun show(fm: FragmentManager) {
         if (!isVisible) {
@@ -165,13 +162,13 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
     }
 
     private fun setupAdapter(uiModels: List<PriceRangeFilterCheckboxItemUiModel>) {
-        val optionViewModelList = uiModels.map {
-            OptionViewModel(option = it.option).apply {
-                isSelected = it.isSelected
-            }
-        }
-        val quickPriceRangeAdapter = PriceRangeFilterCheckboxItemAdapter(optionViewModelList, this)
-        binding?.rvTokofoodSearchQuickPriceRange?.swapAdapter(quickPriceRangeAdapter, false)
+//        val optionViewModelList = uiModels.map {
+//            OptionViewModel(option = it.option).apply {
+//                isSelected = it.isSelected
+//            }
+//        }
+//        val quickPriceRangeAdapter = PriceRangeFilterCheckboxItemAdapter(optionViewModelList, this)
+//        binding?.rvTokofoodSearchQuickPriceRange?.swapAdapter(quickPriceRangeAdapter, false)
     }
 
     private fun toggleButtonLayoutVisibility(shouldShow: Boolean) {

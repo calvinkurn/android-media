@@ -42,7 +42,7 @@ internal fun List<Visitable<*>>.findFilterViewModel(filter: Filter): FilterViewM
     return find { it is FilterViewModel && it.filter == filter } as? FilterViewModel
 }
 
-internal fun List<Visitable<*>>.findPriceRangeFilterUiModel(filter: Filter): PriceRangeFilterCheckboxDataView? {
+internal fun List<Visitable<*>>.findPriceRangeFilterCheckboxDataView(filter: Filter): PriceRangeFilterCheckboxDataView? {
     return find { it is PriceRangeFilterCheckboxDataView && it.filter == filter } as? PriceRangeFilterCheckboxDataView
 }
 

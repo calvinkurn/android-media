@@ -36,7 +36,7 @@ internal class PriceRangeFilterCheckboxViewHolder(
     private fun bindRvFilterPriceRange(priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView) {
         val priceRangeOptionAdapter =
             PriceRangeFilterCheckboxItemAdapter(
-                priceRangeFilterCheckboxDataView.optionViewModelList,
+                priceRangeFilterCheckboxDataView,
                 priceRangeFilterCheckboxListener
             )
         val removeAndRecycleExistingViews = false
