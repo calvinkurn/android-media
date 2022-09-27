@@ -16,6 +16,8 @@ class TokofoodSearchUiEvent(
         const val EVENT_FAILED_LOAD_MORE = 6
         const val EVENT_FAILED_LOAD_FILTER = 7
         const val EVENT_FAILED_LOAD_SEARCH_RESULT = 8
+        const val EVENT_SUCCESS_EDIT_PINPOINT = 9
+        const val EVENT_FAILED_EDIT_PINPOINT = 10
     }
 
 }

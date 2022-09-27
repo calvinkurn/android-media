@@ -8,6 +8,8 @@ data class TokoFoodMerchantList(
     val merchants: List<Merchant> = emptyList(),
     @SerializedName("nextPageKey")
     val nextPageKey: String = "",
+    @SerializedName("state")
+    val state: State = State(),
 )
 
 data class Merchant (
@@ -53,3 +55,21 @@ data class PriceLevel(
     @SerializedName("fareCount")
     val fareCount: Int = 0,
 )
+
+data class State(
+    @SerializedName("status")
+    val status: String = "",
+    @SerializedName("title")
+    val title: String = "",
+    @SerializedName("subtitle")
+    val subtitle: String = ""
+) {
+
+    val isOOC: Boolean
+        get() = status == STATUS_OOC
+
+    companion object {
+        private const val STATUS_OOC = "ooc"
+    }
+
+}

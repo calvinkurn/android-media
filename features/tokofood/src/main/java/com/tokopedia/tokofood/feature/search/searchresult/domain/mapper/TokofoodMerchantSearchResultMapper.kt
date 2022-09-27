@@ -8,6 +8,7 @@ import com.tokopedia.tokofood.feature.search.common.presentation.uimodel.Tokofoo
 import com.tokopedia.tokofood.feature.search.searchresult.domain.response.TokofoodSearchMerchantResponse
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithoutFilterUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchOOCUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchResultUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiState
 import javax.inject.Inject
@@ -51,6 +52,14 @@ class TokofoodMerchantSearchResultMapper @Inject constructor() {
             currentVisitables.orEmpty()
                 .filter { it !is TokoFoodProgressBarUiModel } + mapResponseToVisitables(
                 response
+            )
+        }.orEmpty()
+    }
+
+    fun getOutOfCoverageUiModels(data: Any?): List<Visitable<*>> {
+        return (data as? Int)?.let { oocState ->
+            listOf(
+                MerchantSearchOOCUiModel(oocState)
             )
         }.orEmpty()
     }
