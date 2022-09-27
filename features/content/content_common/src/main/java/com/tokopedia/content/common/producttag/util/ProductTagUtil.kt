@@ -7,7 +7,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
  * Created By : Jonathan Darwin on May 12, 2022
  */
 fun getAutocompleteApplink(query: String, appLinkAfterAutocomplete: String): String =
-    "${ApplinkConstInternalContent.INTERNAL_FEED_AUTOCOMPLETE}?${buildAutoCompletePageParam(query, appLinkAfterAutocomplete)}"
+    "${ApplinkConstInternalContent.INTERNAL_CONTENT_PRODUCT_TAG_AUTOCOMPLETE}?${buildAutoCompletePageParam(query, appLinkAfterAutocomplete)}"
 
 private fun buildAutoCompletePageParam(query: String, appLinkAfterAutocomplete: String): String {
     return buildString {
