@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/invoice_height"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/attach_invoice_item_cardview"
         style="@style/CardView.Light"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="@dimen/dp_chatbot_6"
+        android:layout_marginTop="@dimen/dp_chatbot_6"
         android:clipToPadding="true"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true">
@@ -62,12 +62,11 @@
                 android:layout_height="@dimen/invoice_thumbnail_size"
                 android:layout_below="@id/attach_invoice_item_invoice_date"
                 android:layout_alignLeft="@id/attach_invoice_item_invoice_date"
-                android:layout_marginTop="6dp"
-                android:background="@color/grey_300"
-                android:padding="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_chatbot_6"
+                android:background="@color/Unify_N100"
+                android:padding="@dimen/dp_chatbot_1"
                 android:scaleType="fitXY"
-                android:src="@color/colorAccent"
-                android:contentDescription="attach_invoice_item_product_image" />
+                android:src="@color/Unify_G500" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/attach_invoice_item_product_name"
@@ -104,8 +103,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/attach_invoice_item_product_desc"
-                android:layout_marginLeft="@dimen/dp_18"
-                android:layout_marginTop="8dp"
+                android:layout_marginLeft="@dimen/dp_chatbot_18"
+                android:layout_marginTop="@dimen/dp_chatbot_8"
                 android:background="@drawable/bg_attach_invoice_status"
                 android:gravity="center_horizontal"
                 android:maxWidth="@dimen/dp_200"
@@ -116,9 +115,8 @@
                 android:paddingRight="16dp"
                 android:paddingBottom="4dp"
                 android:textAlignment="center"
-                android:textColor="#f5a623"
-                android:textSize="11sp"
-                app:typographyType="display_3"
+                android:textColor="@color/Unify_Y400"
+                android:textSize="@dimen/sp_chatbot_11"
                 tools:text="Kode resi pengiriman tidak valid" />
 
 
@@ -128,6 +126,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/attach_invoice_item_invoice_status"
                 android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:text="@string/total_invoice" />
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@string/total_invoice"
@@ -139,9 +140,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="4dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="@dimen/unify_space_8"
+                android:layout_marginLeft="@dimen/unify_space_4"
+                android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_toRightOf="@id/attach_invoice_item_invoice_total_container"
                 android:textColor="@color/Unify_Y500"
                 app:typographyType="display_2"
@@ -151,10 +152,10 @@
             <View
                 android:id="@+id/attach_invoice_item_separator"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
+                android:layout_height="@dimen/dp_chatbot_1"
                 android:layout_above="@id/attach_invoice_item_invoice_total_container"
-                android:layout_marginTop="12dp"
-                android:background="@color/grey_hint" />
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:background="@color/Unify_N100" />
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

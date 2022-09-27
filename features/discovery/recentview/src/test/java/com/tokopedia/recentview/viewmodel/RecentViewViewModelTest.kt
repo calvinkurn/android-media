@@ -8,9 +8,6 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -29,8 +26,6 @@ class RecentViewViewModelTest {
 
     private val recentViewUseCase = mockk<RecentViewUseCase>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
-    private val addWishListUseCase = mockk<AddWishListUseCase>(relaxed = true)
-    private val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
     private val addToWishlistV2UseCase = mockk<AddToWishlistV2UseCase>(relaxed = true)
     private val deleteWishlistV2UseCase = mockk<DeleteWishlistV2UseCase>(relaxed = true)
     private val dispatcher = CoroutineTestDispatchersProvider
@@ -45,8 +40,7 @@ class RecentViewViewModelTest {
         coEvery { recentViewUseCase.execute(capture(slot), any()) } answers {
             slot.captured.invoke(arrayListOf())
         }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
-            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel = RecentViewViewModel(dispatcher, userSession, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
         viewModel.getRecentView()
         assert(viewModel.recentViewDetailProductDataResp.value is Success)
     }
@@ -58,64 +52,9 @@ class RecentViewViewModelTest {
         coEvery { recentViewUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.invoke(Throwable())
         }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
-            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel = RecentViewViewModel(dispatcher, userSession, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
         viewModel.getRecentView()
         assert(viewModel.recentViewDetailProductDataResp.value is Fail)
-    }
-
-    @Test
-    fun `add wishlist success`(){
-        val slot = slot<WishListActionListener>()
-        every { userSession.userId } returns "1"
-        coEvery { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onSuccessAddWishlist("1")
-        }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
-            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
-        viewModel.addToWishlist("1")
-        assert(viewModel.addWishlistResponse.value is Success && (viewModel.addWishlistResponse.value as Success<String>).data == "1")
-    }
-
-    @Test
-    fun `add wishlist error`(){
-        val errorMessage = "Error message"
-        val slot = slot<WishListActionListener>()
-        every { userSession.userId } returns "1"
-        coEvery { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onErrorAddWishList(errorMessage, "1")
-        }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
-            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
-        viewModel.addToWishlist( "1")
-        assert(viewModel.addWishlistResponse.value is Fail && (viewModel.addWishlistResponse.value as Fail).throwable.message == errorMessage)
-    }
-
-    @Test
-    fun `remove wishlist success`(){
-        val slot = slot<WishListActionListener>()
-        every { userSession.userId } returns "1"
-        coEvery { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onSuccessRemoveWishlist("1")
-        }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
-            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
-        viewModel.removeFromWishlist("1")
-        assert(viewModel.removeWishlistResponse.value is Success && (viewModel.removeWishlistResponse.value as Success<String>).data == "1")
-    }
-
-    @Test
-    fun `remove wishlist error`(){
-        val errorMessage = "Error message"
-        val slot = slot<WishListActionListener>()
-        every { userSession.userId } returns "1"
-        coEvery { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onErrorRemoveWishlist(errorMessage, "1")
-        }
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
-            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
-        viewModel.removeFromWishlist("1")
-        assert(viewModel.removeWishlistResponse.value is Fail && (viewModel.removeWishlistResponse.value as Fail).throwable.message == errorMessage)
     }
 
     @Test
@@ -126,8 +65,7 @@ class RecentViewViewModelTest {
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
 
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
-            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel = RecentViewViewModel(dispatcher, userSession, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.addToWishlistV2(productId, mockListener)
 
@@ -143,8 +81,7 @@ class RecentViewViewModelTest {
         every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
-            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel = RecentViewViewModel(dispatcher, userSession, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.addToWishlistV2(productId, mockListener)
 
@@ -160,8 +97,7 @@ class RecentViewViewModelTest {
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
 
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
-            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel = RecentViewViewModel(dispatcher, userSession, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.removeFromWishlistV2(productId, mockListener)
 
@@ -177,8 +113,7 @@ class RecentViewViewModelTest {
         every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
         coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
-        viewModel = RecentViewViewModel(dispatcher, userSession, addWishListUseCase,
-            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
+        viewModel = RecentViewViewModel(dispatcher, userSession, addToWishlistV2UseCase, deleteWishlistV2UseCase, recentViewUseCase)
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
         viewModel.removeFromWishlistV2(productId, mockListener)
 

@@ -322,38 +322,6 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun should_show_toaster_when_user_click_ingatkan_saya() {
-        // Given
-        getChatUseCase.response = firstPageChatAsBuyer
-        chatAttachmentUseCase.response = getZeroStockAttachment()
-        addWishListUseCase.isFail = false
-        launchChatRoomActivity()
-
-        //When
-        doScrollChatToPosition(0)
-        clickWishlistButtonAt(1)
-
-        // Then
-        hasToasterWithMsg(context.getString(R.string.title_topchat_success_atw))
-    }
-
-    @Test
-    fun should_show_error_toaster_when_user_click_ingatkan_saya_but_failed() {
-        // Given
-        getChatUseCase.response = firstPageChatAsBuyer
-        chatAttachmentUseCase.response = getZeroStockAttachment()
-        addWishListUseCase.isFail = true
-        launchChatRoomActivity()
-
-        //When
-        doScrollChatToPosition(0)
-        clickWishlistButtonAt(1)
-
-        // Then
-        hasFailedToasterWithMsg("Oops!")
-    }
-
-    @Test
     fun should_open_wishlist_when_user_click_cek_wishlist() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
