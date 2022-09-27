@@ -1,6 +1,7 @@
 package com.tokopedia.shop.flashsale.presentation.creation.information
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
@@ -31,6 +32,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.viewmodel.
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -46,6 +48,8 @@ import org.mockito.ArgumentMatchers.anyLong
 import java.util.*
 
 class CampaignInformationViewModelTest {
+    @RelaxedMockK
+    lateinit var emptyVpsPackageObserver: Observer<in Result<VpsPackageUiModel>>
     @RelaxedMockK
     lateinit var doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase
     @RelaxedMockK
@@ -77,6 +81,7 @@ class CampaignInformationViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        viewModel.emptyQuotaVpsPackage.observeForever(emptyVpsPackageObserver)
     }
 
     //region validateCampaignName
@@ -1725,7 +1730,7 @@ class CampaignInformationViewModelTest {
 
     //region recheckLatestSelectedVpsPackageQuota
     @Test
-    fun `When recheck latest vps package quota success, remainingQuota value should be updated with the latest value from remote`() =
+    fun `When recheck latest vps package quota success, remainingQuota value should be updated with the latest value from remote`() {
         runBlocking {
             //Given
             val now = GregorianCalendar(2020, 8, 1, 7,0,0).time
@@ -1783,12 +1788,13 @@ class CampaignInformationViewModelTest {
             viewModel.recheckLatestSelectedVpsPackageQuota()
 
             //Then
-            val actual = viewModel.emptyQuotaVpsPackage.getOrAwaitValue()
-            assertEquals(expected, actual)
+            coVerify { emptyVpsPackageObserver.onChanged(expected) }
         }
+    }
+
 
     @Test
-    fun `When recheck latest vps package quota success but has no selected vps package, should not update observer`() =
+    fun `When recheck latest vps package quota success but has no selected vps package, should not update observer`() {
         runBlocking {
             //Given
             val now = GregorianCalendar(2020, 8, 1, 7,0,0).time
@@ -1843,11 +1849,13 @@ class CampaignInformationViewModelTest {
             //When
             viewModel.recheckLatestSelectedVpsPackageQuota()
 
-
+            coVerify(exactly = 0) { emptyVpsPackageObserver.onChanged(expected) }
         }
+    }
+
 
     @Test
-    fun `When recheck latest vps package quota error, observer should receive error result`() =
+    fun `When recheck latest vps package quota error, observer should receive error result`() {
         runBlocking {
             //Given
             val error = MessageErrorException("Server error")
@@ -1859,9 +1867,9 @@ class CampaignInformationViewModelTest {
             viewModel.recheckLatestSelectedVpsPackageQuota()
 
             //Then
-            val actual = viewModel.emptyQuotaVpsPackage.getOrAwaitValue()
-            assertEquals(expected, actual)
+            coVerify { emptyVpsPackageObserver.onChanged(expected) }
         }
+    }
     //endregion
 
     //region isTodayInVpsPeriod
