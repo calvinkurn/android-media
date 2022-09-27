@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:gravity="center"
-        android:text="@string/feed_follow_bottom_sheet_desc_text"
+        android:text="@string/feed_follow_bottom_sheet_desc_upcoming_text"
         app:typographyType="display_2"
         app:typographyWeight="reguler"/>
 

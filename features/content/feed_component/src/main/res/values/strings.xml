@@ -251,4 +251,15 @@
     <string name="btn_asgc_flash_remind_btn_text_disabled">Pengingat Aktif</string>
     <string name="btn_add_to_cart_text">+ Keranjang</string>
     <string name="btn_add_to_cart_text_disabled">Segera Hadir</string>
+
+    <!--Follow Bottom Sheet-->
+    <string name="feed_follow_bottom_sheet_success_toaster_text">Kamu berhasil follow toko. Yuk, buruan beli produknya sebelum kehabisan!</string>
+    <string name="feed_asgc_campaign_cta_copywriting_text">Eksklusif untuk Follower Toko</string>
+    <string name="feed_follow_bottom_sheet_button_text">Follow</string>
+    <string name="feed_follow_bottom_sheet_title_text">Follow toko ini dulu, yuk!</string>
+    <string name="feed_follow_bottom_sheet_desc_upcoming_text">Supaya nanti kamu bisa beli
+produk eksklusif ini.</string>
+    <string name="feed_follow_bottom_sheet_desc_ongoing_text">Supaya kamu bisa beli produk eksklusif ini.</string>
+    <string name="feed_asgc_campaign_toaster_action_text">Oke</string>
+
 </resources>

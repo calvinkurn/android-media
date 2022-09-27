@@ -6,15 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
 
     private var dismissedByClosing = false
     private lateinit var followBtn: UnifyButton
+    private lateinit var subTitle: Typography
     private var listener: Listener? = null
     private var mPositionInFeed: Int = 0
+    private var campaignStatus: String = ""
 
 
     override fun onCreateView(
@@ -30,8 +35,11 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         followBtn = view.findViewById(R.id.button_follow)
+        subTitle = view.findViewById(R.id.sub_message_description)
         showCloseIcon = true
         isDragable = false
+
+        setSubtitleText()
 
         followBtn.setOnClickListener { mPositionInFeed?.let { it1 ->
             followBtn.isLoading = true
@@ -45,14 +53,22 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
             dismiss()
         }
     }
+    private fun setSubtitleText(){
+        when(campaignStatus){
+            FeedXCard.Upcoming -> subTitle.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_upcoming_text)
+            FeedXCard.Ongoing -> subTitle.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_ongoing_text)
+        }
+    }
 
     fun show(
         fragmentManager: FragmentManager,
         listener: Listener?,
-        position:Int = 0
+        position:Int = 0,
+        status: String
     ) {
         this.listener = listener
         this.mPositionInFeed = position
+        this.campaignStatus = status
         show(fragmentManager, "")
     }
 
@@ -64,4 +80,5 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
     interface Listener {
         fun onFollowClickedFromFollowBottomSheet(position: Int)
     }
+
 }

@@ -404,9 +404,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             if (data.isFollowedFromFollowRestrictionBottomSheet && data.isFollow) {
                                 if (::productTagBS.isInitialized) {
                                     productTagBS.showToasterOnBottomSheetOnSuccessFollow(
-                                        getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                        getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                         Toaster.TYPE_NORMAL,
-                                        getString(com.tokopedia.feedplus.R.string.feed_asgc_campaign_toaster_action_text)
+                                        getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
                                     )
                                     feedFollowersOnlyBottomSheet.dismiss()
                                 }
@@ -531,9 +531,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             if (data.isFollowedFromFollowRestrictionBottomSheet) {
                                 if (::productTagBS.isInitialized) {
                                     productTagBS.showToasterOnBottomSheetOnSuccessFollow(
-                                        getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                        getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                         Toaster.TYPE_NORMAL,
-                                        getString(com.tokopedia.feedplus.R.string.feed_asgc_campaign_toaster_action_text)
+                                        getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
                                     )
                                     feedFollowersOnlyBottomSheet.dismiss()
                                 }
@@ -2538,7 +2538,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             )
             if (shouldShowFollowerBottomSheet(card))
-                showFollowerBottomSheet(positionInFeed)
+                showFollowerBottomSheet(positionInFeed, card.campaign.status)
         }
     }
 
@@ -3609,10 +3609,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
     }
 
-    private fun showFollowerBottomSheet(positionInFeed: Int) {
+    private fun showFollowerBottomSheet(positionInFeed: Int, campaignStatus: String) {
         if (!::feedFollowersOnlyBottomSheet.isInitialized)
         feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
-        feedFollowersOnlyBottomSheet.show(childFragmentManager, this, positionInFeed)
+        feedFollowersOnlyBottomSheet.show(childFragmentManager, this, positionInFeed, status = campaignStatus)
     }
 
     override fun onFollowClickedFromFollowBottomSheet(position: Int) {

@@ -186,9 +186,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                         if (data.isSuccess) {
                             if (data.isFollow) {
                                 showToast(
-                                    getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                    getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                     Toaster.TYPE_NORMAL,
-                                    getString(com.tokopedia.feedplus.R.string.feed_asgc_campaign_toaster_action_text)
+                                    getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
                                 )
                                 onResponseAfterFollowFromBottomSheet(true)
                             }
@@ -209,9 +209,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                         val data = it.data
                         if (data.isSuccess) {
                             showToast(
-                                getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                 Toaster.TYPE_NORMAL,
-                                getString(com.tokopedia.feedplus.R.string.feed_asgc_campaign_toaster_action_text)
+                                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
                             )
                             onResponseAfterFollowFromBottomSheet(true)
                             if (::feedFollowersOnlyBottomSheet.isInitialized) {
@@ -469,7 +469,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
     private fun showFollowerBottomSheet() {
         feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
-        feedFollowersOnlyBottomSheet.show(childFragmentManager, this)
+        feedFollowersOnlyBottomSheet.show(childFragmentManager, this, status = saleStatus)
     }
 
     private fun onResponseAfterFollowFromBottomSheet(isFollowSuccess: Boolean){
