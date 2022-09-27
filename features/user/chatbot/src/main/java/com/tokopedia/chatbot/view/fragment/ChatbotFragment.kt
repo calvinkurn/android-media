@@ -884,7 +884,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 opponentId,isArticleEntry,hashMap.get(USED_BY).toBlankOrString())
     }
 
-    fun showSearchInvoiceScreen() {
+    private fun showSearchInvoiceScreen() {
         activity?.let {
             val bottomSheetUnify = TransactionInvoiceBottomSheet.newInstance(it, messageId.convertMessageIdToLong(), this)
             bottomSheetUnify.clearContentPadding = true

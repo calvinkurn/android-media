@@ -1,8 +1,10 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
+import android.content.Context
 import android.graphics.Outline
 import android.net.Uri
 import android.text.TextUtils
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.ImageView
@@ -12,6 +14,7 @@ import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
@@ -30,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 
 class ChatbotVideoUploadViewHolder(
@@ -45,7 +49,7 @@ class ChatbotVideoUploadViewHolder(
     private fun getReadStatusId() = com.tokopedia.chat_common.R.id.chat_status
     private fun getChatBalloonId() = R.id.card_group_chat_message
     private fun getVideoTotalLengthId() = R.id.video_length
-    private val datContainer: CardView? = itemView?.findViewById(R.id.dateContainer)
+    private val dateContainer: CardView? = itemView?.findViewById(R.id.dateContainer)
     private val chatBalloon: View? = itemView?.findViewById(getChatBalloonId())
     private val videoTotalLength: Typography? = itemView?.findViewById(getVideoTotalLengthId())
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
@@ -194,9 +198,9 @@ class ChatbotVideoUploadViewHolder(
         date?.text = time
         if (date != null && element?.isShowDate && !TextUtils.isEmpty(time)
         ) {
-            datContainer?.show()
+            dateContainer?.show()
         } else if (date != null) {
-            datContainer?.hide()
+            dateContainer?.hide()
         }
     }
 
@@ -271,16 +275,6 @@ class ChatbotVideoUploadViewHolder(
         chatbotExoPlayer.destroy()
     }
 
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_chatbot_chat_video_upload
-        const val HOURS = 24
-        const val MINUTES = 60
-        const val SECONDS = 60
-        const val RADIUS_FOR_VIDEO = 30f
-        const val SIDE_VALUE_VIDEO_PLACEHOLDER = 0
-    }
-
     override fun setWidth(width: Int) {
         videoWidth = width
     }
@@ -289,13 +283,48 @@ class ChatbotVideoUploadViewHolder(
         videoHeight = height
         setLayoutParams()
     }
+
     private fun setLayoutParams() {
-        if (videoWidth!=0 && videoHeight!=0) {
-            chatBalloon?.layoutParams = ConstraintLayout.LayoutParams(videoWidth,videoHeight)
-            val params =  chatBalloon?.layoutParams as ConstraintLayout.LayoutParams
-            params.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID
-            chatBalloon.layoutParams = params
+        if (videoWidth != 0 && videoHeight != 0) {
+            val maxAllowedWidthInPixel = convertDpToPixel(MAX_ALLOWED_WIDTH, itemView.context)
+            val aspectRatio = (videoHeight.toFloat() / maxAllowedWidthInPixel.toFloat())
+
+            if (videoWidth > maxAllowedWidthInPixel) {
+                val newHeight = (videoHeight * aspectRatio).roundToInt()
+                adjustLayoutDimensions(maxAllowedWidthInPixel, newHeight)
+            } else {
+                adjustLayoutDimensions(videoWidth, videoHeight)
+            }
         }
+    }
+
+    private fun adjustLayoutDimensions(width: Int, height: Int) {
+        chatBalloon?.layoutParams = ConstraintLayout.LayoutParams(width, height)
+        val params = chatBalloon?.layoutParams as ConstraintLayout.LayoutParams
+        params.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID
+        if (dateContainer != null)
+            params.topToBottom = dateContainer.id
+        params.topMargin = TOP_MARGIN
+        chatBalloon.layoutParams = params
+        videoPlayerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+    }
+
+    private fun convertDpToPixel(dp: Float, context: Context): Int {
+        val r = context.resources
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.displayMetrics).toInt()
+    }
+
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.item_chatbot_chat_video_upload
+        const val HOURS = 24
+        const val MINUTES = 60
+        const val SECONDS = 60
+        const val RADIUS_FOR_VIDEO = 30f
+        const val SIDE_VALUE_VIDEO_PLACEHOLDER = 0
+        const val RATIO = 1
+        const val MAX_ALLOWED_WIDTH = 240f
+        const val TOP_MARGIN = 16
     }
 
 }
