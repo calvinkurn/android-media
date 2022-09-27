@@ -526,10 +526,10 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             )
             setOgImageUrl(if(couponImages.isNotEmpty()) couponImages[0] else AVATAR_IMAGE)
         }
-        shareBottomSheet?.show(childFragmentManager,this,null)
-        val bottomSheetTitle = requireContext().resources.getString(R.string.tm_share_bottomsheet_title)
+        val bottomSheetTitle = context?.resources?.getString(R.string.tm_share_bottomsheet_title).orEmpty()
         shareBottomSheet?.setBottomSheetTitle(bottomSheetTitle)
-
+        shareBottomSheet?.setBottomSheetImgOptionsTitle(context?.resources?.getString(R.string.tm_share_bottomsheet_img_options_title)?:"")
+        shareBottomSheet?.show(childFragmentManager,this,null)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
