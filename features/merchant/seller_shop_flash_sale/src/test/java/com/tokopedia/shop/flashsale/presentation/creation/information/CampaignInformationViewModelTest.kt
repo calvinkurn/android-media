@@ -2,6 +2,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.information
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
 import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
 import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
@@ -1327,7 +1328,7 @@ class CampaignInformationViewModelTest {
 
     //region getVpsPackages
     @Test
-    fun `When get vps packages success, observer should successfully receive the data`() =
+    fun `When got no shop tier benefit on the vps package, isShopTierBenefit value should be false`() =
         runBlocking {
             //Given
             val selectedVpsPackageId: Long = 1
@@ -1352,7 +1353,7 @@ class CampaignInformationViewModelTest {
                     isDisabled = false,
                     originalQuota = 50,
                     packageEndTime = packageEndTimeEpoch,
-                    packageName = "Elite VPS Package",
+                    packageName = "Shop Tier Benefit",
                     packageStartTime = packageStartTimeEpoch
                 )
             )
@@ -1363,7 +1364,7 @@ class CampaignInformationViewModelTest {
                     currentQuota = 5,
                     originalQuota = 50,
                     packageEndTime = packageEndTimeDate,
-                    packageName = "Elite VPS Package",
+                    packageName = "Shop Tier Benefit",
                     packageStartTime = packageStartTimeDate,
                     isSelected = false,
                     disabled = false,
@@ -1376,6 +1377,137 @@ class CampaignInformationViewModelTest {
 
             //When
             viewModel.getVpsPackages(vpsPackageId)
+
+            //Then
+            val actual = viewModel.vpsPackages.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When got shop tier benefit on the vps package, isShopTierBenefit value should be true`() =
+        runBlocking {
+            //Given
+            val now = GregorianCalendar(2020, 8, 1, 7,0,0).time
+
+            val packageStartTime = now
+            val packageEndTime = now.advanceDayBy(days = 2)
+
+            val packageStartTimeEpoch = (packageStartTime.time / 1000)
+            val packageEndTimeEpoch = (packageEndTime.time / 1000)
+
+            val packageStartTimeDate = packageStartTime.removeTimeZone()
+            val packageEndTimeDate = packageEndTime.removeTimeZone()
+
+            val vpsPackageId: Long = 101
+
+            val response = listOf(
+                VpsPackage(
+                    packageId = Constant.DEFAULT_SHOP_TIER_BENEFIT_PACKAGE_ID,
+                    remainingQuota = 45,
+                    currentQuota = 5,
+                    isDisabled = false,
+                    originalQuota = 50,
+                    packageEndTime = packageEndTimeEpoch,
+                    packageName = "Shop Tier Benefit",
+                    packageStartTime = packageStartTimeEpoch
+                )
+            )
+            val vpsPackages = listOf(
+                VpsPackageUiModel(
+                    packageId = -1L,
+                    remainingQuota = 45,
+                    currentQuota = 5,
+                    originalQuota = 50,
+                    packageEndTime = packageEndTimeDate,
+                    packageName = "Shop Tier Benefit",
+                    packageStartTime = packageStartTimeDate,
+                    isSelected = false,
+                    disabled = false,
+                    isShopTierBenefit = true
+                )
+            )
+            val expected = Success(vpsPackages)
+
+            coEvery { getSellerCampaignPackageListUseCase.execute() } returns response
+
+            //When
+            viewModel.getVpsPackages(vpsPackageId)
+
+            //Then
+            val actual = viewModel.vpsPackages.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When got a matching vps package, isSelected value should be true`() =
+        runBlocking {
+            //Given
+            val selectedVpsPackageId: Long = 101
+            val now = GregorianCalendar(2020, 8, 1, 7,0,0).time
+
+            val packageStartTime = now
+            val packageEndTime = now.advanceDayBy(days = 2)
+
+            val packageStartTimeEpoch = (packageStartTime.time / 1000)
+            val packageEndTimeEpoch = (packageEndTime.time / 1000)
+
+            val packageStartTimeDate = packageStartTime.removeTimeZone()
+            val packageEndTimeDate = packageEndTime.removeTimeZone()
+
+            val response = listOf(
+                VpsPackage(
+                    packageId = Constant.DEFAULT_SHOP_TIER_BENEFIT_PACKAGE_ID,
+                    remainingQuota = 45,
+                    currentQuota = 5,
+                    isDisabled = false,
+                    originalQuota = 50,
+                    packageEndTime = packageEndTimeEpoch,
+                    packageName = "Shop Tier Benefit",
+                    packageStartTime = packageStartTimeEpoch
+                ),
+                VpsPackage(
+                    packageId = selectedVpsPackageId.toString(),
+                    remainingQuota = 5,
+                    currentQuota = 5,
+                    isDisabled = false,
+                    originalQuota = 10,
+                    packageEndTime = packageEndTimeEpoch,
+                    packageName = "Paket VPS September",
+                    packageStartTime = packageStartTimeEpoch
+                )
+            )
+            val vpsPackages = listOf(
+                VpsPackageUiModel(
+                    packageId = Constant.DEFAULT_SHOP_TIER_BENEFIT_PACKAGE_ID.toLong(),
+                    remainingQuota = 45,
+                    currentQuota = 5,
+                    originalQuota = 50,
+                    packageEndTime = packageEndTimeDate,
+                    packageName = "Shop Tier Benefit",
+                    packageStartTime = packageStartTimeDate,
+                    isSelected = false,
+                    disabled = false,
+                    isShopTierBenefit = true
+                ),
+                VpsPackageUiModel(
+                    packageId = selectedVpsPackageId,
+                    remainingQuota = 5,
+                    currentQuota = 5,
+                    originalQuota = 10,
+                    packageEndTime = packageEndTimeDate,
+                    packageName = "Paket VPS September",
+                    packageStartTime = packageStartTimeDate,
+                    isSelected = true,
+                    disabled = false,
+                    isShopTierBenefit = false
+                )
+            )
+            val expected = Success(vpsPackages)
+
+            coEvery { getSellerCampaignPackageListUseCase.execute() } returns response
+
+            //When
+            viewModel.getVpsPackages(selectedVpsPackageId)
 
             //Then
             val actual = viewModel.vpsPackages.getOrAwaitValue()
