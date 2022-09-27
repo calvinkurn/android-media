@@ -78,7 +78,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -254,14 +253,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.rv_sah_new_other_menu
-
-    override fun goToPrintingPage() {
-        val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
-        val applink = String.format(SellerBaseUrl.APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
-        RouteManager.getIntent(context, applink)?.let {
-            context?.startActivity(it)
-        }
-    }
 
     override fun goToSettings() {
         startActivity(Intent(context, MenuSettingActivity::class.java))

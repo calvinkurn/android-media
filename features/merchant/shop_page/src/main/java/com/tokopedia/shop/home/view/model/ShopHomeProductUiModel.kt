@@ -32,7 +32,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var isPo: Boolean = false
     var isFreeReturn: Boolean = false
     var isWishList: Boolean = false
-    var productUrl: String? = null
+    var productUrl: String = ""
     var isShowWishList: Boolean = false
     var isSoldOut: Boolean = false
     var isShowFreeOngkir: Boolean = false
@@ -80,7 +80,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
         imageUrl = shopProduct.productImage
         imageUrl300 = shopProduct.productImage300
         imageUrl700 = shopProduct.productImage700
-        productUrl = shopProduct.productUrl
+        productUrl = shopProduct.productUrl.orEmpty()
         rating = shopProduct.rating
         isPo = TextApiUtils.isValueTrue(shopProduct.productPreorder)
         totalReview = shopProduct.productReviewCount
@@ -107,7 +107,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
         name = gmFeaturedProduct.name.orEmpty()
         displayedPrice = gmFeaturedProduct.price?.toString().orEmpty()
         imageUrl = gmFeaturedProduct.imageUri
-        productUrl = gmFeaturedProduct.uri
+        productUrl = gmFeaturedProduct.uri.orEmpty()
 
         totalReview = gmFeaturedProduct.totalReview
         rating = gmFeaturedProduct.rating

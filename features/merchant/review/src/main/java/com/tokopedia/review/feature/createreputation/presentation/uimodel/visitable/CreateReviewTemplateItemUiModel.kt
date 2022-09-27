@@ -1,18 +1,18 @@
 package com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable
 
+import com.tokopedia.review.feature.createreputation.model.CreateReviewTemplate
 import com.tokopedia.review.feature.createreputation.presentation.adapter.typefactory.CreateReviewTemplateTypeFactory
-import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateItemUiState
 import java.io.Serializable
 
 data class CreateReviewTemplateItemUiModel(
-    val uiState: CreateReviewTemplateItemUiState
+    val data: CreateReviewTemplate
 ) : Serializable, BaseCreateReviewVisitable<CreateReviewTemplateTypeFactory> {
     override fun areItemsTheSame(other: Any?): Boolean {
-        return other is CreateReviewTemplateItemUiModel && uiState.areItemsTheSame(other.uiState)
+        return other is CreateReviewTemplateItemUiModel && data.text == other.data.text
     }
 
     override fun areContentsTheSame(other: Any?): Boolean {
-        return other is CreateReviewTemplateItemUiModel && uiState.areContentsTheSame(other.uiState)
+        return this == other
     }
 
     override fun getChangePayload(other: Any?): List<String>? {

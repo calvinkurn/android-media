@@ -134,11 +134,17 @@
     <string name="terkhir_text">update terakhir</string>
    <string name="affiliate_income_blacklisted_ticker_desc">Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!</string>
     <string name="affiliate_blacklisted_ticker_title">Saldo Affiliate sedang dioptimalisasi ⚙️</string>
-    <string name="affiliate_withdrwal_title_terms">Produk yang Dikunjungi</string>
+    <string name="affiliate_withdrwal_title_terms">%s yang dikunjungi</string>
     <string name="affiliate_traffic_hari_ini_ticker">Komisi kunjungan akan masuk pada H+1 dan tidak akan muncul pada filter “Hari Ini”.</string>
     <string name="affiliate_lihat_detail">Lihat Detail</string>
     <string name="performa_affiliate">Performa Affiliate</string>
     <string name="content_desc_buttonPromotion">button promosikan</string>
     <string name="content_desc_imageLocation">image shop location</string>
     <string name="ganti_link">Ganti Link</string>
+    <string name="affiliate_link_promosi">Link Promosi</string>
+    <string name="link_dengan_performa">Link dengan performa</string>
+    <string name="no_promoted_products_title">Yaah, belum ada %s yang dipromosikan</string>
+    <string name="no_promoted_products_message">Kamu bisa cari %s di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
+    <string name="no_promoted_toko_message">Kamu bisa cari %s terbaik di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
+    <string name="no_promoted_products_cta">Cari %s</string>
 </resources>

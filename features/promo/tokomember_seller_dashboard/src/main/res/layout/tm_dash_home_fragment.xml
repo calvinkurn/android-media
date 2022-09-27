@@ -29,14 +29,25 @@
                 android:layout_marginStart="@dimen/tm_dash_dp_16"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/tm_dash_dp_16"
-                android:background="@drawable/tm_bg_round_home">
+                >
+
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/flShopbg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    />
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_8"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
@@ -55,8 +66,8 @@
 
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/ivShopIconMark"
-                        android:layout_width="@dimen/tm_dash_dp_12"
-                        android:layout_height="@dimen/tm_dash_dp_12"
+                        android:layout_width="@dimen/tm_dash_dp_10"
+                        android:layout_height="@dimen/tm_dash_dp_10"
                         app:layout_constraintEnd_toEndOf="@+id/ivShopIcon"
                         app:layout_constraintStart_toEndOf="@+id/ivShopIcon"
                         app:srcCompat="@drawable/tm_check_mark"

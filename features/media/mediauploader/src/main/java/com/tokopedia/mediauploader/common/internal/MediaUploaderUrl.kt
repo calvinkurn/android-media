@@ -1,5 +1,6 @@
 package com.tokopedia.mediauploader.common.internal
 
+import com.tokopedia.mediauploader.common.util.MediaUploaderNetwork.BASE_URL
 import javax.inject.Inject
 
 class MediaUploaderUrl @Inject constructor(
@@ -7,7 +8,7 @@ class MediaUploaderUrl @Inject constructor(
 ) {
 
     private val host: String
-        get() = policyManager.policy().host
+        get() = policyManager.get()?.host ?: BASE_URL
 
     fun imageUpload(sourceId: String)
         = "$host/$UPEDIA_VERSION/upload/image/$sourceId"

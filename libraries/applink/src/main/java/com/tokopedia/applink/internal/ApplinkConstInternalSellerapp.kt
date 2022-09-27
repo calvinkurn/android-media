@@ -104,6 +104,7 @@ object ApplinkConstInternalSellerapp {
     const val TOKOMEMBER = "$INTERNAL_SELLERAPP/tokomember"
     const val TOKOMEMBER_PROGRAM_LIST = "$TOKOMEMBER/program-list"
     const val TOKOMEMBER_COUPON_LIST = "$TOKOMEMBER/coupon-list"
+    const val TOKOMEMBER_COUPON_DETAIL = "$TOKOMEMBER/coupon-detail/{coupon_id}"
 
     //TmDashCreateActivity if registered
     const val TOKOMEMBER_PROGRAM_CREATION = "$TOKOMEMBER/program-creation"

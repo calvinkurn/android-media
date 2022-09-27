@@ -8,6 +8,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.network.exception.ResponseErrorException
 import javax.inject.Inject
 
 
@@ -35,7 +36,7 @@ class DigitalAddToCartUseCase @Inject constructor(
             val result = gqlUseCase.executeOnBackground().atcResponse
 
             if (result.errors.isNotEmpty()) {
-                throw Throwable(result.errors.first().title)
+                throw ResponseErrorException(result.errors.first().title)
             }
 
             returnResult = if (result.data.id.isNotEmpty()) {

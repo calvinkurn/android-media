@@ -105,7 +105,7 @@ open class DynamicPostViewHolder(v: View,
         }
 
         bindTitle(element.title, element.template.cardpost.title)
-        bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName, "")
+        bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName, "", element.caption.text)
         bindCaption(element.caption, element.template.cardpost.body, element.trackingPostModel)
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
         bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
@@ -145,7 +145,7 @@ open class DynamicPostViewHolder(v: View,
         return template.text || template.textBadge || template.ctaLink
     }
 
-    private fun bindHeader(postId: String, header: Header, template: TemplateHeader, activityName: String, shopId: String) {
+    private fun bindHeader(postId: String, header: Header, template: TemplateHeader, activityName: String, shopId: String, caption: String) {
         itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
             itemView.authorImage.shouldShowWithAction(template.avatar) {
                 if (!TextUtils.isEmpty(header.avatar)) {
@@ -208,11 +208,11 @@ open class DynamicPostViewHolder(v: View,
                                 header.deletable,
                                 header.editable,
                                 true,
+                                header.followCta.authorID,
                                 "",
                                 "",
                                 "",
-                                "",
-                                ""
+                                caption,
                         )
                     }
                 } else{

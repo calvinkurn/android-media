@@ -7,8 +7,8 @@
 
     <com.tokopedia.topchat.chatroom.view.customview.TopchatSquareImageView
         android:id="@+id/thumbnail"
-        android:layout_width="@dimen/dp_topchat_56"
-        android:layout_height="@dimen/dp_topchat_56"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/dp_topchat_14"
         android:layout_marginBottom="@dimen/dp_topchat_14"
@@ -41,7 +41,7 @@
         android:includeFontPadding="false"
         android:lines="2"
         android:maxLines="2"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/time"
@@ -106,7 +106,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/user_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -116,7 +116,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/unread_counter"
-        android:layout_width="@dimen/layout_lvl2"
+        android:layout_width="14dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:background="@drawable/bg_red_dot_unread"

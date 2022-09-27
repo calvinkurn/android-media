@@ -410,4 +410,8 @@ interface DynamicProductDetailListener {
     fun onImpressBackToTop(label: String)
     fun onImpressProductDetailNavigation(labels: List<String>)
     fun onClickProductDetailnavigation(position: Int, label: String)
+
+    fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel)
+    fun startVerticalRecommendation(pageName: String)
+    fun getRecommendationVerticalTrackData(): ComponentTrackDataModel?
 }

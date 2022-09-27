@@ -35,6 +35,8 @@ object SearchComponentTrackingConst {
 
         const val AUTO_COMPLETE_CANCEL_SEARCH = "02.12.00.00"
         const val AUTO_COMPLETE_MANUAL_ENTER = "02.01.00.00"
+
+        const val AUTO_COMPLETE_VOICE_SEARCH = "01.12.00.00"
     }
 
     object Options {

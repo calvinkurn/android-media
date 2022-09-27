@@ -3,13 +3,16 @@ package com.tokopedia.tokomember_seller_dashboard.view.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
@@ -47,10 +50,12 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tm_activity_tokomember_dash_home)
-        if (bundleNewIntent == null) {
-            openHomeFragment(intent.extras)
-        } else {
-            openHomeFragment(bundleNewIntent)
+        if(!checkApplink()){
+            if (bundleNewIntent == null) {
+                openHomeFragment(intent.extras)
+            } else {
+                openHomeFragment(bundleNewIntent)
+            }
         }
         initDagger()
     }
@@ -97,6 +102,28 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
 
     override fun openCouponDetailFragment(voucherId:Int) {
         addFragment(TmDashCouponDetailFragment.newInstance(voucherId), TAG_HOME)
+    }
+
+    private fun checkApplink() : Boolean{
+        intent.extras?.let{
+            it.get(TOKOMEMBER_SCREEN).also { it1 ->
+                if(it1 is Uri){
+                    val segments = it1.pathSegments
+                    if(segments.size>=2){
+                        when(segments[1]){
+                            PATH_TOKOMEMBER_COUPON_DETAIL -> {
+                              val couponId=segments[2]
+                                Log.i("from dash home","voicher id - $couponId")
+                                openCouponDetailFragment(couponId.toIntOrZero())
+                                return true
+                            }
+                            else -> return false
+                        }
+                    }
+                }
+            }
+        }
+        return false
     }
 
     companion object{
