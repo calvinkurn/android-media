@@ -25,6 +25,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NOTEBOOK
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowNavToolbar
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorAnalytics
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeListBinding
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
@@ -47,6 +48,7 @@ import javax.inject.Inject
 abstract class BaseTokoNowRecipeListFragment : Fragment(),
     RecipeListView,
     ServerErrorListener,
+    ServerErrorAnalytics,
     RecipeEmptyStateListener
 {
 
@@ -74,6 +76,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                     viewModel = viewModel
                 ),
                 serverErrorListener = this,
+                serverErrorAnalytics = this,
                 recipeEmptyStateListener = this
             )
         )
@@ -125,11 +128,14 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
 
     override fun onClickRetryButton() {
         viewModel.refreshPage()
-        analytics.clickRetryFailedLoadPage(pageName)
     }
 
-    override fun onImpressErrorPage() {
+    override fun trackImpressErrorPage() {
         analytics.impressFailedLoadPage(pageName)
+    }
+
+    override fun trackClickRetryPage() {
+        analytics.clickRetryFailedLoadPage(pageName)
     }
 
     override fun onClickResetFilter() {

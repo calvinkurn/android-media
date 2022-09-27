@@ -12,7 +12,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowServerErrorViewHolder(
     itemView: View,
-    private val listener: ServerErrorListener? = null
+    private val serverErrorListener: ServerErrorListener? = null,
+    private val serverErrorAnalytics: ServerErrorAnalytics? = null
 ): AbstractViewHolder<TokoNowServerErrorUiModel>(itemView) {
 
     companion object {
@@ -26,17 +27,22 @@ class TokoNowServerErrorViewHolder(
         binding?.apply {
             root.addOnImpressionListener(item, object : ViewHintListener {
                 override fun onViewHint() {
-                    listener?.onImpressErrorPage()
+                    serverErrorAnalytics?.trackImpressErrorPage()
                 }
             })
             emptyStateFailedToFetchData.setActionClickListener {
-                listener?.onClickRetryButton()
+                serverErrorListener?.onClickRetryButton()
+                serverErrorAnalytics?.trackClickRetryPage()
             }
         }
     }
 
     interface ServerErrorListener {
         fun onClickRetryButton()
-        fun onImpressErrorPage()
+    }
+
+    interface ServerErrorAnalytics {
+        fun trackImpressErrorPage()
+        fun trackClickRetryPage()
     }
 }

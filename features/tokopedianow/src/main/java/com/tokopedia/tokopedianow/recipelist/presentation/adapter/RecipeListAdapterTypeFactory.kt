@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowServerErrorT
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorAnalytics
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeCountUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeHeaderUiModel
@@ -26,6 +27,7 @@ class RecipeListAdapterTypeFactory(
     private val recipeItemListener: RecipeItemListener,
     private val recipeFilterListener: RecipeChipFilterListener,
     private val serverErrorListener: ServerErrorListener,
+    private val serverErrorAnalytics: ServerErrorAnalytics,
     private val recipeEmptyStateListener: RecipeEmptyStateListener
 ) : BaseAdapterTypeFactory(), RecipeListTypeFactory, TokoNowServerErrorTypeFactory {
 
@@ -47,7 +49,7 @@ class RecipeListAdapterTypeFactory(
             RecipeCountViewHolder.LAYOUT -> RecipeCountViewHolder(parent)
             RecipeViewHolder.LAYOUT -> RecipeViewHolder(parent, recipeItemListener)
             RecipeFilterViewHolder.LAYOUT -> RecipeFilterViewHolder(parent, recipeFilterListener)
-            TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(parent, serverErrorListener)
+            TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(parent, serverErrorListener, serverErrorAnalytics)
             RecipeEmptyStateViewHolder.LAYOUT -> RecipeEmptyStateViewHolder(parent, recipeEmptyStateListener)
             else -> super.createViewHolder(parent, type)
         }

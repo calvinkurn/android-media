@@ -413,8 +413,6 @@ class TokoNowRepurchaseFragment:
 
     override fun onClickRetryButton() = refreshLayout()
 
-    override fun onImpressErrorPage() { /* nothing to do */ }
-
     override fun getScrollState(adapterPosition: Int): Parcelable? = null
 
     override fun getParallaxState(): Map<String, Float> = mapOf()
