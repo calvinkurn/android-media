@@ -105,7 +105,6 @@ class SearchSameSessionRecommendationGqlUseCase(
             ?.getData<SearchSameSessionRecommendationResponse>(SearchSameSessionRecommendationResponse::class.java)
             ?.response
             ?.data
-//            ?: SearchSameSessionRecommendationModel()
 
     @GqlQuery("SameSessionRecommendation", SAME_SEARCH_RECOMMENDATION_QUERY)
     private fun createSameSessionRecommendationRequest(requestParams: RequestParams) : GraphqlRequest {
