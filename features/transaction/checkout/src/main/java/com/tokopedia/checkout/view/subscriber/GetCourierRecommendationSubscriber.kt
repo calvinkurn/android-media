@@ -50,9 +50,7 @@ class GetCourierRecommendationSubscriber(
                                     shippingCourierUiModel.isSelected = false
                                 }
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                    if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId &&
-                                        shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId
-                                    ) {
+                                    if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
                                         if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                             view.renderCourierStateFailed(
                                                 itemPosition,
@@ -77,7 +75,9 @@ class GetCourierRecommendationSubscriber(
                                                     shippingRecommendationData,
                                                     logisticPromo
                                                 ),
-                                                itemPosition, isTradeInDropOff, isForceReloadRates
+                                                itemPosition,
+                                                isTradeInDropOff,
+                                                isForceReloadRates
                                             )
                                             return
                                         }
@@ -99,11 +99,7 @@ class GetCourierRecommendationSubscriber(
                                     spId
                                 }
                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                if (isTradeInDropOff || (
-                                    shippingCourierUiModel.productData.shipperProductId == selectedSpId &&
-                                        shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden
-                                )
-                                ) {
+                                if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden)) {
                                     if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                         view.renderCourierStateFailed(
                                             itemPosition,
@@ -113,7 +109,8 @@ class GetCourierRecommendationSubscriber(
                                         view.logOnErrorLoadCourier(
                                             MessageErrorException(
                                                 shippingCourierUiModel.productData.error?.errorMessage
-                                            ), itemPosition
+                                            ),
+                                            itemPosition
                                         )
                                         return
                                     } else {
@@ -124,9 +121,7 @@ class GetCourierRecommendationSubscriber(
                                         if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
                                             // courier should only be used with BO, but no BO code found
                                             view.renderCourierStateFailed(
-                                                itemPosition,
-                                                isTradeInDropOff,
-                                                false
+                                                itemPosition, isTradeInDropOff, false
                                             )
                                             view.logOnErrorLoadCourier(
                                                 MessageErrorException("rates ui hidden but no promo"),
@@ -165,10 +160,11 @@ class GetCourierRecommendationSubscriber(
                                 shippingCourier.isSelected = true
                                 view.renderCourierStateSuccess(
                                     generateCourierItemData(
-                                        shippingCourier,
-                                        shippingRecommendationData
+                                        shippingCourier, shippingRecommendationData
                                     ),
-                                    itemPosition, isTradeInDropOff, isForceReloadRates
+                                    itemPosition,
+                                    isTradeInDropOff,
+                                    isForceReloadRates
                                 )
                                 return
                             }
@@ -179,7 +175,7 @@ class GetCourierRecommendationSubscriber(
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff, false)
             view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
         } else {
-            if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.size > 0) {
+            if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
                 for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                     for (productData in shippingDurationUiModel.serviceData.products) {
                         if (productData.shipperId == shipperId && productData.shipperProductId == spId) {
