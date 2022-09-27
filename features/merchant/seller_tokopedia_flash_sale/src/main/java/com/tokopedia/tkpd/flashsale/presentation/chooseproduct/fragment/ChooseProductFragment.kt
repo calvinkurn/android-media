@@ -78,7 +78,6 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     private var categoryFilterBottomSheet: MultipleSelectionBottomSheet? = null
     private var maxSelectedProductCount: Int = 0
     private var selectedProductCount: Int = 0
-    private var preselectedProductCount: Int = 0
 
     override fun getScreenName(): String = ChooseProductFragment::class.java.canonicalName.orEmpty()
 
@@ -99,6 +98,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.campaignId = flashSaleId
+        viewModel.tabName = tabName
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         setupObservers()
@@ -106,6 +106,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         setupSearchBar()
         setupCategorySelection()
         setupFilterData()
+        viewModel.getFlashSaleList()
         recyclerView?.attachOnScrollListener(onScrollDown = {
             binding?.layoutSearch?.slideDown()
         }, onScrollUp = {
@@ -268,10 +269,6 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
             selectedProductCount = it
             updateSelectionCount()
         }
-        viewModel.preselectedProductCount.observe(viewLifecycleOwner) {
-            preselectedProductCount = it
-            updateSelectionCount()
-        }
         viewModel.maxSelectedProduct.observe(viewLifecycleOwner) {
             maxSelectedProductCount = it
             updateSelectionCount()
@@ -317,7 +314,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     }
 
     private fun updateSelectionCount() {
-        binding?.tfSelectedProductCount?.text = "${preselectedProductCount + selectedProductCount}/$maxSelectedProductCount"
+        binding?.tfSelectedProductCount?.text = "$selectedProductCount/$maxSelectedProductCount"
     }
 
     private fun getSearchBarText(): String {

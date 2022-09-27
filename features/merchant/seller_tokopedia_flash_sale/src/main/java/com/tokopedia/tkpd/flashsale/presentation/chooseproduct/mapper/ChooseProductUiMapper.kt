@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.flashsale.presentation.chooseproduct.mapper
 import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.Category
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaSelection
@@ -30,8 +31,10 @@ object ChooseProductUiMapper {
 
     fun getSelectedProductCount(list: List<ChooseProductItem>) = getSelectedProduct(list).size
 
-    fun getMaxSelectedProduct(): Int {
-        return MAX_PRODUCT_SELECTION
+    // limit max selected to MAX_PRODUCT_SELECTION due to server limitation
+    fun getMaxSelectedProduct(maximumFromRemote: Int): Int {
+        return if (maximumFromRemote < MAX_PRODUCT_SELECTION) maximumFromRemote
+        else MAX_PRODUCT_SELECTION
     }
 
     fun mapToReserveParam(campaignId: Long, reservationId: String, selectedProducts: List<ChooseProductItem>?): DoFlashSaleProductReserveUseCase.Param {
@@ -55,8 +58,11 @@ object ChooseProductUiMapper {
         return criteriaList.orEmpty()
     }
 
-    fun validateSelection(productCount: Int, criteriaList: List<CriteriaSelection>): Boolean {
-        val maxProduct = getMaxSelectedProduct()
+    fun validateSelection(
+        productCount: Int,
+        maxProduct: Int,
+        criteriaList: List<CriteriaSelection>
+    ): Boolean {
         val productValidation = productCount <= maxProduct && productCount.isMoreThanZero()
         val criteriaValidation = criteriaList.validateMax()
         return productValidation && criteriaValidation
@@ -76,9 +82,8 @@ object ChooseProductUiMapper {
         }
     }
 
-    fun isExceedMaxProduct(productCount: Int): Boolean {
-        val maxProduct = getMaxSelectedProduct()
-        return productCount >= maxProduct
+    fun isExceedMaxProduct(productCount: Int?, maxProduct: Int): Boolean {
+        return productCount.orZero() >= maxProduct
     }
 
     fun isExceedMaxCriteria(criteriaList: List<CriteriaSelection>): Boolean {
