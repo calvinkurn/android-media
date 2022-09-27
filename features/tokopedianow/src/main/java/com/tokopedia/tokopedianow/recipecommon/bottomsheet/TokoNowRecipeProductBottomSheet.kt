@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowRecipeProductBinding
 import com.tokopedia.tokopedianow.recipedetail.analytics.ProductAnalytics
@@ -15,6 +16,7 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeProduc
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeProductAdapterTypeFactory
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
@@ -29,6 +31,10 @@ class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
     }
 
     var items: List<Visitable<*>> = emptyList()
+        set(value) {
+            field = value
+            submitList(value)
+        }
     var productListener: RecipeProductListener? = null
     var productAnalytics: ProductAnalytics? = null
 
@@ -65,6 +71,31 @@ class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
         activity?.finish()
     }
 
+    fun showToaster(
+        message: String,
+        duration: Int = Toaster.LENGTH_SHORT,
+        type: Int = Toaster.TYPE_NORMAL,
+        actionText: String = "",
+        onClickAction: View.OnClickListener = View.OnClickListener { }
+    ) {
+        Toaster.toasterCustomBottomHeight = context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_40
+        ).toIntSafely()
+        view?.rootView?.let {
+            if (message.isNotBlank()) {
+                val toaster = Toaster.build(
+                    view = it,
+                    text = message,
+                    duration = duration,
+                    type = type,
+                    actionText = actionText,
+                    clickListener = onClickAction
+                )
+                toaster.show()
+            }
+        }
+    }
+
     fun show(fm: FragmentManager) {
         show(fm, TAG)
     }
@@ -82,6 +113,10 @@ class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
             adapter = this@TokoNowRecipeProductBottomSheet.adapter
             layoutManager = LinearLayoutManager(context)
         }
-        adapter.submitList(items)
+        submitList(items)
+    }
+
+    private fun submitList(value: List<Visitable<*>>) {
+        adapter.submitList(value)
     }
 }

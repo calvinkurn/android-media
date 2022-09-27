@@ -123,11 +123,11 @@ class RecipeProductViewHolder(
                 quantityEditor.setValue(quantity)
                 addTextChangeListener(qtyEditorListener)
 
-                quantityEditor.addButton.setOnClickListener {
+                quantityEditor.setAddClickListener {
                     analytics?.trackClickIncreaseQuantity()
                 }
 
-                quantityEditor.subtractButton.setOnClickListener {
+                quantityEditor.setSubstractListener {
                     analytics?.trackClickDecreaseQuantity()
                 }
             } else {
