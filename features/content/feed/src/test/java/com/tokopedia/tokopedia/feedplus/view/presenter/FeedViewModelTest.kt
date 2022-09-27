@@ -2,6 +2,7 @@ package com.tokopedia.tokopedia.feedplus.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.FeedXTrackViewerResponse
 import com.tokopedia.feedcomponent.data.pojo.VisitChannelTracking
@@ -9,7 +10,9 @@ import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.kolcommon.data.SubmitActionContentResponse
 import com.tokopedia.kolcommon.data.SubmitReportContentResponse
 import com.tokopedia.kolcommon.data.pojo.like.LikeKolPostData
@@ -19,15 +22,19 @@ import com.tokopedia.kolcommon.domain.interactor.SubmitReportContentUseCase
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.tokopedia.feedplus.helper.assertEqualTo
+import com.tokopedia.tokopedia.feedplus.helper.assertFalse
 import com.tokopedia.tokopedia.feedplus.helper.assertTrue
 import com.tokopedia.tokopedia.feedplus.helper.assertType
 import com.tokopedia.tokopedia.feedplus.robot.create
+import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -52,6 +59,8 @@ class FeedViewModelTest {
     private val mockLike: SubmitLikeContentUseCase = mockk(relaxed = true)
     private val mockDelete: SubmitActionContentUseCase = mockk(relaxed = true)
     private val mockTopAdsTracker: SendTopAdsUseCase = mockk(relaxed = true)
+    private val mockFavShop: ToggleFavouriteShopUseCase = mockk(relaxed = true)
+    private val mockTrackAffiliate: TrackAffiliateClickUseCase = mockk(relaxed = true)
 
     private val gqlFailed = MessageErrorException("ooPs")
 
@@ -385,4 +394,92 @@ class FeedViewModelTest {
             }
 
     }
+
+    /**
+     * favorite shop
+     */
+
+    @Test
+    fun `fav shop - success` () {
+        val expected = true
+        coEvery { mockFavShop.createObservable(any()).toBlocking().single() } returns expected
+
+        create(dispatcher = testDispatcher, doFavoriteShopUseCase = mockFavShop)
+            .use {
+                it.vm.doFavoriteShop(Data(), 1)
+                it.vm.doFavoriteShopResp.getOrAwaitValue().assertType<Success<FeedPromotedShopViewModel>> {
+                    dt ->
+                    dt.data.adapterPosition.assertEqualTo(1)
+                    dt.data.isSuccess.assertEqualTo(expected)
+                    dt.data.isSuccess.assertTrue()
+                }
+            }
+    }
+
+    @Test
+    fun `fav shop - failed from gql` () {
+        coEvery { mockFavShop.createObservable(any()).toBlocking().single() } throws gqlFailed
+
+        create(dispatcher = testDispatcher, doFavoriteShopUseCase = mockFavShop)
+            .use {
+                it.vm.doFavoriteShop(Data(), 1)
+                it.vm.doFavoriteShopResp.getOrAwaitValue().assertType<Fail> {
+                        dt -> dt.throwable.assertEqualTo(gqlFailed)
+                        dt.throwable.assertType<MessageErrorException> {  }
+                }
+            }
+    }
+
+    /**
+     * track affiliate
+
+    @Test
+    fun `track affiliate - success` (){
+        val expected = true
+        coEvery { mockTrackAffiliate.createObservable(any()).toBlocking().single() } returns expected
+
+        create(dispatcher = testDispatcher, trackAffiliateClickUseCase = mockTrackAffiliate)
+            .use {
+                it.vm.doTrackAffiliate("Ini")
+                it.vm.trackAffiliateResp.getOrAwaitValue().assertType<Success<TrackAffiliateViewModel>> {
+                        dt ->
+                    dt.data.isSuccess.assertEqualTo(expected)
+                    dt.data.isSuccess.assertTrue()
+                }
+            }
+    }
+
+    @Test
+    fun `track affiliate - failed from gql` (){
+        val expected = false
+        coEvery { mockTrackAffiliate.createObservable(any()).toBlocking().single() } returns expected
+
+        create(dispatcher = testDispatcher, trackAffiliateClickUseCase = mockTrackAffiliate)
+            .use {
+                it.vm.doTrackAffiliate("")
+                it.vm.trackAffiliateResp.getOrAwaitValue().assertType<Success<TrackAffiliateViewModel>> {
+                        dt ->
+                    dt.data.isSuccess.assertEqualTo(expected)
+                    dt.data.isSuccess.assertFalse()
+                }
+            }
+    }
+
+    @Test
+    fun `track affiliate - error from gql` (){
+        coEvery { mockTrackAffiliate.createObservable(any()).toBlocking().single() } throws gqlFailed
+
+        create(dispatcher = testDispatcher, trackAffiliateClickUseCase = mockTrackAffiliate)
+            .use {
+                it.vm.doTrackAffiliate("")
+                it.vm.trackAffiliateResp.getOrAwaitValue().assertType<Fail> {
+                        dt -> dt.throwable.assertEqualTo(gqlFailed)
+                }
+            }
+    }
+    */
+
+    /**
+     *
+     */
 }
