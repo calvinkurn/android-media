@@ -1,0 +1,81 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="12dp"
+    android:paddingBottom="40dp"
+    tools:context="com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetInfo">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/copy_info_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/copy_paste_info_desc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/paste_info_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/paste_two_step_info_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/copy_info_text"
+        app:typographyType="display_1"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/paste_info_image_one"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/paste_info_title"
+        app:unify_image_url_src="https://i.ibb.co/xJdFLm0/image.png" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/paste_info_step_one"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:text="@string/paste_info_step_one"
+        app:layout_constraintBottom_toBottomOf="@id/paste_info_image_one"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/paste_info_image_one"
+        app:layout_constraintTop_toTopOf="@id/paste_info_image_one"
+        app:typographyType="paragraph_2" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/step_one_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="paste_info_step_one, paste_info_image_one" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/paste_info_image_two"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/step_one_barrier"
+        app:unify_image_url_src="https://i.ibb.co/CHkTznZ/image.png" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/paste_info_step_two"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        app:layout_constraintBottom_toBottomOf="@id/paste_info_image_two"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/paste_info_image_two"
+        app:layout_constraintTop_toTopOf="@id/paste_info_image_two"
+        app:typographyType="paragraph_2" />
+<!--    android:text="@string/paste_info_step_two"-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

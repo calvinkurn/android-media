@@ -149,4 +149,9 @@
     <string name="no_promoted_toko_message">Kamu bisa cari %s terbaik di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
     <string name="no_promoted_products_cta">Cari %s</string>
     <string name="promo_search_cta_text">Cek</string>
+    <string name="copy_paste_info_title">Mudahnya promosikan affiliate</string>
+    <string name="copy_paste_info_desc">Selain tempel link produk &amp; toko yang kamu suka, kamu juga bisa promosikan produk yang kami rekomendasikan atau bagikan link langsung dari halaman produk &amp; toko.</string>
+    <string name="paste_two_step_info_title">2 Langkah tempel link</string>
+    <string name="paste_info_step_one">Tempel link produk atau toko, lalu cek apakah link tersebut bisa dipromosikan.</string>
+    <string name="paste_info_step_two">Jika bisa, klik tombol &#8220;Promosikan&#8221; untuk bagikan link tersebut ke sosmed kamu.</string>
 </resources>

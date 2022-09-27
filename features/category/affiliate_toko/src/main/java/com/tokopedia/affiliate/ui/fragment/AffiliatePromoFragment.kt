@@ -31,6 +31,7 @@ import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPasteInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
@@ -44,6 +45,7 @@ import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -153,6 +155,9 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         }
         view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.editText?.afterTextChanged {
             view?.findViewById<UnifyButton>(R.id.search_button)?.isEnabled = it.isNotEmpty()
+        }
+        view?.findViewById<IconUnify>(R.id.promo_link_info)?.setOnClickListener {
+            AffiliateBottomSheetPromoCopyPasteInfo.newInstance().show(childFragmentManager, "")
         }
         setupViewPager()
         showDefaultState()
