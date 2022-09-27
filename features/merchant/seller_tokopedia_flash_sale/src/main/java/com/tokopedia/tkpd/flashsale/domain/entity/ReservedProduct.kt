@@ -128,7 +128,7 @@ data class ReservedProduct(
             val sku: String,
             val stock: Int,
             val url: String,
-            val warehouses: List<Warehouse>
+            var warehouses: List<Warehouse>
         ) : Parcelable
 
         @Parcelize

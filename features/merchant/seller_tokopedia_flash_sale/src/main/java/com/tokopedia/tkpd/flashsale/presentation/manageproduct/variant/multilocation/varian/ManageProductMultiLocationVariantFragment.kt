@@ -1,30 +1,30 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian
 
 import android.content.Intent
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
-import com.tokopedia.campaign.components.adapter.CompositeAdapter
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
-import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductMultiLocationVariantDelegateAdapter
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductMultiLocationVariantItem
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductMultiLocationVariantItem.BundleConstant.toProductCriteriaInWarehouse
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductVariantAdapterListener
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductVariantMultiLocationAdapter
+import javax.inject.Inject
 
-//TODO WILLYBRODUS : CHANGE ALL logic method into ViewModel
 class ManageProductMultiLocationVariantFragment :
-    BaseCampaignManageProductDetailFragment<CompositeAdapter>() {
+    BaseCampaignManageProductDetailFragment<ManageProductVariantMultiLocationAdapter>(),
+    ManageProductVariantAdapterListener {
 
     companion object {
         fun newInstance(
@@ -38,9 +38,6 @@ class ManageProductMultiLocationVariantFragment :
             fragment.arguments = bundle
             return fragment
         }
-
-        private const val INPUT_NOT_EMPTY_STATE = false
-        private const val MINIMUM_VARIANT_TO_BULK_APPLY = 2
     }
 
     //argument
@@ -53,11 +50,12 @@ class ManageProductMultiLocationVariantFragment :
 
     }
 
-    //viewModel
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductMultiLocationVariantViewModel::class.java) }
+
+    var inputAdapter = ManageProductVariantMultiLocationAdapter()
 
     override fun getScreenName(): String =
         ManageProductMultiLocationVariantFragment::class.java.canonicalName.orEmpty()
@@ -71,16 +69,24 @@ class ManageProductMultiLocationVariantFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
+        setupProductInput()
+        setupPage()
+        setupObservers()
+    }
+
+    private fun setupProductInput() {
         product?.let {
-            viewModel.setupInitiateProductData(it, variantPositionOnProduct)
+            viewModel.setProduct(it, variantPositionOnProduct)
         }
-        observeButtonSubmitState()
+    }
+
+    private fun setupPage(){
         setupButtonText()
-        setupHeaderData(viewModel.getFinalProductData(), viewModel.getVariantData())
-        setupWidgetBulkApply(
-            getString(R.string.stfs_inactive_location_bulk_apply_place_holder),
-            false
-        )
+        viewModel.product.value?.let {
+            val variant = it.childProducts[variantPositionOnProduct]
+            setupHeaderData(it, variant)
+        }
     }
 
     private fun setupButtonText() {
@@ -101,17 +107,6 @@ class ManageProductMultiLocationVariantFragment :
             productVariantName = variant.name,
             isShowWidgetBulkApply = true
         )
-        viewModel.getFinalProductData().toItem(viewModel.getVariantData())
-            .let { adapter?.submit(it) }
-    }
-
-    private fun setupWidgetBulkApply(title: String, isReadyToBulkApply: Boolean) {
-        if (isReadyToBulkApply) {
-            enableWidgetBulkApply()
-        } else {
-            disableWidgetBulkApply()
-        }
-        setWidgetBulkApplyText(title)
     }
 
     override fun onBackArrowClicked() {
@@ -128,127 +123,71 @@ class ManageProductMultiLocationVariantFragment :
         }
     }
 
-    override fun createAdapterInstance(): CompositeAdapter {
-        return CompositeAdapter.Builder()
-            .add(ManageProductMultiLocationVariantDelegateAdapter(
-                onToggleSwitched = { position, isChecked ->
-                    onToggleSwitched(position, isChecked)
-                    viewModel.checkAllValidationOfInputUser(position, isChecked)
-                },
-                onDiscountAmountChanged = { position, amount, discount ->
-                    viewModel.setDiscountAmount(position, amount)
-                    viewModel.setDiscountPercentage(position, discount)
-                    viewModel.checkAllValidationOfInputUser(position , INPUT_NOT_EMPTY_STATE)
-                },
-                onDiscountPercentageChange = { position, discount, amount ->
-                    viewModel.setDiscountPercentage(position, discount)
-                    viewModel.setDiscountAmount(position, amount)
-                    viewModel.checkAllValidationOfInputUser(position , INPUT_NOT_EMPTY_STATE)
-                },
-                onValidationInputText = { position, isPriceToPercentage, action ->
-                    val isValid =
-                        when {
-                            isPriceToPercentage -> viewModel.checkValidationDiscountAmountInWarehouseWithPosition(
-                                position
-                            )
-                            else -> viewModel.checkValidationDiscountPercentInWarehouseWithPosition(
-                                position
-                            )
-                        }
-
-                    val (messageAmount, messageDiscount) =
-                        viewModel.getMessageOfHintInputField(position)
-
-                    action.invoke(
-                        isValid,
-                        messageAmount,
-                        messageDiscount
-                    )
-                },
-                onValidationQuantity = { position, stock, isNeedToCheck, action ->
-                    viewModel.setStockAmount(position, stock)
-
-                    viewModel.checkAllValidationOfInputUser(position ,isNeedToCheck)
-
-                    val isStockInCriteria =
-                        viewModel.checkValidationStockInWarehouseWithPosition(position)
-                    val message = viewModel.getMessageOfHintStockField(position)
-                    action.invoke(isStockInCriteria, message)
-                }
-            ))
-            .build()
+    override fun createAdapterInstance() = inputAdapter.apply {
+        product?.let {
+            setDataList(it.childProducts[variantPositionOnProduct])
+            setListener(this@ManageProductMultiLocationVariantFragment)
+        }
     }
 
     override fun onDestroy() {
-        removeObservers(viewModel.buttonEnableState)
         viewModel.flush()
         super.onDestroy()
     }
 
-    private fun observeButtonSubmitState() {
-        observe(viewModel.buttonEnableState) { state ->
-            when {
-                state -> {
-                    enableButtonSubmit()
-                }
-                else -> {
-                    disableButtonSubmit()
-                }
+    private fun setupObservers() {
+        viewModel.isInputPageValid.observe(viewLifecycleOwner) {
+            buttonSubmit?.isEnabled = it
+        }
+        viewModel.enableBulkApply.observe(viewLifecycleOwner) {
+            if (it) enableWidgetBulkApply() else disableWidgetBulkApply()
+        }
+        viewModel.bulkApplyCaption.observe(viewLifecycleOwner) {
+            setWidgetBulkApplyText(it)
+        }
+    }
+
+    override fun onDataInputChanged(index: Int, criteria: ReservedProduct.Product.ProductCriteria, discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup): ValidationResult {
+        viewModel.product.value?.let {
+            val warehouses = inputAdapter.getDataList()
+            it.childProducts[variantPositionOnProduct].warehouses = warehouses
+            viewModel.setProduct(it, position = variantPositionOnProduct)
+        }
+        return viewModel.validateInput(criteria, discountSetup)
+    }
+
+    override fun calculatePrice(percentInput: Long, adapterPosition: Int): String {
+        val warehouses = (adapter as ManageProductVariantMultiLocationAdapter).getDataList()
+        val originalPrice = warehouses.getOrNull(adapterPosition)?.price.orZero()
+        return viewModel.calculatePrice(percentInput, originalPrice)
+    }
+
+    override fun calculatePercent(priceInput: Long, adapterPosition: Int): String {
+        val warehouses = (adapter as ManageProductVariantMultiLocationAdapter).getDataList()
+        val originalPrice = warehouses.getOrNull(adapterPosition)?.price.orZero()
+        return viewModel.calculatePercent(priceInput, originalPrice)
+    }
+
+    override fun onWidgetBulkApplyClicked() {
+        val product = viewModel.product.value
+        val param = BulkApplyMapper.mapProductToBulkParam(context ?: return, product ?: return)
+        val bSheet = ProductBulkApplyBottomSheet.newInstance(param)
+        bSheet.setOnApplyClickListener{
+            val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
+            inputAdapter = ManageProductVariantMultiLocationAdapter().apply {
+                setDataList(appliedProduct.childProducts[variantPositionOnProduct])
+                setListener(this@ManageProductMultiLocationVariantFragment)
             }
+            rvManageProductDetail?.adapter = inputAdapter
+            viewModel.setProduct(appliedProduct,variantPositionOnProduct)
         }
+        bSheet.show(childFragmentManager, "")
     }
-
-    private fun onToggleSwitched(itemPosition: Int, isChecked: Boolean) {
-        viewModel.setItemToggleValue(itemPosition, isChecked)
-        val mapper = viewModel.getFinalProductData().toItem(viewModel.getVariantData())
-        adapter?.submit(mapper)
-        setWidgetBulkApplyState(mapper)
-    }
-
-    private fun setWidgetBulkApplyState(newItems: List<ManageProductMultiLocationVariantItem>) {
-        var activeVariantCount = Int.ZERO
-        newItems.filter { it.isToggleOn }.map {
-            activeVariantCount++
-        }
-
-        if (activeVariantCount >= MINIMUM_VARIANT_TO_BULK_APPLY) {
-            setupWidgetBulkApply(
-                getString(
-                    R.string.stfs_active_location_bulk_apply_place_holder,
-                    activeVariantCount
-                ), true
-            )
-        } else {
-            setupWidgetBulkApply(
-                getString(R.string.stfs_inactive_location_bulk_apply_place_holder),
-                false
-            )
-        }
-    }
-
-    private fun ReservedProduct.Product.toItem(variant: ReservedProduct.Product.ChildProduct): List<ManageProductMultiLocationVariantItem> {
-        return variant.warehouses.map { Warehouse ->
-            ManageProductMultiLocationVariantItem(
-                isToggleOn = Warehouse.isToggleOn,
-                name = Warehouse.name,
-                priceInWarehouse = Warehouse.price.toString(),
-                priceInStore = ManageProductMultiLocationVariantItem.Price(
-                    price = variant.price.price,
-                    lowerPrice = variant.price.lowerPrice,
-                    upperPrice = variant.price.upperPrice
-                ),
-                warehouseId = Warehouse.warehouseId,
-                stock = Warehouse.stock,
-                productCriteria = this.productCriteria.toProductCriteriaInWarehouse()
-            )
-        }
-    }
-
 
     fun getIntentResult() : Intent {
         val intent = Intent()
         val bundle = Bundle()
-        bundle.putParcelable(BUNDLE_KEY_PRODUCT, viewModel.getProductResult())
+        bundle.putParcelable(BUNDLE_KEY_PRODUCT, viewModel.product.value)
         intent.putExtras(bundle)
         return intent
     }
