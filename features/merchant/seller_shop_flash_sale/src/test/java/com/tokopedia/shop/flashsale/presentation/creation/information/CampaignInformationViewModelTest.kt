@@ -5,6 +5,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
 import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
 import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
+import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
@@ -39,7 +40,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyLong
-import java.util.Date
+import java.util.*
 
 class CampaignInformationViewModelTest {
     @RelaxedMockK
@@ -721,7 +722,81 @@ class CampaignInformationViewModelTest {
         assertEquals(selection.showTeaser, createCampaignParam.showTeaser)
     }
 
+    @Test
+    fun `When create campaign success, should correctly store the campaignId`() = runBlocking {
+        //Given
+        val campaignIdNotCreated: Long = -1
+        val remoteCampaignId : Long = 100
+        val response = CampaignCreationResult(
+            campaignId = remoteCampaignId,
+            isSuccess = true,
+            totalProductFailed = 0,
+            errorDescription = "",
+            errorTitle = "",
+            errorMessage = ""
+        )
+        val selection = buildSelectionObject().copy(showTeaser = true)
+        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Create,
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType,
+            packageId = 1
+        )
 
+        coEvery { doSellerCampaignCreationUseCase.execute(createCampaignParam) } returns response
+
+        //When
+        viewModel.setCampaignId(campaignIdNotCreated)
+        viewModel.submit(selection)
+
+        //Then
+        coVerify { tracker.sendClickButtonProceedOnCampaignInfoPageEvent(remoteCampaignId, selection.vpsPackageId) }
+        assertEquals(remoteCampaignId, viewModel.getCampaignId())
+    }
+
+    @Test
+    fun `When create campaign error, campaignId value should stay -1`() = runBlocking {
+        //Given
+        val campaignIdNotCreated: Long = -1
+
+        val response = CampaignCreationResult(
+            campaignId = campaignIdNotCreated,
+            isSuccess = false,
+            totalProductFailed = 0,
+            errorDescription = "",
+            errorTitle = "",
+            errorMessage = ""
+        )
+        val selection = buildSelectionObject().copy(showTeaser = true)
+        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Create,
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType,
+            packageId = 1
+        )
+
+        coEvery { doSellerCampaignCreationUseCase.execute(createCampaignParam) } returns response
+
+        //When
+        viewModel.setCampaignId(campaignIdNotCreated)
+        viewModel.submit(selection)
+
+        //Then
+        coVerify { tracker.sendClickButtonProceedOnCampaignInfoPageEvent(campaignIdNotCreated, selection.vpsPackageId) }
+        assertEquals(campaignIdNotCreated, viewModel.getCampaignId())
+    }
 
     @Test
     fun `When create campaign error, observer should receive error`() = runBlocking {
@@ -883,10 +958,47 @@ class CampaignInformationViewModelTest {
     }
 
     @Test
-    fun `When update campaign after previously get campaign detail, should get correct values`() {
+    fun `When update campaign and previous campaign campaignRuleSubmit is false, should pass the correct params to remote`() {
         //Given
         val campaignId : Long= 1001
         val campaignRuleSubmit = false
+        val relatedCampaign = listOf(RelatedCampaign(1, "Shoes Flash Sale"))
+        val relatedCampaignId = listOf<Long>(1)
+        val campaign = buildCampaignUiModel(campaignId).copy(relatedCampaigns = relatedCampaign, isCampaignRuleSubmit = campaignRuleSubmit)
+        val selection = buildSelectionObject()
+        val params = DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Update(campaignId),
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType,
+            campaignRelation = relatedCampaignId,
+            isCampaignRuleSubmit = campaignRuleSubmit,
+            packageId = selection.vpsPackageId
+        )
+        val vpsPackages = listOf<VpsPackage>()
+
+        coEvery { getSellerCampaignPackageListUseCase.execute() } returns vpsPackages
+        coEvery { getSellerCampaignDetailUseCase.execute(campaignId) } returns campaign
+
+        //When
+        viewModel.setCampaignId(campaignId)
+        viewModel.getCampaignDetail(campaignId)
+        viewModel.submit(selection)
+
+        //Then
+        coVerify { doSellerCampaignCreationUseCase.execute(params) }
+    }
+
+    @Test
+    fun `When update campaign and previous campaign campaignRuleSubmit is true, should pass the correct params to remote`() {
+        //Given
+        val campaignId : Long= 1001
+        val campaignRuleSubmit = true
         val relatedCampaign = listOf(RelatedCampaign(1, "Shoes Flash Sale"))
         val relatedCampaignId = listOf<Long>(1)
         val campaign = buildCampaignUiModel(campaignId).copy(relatedCampaigns = relatedCampaign, isCampaignRuleSubmit = campaignRuleSubmit)
@@ -1167,6 +1279,128 @@ class CampaignInformationViewModelTest {
     }
     //endregion
 
+    //region getCampaignQuotaOfSelectedMonth
+    @Test
+    fun `When get campaign quota success, observer should successfully receive the data`() =
+        runBlocking {
+            //Given
+            val vpsPackageId: Long = 101
+
+            val remainingQuota = 5
+            val campaignAttribute = CampaignAttribute(
+                success = true,
+                errorMessage = "",
+                listOf(),
+                remainingCampaignQuota = remainingQuota
+            )
+            val expected = Success(remainingQuota)
+
+            coEvery { getSellerCampaignAttributeUseCase.execute(month = 8, year = 2022, vpsPackageId = vpsPackageId) } returns campaignAttribute
+
+            //When
+            viewModel.getCampaignQuotaOfSelectedMonth(month = 8, year = 2022, vpsPackageId = vpsPackageId)
+
+            //Then
+            val actual = viewModel.campaignQuota.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When get campaign quota error, observer should receive error result`() =
+        runBlocking {
+            //Given
+            val vpsPackageId: Long = 101
+            val error = MessageErrorException("Server error")
+            val expected = Fail(error)
+
+
+            coEvery { getSellerCampaignAttributeUseCase.execute(month = 8, year = 2022, vpsPackageId = vpsPackageId) }  throws error
+
+            //When
+            viewModel.getCampaignQuotaOfSelectedMonth(month = 8, year = 2022, vpsPackageId = vpsPackageId)
+
+            //Then
+            val actual = viewModel.campaignQuota.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+    //endregion
+
+    //region getVpsPackages
+    @Test
+    fun `When get vps packages success, observer should successfully receive the data`() =
+        runBlocking {
+            //Given
+            val selectedVpsPackageId: Long = 1
+            val now = GregorianCalendar(2020, 8, 1, 7,0,0).time
+
+            val packageStartTime = now
+            val packageEndTime = now.advanceDayBy(days = 2)
+
+            val packageStartTimeEpoch = (packageStartTime.time / 1000)
+            val packageEndTimeEpoch = (packageEndTime.time / 1000)
+
+            val packageStartTimeDate = packageStartTime.removeTimeZone()
+            val packageEndTimeDate = packageEndTime.removeTimeZone()
+
+            val vpsPackageId: Long = 101
+
+            val response = listOf(
+                VpsPackage(
+                    packageId = selectedVpsPackageId.toString(),
+                    remainingQuota = 45,
+                    currentQuota = 5,
+                    isDisabled = false,
+                    originalQuota = 50,
+                    packageEndTime = packageEndTimeEpoch,
+                    packageName = "Elite VPS Package",
+                    packageStartTime = packageStartTimeEpoch
+                )
+            )
+            val vpsPackages = listOf(
+                VpsPackageUiModel(
+                    packageId = selectedVpsPackageId,
+                    remainingQuota = 45,
+                    currentQuota = 5,
+                    originalQuota = 50,
+                    packageEndTime = packageEndTimeDate,
+                    packageName = "Elite VPS Package",
+                    packageStartTime = packageStartTimeDate,
+                    isSelected = false,
+                    disabled = false,
+                    isShopTierBenefit = false
+                )
+            )
+            val expected = Success(vpsPackages)
+
+            coEvery { getSellerCampaignPackageListUseCase.execute() } returns response
+
+            //When
+            viewModel.getVpsPackages(vpsPackageId)
+
+            //Then
+            val actual = viewModel.vpsPackages.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When get vps packages error, observer should receive error result`() =
+        runBlocking {
+            //Given
+            val vpsPackageId: Long = 101
+            val error = MessageErrorException("Server error")
+            val expected = Fail(error)
+
+
+            coEvery { getSellerCampaignPackageListUseCase.execute()  }  throws error
+
+            //When
+            viewModel.getVpsPackages(vpsPackageId)
+
+            //Then
+            val actual = viewModel.vpsPackages.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+    //endregion
     private fun buildSelectionObject(): CampaignInformationViewModel.Selection {
         return CampaignInformationViewModel.Selection(
             "Adidas Sale",
