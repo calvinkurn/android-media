@@ -44,6 +44,7 @@ import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -52,6 +53,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -69,10 +71,12 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     lateinit var userSessionInterface: UserSessionInterface
 
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
-    private  val adapter: AffiliateAdapter by lazy {
-        AffiliateAdapter(AffiliateAdapterFactory(null, null, this),
-        source = AffiliateAdapter.SOURCE_PROMOSIKAN,
-        userId = userSessionInterface.userId)
+    private val adapter: AffiliateAdapter by lazy {
+        AffiliateAdapter(
+            AffiliateAdapterFactory(null, null, this),
+            source = AffiliateAdapter.SOURCE_PROMOSIKAN,
+            userId = userSessionInterface.userId
+        )
     }
 
     private val tabFragments = arrayListOf<Fragment>()
@@ -114,7 +118,11 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         product_link_et.run {
             setRelatedView(dim_layer)
             setDoneAction {
-                affiliatePromoViewModel.getSearch(editText.text.toString())
+                editText.text.let {
+                    if (it.isNotEmpty()) {
+                        affiliatePromoViewModel.getSearch(it.toString())
+                    }
+                }
             }
             setEventListener(this@AffiliatePromoFragment)
         }
@@ -134,6 +142,17 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
             setOnBackButtonClickListener {
                 handleBack()
             }
+        }
+        view?.findViewById<UnifyButton>(R.id.search_button)?.setOnClickListener {
+            view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.let {
+                it.editingState(false)
+                if (it.editText.text?.isNotEmpty() == true) {
+                    affiliatePromoViewModel.getSearch(it.toString())
+                }
+            }
+        }
+        view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.editText?.afterTextChanged {
+            view?.findViewById<UnifyButton>(R.id.search_button)?.isEnabled = it.isNotEmpty()
         }
         setupViewPager()
         showDefaultState()
@@ -268,6 +287,7 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
             )
         }
     }
+
     private fun onGetAffiliateSearchData(affiliateSearchData: AffiliateSearchData) {
         resetAdapter()
         if (affiliateSearchData.searchAffiliate?.data?.status == 0) {
@@ -317,7 +337,8 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
             }
         }
     }
-    private fun resetAdapter(){
+
+    private fun resetAdapter() {
         adapter.clearAllElements()
         view?.findViewById<RecyclerView>(R.id.promotion_recycler_view)?.apply {
             adapter = null

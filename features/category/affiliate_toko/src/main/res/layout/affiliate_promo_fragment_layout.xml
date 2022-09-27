@@ -87,10 +87,11 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="6dp"
                 android:text="@string/promo_search_cta_text"
+                android:enabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/product_link_et"
                 app:layout_constraintTop_toTopOf="@id/product_link_et"
-                app:unifyButtonSize="medium"
+                app:unifyButtonSize="large"
                 app:unifyButtonVariant="filled" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify2>
