@@ -88,8 +88,8 @@ abstract class BaseTokoNowRecipeListViewModel(
             val response = getRecipeListUseCase.execute(getRecipeListParam)
             hasNext = response.metadata.hasNext
 
-            visitableItems.addRecipeCount(response)
             if (response.data.recipes.isNotEmpty()) {
+                visitableItems.addRecipeCount(response)
                 visitableItems.addRecipeItems(
                     response = response
                 )
