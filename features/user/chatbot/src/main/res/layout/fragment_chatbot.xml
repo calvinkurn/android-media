@@ -16,21 +16,12 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/float_chat_item"
+        <com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
+            android:id="@+id/floating_invoice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/chatbot_chat_background"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <include
-                layout="@layout/attached_invoice_float_chat_item"
-                android:layout_width="@dimen/dp_chatbot_220"
-                android:layout_height="wrap_content">
-
-            </include>
-        </RelativeLayout>
+            android:background="@color/Unify_N50"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/add_comment_area"
@@ -47,9 +38,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_chatbot_3"
                 android:layout_marginRight="@dimen/dp_chatbot_3"
-                android:background="@color/chatbot_chat_background"
-                android:paddingLeft="@dimen/spacing_lvl4"
-                android:paddingTop="@dimen/spacing_lvl3"
+                android:background="@color/Unify_N50"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
                 android:visibility="gone"
                 tools:itemCount="1"
                 tools:listitem="@layout/chatbot_item_quick_reply"
