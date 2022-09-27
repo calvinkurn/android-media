@@ -9,5 +9,6 @@ data class FavoriteShopViewModel (
         var adapterPosition: Int = 0,
         var errorMessage: String = "",
         var isSuccess: Boolean = false,
-        var isUnfollowFromShopsMenu: Boolean = false
+        var isUnfollowFromShopsMenu: Boolean = false,
+        var isFollowedFromFollowRestrictionBottomSheet: Boolean = false
 )

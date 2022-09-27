@@ -10,6 +10,12 @@ data class FeedXGQLResponse(
 data class FeedXGetActivityProductsResponse(
         @SerializedName("products")
         var products: List<FeedXProduct> = emptyList(),
+        @SerializedName("isFollowed")
+        var isFollowed: Boolean ,
+        @SerializedName("contentType")
+        var contentType: String ,
+        @SerializedName("campaign")
+        var campaign: FeedXCampaign ,
         @SerializedName("nextCursor")
         var nextCursor: String = "",
 )

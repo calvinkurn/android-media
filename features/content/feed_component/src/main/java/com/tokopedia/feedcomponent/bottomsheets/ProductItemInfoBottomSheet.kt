@@ -18,6 +18,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewMode
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.item_posttag.*
 
 class ProductItemInfoBottomSheet : BottomSheetUnify() {
@@ -179,6 +180,21 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 putBoolean(ProductPostTagViewModelNew.WISHLIST_ITEM_CLICKED, true)
             }
             adapter.notifyItemChanged(rowNumber, payload)
+        }
+    }
+
+    fun showToasterOnBottomSheetOnSuccessFollow(message: String, type: Int, actionText: String? = null) {
+        view?.rootView?.let {
+            context?.resources?.let { resource ->
+                Toaster.toasterCustomBottomHeight =
+                    resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
+            }
+            if (actionText?.isEmpty() == false)
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type, actionText)
+                    .show()
+            else {
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
+            }
         }
     }
 

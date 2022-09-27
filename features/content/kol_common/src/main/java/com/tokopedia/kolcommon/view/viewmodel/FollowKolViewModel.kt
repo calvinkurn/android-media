@@ -13,5 +13,6 @@ data class FollowKolViewModel (
         var errorMessage: String = "",
         var isSuccess: Boolean = false,
         var isFollow: Boolean = false,
-        var position: Int = 0
+        var position: Int = 0,
+        var isFollowedFromFollowRestrictionBottomSheet: Boolean = false
 )

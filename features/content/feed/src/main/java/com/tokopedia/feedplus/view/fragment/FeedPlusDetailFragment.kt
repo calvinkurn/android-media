@@ -24,8 +24,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.ProductActionBottomSheet
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedplus.R
@@ -73,10 +77,8 @@ import javax.inject.Inject
 private const val ARGS_DETAIL_ID = "DETAIL_ID"
 private const val REQUEST_OPEN_PDP = 111
 private const val TYPE = "text/plain"
-private const val PLACEHOLDER_LINK = "{{branchlink}}"
-private const val TITLE_OTHER = "Lainnya"
 
-class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, ShareCallback {
+class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, ShareCallback, FeedFollowersOnlyBottomSheet.Listener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerviewScrollListener: EndlessScrollRecycleListener
@@ -84,8 +86,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private lateinit var adapter: DetailFeedAdapter
     private lateinit var pagingHandler: PagingHandler
     private lateinit var feedViewModel: FeedViewModel
+    private lateinit var campaignData: FeedXCampaign
     private var detailId: String = ""
     private var shopId: String = ""
+    private var authorType: String = ""
     private var shopName: String = ""
     private var postType: String = ""
     private var saleType: String = ""
@@ -109,6 +113,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var presenter: FeedDetailViewModel
+    private lateinit var feedFollowersOnlyBottomSheet: FeedFollowersOnlyBottomSheet
 
     @Inject
     lateinit var analytics: FeedAnalytics
@@ -173,6 +178,49 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 }
             })
 
+            followKolResp.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Success -> {
+                        val data = it.data
+                        if (data.isSuccess) {
+                            if (data.isFollow) {
+                                showToast(
+                                    getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                    Toaster.TYPE_NORMAL
+                                )
+                            }
+                        }
+                    }
+                    is Fail -> {
+                        val message = it.throwable.message
+                            ?: getString(R.string.default_request_error_unknown)
+                        showToast(message, Toaster.TYPE_ERROR)
+                    }
+                }
+            })
+
+            toggleFavoriteShopResp.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Success -> {
+                        val data = it.data
+                        if (data.isSuccess) {
+                            showToast(
+                                getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                Toaster.TYPE_NORMAL
+                            )
+                            if (::feedFollowersOnlyBottomSheet.isInitialized) {
+                                feedFollowersOnlyBottomSheet.dismiss()
+                            }
+                        }
+                    }
+                    is Fail -> {
+                        val message = it.throwable.message
+                            ?: getString(R.string.default_request_error_unknown)
+                        showToast(message, Toaster.TYPE_ERROR)
+                    }
+                }
+            })
+
         }
     }
 
@@ -193,6 +241,13 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             arguments?.run {
                 getString(FeedPlusDetailActivity.PARAM_SHOP_ID)?.let {
                     shopId = it
+                }
+            }
+        }
+        if (authorType.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_AUTHOR_TYPE)?.let {
+                    authorType = it
                 }
             }
         }
@@ -288,6 +343,30 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         return view
     }
 
+    private fun onFollowKolClicked(rowNumber: Int, id: Int) {
+        if (userSession.isLoggedIn) {
+            feedViewModel.doFollowKol(id, rowNumber)
+        } else {
+            onGoToLogin()
+        }
+    }
+
+    private fun onShopFollowRequestedFromBottomSheet(){
+        if (userSession.isLoggedIn) {
+            if (authorType == FollowCta.AUTHOR_USER) {
+                onFollowKolClicked(0, shopId.toIntOrZero())
+            } else if (authorType == FollowCta.AUTHOR_SHOP) {
+                feedViewModel.doToggleFavoriteShop(
+                    rowNumber = 0,
+                    adapterPosition = 0,
+                    shopId = shopId,
+                    follow = false
+                )
+            }
+        } else {
+            onGoToLogin()
+        }
+    }
 
     private fun prepareView() {
         recyclerView.layoutManager = layoutManager
@@ -342,7 +421,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     }
 
                     is FeedDetailViewState.Success -> {
-                        onSuccessGetFeedDetail(it.feedDetailList, it.cursor)
+                        onSuccessGetFeedDetail(it.feedXGetActivityProductsResponse)
                     }
 
                     is FeedDetailViewState.Error -> {
@@ -357,14 +436,17 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         }
     }
     private fun onSuccessGetFeedDetail(
-            products: List<FeedXProduct>,
-            cursor: String) {
+            data: FeedXGetActivityProductsResponse) {
         setUpShopDataHeader()
-        productList.addAll(products)
-        val ret = mapPostTag(products)
+        isFollowed = data.isFollowed
+        campaignData = data.campaign
+        productList.addAll(data.products)
+        val ret = mapPostTag(data.products)
         adapter.addList(ret)
-        pagingHandler.setHasNext(ret.size > 1 && cursor.isNotEmpty())
+        pagingHandler.setHasNext(ret.size > 1 && data.nextCursor.isNotEmpty())
         adapter.notifyDataSetChanged()
+        if (shouldShowFollowerBottomSheet())
+            showFollowerBottomSheet()
     }
     private fun onErrorGetFeedDetail(error: Throwable) {
         dismissLoading()
@@ -372,9 +454,15 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
         }
     }
+    private fun shouldShowFollowerBottomSheet() =
+        ::campaignData.isInitialized && campaignData.isRilisanSpl && !isFollowed
 
     private fun onEmptyFeedDetail() {
         adapter.showEmpty()
+    }
+    private fun showFollowerBottomSheet() {
+        feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
+        feedFollowersOnlyBottomSheet.show(childFragmentManager, this)
     }
 
     override fun onStart() {
@@ -484,17 +572,21 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             }
             else ""
 
-        onTagSheetItemBuy(
-            item.postId.toString(),
-            item.positionInFeed,
-            item.product,
-            item.shopId,
-            item.postType,
-            item.isFollowed,
-            item.shopName,
-            item.playChannelId,
-            campaignTrackerValue
-        )
+        if (shouldShowFollowerBottomSheet()) {
+            showFollowerBottomSheet()
+        } else {
+            onTagSheetItemBuy(
+                item.postId.toString(),
+                item.positionInFeed,
+                item.product,
+                item.shopId,
+                item.postType,
+                item.isFollowed,
+                item.shopName,
+                item.playChannelId,
+                campaignTrackerValue
+            )
+        }
     }
 
     private fun onShareProduct(
@@ -738,6 +830,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         }
     }
 
+    override fun onFollowClickedFromFollowBottomSheet(position: Int) {
+        onShopFollowRequestedFromBottomSheet()
+    }
 
     private fun setUpShopDataHeader() {
         (activity as FeedPlusDetailActivity).getShopInfoLayout()?.run {
@@ -927,6 +1022,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
     override fun onDestroyView() {
+        if (::feedFollowersOnlyBottomSheet.isInitialized) {
+            feedFollowersOnlyBottomSheet.onDestroy()
+        }
         Toaster.onCTAClick = View.OnClickListener { }
         super.onDestroyView()
     }

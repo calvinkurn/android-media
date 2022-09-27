@@ -141,4 +141,11 @@ dari Feed.</string>
     <string name="feed_play_header_upcoming_text">Nantikan live seru lainnya!</string>
     <string name="btn_add_to_cart_text">+ Keranjang</string>
 
+    <!--Follow Bottom Sheet-->
+    <string name="feed_follow_bottom_sheet_button_text">Follow</string>
+    <string name="feed_follow_bottom_sheet_title_text">Follow toko ini dulu, yuk!</string>
+    <string name="feed_follow_bottom_sheet_desc_text">Supaya kamu bisa beli produk eksklusif ini.</string>
+    <string name="feed_follow_bottom_sheet_success_toaster_text">Kamu berhasil follow toko. Yuk, buruan beli produknya sebelum kehabisan!</string>
+    <string name="feed_asgc_campaign_cta_copywriting_text">Eksklusif untuk Follower Toko</string>
+
 </resources>

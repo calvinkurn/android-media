@@ -72,9 +72,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
         }
 
         feedQuery.data.let {
-
-            feedDetailLiveData.value = FeedDetailViewState.Success(it.products,
-                    it.nextCursor)
+            feedDetailLiveData.value = FeedDetailViewState.Success(it)
         }
     }
 

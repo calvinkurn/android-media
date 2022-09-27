@@ -24,8 +24,12 @@ data class FeedXCampaign(
     val isUpcoming: Boolean
         get() = status == Upcoming
 
+    val isRilisanSpl: Boolean
+        get() = name == ASGC_RILISAN_SPECIAL
+
     companion object {
         private const val Upcoming = "upcoming"
+        private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"
     }
 }
 

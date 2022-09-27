@@ -17,7 +17,11 @@ interface KolPostViewHolderListener {
     fun trackTooltipClick(hasMultipleContent: Boolean, activityId: String,
                           activityType: String, position: String)
 
-    fun onFollowKolClicked(rowNumber: Int, id: Int)
+    fun onFollowKolClicked(
+        rowNumber: Int,
+        id: Int,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean = false
+    )
 
     fun onUnfollowKolClicked(rowNumber: Int, id: Int)
 
