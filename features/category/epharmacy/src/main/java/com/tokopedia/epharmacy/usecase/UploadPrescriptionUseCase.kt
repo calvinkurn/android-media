@@ -17,6 +17,7 @@ import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.url.TokopediaUrl
 import java.io.ByteArrayOutputStream
+import java.lang.NullPointerException
 import java.lang.reflect.Type
 import javax.inject.Inject
 

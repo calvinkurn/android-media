@@ -89,6 +89,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.viewmodel.
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.removeTime
@@ -823,6 +824,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tickerErrorMessage?.visible()
         binding?.tickerErrorMessage?.tickerTitle = title
         binding?.tickerErrorMessage?.setTextDescription(description)
+        binding?.tickerErrorMessage?.tickerShape = Ticker.SHAPE_LOOSE
+        binding?.tickerErrorMessage?.tickerType = Ticker.TYPE_ERROR
+    }
+
+    private fun showVpsPackageAutomaticallyAdjustedTicker() {
+        binding?.tickerErrorMessage?.visible()
+        binding?.tickerErrorMessage?.tickerTitle = ""
+        binding?.tickerErrorMessage?.setTextDescription(getString(R.string.sfs_vps_package_auto_switch))
+        binding?.tickerErrorMessage?.tickerShape = Ticker.SHAPE_LOOSE
+        binding?.tickerErrorMessage?.tickerType = Ticker.TYPE_ANNOUNCEMENT
     }
 
     private fun hideErrorTicker() {
@@ -837,26 +848,50 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tickerLapsedTeaser?.gone()
     }
 
-    private fun displayCampaignDetail(combinedData: CampaignWithVpsPackages) {
-        val campaign = combinedData.campaign
-        val quotaSource = viewModel.findDefaultQuotaSourceOnEditMode(campaign.packageInfo.packageId, combinedData.vpsPackages)
+    private fun displayCampaignDetail(campaignWithSelectedVpsPackage: CampaignWithVpsPackages) {
+        val now = Date()
+        val campaign = campaignWithSelectedVpsPackage.campaign
+        val selectedVpsPackage = viewModel.findSelectedVpsPackage(
+            campaign.packageInfo.packageId,
+            campaignWithSelectedVpsPackage.vpsPackages
+        )
+
+        val updatedVpsPackage = viewModel.findSuggestedVpsPackage(now, selectedVpsPackage, campaignWithSelectedVpsPackage.vpsPackages) ?: return
+        val isSelectedVpsPackageExpired = now.after(selectedVpsPackage?.packageEndTime)
+
+        val campaignStartDate = if (isSelectedVpsPackageExpired) {
+            now.advanceHourBy(TWO_HOURS)
+        } else {
+            campaign.startDate.removeTimeZone()
+        }
+
+        val campaignEndDate = if (isSelectedVpsPackageExpired) {
+            campaignStartDate.advanceMinuteBy(THIRTY_MINUTE)
+        } else {
+            campaign.endDate.removeTimeZone()
+        }
+
+        val campaignUpcomingDate = if (isSelectedVpsPackageExpired) {
+            campaignStartDate.decreaseHourBy(ONE_HOUR)
+        } else {
+            campaign.upcomingDate.removeTimeZone()
+        }
+
+        if (isSelectedVpsPackageExpired) showVpsPackageAutomaticallyAdjustedTicker()
 
         binding?.run {
             tauCampaignName.editText.setText(campaign.campaignName)
 
-            displaySelectedVpsPackage(quotaSource)
+            displaySelectedVpsPackage(updatedVpsPackage)
 
             val isEditDateEnabled = campaign.status == CampaignStatus.DRAFT
-            tauStartDate.editText.setText(campaign.startDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
-            tauEndDate.editText.setText(campaign.endDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            tauStartDate.editText.setText(campaignStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+            tauEndDate.editText.setText(campaignEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
             tauStartDate.isEnabled = isEditDateEnabled
             tauEndDate.isEnabled = isEditDateEnabled
 
-            val upcomingTimeInHours = viewModel.findUpcomingTimeDifferenceInHour(
-                campaign.startDate.removeTimeZone(),
-                campaign.upcomingDate.removeTimeZone()
-            )
-            val maxValue = viewModel.getTeaserQuantityEditorMaxValue( campaign.startDate.removeTimeZone(), Date())
+            val upcomingTimeInHours = viewModel.findUpcomingTimeDifferenceInHour(campaignStartDate, campaignUpcomingDate)
+            val maxValue = viewModel.getTeaserQuantityEditorMaxValue(campaignStartDate, Date())
             binding?.quantityEditor?.maxValue = maxValue
             binding?.quantityEditor?.setValue(upcomingTimeInHours)
             binding?.quantityEditor?.addButton?.isEnabled = upcomingTimeInHours != QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
@@ -867,21 +902,21 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             renderSelectedColor(campaign)
         }
 
-        viewModel.setSelectedStartDate(campaign.startDate.removeTimeZone())
-        viewModel.setSelectedEndDate(campaign.endDate.removeTimeZone())
+        viewModel.setSelectedStartDate(campaignStartDate)
+        viewModel.setSelectedEndDate(campaignEndDate)
         viewModel.setShowTeaser(campaign.useUpcomingWidget)
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
-        viewModel.storeVpsPackage(combinedData.vpsPackages)
-        viewModel.setSelectedVpsPackage(quotaSource ?: return)
+        viewModel.storeVpsPackage(campaignWithSelectedVpsPackage.vpsPackages)
+        viewModel.setSelectedVpsPackage(updatedVpsPackage)
 
         viewModel.storeAsDefaultSelection(
             CampaignInformationViewModel.Selection(
                 campaign.campaignName,
-                campaign.startDate.removeTimeZone(),
-                campaign.endDate.removeTimeZone(),
+                campaignStartDate,
+                campaignEndDate,
                 campaign.useUpcomingWidget,
-                campaign.upcomingDate.removeTimeZone(),
+                campaignUpcomingDate,
                 campaign.gradientColor.first,
                 campaign.gradientColor.second,
                 campaign.paymentType,

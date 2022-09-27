@@ -2,14 +2,16 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Html
 import android.text.InputType
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -98,6 +100,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_GEN
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_SUMMARY_DIALOG_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
+import com.tokopedia.tokomember_seller_dashboard.util.TM_SUMMARY_DIALOG_TITLE_START_TEXT
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
@@ -200,7 +203,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         tmEligibilityViewModel.getSellerInfo()
         shopName = arguments?.getString(BUNDLE_SHOP_NAME)?:""
         shopAvatar = arguments?.getString(BUNDLE_SHOP_AVATAR)?:""
@@ -900,7 +902,16 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             loaderDialog?.loaderText?.apply {
                 setType(Typography.DISPLAY_2)
             }
-            loaderDialog?.setLoadingText(Html.fromHtml(TM_SUMMARY_DIALOG_TITLE))
+//
+            val ss = SpannableString(TM_SUMMARY_DIALOG_TITLE)
+            ss.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0, TM_SUMMARY_DIALOG_TITLE_START_TEXT.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            loaderDialog?.setLoadingText(ss)
+        loaderDialog?.loaderText?.gravity=Gravity.CENTER_HORIZONTAL
+
             loaderDialog?.show()
     }
 
@@ -1135,6 +1146,13 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         val firstIndex = COUPON_TERMS_CONDITION.indexOf(TERMS)
         ss.setSpan(
             clickableSpan,
+            firstIndex,
+            firstIndex + TERNS_AND_CONDITION.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        ss.setSpan(
+            StyleSpan(Typeface.BOLD),
             firstIndex,
             firstIndex + TERNS_AND_CONDITION.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
