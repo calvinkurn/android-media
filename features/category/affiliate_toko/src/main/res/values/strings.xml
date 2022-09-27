@@ -27,7 +27,8 @@
     <string name="affiliate_never_bought_product">Cari produknya dulu, yuk!</string>
     <string name="affiliate_still_buy_products">Kalau udah ada produk yang mau dipromosikan, segera salin link-nya, lalu tempel di sini.</string>
     <string name="affiliate_paste_link">Tempel Link</string>
-    <string name="affiliate_paste_product_link">Tempel link produk di sini</string>
+    <string name="affiliate_paste_product_link">Punya link produk atau toko?</string>
+    <string name="affiliate_paste_product_link_desc">Tempel link &amp; cek buat mulai promosikan</string>
     <string name="affiliate_active">Aktif</string>
     <string name="affiliate_inactive">Tidak Aktif</string>
     <string name="affiliate_how_to_promote">Gimana cara promosikannya?</string>
@@ -147,4 +148,5 @@
     <string name="no_promoted_products_message">Kamu bisa cari %s di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
     <string name="no_promoted_toko_message">Kamu bisa cari %s terbaik di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
     <string name="no_promoted_products_cta">Cari %s</string>
+    <string name="promo_search_cta_text">Cek</string>
 </resources>

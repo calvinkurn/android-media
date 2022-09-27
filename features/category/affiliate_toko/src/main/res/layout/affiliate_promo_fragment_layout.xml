@@ -15,64 +15,113 @@
         app:layout_constraintTop_toTopOf="parent"
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
-        app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
         app:toolbarContentType="typeCustom"
+        app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
         app:toolbarInitialFillColor="transparent"
-        app:toolbarInitialTheme="light"/>
+        app:toolbarInitialTheme="light" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_link_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl4"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/promo_navToolbar"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        android:text="@string/affiliate_paste_product_link" />
-
-    <com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
-        android:id="@+id/product_link_et"
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/promo_link_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/product_link_text"
-        app:layout_constraintStart_toStartOf="@id/product_link_text"
-        app:unify_text_field_placeholder="https://tokopedia.com/lipstick..."
-        app:unify_text_field_clearable="true"
-        app:unify_text_field_label_static="true"
-        />
+        android:layout_marginHorizontal="16dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="12dp"
+        app:layout_constraintTop_toBottomOf="@id/promo_navToolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="12dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="16dp">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/promo_link_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/affiliate_paste_product_link"
+                android:textColor="@color/Unify_NN950"
+                app:fontFamily=""
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="display_2"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/promo_link_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/affiliate_paste_product_link_desc"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/promo_link_title"
+                app:typographyType="display_3" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/promo_link_info"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_name="INFORMATION"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
+                android:id="@+id/product_link_et"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toStartOf="@id/search_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/promo_link_desc"
+                app:unify_text_field_clearable="true"
+                app:unify_text_field_label_static="true"
+                app:unify_text_field_placeholder="https://tokopedia.com/lipstick..." />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/search_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="6dp"
+                android:text="@string/promo_search_cta_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/product_link_et"
+                app:layout_constraintTop_toTopOf="@id/product_link_et"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="filled" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify2>
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/promotion_card_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/product_link_et"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:typographyType="body_3"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/affiliate_produk_ditemukan"
         android:visibility="gone"
-        tools:visibility="visible"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/promo_link_card"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/promo_affiliate_progress_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="promo_affiliate_progress_bar,promo_affiliate_progress_title"
-        />
+        app:constraint_referenced_ids="promo_affiliate_progress_bar,promo_affiliate_progress_title" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/promo_affiliate_progress_bar"
-        android:layout_width="@dimen/unify_space_32"
-        android:layout_height="@dimen/unify_space_32"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -84,32 +133,30 @@
         android:id="@+id/promo_affiliate_progress_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:typographyType="heading_3"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/promo_affiliate_progress_bar"
+        android:layout_marginTop="16dp"
         android:text="@string/affiliate_tunggu_ya_produknya_lagi_dicari"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/promo_affiliate_progress_bar"
+        app:typographyType="heading_3" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/promotion_card_title"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="@dimen/unify_space_48"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/promotion_card_title">
+
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/promotion_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/promotion_recycler_view"
             android:visibility="visible"
             tools:itemCount="1"
             tools:listitem="@layout/affiliate_promotion_product_card_item_layout"
-            tools:visibility="gone"
-            />
+            tools:visibility="gone" />
 
         <RelativeLayout
             android:id="@+id/recommended_layout"
@@ -118,9 +165,8 @@
             android:descendantFocusability="blocksDescendants"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            app:layout_constraintTop_toTopOf="parent"
             android:visibility="gone"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout_recommended"
@@ -136,12 +182,13 @@
                 app:tabTextColor="@color/Unify_N700_68" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
-                app:tickerType="announcement"
-                android:visibility="gone"
                 android:id="@+id/affiliate_announcement_ticker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tab_layout_recommended"/>
+                android:layout_below="@id/tab_layout_recommended"
+                android:visibility="gone"
+                app:tickerType="announcement" />
+
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/view_pager_recommended"
                 android:layout_width="match_parent"
@@ -155,13 +202,13 @@
         android:id="@+id/dim_layer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/Unify_NN900"
+        android:layout_marginTop="12dp"
         android:alpha="0.7"
+        android:background="@color/Unify_NN900"
         android:gravity="center"
         android:visibility="gone"
-        android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_link_et"
-        tools:visibility="invisible"/>
+        app:layout_constraintTop_toBottomOf="@id/promo_link_card"
+        tools:visibility="invisible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
