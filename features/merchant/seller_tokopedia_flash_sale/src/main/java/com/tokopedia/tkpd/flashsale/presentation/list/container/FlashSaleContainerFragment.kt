@@ -28,7 +28,11 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragmen
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -114,7 +118,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
         renderLoadingState(uiState.isLoading, uiState.error)
-        renderTicker(uiState.showTicker, uiState.error)
+        renderTicker(uiState.showTicker, uiState.tickerMessage, uiState.error, uiState.isLoading)
         renderTabs(uiState.tabs, uiState.error, findTargetTabDestination() ?: return)
         renderErrorState(uiState.error)
     }
@@ -177,21 +181,17 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderTicker(shouldDisplayTicker: Boolean, error: Throwable?) {
-        binding?.run {
-            val isError = error != null
-            ticker.isVisible = shouldDisplayTicker && !isError
-            ticker.setHtmlDescription(getString(R.string.stfs_multi_location_ticker))
-            ticker.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    routeToUrl(linkUrl.toString())
-                }
+    private fun renderTicker(
+        showTicker: Boolean,
+        remoteTickerMessage: String,
+        error: Throwable?,
+        isLoading: Boolean
+    ) {
+        val isError = error != null
+        val shouldDisplayTicker = showTicker && !isError && !isLoading
 
-                override fun onDismiss() {
-                    viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker)
-                }
-
-            })
+        if (shouldDisplayTicker) {
+            displayTicker(remoteTickerMessage)
         }
     }
 
@@ -216,6 +216,47 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
             val tab = tabLayout?.getTabAt(tabPosition)
             tab?.select()
+        }
+    }
+
+    private fun displayTicker(remoteTickerMessage: String) {
+        binding?.run {
+            ticker.isVisible = true
+
+            val defaultTicker = TickerData(
+                title = "",
+                description = getString(R.string.stfs_multi_location_ticker),
+                isFromHtml = true,
+                type = Ticker.TYPE_ANNOUNCEMENT
+            )
+            val remoteTicker = TickerData(
+                title = "",
+                description = remoteTickerMessage,
+                isFromHtml = true,
+                type = Ticker.TYPE_ANNOUNCEMENT
+            )
+
+            val tickers = if (remoteTickerMessage.isEmpty()) listOf(defaultTicker) else listOf(defaultTicker, remoteTicker)
+
+            val tickerAdapter = TickerPagerAdapter(activity ?: return, tickers)
+            tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    routeToUrl(linkUrl.toString())
+                }
+            })
+
+
+            ticker.addPagerView(tickerAdapter, tickers)
+            ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    routeToUrl(linkUrl.toString())
+                }
+
+                override fun onDismiss() {
+                    viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker)
+                }
+
+            })
         }
     }
 
