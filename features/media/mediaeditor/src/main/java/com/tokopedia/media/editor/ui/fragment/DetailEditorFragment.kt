@@ -536,15 +536,25 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun readPreviousState() {
-        if (viewBinding?.imgUcropPreview?.isVisible == false && data.cropRotateValue.imageWidth != 0) {
-            manualCropBitmap(data.cropRotateValue)
+        var cropScale = 0f
+        var rotateIndexNumber = -1
+        var watermarkIndexNumber = -1
+        detailState.getFilteredStateList().forEachIndexed { index, editorDetailUi ->
+            if (editorDetailUi.isToolWatermark()) watermarkIndexNumber = index
+            if (editorDetailUi.cropRotateValue.isRotate) rotateIndexNumber = index
+
+            if (editorDetailUi.cropRotateValue.isCrop) cropScale = editorDetailUi.cropRotateValue.scale
+            if (editorDetailUi.editorToolType == data.editorToolType) return@forEachIndexed
+            readPreviousDetailState(editorDetailUi)
         }
 
-        var cropScale = 0f
-        detailState.getFilteredStateList().forEach { editorDetailUi ->
-            if (editorDetailUi.cropRotateValue.isCrop) cropScale = editorDetailUi.cropRotateValue.scale
-            if (editorDetailUi.editorToolType == data.editorToolType) return@forEach
-            readPreviousDetailState(editorDetailUi)
+        // need to provide sequence for watermark that implemented before / after rotate
+        if (watermarkIndexNumber < rotateIndexNumber) {
+            implementPreviousWatermark(data)
+        }
+
+        if (viewBinding?.imgUcropPreview?.isVisible == false && data.cropRotateValue.imageWidth != 0) {
+            manualCropBitmap(data.cropRotateValue)
         }
 
         if((data.isToolRotate() || data.isToolCrop()) && data.cropRotateValue.imageWidth != 0) {
@@ -552,6 +562,10 @@ class DetailEditorFragment @Inject constructor(
             implementPreviousStateCrop(data.cropRotateValue)
 
             if(cropScale != 0f) viewModel.rotateInitialScale = cropScale
+        }
+
+        if (watermarkIndexNumber > rotateIndexNumber) {
+            implementPreviousWatermark(data)
         }
 
         implementedBaseBitmap = getBitmap()
@@ -563,7 +577,6 @@ class DetailEditorFragment @Inject constructor(
             when (editorToolType) {
                 EditorToolType.BRIGHTNESS -> implementPreviousStateBrightness(brightnessValue)
                 EditorToolType.CONTRAST -> implementPreviousStateContrast(contrastValue)
-                EditorToolType.WATERMARK -> implementPreviousWatermark(previousState)
             }
         }
     }
