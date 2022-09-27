@@ -224,9 +224,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         observeSimilarSearchLiveData()
         observeRouteToLoginEventLiveData()
         observeUpdateWishlistOriginalProductEventLiveData()
-        observeAddWishlistEventLiveData()
         observeAddWishlistV2EventLiveData()
-        observeRemoveWishlistEventLiveData()
         observeRemoveWishlistV2EventLiveData()
         observeAddToCartEventLiveData()
         observeRouteToCartEventLiveData()
@@ -259,9 +257,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
             override fun onButtonWishlistClicked() {
                 context?.let {
-                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                        similarSearchViewModel?.onViewToggleWishlistV2OriginalProduct()
-                    } else similarSearchViewModel?.onViewToggleWishlistOriginalProduct()
+                    similarSearchViewModel?.onViewToggleWishlistV2OriginalProduct()
                 }
             }
 
@@ -326,12 +322,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         })
     }
 
-    private fun observeAddWishlistEventLiveData() {
-        similarSearchViewModel?.getAddWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            handleAddWishlistEvent(it)
-        })
-    }
-
     private fun observeAddWishlistV2EventLiveData() {
         similarSearchViewModel?.getAddWishlistV2EventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             handleAddWishlistV2Event(it)
@@ -342,19 +332,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         similarSearchViewModel?.getRemoveWishlistV2EventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             handleRemoveWishlistV2Event(it)
         })
-    }
-
-    private fun handleAddWishlistEvent(isSuccess: Boolean) {
-        if (isSuccess) {
-            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-            view?.let {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishList() }.show()
-            }
-        }
-        else {
-            showSnackbar(R.string.similar_search_add_wishlist_failed, Toaster.TYPE_ERROR)
-        }
     }
 
     private fun handleAddWishlistV2Event(result: AddToWishlistV2Response.Data.WishlistAddV2) {
@@ -373,33 +350,9 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
     }
 
-    private fun goToWishList() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
-        startActivity(intent)
-    }
-
     private fun showSnackbar(@StringRes messageStringResource: Int, toasterType: Int = Toaster.TYPE_NORMAL) {
         view?.let { view ->
             Toaster.make(view, getString(messageStringResource), Snackbar.LENGTH_SHORT, toasterType)
-        }
-    }
-
-    private fun observeRemoveWishlistEventLiveData() {
-        similarSearchViewModel?.getRemoveWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            handleRemoveWishlistEvent(it)
-        })
-    }
-
-    private fun handleRemoveWishlistEvent(isSuccess: Boolean) {
-        if (isSuccess) {
-            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
-            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
-            view?.let {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
-            }
-        }
-        else {
-            showSnackbar(R.string.similar_search_remove_wishlist_failed, Toaster.TYPE_ERROR)
         }
     }
 

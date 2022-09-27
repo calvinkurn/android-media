@@ -176,6 +176,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
     public static final String MAINAPP_RECHARGE_ATC_CHECKOUT_GQL = "android_enable_digital_gql";
     public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
+    public static final String MAINAPP_DEALS_ENABLE_PDP = "android_enable_deals_pdp";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
@@ -262,12 +263,9 @@ public class RemoteConfigKey {
     public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
 
     public static final String ENABLE_CART_CHECKOUT_BUNDLING = "android_enable_cart_checkout_bundling";
-    public static final String ENABLE_NEW_CONTENT_CREATION_FLOW = "app_android_feed_cc_feature_flag";
     public static final String SHOW_SHOPADS_FEED_NEW_DESIGN = "app_android_feed_shopads_new_design_flag";
     public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
 
-    public static final String ENABLE_WISHLIST_REVAMP_v2 = "android_revamp_wishlist_v2";
-    public static final String ENABLE_ADD_REMOVE_WISHLIST_V2 = "android_enable_add_remove_wishlist_v2";
     public static final String ENABLE_WISHLIST_COLLECTION = "android_enable_wishlist_collection";
 
     public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";

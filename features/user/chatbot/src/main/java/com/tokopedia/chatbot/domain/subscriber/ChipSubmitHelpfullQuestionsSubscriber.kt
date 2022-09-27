@@ -1,12 +1,14 @@
 package com.tokopedia.chatbot.domain.subscriber
 
 import com.tokopedia.chat_common.util.handleError
-import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueResponse
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionListResponse
+import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
 
-class ChipSubmitHelpfullQuestionsSubscriber(val onsubmitingHelpfQuestionsError: (Throwable) -> Unit)
+class ChipSubmitHelpfullQuestionsSubscriber(private val messageId : String,
+                                            val onsubmitingHelpfQuestionsError: (Throwable) -> Unit)
     : Subscriber<GraphqlResponse>() {
 
     override fun onNext(graphqlResponse: GraphqlResponse) {
@@ -24,6 +26,12 @@ class ChipSubmitHelpfullQuestionsSubscriber(val onsubmitingHelpfQuestionsError: 
 
     override fun onError(e: Throwable) {
         onsubmitingHelpfQuestionsError(e)
+        ChatbotNewRelicLogger.logNewRelic(
+            false,
+            messageId,
+            ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
+            e
+        )
     }
 
 }
