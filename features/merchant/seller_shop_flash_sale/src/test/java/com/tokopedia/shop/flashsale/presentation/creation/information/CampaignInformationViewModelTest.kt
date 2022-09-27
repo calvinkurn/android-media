@@ -6,6 +6,7 @@ import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
 import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
 import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
+import com.tokopedia.shop.flashsale.common.extension.decreaseMinuteBy
 import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.DateManager
@@ -1533,6 +1534,157 @@ class CampaignInformationViewModelTest {
             assertEquals(expected, actual)
         }
     //endregion
+
+    //region getSelectedVpsPackage
+    @Test
+    fun `When get selected vps package, should return correct values`() {
+        //Given
+        val vpsPackage = buildVpsPackageUiModel()
+        viewModel.setSelectedVpsPackage(vpsPackage)
+
+        //When
+        val actual = viewModel.getSelectedVpsPackage()
+
+        //Then
+        assertEquals(vpsPackage, actual)
+    }
+    //endregion
+
+    //region getStoredVpsPackages
+    @Test
+    fun `When get stored vps package, should return correct values`() {
+        //Given
+        val vpsPackages = listOf(buildVpsPackageUiModel())
+        viewModel.storeVpsPackage(vpsPackages)
+
+        //When
+        val actual = viewModel.getStoredVpsPackages()
+
+        //Then
+        assertEquals(vpsPackages, actual)
+    }
+    //endregion
+
+    //region findSelectedVpsPackage
+    @Test
+    fun `When found matching vps package, should return correct values`() {
+        //Given
+        val vpsPackage = buildVpsPackageUiModel()
+        val vpsPackages = listOf(vpsPackage)
+
+        //When
+        val actual = viewModel.findSelectedVpsPackage(selectedVpsPackageId = 101, vpsPackages)
+
+        //Then
+        assertEquals(vpsPackage, actual)
+    }
+
+    @Test
+    fun `When found no matching vps package, should return null`() {
+        //Given
+        val vpsPackages = listOf(buildVpsPackageUiModel())
+
+        //When
+        val actual = viewModel.findSelectedVpsPackage(selectedVpsPackageId = 102, vpsPackages)
+
+        //Then
+        assertEquals(null, actual)
+    }
+    //endregion
+
+    //region findSuggestedVpsPackage
+
+    //endregion
+
+    //region findCampaignMaxEndDateByVpsRule
+
+    //endregion
+
+    //region shouldEnableProceedButton
+
+    //endregion
+
+    //region recheckLatestSelectedVpsPackageQuota
+
+    //endregion
+
+    //region isTodayInVpsPeriod
+    @Test
+    fun `When current date time is within selected package vps period, should return true`() {
+        //Given
+        val now = Date()
+        val packageStartTime = now.decreaseHourBy(desiredHourToBeDecreased = 1)
+        val packageEndTime = now.advanceDayBy(days = 7)
+        val vpsPackage = buildVpsPackageUiModel().copy(packageStartTime = packageStartTime, packageEndTime = packageEndTime)
+
+        //When
+        val actual = viewModel.isTodayInVpsPeriod(vpsPackage)
+
+        //Then
+        assertEquals(true, actual)
+    }
+
+    @Test
+    fun `When current date time is after selected package vps start time, should return false`() {
+        //Given
+        val now = Date()
+        val packageStartTime = now.decreaseHourBy(desiredHourToBeDecreased = 1)
+        val packageEndTime = now.decreaseHourBy(desiredHourToBeDecreased = 2)
+        val vpsPackage = buildVpsPackageUiModel().copy(packageStartTime = packageStartTime, packageEndTime = packageEndTime)
+
+        //When
+        val actual = viewModel.isTodayInVpsPeriod(vpsPackage)
+
+        //Then
+        assertEquals(false, actual)
+    }
+
+    @Test
+    fun `When current date time is before selected package vps start time, should return false`() {
+        //Given
+        val now = Date()
+        val packageStartTime = now.advanceDayBy(days = 1)
+        val packageEndTime = now.advanceDayBy(days = 7)
+        val vpsPackage = buildVpsPackageUiModel().copy(packageStartTime = packageStartTime, packageEndTime = packageEndTime)
+
+        //When
+        val actual = viewModel.isTodayInVpsPeriod(vpsPackage)
+
+        //Then
+        assertEquals(false, actual)
+    }
+
+    @Test
+    fun `When current date time is after selected package vps end time, should return false`() {
+        //Given
+        val now = Date()
+        val packageStartTime = now.decreaseMinuteBy(desiredMinuteBeDecreased = 30)
+        val packageEndTime = now.decreaseHourBy(desiredHourToBeDecreased = 1)
+        val vpsPackage = buildVpsPackageUiModel().copy(packageStartTime = packageStartTime, packageEndTime = packageEndTime)
+
+        //When
+        val actual = viewModel.isTodayInVpsPeriod(vpsPackage)
+
+        //Then
+        assertEquals(false, actual)
+    }
+    //endregion
+
+    //region Helper function
+    private fun buildVpsPackageUiModel(): VpsPackageUiModel {
+        return VpsPackageUiModel(
+            packageId = 101,
+            remainingQuota = 5,
+            currentQuota = 5,
+            originalQuota = 10,
+            packageEndTime = Date().advanceDayBy(days = 7),
+            packageName = "Paket VPS September",
+            packageStartTime = Date(),
+            isSelected = true,
+            disabled = false,
+            isShopTierBenefit = false
+        )
+    }
     private fun buildSelectionObject(): CampaignInformationViewModel.Selection {
         return CampaignInformationViewModel.Selection(
             "Adidas Sale",
@@ -1577,4 +1729,5 @@ class CampaignInformationViewModelTest {
             CampaignUiModel.PackageInfo(packageId = 1, packageName = "VPS Package Elite")
         )
     }
+    //endregion
 }
