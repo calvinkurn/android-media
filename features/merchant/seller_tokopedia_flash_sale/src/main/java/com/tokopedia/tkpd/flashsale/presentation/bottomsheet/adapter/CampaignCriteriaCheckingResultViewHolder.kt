@@ -25,8 +25,6 @@ class CampaignCriteriaCheckingResultViewHolder(
             }
         }
         adjustLayoutItemWidth(binding.layoutContent)
-        val htmlDecText = binding.root.context.getString(R.string.commonbs_multiloc_desc)
-        binding.layoutContent.tickerMultiloc.setHtmlDescription(htmlDecText)
     }
 
     private fun setExpandIcon(isContentVisible: Boolean) {
@@ -61,6 +59,8 @@ class CampaignCriteriaCheckingResultViewHolder(
         item: CriteriaCheckingResult
     ) {
         bindingContent.apply {
+            val htmlDecText = this.root.context.getString(R.string.commonbs_multiloc_desc, item.locationResult.size)
+            tickerMultiloc.setHtmlDescription(htmlDecText)
             tickerMultiloc.isVisible = item.isMultiloc
             tickerMultiloc.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {

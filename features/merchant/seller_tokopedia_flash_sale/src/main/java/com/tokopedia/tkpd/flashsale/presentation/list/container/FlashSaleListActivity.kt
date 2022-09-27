@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantActivity
 
 class FlashSaleListActivity : BaseSimpleActivity() {
 
@@ -15,6 +17,7 @@ class FlashSaleListActivity : BaseSimpleActivity() {
             val intent = Intent(context, FlashSaleListActivity::class.java)
             context.startActivity(intent)
         }
+
     }
 
     override fun getLayoutRes() = R.layout.stfs_activity_flash_sale_list_container

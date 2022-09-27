@@ -13,13 +13,13 @@ class CampaignDetailActivity : BaseSimpleActivity() {
 
     companion object {
         @JvmStatic
-        fun start(context: Context, flashSaleId: Long, tabName: String) {
+        fun start(context: Context, flashSaleId: Long, tabName: String, totalSubmittedProduct: Long = 0) {
             val intent = Intent(context, CampaignDetailActivity::class.java)
             val bundle = Bundle()
             bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
             bundle.putString(BundleConstant.BUNDLE_KEY_TAB_NAME, tabName)
             intent.putExtras(bundle)
-
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             context.startActivity(intent)
         }
     }
@@ -39,9 +39,5 @@ class CampaignDetailActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.stfs_activity_campaign_detail)
-        val header = findViewById<HeaderUnify>(R.id.header)
-        header.apply {
-            setNavigationOnClickListener { finish() }
-        }
     }
 }

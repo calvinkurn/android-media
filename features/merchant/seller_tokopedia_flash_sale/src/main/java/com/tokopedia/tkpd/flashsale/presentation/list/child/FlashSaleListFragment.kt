@@ -12,12 +12,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.campaign.components.bottomsheet.selection.multiple.MultipleSelectionBottomSheet
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
-import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
-import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -40,6 +40,7 @@ import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleCompone
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleStatusFilter
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
+import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.FinishedFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
@@ -549,14 +550,11 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     }
 
     private fun handleRegisteredCampaignRedirection(flashSaleId: Long, status: FlashSaleStatus) {
-        when (status) {
-            FlashSaleStatus.NO_REGISTERED_PRODUCT -> {
-                //TODO: Navigate to add product page
-            }
-            FlashSaleStatus.WAITING_FOR_SELECTION -> {
-                //TODO: Navigate to ubah product page
-            }
-            else -> navigateToFlashSaleDetailPage(flashSaleId)
+        if (status == FlashSaleStatus.NO_REGISTERED_PRODUCT) {
+            ChooseProductActivity.start(context, flashSaleId, tabName)
+        } else {
+            navigateToFlashSaleDetailPage(flashSaleId)
         }
     }
+
 }

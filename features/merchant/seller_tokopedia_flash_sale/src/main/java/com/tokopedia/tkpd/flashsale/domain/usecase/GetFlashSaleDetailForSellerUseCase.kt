@@ -7,25 +7,26 @@ import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
-class GetFlashSaleDetailForSellerUseCase @Inject constructor(
+class  GetFlashSaleDetailForSellerUseCase @Inject constructor(
     repository: GraphqlRepository,
     private val getFlashSaleListForSellerUseCase: GetFlashSaleListForSellerUseCase,
 ) : GraphqlUseCase<FlashSale>(repository)  {
     companion object {
         private const val ONE = 1
         private const val FIRST_PAGE = 0
+        private const val TAB_NAME = "detail"
     }
 
     suspend fun execute(
-        tabName: String,
         campaignId: Long
     ): FlashSale {
         return coroutineScope {
             val params = GetFlashSaleListForSellerUseCase.Param(
-                tabName = tabName,
+                tabName = TAB_NAME,
                 offset = FIRST_PAGE,
                 rows = ONE,
-                campaignIds = listOf(campaignId)
+                campaignIds = listOf(campaignId),
+                requestProductMetaData = true
             )
             val campaignList = getFlashSaleListForSellerUseCase.execute(
                 params

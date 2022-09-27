@@ -6,9 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.R
@@ -31,7 +28,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-abstract class BaseCampaignManageProductDetailFragment<F : AdapterTypeFactory> :
+abstract class BaseCampaignManageProductDetailFragment<RA : RecyclerView.Adapter<*>> :
     BaseDaggerFragment() {
 
     private var viewBinding by autoClearedNullable<FragmentBaseCampaignManageProductDetailBinding>()
@@ -70,7 +67,7 @@ abstract class BaseCampaignManageProductDetailFragment<F : AdapterTypeFactory> :
         private set
     var buttonSubmit: UnifyButton? = null
         private set
-    var adapter: BaseListAdapter<Visitable<*>, F>? = null
+    var adapter: RA? = null
         private set
 
     override fun onCreateView(
@@ -135,7 +132,7 @@ abstract class BaseCampaignManageProductDetailFragment<F : AdapterTypeFactory> :
         adapter = createAdapterInstance()
     }
 
-    abstract fun createAdapterInstance(): BaseListAdapter<Visitable<*>, F>
+    abstract fun createAdapterInstance(): RA
 
     private fun setupRecyclerView() {
         rvManageProductDetail?.apply {
@@ -225,7 +222,7 @@ abstract class BaseCampaignManageProductDetailFragment<F : AdapterTypeFactory> :
     /**
      * You can override this function to define the action when clicking widget bulk apply
      */
-    protected fun onWidgetBulkApplyClicked() {}
+    protected open fun onWidgetBulkApplyClicked() {}
 
     /**
      * Can be used to set widget bulk apply title

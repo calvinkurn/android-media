@@ -5,11 +5,11 @@
     <application>
         <activity
             android:name="com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleListActivity"
-            android:exported="false"
             android:configChanges="orientation"
+            android:exported="false"
             android:label="@string/fs_tkpd_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -27,6 +27,38 @@
 
         <activity
             android:name="com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
+            android:name="com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
+            android:name="com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
+            android:name="com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.ManageProductVariantActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
+            android:name="com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.ManageProductMultiLocationVariantActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
             android:exported="false" />
 
     </application>

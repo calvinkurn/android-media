@@ -10,7 +10,12 @@ interface HasPaginatedList {
         val onLoadNextPageFinished: () -> Unit = {}
     )
 
-    fun attachPaging(recyclerView: RecyclerView, config: Config, loadNextPage: (Int, Int) -> Unit)
+    fun attachPaging(
+        recyclerView: RecyclerView,
+        config: Config,
+        loadNextPage: (Int, Int) -> Unit
+    )
+
     fun notifyLoadResult(hasNextPage: Boolean)
     fun resetPaging()
 }

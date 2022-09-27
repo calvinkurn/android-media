@@ -14,7 +14,11 @@ data class GetFlashSaleListForSellerRequest(
     @SerializedName("sort")
     val sort: Sort,
     @SerializedName("additional_params")
-    val additionalParams: AdditionalParam
+    val additionalParams: AdditionalParam,
+    @SerializedName("check_product_eligibility")
+    val checkProductEligibility: Boolean = true,
+    @SerializedName("matched_product_per_criteria")
+    val matchedProductPerCriteria: Boolean = true
 ) {
     data class Pagination(
         @SerializedName("rows")
@@ -42,11 +46,7 @@ data class GetFlashSaleListForSellerRequest(
     data class AdditionalParam(
         @SerializedName("highlight_recommendation")
         val highlightRecommendation: Boolean = false,
-        @SerializedName("matched_product_per_criteria")
-        val matchedProductPerCriteria: Boolean = false,
         @SerializedName("product_meta")
-        val productMeta: Boolean = false,
-        @SerializedName("check_product_eligibility")
-        val checkProductEligibility: Boolean = false
+        val productMeta: Boolean = false
     )
 }
