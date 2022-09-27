@@ -6,5 +6,5 @@ data class KycHeaderDataModel(
     @SerializedName("message")
     var message: MutableList<String?> = mutableListOf(),
     @SerializedName("error_code")
-    var errorCode: String? = ""
+    var errorCode: String? = "",
 )

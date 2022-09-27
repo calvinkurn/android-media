@@ -18,6 +18,9 @@ import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNum
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberTrackingData
 import com.tokopedia.common.topupbills.favoritepage.data.TopupBillsSeamlessFavNumberModData
 import com.tokopedia.common.topupbills.favoritepage.data.UpdateFavoriteDetail
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
+import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 
 object CommonTopupbillsDummyData {
@@ -147,4 +150,51 @@ object CommonTopupbillsDummyData {
                 id = id
         )
     }
+
+    fun getDummyCartDataWithErrors(): ErrorAtc{
+        return ErrorAtc(
+            status = 400,
+            title = "this is an error",
+            atcErrorPage = AtcErrorPage(
+                isShowErrorPage = true,
+                title = "Waduh Ada Error",
+                subTitle = "Hayolo Ada Error",
+                imageUrl = "https://images.tokopedia.net/img/verify_account.png",
+                buttons = listOf(
+                    AtcErrorButton(
+                        label = "Tambah Nomor HP",
+                        url = "https://tokopedia.com",
+                        appLinkUrl = "tokopedia://home",
+                        type = "primary"
+                    )
+                )
+            )
+        )
+    }
+
+    fun getRawErrors() = """
+        {
+          "errors": [
+            {
+              "id": "1104",
+              "status": 400,
+              "title": "this is an error",
+              "error_page": {
+                "show_error_page": true,
+                "title": "Waduh Ada Error",
+                "sub_title": "Hayolo Ada Error",
+                "image_url": "https://images.tokopedia.net/img/verify_account.png",
+                "buttons": [
+                  {
+                    "label" : "Tambah Nomor HP",
+                    "url": "https://tokopedia.com",
+                    "applink_url": "tokopedia://home",
+                    "type": "primary"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+    """.trimIndent()
 }

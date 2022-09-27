@@ -408,7 +408,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             dataMap["groupName"] = groupName
             dataMap[GROUPID] = groupId
             dataMap[NAME_EDIT] = true
-            dataMap[DAILY_BUDGET] = dailyBudget.toString()
+            if (priceDaily != 0.0F)
+                dataMap[DAILY_BUDGET] = dailyBudget.toString()
             if (this.bidType == BID_TYPE_BROWSE) {
                 bidTypeData?.clear()
                 bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, bid.toFloat()))

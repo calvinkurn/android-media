@@ -8,11 +8,13 @@ import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactorySimulateNullPref
 import com.tokopedia.kyc_centralized.kycRobot
 import com.tokopedia.kyc_centralized.stubLiveness
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@UiTest
 @RunWith(AndroidJUnit4::class)
 class IssueSimulatorUserIdentification {
 

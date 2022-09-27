@@ -81,7 +81,7 @@ class FocusCameraFaceView : View {
 
         mSemiBlackPaint?.let { canvas.drawPath(mPath, it) }
         canvas.clipPath(mPath)
-        canvas.drawColor(MethodChecker.getColor(this.context, com.tokopedia.user_identification_common.R.color.kyc_dms_overlay))
+        canvas.drawColor(MethodChecker.getColor(this.context, com.tokopedia.kyc_centralized.R.color.kyc_dms_overlay))
     }
 
     companion object {
