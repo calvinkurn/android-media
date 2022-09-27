@@ -9,7 +9,7 @@ import com.tokopedia.content.common.producttag.di.DaggerFeedSuggestionComponent
 /**
  * Created By : Jonathan Darwin on May 24, 2022
  */
-class FeedAutoCompleteActivity : BaseAutoCompleteActivity() {
+class ContentAutoCompleteActivity : BaseAutoCompleteActivity() {
 
     override fun createInitialStateComponent(): InitialStateComponent {
         return DaggerFeedInitialStateComponent.builder()

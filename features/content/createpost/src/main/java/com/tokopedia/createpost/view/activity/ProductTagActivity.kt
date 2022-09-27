@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.createpost.createpost.databinding.ActivityProductTagBinding
 import com.tokopedia.createpost.di.CreatePostModule
@@ -95,17 +96,7 @@ class ProductTagActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-
-        val path = intent?.data?.path.toString()
-        val source = if(path.contains(PRODUCT)) ProductTagSource.GlobalSearch
-                    else if(path.contains(SHOP)) ProductTagSource.Shop
-                    else ProductTagSource.Unknown
-
-        val query = intent?.extras?.getString(SearchParamUiModel.KEY_QUERY) ?: ""
-        val shopId = intent?.data?.lastPathSegment ?: ""
-        val componentId = intent?.extras?.getString(SearchParamUiModel.KEY_COMPONENT_ID) ?: ""
-
-        ProductTagParentFragment.findFragment(supportFragmentManager)?.onNewIntent(source, query, shopId, componentId)
+        ProductTagParentFragment.findFragment(supportFragmentManager)?.onNewIntent(intent)
     }
 
     private fun inject() {
@@ -131,7 +122,7 @@ class ProductTagActivity : BaseActivity() {
                 .setAuthorType(authorType)
                 .setProductTagSource(productTagList)
                 .setMultipleSelectionProduct(false, 0)
-                .setFullPageAutocomplete(true)
+                .setFullPageAutocomplete(true, ApplinkConst.FEED_CREATION_PRODUCT_SEARCH)
                 .setBackButton(ContentProductTagConfig.BackButton.Back)
                 .setIsShowActionBarDivider(true)
                 .setIsAutoHandleBackPressed(true)
@@ -151,8 +142,5 @@ class ProductTagActivity : BaseActivity() {
         const val RESULT_PRODUCT_PRICE_ORIGINAL_FMT = "RESULT_PRODUCT_PRICE_ORIGINAL_FMT"
         const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
         const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
-
-        private const val PRODUCT = "product"
-        private const val SHOP = "shop"
     }
 }

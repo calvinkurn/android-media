@@ -6,10 +6,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 /**
  * Created By : Jonathan Darwin on May 12, 2022
  */
-fun getAutocompleteApplink(query: String): String =
-    "${ApplinkConstInternalContent.INTERNAL_FEED_AUTOCOMPLETE}?${buildAutoCompletePageParam(query)}"
+fun getAutocompleteApplink(query: String, appLinkAfterAutocomplete: String): String =
+    "${ApplinkConstInternalContent.INTERNAL_CONTENT_PRODUCT_TAG_AUTOCOMPLETE}?${buildAutoCompletePageParam(query, appLinkAfterAutocomplete)}"
 
-private fun buildAutoCompletePageParam(query: String): String {
+private fun buildAutoCompletePageParam(query: String, appLinkAfterAutocomplete: String): String {
     return buildString {
         append("navsource=feed_product")
         append("&")
@@ -17,7 +17,7 @@ private fun buildAutoCompletePageParam(query: String): String {
         append("&")
         append("srp_page_id=0")
         append("&")
-        append("baseSRPApplink=${ApplinkConst.FEED_CREATION_PRODUCT_SEARCH}")
+        append("baseSRPApplink=$appLinkAfterAutocomplete")
 
         if(query.isNotEmpty())
             append("&")

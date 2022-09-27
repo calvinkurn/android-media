@@ -43,6 +43,9 @@ class ContentProductTagArgument private constructor(
     val isAutoHandleBackPressed: Boolean
         get() = query[KEY_IS_AUTO_HANDLE_BACK_PRESSED].toBoolean()
 
+    val appLinkAfterAutocomplete: String
+        get() = query[KEY_APPLINK_AFTER_AUTOCOMPLETE].orEmpty()
+
     companion object {
         const val KEY_SHOP_BADGE = "shopBadge"
         const val KEY_AUTHOR_ID = "authorId"
@@ -54,6 +57,7 @@ class ContentProductTagArgument private constructor(
         const val KEY_BACK_BUTTON = "backButton"
         const val KEY_IS_SHOW_ACTION_BAR_DIVIDER = "isShowActionBarDivider"
         const val KEY_IS_AUTO_HANDLE_BACK_PRESSED = "isAutoHandleBackPressed"
+        const val KEY_APPLINK_AFTER_AUTOCOMPLETE = "appLinkAfterAutocomplete"
 
         const val QUERY_SEPARATOR = "&"
 
@@ -115,8 +119,16 @@ class ContentProductTagArgument private constructor(
             return this
         }
 
-        fun setFullPageAutocomplete(isFullPageAutocomplete: Boolean): Builder {
+        fun setFullPageAutocomplete(
+            isFullPageAutocomplete: Boolean,
+            appLinkAfterAutocomplete: String,
+        ): Builder {
+            /**
+             * if isFullPageAutocomplete is false,
+             * applinkAfterAutocomplete will be ignored.
+             */
             argumentMap[KEY_IS_FULL_PAGE_AUTOCOMPLETE] = isFullPageAutocomplete
+            argumentMap[KEY_APPLINK_AFTER_AUTOCOMPLETE] = appLinkAfterAutocomplete
             return this
         }
 

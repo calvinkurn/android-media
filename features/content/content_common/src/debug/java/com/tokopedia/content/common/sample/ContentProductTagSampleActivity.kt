@@ -1,5 +1,6 @@
 package com.tokopedia.content.common.sample
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -14,7 +15,6 @@ import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagPare
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
-import com.tokopedia.content.common.sample.analytic.ContentProductTagSampleAnalyticImpl
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -89,6 +89,11 @@ class ContentProductTagSampleActivity : BaseActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        ProductTagParentFragment.findFragment(supportFragmentManager)?.onNewIntent(intent)
+    }
+
     private fun setupDefault() {
         binding.rbUser.isChecked = true
         binding.rbMultipleSelectionProductYes.isChecked = true
@@ -154,10 +159,11 @@ class ContentProductTagSampleActivity : BaseActivity() {
             .setAuthorType(getAuthorType())
             .setProductTagSource(getProductTagSource())
             .setMultipleSelectionProduct(isMultipleSelectionProduct(), getMaxSelectedProduct())
-            .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
+            .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked, getApplinkAfterAutocomplete())
             .setBackButton(ContentProductTagConfig.BackButton.Close)
             .setIsShowActionBarDivider(false)
             .setIsAutoHandleBackPressed(getIsAutoHandleBackPressed())
+
     }
 
     private fun closeFragment() {
@@ -212,6 +218,10 @@ class ContentProductTagSampleActivity : BaseActivity() {
 
     private fun getIsAutoHandleBackPressed(): Boolean {
         return binding.cbxIsAutoHandleBackPressed.isChecked
+    }
+
+    private fun getApplinkAfterAutocomplete(): String {
+        return "tokopedia-android-internal://sample/content-creation-product-search"
     }
 
     private fun validate(): Boolean {
