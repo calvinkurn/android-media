@@ -1,39 +1,104 @@
 package com.tokopedia.report.view.activity
 
-import android.content.Context
-import android.content.Intent
-import androidx.fragment.app.Fragment
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.report.data.constant.GeneralConstant
+import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.di.DaggerMerchantReportComponent
 import com.tokopedia.report.di.MerchantReportComponent
-import com.tokopedia.report.view.fragment.ProductReportComposeFragment
+import com.tokopedia.report.view.adapter.ReportReasonAdapter
+import com.tokopedia.report.view.fragment.components.ProductReportComposeContent
+import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
+import com.tokopedia.report.view.util.extensions.argsExtraString
+import com.tokopedia.report.view.viewmodel.ProductReportViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.flow.collectLatest
 
-class ProductReportActivity: BaseSimpleActivity(), HasComponent<MerchantReportComponent> {
-    private lateinit var fragment : ProductReportComposeFragment
+class ProductReportActivity : ComponentActivity(), HasComponent<MerchantReportComponent>,
+    ReportReasonAdapter.OnReasonClick {
 
-    override fun getNewFragment(): Fragment {
-        val productId = intent.data?.lastPathSegment?.let {
-            it
-        } ?: (intent.extras?.getString(ARG_PRODUCT_ID) ?: "-1")
-        fragment = ProductReportComposeFragment.createInstance(productId)
-        return fragment
-    }
+    private val tracking by lazy { MerchantReportTracking() }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel by viewModels<ProductReportViewModel> { viewModelFactory }
+
+    private val productId by argsExtraString(ARG_PRODUCT_ID, "-1")
 
     override fun getComponent(): MerchantReportComponent = DaggerMerchantReportComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+        .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+        .build()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContent {
+            val uiState = viewModel.uiState.collectAsState()
+
+            LaunchedEffect(key1 = viewModel.uiEvent, block = {
+                viewModel.uiEvent.collectLatest {
+                    when (it) {
+                        is ProductReportUiEvent.OnFooterClicked -> onFooterClicked()
+                        is ProductReportUiEvent.OnScrollTop -> onScrollTop(it.reason)
+                        is ProductReportUiEvent.OnGoToForm -> gotoForm(it.reason)
+                        is ProductReportUiEvent.OnBackPressed -> {
+                            finish()
+                        }
+                        else -> {
+                        }
+                    }
+                }
+            })
+
+            Surface(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                ProductReportComposeContent(
+                    uiState = uiState.value,
+                    onEvent = viewModel::onEvent
+                )
+            }
+        }
+    }
+
+    private fun onFooterClicked() {
+        val appLink = "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}"
+        tracking.eventReportLearnMore()
+        RouteManager.route(this, appLink)
+    }
+
+    private fun onScrollTop(reason: ProductReportReason) {
+        tracking.eventReportReason(reason.strLabel)
+        scrollToTop()
+    }
+
+    override fun scrollToTop() {
+    }
+
+    override fun gotoForm(reason: ProductReportReason) {
+        tracking.eventReportReason(reason.strLabel)
+        startActivityForResult(
+            ProductReportFormActivity.createIntent(this, reason, productId),
+            REQUEST_CODE_FORM_SUBMIT
+        )
+    }
 
     companion object {
         private const val ARG_PRODUCT_ID = "arg_product_id"
-        fun getCallingIntent(context: Context, productId: String): Intent =
-                Intent(context, ProductReportActivity::class.java).putExtra(ARG_PRODUCT_ID, productId)
-    }
-
-    override fun onBackPressed() {
-        if(::fragment.isInitialized){
-            fragment.onBackPressed()
-        } else
-            super.onBackPressed()
+        private const val REQUEST_CODE_FORM_SUBMIT = 100
     }
 }

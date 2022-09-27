@@ -1,5 +1,6 @@
 package com.tokopedia.report.view.util.extensions
 
+import android.app.Activity
 import androidx.fragment.app.Fragment
 
 /**
@@ -9,4 +10,8 @@ import androidx.fragment.app.Fragment
 
 fun Fragment.argsString(key: String, default: String = "") = lazy {
     arguments?.getString(key, default) ?: default
+}
+
+fun Activity.argsExtraString(key: String, default: String = "") = lazy {
+    intent?.extras?.getString(key, default) ?: default
 }
