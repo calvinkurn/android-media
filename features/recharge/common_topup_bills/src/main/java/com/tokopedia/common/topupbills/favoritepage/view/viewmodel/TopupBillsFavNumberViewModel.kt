@@ -69,6 +69,7 @@ class TopupBillsFavNumberViewModel @Inject constructor(
         totalTransaction: Int,
         label: String,
         isDelete: Boolean,
+        source: String,
         actionType: FavoriteNumberActionType,
         operatorName: String = "",
         onDeleteCallback: FavoriteNumberDeletionListener? = null
@@ -82,7 +83,8 @@ class TopupBillsFavNumberViewModel @Inject constructor(
                     hashedClientNumber,
                     totalTransaction,
                     label,
-                    isDelete
+                    isDelete,
+                    source,
                 )
             }.executeOnBackground()
 
@@ -104,6 +106,10 @@ class TopupBillsFavNumberViewModel @Inject constructor(
                 UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
             }
         }
+    }
+
+    fun createSourceParam(categoryIds: List<Int>): String {
+        return modifyRechargeFavoriteNumberUseCase.createSourceParam(categoryIds)
     }
 
     companion object {

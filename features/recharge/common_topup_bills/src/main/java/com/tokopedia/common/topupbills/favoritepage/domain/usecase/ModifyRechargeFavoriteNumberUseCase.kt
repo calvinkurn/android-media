@@ -2,6 +2,7 @@ package com.tokopedia.common.topupbills.favoritepage.domain.usecase
 
 import com.tokopedia.common.topupbills.favoritepage.data.TopupBillsSeamlessFavNumberModData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -38,10 +39,9 @@ class ModifyRechargeFavoriteNumberUseCase @Inject constructor(
         hashedClientNumber: String,
         totalTransaction: Int,
         label: String,
-        isDelete: Boolean
+        isDelete: Boolean,
+        source: String,
     ) {
-       val paramSource = "${FAVORITE_NUMBER_PARAM_SOURCE_PERSO}$categoryId"
-
         val requestData = mapOf(
             FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
                 FAVORITE_NUMBER_PARAM_CATEGORY_ID to categoryId,
@@ -51,7 +51,7 @@ class ModifyRechargeFavoriteNumberUseCase @Inject constructor(
                 FAVORITE_NUMBER_PARAM_LABEL to label,
                 FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
                 FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE to false,
-                FAVORITE_NUMBER_PARAM_SOURCE to paramSource,
+                FAVORITE_NUMBER_PARAM_SOURCE to source,
                 FAVORITE_NUMBER_PARAM_UPDATE_STATUS to true,
                 FAVORITE_NUMBER_PARAM_WISHLIST to !isDelete
             )
@@ -60,6 +60,11 @@ class ModifyRechargeFavoriteNumberUseCase @Inject constructor(
         params = RequestParams.create().apply {
             putAll(requestData)
         }
+    }
+
+    fun createSourceParam(categoryIds: List<Int>): String {
+        val joinedCategoryIds = categoryIds.joinToString(separator = ",")
+        return "${FAVORITE_NUMBER_PARAM_SOURCE_PERSO}$joinedCategoryIds"
     }
 
     companion object {

@@ -48,6 +48,7 @@ import com.tokopedia.common.topupbills.favoritepage.view.viewmodel.TopupBillsFav
 import com.tokopedia.common.topupbills.favoritepage.view.viewholder.PersoFavoriteNumberErrorViewHolder.PersoFavoriteNumberErrorStateListener
 import com.tokopedia.common.topupbills.favoritepage.view.viewholder.PersoFavoriteNumberViewHolder.OnPersoFavoriteNumberClickListener
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -370,6 +371,7 @@ class TopupBillsPersoFavoriteNumberFragment :
         val shouldDelete = false
         showShimmering()
         if (favoriteDetail != null) {
+            val source = favNumberViewModel.createSourceParam(dgCategoryIds)
             favNumberViewModel.modifySeamlessFavoriteNumber(
                 categoryId = favoriteDetail.categoryID,
                 productId = favoriteDetail.productID,
@@ -378,6 +380,7 @@ class TopupBillsPersoFavoriteNumberFragment :
                 totalTransaction = favoriteDetail.totalTransaction,
                 label = favoriteDetail.label,
                 isDelete = shouldDelete,
+                source = source,
                 actionType = FavoriteNumberActionType.UNDO_DELETE
             )
         }
@@ -524,10 +527,10 @@ class TopupBillsPersoFavoriteNumberFragment :
         commonTopupBillsAnalytics.eventClickFavoriteNumberSaveBottomSheet(
             currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
-
         val shouldDelete = false
-
         showShimmering()
+
+        val source = favNumberViewModel.createSourceParam(dgCategoryIds)
         favNumberViewModel.modifySeamlessFavoriteNumber(
             categoryId = favNumberItem.categoryId.toIntOrZero(),
             productId = favNumberItem.productId.toIntOrZero(),
@@ -536,6 +539,7 @@ class TopupBillsPersoFavoriteNumberFragment :
             totalTransaction = DEFAULT_TOTAL_TRANSACTION,
             label = newName,
             isDelete = shouldDelete,
+            source = source,
             actionType = FavoriteNumberActionType.UPDATE
         )
     }
@@ -604,9 +608,10 @@ class TopupBillsPersoFavoriteNumberFragment :
         commonTopupBillsAnalytics.eventClickFavoriteNumberConfirmDelete(
             currentCategoryName, favNumberItem.operatorName, userSession.userId
         )
-
         val shouldDelete = true
         showShimmering()
+
+        val source = favNumberViewModel.createSourceParam(dgCategoryIds)
         favNumberViewModel.modifySeamlessFavoriteNumber(
             categoryId = favNumberItem.categoryId.toIntOrZero(),
             productId = favNumberItem.productId.toIntOrZero(),
@@ -615,6 +620,7 @@ class TopupBillsPersoFavoriteNumberFragment :
             totalTransaction = DEFAULT_TOTAL_TRANSACTION,
             label = favNumberItem.getClientName(),
             isDelete = shouldDelete,
+            source = source,
             actionType = FavoriteNumberActionType.DELETE,
             operatorName = favNumberItem.operatorName,
             object: FavoriteNumberDeletionListener {
