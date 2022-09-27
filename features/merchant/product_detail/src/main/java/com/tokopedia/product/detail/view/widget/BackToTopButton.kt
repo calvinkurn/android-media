@@ -8,7 +8,9 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.databinding.WidgetBackToTopBinding
+import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.NAVIGATION_THRESHOLD_MEDIA_PERCENTAGE
 import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.calculateFirstVisibleItemPosition
 
 class BackToTopButton(
@@ -28,6 +30,7 @@ class BackToTopButton(
 
     private var recyclerView: RecyclerView? = null
     private var listener: NavigationListener? = null
+    private var config: ProductDetailNavigation.Configuration? = null
 
     private val smoothScroller = SmoothScroller(context)
     private val onScrollListener = OnScrollListener()
@@ -36,7 +39,8 @@ class BackToTopButton(
     private var isVisible = false
     private var enableClick = true
     private var enableBlockingTouch = true
-    private var navTabPositionOffsetY = Int.ZERO
+
+    private val mediaHeight by lazy { calculateMediaHeightOffsetY() }
 
     init {
         addView(view)
@@ -52,12 +56,12 @@ class BackToTopButton(
         recyclerView: RecyclerView,
         enableBlockingTouch: Boolean,
         listener: NavigationListener,
-        offsetY: Int = Int.ZERO
+        config: ProductDetailNavigation.Configuration
     ) {
-        navTabPositionOffsetY = offsetY
         recyclerView.removeOnScrollListener(onScrollListener)
 
         this.listener = listener
+        this.config = config
         recyclerView.addOnScrollListener(onScrollListener)
         this.recyclerView = recyclerView
         this.enableBlockingTouch = enableBlockingTouch
@@ -101,6 +105,14 @@ class BackToTopButton(
         }
     }
 
+    private fun calculateMediaHeightOffsetY(): Int {
+        return if (config is ProductDetailNavigation.Configuration.Navbar4) {
+            val mediaHeight =
+                recyclerView?.findViewHolderForAdapterPosition(Int.ZERO)?.itemView?.height.orZero()
+            (mediaHeight * NAVIGATION_THRESHOLD_MEDIA_PERCENTAGE).toInt()
+        } else Int.ZERO
+    }
+
     private inner class OnScrollListener : RecyclerView.OnScrollListener() {
 
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -114,7 +126,12 @@ class BackToTopButton(
         }
 
         private fun resolveButtonVisibility(recyclerView: RecyclerView) {
-            if (calculateFirstVisibleItemPosition(recyclerView, navTabPositionOffsetY) == 0) {
+            val mediaOffsetY = mediaHeight * NAVIGATION_THRESHOLD_MEDIA_PERCENTAGE
+            if (calculateFirstVisibleItemPosition(
+                    recyclerView,
+                    config?.offsetY.orZero() + mediaOffsetY.toInt()
+                ) == 0
+            ) {
                 toggle(false)
             } else toggle(true)
         }

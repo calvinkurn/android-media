@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.databinding.WidgetNavigationTabBinding
+import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.NAVIGATION_THRESHOLD_MEDIA_PERCENTAGE
 import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.calculateFirstVisibleItemPosition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +29,7 @@ class NavigationTab(
     companion object {
         private const val NAVIGATION_ANIMATION_DURATION = 300L
         private const val NAVIGATION_DELAYED_SHOW_DURATION = 2000L
+        private const val SELECT_TAB_THRESHOLD = 300L
     }
 
     private val binding = WidgetNavigationTabBinding.inflate(LayoutInflater.from(context))
@@ -37,6 +40,8 @@ class NavigationTab(
     private var recyclerView: RecyclerView? = null
     private var items: List<Item> = emptyList()
     private var listener: NavigationListener? = null
+    private var config: ProductDetailNavigation.Configuration? = null
+    private var itemPositionMap: Map<Int, Int> = mapOf()
 
     private val smoothScroller = SmoothScroller(context)
     private val onTabSelectedListener = OnTabSelected()
@@ -52,7 +57,8 @@ class NavigationTab(
     private var impressNavigation = false
     private var isVisible = false
     private var enableBlockingTouch = true
-    private var navTabPositionOffsetY = Int.ZERO
+
+    private val mediaHeightOffsetY by lazy { calculateMediaHeightOffsetY() }
 
     init {
         addView(view)
@@ -64,12 +70,12 @@ class NavigationTab(
         items: List<Item>,
         enableBlockingTouch: Boolean,
         listener: NavigationListener,
-        offsetY: Int = Int.ZERO
+        config: ProductDetailNavigation.Configuration
     ) {
-        navTabPositionOffsetY = offsetY
         recyclerView.removeOnScrollListener(onScrollListener)
         recyclerView.removeOnScrollListener(onContentScrollListener)
 
+        this.config = config
         this.listener = listener
         recyclerView.addOnScrollListener(onScrollListener)
         recyclerView.addOnScrollListener(onContentScrollListener)
@@ -87,9 +93,9 @@ class NavigationTab(
     }
 
     fun updateItemPosition() {
-        this.items.forEach { item ->
-            item.updatePosition()
-        }
+        itemPositionMap = items.mapIndexed { index, item ->
+            item.getPosition() to index
+        }.toMap()
     }
 
     fun onClickBackToTop() {
@@ -142,17 +148,21 @@ class NavigationTab(
         } else recyclerView?.suppressLayout(false)
     }
 
+    private fun calculateMediaHeightOffsetY(): Int {
+        return if (config is ProductDetailNavigation.Configuration.Navbar4) {
+            val mediaHeight =
+                recyclerView?.findViewHolderForAdapterPosition(Int.ZERO)?.itemView?.height.orZero()
+            (mediaHeight * NAVIGATION_THRESHOLD_MEDIA_PERCENTAGE).toInt()
+        } else Int.ZERO
+    }
+
+
     data class Item(
         val label: String,
+        val componentName: String,
         private val positionUpdater: () -> Int
     ) {
-        private var position: Int = -1
-
         fun getPosition() = positionUpdater.invoke()
-
-        fun updatePosition() {
-            position = positionUpdater.invoke()
-        }
     }
 
     private inner class OnScrollListener : RecyclerView.OnScrollListener() {
@@ -175,7 +185,7 @@ class NavigationTab(
         private fun getFirstVisibleItemPosition(recyclerView: RecyclerView): Int {
             return calculateFirstVisibleItemPosition(
                 recyclerView,
-                offsetY = navTabPositionOffsetY
+                offsetY = config?.offsetY.orZero() + mediaHeightOffsetY
             )
         }
 
@@ -200,6 +210,8 @@ class NavigationTab(
 
     private inner class OnTabSelected : TabLayout.OnTabSelectedListener {
 
+        private var lastTimeClick = System.currentTimeMillis()
+
         override fun onTabSelected(tab: TabLayout.Tab) {
             selectTab(tab.position)
         }
@@ -222,7 +234,7 @@ class NavigationTab(
         }
 
         private fun smoothScrollToPosition(position: Int) {
-            if (position == -1) return
+            if (position == -1 || !shouldProcessClick()) return
 
             recyclerView?.apply {
                 enableTouchScroll(false)
@@ -234,6 +246,14 @@ class NavigationTab(
         private fun trackOnClickTab(position: Int) {
             val label = items.getOrNull(position)?.label ?: ""
             listener?.onClickNavigationTab(position, label)
+        }
+
+        private fun shouldProcessClick(): Boolean {
+            val currentTimeMillis = System.currentTimeMillis()
+            val result = (currentTimeMillis - lastTimeClick) >= SELECT_TAB_THRESHOLD
+            lastTimeClick = currentTimeMillis
+            println("vindo - $result")
+            return result
         }
     }
 
@@ -251,7 +271,7 @@ class NavigationTab(
         }
 
         private fun updateSelectedTab(recyclerView: RecyclerView) {
-            val offsetY = view.height + navTabPositionOffsetY
+            val offsetY = view.height + config?.offsetY.orZero()
             val firstVisibleItemPosition = calculateFirstVisibleItemPosition(
                 recyclerView = recyclerView,
                 offsetY = offsetY
@@ -277,7 +297,7 @@ class NavigationTab(
             return super.calculateDyToMakeVisible(
                 view,
                 snapPreference
-            ) + this@NavigationTab.view.height + navTabPositionOffsetY
+            ) + this@NavigationTab.view.height + config?.offsetY.orZero()
         }
 
         override fun getVerticalSnapPreference(): Int {
