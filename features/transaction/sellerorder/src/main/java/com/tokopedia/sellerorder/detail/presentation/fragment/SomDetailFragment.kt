@@ -13,7 +13,11 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -36,7 +40,13 @@ import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -90,7 +100,11 @@ import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.DialogAcceptOrderFreeShippingSomBinding
 import com.tokopedia.sellerorder.databinding.FragmentSomDetailBinding
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
-import com.tokopedia.sellerorder.detail.data.model.*
+import com.tokopedia.sellerorder.detail.data.model.GetResolutionTicketStatusResponse
+import com.tokopedia.sellerorder.detail.data.model.SetDelivered
+import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
+import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
+import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
@@ -98,7 +112,12 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticI
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailAddOnViewHolder
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.BottomSheetManager
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBaseRejectOrderBottomSheet
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetSetDelivered
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.mapper.SomDetailMapper
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
@@ -953,10 +972,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onResoClicked(redirectPath: String) {
-        RouteManager.route(
-            context,
-            String.format("%s?url=%s", ApplinkConst.WEBVIEW, redirectPath)
-        )
+        SomNavigator.openAppLink(context, redirectPath)
     }
 
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
