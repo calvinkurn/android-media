@@ -1,9 +1,9 @@
-package com.tokopedia.filter.bottomsheet.pricerangecheckbox.item
+package com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox
 
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxViewHolder
+import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.databinding.FilterPriceRangeItemBinding
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -15,7 +15,7 @@ class PriceRangeFilterCheckboxItemViewHolder(
     private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: PriceRangeFilterCheckboxItemUiModel, priceRangeSize: Int) {
+    fun bind(item: OptionViewModel, priceRangeSize: Int) {
         with(binding) {
             tvPriceRangeDollar.text =
                 MethodChecker.fromHtml(getPriceLevelString(item, priceRangeSize))
@@ -24,7 +24,7 @@ class PriceRangeFilterCheckboxItemViewHolder(
         }
     }
 
-    private fun bindCheckboxPriceRange(item: PriceRangeFilterCheckboxItemUiModel) {
+    private fun bindCheckboxPriceRange(item: OptionViewModel) {
         with(binding.cbPriceRange) {
             setOnCheckedChangeListener(null)
             isChecked = item.isSelected
@@ -40,20 +40,13 @@ class PriceRangeFilterCheckboxItemViewHolder(
     }
 
     private fun getPriceLevelString(
-        item: PriceRangeFilterCheckboxItemUiModel,
+        item: OptionViewModel,
         priceRangeSize: Int
     ): String {
         val priceBuilder = StringBuilder()
         val option = item.option
         val priceRangeValue = option.value.toIntSafely()
-        val color = "#${
-            Integer.toHexString(
-                ContextCompat.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
-                )
-            ).substring(PriceRangeFilterCheckboxViewHolder.STRING_COLOR_INDEX)
-        }"
+        val color = getColorHexString(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
 
         priceBuilder.append("<font color=$color>")
 
@@ -76,5 +69,17 @@ class PriceRangeFilterCheckboxItemViewHolder(
         }
 
         return priceBuilder.toString()
+    }
+
+    private fun getColorHexString(idColor: Int): String {
+        return try {
+            val colorHexInt = ContextCompat.getColor(itemView.context, idColor)
+            val colorToHexString = Integer.toHexString(colorHexInt).uppercase()
+                .substring(PriceRangeFilterCheckboxViewHolder.STRING_COLOR_INDEX)
+            return "#$colorToHexString"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
     }
 }

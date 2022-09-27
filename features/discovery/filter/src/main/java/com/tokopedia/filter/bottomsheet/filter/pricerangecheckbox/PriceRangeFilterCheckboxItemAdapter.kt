@@ -1,12 +1,13 @@
-package com.tokopedia.filter.bottomsheet.pricerangecheckbox.item
+package com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.databinding.FilterPriceRangeItemBinding
 
 class PriceRangeFilterCheckboxItemAdapter(
-    private val priceRangeFilterList: List<PriceRangeFilterCheckboxItemUiModel>,
+    private val optionViewModelList: List<OptionViewModel>,
     private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
 ) : RecyclerView.Adapter<PriceRangeFilterCheckboxItemViewHolder>() {
 
@@ -26,8 +27,8 @@ class PriceRangeFilterCheckboxItemAdapter(
     }
 
     override fun onBindViewHolder(holder: PriceRangeFilterCheckboxItemViewHolder, position: Int) {
-        holder.bind(priceRangeFilterList[position], priceRangeFilterList.size)
+        holder.bind(optionViewModelList[position], optionViewModelList.size)
     }
 
-    override fun getItemCount(): Int = priceRangeFilterList.size
+    override fun getItemCount(): Int = optionViewModelList.size
 }

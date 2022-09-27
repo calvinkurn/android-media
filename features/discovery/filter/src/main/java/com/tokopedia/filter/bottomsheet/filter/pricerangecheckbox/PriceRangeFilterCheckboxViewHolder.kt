@@ -1,18 +1,16 @@
-package com.tokopedia.filter.bottomsheet.pricerangecheckbox
+package com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.filter.R
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemAdapter
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxListener
 import com.tokopedia.filter.databinding.FilterPriceRangeLayoutBinding
 
 internal class PriceRangeFilterCheckboxViewHolder(
     itemView: View,
     private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
-) : AbstractViewHolder<PriceRangeFilterCheckboxUiModel>(itemView) {
+) : AbstractViewHolder<PriceRangeFilterCheckboxDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -30,15 +28,15 @@ internal class PriceRangeFilterCheckboxViewHolder(
         }
     }
 
-    override fun bind(element: PriceRangeFilterCheckboxUiModel) {
+    override fun bind(element: PriceRangeFilterCheckboxDataView) {
         bindRvFilterPriceRange(element)
-        binding.tvPriceRangeLabel.text = element.priceRangeLabel
+        binding.tvPriceRangeLabel.text = element.filter.title
     }
 
-    private fun bindRvFilterPriceRange(priceRangeFilterCheckboxUiModel: PriceRangeFilterCheckboxUiModel) {
+    private fun bindRvFilterPriceRange(priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView) {
         val priceRangeOptionAdapter =
             PriceRangeFilterCheckboxItemAdapter(
-                priceRangeFilterCheckboxUiModel.priceRangeList,
+                priceRangeFilterCheckboxDataView.optionViewModelList,
                 priceRangeFilterCheckboxListener
             )
         val removeAndRecycleExistingViews = false

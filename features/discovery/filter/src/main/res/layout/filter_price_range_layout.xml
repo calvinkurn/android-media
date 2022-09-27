@@ -9,7 +9,7 @@
         android:id="@+id/tvPriceRangeLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/price_range_filter_label"
+        android:text="@string/filter_price_range_label"
         android:layout_marginTop="16dp"
         app:typographyWeight="bold"
         app:typographyType="display_1"

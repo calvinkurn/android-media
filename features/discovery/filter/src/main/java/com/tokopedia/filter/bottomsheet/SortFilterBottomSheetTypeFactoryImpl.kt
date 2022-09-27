@@ -13,9 +13,9 @@ import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterViewHolder
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewHolder
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxListener
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxUiModel
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxViewHolder
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxListener
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxViewHolder
 import com.tokopedia.filter.bottomsheet.sort.SortViewHolder
 import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
@@ -45,7 +45,7 @@ internal class SortFilterBottomSheetTypeFactoryImpl(
     override fun type(keywordFilterDataView: KeywordFilterDataView) =
         KeywordFilterViewHolder.LAYOUT
 
-    override fun type(priceRangeFilterCheckboxUiModel: PriceRangeFilterCheckboxUiModel): Int =
+    override fun type(priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView): Int =
         PriceRangeFilterCheckboxViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
