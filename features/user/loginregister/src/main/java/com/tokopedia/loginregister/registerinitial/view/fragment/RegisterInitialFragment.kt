@@ -344,9 +344,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 actionTextView?.setOnClickListener {
                     if (isUsingRedefineRegisterEmailMandatoryOptionalVariant() || isUsingRedefineRegisterEmailControlVariant()) {
                         redefineRegisterInitialAnalytics.sendClickOnMasukEvent(redefineRegisterEmailVariant)
-                    } else {
-                        registerAnalytics.trackClickTopSignInButton()
                     }
+                    registerAnalytics.trackClickTopSignInButton()
                     registerInitialRouter.goToLoginPage(activity)
                 }
             }
@@ -399,9 +398,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 if (!isUsingRedefineRegisterEmailMandatoryOptionalVariant()) {
                     if (isUsingRedefineRegisterEmailControlVariant()) {
                         redefineRegisterInitialAnalytics.sendClickOnButtonMetodeLainEvent(redefineRegisterEmailVariant)
-                    } else {
-                        registerAnalytics.trackClickSocmedButton()
                     }
+                    registerAnalytics.trackClickSocmedButton()
                     bottomSheet?.show(act.supportFragmentManager, getString(R.string.bottom_sheet_show))
                 } else {
                     redefineRegisterInitialAnalytics.sendClickOnButtonMetodeLainEvent(redefineRegisterEmailVariant)
@@ -829,9 +827,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
         if (isUsingRedefineRegisterEmailMandatoryOptionalVariant() || isUsingRedefineRegisterEmailControlVariant()) {
             redefineRegisterInitialAnalytics.sendClickOnButtonDaftarPhoneNumberEvent(RedefineInitialRegisterAnalytics.ACTION_FAILED, redefineRegisterEmailVariant, messageError)
-        } else {
-            registerAnalytics.trackFailedClickSignUpButton(messageError.removeErrorCode())
         }
+        registerAnalytics.trackFailedClickSignUpButton(messageError.removeErrorCode())
 
         partialRegisterInputView.onErrorInputEmailPhoneValidate(messageError)
         phoneNumber = ""
@@ -1148,6 +1145,9 @@ class RegisterInitialFragment : BaseDaggerFragment(),
             setTempPhoneNumber(id)
             registerInitialViewModel.registerCheck(PhoneUtils.removeSymbolPhone(id))
         } else {
+            if (isUsingRedefineRegisterEmailControlVariant()) {
+                redefineRegisterInitialAnalytics.sendClickOnButtonDaftarEmailEvent(RedefineInitialRegisterAnalytics.ACTION_CLICK, redefineRegisterEmailVariant)
+            }
             registerInitialViewModel.registerCheck(id)
         }
     }
@@ -1179,9 +1179,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
             showProgressBar()
             if (isUsingRedefineRegisterEmailMandatoryOptionalVariant() || isUsingRedefineRegisterEmailControlVariant()) {
                 redefineRegisterInitialAnalytics.sendClickOnButtonGoogleEvent(RedefineInitialRegisterAnalytics.ACTION_CLICK, redefineRegisterEmailVariant)
-            } else {
-                registerAnalytics.trackClickGoogleButton(it.applicationContext)
             }
+            registerAnalytics.trackClickGoogleButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_GMAIL)
             goToRegisterGoogle()
         }
@@ -1215,6 +1214,9 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorRegister(errorMessage: String) {
+        if (isUsingRedefineRegisterEmailControlVariant()) {
+            redefineRegisterInitialAnalytics.sendClickOnButtonDaftarEmailEvent(RedefineInitialRegisterAnalytics.ACTION_FAILED, errorMessage)
+        }
         dismissProgressBar()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
         registerAnalytics.trackErrorRegister(errorMessage.removeErrorCode(), userSession.loginMethod)
@@ -1317,6 +1319,11 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun sendTrackingSuccessRegister() {
+
+        if (isUsingRedefineRegisterEmailControlVariant()) {
+            redefineRegisterInitialAnalytics.sendClickOnButtonDaftarEmailEvent(RedefineInitialRegisterAnalytics.ACTION_SUCCESS, redefineRegisterEmailVariant)
+        }
+
         registerAnalytics.trackSuccessRegister(
                 userSession.loginMethod,
                 userSession.userId,
