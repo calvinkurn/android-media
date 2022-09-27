@@ -544,7 +544,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
                     feedXCard.media.any { it.isImage }
         )
-        asgcProductCampaignCopywring.showWithCondition(feedXCard.campaign.isRilisanSpl && feedXCard.followers.isFollowed.not())
+        asgcProductCampaignCopywring.showWithCondition(feedXCard.campaign.isRilisanSpl && feedXCard.campaign.isRSFollowersRestrictionOn)
 
         topAdsCard.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)

@@ -187,7 +187,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                             if (data.isFollow) {
                                 showToast(
                                     getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
-                                    Toaster.TYPE_NORMAL
+                                    Toaster.TYPE_NORMAL,
+                                    getString(com.tokopedia.feedplus.R.string.feed_asgc_campaign_toaster_action_text)
                                 )
                                 onResponseAfterFollowFromBottomSheet(true)
                             }
@@ -209,7 +210,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                         if (data.isSuccess) {
                             showToast(
                                 getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
-                                Toaster.TYPE_NORMAL
+                                Toaster.TYPE_NORMAL,
+                                getString(com.tokopedia.feedplus.R.string.feed_asgc_campaign_toaster_action_text)
                             )
                             onResponseAfterFollowFromBottomSheet(true)
                             if (::feedFollowersOnlyBottomSheet.isInitialized) {

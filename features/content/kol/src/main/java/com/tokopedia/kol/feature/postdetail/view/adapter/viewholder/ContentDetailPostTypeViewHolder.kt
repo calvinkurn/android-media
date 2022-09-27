@@ -455,7 +455,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
                     feedXCard.media.any { it.isImage }
         )
-        topAdsProductCampaignCopywritingText.showWithCondition(feedXCard.campaign.isRilisanSpl && feedXCard.followers.isFollowed.not())
+        topAdsProductCampaignCopywritingText.showWithCondition(feedXCard.campaign.isRilisanSpl && feedXCard.campaign.isRSFollowersRestrictionOn)
 
         topAdsCard.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)

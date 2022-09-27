@@ -147,5 +147,6 @@ dari Feed.</string>
     <string name="feed_follow_bottom_sheet_desc_text">Supaya kamu bisa beli produk eksklusif ini.</string>
     <string name="feed_follow_bottom_sheet_success_toaster_text">Kamu berhasil follow toko. Yuk, buruan beli produknya sebelum kehabisan!</string>
     <string name="feed_asgc_campaign_cta_copywriting_text">Eksklusif untuk Follower Toko</string>
+    <string name="feed_asgc_campaign_toaster_action_text">Oke</string>
 
 </resources>

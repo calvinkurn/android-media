@@ -405,7 +405,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 if (::productTagBS.isInitialized) {
                                     productTagBS.showToasterOnBottomSheetOnSuccessFollow(
                                         getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
-                                        Toaster.TYPE_NORMAL
+                                        Toaster.TYPE_NORMAL,
+                                        getString(com.tokopedia.feedplus.R.string.feed_asgc_campaign_toaster_action_text)
                                     )
                                     feedFollowersOnlyBottomSheet.dismiss()
                                 }
@@ -531,7 +532,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 if (::productTagBS.isInitialized) {
                                     productTagBS.showToasterOnBottomSheetOnSuccessFollow(
                                         getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
-                                        Toaster.TYPE_NORMAL
+                                        Toaster.TYPE_NORMAL,
+                                        getString(com.tokopedia.feedplus.R.string.feed_asgc_campaign_toaster_action_text)
                                     )
                                     feedFollowersOnlyBottomSheet.dismiss()
                                 }
