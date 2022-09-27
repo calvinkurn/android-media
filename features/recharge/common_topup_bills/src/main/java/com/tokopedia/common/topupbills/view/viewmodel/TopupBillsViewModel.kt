@@ -8,7 +8,6 @@ import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
-import com.tokopedia.common.topupbills.favoritepage.domain.usecase.ModifyRechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.favoritepage.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberActionType
@@ -64,18 +63,6 @@ class TopupBillsViewModel @Inject constructor(
     private val _seamlessFavNumberData = MutableLiveData<Result<Pair<TopupBillsSeamlessFavNumber, Boolean>>>()
     val seamlessFavNumberData: LiveData<Result<Pair<TopupBillsSeamlessFavNumber, Boolean>>>
         get() = _seamlessFavNumberData
-
-    private val _seamlessFavNumberUpdateData = MutableLiveData<Result<UpdateFavoriteDetail>>()
-    val seamlessFavNumberUpdateData: LiveData<Result<UpdateFavoriteDetail>>
-        get() = _seamlessFavNumberUpdateData
-
-    private val _seamlessFavNumberDeleteData = MutableLiveData<Result<UpdateFavoriteDetail>>()
-    val seamlessFavNumberDeleteData: LiveData<Result<UpdateFavoriteDetail>>
-        get() = _seamlessFavNumberDeleteData
-
-    private val _seamlessFavNumberUndoDeleteData = MutableLiveData<Result<UpdateFavoriteDetail>>()
-    val seamlessFavNumberUndoDeleteData: LiveData<Result<UpdateFavoriteDetail>>
-        get() = _seamlessFavNumberUndoDeleteData
 
     private val _checkVoucherData = MutableLiveData<Result<PromoData>>()
     val checkVoucherData: LiveData<Result<PromoData>>
@@ -190,39 +177,6 @@ class TopupBillsViewModel @Inject constructor(
                 else -> it.message
             }
             _seamlessFavNumberData.postValue(Fail(Throwable(errMsg)))
-        }
-    }
-
-    fun modifySeamlessFavoriteNumber(
-        rawQuery: String,
-        mapParam: Map<String, Any>,
-        actionType: FavoriteNumberActionType,
-        onModifyCallback: (() -> Unit)? = null
-    ) {
-        launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val graphqlRequest = GraphqlRequest(
-                    rawQuery,
-                    TopupBillsSeamlessFavNumberModData::class.java,
-                    mapParam
-                )
-                graphqlRepository.response(listOf(graphqlRequest))
-            }.getSuccessData<TopupBillsSeamlessFavNumberModData>()
-
-            when (actionType) {
-                FavoriteNumberActionType.UPDATE -> _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
-                FavoriteNumberActionType.DELETE -> _seamlessFavNumberDeleteData.postValue(Success(data.updateFavoriteDetail))
-                FavoriteNumberActionType.UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Success(data.updateFavoriteDetail))
-            }
-        }) {
-            when (actionType) {
-                FavoriteNumberActionType.UPDATE -> _seamlessFavNumberUpdateData.postValue(Fail(it))
-                FavoriteNumberActionType.DELETE -> {
-                    _seamlessFavNumberDeleteData.postValue(Fail(it))
-                    onModifyCallback?.invoke()
-                }
-                FavoriteNumberActionType.UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
-            }
         }
     }
 
