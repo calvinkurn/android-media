@@ -24,7 +24,9 @@ class GetCourierRecommendationSubscriber(
     private val isForceReloadRates: Boolean,
     private val isBoUnstackEnabled: Boolean
 ) : Subscriber<ShippingRecommendationData?>() {
+
     override fun onCompleted() {}
+
     override fun onError(e: Throwable) {
         Timber.d(e)
         if (isInitialLoad) {
@@ -90,9 +92,17 @@ class GetCourierRecommendationSubscriber(
                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                 shippingCourierUiModel.isSelected = false
                             }
+                            val selectedSpId =
+                                if (shippingDurationUiModel.serviceData.selectedShipperProductId > 0) {
+                                    shippingDurationUiModel.serviceData.selectedShipperProductId
+                                } else {
+                                    spId
+                                }
                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == spId &&
-                                        shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden)
+                                if (isTradeInDropOff || (
+                                    shippingCourierUiModel.productData.shipperProductId == selectedSpId &&
+                                        shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden
+                                )
                                 ) {
                                     if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                         view.renderCourierStateFailed(
@@ -111,7 +121,8 @@ class GetCourierRecommendationSubscriber(
                                             shippingCourierUiModel,
                                             shippingRecommendationData
                                         )
-                                        if (shippingCourierUiModel.productData.isUiRatesHidden && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                        if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                            // courier should only be used with BO, but no BO code found
                                             view.renderCourierStateFailed(
                                                 itemPosition,
                                                 isTradeInDropOff,
