@@ -10,6 +10,7 @@ import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
@@ -135,7 +136,8 @@ class TextLabelAnimator(
     companion object {
         private const val IDLE_DURATION = 3000L
         private const val AFTER_SWIPE_DURATION = 100L
-        private const val ALPHA_400_DURATION = 400L
+        private const val ALPHA_MEDIUM_DURATION = 400L
+        private const val ALPHA_SHORT_DURATION = 250L
         private const val ALPHA_MIN = 0f
         private const val ALPHA_MAX = 1f
     }
@@ -148,21 +150,24 @@ class TextLabelAnimator(
         onAnimationEnd: () -> Unit
     ) {
         cancelContainerAnimator()
+        cancelTextAnimator()
 
-        //txtView.alpha = 0f
+        container.alpha = ALPHA_MAX
         txtView.text = text
-        onAnimationEnd.invoke()
-        //onAnimationEnd.invoke()
-        /*txtView.animate()
-            .setDuration(ALPHA_400_DURATION)
-            .setStartDelay(0)
-            .setInterpolator(DecelerateInterpolator())
-            .alpha(1f)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    //onAnimationEnd.invoke()
-                }
-            }).start()*/
+        show()
+
+        textAnimator = txtView.createAlphaAnimation(
+            start = ALPHA_MIN,
+            end = ALPHA_MAX,
+            properties = {
+                duration = ALPHA_SHORT_DURATION
+                startDelay = Int.ZERO.toLong()
+                interpolator = AccelerateInterpolator()
+            },
+            onAnimationEnd = onAnimationEnd
+        )
+
+        textAnimator?.start()
     }
 
     fun animateAutoHide(onAnimationEnd: (() -> Unit)? = null) {
@@ -205,7 +210,7 @@ class TextLabelAnimator(
         properties: ValueAnimator.() -> Unit,
         onAnimationEnd: (() -> Unit)?
     ) = ValueAnimator.ofFloat(start, end).apply {
-        duration = ALPHA_400_DURATION
+        duration = ALPHA_MEDIUM_DURATION
         properties.invoke(this)
 
         addUpdateListener {
