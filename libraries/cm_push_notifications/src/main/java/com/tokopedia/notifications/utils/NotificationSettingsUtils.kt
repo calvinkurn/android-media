@@ -19,6 +19,7 @@ class NotificationSettingsUtils(private val context: Context) {
 
     private val postNotificationPermission = "android.permission.POST_NOTIFICATIONS"
     private val userSession: UserSessionInterface = UserSession(context)
+    private val sdkLevel33 = 33
 
     fun checkNotificationsModeForSpecificChannel(channel: String?): NotificationMode {
         return if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
@@ -42,29 +43,37 @@ class NotificationSettingsUtils(private val context: Context) {
     }
 
     fun sendNotificationPromptEvent() {
-        try {
-            NotificationSettingsGtmEvents(userSession).sendPromptImpressionEvent(context)
-        } catch (e: Exception){
+        if(Build.VERSION.SDK_INT >= sdkLevel33) {
+            try {
+                NotificationSettingsGtmEvents(userSession).sendPromptImpressionEvent(context)
+            } catch (e: Exception) {
+            }
         }
     }
 
     fun checkNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                context,
-                postNotificationPermission) == PackageManager.PERMISSION_GRANTED) {
-            try {
-                NotificationSettingsGtmEvents(userSession).sendActionAllowEvent(context)
-            } catch (e: Exception){
-            }
+        if (Build.VERSION.SDK_INT >= sdkLevel33) {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    postNotificationPermission
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                try {
+                    NotificationSettingsGtmEvents(userSession).sendActionAllowEvent(context)
+                } catch (e: Exception) {
+                }
 
-        } else if (ContextCompat.checkSelfPermission(
-                context,
-                postNotificationPermission) == PackageManager.PERMISSION_DENIED) {
-            try {
-                NotificationSettingsGtmEvents(userSession).sendActionNotAllowEvent(
-                    context
-                )
-            } catch (e: Exception) {
+            } else if (ContextCompat.checkSelfPermission(
+                    context,
+                    postNotificationPermission
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                try {
+                    NotificationSettingsGtmEvents(userSession).sendActionNotAllowEvent(
+                        context
+                    )
+                } catch (e: Exception) {
+                }
             }
         }
     }
