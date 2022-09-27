@@ -3,18 +3,16 @@ package com.tokopedia.chatbot.view.customview.videoheader
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chatbot.R
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifyprinciples.Typography
 
 class VideoScreenHeader(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
 
-    private lateinit var backIcon: IconUnify
-    private lateinit var screenTitle: Typography
+    private var backIcon: IconUnify? = null
+    private var screenTitle: Typography? = null
     var backClickListener: OnClickBackButton? = null
 
     init {
@@ -23,7 +21,7 @@ class VideoScreenHeader(context: Context, attributeSet: AttributeSet) :
     }
 
     private fun initClickListener() {
-        backIcon.setOnClickListener {
+        backIcon?.setOnClickListener {
             backClickListener?.navigateToChatbotActivity()
         }
     }
@@ -34,7 +32,7 @@ class VideoScreenHeader(context: Context, attributeSet: AttributeSet) :
             backIcon = findViewById(R.id.back_icon)
             screenTitle = findViewById(R.id.title)
         }
-        screenTitle.apply {
+        screenTitle?.apply {
             text = context.getString(R.string.chatbot_video_title)
             setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             setType(Typography.DISPLAY_1)

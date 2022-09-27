@@ -235,10 +235,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isSendButtonActivated : Boolean = true
     private var isFloatingSendButton: Boolean = false
     private var isFloatingInvoiceCancelled : Boolean = false
-    lateinit var textWatcher : TextWatcher
+    private var textWatcher : TextWatcher? = null
     private var isConnectedToAgent : Boolean = false
-    private lateinit var attachmentMenuRecyclerView : AttachmentMenuRecyclerView
-    private lateinit var replyBubbleContainer : ReplyBubbleAreaMessage
+    private var attachmentMenuRecyclerView : AttachmentMenuRecyclerView? = null
+    private var replyBubbleContainer : ReplyBubbleAreaMessage? = null
     private var replyBubbleEnabled : Boolean = false
     private var senderNameForReply = ""
     private var smoothScroll : SmoothScroller? = null
@@ -1166,7 +1166,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             sendMessage,
             startTime,
             opponentId,
-            replyBubbleContainer.referredMsg,
+            replyBubbleContainer?.referredMsg,
             onSendingMessage(sendMessage, startTime, replyBubbleContainer?.referredMsg)
         )
 
@@ -1582,7 +1582,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 REPLY -> {
                     replyBubbleOnBoarding.dismiss()
                     senderNameForReply = messageUiModel.from
-                    replyBubbleContainer.composeReplyData(messageUiModel,"",true, getUserNameForReplyBubble.getUserName(messageUiModel))
+                    replyBubbleContainer?.composeReplyData(messageUiModel,"",true, getUserNameForReplyBubble.getUserName(messageUiModel))
                     bottomSheetPage.dismiss()
                 }
             }
@@ -1605,9 +1605,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun visibilityReplyBubble(state: Boolean) {
         if (!state) {
             replyBubbleContainer?.referredMsg = null
-            replyBubbleContainer.hide()
+            replyBubbleContainer?.hide()
         }else{
-            replyBubbleContainer.show()
+            replyBubbleContainer?.show()
         }
     }
 
@@ -1848,7 +1848,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun isInvoiceRemoved(isRemoved: Boolean) {
         isFloatingInvoiceCancelled = isRemoved
-        if (this::textWatcher.isInitialized)
+        if (textWatcher != null)
             replyEditText.removeTextChangedListener(textWatcher)
     }
 }

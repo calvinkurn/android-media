@@ -57,7 +57,7 @@ class ChatbotVideoUploadViewHolder(
     private val action: ImageView? = itemView?.findViewById(getLeftActionId())
     private val progressBarSendVideo: View? = itemView?.findViewById(getProgressBarSendVideoId())
     private val videoPlayerView: PlayerView? = itemView?.findViewById(getVideoPlayerId())
-    private lateinit var chatbotExoPlayer: ChatbotExoPlayer
+    private var chatbotExoPlayer: ChatbotExoPlayer? = null
     private var videoWidth = 0
     private var videoHeight = 0
 
@@ -76,7 +76,6 @@ class ChatbotVideoUploadViewHolder(
     )
 
     override fun bind(element: VideoUploadUiModel) {
-        if (element == null) return
         super.bind(element)
         prerequisiteUISetup()
         setupChatBubbleAlignment(chatBalloon, element)
@@ -108,12 +107,12 @@ class ChatbotVideoUploadViewHolder(
     }
 
     private fun setUpExoPlayerListener() {
-        chatbotExoPlayer.videoDimensionsListener = this
-        chatbotExoPlayer.getExoPlayer().addListener(object : Player.EventListener {
+        chatbotExoPlayer?.videoDimensionsListener = this
+        chatbotExoPlayer?.getExoPlayer()?.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 super.onPlayerStateChanged(playWhenReady, playbackState)
                 if (playbackState == Player.STATE_READY) {
-                    val duration = chatbotExoPlayer.getExoPlayer().duration.orZero()
+                    val duration = chatbotExoPlayer!!.getExoPlayer().duration.orZero()
                     setTimeData(duration)
                 }
             }
@@ -122,10 +121,12 @@ class ChatbotVideoUploadViewHolder(
 
     private fun setUpChatbotExoPlayer(element: VideoUploadUiModel) {
         chatbotExoPlayer = ChatbotExoPlayer(itemView.context)
-        videoPlayerView?.player = chatbotExoPlayer.getExoPlayer()
+        videoPlayerView?.player = chatbotExoPlayer?.getExoPlayer()
         val mediaSource =
-            chatbotExoPlayer.getMediaSourceBySource(itemView.context, Uri.parse(element.videoUrl))
-        chatbotExoPlayer.getExoPlayer().prepare(mediaSource)
+            chatbotExoPlayer?.getMediaSourceBySource(itemView.context, Uri.parse(element.videoUrl))
+        if (mediaSource != null) {
+            chatbotExoPlayer?.getExoPlayer()?.prepare(mediaSource)
+        }
     }
 
     private fun setDefaultVideoDuration() {
@@ -133,7 +134,7 @@ class ChatbotVideoUploadViewHolder(
     }
 
     private fun setTimeData(duration: Long) {
-        var totalLengthInString = convertVideoLength(duration)
+        val totalLengthInString = convertVideoLength(duration)
         videoTotalLength?.text = totalLengthInString
     }
 
@@ -188,7 +189,7 @@ class ChatbotVideoUploadViewHolder(
 
     override fun setHeaderDate(element: BaseChatUiModel) {
         if (date == null) return
-        val time = element?.replyTime?.let {
+        val time = element.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(
                 it,
                 itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date),
@@ -196,7 +197,7 @@ class ChatbotVideoUploadViewHolder(
             )
         }
         date?.text = time
-        if (date != null && element?.isShowDate && !TextUtils.isEmpty(time)
+        if (date != null && element.isShowDate && !TextUtils.isEmpty(time)
         ) {
             dateContainer?.show()
         } else if (date != null) {
@@ -272,7 +273,7 @@ class ChatbotVideoUploadViewHolder(
 
     override fun onViewRecycled() {
         super.onViewRecycled()
-        chatbotExoPlayer.destroy()
+        chatbotExoPlayer?.destroy()
     }
 
     override fun setWidth(width: Int) {
@@ -322,7 +323,6 @@ class ChatbotVideoUploadViewHolder(
         const val SECONDS = 60
         const val RADIUS_FOR_VIDEO = 30f
         const val SIDE_VALUE_VIDEO_PLACEHOLDER = 0
-        const val RATIO = 1
         const val MAX_ALLOWED_WIDTH = 240f
         const val TOP_MARGIN = 16
     }

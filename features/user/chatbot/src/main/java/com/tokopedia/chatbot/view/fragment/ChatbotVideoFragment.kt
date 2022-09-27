@@ -27,13 +27,13 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideoStateListener, VideoScreenHeader.OnClickBackButton{
 
     private var videoUrl = ""
-    private lateinit var videoPlayerView : PlayerView
-    private lateinit var progressLoader : LoaderUnify
-    private lateinit var errorImage : ImageView
-    private lateinit var chatbotExoPlayer: ChatbotExoPlayer
-    private lateinit var chatbotVideoControl: ChatbotVideoControlView
-    private lateinit var parentLayout : ConstraintLayout
-    private lateinit var videoScreenHeader: VideoScreenHeader
+    private var videoPlayerView : PlayerView? = null
+    private var progressLoader : LoaderUnify? = null
+    private var errorImage : ImageView? = null
+    private var chatbotExoPlayer: ChatbotExoPlayer? = null
+    private var chatbotVideoControl: ChatbotVideoControlView? = null
+    private var parentLayout : ConstraintLayout? = null
+    private var videoScreenHeader: VideoScreenHeader? = null
 
     override fun getScreenName(): String {
         return ""
@@ -61,9 +61,9 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
     }
 
     private fun setMarginForHeader(defaultStatusBarHeight : Int) {
-        val param = videoScreenHeader.layoutParams as ViewGroup.MarginLayoutParams
+        val param = videoScreenHeader?.layoutParams as ViewGroup.MarginLayoutParams
         param.setMargins(0,defaultStatusBarHeight,0,0)
-        videoScreenHeader.layoutParams = param
+        videoScreenHeader?.layoutParams = param
     }
 
     private fun getStatusBarHeight(context: Context): Int {
@@ -82,62 +82,64 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
 
     private fun initViews(view : View) {
         parentLayout = view.findViewById(R.id.parent_view)
-        parentLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        parentLayout?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         videoScreenHeader = view.findViewById(R.id.video_screen_header)
         chatbotVideoControl = view.findViewById(R.id.video_control)
         chatbotExoPlayer = ChatbotExoPlayer(view.context, chatbotVideoControl)
         videoPlayerView = view.findViewById(R.id.video_player)
         progressLoader = view.findViewById(R.id.loader)
         errorImage = view.findViewById(R.id.error_image)
-        videoScreenHeader.bringToFront()
+        videoScreenHeader?.bringToFront()
         initVideoPlayer()
 
     }
 
     private fun initListenerForNavigation(){
-        videoScreenHeader.backClickListener = this
+        videoScreenHeader?.backClickListener = this
     }
 
     private fun initVideoPlayer() {
-        videoPlayerView.player = chatbotExoPlayer.getExoPlayer()
-        chatbotExoPlayer.start(videoUrl)
-        chatbotExoPlayer.videoStateListener = this
+        videoPlayerView?.player = chatbotExoPlayer?.getExoPlayer()
+        chatbotExoPlayer?.start(videoUrl)
+        chatbotExoPlayer?.videoStateListener = this
         initListenerForVideoPlayer()
     }
 
     private fun initListenerForVideoPlayer() {
-        videoPlayerView.videoSurfaceView?.setOnClickListener {
-            if (chatbotExoPlayer.getExoPlayer().isPlaying) {
-                chatbotExoPlayer.pause()
+        videoPlayerView?.videoSurfaceView?.setOnClickListener {
+            if (chatbotExoPlayer?.getExoPlayer()?.isPlaying == true) {
+                chatbotExoPlayer?.pause()
             } else {
-                chatbotExoPlayer.resume()
+                chatbotExoPlayer?.resume()
             }
         }
     }
 
     private fun onErrorVideoLoad(){
-        errorImage.visible()
-        errorImage.setImageResource(R.drawable.chatbot_video_error)
-        progressLoader.gone()
+        errorImage?.visible()
+        errorImage?.setImageResource(R.drawable.chatbot_video_error)
+        progressLoader?.gone()
         context?.let {
-            Toaster.build(
-                videoPlayerView, getString(R.string.chatbot_video_can_not_be_played), LENGTH_SHORT,
-                TYPE_ERROR, getString(R.string.chatbot_video_refresh)
-            ) {
-                chatbotExoPlayer.start(videoUrl)
-                errorImage.gone()
-            }.show()
+            videoPlayerView?.let { videoPlayer ->
+                Toaster.build(
+                    videoPlayer, getString(R.string.chatbot_video_can_not_be_played), LENGTH_SHORT,
+                    TYPE_ERROR, getString(R.string.chatbot_video_refresh)
+                ) {
+                    chatbotExoPlayer?.start(videoUrl)
+                    errorImage?.gone()
+                }.show()
+            }
         }
 
     }
 
     override fun onInitialStateLoading() {
-        progressLoader.visible()
-        progressLoader.bringToFront()
+        progressLoader?.visible()
+        progressLoader?.bringToFront()
     }
 
     override fun onVideoReadyToPlay() {
-        progressLoader.gone()
+        progressLoader?.gone()
     }
 
     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
@@ -151,22 +153,22 @@ class ChatbotVideoFragment : BaseDaggerFragment(), ChatbotExoPlayer.ChatbotVideo
 
     override fun onPause() {
         super.onPause()
-        chatbotExoPlayer.pause()
+        chatbotExoPlayer?.pause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        chatbotExoPlayer.destroy()
+        chatbotExoPlayer?.destroy()
     }
 
     override fun onResume() {
         super.onResume()
-        chatbotExoPlayer.resume()
+        chatbotExoPlayer?.resume()
     }
 
     override fun onStop() {
         super.onStop()
-        chatbotExoPlayer.stop()
+        chatbotExoPlayer?.stop()
     }
 
     override fun navigateToChatbotActivity() {
