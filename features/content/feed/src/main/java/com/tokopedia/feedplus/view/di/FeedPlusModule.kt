@@ -7,21 +7,15 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi
-import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedAuthInterceptor
 import com.tokopedia.feedplus.data.api.FeedUrl
-import com.tokopedia.feedplus.view.listener.DynamicFeedContract
-import com.tokopedia.feedplus.view.presenter.DynamicFeedPresenter
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
@@ -100,15 +94,6 @@ class FeedPlusModule {
     @Provides
     fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
         return DeleteWishlistV2UseCase(graphqlRepository)
-    }
-
-    @FeedPlusScope
-    @Provides
-    fun provideDynamicFeedPresenter(userSession: UserSessionInterface,
-                                    getDynamicFeedUseCase: GetDynamicFeedUseCase,
-                                    likeKolPostUseCase: LikeKolPostUseCase,
-                                    trackAffiliateClickUseCase: TrackAffiliateClickUseCase): DynamicFeedContract.Presenter {
-        return DynamicFeedPresenter(userSession, getDynamicFeedUseCase, likeKolPostUseCase, trackAffiliateClickUseCase)
     }
 
     //SHOP COMMON
