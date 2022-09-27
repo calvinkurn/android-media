@@ -17,6 +17,7 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -69,6 +70,7 @@ internal open class ProductListPresenterTestFixtures {
 
         override fun computation() = Schedulers.immediate()
     }
+    protected open val sameSessionRecommendationPresenterDelegate= mockk<SameSessionRecommendationPresenterDelegate>(relaxed = true)
     protected lateinit var productListPresenter: ProductListPresenter
 
     @Before
@@ -99,6 +101,7 @@ internal open class ProductListPresenterTestFixtures {
                 requestParamsGenerator,
                 chooseAddressPresenterDelegate
             ) { saveLastFilterUseCase },
+            sameSessionRecommendationPresenterDelegate,
         )
         productListPresenter.attachView(productListView)
     }

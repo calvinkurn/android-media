@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
+import com.tokopedia.discovery.common.constants.SearchConstant.SameSessionRecommendation.DEFAULT_KEYWORD_INTENT
+import com.tokopedia.discovery.common.constants.SearchConstant.SameSessionRecommendation.KEYWORD_INTENT_LOW
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
@@ -68,6 +70,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var customVideoURL: String = ""
     var productListType: String = ""
     var dimension131: String = ""
+    var keywordIntention: Int = DEFAULT_KEYWORD_INTENT
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -125,6 +128,9 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
 
     val dimension115: String
         get() = labelGroupList.getFormattedPositionName()
+
+    val isKeywordIntentionLow : Boolean
+        get() = keywordIntention == KEYWORD_INTENT_LOW
 
     companion object {
         fun create(

@@ -110,4 +110,8 @@ class RecyclerViewUpdater @Inject constructor(
     override fun onChangeSingleGrid() {
         recyclerView?.requestLayout()
     }
+
+    override fun insertItemAtIndex(item: Visitable<*>, index: Int) {
+        productListAdapter?.insertItemAtIndex(item, index)
+    }
 }

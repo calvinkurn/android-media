@@ -106,6 +106,7 @@ import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetLi
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
 import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
@@ -208,6 +209,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
+
+    @Inject
+    lateinit var sameSessionRecommendationListener: SameSessionRecommendationListener
 
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -457,6 +461,7 @@ class ProductListFragment: BaseDaggerFragment(),
             ),
             networkMonitor = networkMonitor,
             isUsingViewStub = remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB),
+            sameSessionRecommendationListener = sameSessionRecommendationListener,
         )
     }
 
