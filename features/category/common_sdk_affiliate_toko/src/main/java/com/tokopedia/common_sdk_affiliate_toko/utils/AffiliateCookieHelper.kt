@@ -23,6 +23,10 @@ class AffiliateCookieHelper @Inject constructor(
     private val checkCookieUseCase: CheckCookieUseCase,
     private val userSession: UserSessionInterface
 ) {
+    companion object {
+        private const val ATC_SOURCE = "shop_page"
+    }
+
     private var affiliateUUID: String = ""
 
     /**
@@ -32,6 +36,7 @@ class AffiliateCookieHelper @Inject constructor(
      * @param[affiliateChannel] required and pass it from url query params
      * @param[affiliatePageDetail] [AffiliatePageDetail]
      * @param[uuid] random UUID generated every time user land on PDP page. (Required for Product)
+     * @param[isATC] mandatory for direct ATC attribution
      * @param[additionalParam] some additional params of type [AdditionalParam]
      *
      */
@@ -40,6 +45,7 @@ class AffiliateCookieHelper @Inject constructor(
         affiliateChannel: String,
         affiliatePageDetail: AffiliatePageDetail,
         uuid: String = "",
+        isATC: Boolean = false,
         additionalParam: List<AdditionalParam> = emptyList(),
     ) {
         val params = AffiliateCookieParams(
@@ -54,7 +60,8 @@ class AffiliateCookieHelper @Inject constructor(
                 if (affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
-                        userSession.deviceId
+                        userSession.deviceId,
+                        if (isATC) ATC_SOURCE else ""
                     )
                 }
             }
@@ -63,11 +70,13 @@ class AffiliateCookieHelper @Inject constructor(
                 if (affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
-                        userSession.deviceId
+                        userSession.deviceId,
+                        if (isATC) ATC_SOURCE else ""
                     )
                 } else {
                     try {
-                        val checkAffiliateResponse = checkCookieUseCase.checkAffiliateCookie(params,userSession.deviceId)
+                        val checkAffiliateResponse =
+                            checkCookieUseCase.checkAffiliateCookie(params, userSession.deviceId)
                         this.affiliateUUID = checkAffiliateResponse.response.affiliateUuId ?: ""
                     } catch (e: Exception) {
                         Timber.e(e)

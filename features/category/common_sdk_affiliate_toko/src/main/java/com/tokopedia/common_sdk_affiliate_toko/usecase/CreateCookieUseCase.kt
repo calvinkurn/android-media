@@ -21,16 +21,18 @@ class CreateCookieUseCase @Inject constructor(
 
     private fun createRequestParam(
         param: AffiliateCookieParams,
-        deviceId: String
+        deviceId: String,
+        atcSource: String
     ): HashMap<String, Any> {
         return hashMapOf(
-            INPUT_PARAM to affiliateCookieDTO(param, deviceId)
+            INPUT_PARAM to affiliateCookieDTO(param, deviceId, atcSource)
         )
     }
 
     private fun affiliateCookieDTO(
         param: AffiliateCookieParams,
-        deviceId: String
+        deviceId: String,
+        atcSource: String
     ): CreateAffiliateCookieRequest {
         return CreateAffiliateCookieRequest(
             param.toCreateCookieAdditionParam(),
@@ -39,7 +41,8 @@ class CreateCookieUseCase @Inject constructor(
             CreateAffiliateCookieRequest.Header(
                 TrackApp.getInstance().gtm.irisSessionId,
                 param.uuid,
-                deviceId
+                deviceId,
+                atcSource
             ),
             CreateAffiliateCookieRequest.LinkDetail(
                 channel = param.affiliateChannel
@@ -65,13 +68,13 @@ class CreateCookieUseCase @Inject constructor(
 
     internal suspend fun createCookieRequest(
         param: AffiliateCookieParams,
-        deviceId: String
+        deviceId: String,
+        atcSource: String
     ): CreateAffiliateCookieResponse {
         return commonAffiliateRepository.getGQLData(
             GQL_Create_Cookie,
             CreateAffiliateCookieResponse::class.java,
-            createRequestParam(param, deviceId)
-
+            createRequestParam(param, deviceId, atcSource)
         )
     }
 }
