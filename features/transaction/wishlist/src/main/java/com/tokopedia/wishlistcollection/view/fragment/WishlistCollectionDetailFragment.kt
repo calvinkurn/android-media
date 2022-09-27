@@ -28,6 +28,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.config.GlobalConfig
@@ -1883,9 +1884,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun goToWishlistCollection(collectionId: String) {
-        val detailCollection =
-            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$collectionId"
-        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
+        val intentCollectionDetail = RouteManager.getIntent(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, collectionId)
         intentCollectionDetail.putExtra(EXTRA_IS_BULK_ADD, false)
         startActivityForResult(intentCollectionDetail, REQUEST_CODE_GO_TO_COLLECTION_DETAIL)
     }
@@ -2069,9 +2068,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun goToWishlistAllToAddCollection() {
         WishlistCollectionAnalytics.sendClickTambahBarangKeKoleksiOnEmptyStateNoCollectionItemsEvent()
-        val detailCollection =
-            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=0"
-        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
+        val intentCollectionDetail = RouteManager.getIntent(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, "0")
         intentCollectionDetail.putExtra(EXTRA_IS_BULK_ADD, true)
         intentCollectionDetail.putExtra(EXTRA_COLLECTION_ID_DESTINATION, collectionId)
         intentCollectionDetail.putExtra(EXTRA_COLLECTION_NAME_DESTINATION, collectionName)
