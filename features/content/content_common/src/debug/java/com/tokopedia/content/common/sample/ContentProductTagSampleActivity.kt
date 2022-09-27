@@ -159,11 +159,11 @@ class ContentProductTagSampleActivity : BaseActivity() {
             .setAuthorType(getAuthorType())
             .setProductTagSource(getProductTagSource())
             .setMultipleSelectionProduct(isMultipleSelectionProduct(), getMaxSelectedProduct())
-            .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked)
+            .setFullPageAutocomplete(binding.rbFullPageAutocompleteYes.isChecked, getApplinkAfterAutocomplete())
             .setBackButton(ContentProductTagConfig.BackButton.Close)
             .setIsShowActionBarDivider(false)
             .setIsAutoHandleBackPressed(getIsAutoHandleBackPressed())
-            .setAppLinkAfterAutocomplete(getApplinkAfterAutocomplete())
+
     }
 
     private fun closeFragment() {

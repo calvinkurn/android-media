@@ -122,11 +122,10 @@ class ProductTagActivity : BaseActivity() {
                 .setAuthorType(authorType)
                 .setProductTagSource(productTagList)
                 .setMultipleSelectionProduct(false, 0)
-                .setFullPageAutocomplete(true)
+                .setFullPageAutocomplete(true, ApplinkConst.FEED_CREATION_PRODUCT_SEARCH)
                 .setBackButton(ContentProductTagConfig.BackButton.Back)
                 .setIsShowActionBarDivider(true)
                 .setIsAutoHandleBackPressed(true)
-                .setAppLinkAfterAutocomplete(ApplinkConst.FEED_CREATION_PRODUCT_SEARCH)
         )
     }
 

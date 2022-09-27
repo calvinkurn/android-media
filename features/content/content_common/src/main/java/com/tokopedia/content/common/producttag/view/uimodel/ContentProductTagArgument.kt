@@ -119,8 +119,16 @@ class ContentProductTagArgument private constructor(
             return this
         }
 
-        fun setFullPageAutocomplete(isFullPageAutocomplete: Boolean): Builder {
+        fun setFullPageAutocomplete(
+            isFullPageAutocomplete: Boolean,
+            appLinkAfterAutocomplete: String,
+        ): Builder {
+            /**
+             * if isFullPageAutocomplete is false,
+             * applinkAfterAutocomplete will be ignored.
+             */
             argumentMap[KEY_IS_FULL_PAGE_AUTOCOMPLETE] = isFullPageAutocomplete
+            argumentMap[KEY_APPLINK_AFTER_AUTOCOMPLETE] = appLinkAfterAutocomplete
             return this
         }
 
@@ -136,14 +144,6 @@ class ContentProductTagArgument private constructor(
 
         fun setIsAutoHandleBackPressed(isAutoHandleBackPressed: Boolean): Builder {
             argumentMap[KEY_IS_AUTO_HANDLE_BACK_PRESSED] = isAutoHandleBackPressed
-            return this
-        }
-
-        fun setAppLinkAfterAutocomplete(appLinkAfterAutocomplete: String): Builder {
-            /**
-             * This config will be ignored if you set isFullPageAutocomplete = false
-             */
-            argumentMap[KEY_APPLINK_AFTER_AUTOCOMPLETE] = appLinkAfterAutocomplete
             return this
         }
 
