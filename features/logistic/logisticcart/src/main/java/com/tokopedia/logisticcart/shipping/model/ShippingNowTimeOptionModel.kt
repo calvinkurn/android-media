@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
+import com.tokopedia.coachmark.CoachMark2
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -15,5 +16,6 @@ class ShippingNowTimeOptionModel(
     val warning: String? = null,
     val isError: Boolean = false,
     val isDefaultNowShipment: Boolean,
-    var isSelected: Boolean
+    var isSelected: Boolean,
+    var isShowCoachMark: Boolean = false
 ) : Parcelable

@@ -3,14 +3,18 @@ package com.tokopedia.logisticcart.shipping.features.shippingnowwidget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.CompoundButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingNowTimeOptionModel
+import com.tokopedia.logisticcart.R
 
 class ShippingNowWidget : ConstraintLayout {
 
@@ -51,9 +55,32 @@ class ShippingNowWidget : ConstraintLayout {
                 setWarning(shippingNowTimeOption.warning, shippingNowTimeOption.isError)
                 showRightIcon(shippingNowTimeOption.isDefaultNowShipment.not() && shippingNowTimeOption.isEnable)
                 setTimeOptionEnable(shippingNowTimeOption.isEnable)
+                showCoachMark(shippingNowTimeOption.isShowCoachMark)
             }
 
             binding?.shipmentTimeOptionView?.addView(timeOptionBinding.root)
+        }
+    }
+
+    private fun ItemShipmentNowTimeOptionBinding.showCoachMark(isShow: Boolean) {
+        if (isShow) {
+            rightIcon.apply {
+                val coachMarkItem = ArrayList<CoachMark2Item>()
+                val coachMark = CoachMark2(context).apply {
+                    simpleCloseIcon?.gone()
+                    stepButtonTextLastChild = "Oke"
+                    stepPrev?.visible()
+                }
+                coachMarkItem.add(
+                    CoachMark2Item(
+                        this,
+                        context.getString(R.string.title_coachmark_option_schedule_delivery),
+                        context.getString(R.string.description_coachmark_option_schedule_delivery),
+                        CoachMark2.POSITION_BOTTOM
+                    )
+                )
+                coachMark.showCoachMark(coachMarkItem)
+            }
         }
     }
 
@@ -152,31 +179,8 @@ class ShippingNowWidget : ConstraintLayout {
                 title = "Jadwal lainnya (Rp20.000)",
                 description = "Tiba hari ini, 16:00 - 18:00",
                 isDefaultNowShipment = false,
-                isSelected = false
-            ),
-            ShippingNowTimeOptionModel(
-                isEnable = true,
-                title = "Jadwal lainnya (Rp20.000)",
-                description = "Tiba hari ini, 16:00 - 18:00",
-                warning = "Belanja min. Rp50.000 untuk gratis ongkir",
-                isDefaultNowShipment = false,
-                isSelected = false
-            ),
-            ShippingNowTimeOptionModel(
-                isEnable = false,
-                title = "Jadwal pengiriman tidak tersedia",
-                warning = "Belanjaanmu di kategori [nama kategori in L3] belum bisa pakai pengiriman terjadwal.",
-                isDefaultNowShipment = false,
-                isSelected = false
-            ),
-            ShippingNowTimeOptionModel(
-                isEnable = true,
-                title = "Jadwal lainnya (Rp20.000)",
-                description = "Tiba hari ini, 16:00 - 18:00",
-                warning = "Kuota Habis",
-                isDefaultNowShipment = false,
-                isError = true,
-                isSelected = false
+                isSelected = false,
+                isShowCoachMark = true
             )
         )
     }
